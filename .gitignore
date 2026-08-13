@@ -1,0 +1,34 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build output
+build/
+dist/
+target/
+out/
+
+# Dependencies / package managers
+node_modules/
+.bun/
+.pnpm-store/
+
+# Logs / temporary files
+*.log
+*.tmp
+*.temp
+
+# Profiling outputs can be huge.
+# Keep curated metadata/summaries in git and store large captures externally.
+profiles/*
+!profiles/.gitkeep
+
+# Raw benchmark output may be machine-specific or large.
+results/raw/*
+!results/raw/.gitkeep
