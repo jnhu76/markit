@@ -53,6 +53,10 @@ The early project is **not** trying to:
 │   ├── README.md
 │   └── adr/
 │       └── README.md
+├── mvp/
+│   ├── README.md
+│   ├── gpui/
+│   └── pocketjs/
 ├── profiles/
 │   └── .gitkeep
 └── results/
@@ -63,6 +67,9 @@ The early project is **not** trying to:
 ```
 
 The PRD lives at [docs/PRD.md](docs/PRD.md).
+
+Framework feasibility prototypes (GPUI / PocketJS MVP probes) live under
+[mvp/](mvp/README.md), managed as a unified set for the Phase B comparison.
 
 ## Research Workflow
 
