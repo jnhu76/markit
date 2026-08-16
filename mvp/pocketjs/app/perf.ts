@@ -16,6 +16,12 @@ export interface PerfEdit {
   visibleLines: number;
   measures: number;
   ops: number;
+  /** Suffix line-index entries shifted by this edit's length delta. */
+  adjusts: number;
+  /** '\n' inserted by this edit. */
+  newlinesIn: number;
+  /** '\n' removed by this edit. */
+  newlinesDel: number;
 }
 
 export interface PerfCounters {
@@ -23,12 +29,18 @@ export interface PerfCounters {
   frames: number;
   /** Document mutations applied. */
   edits: number;
-  /** Full-document line-index rebuilds. */
+  /** Full-document line-index rebuilds (load-time only after A3). */
   lineStartsScans: number;
   /** Chars scanned by lineStarts (== doc length per scan). */
   lineStartsChars: number;
   /** Wall time spent in lineStarts, ms (coarse; 0 when Date is unavailable). */
   lineStartsMs: number;
+  /** Line-index suffix entries shifted by incremental updates. */
+  lineIndexAdjusts: number;
+  /** '\n' inserted by edits. */
+  newlinesInserted: number;
+  /** '\n' removed by edits. */
+  newlinesDeleted: number;
   /** typeText concat copies. */
   typeCopies: number;
   /** Chars copied by typeText concat (≈ doc length per edit). */
@@ -61,6 +73,9 @@ const ZERO: PerfCounters = {
   lineStartsScans: 0,
   lineStartsChars: 0,
   lineStartsMs: 0,
+  lineIndexAdjusts: 0,
+  newlinesInserted: 0,
+  newlinesDeleted: 0,
   typeCopies: 0,
   typeCopyChars: 0,
   typeMs: 0,
@@ -77,12 +92,12 @@ let counters: PerfCounters = { ...ZERO };
 let requested = false;
 
 /** Current per-edit record being accumulated (set by perfEditBegin). */
-let cur: PerfEdit = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0 };
+let cur: PerfEdit = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0, adjusts: 0, newlinesIn: 0, newlinesDel: 0 };
 /** Op count at the beginning of the current frame. */
 let opsAtFrameStart = 0;
 
 export function perfEditBegin(): void {
-  cur = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0 };
+  cur = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0, adjusts: 0, newlinesIn: 0, newlinesDel: 0 };
   opsAtFrameStart = opCalls;
 }
 
@@ -141,6 +156,16 @@ export function perfRecordLineStarts(chars: number, ms: number): void {
   cur.scanMs += ms;
 }
 
+/** Incremental line-index update: suffix entries shifted + newlines moved. */
+export function perfRecordLineIndex(adjusted: number, inserted: number, deleted: number): void {
+  counters.lineIndexAdjusts += adjusted;
+  counters.newlinesInserted += inserted;
+  counters.newlinesDeleted += deleted;
+  cur.adjusts += adjusted;
+  cur.newlinesIn += inserted;
+  cur.newlinesDel += deleted;
+}
+
 export function perfRecordTypeCopy(chars: number, ms: number): void {
   counters.typeCopies += 1;
   counters.typeCopyChars += chars;
@@ -171,22 +196,6 @@ export function perfRecordSvcSend(): void {
 
 /** Host ui.* op calls (perfInit wraps the native ops). */
 let opCalls = 0;
-
-// ---- Phase A2 DIAGNOSTIC counterfactuals (compile-time; NEVER a product
-// configuration). One rebuild per variant; reverted before the phase ends.
-//   0 = production behavior
-//   1 = skip the lineStarts scan (line index goes stale)
-//   2 = skip the typeText concat (document does not change)
-//   3 = skip both
-export const CF: number = 0;
-
-export function cfSkipScan(): boolean {
-  return CF === 1 || CF === 3;
-}
-
-export function cfSkipConcat(): boolean {
-  return CF === 2 || CF === 3;
-}
 
 /**
  * Wrap the native ui ops with per-call counters. Costs ~2 ms per edit turn

@@ -14,6 +14,7 @@ import { onFrame } from "@pocketjs/framework/lifecycle";
 import { hitFocusable } from "@pocketjs/framework/input";
 import { getOps, resizeViewport } from "@pocketjs/framework";
 import {
+  LineIndex,
   backspaceSel,
   caretFromX,
   caretRow,
@@ -22,17 +23,16 @@ import {
   lineEnd,
   lineOf,
   lineStart,
-  lineStarts,
   moveVertical,
   selBounds,
   typeText,
+  type EditChange,
   type EditState,
 } from "./editor.ts";
 import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
-// Phase A2 instrumentation (Markit-owned): work counters + perfreq reply.
+// Phase A2/A3 instrumentation (Markit-owned): work counters + perfreq reply.
 import {
-  cfSkipScan,
   perfCounters,
   perfEditCommit,
   perfOpCalls,
@@ -90,15 +90,11 @@ export default function Editor(): ReturnType<typeof View> {
   const [scrollE, setScrollE] = createSignal(0);
 
   const starts = createMemo(() => {
-    // DIAGNOSTIC (CF=1/3): return the load-time index without scanning —
-    // document lines go stale. Not a valid product configuration.
-    if (cfSkipScan()) {
-      void doc();
-      return startsCache;
-    }
-    const s = lineStarts(doc());
-    startsCache = s;
-    return s;
+    // A3-P1: the index is maintained incrementally by applyState (and
+    // rebuilt once at load). This memo only makes the index reactive to
+    // document changes — no document work per edit.
+    void doc();
+    return lineIndex.starts;
   });
   const totalH = () => starts().length * LINE_H;
   const maxScroll = () => Math.max(0, totalH() - vp().h);
@@ -135,13 +131,17 @@ export default function Editor(): ReturnType<typeof View> {
   };
 
   const selState = (): EditState => ({ doc: doc(), caret: caret(), anchor: anchor() });
-  const applyState = (s: EditState) => {
+  const applyState = (s: EditState, change?: EditChange | null) => {
+    // Explicit changed-range propagation: the incremental line index is
+    // updated locally before the document signal flips (A3-P1).
+    if (change) lineIndex.applyEdit(change.start, change.end, change.text);
     setDoc(s.doc);
     setCaret(s.caret);
     setAnchor(s.anchor);
   };
-  const mutate = (f: (s: EditState) => EditState) => {
-    applyState(f(selState()));
+  const mutate = (f: (s: EditState) => EditResult) => {
+    const r = f(selState());
+    applyState(r.state, r.change);
   };
 
   const handleKey = (k: string, shift = false) => {
@@ -192,34 +192,34 @@ export default function Editor(): ReturnType<typeof View> {
         mutate((s) => typeText(s, "  "));
         break;
       case "Left":
-        mutate((s) => {
-          const at = Math.max(0, s.caret - 1);
-          return { doc: s.doc, caret: at, anchor: at };
-        });
+        mutate((s) => ({
+          state: { doc: s.doc, caret: Math.max(0, s.caret - 1), anchor: Math.max(0, s.caret - 1) },
+          change: null,
+        }));
         break;
       case "Right":
-        mutate((s) => {
-          const at = Math.min(s.doc.length, s.caret + 1);
-          return { doc: s.doc, caret: at, anchor: at };
-        });
+        mutate((s) => ({
+          state: { doc: s.doc, caret: Math.min(s.doc.length, s.caret + 1), anchor: Math.min(s.doc.length, s.caret + 1) },
+          change: null,
+        }));
         break;
       case "Home":
         mutate((s) => {
           const at = lineStart(starts(), s.caret);
-          return { doc: s.doc, caret: at, anchor: at };
+          return { state: { doc: s.doc, caret: at, anchor: at }, change: null };
         });
         break;
       case "End":
         mutate((s) => {
           const at = lineEnd(s.doc, starts(), s.caret);
-          return { doc: s.doc, caret: at, anchor: at };
+          return { state: { doc: s.doc, caret: at, anchor: at }, change: null };
         });
         break;
       case "Up":
       case "Down":
         mutate((s) => {
           const at = moveVertical(s.doc, starts(), s.caret, k === "Up" ? -1 : 1, caretPx(), textWidth);
-          return { doc: s.doc, caret: at, anchor: at };
+          return { state: { doc: s.doc, caret: at, anchor: at }, change: null };
         });
         break;
       case "PageUp":
@@ -243,12 +243,14 @@ export default function Editor(): ReturnType<typeof View> {
         setScrollE(Math.max(0, Math.min(maxScroll(), scrollE())));
         break;
       case "load":
+        // A3-P1: rebuild the index BEFORE the doc signal flips — the memo
+        // re-evaluates synchronously on setDoc and must see the matching
+        // index, or the last visible line's slice extends to the document
+        // end (an O(doc) text run in the retained tree, shaped every draw).
+        lineIndex = new LineIndex(ev.text ?? "");
         setDoc(ev.text ?? "");
         setCaret(0);
         setAnchor(0);
-        // DIAGNOSTIC (CF=1/3): the index is snapshotted at load; edits
-        // afterwards keep it stale (no per-edit scan).
-        startsCache = lineStarts(ev.text ?? "");
         break;
       case "ch":
         if (ev.s) mutate((s) => typeText(s, ev.s!));
@@ -324,9 +326,14 @@ export default function Editor(): ReturnType<typeof View> {
         t: "perf",
         frames: c.frames,
         edits: c.edits,
+        docChars: doc().length,
+        docLines: starts().length,
         lineStartsScans: c.lineStartsScans,
         lineStartsChars: c.lineStartsChars,
         lineStartsMs: c.lineStartsMs,
+        lineIndexAdjusts: c.lineIndexAdjusts,
+        newlinesInserted: c.newlinesInserted,
+        newlinesDeleted: c.newlinesDeleted,
         typeCopies: c.typeCopies,
         typeCopyChars: c.typeCopyChars,
         typeMs: c.typeMs,
@@ -417,8 +424,10 @@ export default function Editor(): ReturnType<typeof View> {
 
 // Local helpers kept out of the component body for clarity.
 
-/** DIAGNOSTIC (CF=1/3): load-time line index cache (never updated by edits). */
-let startsCache: number[] = [0];
+/** A3-P1: the incremental line index. Built once at load (one full scan);
+ *  edits update it locally via applyState — full scans never run on the
+ *  edit hot path. */
+let lineIndex: LineIndex = new LineIndex(SAMPLE_DOC);
 
 function caretRowOf(starts: number[], caret: number): number {
   return lineOf(starts, caret).line;
