@@ -34,6 +34,7 @@ import { SAMPLE_DOC } from "./sample.ts";
 import {
   perfCounters,
   perfEditCommit,
+  perfOpCalls,
   perfRecordMeasure,
   perfRecordSvcEvents,
   perfRecordSvcSend,
@@ -321,6 +322,7 @@ export default function Editor(): ReturnType<typeof View> {
         measureChars: c.measureChars,
         svcEvents: c.svcEvents,
         svcSends: c.svcSends,
+        ops: perfOpCalls(),
         editsRing: JSON.stringify(c.editsRing),
       });
     }

@@ -74,7 +74,9 @@ struct MarkitGame {
     /// verification without a display).
     echo_state: bool,
     // ---- Phase A2 instrumentation (Markit-owned) -------------------------
-    /// PJS_PERF=1 enables per-tick JSONL + the guest perfreq round-trip.
+    /// --perf or PJS_PERF=1 enables per-tick JSONL + the guest perfreq
+    /// round-trip (a flag, because WSL-launched Windows processes do not
+    /// inherit WSL env vars).
     perf: bool,
     /// Duration of the last wgpu render pass (render(), us).
     render_us: u64,
@@ -481,6 +483,7 @@ struct Args {
     script: Vec<(u64, ScriptEvent)>,
     auto_quit: Option<f32>,
     smoke: bool,
+    perf: bool,
 }
 
 fn parse_args() -> Result<Args> {
@@ -496,6 +499,7 @@ fn parse_args() -> Result<Args> {
         script: Vec::new(),
         auto_quit: None,
         smoke: false,
+        perf: std::env::var("PJS_PERF").is_ok(),
     };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
@@ -520,6 +524,7 @@ fn parse_args() -> Result<Args> {
             "--screenshot" => args.screenshot = Some(PathBuf::from(val("--screenshot")?)),
             "--frames" => args.frames = val("--frames")?.parse()?,
             "--smoke" => args.smoke = true,
+            "--perf" => args.perf = true,
             "--type" => {
                 let (frame, s) = at(&val("--type")?, "--type")?;
                 args.script.push((frame, ScriptEvent::Type(s)));
@@ -680,7 +685,7 @@ fn main() -> Result<()> {
         quit_after: args.auto_quit.map(|s| (s * TICK_HZ as f32) as u64),
         smoke: args.smoke,
         echo_state: args.screenshot.is_some(),
-        perf: std::env::var("PJS_PERF").is_ok(),
+        perf: args.perf || std::env::var("PJS_PERF").is_ok(),
         render_us: 0,
         perf_reply: None,
     };

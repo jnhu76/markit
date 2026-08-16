@@ -315,7 +315,10 @@ fn main() {
         .unwrap_or_else(|| editor::ThinEditor::DEFAULT_SEED.to_string());
     // Instrumentation skeleton: all seven stages are observable on GPUI.
     instrument::init(8192, vec!["frame_submit"]);
-    a2::set_enabled(std::env::var("GPUI_A2").is_ok());
+    // --a2 (or GPUI_A2=1) enables the Phase A2 JSONL emission; counters
+    // themselves are always collected.
+    let a2_on = std::env::args().any(|a| a == "--a2") || std::env::var("GPUI_A2").is_ok();
+    a2::set_enabled(a2_on);
 
     Application::new().run(move |cx: &mut App| {
         // Key bindings must be registered before opening the window: the

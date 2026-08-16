@@ -15,6 +15,7 @@ export interface PerfEdit {
   copyMs: number;
   visibleLines: number;
   measures: number;
+  ops: number;
 }
 
 export interface PerfCounters {
@@ -76,13 +77,17 @@ let counters: PerfCounters = { ...ZERO };
 let requested = false;
 
 /** Current per-edit record being accumulated (set by perfEditBegin). */
-let cur: PerfEdit = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0 };
+let cur: PerfEdit = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0 };
+/** Op count at the beginning of the current frame. */
+let opsAtFrameStart = 0;
 
 export function perfEditBegin(): void {
-  cur = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0 };
+  cur = { scanChars: 0, scanMs: 0, copyChars: 0, copyMs: 0, visibleLines: 0, measures: 0, ops: 0 };
+  opsAtFrameStart = opCalls;
 }
 
 export function perfEditCommit(): void {
+  cur.ops = opCalls - opsAtFrameStart;
   editsRing.push(cur);
   if (editsRing.length > EDITS_RING) editsRing.shift();
   counters.editsRing = [...editsRing];
@@ -162,4 +167,40 @@ export function perfRecordSvcEvents(n: number): void {
 
 export function perfRecordSvcSend(): void {
   counters.svcSends += 1;
+}
+
+/** Host ui.* op calls (perfInit wraps the native ops). */
+let opCalls = 0;
+
+/**
+ * Wrap the native `globalThis.ui` ops with counters. Must run before
+ * `mount()` renders the tree. The framework resolves ops lazily from the
+ * same object (host.ts getOps), so wrapped properties are seen by every
+ * renderer call. Overhead: one JS call + increment per op.
+ */
+export function perfInit(): void {
+  try {
+    const ui = (globalThis as unknown as { ui?: Record<string, unknown> }).ui;
+    if (!ui || typeof ui.createNode !== "function") return;
+    const names = [
+      "createNode", "destroyNode", "insertBefore", "removeChild",
+      "setStyle", "setProp", "setText", "replaceText", "setImage",
+      "setSprite", "measureText", "hitTest", "hitTestBounds",
+      "setFocus", "setActive",
+    ];
+    for (const name of names) {
+      const orig = ui[name] as (...args: unknown[]) => unknown;
+      if (typeof orig !== "function") continue;
+      ui[name] = (...args: unknown[]) => {
+        opCalls += 1;
+        return orig(...args);
+      };
+    }
+  } catch {
+    // No native ui (web/test host): counters stay at 0.
+  }
+}
+
+export function perfOpCalls(): number {
+  return opCalls;
 }

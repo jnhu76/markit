@@ -5,6 +5,10 @@ Invokes the Windows exes (windowed, same machine/toolchain as A1), saves
 raw logs to results/raw/a2/, and appends parse-a2.py + parse-trace.py
 summaries. Keeps the A1 result files untouched.
 
+WSL interop does not translate /mnt/... arguments or env vars, so all file
+paths are passed as C:\\... and instrumentation is enabled by flags
+(--perf / --a2), not environment.
+
 Usage:
   run-a2.py pjs-scaling <10k|100k|1m> [runs]
   run-a2.py pjs-pos <10k|100k|1m> <begin|q1|mid|q3|end> [runs]
@@ -36,6 +40,16 @@ PJS_A1 = A1 / "mvp-pocketjs.exe"
 GPUI_A1 = A1 / "gpui" / "target" / "release" / "mvp-gpui.exe"
 DIST_A2 = A2 / "mvp" / "pocketjs" / "dist"
 DIST_A1 = A1 / "dist"
+
+
+def win(p: Path) -> str:
+    """/mnt/c/... -> C:\\... (WSL interop does not translate args)."""
+    s = str(p)
+    if s.startswith("/mnt/"):
+        drive = s[5]
+        return f"{drive.upper()}:\\" + s[7:].replace("/", "\\")
+    return s
+
 
 # The A1 windowed workload: 100 single-char inserts at ticks 340..439,
 # backspace @450, scroll @460, auto-quit 9s.
@@ -70,23 +84,32 @@ def run(name, argv, env, corpus, run_i):
     return log
 
 
-def pjs_env(perf: bool):
+def pjs_env():
     env = os.environ.copy()
-    env["PJS_PERF"] = "1" if perf else ""
-    env["POCKETJS_DIST"] = str(DIST_A2)
+    env["POCKETJS_DIST"] = win(DIST_A2)
     return env
 
 
-def pjs_cmd(exe, corpus, extra, auto_quit="9"):
+def pjs_cmd(exe, corpus, extra, auto_quit="9", perf=False):
     dist = DIST_A1 if exe == PJS_A1 else DIST_A2
-    return [
-        str(exe),
-        "--js", str(dist / "markit-editor.js"),
-        "--pak", str(dist / "markit-editor.pak"),
-        "--file", str(A2 / f"{corpus}.txt"),
+    argv = [
+        str(exe),  # execable from WSL (interop); args below are C:\ paths
+        "--js", win(dist / "markit-editor.js"),
+        "--pak", win(dist / "markit-editor.pak"),
+        "--file", win(A2 / f"{corpus}.txt"),
         "--width", "1000", "--height", "700",
         "--auto-quit", auto_quit,
-    ] + extra
+    ]
+    if perf:
+        argv += ["--perf"]
+    return argv + extra
+
+
+def gpui_cmd(corpus, extra, a2=False, workspace=A2):
+    argv = [str(workspace / "mvp" / "gpui" / "target" / "release" / "mvp-gpui.exe")]
+    if a2:
+        argv += ["--a2"]
+    return argv + extra + ["--file", win(workspace / f"{corpus}.txt")]
 
 
 def main():
@@ -102,7 +125,7 @@ def main():
         if len(cmd) > 2:
             runs = int(cmd[2])
         for i in range(runs):
-            run(f"pjs-scale-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing()), pjs_env(True), corpus, i)
+            run(f"pjs-scale-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing(), perf=True), pjs_env(), corpus, i)
 
     elif kind == "pjs-pos":
         corpus, pos = cmd[1], cmd[2]
@@ -115,7 +138,7 @@ def main():
         for t in range(342, 392):
             extra += ["--type", f"a@{t}"]
         for i in range(runs):
-            run(f"pjs-pos-{pos}", pjs_cmd(PJS_A2, corpus, extra, "7"), pjs_env(True), corpus, i)
+            run(f"pjs-pos-{pos}", pjs_cmd(PJS_A2, corpus, extra, "7", perf=True), pjs_env(), corpus, i)
 
     elif kind == "pjs-vp":
         corpus, vp = cmd[1], cmd[2]
@@ -126,7 +149,7 @@ def main():
         for t in range(342, 392):
             extra += ["--type", f"a@{t}"]
         for i in range(runs):
-            run(f"pjs-vp-{vp}", pjs_cmd(PJS_A2, corpus, extra, "7"), pjs_env(True), corpus, i)
+            run(f"pjs-vp-{vp}", pjs_cmd(PJS_A2, corpus, extra, "7", perf=True), pjs_env(), corpus, i)
 
     elif kind == "pjs-noop":
         corpus, variant = cmd[1], cmd[2]
@@ -143,34 +166,30 @@ def main():
             for t in range(342, 392):
                 extra += ["--key", f"Left@{t}"]
         for i in range(runs):
-            run(f"pjs-noop-{variant}", pjs_cmd(PJS_A2, corpus, extra, "7"), pjs_env(True), corpus, i)
+            run(f"pjs-noop-{variant}", pjs_cmd(PJS_A2, corpus, extra, "7", perf=True), pjs_env(), corpus, i)
 
     elif kind == "gpui-smoke":
         corpus = cmd[1]
         if len(cmd) > 2:
             runs = int(cmd[2])
-        env = os.environ.copy()
-        env["GPUI_A2"] = "1"
         for i in range(runs):
             run(
                 f"gpui-smoke-{corpus}",
-                [str(GPUI_A2), "--smoke", "--file", str(A2 / f"{corpus}.txt")],
-                env, corpus, i,
+                gpui_cmd(corpus, ["--smoke"], a2=True),
+                {}, corpus, i,
             )
 
     elif kind == "gpui-a2":
         corpus, mode, arg = cmd[1], cmd[2], cmd[3]
         if len(cmd) > 4:
             runs = int(cmd[4])
-        env = os.environ.copy()
-        env["GPUI_A2"] = "1"
-        argv = [str(GPUI_A2), "--a2-mode", mode, "--a2-n", "50", "--file", str(A2 / f"{corpus}.txt")]
+        argv = ["--a2-mode", mode, "--a2-n", "50"]
         if mode == "pos":
             argv += ["--a2-pos", arg]
         elif mode == "vp":
             argv += ["--a2-vp", arg]
         for i in range(runs):
-            run(f"gpui-{mode}-{arg}", argv, env, corpus, i)
+            run(f"gpui-{mode}-{arg}", gpui_cmd(corpus, argv, a2=True), {}, corpus, i)
 
     elif kind == "cal-pjs":
         corpus = cmd[1]
@@ -178,23 +197,20 @@ def main():
             runs = int(cmd[2])
         for i in range(runs):
             # original exe + original bundle (A1 baseline)
-            run(f"cal-pjs-orig-{corpus}", pjs_cmd(PJS_A1, corpus, a1_typing()), pjs_env(False), corpus, i)
+            run(f"cal-pjs-orig-{corpus}", pjs_cmd(PJS_A1, corpus, a1_typing()), pjs_env(), corpus, i)
             # instrumented exe, JSONL off
-            run(f"cal-pjs-off-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing()), pjs_env(False), corpus, i)
+            run(f"cal-pjs-off-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing()), pjs_env(), corpus, i)
             # instrumented exe, JSONL on
-            run(f"cal-pjs-on-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing()), pjs_env(True), corpus, i)
+            run(f"cal-pjs-on-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing(), perf=True), pjs_env(), corpus, i)
 
     elif kind == "cal-gpui":
         corpus = cmd[1]
         if len(cmd) > 2:
             runs = int(cmd[2])
         for i in range(runs):
-            run(f"cal-gpui-orig-{corpus}", [str(GPUI_A1), "--smoke", "--file", str(A1 / f"{corpus}.txt")], {}, corpus, i)
-            env_off = os.environ.copy()
-            run(f"cal-gpui-off-{corpus}", [str(GPUI_A2), "--smoke", "--file", str(A2 / f"{corpus}.txt")], env_off, corpus, i)
-            env_on = os.environ.copy()
-            env_on["GPUI_A2"] = "1"
-            run(f"cal-gpui-on-{corpus}", [str(GPUI_A2), "--smoke", "--file", str(A2 / f"{corpus}.txt")], env_on, corpus, i)
+            run(f"cal-gpui-orig-{corpus}", gpui_cmd(corpus, ["--smoke"], a2=False, workspace=A1), {}, corpus, i)
+            run(f"cal-gpui-off-{corpus}", gpui_cmd(corpus, ["--smoke"], a2=False), {}, corpus, i)
+            run(f"cal-gpui-on-{corpus}", gpui_cmd(corpus, ["--smoke"], a2=True), {}, corpus, i)
 
     else:
         print(f"unknown kind {kind}")
