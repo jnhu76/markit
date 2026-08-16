@@ -1,0 +1,16 @@
+edit_ticks=3 total_ticks=421
+dirty p50=0 p95=1 max=1 (d)
+words p50=1639 p95=1641 max=1641 (w)
+r_us p50=1630 p95=1630 max=1630 (us)
+dl_us p50=37 p95=38 max=38 (us)
+ct_us p50=77 p95=77 max=77 (us)
+gf_us p50=1591 p95=11083 max=11083 (us)
+last-edit solidMs=8
+last-edit indexMs=3
+last-edit modelMs=0
+last-edit adjusts=31390
+last-edit runsRendered=26
+last-edit inlineParsed=1
+last-edit blocksReparsed=1
+last-edit blocksScanned=5
+guest-perf {"t":"perf","frames":419,"edits":4,"docChars":1049378,"docLines":31397,"lineStartsScans":2,"lineStartsChars":1049715,"lineStartsMs":151,"lineIndexAdjusts":31390,"newlinesInserted":0,"newlinesDeleted":0,"typeCopies":1,"typeCopyChars":1049378,"typeMs":0,"modelMs":0,"indexMs":3,"solidMs":11,"blocksScanned":5,"blocksReparsed":1,"inlineParsed":1,"runsRendered":64,"visibleVisits":4,"visibleLines":74,"measures":5,"measureChars":12,"svcEvents":9,"svcSends":12,"ops":0,"opCounts":"{}","editsRing":"[{\"scanChars\":1049377,\"scanMs\":151,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":37,\"measures\":3,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":25},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":1,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":2,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":1049378,\"copyMs\":0,\"visibleLines\":0,\"measures\":1,\"ops\":0,\"adjusts\":31390,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":3,\"solidMs\":8,\"blocksScanned\":5,\"blocksReparsed\":1,\"inlineParsed\":1,\"runsRendered\":26}]"}

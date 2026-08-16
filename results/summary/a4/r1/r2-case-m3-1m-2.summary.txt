@@ -1,0 +1,16 @@
+edit_ticks=4 total_ticks=421
+dirty p50=1.0 p95=1 max=1 (d)
+words p50=1518.0 p95=1520 max=1520 (w)
+r_us p50=1409.0 p95=4288 max=4288 (us)
+dl_us p50=32.0 p95=39 max=39 (us)
+ct_us p50=66.5 p95=68 max=68 (us)
+gf_us p50=1428.5 p95=9278 max=9278 (us)
+last-edit solidMs=6
+last-edit indexMs=2
+last-edit modelMs=0
+last-edit adjusts=31396
+last-edit runsRendered=25
+last-edit inlineParsed=1
+last-edit blocksReparsed=1
+last-edit blocksScanned=1
+guest-perf {"t":"perf","frames":419,"edits":5,"docChars":1049378,"docLines":31397,"lineStartsScans":2,"lineStartsChars":1049715,"lineStartsMs":145,"lineIndexAdjusts":31396,"newlinesInserted":0,"newlinesDeleted":0,"typeCopies":1,"typeCopyChars":1049378,"typeMs":0,"modelMs":0,"indexMs":2,"solidMs":7,"blocksScanned":1,"blocksReparsed":1,"inlineParsed":1,"runsRendered":59,"visibleVisits":3,"visibleLines":48,"measures":7,"measureChars":18,"svcEvents":10,"svcSends":14,"ops":0,"opCounts":"{}","editsRing":"[{\"scanChars\":1049377,\"scanMs\":145,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":37,\"measures\":3,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":25},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":1,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":1,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":1,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":1049378,\"copyMs\":0,\"visibleLines\":0,\"measures\":1,\"ops\":0,\"adjusts\":31396,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":2,\"solidMs\":6,\"blocksScanned\":1,\"blocksReparsed\":1,\"inlineParsed\":1,\"runsRendered\":25}]"}
