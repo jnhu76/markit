@@ -1,0 +1,31 @@
+=== parse-a2.py gpui-static-x-1m-2.log ===
+=== GPUI (per frame) ===
+edit frames:
+  concat_us              n=0
+  lines_us               n=0
+  prepaint_us            n=0
+  shape_us               n=0
+  paint_us               n=0
+  lines_shaped           n=0
+  glyphs                 n=0
+  quads                  n=0
+static frames (no edit):
+  prepaint_us            n=    1 p50=  478995.0 p95=  478995.0 p99=  478995.0 max=  478995.0
+  shape_us               n=    1 p50=  478993.0 p95=  478993.0 p99=  478993.0 max=  478993.0
+  paint_us               n=    1 p50=   14149.0 p95=   14149.0 p99=   14149.0 max=   14149.0
+  lines_shaped           n=    1 p50=   18081.0 p95=   18081.0 p99=   18081.0 max=   18081.0
+all frames:
+  lines_shaped           n=    1 min=   18081 p50=   18081 max=   18081
+  glyphs                 n=    1 min= 1028991 p50= 1028991 max= 1028991
+  visible                n=    1 min=   19654 p50=   19654 max=   19654
+  first                  n=    1 min=       0 p50=       0 max=       0
+  last                   n=    1 min=   19653 p50=   19653 max=   19653
+  lines_total            n=    1 min=   19653 p50=   19653 max=   19653
+=== parse-trace.py gpui-static-x-1m-2.log ===
+=== latency distribution (us) ===
+  input->edit    no samples
+  edit->layout   no samples
+  layout         n=    1 p50=      7.5 p95=      7.5 p99=      7.5 max=      7.5
+  render         n=    1 p50= 493246.0 p95= 493246.0 p99= 493246.0 max= 493246.0
+  layout->submit no samples
+  long frames (>16.7ms layout): 0

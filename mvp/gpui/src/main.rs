@@ -16,6 +16,7 @@
 
 mod editor;
 mod instrument;
+mod a2;
 
 use gpui::{
     prelude::*, App, Application, Bounds, Entity, Keystroke, KeyBinding, Window, WindowBounds,
@@ -174,8 +175,164 @@ fn smoke_step(view: Entity<ThinEditor>, step: usize) -> impl FnOnce(&mut Window,
     }
 }
 
+/// Deterministic A2 driver — one step per frame, like smoke, but scoped to
+/// the Phase A2 experiments: place the caret at a scripted position, then
+/// type `n` chars (or `n` no-op redraws) through the real input path.
+///
+///   --a2-mode pos --a2-pos <begin|q1|mid|q3|end> [--a2-n 50]
+///   --a2-mode vp  --a2-vp <inside|near|far>      [--a2-n 50]
+///   --a2-mode static                             [--a2-n 50]
+///   --a2-mode scale                              [--a2-n 100]  (caret at 0,
+///      typing only — the A1 workload's typing segment, no IME steps)
+#[derive(Clone, Copy, Debug)]
+enum A2Mode {
+    Pos(f64),
+    VpLine(usize),
+    VpFar,
+    Static,
+    Scale,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct A2Spec {
+    mode: A2Mode,
+    n: usize,
+}
+
+fn parse_a2() -> Option<A2Spec> {
+    let args: Vec<String> = std::env::args().collect();
+    let mut mode = None;
+    let mut n = 50usize;
+    let mut it = args.iter().skip(1);
+    let mut pending: Option<&str> = None; // --a2-mode value when not yet consumed
+    while let Some(a) = it.next() {
+        let mut next_val = || it.next().map(|s| s.as_str());
+        match a.as_str() {
+            "--a2-mode" => {
+                let m = next_val()?;
+                mode = Some(match m {
+                    "pos" => {
+                        let mut pos = "begin";
+                        while let Some(v) = next_val() {
+                            match v {
+                                "--a2-pos" => {
+                                    pos = next_val()?;
+                                    break;
+                                }
+                                "--a2-n" => n = next_val()?.parse().ok()?,
+                                _ => {}
+                            }
+                        }
+                        match pos {
+                            "begin" => A2Mode::Pos(0.0),
+                            "q1" => A2Mode::Pos(0.25),
+                            "mid" => A2Mode::Pos(0.5),
+                            "q3" => A2Mode::Pos(0.75),
+                            "end" => A2Mode::Pos(1.0),
+                            _ => return None,
+                        }
+                    }
+                    "vp" => {
+                        let mut vp = "inside";
+                        while let Some(v) = next_val() {
+                            match v {
+                                "--a2-vp" => {
+                                    vp = next_val()?;
+                                    break;
+                                }
+                                "--a2-n" => n = next_val()?.parse().ok()?,
+                                _ => {}
+                            }
+                        }
+                        match vp {
+                            "inside" => A2Mode::VpLine(10),
+                            "near" => A2Mode::VpLine(30),
+                            "far" => A2Mode::VpFar,
+                            _ => return None,
+                        }
+                    }
+                    "static" => A2Mode::Static,
+                    "scale" => A2Mode::Scale,
+                    _ => return None,
+                });
+            }
+            "--a2-n" => n = next_val()?.parse().ok()?,
+            _ => {
+                if let Some(m) = pending.take() {
+                    let _ = m;
+                }
+            }
+        }
+    }
+    mode.map(|mode| A2Spec { mode, n })
+}
+
+fn a2_step(view: Entity<ThinEditor>, spec: A2Spec, step: usize) -> impl FnOnce(&mut Window, &mut App) {
+    move |window, cx| {
+        let n = spec.n;
+        let done = match step {
+            0 => {
+                window.focus(&view.read(cx).focus_handle);
+                print_state(&view, cx, "a2 start");
+                false
+            }
+            1 => {
+                // Place the caret WITHOUT scrolling (no ensure_cursor_visible):
+                // for vp experiments the edit point must stay outside the
+                // viewport until the first typed char scrolls it in.
+                view.update(cx, |e, _| {
+                    let len = e.text.len();
+                    let offset = match spec.mode {
+                        A2Mode::Pos(f) => (len as f64 * f) as usize,
+                        A2Mode::VpLine(l) => {
+                            let idx = l.min(e.line_count());
+                            e.line_starts[idx]
+                        }
+                        A2Mode::VpFar => len / 2,
+                        A2Mode::Static | A2Mode::Scale => 0,
+                    };
+                    let offset = offset.min(len);
+                    e.selection = offset..offset;
+                    e.selection_reversed = false;
+                    e.preferred_x = None;
+                });
+                println!(
+                    "[a2] mode={:?} n={} caret={}",
+                    spec.mode,
+                    n,
+                    view.read(cx).cursor_offset()
+                );
+                false
+            }
+            s if s >= 2 && s < 2 + n => {
+                match spec.mode {
+                    A2Mode::Static => {
+                        // Redraw with no document change (static-frame control).
+                        view.update(cx, |_e, cx| cx.notify());
+                    }
+                    _ => {
+                        window.dispatch_keystroke(Keystroke::parse("a").unwrap(), cx);
+                    }
+                }
+                false
+            }
+            s if s == 2 + n => {
+                print_state(&view, cx, "a2 final");
+                instrument::dump("a2", 5000);
+                cx.quit();
+                true
+            }
+            _ => true,
+        };
+        if !done {
+            window.defer(cx, a2_step(view, spec, step + 1));
+        }
+    }
+}
+
 fn main() {
     let smoke = std::env::args().any(|a| a == "--smoke");
+    let a2 = parse_a2();
     // --file <path>: load a corpus document instead of the built-in seed
     // (parity with mvp/pocketjs's --file; both MVPs then edit the same
     // bytes).
@@ -186,7 +343,11 @@ fn main() {
         .and_then(|w| std::fs::read_to_string(&w[1]).ok())
         .unwrap_or_else(|| editor::ThinEditor::DEFAULT_SEED.to_string());
     // Instrumentation skeleton: all seven stages are observable on GPUI.
-            instrument::init(8192, vec!["frame_submit"]);
+    instrument::init(8192, vec!["frame_submit"]);
+    // --a2 (or GPUI_A2=1) enables the Phase A2 JSONL emission; counters
+    // themselves are always collected.
+    let a2_on = std::env::args().any(|a| a == "--a2") || std::env::var("GPUI_A2").is_ok();
+    a2::set_enabled(a2_on);
 
     Application::new().run(move |cx: &mut App| {
         // Key bindings must be registered before opening the window: the
@@ -252,6 +413,10 @@ fn main() {
                 if smoke {
                     let view = cx.entity();
                     window.defer(cx, smoke_step(view, 0));
+                }
+                if let Some(spec) = a2 {
+                    let view = cx.entity();
+                    window.defer(cx, a2_step(view, spec, 0));
                 }
                 cx.activate(true);
             })

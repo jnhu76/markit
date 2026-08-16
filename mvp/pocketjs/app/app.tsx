@@ -30,6 +30,20 @@ import {
 } from "./editor.ts";
 import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
+// Phase A2 instrumentation (Markit-owned): work counters + perfreq reply.
+import {
+  cfSkipScan,
+  perfCounters,
+  perfEditCommit,
+  perfOpCalls,
+  perfRecordMeasure,
+  perfRecordSvcEvents,
+  perfRecordSvcSend,
+  perfRecordVisible,
+  perfRequest,
+  perfTakeRequest,
+  perfTickFrames,
+} from "./perf.ts";
 
 /** 18 px body font (slot 3 — 12/14/16/18/20/24/36). */
 const FONT_SLOT = 3;
@@ -61,6 +75,7 @@ function textWidth(text: string): number {
   let w = widthCache.get(key);
   if (w === undefined) {
     w = getOps().measureText(text, FONT_SLOT);
+    perfRecordMeasure(text.length);
     widthCache.set(key, w);
   }
   return w;
@@ -74,7 +89,17 @@ export default function Editor(): ReturnType<typeof View> {
   const [anchor, setAnchor] = createSignal(0);
   const [scrollE, setScrollE] = createSignal(0);
 
-  const starts = createMemo(() => lineStarts(doc()));
+  const starts = createMemo(() => {
+    // DIAGNOSTIC (CF=1/3): return the load-time index without scanning —
+    // document lines go stale. Not a valid product configuration.
+    if (cfSkipScan()) {
+      void doc();
+      return startsCache;
+    }
+    const s = lineStarts(doc());
+    startsCache = s;
+    return s;
+  });
   const totalH = () => starts().length * LINE_H;
   const maxScroll = () => Math.max(0, totalH() - vp().h);
   const viewH = () => vp().h;
@@ -86,6 +111,7 @@ export default function Editor(): ReturnType<typeof View> {
     const to = Math.min(starts().length, from + Math.ceil(viewH() / LINE_H) + 1);
     const out: { index: number; start: number; end: number }[] = [];
     for (let i = from; i < to; i++) out.push({ index: i, start: starts()[i], end: lineEnd(doc(), starts(), starts()[i]) });
+    perfRecordVisible(to - from);
     return out;
   });
 
@@ -207,6 +233,9 @@ export default function Editor(): ReturnType<typeof View> {
 
   const handleEvent = (ev: HostEvent) => {
     switch (ev.t) {
+      case "perfreq":
+        perfRequest();
+        break;
       case "hello":
       case "resize":
         setVp({ w: ev.w ?? 1000, h: ev.h ?? 700 });
@@ -217,6 +246,9 @@ export default function Editor(): ReturnType<typeof View> {
         setDoc(ev.text ?? "");
         setCaret(0);
         setAnchor(0);
+        // DIAGNOSTIC (CF=1/3): the index is snapshotted at load; edits
+        // afterwards keep it stale (no per-edit scan).
+        startsCache = lineStarts(ev.text ?? "");
         break;
       case "ch":
         if (ev.s) mutate((s) => typeText(s, ev.s!));
@@ -276,8 +308,38 @@ export default function Editor(): ReturnType<typeof View> {
 
   onFrame(() => {
     if (!svc) return;
+    perfTickFrames();
     const events = svc.poll();
-    for (const ev of events) handleEvent(ev);
+    perfRecordSvcEvents(events.length);
+    let anyEdit = false;
+    for (const ev of events) {
+      handleEvent(ev);
+      if (ev.t === "ch" || ev.t === "key" || ev.t === "paste" || ev.t === "load") anyEdit = true;
+    }
+    if (anyEdit) perfEditCommit();
+    if (perfTakeRequest()) {
+      // Phase A2: one counter dump per request (host prints it).
+      const c = perfCounters();
+      svc.send({
+        t: "perf",
+        frames: c.frames,
+        edits: c.edits,
+        lineStartsScans: c.lineStartsScans,
+        lineStartsChars: c.lineStartsChars,
+        lineStartsMs: c.lineStartsMs,
+        typeCopies: c.typeCopies,
+        typeCopyChars: c.typeCopyChars,
+        typeMs: c.typeMs,
+        visibleVisits: c.visibleVisits,
+        visibleLines: c.visibleLines,
+        measures: c.measures,
+        measureChars: c.measureChars,
+        svcEvents: c.svcEvents,
+        svcSends: c.svcSends,
+        ops: perfOpCalls(),
+        editsRing: JSON.stringify(c.editsRing),
+      });
+    }
     if (events.length > 0) {
       // State echo for the host's smoke driver (ignored otherwise).
       svc.send({
@@ -354,6 +416,9 @@ export default function Editor(): ReturnType<typeof View> {
 }
 
 // Local helpers kept out of the component body for clarity.
+
+/** DIAGNOSTIC (CF=1/3): load-time line index cache (never updated by edits). */
+let startsCache: number[] = [0];
 
 function caretRowOf(starts: number[], caret: number): number {
   return lineOf(starts, caret).line;

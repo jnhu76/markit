@@ -1,0 +1,25 @@
+=== parse-a2.py cal-gpui-off-10k-10k-1.log ===
+=== GPUI (per frame) ===
+edit frames:
+  concat_us              n=0
+  lines_us               n=0
+  prepaint_us            n=0
+  shape_us               n=0
+  paint_us               n=0
+  lines_shaped           n=0
+  glyphs                 n=0
+  quads                  n=0
+static frames (no edit):
+  prepaint_us            n=0
+  shape_us               n=0
+  paint_us               n=0
+  lines_shaped           n=0
+all frames:
+=== parse-trace.py cal-gpui-off-10k-10k-1.log ===
+=== latency distribution (us) ===
+  input->edit    n=  106 p50=     10.7 p95=     14.5 p99=    108.5 max=    113.9
+  edit->layout   n=  103 p50=      7.4 p95=     16.2 p99=     22.1 max=     24.4
+  layout         n=  106 p50=      0.5 p95=      0.7 p99=      2.5 max=      6.3
+  render         n=  106 p50=    409.2 p95=    518.2 p99=   1062.5 max=   7752.4
+  layout->submit no samples
+  long frames (>16.7ms layout): 0

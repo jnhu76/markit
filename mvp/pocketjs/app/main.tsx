@@ -12,5 +12,9 @@
 
 import Editor from "./app.tsx";
 import { mount } from "@pocketjs/framework";
+import { perfInit } from "./perf.ts";
+
+// Phase A2: wrap the native ui ops with counters before the first render.
+perfInit();
 
 mount(() => <Editor />);

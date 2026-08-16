@@ -1,0 +1,24 @@
+=== parse-a2.py pjs-noop-left-1m-2.log ===
+=== PocketJS (per tick) ===
+edit ticks:
+  gf_us                  n=   51 p50=     210.0 p95=    1712.0 p99=    1851.5 max=    1881.0
+  ct_us                  n=   51 p50=       0.0 p95=      83.5 p99=     104.5 max=     109.0
+  dl_us                  n=   51 p50=      75.0 p95=     105.0 p99=     111.0 max=     112.0
+  words                  n=   51 p50=    2980.0 p95=    2980.0 p99=    2980.0 max=    2980.0
+  r_us                   n=   51 p50=     397.0 p95=     752.0 p99=    1391.0 max=    1600.0
+idle ticks:
+  gf_us                  n=  370 p50=      58.0 p95=      97.6 p99=     137.3 max=  294668.0
+  dl_us                  n=  370 p50=      84.0 p95=     108.0 p99=     130.0 max=     139.0
+  words: first=2980 last=2980
+=== guest perf reply ===
+  {"t":"perf","frames":419,"edits":0,"lineStartsScans":3,"lineStartsChars":2097624,"lineStartsMs":282,"typeCopies":0,"typeCopyChars":0,"typeMs":0,"visibleVisits":3,"visibleLines":48,"measures":19,"measureChars":64,"svcEvents":55,"svcSends":104,"ops":0,"editsRing":"[{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":0,\"measures\":0,\"ops\":0}]"}
+
+=== parse-trace.py pjs-noop-left-1m-2.log ===
+=== latency distribution (us) ===
+  input->edit    n=   50 p50=      0.3 p95=      0.8 p99=      1.2 max=      1.4
+  edit->layout   n=   50 p50=    212.1 p95=   1675.6 p99=   1900.9 max=   1910.0
+  layout         n=  187 p50=     63.9 p95=   1139.0 p99=   1893.1 max=   1958.8
+  render         n=    8 p50=    513.5 p95=   1321.6 p99=   1545.0 max=   1600.8
+  layout->submit n=    8 p50=  10986.0 p95=  52878.7 p99=  55733.1 max=  56446.7
+  long frames (>16.7ms layout): 0
+

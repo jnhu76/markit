@@ -13,6 +13,10 @@
 // The measure function is injected (getOps().measureText behind a cache in
 // app.tsx) so this module stays pure and deterministic.
 
+// Phase A2 instrumentation (Markit-owned): work counters around the two
+// O(doc)-per-edit paths. Removing these lines restores original behavior.
+import { cfSkipConcat, perfNow, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
+
 export type Measure = (text: string) => number;
 
 export interface EditState {
@@ -25,10 +29,12 @@ export interface EditState {
 
 /** Byte/code-unit offset of each line start, mirroring GPUI's line_starts. */
 export function lineStarts(doc: string): number[] {
+  const t0 = perfNow();
   const starts = [0];
   for (let i = 0; i < doc.length; i++) {
     if (doc[i] === "\n") starts.push(i + 1);
   }
+  perfRecordLineStarts(doc.length, perfNow() - t0);
   return starts;
 }
 
@@ -51,8 +57,12 @@ export function lineCount(starts: number[]): number {
 /** Replace the current selection (or insert at the caret) with `text`. */
 export function typeText(s: EditState, text: string): EditState {
   const [lo, hi] = selBounds(s);
+  const t0 = perfNow();
+  // DIAGNOSTIC (CF=2/3): skip the concat — the document does not change.
+  const doc = cfSkipConcat() ? s.doc : s.doc.slice(0, lo) + text + s.doc.slice(hi);
+  perfRecordTypeCopy(s.doc.length + text.length, perfNow() - t0);
   return {
-    doc: s.doc.slice(0, lo) + text + s.doc.slice(hi),
+    doc,
     caret: lo + text.length,
     anchor: lo + text.length,
   };
