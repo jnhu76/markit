@@ -135,6 +135,17 @@ document (the per-edit `scanMs` was 166–190 ms across positions vs 206 ms
 in the scaling cell — run-to-run noise, same order). The residual spread
 (±10%) is machine noise, not a position effect.
 
+> **A4 erratum (2026-08-17):** the `caretFromX` click bug (see the
+> erratum in `docs/phase-a3-intervention-validation.md`) was present in
+> this battery: every click on a line ≥ 1 placed the caret at the
+> document end, so the q1/mid/q3/end cells above are end-position edits
+> and begin is the only genuine non-end position. The qualitative
+> conclusion (cost independent of position) is unaffected — every cell
+> exercised the same O(N) scan; no finer position gradient may be read
+> from this table. Affected files are marked in
+> `results/summary/a2/INVALIDATED-caretFromX.md`. A corrected gradient
+> exists only in the A4 re-measurement (§2.4 of the A4 closeout).
+
 ### 4.3 Viewport (Q3)
 
 | viewport | edit at line | `gf_us` |
@@ -145,6 +156,11 @@ in the scaling cell — run-to-run noise, same order). The residual spread
 
 Viewport position does not change the cost either. The scan ignores the
 viewport entirely.
+
+> **A4 erratum:** the three viewport cells above are repeats of
+> "edit at document end" for the same reason (clicks at lines 10/30/9826
+> all landed the caret at the end). The conclusion is unaffected; the
+> cells are not a viewport comparison.
 
 ### 4.4 Noop / same-value control (Q4)
 

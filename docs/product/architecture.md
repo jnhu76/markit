@@ -77,6 +77,19 @@ and doc reads are **hoisted into item-scoped memos**, so a document
 change re-evaluates the visible memos (26× per edit) without re-mounting
 components (~90 native node creations per edit before the fix).
 
+**Stateless-projection invariant (A4 review gate):** visible-line items
+are keyed by their **absolute document line number** and carry **no
+state** — every doc-dependent read happens inside item-scoped memos.
+Absolute line numbers are *not* stable document identity (inserting a
+`\n` before the viewport shifts every later line), so correctness comes
+exclusively from stateless re-derivation, never from stored per-item
+state. If a future line widget needs state (IME, folding, inline
+widgets), identity must move to a stable block/content ID, not the
+absolute line number. The invariant and its regression tests live in
+`mvp/pocketjs/app/view-slots.ts` + `view-slots.test.ts`; the identity
+cache grows with the highest line ever visible (bounded eviction is a
+backlog item once lines gain state).
+
 ## 6. Where is the boundary between the PocketJS component tree and the
 document model?
 
@@ -119,6 +132,17 @@ No `if (platform === "windows")` in the core. The host/svc boundary
 (`mvp/pocketjs/src/main.rs` + `app/svc.ts`) is the socket where desktop
 capabilities enter; new capabilities are added as svc messages + adapter
 implementations, not core branches.
+
+**Ownership of the implementations (A4 review decision):** `app/platform.ts`
+is a **Markit-facing interface sketch** — it names the capabilities the
+core needs and is deliberately not an OS implementation layer. The
+generic OS implementations (Windows GDI/Linux fontconfig/macOS CoreText
+font discovery, clipboard backends, IME host binding, native dialogs)
+belong to **PocketJS** (Desktop Enablement, the immediate next phase).
+Markit must not grow a private Windows/Linux/macOS compatibility layer
+behind these interfaces: the contract is the seam where
+PocketJS-provided implementations plug in, and Markit's P1 acceptance
+explicitly checks that no such private layer was introduced.
 
 ## 9. How are IME / clipboard / fonts / file dialogs abstracted?
 

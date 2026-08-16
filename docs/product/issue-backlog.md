@@ -151,13 +151,56 @@ need or that have real evidence.
 - Body:
   - **Why**: A fence-boundary edit invalidates through the whole fence
     cascade (1M: 30 197 lines, 68.9 ms — measured). Correct, but too
-    broad for a product hot path.
+    broad for a product hot path. The worst case must not propagate
+    with unbounded document size.
   - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.4.
-  - **Scope**: bound the recovery (e.g. only treat ``` as an opener when
-    a matching close exists ahead), keep the incremental rescan correct
-    (differential oracle), re-measure M5 at 10K/100K/1M.
-  - **Acceptance**: M5 invalidation radius bounded and documented;
-    invariants battery green.
+  - **Scope**: bound the recovery — candidates are parser checkpoints
+    (every N blocks) + parser restart state at the checkpoint + scan
+    until the state converges, and/or only treating ``` as an opener
+    when a matching close exists ahead. Keep the incremental rescan
+    correct (differential oracle); **do not optimize the honest
+    structural propagation away** — fence delimiters legitimately change
+    later structure, so the fix is *bounding* the cascade, not hiding it.
+    Re-measure M5 at 10K/100K/1M.
+  - **Acceptance**: M5 invalidation radius bounded (no O(document)
+    worst case at 1M) and documented; differential oracle still green;
+    invariants battery green; the measured before/after is recorded
+    honestly.
+
+### [X] Markdown L1 conformance golden fixtures
+
+- Labels: `markdown`, `tests`, `p0`
+- Body:
+  - **Why**: the R2 differential oracle proves *incremental invalidation
+    correctness* (incremental == full scan of the same parser), not
+    Markdown/CommonMark conformance — both sides could parse wrong
+    together. The parser is the Markit L1 subset (heading, paragraph,
+    bold, emphasis, inline code, link, blockquote, ul/ol list, fenced
+    code), not a general Markdown parser.
+  - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.2
+    (conformance scope).
+  - **Scope**: supported-syntax golden fixtures (input → expected
+    blocks/runs), CommonMark-derived cases where applicable, a list of
+    known deviations.
+  - **Acceptance**: fixtures committed and green in the regression
+    battery; deviations documented, not silently "fixed".
+
+### [X] Bound the visible-line identity cache (view-slots)
+
+- Labels: `view-model`, `memory`, `p4`
+- Body:
+  - **Why**: `app/view-slots.ts` caches one item per absolute line
+    number ever visible; the cache grows with the highest line reached
+    (a full scroll of a 1M-line document ≈ 1M small objects). Stateless
+    today, so the cost is bounded memory; it becomes a correctness
+    hazard the moment items gain state.
+  - **Evidence**: `mvp/pocketjs/app/view-slots.ts` invariant 4;
+    `docs/product/architecture.md` §5.
+  - **Scope**: windowed/LRU eviction of the cache (viewport × k), keyed
+    by absolute line number; keep the stateless-projection invariant
+    and its regression tests green.
+  - **Acceptance**: cache size bounded by viewport × k under scroll;
+    `view-slots.test.ts` still green.
 
 ### [X] markit-desktop target identity (PocketJS upstream proposal)
 

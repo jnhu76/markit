@@ -1,8 +1,8 @@
 # Phase A4 — Final Research Closeout → PocketJS Product Foundation
 
-Status: **RESEARCH_PHASE_CLOSED — READY_FOR_PRODUCT_P0** (A4-R exit gate
-passed, see §7; the A4-P product architecture, platform plan, MVP scope
-and roadmap follow in this document and `docs/product/`).
+Status: **RESEARCH_PHASE_CLOSED — READY_FOR_PRODUCT_FOUNDATION** (A4-R
+exit gate passed, see §7; A4-P hands the foundation to PocketJS Desktop
+Enablement first, then Markit Product P0 — see §12 and the roadmap).
 
 ## 0. The answer in one paragraph
 
@@ -12,16 +12,17 @@ research phase:
 - **R1 (PocketJS ~7 ms active-edit floor)**: the residual was decomposed
   with a byte-identical counterfactual (the CF bundle reproduces the
   Solid app's DrawList word-for-word and pixel-for-pixel). ~7.4 ms of the
-  ~8.5 ms edit turn is **Solid reactive reconstruction**: Solid's
-  `For` reconciliation (item-reference identity) re-mounted all 26
-  visible line components per edit (~90 native node creations + GC
-  churn). The PocketJS lower rendering stack — document mutation, core
-  tick (layout + text), DrawList, host, GPU — is **~0.3 ms**. The one
-  obvious, safe, local, product-natural fix (stable item identity for
-  the visible list, A3's changed-range discipline applied to the view
-  layer) reduced the Solid contribution to ~1.0–1.5 ms with no semantic
-  or visual change. **Framework floor: CONFIRMED** — the ~7 ms was
-  Solid-layer cost, not the PocketJS stack.
+  ~8.5 ms edit turn is **Solid-layer work amplification, not a framework
+  intrinsic floor**: Solid's `For` reconciles by item-reference identity,
+  and Markit's fresh per-render item objects re-mounted all 26 visible
+  line components per edit (~90 native node creations + GC churn). The
+  PocketJS lower rendering stack — document mutation, core tick (layout
+  + text), DrawList, host, GPU — is **~0.3 ms**. The one obvious, safe,
+  local, product-natural fix (stable item identity for the visible list,
+  A3's changed-range discipline applied to the view layer) reduced the
+  reactive/render preparation to ~1.0–1.5 ms with no semantic or visual
+  change. So the ~7 ms was **Markit's use of Solid reconciliation
+  semantics**, not the PocketJS stack.
 - **R2 (Markdown L1 invalidation radius)**: an incremental L1 pipeline
   (Block Index → Incremental Parse → Affected Blocks → Styled Runs →
   Visible Layout → DrawList) was built and measured on fixed-seed
@@ -160,9 +161,21 @@ DrawList:                      ~50–60 µs
 host/GPU:                      ~250–300 µs
 model (concat + suffix shift): 0–2.3 ms (position-dependent, Markit-owned)
 
-FRAMEWORK FLOOR: CONFIRMED — the PocketJS lower rendering stack is
-~0.3 ms; the measured floor was Solid-layer reconstruction, and the
-stable-item fix removes most of it.
+CONFIRMED:
+  Fresh-reference visible-item reconstruction caused the ~7 ms Solid-
+  layer amplification (Solid's `For` reconciles by item-reference
+  identity; 26 fresh objects per edit re-mount every visible line).
+
+PocketJS lower-stack floor observed in this experiment:
+  ~0.3 ms (model + core + DrawList + host + GPU).
+
+After adopting stable Solid identities:
+  reactive/render preparation ≈ 1.0–1.5 ms — viewport-constant and
+  position-independent.
+
+Not shown: a 7 ms "framework intrinsic floor". The ~7 ms was Markit's
+use of Solid reconciliation semantics (fresh item references), not a
+property of Solid or PocketJS itself.
 ```
 
 ## 3. A4-R R2 — Markdown L1 invalidation radius
@@ -190,6 +203,15 @@ Document → Block Index → Incremental Parse → Affected Blocks
   fence-boundary edit extends the radius to the fence close). 10 unit
   tests incl. a 5000-edit randomized differential against the full-scan
   oracle on the real 10K corpus (0 failures).
+
+  **Conformance scope (what the oracle proves):** the differential proves
+  *incremental invalidation correctness* — the incremental rescan agrees
+  with this same parser's full scan on 5000 random edits. It is **not** a
+  CommonMark conformance proof: both sides could parse "wrong" together.
+  The parser is the *Markit Markdown L1 subset* (the nine constructs
+  above, syntax-visible), not a general Markdown parser; conformance
+  golden fixtures (CommonMark-derived cases + known deviations) are
+  deferred to Product P0 (`docs/product/issue-backlog.md`).
 - `app/md-app.tsx`: the L0 editor plus the pipeline — the block index is
   maintained per edit (same changed-range discipline as the LineIndex),
   styled runs are computed per affected block (cached by block start
@@ -230,18 +252,20 @@ per-edit record:
    consumes forward to the next close — at 1M the cascade re-parsed
    30 197 lines / 2 364 blocks and took 68.9 ms. Recorded as a genuine
    structural-edit cost (the L1 block model's "``` outside a fence opens
-   one" rule), a **product-level design input** (a real Markit editor
-   needs a bounded L1 strategy for fence recovery — e.g. only treat
-   ``` as a fence opener when a close exists ahead, or limit the cascade
-   to the enclosing section), not something to benchmark away.
+   one" rule), a **product-level design input** — tracked as the
+   *bounded fence recovery* product item
+   (`docs/product/issue-backlog.md`, P4) with parser-checkpoint /
+   restart-state candidates; the honest 68.9 ms is kept, not optimized
+   away for a prettier report.
 4. **No accidental O(document) hot path exists for normal edits** — the
    A4-R exit-gate "no new O(document) amplification" criterion passes.
 
 ## 4. A4-R exit gate
 
 ```text
-✅ PocketJS 7 ms residual decomposed (Solid reconstruction ~7.4 ms,
-   lower stack ~0.3 ms; stable-item fix → ~1.0–1.5 ms)
+✅ PocketJS 7 ms residual decomposed (Solid reconstruction ~7.4 ms —
+   Markit's fresh-reference reconciliation, not a framework intrinsic
+   floor; lower stack ~0.3 ms; stable-item fix → ~1.0–1.5 ms)
 ✅ Markdown L1 pipeline built (BlockIndex + incremental rescan + styled
    runs + visible layout; 5000-edit differential-correct)
 ✅ 10K/100K/1M L1 corpora generated (fixed seed)
@@ -263,8 +287,9 @@ RESEARCH_PHASE_CLOSED
 **CONFIRMED**
 
 - The A3 PocketJS residual was Solid reactive reconstruction (~7.4 ms of
-  the ~8.5 ms edit turn), removable with a stable-item + memoized-read
-  pattern (→ ~1.0–1.5 ms; whole turn 1.66 ms at 10K, 3.65 ms at 1M).
+  the ~8.5 ms edit turn) caused by Markit's fresh-reference visible-item
+  objects, removable with a stable-item + memoized-read pattern (→
+  ~1.0–1.5 ms; whole turn 1.66 ms at 10K, 3.65 ms at 1M).
 - The PocketJS lower rendering stack (model + core + DrawList + host +
   GPU) is ~0.3 ms for a one-char edit, viewport-bound, scaling only with
   the model's O(lines-after) suffix shift.
@@ -405,21 +430,37 @@ issue bodies).
    clamped every click on a line ≥ 1 to the document end; it silently
    corrupted the A3-era click-position cells and was uncovered by R2's
    position cases. Fixed in `editor.ts` (direct `starts` lookup) and
-   re-measured.
+   re-measured. **Provenance (A4 review gate):** the A4 erratum in
+   `docs/phase-a3-intervention-validation.md` marks the affected A3
+   cells; affected A3/A2 summary files are kept in place and marked
+   superseded in `results/summary/a3/INVALIDATED-caretFromX.md` and
+   `results/summary/a2/INVALIDATED-caretFromX.md`. A2's qualitative
+   position conclusions are unaffected (see the A2 doc erratum).
 3. **The R1 stable-item fix also applies to the md-app** — the R2 local
    edit times (~1.4 ms) already include it; the run-level Text nodes in
    md-app are recreated per edit (runs shift with the doc) — a known
    cost carried by the L1 prototype, to be addressed by the Incremental
    View Model (per-line run signals), not by more R-phase optimization.
+4. **Stable visible-list identity is a stateless projection** — items
+   are keyed by absolute line number and carry no state; every
+   doc-dependent read lives in item-scoped memos (regression-tested in
+   `app/view-slots.test.ts`, invariant in `app/view-slots.ts` and
+   `docs/product/architecture.md` §11). If line widgets later gain state
+   (IME, folding), identity must move to a stable block/content ID.
 
 ## 12. Product MVP and next phase
 
 - MVP v0.1 scope: `docs/product/mvp-v0.1.md`.
-- Roadmap: `docs/product/roadmap.md` (P0 Product Foundation → P1 Windows
-  Desktop MVP → P2 Linux → P3 macOS → P4 Markdown Visual Editing L2 → P5
-  Rich Blocks → P6 Hardening).
-- Next phase: **PRODUCT P0 / P1** — no A5 research is planned unless a
-  real Markit product workload demonstrates a foundational blocker.
+- Roadmap: `docs/product/roadmap.md` (PocketJS Desktop Enablement →
+  P0 Product Foundation → P1 Windows Desktop MVP → P2 Linux → P3 macOS →
+  P4 Markdown Visual Editing L2 → P5 Rich Blocks → P6 Hardening).
+- Next phase: **PocketJS Desktop Enablement / Windows Reference Host** —
+  prove the generic desktop capabilities in PocketJS first (normal
+  desktop window, CJK runtime fonts, clipboard, IME, platform
+  capability truthfulness), then **Markit Product P0 starts after the
+  required PocketJS desktop capabilities are proven on the target
+  platform**. No A5 research is planned unless a real Markit product
+  workload demonstrates a foundational blocker.
 
 ## 13. Limitations
 
@@ -432,8 +473,11 @@ issue bodies).
   pixel-verified.
 - The q1/mid/q3 position cells from the first (pre-fix) battery were
   corrupted by the caretFromX bug and discarded; the final cells were
-  re-run with the fix. The A3 position table has the same latent
-  corruption in its middle cells (the begin/end cells were unaffected).
+  re-run with the fix. The A3 position and viewport tables carry the
+  same latent corruption in their click-derived cells (begin valid, end
+  valid by coincidence, middle cells invalid) — see the A4 erratum in
+  `docs/phase-a3-intervention-validation.md`; affected A3/A2 summary
+  files are marked `INVALIDATED` in place, not deleted.
 - cf-notext's words (12) are not a presentation (diagnostic only).
 - The R2 pipeline is the measurement surface, not the final product
   editor; md-app's run-level Text recreation is a known prototype cost.
@@ -456,5 +500,13 @@ Artifacts:
 
 ```text
 RESEARCH_PHASE_CLOSED
-READY_FOR_PRODUCT_P0
+READY_FOR_PRODUCT_FOUNDATION
+
+Immediate next step:
+  PocketJS Desktop Enablement / Windows Reference Host
+  (normal desktop window, CJK runtime fonts, clipboard, IME,
+   platform capability truthfulness — PocketJS-owned)
+
+Product P0 starts after the required PocketJS desktop capabilities
+are proven on the target platform.
 ```

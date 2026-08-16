@@ -29,6 +29,7 @@ import {
   type EditChange,
   type EditState,
 } from "./editor.ts";
+import { resolveViewSlots, type LineSlot } from "./view-slots.ts";
 import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
 // Phase A2/A3 instrumentation (Markit-owned): work counters + perfreq reply.
@@ -105,27 +106,21 @@ export default function Editor(): ReturnType<typeof View> {
 
   // Visible line range — GPUI's paint formula exactly: first line from
   // scroll, one viewport's worth plus one; nothing else is shaped or drawn.
-  // A4-R1: items carry ONLY the stable line number, cached by position, so
-  // Solid's For reconciliation (item-reference identity — this Solid
-  // version's mapArray matches `items[i] === newItems[i]`) reuses every
-  // component while the document shifts under it; the line's start/end
-  // and text are derived inside the item from doc()/starts(). Without the
-  // cache, fresh per-render objects made mapArray re-mount all 26 line
-  // components per edit — ~90 native node creations per edit, the
-  // dominant term of the measured Solid reconstruction cost.
-  const lineCache = new Map<number, { line: number }>();
+  // A4-R1: items carry ONLY the stable absolute line number, cached by
+  // position, so Solid's For reconciliation (item-reference identity —
+  // this Solid version's mapArray matches `items[i] === newItems[i]`)
+  // reuses every component while the document shifts under it; the line's
+  // start/end and text are derived inside the item from doc()/starts().
+  // Without the cache, fresh per-render objects made mapArray re-mount
+  // all 26 line components per edit — ~90 native node creations per edit,
+  // the dominant term of the measured Solid reconstruction cost. Items
+  // are stateless projections (view-slots.ts): identity is the absolute
+  // line number; content is always re-derived.
+  const lineCache = new Map<number, LineSlot>();
   const visibleLines = createMemo(() => {
     const from = Math.max(0, Math.floor(scrollE() / LINE_H));
     const to = Math.min(starts().length, from + Math.ceil(viewH() / LINE_H) + 1);
-    const out: { line: number }[] = [];
-    for (let i = from; i < to; i++) {
-      let item = lineCache.get(i);
-      if (!item) {
-        item = { line: i };
-        lineCache.set(i, item);
-      }
-      out.push(item);
-    }
+    const out = resolveViewSlots(from, to, lineCache);
     perfRecordVisible(to - from);
     return out;
   });

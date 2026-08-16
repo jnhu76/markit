@@ -39,6 +39,7 @@ import {
   type EditChange,
   type EditState,
 } from "./editor.ts";
+import { resolveViewSlots, type LineSlot } from "./view-slots.ts";
 import {
   BlockIndex,
   parseInline,
@@ -194,20 +195,13 @@ export default function MdEditor(): ReturnType<typeof View> {
     return out;
   }
 
-  // Visible line range (same formula as app.tsx).
-  const lineCache = new Map<number, { line: number }>();
+  // Visible line range (same formula as app.tsx; see view-slots.ts for
+  // the stateless-projection invariant).
+  const lineCache = new Map<number, LineSlot>();
   const visibleLines = createMemo(() => {
     const from = Math.max(0, Math.floor(scrollE() / LINE_H));
     const to = Math.min(starts().length, from + Math.ceil(viewH() / LINE_H) + 1);
-    const out: { line: number }[] = [];
-    for (let i = from; i < to; i++) {
-      let item = lineCache.get(i);
-      if (!item) {
-        item = { line: i };
-        lineCache.set(i, item);
-      }
-      out.push(item);
-    }
+    const out = resolveViewSlots(from, to, lineCache);
     perfRecordVisible(to - from);
     return out;
   });

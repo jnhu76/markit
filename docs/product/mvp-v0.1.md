@@ -2,7 +2,11 @@
 
 The first shippable product milestone: a single-document, L1-styled
 Markdown editor on Windows (P1), then Linux (P2), then macOS (P3), built
-on the PocketJS foundation decided in A4.
+on the PocketJS foundation decided in A4. Prerequisite: **PocketJS
+Desktop Enablement** (roadmap E0) proves the consumed desktop
+capabilities (window, CJK fonts, clipboard, IME, dialogs) on the target
+platform first — this milestone consumes them, it does not re-implement
+them Markit-side.
 
 ## In scope
 

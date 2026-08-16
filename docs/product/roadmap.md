@@ -4,6 +4,37 @@ Phase A* research naming ends here (A4 closes the research phase). The
 product phases below replace it. Each phase lists goal / scope /
 acceptance / non-goals.
 
+```text
+A4 Research Closeout
+      ↓
+PocketJS Desktop Enablement      ← immediate next step
+      ↓
+Windows desktop substrate proven
+      ↓
+Markit Product P0 / P1
+```
+
+## E0 — PocketJS Desktop Enablement / Windows Reference Host (next)
+
+- Goal: prove the generic desktop capabilities **in PocketJS** on a real
+  Windows host, before Markit productizes on top of them.
+- Scope: normal desktop window, CJK runtime fonts (font discovery +
+  fallback chain + runtime glyph extension), text clipboard, IME
+  composition host binding, platform capability truthfulness (the
+  capability matrix moves from NOT TESTED to PASS only on evidence).
+- Why: `app/platform.ts` (A4-P) is a **Markit-facing interface sketch**,
+  not an OS implementation layer. Generic OS capability implementation
+  belongs to PocketJS; if Markit implements Windows/Linux/macOS
+  mechanics itself behind these interfaces, it grows a Markit-private
+  compatibility stack that will have to be extracted later.
+- Acceptance: the Windows reference host demonstrates the Tier-0
+  capabilities (`docs/product/architecture.md` §9) with evidence; the
+  capability matrix documents the results; the P1 scope below consumes
+  them instead of re-implementing them.
+- Output: PocketJS desktop foundation (upstream, if appropriate) +
+  Markit consumes it via the platform contracts.
+- Non-goals: Markit editor features, packaging, Linux/macOS hosts.
+
 ## P0 — Product Foundation
 
 - Goal: architecture frozen enough to implement; shared-core skeleton;
@@ -21,14 +52,17 @@ acceptance / non-goals.
 ## P1 — Windows Desktop MVP
 
 - Goal: Markit Desktop v0.1 runs on Windows (`docs/product/mvp-v0.1.md`
-  gates 1–7).
+  gates 1–7), consuming the desktop capabilities proven in E0.
 - Scope: markit-core refactor of the MVP guest (editor.ts/markdown.ts
-  become the core modules), Windows font discovery + CJK/emoji fallback,
-  text clipboard, IME model + Pinyin validation, native file dialogs,
-  atomic save, undo/redo transactions, crash recovery minimal,
-  Ctrl shortcuts, portable exe, regression battery in CI.
+  become the core modules), consume PocketJS desktop capabilities
+  (fonts/clipboard/IME host binding/native dialogs from E0), Markit-
+  owned editor-model sides (IME composition model, undo/redo
+  transactions with IME-commit grouping), atomic save, crash recovery
+  minimal, Ctrl shortcuts, portable exe, regression battery in CI.
 - Acceptance: mvp-v0.1 gates 1–7 PASS on Windows with evidence;
-  invariants battery green.
+  invariants battery green; no Markit-private OS compatibility layer
+  introduced (platform work stays behind the contracts, implemented by
+  PocketJS).
 - Non-goals: tabs, images/tables/math, installer/MSIX (later if needed),
   Linux/macOS.
 
