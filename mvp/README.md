@@ -8,7 +8,7 @@ interaction-to-present 对比实验做准备。
 | 框架 | 目录 | 状态 | 阶段报告 |
 |---|---|---|---|
 | GPUI | [`gpui/`](gpui/) | 原型完成（Phase A0 GO） | `docs/phase-a0-windows-feasibility.md` |
-| PocketJS | [`pocketjs/`](pocketjs/) | **待做**（Phase A1 已在 fork 完成，见下） | `docs/phase-a1-pocketjs-windows.md` |
+| PocketJS | [`pocketjs/`](pocketjs/) | 原型落地（Phase A1 MVP 侧 PASS，Windows 运行验证中） | `docs/phase-a1-pocketjs-windows.md` |
 
 ## 共享契约
 
@@ -27,7 +27,8 @@ cargo build --release
 
 ## PocketJS MVP 状态
 
-Phase A1（Windows desktop host 适配）已在 `jnhu76/pocketjs` fork 的
-`support/windows-desktop` 分支完成并验证（thin editor MVP + 确定性 smoke +
-instrumentation，`docs/phase-a1-pocketjs-windows.md`，状态 READY_FOR_PHASE_B）。
-把该 MVP 落地到本目录（`mvp/pocketjs/`）是 Phase B 之前的下一个任务。
+Markit 自有的 PocketJS thin editor MVP 已落地到本目录（`mvp/pocketjs/`）：
+Markit-owned host（Rust）+ Markit-owned guest（SolidJS），与 GPUI MVP 同窗口/
+同字体/同 seed/同 trace schema，P0-P9 在 WSLg 验证 PASS（CJK/IME/clipboard
+DEFERRED）。PocketJS 以 submodule 形式固定在 `vendor/pocketjs`
+（`feat/windows-mvp` 基线）。Windows 原生运行与 benchmark 是下一项。

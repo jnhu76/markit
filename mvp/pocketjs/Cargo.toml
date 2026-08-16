@@ -1,0 +1,27 @@
+# Markit Phase A1 — PocketJS thin editor MVP host.
+#
+# Markit-owned desktop host for the PocketJS guest (P0-P9 thin editor):
+# boot the guest bundle, bridge svc, drive the FlatWidget shell, record the
+# shared 7-stage trace. PocketJS crates are consumed as path dependencies
+# from vendor/pocketjs (the pinned submodule); versions mirror the engine
+# workspace's own resolution so the two build plans agree.
+[package]
+name = "mvp-pocketjs"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+pocket3d = { path = "../../vendor/pocketjs/engine/pocket3d/crates/pocket3d" }
+pocket-mod = { path = "../../vendor/pocketjs/engine/crates/pocket-mod" }
+pocket-ui-surface = { path = "../../vendor/pocketjs/engine/crates/pocket-ui-surface" }
+pocket-ui-wgpu = { path = "../../vendor/pocketjs/engine/crates/pocket-ui-wgpu" }
+pocket-widget = { path = "../../vendor/pocketjs/engine/crates/pocket-widget" }
+
+wgpu = "25"
+winit = "0.30"
+glam = { version = "0.33", features = ["std"] }
+anyhow = "1"
+log = "0.4"
+env_logger = "0.11"
+serde_json = "1"
