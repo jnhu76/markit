@@ -331,6 +331,8 @@ fn a2_step(view: Entity<ThinEditor>, spec: A2Spec, step: usize) -> impl FnOnce(&
 }
 
 fn main() {
+    // Phase A3-M: anchor the startup marker at the process entry point.
+    instrument::mark_process_start();
     let smoke = std::env::args().any(|a| a == "--smoke");
     let a2 = parse_a2();
     // --file <path>: load a corpus document instead of the built-in seed

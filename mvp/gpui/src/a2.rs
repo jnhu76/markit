@@ -29,18 +29,25 @@ pub struct RenderStats {
     pub prepaint_us: u64,
     /// visible-range line shaping loop, us
     pub shape_us: u64,
-    /// lines shaped (== lines visited by prepaint)
+    /// lines shaped (non-empty lines in the visited range)
     pub lines_shaped: u64,
     /// glyphs across shaped lines (sum of shaped line lengths)
     pub glyphs: u64,
     /// first line index visited
     pub first: u64,
-    /// computed "visible" count (element-bounds based)
+    /// viewport-derived visible count (element-bounds based; A3-G1: the
+    /// element is sized to the viewport, so this is ~viewport lines)
     pub visible: u64,
     /// last line index visited (exclusive)
     pub last: u64,
     /// total document lines
     pub lines_total: u64,
+    /// overscan lines added beyond the visible range (A3-G1)
+    pub overscan: u64,
+    /// lines visited by prepaint (last - first; the workset size)
+    pub lines_visited: u64,
+    /// lines painted (completed in paint)
+    pub lines_painted: u64,
     /// selection quads built
     pub quads: u64,
     /// paint loop duration, us
@@ -97,7 +104,7 @@ pub fn emit_render(stats: RenderStats) {
         None => String::new(),
     };
     println!(
-        "{{\"perf\":1,\"prepaint_us\":{},\"shape_us\":{},\"lines_shaped\":{},\"glyphs\":{},\"first\":{},\"visible\":{},\"last\":{},\"lines_total\":{},\"quads\":{},\"paint_us\":{}{}}}",
+        "{{\"perf\":1,\"prepaint_us\":{},\"shape_us\":{},\"lines_shaped\":{},\"glyphs\":{},\"first\":{},\"visible\":{},\"last\":{},\"lines_total\":{},\"overscan\":{},\"lines_visited\":{},\"lines_painted\":{},\"quads\":{},\"paint_us\":{}{}}}",
         stats.prepaint_us,
         stats.shape_us,
         stats.lines_shaped,
@@ -106,6 +113,9 @@ pub fn emit_render(stats: RenderStats) {
         stats.visible,
         stats.last,
         stats.lines_total,
+        stats.overscan,
+        stats.lines_visited,
+        stats.lines_painted,
         stats.quads,
         stats.paint_us,
         edit_json,

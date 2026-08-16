@@ -1,0 +1,33 @@
+=== parse-a2.py gpui-pos-end-1m-1.log ===
+=== GPUI (per frame) ===
+edit frames:
+  concat_us              n=   49 p50=     362.0 p95=     491.8 p99=     523.1 max=     526.0
+  lines_us               n=   49 p50=     590.0 p95=     624.8 p99=     637.1 max=     639.0
+  prepaint_us            n=   49 p50=      51.0 p95=      85.6 p99=     399.7 max=     681.0
+  shape_us               n=   49 p50=      50.0 p95=      84.6 p99=     398.7 max=     680.0
+  paint_us               n=   49 p50=      93.0 p95=     111.8 p99=     123.4 max=     132.0
+  lines_shaped           n=   49 p50=      24.0 p95=      24.0 p99=      24.0 max=      24.0
+  glyphs                 n=   49 p50=    1313.0 p95=    1334.6 p99=    1336.5 max=    1337.0
+  quads                  n=   49 p50=       0.0 p95=       0.0 p99=       0.0 max=       0.0
+static frames (no edit):
+  prepaint_us            n=    2 p50=    1123.5 p95=    2105.8 p99=    2193.2 max=    2215.0
+  shape_us               n=    2 p50=    1120.5 p95=    2102.8 p99=    2190.2 max=    2212.0
+  paint_us               n=    2 p50=     553.5 p95=     769.9 p99=     789.2 max=     794.0
+  lines_shaped           n=    2 p50=      25.0 p95=      25.0 p99=      25.0 max=      25.0
+all frames:
+  lines_shaped           n=   51 min=      24 p50=      24 max=      25
+  glyphs                 n=   51 min=    1289 p50=    1314 max=    1671
+  visible                n=   51 min=      26 p50=      26 max=      26
+  first                  n=   51 min=       0 p50=   19629 max=   19629
+  last                   n=   51 min=      28 p50=   19653 max=   19653
+  lines_total            n=   51 min=   19653 p50=   19653 max=   19653
+
+=== parse-trace.py gpui-pos-end-1m-1.log ===
+=== latency distribution (us) ===
+  input->edit    n=   50 p50=    956.4 p95=   1088.3 p99=   1141.6 max=   1160.6
+  edit->layout   n=   49 p50=      9.9 p95=     21.0 p99=     24.1 max=     26.0
+  layout         n=   51 p50=      0.6 p95=      1.4 p99=      6.0 max=      6.0
+  render         n=   51 p50=    165.1 p95=    313.7 p99=   1973.5 max=   3101.5
+  layout->submit no samples
+  long frames (>16.7ms layout): 0
+

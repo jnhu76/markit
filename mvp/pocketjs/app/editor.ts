@@ -2,7 +2,9 @@
 //
 // Deliberately framework-free and mirroring the GPUI Phase A0 prototype's
 // semantics so the two MVPs edit the same corpus the same way:
-//   - flat document string, line index rebuilt on every mutation;
+//   - flat document string, line index maintained incrementally (A3-P1:
+//     one full scan at load, local updates per edit — no full-document
+//     rescans on the edit hot path);
 //   - caret/selection in code-unit offsets (U0/ASCII corpus: code unit ==
 //     byte; a Unicode ladder (U1+) will need byte/scalar/UTF-16 awareness);
 //   - NO soft wrap (GPUI paints full lines; the window clips long ones);
@@ -13,9 +15,10 @@
 // The measure function is injected (getOps().measureText behind a cache in
 // app.tsx) so this module stays pure and deterministic.
 
-// Phase A2 instrumentation (Markit-owned): work counters around the two
-// O(doc)-per-edit paths. Removing these lines restores original behavior.
-import { cfSkipConcat, perfNow, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
+// Phase A2/A3 instrumentation (Markit-owned): work counters around the
+// line-index and concat paths. Removing these lines restores the original
+// behavior (at the cost of the A2-measured full-document scan per edit).
+import { perfNow, perfRecordLineIndex, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
 
 export type Measure = (text: string) => number;
 
@@ -27,7 +30,24 @@ export interface EditState {
   anchor: number;
 }
 
-/** Byte/code-unit offset of each line start, mirroring GPUI's line_starts. */
+/** A document change: replace [start, end) (code-unit offsets) with text. */
+export interface EditChange {
+  start: number;
+  end: number;
+  text: string;
+}
+
+/** An edit outcome: the new state plus the change that produced it (null =
+ *  caret-only move; the document did not change). Explicit changed-range
+ *  propagation lets the caller maintain the line index locally. */
+export interface EditResult {
+  state: EditState;
+  change: EditChange | null;
+}
+
+/** Byte/code-unit offset of each line start, mirroring GPUI's line_starts.
+ *  Full-document scan — the A2 root cause when called per edit. A3 keeps it
+ *  for load-time index construction and test oracles only. */
 export function lineStarts(doc: string): number[] {
   const t0 = perfNow();
   const starts = [0];
@@ -36,6 +56,85 @@ export function lineStarts(doc: string): number[] {
   }
   perfRecordLineStarts(doc.length, perfNow() - t0);
   return starts;
+}
+
+/**
+ * Incremental line index (Phase A3-P1): line-start offsets maintained
+ * locally across edits instead of re-derived from the whole document.
+ *
+ * - Construction does the one allowed full scan (load time, O(N)).
+ * - `applyEdit(start, end, text)` rescans only the affected region: the
+ *   entries inside the replaced range are dropped, newline positions in the
+ *   inserted text are added, and the remaining suffix entries are shifted
+ *   by the length delta. The suffix shift is O(lines after the edit) —
+ *   instrumented as `entriesAdjusted` (A3 reports it as the residual
+ *   position-dependent term, replacing A2's O(chars) full scan).
+ * - `verify` is the reference oracle (full scan) for tests only; it never
+ *   runs on the production edit path.
+ *
+ * Offset unit: JS string code units, matching the pre-A3 semantics.
+ */
+export class LineIndex {
+  /** Code-unit offset of each line start; starts[0] === 0. */
+  starts: number[];
+  /** Full-document scans performed (construction only in production). */
+  fullScans: number;
+  /** Suffix entries shifted by an edit's length delta (O(lines-after)). */
+  entriesAdjusted: number;
+  /** '\n' inserted by edits. */
+  newlinesInserted: number;
+  /** '\n' removed by edits. */
+  newlinesDeleted: number;
+
+  constructor(doc: string) {
+    this.starts = lineStarts(doc);
+    this.fullScans = 1;
+    this.entriesAdjusted = 0;
+    this.newlinesInserted = 0;
+    this.newlinesDeleted = 0;
+  }
+
+  /** (line index, line start) for a code-unit offset. */
+  lineOf(offset: number): { line: number; start: number } {
+    return lineOf(this.starts, offset);
+  }
+
+  /** Update for: replace [start, end) with `text` (code-unit offsets). */
+  applyEdit(start: number, end: number, text: string): void {
+    const lineLo = this.lineOf(start).line;
+    const lineHi = this.lineOf(end).line;
+    // Line starts strictly inside (start, end] mark lines that vanish with
+    // the replaced text.
+    const removed = lineHi - lineLo;
+    // Line starts opened by '\n' inside the inserted text.
+    const opened: number[] = [];
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i) === 10 /* \n */) opened.push(start + i + 1);
+    }
+    // Suffix entries (after the replaced region) shift by the length delta.
+    const delta = text.length - (end - start);
+    const suffixFrom = lineLo + 1 + removed;
+    const adjusted = this.starts.length - suffixFrom;
+    for (let i = suffixFrom; i < this.starts.length; i++) {
+      this.starts[i] += delta;
+    }
+    this.entriesAdjusted += adjusted;
+    // Replace the affected slice with the opened entries.
+    this.starts.splice(lineLo + 1, removed, ...opened);
+    this.newlinesDeleted += removed;
+    this.newlinesInserted += opened.length;
+    perfRecordLineIndex(adjusted, opened.length, removed);
+  }
+
+  /** Reference comparison against a full scan — TEST/validation only. */
+  verify(doc: string): boolean {
+    const ref = lineStarts(doc);
+    if (ref.length !== this.starts.length) return false;
+    for (let i = 0; i < ref.length; i++) {
+      if (ref[i] !== this.starts[i]) return false;
+    }
+    return true;
+  }
 }
 
 /** (line index, line start) for a code-unit offset. */
@@ -55,38 +154,46 @@ export function lineCount(starts: number[]): number {
 }
 
 /** Replace the current selection (or insert at the caret) with `text`. */
-export function typeText(s: EditState, text: string): EditState {
+export function typeText(s: EditState, text: string): EditResult {
   const [lo, hi] = selBounds(s);
   const t0 = perfNow();
-  // DIAGNOSTIC (CF=2/3): skip the concat — the document does not change.
-  const doc = cfSkipConcat() ? s.doc : s.doc.slice(0, lo) + text + s.doc.slice(hi);
+  const doc = s.doc.slice(0, lo) + text + s.doc.slice(hi);
   perfRecordTypeCopy(s.doc.length + text.length, perfNow() - t0);
   return {
-    doc,
-    caret: lo + text.length,
-    anchor: lo + text.length,
+    state: {
+      doc,
+      caret: lo + text.length,
+      anchor: lo + text.length,
+    },
+    change: { start: lo, end: hi, text },
   };
 }
 
 /** Backspace: delete the selection, or the code unit before the caret. */
-export function backspaceSel(s: EditState): EditState {
+export function backspaceSel(s: EditState): EditResult {
   if (s.caret !== s.anchor) return typeText(s, "");
   const at = Math.max(0, s.caret - 1);
   return {
-    doc: s.doc.slice(0, at) + s.doc.slice(s.caret),
-    caret: at,
-    anchor: at,
+    state: {
+      doc: s.doc.slice(0, at) + s.doc.slice(s.caret),
+      caret: at,
+      anchor: at,
+    },
+    change: { start: at, end: s.caret, text: "" },
   };
 }
 
 /** Delete: delete the selection, or the code unit at the caret. */
-export function deleteSel(s: EditState): EditState {
+export function deleteSel(s: EditState): EditResult {
   if (s.caret !== s.anchor) return typeText(s, "");
   const at = Math.min(s.doc.length, s.caret + 1);
   return {
-    doc: s.doc.slice(0, s.caret) + s.doc.slice(at),
-    caret: s.caret,
-    anchor: s.caret,
+    state: {
+      doc: s.doc.slice(0, s.caret) + s.doc.slice(at),
+      caret: s.caret,
+      anchor: s.caret,
+    },
+    change: { start: s.caret, end: at, text: "" },
   };
 }
 

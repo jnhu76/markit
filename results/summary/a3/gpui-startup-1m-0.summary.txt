@@ -1,0 +1,14 @@
+=== startup-memory gpui 1m run 0 ===
+  mvp: gpui
+  corpus: 1m
+  run: 0
+  first_usable_frame_ms: 344
+  ws_bytes_1s: 40779776
+  priv_bytes_1s: 37191680
+  cpu_s_1s: 0.421875
+  ws_bytes_4s: 40841216
+  priv_bytes_4s: 37261312
+  cpu_s_4s: 0.46875
+  ticks: None
+  frames_rendered: None
+  gpui_a2_frames: 2

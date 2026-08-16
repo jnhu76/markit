@@ -49,7 +49,10 @@ def document(rng: random.Random, target: int) -> str:
 
 def main() -> None:
     OUT.mkdir(exist_ok=True)
-    for name, kb in (("10k.txt", 10), ("100k.txt", 100), ("1m.txt", 1024)):
+    # Phase A3: 250K/500K added for the intervention scaling cells; the
+    # 10K/100K/1M bytes are unchanged (same seed, same generation order).
+    for name, kb in (("10k.txt", 10), ("100k.txt", 100), ("250k.txt", 250),
+                     ("500k.txt", 500), ("1m.txt", 1024)):
         rng = random.Random(SEED)
         body = document(rng, kb * 1024)
         (OUT / name).write_text(body, encoding="ascii")
