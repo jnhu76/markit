@@ -30,6 +30,18 @@ import {
 } from "./editor.ts";
 import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
+// Phase A2 instrumentation (Markit-owned): work counters + perfreq reply.
+import {
+  perfCounters,
+  perfEditCommit,
+  perfRecordMeasure,
+  perfRecordSvcEvents,
+  perfRecordSvcSend,
+  perfRecordVisible,
+  perfRequest,
+  perfTakeRequest,
+  perfTickFrames,
+} from "./perf.ts";
 
 /** 18 px body font (slot 3 — 12/14/16/18/20/24/36). */
 const FONT_SLOT = 3;
@@ -61,6 +73,7 @@ function textWidth(text: string): number {
   let w = widthCache.get(key);
   if (w === undefined) {
     w = getOps().measureText(text, FONT_SLOT);
+    perfRecordMeasure(text.length);
     widthCache.set(key, w);
   }
   return w;
@@ -86,6 +99,7 @@ export default function Editor(): ReturnType<typeof View> {
     const to = Math.min(starts().length, from + Math.ceil(viewH() / LINE_H) + 1);
     const out: { index: number; start: number; end: number }[] = [];
     for (let i = from; i < to; i++) out.push({ index: i, start: starts()[i], end: lineEnd(doc(), starts(), starts()[i]) });
+    perfRecordVisible(to - from);
     return out;
   });
 
@@ -207,6 +221,9 @@ export default function Editor(): ReturnType<typeof View> {
 
   const handleEvent = (ev: HostEvent) => {
     switch (ev.t) {
+      case "perfreq":
+        perfRequest();
+        break;
       case "hello":
       case "resize":
         setVp({ w: ev.w ?? 1000, h: ev.h ?? 700 });
@@ -276,8 +293,37 @@ export default function Editor(): ReturnType<typeof View> {
 
   onFrame(() => {
     if (!svc) return;
+    perfTickFrames();
     const events = svc.poll();
-    for (const ev of events) handleEvent(ev);
+    perfRecordSvcEvents(events.length);
+    let anyEdit = false;
+    for (const ev of events) {
+      handleEvent(ev);
+      if (ev.t === "ch" || ev.t === "key" || ev.t === "paste" || ev.t === "load") anyEdit = true;
+    }
+    if (anyEdit) perfEditCommit();
+    if (perfTakeRequest()) {
+      // Phase A2: one counter dump per request (host prints it).
+      const c = perfCounters();
+      svc.send({
+        t: "perf",
+        frames: c.frames,
+        edits: c.edits,
+        lineStartsScans: c.lineStartsScans,
+        lineStartsChars: c.lineStartsChars,
+        lineStartsMs: c.lineStartsMs,
+        typeCopies: c.typeCopies,
+        typeCopyChars: c.typeCopyChars,
+        typeMs: c.typeMs,
+        visibleVisits: c.visibleVisits,
+        visibleLines: c.visibleLines,
+        measures: c.measures,
+        measureChars: c.measureChars,
+        svcEvents: c.svcEvents,
+        svcSends: c.svcSends,
+        editsRing: JSON.stringify(c.editsRing),
+      });
+    }
     if (events.length > 0) {
       // State echo for the host's smoke driver (ignored otherwise).
       svc.send({

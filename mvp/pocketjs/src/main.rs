@@ -18,6 +18,7 @@
 mod instrument;
 
 use std::path::PathBuf;
+use std::time::Instant;
 
 use anyhow::{Context, Result, anyhow};
 use glam::Vec2;
@@ -72,6 +73,13 @@ struct MarkitGame {
     /// --screenshot: headless run — also echoes guest state (deterministic
     /// verification without a display).
     echo_state: bool,
+    // ---- Phase A2 instrumentation (Markit-owned) -------------------------
+    /// PJS_PERF=1 enables per-tick JSONL + the guest perfreq round-trip.
+    perf: bool,
+    /// Duration of the last wgpu render pass (render(), us).
+    render_us: u64,
+    /// Guest perf reply received this tick (printed by the caller).
+    perf_reply: Option<String>,
 }
 
 enum ScriptEvent {
@@ -102,12 +110,15 @@ impl MarkitGame {
         }
     }
 
-    fn forward_edits(&mut self, input: &Input) {
+    /// Forward this tick's keyboard edits to the guest; returns the number
+    /// of edit svc lines pushed (Phase A2 counter).
+    fn forward_edits(&mut self, input: &Input) -> usize {
         // Batch runs of typed chars into one line; Ctrl-chords are
         // shortcuts, not text.
         let shift = input.key_down(KeyCode::ShiftLeft) || input.key_down(KeyCode::ShiftRight);
         let primary =
             input.key_down(KeyCode::ControlLeft) || input.key_down(KeyCode::ControlRight);
+        let mut edits = 0usize;
         let mut chars = String::new();
         for key in input.edits() {
             let named = match key {
@@ -134,13 +145,16 @@ impl MarkitGame {
             if !chars.is_empty() {
                 let batch = std::mem::take(&mut chars);
                 self.svc(serde_json::json!({"t": "ch", "s": batch}));
+                edits += 1;
                 instrument::record(Stage::EditApplied);
             }
             self.svc(serde_json::json!({"t": "key", "k": named, "sh": shift}));
+            edits += 1;
             instrument::record(Stage::EditApplied);
         }
         if !chars.is_empty() {
             self.svc(serde_json::json!({"t": "ch", "s": chars}));
+            edits += 1;
             instrument::record(Stage::EditApplied);
         }
 
@@ -154,12 +168,18 @@ impl MarkitGame {
             }
             if input.key_pressed(KeyCode::KeyA) {
                 self.svc(serde_json::json!({"t": "key", "k": "SelectAll", "sh": false}));
+                edits += 1;
                 instrument::record(Stage::EditApplied);
             }
         }
+        edits
     }
 
-    fn run_script(&mut self) {
+    /// Run due scripted events; returns the number of edit svc lines pushed
+    /// (Phase A2 counter) and whether any event fired.
+    fn run_script(&mut self) -> (usize, bool) {
+        let mut edits = 0usize;
+        let mut fired = false;
         let due: Vec<usize> = self
             .script
             .iter()
@@ -169,24 +189,30 @@ impl MarkitGame {
             .collect();
         for i in due.into_iter().rev() {
             let (_, ev) = self.script.remove(i);
+            fired = true;
             match ev {
                 ScriptEvent::Click(x, y) => {
+                    // Mirrors the real-mouse path: press then release.
+                    self.svc(serde_json::json!({"t": "mouse", "x": x, "y": y, "d": true}));
                     self.svc(serde_json::json!({"t": "mouse", "x": x, "y": y, "d": false}));
                     self.script_click_until = self.ticks + 4;
                     instrument::record(Stage::InputReceived);
                 }
                 ScriptEvent::Type(s) => {
                     self.svc(serde_json::json!({"t": "ch", "s": s}));
+                    edits += 1;
                     instrument::record(Stage::InputReceived);
                     instrument::record(Stage::EditApplied);
                 }
                 ScriptEvent::Key(k) => {
                     self.svc(serde_json::json!({"t": "key", "k": k}));
+                    edits += 1;
                     instrument::record(Stage::InputReceived);
                     instrument::record(Stage::EditApplied);
                 }
                 ScriptEvent::Paste(text) => {
                     self.svc(serde_json::json!({"t": "paste", "text": text}));
+                    edits += 1;
                     instrument::record(Stage::InputReceived);
                     instrument::record(Stage::EditApplied);
                 }
@@ -202,6 +228,7 @@ impl MarkitGame {
                 }
             }
         }
+        (edits, fired)
     }
 }
 
@@ -242,14 +269,18 @@ impl FlatWidget for MarkitGame {
             instrument::record(Stage::InputReceived);
         }
 
-        self.forward_edits(input);
+        let mut edits_pushed = self.forward_edits(input);
         let scroll = input.scroll();
         if scroll.y != 0.0 {
             self.svc(serde_json::json!({"t": "scroll", "dy": scroll.y / scale as f32}));
         }
+        let mut script_fired = false;
         if !self.script.is_empty() {
-            self.run_script();
+            let (n, f) = self.run_script();
+            edits_pushed += n;
+            script_fired = f;
         }
+        let had_input = had_input || script_fired;
         let script_down = self.ticks < self.script_click_until;
         let pressed_edge = input.mouse_button_pressed(winit::event::MouseButton::Left);
         let level_down = input.mouse_button_down(winit::event::MouseButton::Left) || script_down;
@@ -272,18 +303,37 @@ impl FlatWidget for MarkitGame {
             }
         }
 
+        // Phase A2: ask the guest for its counter dump two ticks before an
+        // auto-quit so the reply lands inside a normal tick (bench mode).
+        if self.perf
+            && let Some(q) = self.quit_after
+            && self.ticks + 2 == q
+        {
+            self.svc(serde_json::json!({"t": "perfreq"}));
+        }
+
         // The guest turn (exactly one per tick). Layout = DrawList
         // regeneration inside surface.tick.
         instrument::record(Stage::LayoutBegin);
+        let gf_t0 = Instant::now();
         self.guest.frame(0)?;
+        let gf_us = gf_t0.elapsed().as_micros() as u64;
+        let ct_t0 = Instant::now();
         self.surface.tick();
+        let ct_us = ct_t0.elapsed().as_micros() as u64;
         instrument::record(Stage::LayoutEnd);
 
         // Guest → host intents.
-        for line in self.surface.svc_drain() {
+        let drained: Vec<String> = self.surface.svc_drain();
+        for line in drained {
             match serde_json::from_str::<serde_json::Value>(&line) {
                 Ok(v) => match v["t"].as_str() {
                     Some("quit") => self.exit = true,
+                    Some("perf") => {
+                        if self.perf {
+                            self.perf_reply = Some(line);
+                        }
+                    }
                     Some("caret") => {
                         self.caret_rect = Some((
                             v["x"].as_f64().unwrap_or(0.0) as f32,
@@ -322,16 +372,32 @@ impl FlatWidget for MarkitGame {
         }
 
         // DrawList content hash → demand rendering.
+        let dl_t0 = Instant::now();
+        let mut words_len = 0usize;
         let (hash, words) = self.surface.with_ui(|ui| {
             let words = &ui.draw().words;
+            words_len = words.len();
             let hash = fnv1a64(words);
             (hash, (hash != self.hash).then(|| words.clone()))
         });
+        let dl_us = dl_t0.elapsed().as_micros() as u64;
         if let Some(words) = words {
             log::debug!("markit: DrawList changed at tick {}", self.ticks);
             self.words = words;
             self.hash = hash;
             self.dirty = true;
+        }
+
+        if self.perf {
+            // Phase A2: one JSON line per tick (see bench/parse-a2.py).
+            println!(
+                "{{\"perf\":1,\"tick\":{},\"ev\":{},\"in\":{},\"gf_us\":{},\"ct_us\":{},\"dl_us\":{},\"words\":{},\"dirty\":{},\"r_us\":{}}}",
+                self.ticks, edits_pushed, had_input as u8, gf_us, ct_us, dl_us, words_len,
+                self.dirty as u8, self.render_us,
+            );
+        }
+        if let Some(reply) = self.perf_reply.take() {
+            println!("[perf] {reply}");
         }
 
         self.ticks += 1;
@@ -345,6 +411,7 @@ impl FlatWidget for MarkitGame {
     fn render(&mut self, gpu: &Gpu, view: &wgpu::TextureView, window_px: (u32, u32)) -> Result<()> {
         let renderer = self.renderer.as_mut().expect("init ran");
         instrument::record(Stage::RenderBegin);
+        let r_t0 = Instant::now();
         let scale = if self.scale > 0.0 { self.scale as f32 } else { 1.0 };
         let mut encoder = gpu.device.create_command_encoder(&Default::default());
         self.surface.with_ui(|ui| {
@@ -362,6 +429,7 @@ impl FlatWidget for MarkitGame {
             )
         })?;
         gpu.queue.submit([encoder.finish()]);
+        self.render_us = r_t0.elapsed().as_micros() as u64;
         instrument::record(Stage::RenderEnd);
         instrument::record(Stage::FrameSubmit);
         Ok(())
@@ -612,6 +680,9 @@ fn main() -> Result<()> {
         quit_after: args.auto_quit.map(|s| (s * TICK_HZ as f32) as u64),
         smoke: args.smoke,
         echo_state: args.screenshot.is_some(),
+        perf: std::env::var("PJS_PERF").is_ok(),
+        render_us: 0,
+        perf_reply: None,
     };
 
     if let Some(out) = args.screenshot.clone() {
@@ -652,6 +723,10 @@ fn headless(mut game: MarkitGame, args: Args, out: &std::path::Path) -> Result<(
     game.init(&gpu, OFFSCREEN_FORMAT)?;
     let mut input = Input::default();
     for _ in 0..args.frames {
+        // Phase A2: ask the guest for its counter dump on the last frame.
+        if game.perf && game.ticks + 1 == args.frames {
+            game.svc(serde_json::json!({"t": "perfreq"}));
+        }
         // Headless: the "window" tracks the game's logical viewport, so
         // scripted --resize events behave like a real window resize.
         let px = (game.logical.0, game.logical.1);

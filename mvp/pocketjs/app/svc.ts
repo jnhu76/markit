@@ -26,11 +26,13 @@
 //   {t:"caret", x, y, h}       caret rect (logical px) — IME docking
 //   {t:"quit"}                 close the window
 //   {t:"state", caret, anchor, scrollY, docHead}  smoke/state echo
+//   {t:"perf", ...}            Phase A2 counter dump (reply to "perfreq")
 
 import { getOps } from "@pocketjs/framework";
+import { perfRecordSvcSend } from "./perf.ts";
 
 export interface HostEvent {
-  t: "hello" | "resize" | "load" | "ch" | "key" | "mouse" | "scroll" | "paste" | "ime";
+  t: "hello" | "resize" | "load" | "ch" | "key" | "mouse" | "scroll" | "paste" | "ime" | "perfreq";
   w?: number;
   h?: number;
   text?: string;
@@ -53,7 +55,8 @@ export interface Svc {
     line:
       | { t: "quit" }
       | { t: "caret"; x: number; y: number; h: number }
-      | { t: "state"; caret: number; anchor: number; scrollY: number; w: number; h: number; docHead: string },
+      | { t: "state"; caret: number; anchor: number; scrollY: number; w: number; h: number; docHead: string }
+      | ({ t: "perf" } & Record<string, number>),
   ): void;
 }
 
@@ -79,6 +82,7 @@ export function connectSvc(): Svc | null {
       return events;
     },
     send(line) {
+      perfRecordSvcSend();
       send(JSON.stringify(line));
     },
   };

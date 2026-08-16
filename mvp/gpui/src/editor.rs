@@ -6,6 +6,7 @@
 //! parser, no syntax highlighting, no plugins, no undo, no perf work.
 
 use std::ops::Range;
+use std::time::Instant;
 
 use gpui::{
     actions, point, prelude::*, px, relative, rgb, rgba, size, App, Bounds, ClipboardItem,
@@ -16,6 +17,7 @@ use gpui::{
 };
 use unicode_segmentation::UnicodeSegmentation;
 
+use crate::a2::{self, EditStats};
 use crate::instrument::{self, Stage};
 
 actions!(
@@ -187,13 +189,25 @@ impl ThinEditor {
 
     /// Core mutation. `range` is in byte offsets.
     fn apply_edit(&mut self, range: Range<usize>, new_text: &str, cx: &mut Context<Self>) {
+        // Phase A2: split the mutation into concat vs line-index rebuild.
+        let t0 = Instant::now();
         self.text = format!(
             "{}{}{}",
             &self.text[..range.start],
             new_text,
             &self.text[range.end..]
         );
+        let concat_us = a2::us_since(t0);
+        let t1 = Instant::now();
         self.rebuild_line_starts();
+        let lines_us = a2::us_since(t1);
+        a2::record_edit(EditStats {
+            concat_us,
+            lines_us,
+            scan_chars: self.text.len() as u64,
+            lines_recreated: self.line_starts.len() as u64,
+            doc_len: self.text.len() as u64,
+        });
         self.selection = range.start + new_text.len()..range.start + new_text.len();
         self.selection_reversed = false;
         self.marked_range = None;
@@ -548,13 +562,25 @@ impl EntityInputHandler for ThinEditor {
             .or(self.marked_range.clone())
             .unwrap_or(self.selection.clone());
 
+        // Phase A2: same split as apply_edit (IME-commit path).
+        let t0 = Instant::now();
         self.text = format!(
             "{}{}{}",
             &self.text[..range.start],
             new_text,
             &self.text[range.end..]
         );
+        let concat_us = a2::us_since(t0);
+        let t1 = Instant::now();
         self.rebuild_line_starts();
+        let lines_us = a2::us_since(t1);
+        a2::record_edit(EditStats {
+            concat_us,
+            lines_us,
+            scan_chars: self.text.len() as u64,
+            lines_recreated: self.line_starts.len() as u64,
+            doc_len: self.text.len() as u64,
+        });
         if !new_text.is_empty() {
             self.marked_range = Some(range.start..range.start + new_text.len());
         } else {
@@ -752,6 +778,7 @@ impl Element for EditorElement {
         cx: &mut App,
     ) -> Self::PrepaintState {
         instrument::record(Stage::RenderBegin);
+        let t_pre = Instant::now();
         let editor = self.editor.read(cx);
         let text_style = window.text_style();
         let font = text_style.font();
@@ -767,12 +794,15 @@ impl Element for EditorElement {
         let last = (first + visible).min(line_count);
 
         let mut lines = Vec::new();
+        let t_shape = Instant::now();
+        let mut glyphs = 0u64;
         for idx in first..last {
             let (line_start, line_end) = editor.line_bounds(idx);
             let text: SharedString = editor.text[line_start..line_end].to_string().into();
             if text.is_empty() {
                 continue;
             }
+            glyphs += text.len() as u64;
             let runs = if let Some(marked) = editor.marked_range.as_ref() {
                 let m_start = marked.start.saturating_sub(line_start).min(text.len());
                 let m_end = marked.end.saturating_sub(line_start).min(text.len());
@@ -808,6 +838,7 @@ impl Element for EditorElement {
             let line = window.text_system().shape_line(text, font_size, &runs, None);
             lines.push((idx, line));
         }
+        let shape_us = a2::us_since(t_shape);
 
         // Selection quads per visible line.
         let selection = editor.selection.clone();
@@ -815,6 +846,7 @@ impl Element for EditorElement {
         let cursor_offset = editor.cursor_offset();
         let mut selection_quads = Vec::new();
         let mut cursor = None;
+        let mut quads = 0u64;
         if !selection.is_empty() {
             let (sel_start, sel_end) = if selection_reversed {
                 (selection.end, selection.start)
@@ -838,6 +870,7 @@ impl Element for EditorElement {
                     ),
                     rgba(0x3311ff30),
                 ));
+                quads += 1;
             }
         } else if editor.focus_handle.is_focused(window) {
             let (cur_line, cur_start) = editor.line_of_offset(cursor_offset);
@@ -854,6 +887,21 @@ impl Element for EditorElement {
             }
         }
 
+        let prepaint_us = a2::us_since(t_pre);
+        // Phase A2: remember render counters for the frame's JSONL line.
+        a2::set_pending(a2::RenderStats {
+            prepaint_us,
+            shape_us,
+            lines_shaped: lines.len() as u64,
+            glyphs,
+            first: first as u64,
+            visible: visible as u64,
+            last: last as u64,
+            lines_total: line_count as u64,
+            quads,
+            paint_us: 0,
+            edit: a2::take_edit(),
+        });
         PrepaintState {
             lines,
             selection_quads,
@@ -871,6 +919,7 @@ impl Element for EditorElement {
         window: &mut Window,
         cx: &mut App,
     ) {
+        let t_paint = Instant::now();
         let focus_handle = self.editor.read(cx).focus_handle.clone();
         window.handle_input(
             &focus_handle,
@@ -907,6 +956,12 @@ impl Element for EditorElement {
             editor.last_bounds = Some(bounds);
             editor.last_viewport_h = window.viewport_size().height;
         });
+
+        // Phase A2: complete and emit the frame's JSONL line.
+        if let Some(mut stats) = a2::take_pending() {
+            stats.paint_us = a2::us_since(t_paint);
+            a2::emit_render(stats);
+        }
 
         instrument::record(Stage::RenderEnd);
     }
