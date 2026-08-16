@@ -1,12 +1,23 @@
-// mvp/pocketjs/app/app.tsx — Markit PocketJS thin-editor guest.
+// mvp/pocketjs/app/md-app.tsx — A4-R2 Markdown L1 styled editor (guest).
 //
-// The window IS the editor: a plain-text editing surface over the Markit
-// flat widget host. No markdown, no chrome. Layout mirrors the GPUI Phase
-// A0 prototype (Consolas 18 px, 28 px line height, no soft wrap, visible
-// lines only) so both MVPs render the same corpus the same way; the seed
-// document is app/sample.ts. The host feeds real keyboard/mouse/scroll/
-// resize through the svc channel (app/svc.ts); without a host the bundle
-// renders the seed read-only.
+// The L0 editor (app.tsx) plus the Phase A4-R2 incremental Markdown L1
+// pipeline: Document → Block Index → Incremental Parse → Affected Blocks
+// → Styled Runs → Visible Layout → DrawList.
+//
+//   - BlockIndex (markdown.ts) is maintained incrementally in applyState,
+//     exactly like the LineIndex (A3-P1): one full scan at load, then a
+//     per-edit rescan whose consumed range is the structural invalidation
+//     radius (blocksScanned / blocksReparsed).
+//   - Styled runs are computed per affected block (parseInline, cached by
+//     block start line) — inlineParsed counts the re-parses per edit.
+//   - Each visible line renders its runs as Text nodes colored by style
+//     (L1 keeps the Markdown syntax visible). Font slot is unchanged, so
+//     the caret/measure math of the L0 editor stays valid.
+//   - The R2 work counters (blocksScanned, blocksReparsed, inlineParsed,
+//     runsRendered) ride the same perf reply as the R1 counters.
+//
+// This is the R2 measurement surface, not the final product editor — the
+// A4-P architecture layers the same pipeline into markit-core.
 
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { Focusable, Text, View } from "@pocketjs/framework/components";
@@ -21,7 +32,6 @@ import {
   caretX,
   deleteSel,
   lineEnd,
-  lineOf,
   lineStart,
   moveVertical,
   selBounds,
@@ -30,48 +40,54 @@ import {
   type EditState,
 } from "./editor.ts";
 import { resolveViewSlots, type LineSlot } from "./view-slots.ts";
+import {
+  BlockIndex,
+  parseInline,
+  type Block,
+  type Run,
+} from "./markdown.ts";
 import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
-// Phase A2/A3 instrumentation (Markit-owned): work counters + perfreq reply.
 import {
+  markitPhaseTimed,
   perfCounters,
   perfEditCommit,
   perfOpCalls,
   perfOpCounts,
+  perfRecordBlockIndex,
   perfRecordGuestPhases,
   perfRecordMeasure,
+  perfRecordRunsRendered,
   perfRecordSvcEvents,
   perfRecordSvcSend,
   perfRecordVisible,
   perfRequest,
   perfTakeRequest,
   perfTickFrames,
-  markitPhaseTimed,
 } from "./perf.ts";
 
-/** 18 px body font (slot 3 — 12/14/16/18/20/24/36). */
 const FONT_SLOT = 3;
-/** Line height in logical px — mirrors GPUI's LINE_HEIGHT (28). */
 const LINE_H = 28;
-/** Cursor width px — mirrors GPUI's CURSOR_WIDTH (2). */
 const CARET_W = 2;
-/** Cursor height px — GPUI paints the caret full line height. */
 const CARET_H = LINE_H;
-/** PageUp/PageDown step — one viewport. */
 const SCROLL_STEP = 56;
-/** Pointer movement (logical px) that turns a press into a drag. */
 const DRAG_SLOP = 3;
 
-// GPUI Phase A0 palette: white surface, #333333 ink, blue caret,
-// rgba(0x3311ff30) selection.
 const INK = {
   bg: "#ffffff",
   body: "#333333",
   caret: "#0000ff",
   sel: "#3311ff30",
+  // L1 style colors (color-only styling keeps the caret math font-uniform).
+  heading: "#1e3a8a",
+  quote: "#64748b",
+  code: "#0f766e",
+  list: "#333333",
+  bold: "#7c2d12",
+  em: "#444444",
+  link: "#1d4ed8",
 };
 
-/** The measure injected into the caret math: body-font width in px. */
 const widthCache = new Map<string, number>();
 function textWidth(text: string): number {
   if (text === "") return 0;
@@ -85,7 +101,37 @@ function textWidth(text: string): number {
   return w;
 }
 
-export default function Editor(): ReturnType<typeof View> {
+/** Block base color for body runs. */
+function blockColor(kind: Block["kind"]): string {
+  switch (kind) {
+    case "heading":
+      return INK.heading;
+    case "quote":
+      return INK.quote;
+    case "fenced":
+      return INK.code;
+    default:
+      return INK.body;
+  }
+}
+
+/** Inline style color (wins over the block base). */
+function runColor(style: Run["style"], kind: Block["kind"]): string {
+  switch (style) {
+    case "bold":
+      return INK.bold;
+    case "em":
+      return INK.em;
+    case "code":
+      return INK.code;
+    case "link":
+      return INK.link;
+    default:
+      return blockColor(kind);
+  }
+}
+
+export default function MdEditor(): ReturnType<typeof View> {
   const svc = connectSvc();
   const [vp, setVp] = createSignal({ w: 1000, h: 700 });
   const [doc, setDoc] = createSignal(SAMPLE_DOC);
@@ -94,9 +140,6 @@ export default function Editor(): ReturnType<typeof View> {
   const [scrollE, setScrollE] = createSignal(0);
 
   const starts = createMemo(() => {
-    // A3-P1: the index is maintained incrementally by applyState (and
-    // rebuilt once at load). This memo only makes the index reactive to
-    // document changes — no document work per edit.
     void doc();
     return lineIndex.starts;
   });
@@ -104,18 +147,56 @@ export default function Editor(): ReturnType<typeof View> {
   const maxScroll = () => Math.max(0, totalH() - vp().h);
   const viewH = () => vp().h;
 
-  // Visible line range — GPUI's paint formula exactly: first line from
-  // scroll, one viewport's worth plus one; nothing else is shaped or drawn.
-  // A4-R1: items carry ONLY the stable absolute line number, cached by
-  // position, so Solid's For reconciliation (item-reference identity —
-  // this Solid version's mapArray matches `items[i] === newItems[i]`)
-  // reuses every component while the document shifts under it; the line's
-  // start/end and text are derived inside the item from doc()/starts().
-  // Without the cache, fresh per-render objects made mapArray re-mount
-  // all 26 line components per edit — ~90 native node creations per edit,
-  // the dominant term of the measured Solid reconstruction cost. Items
-  // are stateless projections (view-slots.ts): identity is the absolute
-  // line number; content is always re-derived.
+  // A4-R2: cached styled runs per block, keyed by the block's start line.
+  // Invalidated for exactly the blocks the rescan replaced.
+  const blockRuns = new Map<number, Run[]>();
+
+  /** Styled runs covering a block's text (lazy for fenced/blank). */
+  function runsFor(block: Block): Run[] {
+    const cached = blockRuns.get(block.startLine);
+    if (cached) return cached;
+    if (block.kind === "fenced") {
+      const s = starts()[block.startLine];
+      const e = lineEnd(doc(), starts(), starts()[block.endLine]);
+      const runs: Run[] = [{ start: 0, end: e - s, style: "body" }];
+      blockRuns.set(block.startLine, runs);
+      return runs;
+    }
+    if (block.kind === "blank") return [];
+    const s = starts()[block.startLine];
+    const e = lineEnd(doc(), starts(), starts()[block.endLine]);
+    const runs = parseInline(doc().slice(s, e));
+    blockRuns.set(block.startLine, runs);
+    return runs;
+  }
+
+  /** Runs for one visible line: the block's runs sliced to [ls, le), each
+   *  carrying its x offset (font-uniform measure of the line prefix). */
+  function lineRuns(line: number): { start: number; end: number; color: string; x: number }[] {
+    const bi = blockIndex.blockAt(line);
+    if (bi.block.kind === "blank") return [];
+    const runs = runsFor(bi.block);
+    const ls = starts()[line];
+    const le = lineEnd(doc(), starts(), ls);
+    const bs = starts()[bi.block.startLine];
+    const lo = ls - bs;
+    const hi = le - bs;
+    const out: { start: number; end: number; color: string; x: number }[] = [];
+    for (const r of runs) {
+      const s = Math.max(r.start, lo);
+      const e = Math.min(r.end, hi);
+      if (e > s) out.push({
+        start: bs + s,
+        end: bs + e,
+        color: runColor(r.style, bi.block.kind),
+        x: textWidth(doc().slice(ls, bs + s)),
+      });
+    }
+    return out;
+  }
+
+  // Visible line range (same formula as app.tsx; see view-slots.ts for
+  // the stateless-projection invariant).
   const lineCache = new Map<number, LineSlot>();
   const visibleLines = createMemo(() => {
     const from = Math.max(0, Math.floor(scrollE() / LINE_H));
@@ -127,12 +208,10 @@ export default function Editor(): ReturnType<typeof View> {
 
   const caretPx = () => caretX(doc(), starts(), caret(), textWidth);
   const caretRow = () => caretRowOf(starts(), caret());
-  /** Normalized selection bounds, null when collapsed. */
   const editSel = (): [number, number] | null => {
     if (caret() === anchor()) return null;
     return selBounds({ doc: doc(), caret: caret(), anchor: anchor() });
   };
-  /** Selection highlight rect for one display line, null outside. */
   const lineSelRect = (line: number) => {
     const sel = editSel();
     if (!sel) return null;
@@ -146,17 +225,35 @@ export default function Editor(): ReturnType<typeof View> {
 
   const selState = (): EditState => ({ doc: doc(), caret: caret(), anchor: anchor() });
   const applyState = (s: EditState, change?: EditChange | null) => {
-    // Explicit changed-range propagation: the incremental line index is
-    // updated locally before the document signal flips (A3-P1).
     markitPhaseTimed(
       () => {
-        if (change) lineIndex.applyEdit(change.start, change.end, change.text);
+        if (!change) return;
+        // LineIndex first (the block rescan reads the new line offsets).
+        lineIndex.applyEdit(change.start, change.end, change.text);
+        const lineLo = lineIndex.lineOf(change.start).line;
+        const lineHi = lineIndex.lineOf(Math.max(change.start, change.end)).line;
+        const res = blockIndex.applyEdit(lineLo, lineHi, lineIndex.starts.length, (l) => {
+          const st = lineIndex.starts[l] ?? s.doc.length;
+          const en = l + 1 < lineIndex.starts.length ? lineIndex.starts[l + 1] : s.doc.length;
+          return s.doc.slice(st, en - (en > st && s.doc[en - 1] === "\n" ? 1 : 0));
+        });
+        // Invalidate + eagerly re-parse exactly the replaced blocks
+        // (inlineParsed = the inline invalidation radius).
+        let inline = 0;
+        for (const oldStart of res.replacedStartLines) blockRuns.delete(oldStart);
+        for (let k = res.lo; k <= res.hi; k++) {
+          const b = blockIndex.blocks[k];
+          if (b.kind !== "fenced" && b.kind !== "blank") {
+            const st = starts()[b.startLine];
+            const en = lineEnd(s.doc, lineIndex.starts, starts()[b.endLine]);
+            blockRuns.set(b.startLine, parseInline(s.doc.slice(st, en)));
+            inline += 1;
+          }
+        }
+        perfRecordBlockIndex(res.stats.linesScanned, res.stats.blocksReparsed, inline);
       },
       (ms) => perfRecordGuestPhases(0, ms, 0),
     );
-    // The Solid synchronous re-render runs inside these signal writes —
-    // this phase is the guest-side measure of reactive reconstruction
-    // (A4-R1, Date.now() ms, coarse).
     markitPhaseTimed(
       () => {
         setDoc(s.doc);
@@ -175,8 +272,6 @@ export default function Editor(): ReturnType<typeof View> {
   };
 
   const handleKey = (k: string, shift = false) => {
-    // Shift + navigation extends the selection: the caret moves, the
-    // anchor holds.
     if (shift) {
       const extend = (pos: number) => setCaret(Math.max(0, Math.min(pos, doc().length)));
       switch (k) {
@@ -193,10 +288,9 @@ export default function Editor(): ReturnType<typeof View> {
           extend(lineEnd(doc(), starts(), caret()));
           return;
         case "Up":
-        case "Down": {
+        case "Down":
           extend(moveVertical(doc(), starts(), caret(), k === "Up" ? -1 : 1, caretPx(), textWidth));
           return;
-        }
       }
     }
     if (k === "Escape") {
@@ -273,11 +367,13 @@ export default function Editor(): ReturnType<typeof View> {
         setScrollE(Math.max(0, Math.min(maxScroll(), scrollE())));
         break;
       case "load":
-        // A3-P1: rebuild the index BEFORE the doc signal flips — the memo
-        // re-evaluates synchronously on setDoc and must see the matching
-        // index, or the last visible line's slice extends to the document
-        // end (an O(doc) text run in the retained tree, shaped every draw).
         lineIndex = new LineIndex(ev.text ?? "");
+        blockIndex = new BlockIndex((l) => {
+          const st = lineIndex.starts[l] ?? ev.text!.length;
+          const en = l + 1 < lineIndex.starts.length ? lineIndex.starts[l + 1] : ev.text!.length;
+          return ev.text!.slice(st, en - (en > st && ev.text![en - 1] === "\n" ? 1 : 0));
+        }, lineIndex.starts.length);
+        blockRuns.clear();
         setDoc(ev.text ?? "");
         setCaret(0);
         setAnchor(0);
@@ -306,12 +402,10 @@ export default function Editor(): ReturnType<typeof View> {
         setScrollE(Math.max(0, Math.min(maxScroll(), scrollE() + (ev.dy ?? 0))));
         break;
       case "ime":
-        // IME composition is DEFERRED on Phase A1 (protocol reserved).
         break;
     }
   };
 
-  // ---- pointer gestures over the content (svc mouse stream) --------------
   let press: { x: number; y: number; dragged: boolean } | null = null;
   let prevDown = false;
 
@@ -324,15 +418,13 @@ export default function Editor(): ReturnType<typeof View> {
     press = { x, y, dragged: false };
     const pos = editPosAt(x, y);
     setCaret(pos);
-    // Shift-click keeps the anchor: the span to the clicked point
-    // becomes the selection.
     if (!shift) setAnchor(pos);
   };
   const pointerMove = (x: number, y: number) => {
     if (!press) return;
     if (!press.dragged && Math.abs(x - press.x) + Math.abs(y - press.y) < DRAG_SLOP) return;
     press.dragged = true;
-    setCaret(editPosAt(x, y)); // anchor stays: the selection
+    setCaret(editPosAt(x, y));
   };
   const pointerUp = () => {
     press = null;
@@ -350,7 +442,6 @@ export default function Editor(): ReturnType<typeof View> {
     }
     if (anyEdit) perfEditCommit();
     if (perfTakeRequest()) {
-      // Phase A2: one counter dump per request (host prints it).
       const c = perfCounters();
       svc.send({
         t: "perf",
@@ -370,6 +461,10 @@ export default function Editor(): ReturnType<typeof View> {
         modelMs: c.modelMs,
         indexMs: c.indexMs,
         solidMs: c.solidMs,
+        blocksScanned: c.blocksScanned,
+        blocksReparsed: c.blocksReparsed,
+        inlineParsed: c.inlineParsed,
+        runsRendered: c.runsRendered,
         visibleVisits: c.visibleVisits,
         visibleLines: c.visibleLines,
         measures: c.measures,
@@ -382,7 +477,6 @@ export default function Editor(): ReturnType<typeof View> {
       });
     }
     if (events.length > 0) {
-      // State echo for the host's smoke driver (ignored otherwise).
       svc.send({
         t: "state",
         caret: caret(),
@@ -392,8 +486,6 @@ export default function Editor(): ReturnType<typeof View> {
         h: vp().h,
         docHead: doc().slice(0, 64),
       });
-      // Caret rect (logical px) — host docks IME candidates here
-      // (deferred Phase A1, but the wire contract is live).
       svc.send({
         t: "caret",
         x: Math.round(caretPx()),
@@ -411,19 +503,15 @@ export default function Editor(): ReturnType<typeof View> {
       >
         <For each={visibleLines()}>
           {(item) => {
-            // A4-R1: the item carries only the stable line number; every
-            // doc-dependent read lives in item-scoped memos, so the item
-            // component itself never re-runs on a document change (its
-            // children getter used to read doc() directly, which
-            // re-mounted all 26 line components per edit). The memos
-            // re-evaluate (26× per edit) but the components and their
-            // native nodes are created once.
+            // Same stable-item discipline as app.tsx (A4-R1): the item
+            // carries only the line number; doc-dependent reads live in
+            // item-scoped memos.
             const line = item.line;
             const sel = createMemo(() => lineSelRect(line));
-            const text = createMemo(() => {
-              const start = starts()[line];
-              const end = lineEnd(doc(), starts(), start);
-              return doc().slice(start, end);
+            const runs = createMemo(() => {
+              const out = lineRuns(line);
+              perfRecordRunsRendered(out.length);
+              return out;
             });
             return (
               <View class="absolute" style={{ insetL: 0, insetT: line * LINE_H, height: LINE_H }}>
@@ -439,18 +527,22 @@ export default function Editor(): ReturnType<typeof View> {
                     }}
                   />
                 </Show>
-                <Text
-                  class="absolute text-lg"
-                  style={{
-                    insetL: 0,
-                    insetT: 0,
-                    height: LINE_H,
-                    lineHeight: LINE_H,
-                    textColor: INK.body,
-                  }}
-                >
-                  {text()}
-                </Text>
+                <For each={runs()}>
+                  {(run) => (
+                    <Text
+                      class="absolute text-lg"
+                      style={{
+                        insetL: run.x,
+                        insetT: 0,
+                        height: LINE_H,
+                        lineHeight: LINE_H,
+                        textColor: run.color,
+                      }}
+                    >
+                      {doc().slice(run.start, run.end)}
+                    </Text>
+                  )}
+                </For>
               </View>
             );
           }}
@@ -472,13 +564,13 @@ export default function Editor(): ReturnType<typeof View> {
   );
 }
 
-// Local helpers kept out of the component body for clarity.
-
-/** A3-P1: the incremental line index. Built once at load (one full scan);
- *  edits update it locally via applyState — full scans never run on the
- *  edit hot path. */
 let lineIndex: LineIndex = new LineIndex(SAMPLE_DOC);
+let blockIndex: BlockIndex = new BlockIndex((l) => {
+  const st = lineIndex.starts[l] ?? SAMPLE_DOC.length;
+  const en = l + 1 < lineIndex.starts.length ? lineIndex.starts[l + 1] : SAMPLE_DOC.length;
+  return SAMPLE_DOC.slice(st, en - (en > st && SAMPLE_DOC[en - 1] === "\n" ? 1 : 0));
+}, lineIndex.starts.length);
 
-function caretRowOf(starts: number[], caret: number): number {
-  return lineOf(starts, caret).line;
+function caretRowOf(startsArr: number[], caretPos: number): number {
+  return caretRow(startsArr, caretPos);
 }

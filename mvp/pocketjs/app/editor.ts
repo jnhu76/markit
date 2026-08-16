@@ -18,7 +18,7 @@
 // Phase A2/A3 instrumentation (Markit-owned): work counters around the
 // line-index and concat paths. Removing these lines restores the original
 // behavior (at the cost of the A2-measured full-document scan per edit).
-import { perfNow, perfRecordLineIndex, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
+import { markitNow, perfRecordLineIndex, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
 
 export type Measure = (text: string) => number;
 
@@ -49,12 +49,12 @@ export interface EditResult {
  *  Full-document scan — the A2 root cause when called per edit. A3 keeps it
  *  for load-time index construction and test oracles only. */
 export function lineStarts(doc: string): number[] {
-  const t0 = perfNow();
+  const t0 = markitNow();
   const starts = [0];
   for (let i = 0; i < doc.length; i++) {
     if (doc[i] === "\n") starts.push(i + 1);
   }
-  perfRecordLineStarts(doc.length, perfNow() - t0);
+  perfRecordLineStarts(doc.length, markitNow() - t0);
   return starts;
 }
 
@@ -156,9 +156,9 @@ export function lineCount(starts: number[]): number {
 /** Replace the current selection (or insert at the caret) with `text`. */
 export function typeText(s: EditState, text: string): EditResult {
   const [lo, hi] = selBounds(s);
-  const t0 = perfNow();
+  const t0 = markitNow();
   const doc = s.doc.slice(0, lo) + text + s.doc.slice(hi);
-  perfRecordTypeCopy(s.doc.length + text.length, perfNow() - t0);
+  perfRecordTypeCopy(s.doc.length + text.length, markitNow() - t0);
   return {
     state: {
       doc,
@@ -229,7 +229,13 @@ export function caretFromX(
   x: number,
   measure: Measure,
 ): number {
-  const { start } = lineOf(starts, Math.min(Math.max(0, lineIndex * doc.length), doc.length));
+  // A4-R2 correctness fix: the line index maps DIRECTLY into `starts` —
+  // the previous `lineIndex * doc.length` clamp sent every click on a
+  // line >= 1 to the document end (uncovered by the R2 position cases;
+  // the caret landed at the last line's start instead of the clicked
+  // line, which also corrupted the R1 q1/mid/q3 position cells).
+  const line = Math.max(0, Math.min(lineIndex, starts.length - 1));
+  const start = starts[line];
   const end = lineEnd(doc, starts, start);
   const text = doc.slice(start, end);
   let acc = 0;

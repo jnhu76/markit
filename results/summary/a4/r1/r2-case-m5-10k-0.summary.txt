@@ -1,0 +1,16 @@
+edit_ticks=1 total_ticks=421
+dirty p50=1 p95=1 max=1 (d)
+words p50=1708 p95=1708 max=1708 (w)
+r_us p50=1615 p95=1615 max=1615 (us)
+dl_us p50=33 p95=33 max=33 (us)
+ct_us p50=58 p95=58 max=58 (us)
+gf_us p50=5204 p95=5204 max=5204 (us)
+last-edit solidMs=4
+last-edit indexMs=0
+last-edit modelMs=0
+last-edit adjusts=297
+last-edit runsRendered=23
+last-edit inlineParsed=12
+last-edit blocksReparsed=24
+last-edit blocksScanned=287
+guest-perf {"t":"perf","frames":419,"edits":2,"docChars":10383,"docLines":317,"lineStartsScans":2,"lineStartsChars":10720,"lineStartsMs":2,"lineIndexAdjusts":297,"newlinesInserted":0,"newlinesDeleted":0,"typeCopies":1,"typeCopyChars":10383,"typeMs":0,"modelMs":0,"indexMs":0,"solidMs":4,"blocksScanned":287,"blocksReparsed":24,"inlineParsed":12,"runsRendered":75,"visibleVisits":4,"visibleLines":74,"measures":8,"measureChars":19,"svcEvents":7,"svcSends":8,"ops":0,"opCounts":"{}","editsRing":"[{\"scanChars\":10382,\"scanMs\":2,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":37,\"measures\":3,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":25},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":10383,\"copyMs\":0,\"visibleLines\":0,\"measures\":2,\"ops\":0,\"adjusts\":297,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":4,\"blocksScanned\":287,\"blocksReparsed\":24,\"inlineParsed\":12,\"runsRendered\":23}]"}

@@ -78,6 +78,9 @@ struct MarkitGame {
     /// round-trip (a flag, because WSL-launched Windows processes do not
     /// inherit WSL env vars).
     perf: bool,
+    /// --dump-words: print the DrawList words on every dirty tick
+    /// (A4-R1 diagnostic — DrawList equivalence checks).
+    dump_words: bool,
     /// Duration of the last wgpu render pass (render(), us).
     render_us: u64,
     /// Guest perf reply received this tick (printed by the caller).
@@ -390,6 +393,10 @@ impl FlatWidget for MarkitGame {
         });
         let dl_us = dl_t0.elapsed().as_micros() as u64;
         if let Some(words) = words {
+            if self.dump_words {
+                let joined: Vec<String> = words.iter().map(|w| w.to_string()).collect();
+                println!("[words] tick={} count={} {}", self.ticks, words.len(), joined.join(","));
+            }
             log::debug!("markit: DrawList changed at tick {}", self.ticks);
             self.words = words;
             self.hash = hash;
@@ -498,6 +505,9 @@ struct Args {
     auto_quit: Option<f32>,
     smoke: bool,
     perf: bool,
+    /// A4-R1: print the DrawList words as a JSON array on every dirty tick
+    /// (diagnostic — DrawList equivalence checks).
+    dump_words: bool,
 }
 
 fn parse_args() -> Result<Args> {
@@ -514,6 +524,7 @@ fn parse_args() -> Result<Args> {
         auto_quit: None,
         smoke: false,
         perf: std::env::var("PJS_PERF").is_ok(),
+        dump_words: false,
     };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
@@ -539,6 +550,7 @@ fn parse_args() -> Result<Args> {
             "--frames" => args.frames = val("--frames")?.parse()?,
             "--smoke" => args.smoke = true,
             "--perf" => args.perf = true,
+            "--dump-words" => args.dump_words = true,
             "--type" => {
                 let (frame, s) = at(&val("--type")?, "--type")?;
                 args.script.push((frame, ScriptEvent::Type(s)));
@@ -700,6 +712,7 @@ fn main() -> Result<()> {
         smoke: args.smoke,
         echo_state: args.screenshot.is_some(),
         perf: args.perf || std::env::var("PJS_PERF").is_ok(),
+        dump_words: args.dump_words,
         render_us: 0,
         perf_reply: None,
         process_t0: Instant::now(),

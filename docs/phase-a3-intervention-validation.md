@@ -7,6 +7,46 @@ by the production implementations (PJS 1M edit 224.8→9.9 ms vs CF=1
 startup, memory and idle baselines captured on the A1 Windows machine;
 one integration bug found and fixed during A3-M (see §3).
 
+> ## ⚠️ A4 Erratum (2026-08-17) — click-position provenance
+>
+> Read this before quoting any A3 click-derived cell. A4's R2 position
+> cases uncovered a pre-existing `caretFromX` bug (`mvp/pocketjs/app/
+> editor.ts`, present since the A1 MVP): the click line was computed as
+> `Math.min(Math.max(0, lineIndex * doc.length), doc.length)`, so every
+> click on a line ≥ 1 placed the caret at the **end of the document**
+> and ignored the x-coordinate. Fixed in A4 (direct `starts` lookup,
+> commit `1aefbfd`) and re-measured.
+>
+> | A3 data | status | reason |
+> |---------|--------|--------|
+> | `pjs-pos-begin` (1M) | ✅ valid | click at line 0 maps correctly |
+> | `pjs-pos-end` (1M) | ✅ valid by coincidence | caret at document end is the intended position |
+> | `pjs-pos-q1/mid/q3` (1M) | ⛔ **INVALIDATED** | caret landed at document end; these cells measured end-position edits |
+> | `pjs-vp-inside/near/far` (1M) | ⛔ **INVALIDATED** | all three clicks (lines 10/30/~9826) also landed at document end |
+> | `pjs-scale-*` (all corpora) | ✅ valid | typing-only workload, no clicks |
+> | GPUI cells (pos/vp/smoke/scale) | ✅ valid | Rust-side click path, unaffected |
+>
+> Affected summary files are kept in place but marked superseded in
+> `results/summary/a3/INVALIDATED-caretFromX.md`. The A2 PJS pos/vp cells
+> carry the same latent corruption (`results/summary/a2/
+> INVALIDATED-caretFromX.md`); A2's qualitative conclusion — the per-edit
+> scan is O(N) at every position — is unaffected because every cell
+> measured the same O(N) scan cost.
+>
+> **A3 conclusions that still hold:** both counterfactual chains (PJS
+> `lineStarts` full-scan removal 224.8→9.9 ms; GPUI viewport bounding
+> ~52.4→1.2 ms) rest on typing workloads (`pjs-scale`, `gpui-smoke`),
+> which contain no clicks. The begin/end position gap (~2.4 ms @1M — the
+> suffix-shift term, O(lines after edit)) is anchored by the two valid
+> cells and stands.
+>
+> **A3 numbers replaced by A4:** the position table's intermediate cells
+> (8.2/8.2/7.3 ms) and the viewport table (8.9/9.3/8.8 ms) were all
+> end-position edits — treat them as end-position data, not position
+> gradients. A4 re-measured the full 1M gradient with the fix (after the
+> stable-item fix): begin 4.18 / q1 3.66 / mid 2.79 / q3 2.41 / end
+> 1.91 ms (`docs/phase-a4-final-research-closeout.md` §2.4).
+
 ## 0. The answer in one paragraph
 
 Both A2-confirmed Markit-owned root causes were removed with minimal,
@@ -154,8 +194,16 @@ band. The per-edit scan — the A2 scaling driver — is gone at every size.)
 | begin | 218.3 ms | 9.8 ms |
 | q1 | 189.4 ms | 8.2 ms |
 | mid | 182.0 ms | 8.2 ms |
-| q3 | 198.4 ms | 7.3 ms |
-| end | 192.7 ms | 7.4 ms |
+| q3 | 198.4 ms | 7.3 ms ⛔ |
+| end | 192.7 ms | 7.4 ms ✅¹ |
+
+> ⛔ q1/mid/q3 A3 cells are **INVALIDATED** by the `caretFromX` bug (A4
+> erratum above): the click landed the caret at the document end, so they
+> measured end-position edits. ✅¹ end is valid by coincidence (caret at
+> document end is its intended position). The begin/end anchor cells
+> support the suffix-shift claim below; the intermediate "gradient" does
+> not exist in this data. The full gradient was re-measured in A4: begin
+> 4.18 / q1 3.66 / mid 2.79 / q3 2.41 / end 1.91 ms @1M (post-fix).
 
 A2 was position-independent because the scan is O(N) everywhere. A3 shows
 the expected suffix-shift signature: begin edits shift all 19 653 entries
@@ -167,9 +215,14 @@ ends stay inside the CF-predicted order of magnitude.
 
 | viewport | A2 | A3 |
 |----------|-----|-----|
-| inside | 183.2 ms | 8.9 ms |
-| near | 182.3 ms | 9.3 ms |
-| far | 185.2 ms | 8.8 ms |
+| inside | 183.2 ms | 8.9 ms ⛔ |
+| near | 182.3 ms | 9.3 ms ⛔ |
+| far | 185.2 ms | 8.8 ms ⛔ |
+
+> ⛔ All three A3 viewport cells are **INVALIDATED** by the same bug (A4
+> erratum above): every click landed the caret at the document end, so
+> this table is three repeats of "edit at end with different click
+> coordinates", not a viewport comparison.
 ### Tail latency (edit→layout trace span, us)
 
 | corpus | A2 p50/p99 | A3 p50/p95/p99 |

@@ -1,0 +1,16 @@
+edit_ticks=1 total_ticks=421
+dirty p50=1 p95=1 max=1 (d)
+words p50=1708 p95=1708 max=1708 (w)
+r_us p50=1564 p95=1564 max=1564 (us)
+dl_us p50=74 p95=74 max=74 (us)
+ct_us p50=85 p95=85 max=85 (us)
+gf_us p50=68918 p95=68918 max=68918 (us)
+last-edit solidMs=5
+last-edit indexMs=63
+last-edit modelMs=0
+last-edit adjusts=31377
+last-edit runsRendered=23
+last-edit inlineParsed=1182
+last-edit blocksReparsed=2364
+last-edit blocksScanned=30197
+guest-perf {"t":"perf","frames":419,"edits":2,"docChars":1049378,"docLines":31397,"lineStartsScans":2,"lineStartsChars":1049715,"lineStartsMs":143,"lineIndexAdjusts":31377,"newlinesInserted":0,"newlinesDeleted":0,"typeCopies":1,"typeCopyChars":1049378,"typeMs":0,"modelMs":0,"indexMs":63,"solidMs":5,"blocksScanned":30197,"blocksReparsed":2364,"inlineParsed":1182,"runsRendered":75,"visibleVisits":4,"visibleLines":74,"measures":8,"measureChars":19,"svcEvents":7,"svcSends":8,"ops":0,"opCounts":"{}","editsRing":"[{\"scanChars\":1049377,\"scanMs\":143,\"copyChars\":0,\"copyMs\":0,\"visibleLines\":37,\"measures\":3,\"ops\":0,\"adjusts\":0,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":0,\"solidMs\":0,\"blocksScanned\":0,\"blocksReparsed\":0,\"inlineParsed\":0,\"runsRendered\":25},{\"scanChars\":0,\"scanMs\":0,\"copyChars\":1049378,\"copyMs\":0,\"visibleLines\":0,\"measures\":2,\"ops\":0,\"adjusts\":31377,\"newlinesIn\":0,\"newlinesDel\":0,\"modelMs\":0,\"indexMs\":63,\"solidMs\":5,\"blocksScanned\":30197,\"blocksReparsed\":2364,\"inlineParsed\":1182,\"runsRendered\":23}]"}
