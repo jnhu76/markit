@@ -76,31 +76,41 @@ fn print_state(view: &Entity<ThinEditor>, cx: &mut App, label: &str) {
 /// input-handler + keystroke-dispatch paths the platform uses.
 fn smoke_step(view: Entity<ThinEditor>, step: usize) -> impl FnOnce(&mut Window, &mut App) {
     move |window, cx| {
-        let done = match step {
+        // Typing workload: steps 1..=100 type one 'a' per frame through
+        // the real keystroke dispatch (shared by both MVPs' first-round
+        // benchmark — see bench/run-bench.cmd).
+        let done = if step >= 1 && step <= 100 {
+            window.dispatch_keystroke(Keystroke::parse("a").unwrap(), cx);
+            if step == 100 {
+                print_state(&view, cx, "after typing x100");
+            }
+            false
+        } else {
+            match step {
             0 => {
                 window.focus(&view.read(cx).focus_handle);
                 print_state(&view, cx, "start");
                 false
             }
-            1 => {
+            101 => {
                 // Plain character input (what WM_CHAR / key_char dispatch to).
                 view.update(cx, |e, cx| e.replace_text_in_range(None, "Hi你好!", window, cx));
                 false
             }
-            2 => {
+            102 => {
                 // IME composition start: mark text without committing.
                 view.update(cx, |e, cx| {
                     e.replace_and_mark_text_in_range(None, "世", Some(0..0), window, cx)
                 });
                 false
             }
-            3 => {
+            103 => {
                 // IME commit: replace the marked range.
                 view.update(cx, |e, cx| e.replace_text_in_range(None, "世界", window, cx));
                 print_state(&view, cx, "after ime-commit");
                 false
             }
-            4 => {
+            104 => {
                 let keymap = cx.key_bindings();
                 let keymap = keymap.borrow();
                 let matching: Vec<String> = keymap
@@ -117,27 +127,27 @@ fn smoke_step(view: Entity<ThinEditor>, step: usize) -> impl FnOnce(&mut Window,
                 print_state(&view, cx, "after keystroke end");
                 false
             }
-            5 => {
+            105 => {
                 window.dispatch_keystroke(Keystroke::parse("backspace").unwrap(), cx);
                 print_state(&view, cx, "after backspace");
                 false
             }
-            6 => {
+            106 => {
                 window.dispatch_keystroke(Keystroke::parse("backspace").unwrap(), cx);
                 print_state(&view, cx, "after backspace2");
                 false
             }
-            7 => {
+            107 => {
                 window.dispatch_keystroke(Keystroke::parse("enter").unwrap(), cx);
                 print_state(&view, cx, "after enter");
                 false
             }
-            8 => {
+            108 => {
                 window.dispatch_keystroke(Keystroke::parse("cmd-a").unwrap(), cx);
                 print_state(&view, cx, "after cmd-a");
                 false
             }
-            9 => {
+            109 => {
                 // Scroll by two lines, as the wheel handler would.
                 view.update(cx, |e, cx| {
                     e.scroll_y = px(f32::from(e.scroll_y) + 2.0 * f32::from(e.line_height));
@@ -145,17 +155,18 @@ fn smoke_step(view: Entity<ThinEditor>, step: usize) -> impl FnOnce(&mut Window,
                 });
                 false
             }
-            10 => {
+            110 => {
                 window.resize(size(px(1200.0), px(800.0)));
                 false
             }
-            11 => {
+            111 => {
                 print_state(&view, cx, "final");
                 instrument::dump("smoke", 1200);
                 cx.quit();
                 true
             }
             _ => true,
+            }
         };
         if !done {
             window.defer(cx, smoke_step(view, step + 1));
@@ -165,6 +176,15 @@ fn smoke_step(view: Entity<ThinEditor>, step: usize) -> impl FnOnce(&mut Window,
 
 fn main() {
     let smoke = std::env::args().any(|a| a == "--smoke");
+    // --file <path>: load a corpus document instead of the built-in seed
+    // (parity with mvp/pocketjs's --file; both MVPs then edit the same
+    // bytes).
+    let seed: String = std::env::args()
+        .collect::<Vec<_>>()
+        .windows(2)
+        .find(|w| w[0] == "--file")
+        .and_then(|w| std::fs::read_to_string(&w[1]).ok())
+        .unwrap_or_else(|| editor::ThinEditor::DEFAULT_SEED.to_string());
     // Instrumentation skeleton: all seven stages are observable on GPUI.
             instrument::init(8192, vec!["frame_submit"]);
 
@@ -206,7 +226,7 @@ fn main() {
                     show: true,
                     ..Default::default()
                 },
-                |_, cx| cx.new(|cx| ThinEditor::new(cx)),
+                |_, cx| cx.new(|cx| ThinEditor::with_seed(cx, &seed)),
             )
             .unwrap();
 

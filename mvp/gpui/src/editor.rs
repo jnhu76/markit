@@ -82,8 +82,12 @@ pub struct ThinEditor {
 
 impl ThinEditor {
     pub fn new(cx: &mut Context<Self>) -> Self {
-        // Seed corpus (plain-10k style): ASCII + regular Chinese.
-        let text = "Markit Phase A0 - GPUI feasibility spike\n\
+        Self::with_seed(cx, Self::DEFAULT_SEED)
+    }
+
+    /// Seed corpus (plain-10k style): ASCII + regular Chinese — the
+    /// byte-identical twin of mvp/pocketjs/app/sample.ts.
+    pub const DEFAULT_SEED: &'static str = "Markit Phase A0 - GPUI feasibility spike\n\
                     Fixed font, mouse & keyboard input, insert/delete, cursor,\n\
                     selection, scroll, resize, HiDPI baseline, Chinese text.\n\
                     \n\
@@ -93,11 +97,12 @@ impl ThinEditor {
                     \n\
                     The quick brown fox jumps over the lazy dog. 0123456789\n\
                     A short line.\n\
-                    Last line of the seed document."
-            .into();
+                    Last line of the seed document.";
+
+    pub fn with_seed(cx: &mut Context<Self>, text: &str) -> Self {
         let mut editor = Self {
             focus_handle: cx.focus_handle(),
-            text,
+            text: text.to_string(),
             line_starts: vec![0],
             selection: 0..0,
             selection_reversed: false,

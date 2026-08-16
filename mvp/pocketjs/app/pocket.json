@@ -1,0 +1,7 @@
+{
+  "name": "markit-editor",
+  "private": true,
+  "title": "Markit PocketJS Thin Editor",
+  "entry": "./main.tsx",
+  "density": 1
+}
