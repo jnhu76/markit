@@ -49,6 +49,10 @@ actions!(
 const LINE_HEIGHT: f32 = 28.0;
 /// Cursor width in px.
 const CURSOR_WIDTH: f32 = 2.0;
+/// Extra lines shaped beyond the strictly visible range (Phase A3-G1).
+/// Covers fractional scroll offsets and the paint formula's rounding; the
+/// shaped workset is `visible + overscan`, never document-proportional.
+const OVERSCAN_LINES: usize = 2;
 
 fn pxf(p: Pixels) -> f32 {
     f32::from(p)
@@ -757,12 +761,17 @@ impl Element for EditorElement {
         cx: &mut App,
     ) -> (LayoutId, Self::RequestLayoutState) {
         instrument::record(Stage::LayoutBegin);
-        let editor = self.editor.read(cx);
-        let content_h = px(pxf(editor.line_height) * editor.line_count() as f32);
-        let h = content_h.max(editor.last_viewport_h).max(px(1.0));
+        // Phase A3-G1: the element's layout extent is the VIEWPORT, not the
+        // content. The A2 root cause was sizing this element to
+        // `line_height × line_count`, which made prepaint's "visible" range
+        // `[scroll_line .. document_end]` and shaped the whole tail of the
+        // document every frame. The document's logical extent (total height,
+        // scroll range) lives in the ThinEditor model (`line_count`,
+        // `scroll_y` clamps in on_scroll_wheel / ensure_cursor_visible) and
+        // is unchanged; only the paint/layout workset is viewport-bounded.
         let mut style = Style::default();
         style.size.width = relative(1.).into();
-        style.size.height = h.into();
+        style.size.height = relative(1.).into();
         let id = window.request_layout(style, [], cx);
         instrument::record(Stage::LayoutEnd);
         (id, ())
@@ -786,12 +795,16 @@ impl Element for EditorElement {
         let lh = pxf(text_style.line_height.to_pixels(text_style.font_size, window.rem_size()));
         let scroll_y = pxf(editor.scroll_y);
 
-        // Visible line range (paint is clipped; skip off-screen lines to avoid
-        // shaping work outside the viewport).
+        // Visible line range (paint is clipped; skip off-screen lines to
+        // avoid shaping work outside the viewport). A3-G1: `bounds` is the
+        // viewport (request_layout sizes the element to it), so this range
+        // is viewport-bounded plus a small overscan — never
+        // [first .. document end].
         let line_count = editor.line_count();
         let first = (scroll_y / lh).floor().max(0.0) as usize;
         let visible = (pxf(bounds.size.height) / lh).ceil() as usize + 1;
-        let last = (first + visible).min(line_count);
+        let last = (first + visible + OVERSCAN_LINES).min(line_count);
+        let lines_visited = last - first;
 
         let mut lines = Vec::new();
         let t_shape = Instant::now();
@@ -888,7 +901,7 @@ impl Element for EditorElement {
         }
 
         let prepaint_us = a2::us_since(t_pre);
-        // Phase A2: remember render counters for the frame's JSONL line.
+        // Phase A2/A3: remember render counters for the frame's JSONL line.
         a2::set_pending(a2::RenderStats {
             prepaint_us,
             shape_us,
@@ -898,6 +911,9 @@ impl Element for EditorElement {
             visible: visible as u64,
             last: last as u64,
             lines_total: line_count as u64,
+            overscan: OVERSCAN_LINES as u64,
+            lines_visited: lines_visited as u64,
+            lines_painted: 0,
             quads,
             paint_us: 0,
             edit: a2::take_edit(),
@@ -934,6 +950,7 @@ impl Element for EditorElement {
         for quad in prepaint.selection_quads.drain(..) {
             window.paint_quad(quad);
         }
+        let lines_painted = prepaint.lines.len() as u64;
         for (idx, line) in prepaint.lines.drain(..) {
             let origin = point(
                 bounds.left(),
@@ -957,12 +974,16 @@ impl Element for EditorElement {
             editor.last_viewport_h = window.viewport_size().height;
         });
 
-        // Phase A2: complete and emit the frame's JSONL line.
+        // Phase A2/A3: complete and emit the frame's JSONL line.
         if let Some(mut stats) = a2::take_pending() {
             stats.paint_us = a2::us_since(t_paint);
+            stats.lines_painted = lines_painted;
             a2::emit_render(stats);
         }
 
+        // Phase A3-M: first usable frame = application-level frame-ready
+        // (seed document painted, editor wired for input). See instrument.rs.
+        instrument::first_usable_frame();
         instrument::record(Stage::RenderEnd);
     }
 }
