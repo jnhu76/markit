@@ -32,3 +32,4 @@ profiles/*
 # Raw benchmark output may be machine-specific or large.
 results/raw/*
 !results/raw/.gitkeep
+bench/__pycache__/
