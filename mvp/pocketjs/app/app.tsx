@@ -32,6 +32,7 @@ import { connectSvc, type HostEvent } from "./svc.ts";
 import { SAMPLE_DOC } from "./sample.ts";
 // Phase A2 instrumentation (Markit-owned): work counters + perfreq reply.
 import {
+  cfSkipScan,
   perfCounters,
   perfEditCommit,
   perfOpCalls,
@@ -88,7 +89,17 @@ export default function Editor(): ReturnType<typeof View> {
   const [anchor, setAnchor] = createSignal(0);
   const [scrollE, setScrollE] = createSignal(0);
 
-  const starts = createMemo(() => lineStarts(doc()));
+  const starts = createMemo(() => {
+    // DIAGNOSTIC (CF=1/3): return the load-time index without scanning —
+    // document lines go stale. Not a valid product configuration.
+    if (cfSkipScan()) {
+      void doc();
+      return startsCache;
+    }
+    const s = lineStarts(doc());
+    startsCache = s;
+    return s;
+  });
   const totalH = () => starts().length * LINE_H;
   const maxScroll = () => Math.max(0, totalH() - vp().h);
   const viewH = () => vp().h;
@@ -235,6 +246,9 @@ export default function Editor(): ReturnType<typeof View> {
         setDoc(ev.text ?? "");
         setCaret(0);
         setAnchor(0);
+        // DIAGNOSTIC (CF=1/3): the index is snapshotted at load; edits
+        // afterwards keep it stale (no per-edit scan).
+        startsCache = lineStarts(ev.text ?? "");
         break;
       case "ch":
         if (ev.s) mutate((s) => typeText(s, ev.s!));
@@ -402,6 +416,9 @@ export default function Editor(): ReturnType<typeof View> {
 }
 
 // Local helpers kept out of the component body for clarity.
+
+/** DIAGNOSTIC (CF=1/3): load-time line index cache (never updated by edits). */
+let startsCache: number[] = [0];
 
 function caretRowOf(starts: number[], caret: number): number {
   return lineOf(starts, caret).line;

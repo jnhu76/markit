@@ -168,6 +168,24 @@ def main():
         for i in range(runs):
             run(f"pjs-noop-{variant}", pjs_cmd(PJS_A2, corpus, extra, "7", perf=True), pjs_env(), corpus, i)
 
+    elif kind == "pjs-cf":
+        # Counterfactual: the dist bundle was rebuilt with perf.ts CF=<n>;
+        # runs the A1 typing workload and labels the run cf<n>.
+        cf, corpus = cmd[1], cmd[2]
+        if len(cmd) > 3:
+            runs = int(cmd[3])
+        for i in range(runs):
+            run(f"pjs-cf{cf}-{corpus}", pjs_cmd(PJS_A2, corpus, a1_typing(), perf=True), pjs_env(), corpus, i)
+
+    elif kind == "gpui-cf":
+        # Counterfactual: the release exe was rebuilt with the diagnostic
+        # truncation; the caller restores the clean exe afterwards.
+        corpus = cmd[1]
+        if len(cmd) > 2:
+            runs = int(cmd[2])
+        for i in range(runs):
+            run(f"gpui-cf-{corpus}", gpui_cmd(corpus, ["--smoke"], a2=True), {}, corpus, i)
+
     elif kind == "gpui-smoke":
         corpus = cmd[1]
         if len(cmd) > 2:

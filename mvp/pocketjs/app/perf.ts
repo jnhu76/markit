@@ -172,6 +172,29 @@ export function perfRecordSvcSend(): void {
 /** Host ui.* op calls (perfInit wraps the native ops). */
 let opCalls = 0;
 
+// ---- Phase A2 DIAGNOSTIC counterfactuals (compile-time; NEVER a product
+// configuration). One rebuild per variant; reverted before the phase ends.
+//   0 = production behavior
+//   1 = skip the lineStarts scan (line index goes stale)
+//   2 = skip the typeText concat (document does not change)
+//   3 = skip both
+export const CF: number = 0;
+
+export function cfSkipScan(): boolean {
+  return CF === 1 || CF === 3;
+}
+
+export function cfSkipConcat(): boolean {
+  return CF === 2 || CF === 3;
+}
+
+/**
+ * Wrap the native ui ops with per-call counters. Costs ~2 ms per edit turn
+ * at 10K (calibration), so it is OFF for the main battery and enabled only
+ * for the dedicated op-churn run (WRAP_OPS=1).
+ */
+export const WRAP_OPS: boolean = false;
+
 /**
  * Wrap the native `globalThis.ui` ops with counters. Must run before
  * `mount()` renders the tree. The framework resolves ops lazily from the
@@ -179,6 +202,7 @@ let opCalls = 0;
  * renderer call. Overhead: one JS call + increment per op.
  */
 export function perfInit(): void {
+  if (!WRAP_OPS) return;
   try {
     const ui = (globalThis as unknown as { ui?: Record<string, unknown> }).ui;
     if (!ui || typeof ui.createNode !== "function") return;

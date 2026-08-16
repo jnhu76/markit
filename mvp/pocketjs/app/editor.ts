@@ -15,7 +15,7 @@
 
 // Phase A2 instrumentation (Markit-owned): work counters around the two
 // O(doc)-per-edit paths. Removing these lines restores original behavior.
-import { perfNow, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
+import { cfSkipConcat, perfNow, perfRecordLineStarts, perfRecordTypeCopy } from "./perf.ts";
 
 export type Measure = (text: string) => number;
 
@@ -58,7 +58,8 @@ export function lineCount(starts: number[]): number {
 export function typeText(s: EditState, text: string): EditState {
   const [lo, hi] = selBounds(s);
   const t0 = perfNow();
-  const doc = s.doc.slice(0, lo) + text + s.doc.slice(hi);
+  // DIAGNOSTIC (CF=2/3): skip the concat — the document does not change.
+  const doc = cfSkipConcat() ? s.doc : s.doc.slice(0, lo) + text + s.doc.slice(hi);
   perfRecordTypeCopy(s.doc.length + text.length, perfNow() - t0);
   return {
     doc,

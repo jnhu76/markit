@@ -792,6 +792,10 @@ impl Element for EditorElement {
         let first = (scroll_y / lh).floor().max(0.0) as usize;
         let visible = (pxf(bounds.size.height) / lh).ceil() as usize + 1;
         let last = (first + visible).min(line_count);
+        // DIAGNOSTIC ONLY (Phase A2 counterfactual): truncate the shaped
+        // range to 26 lines. Breaks semantics (scrolled-out lines are not
+        // shaped); removed after the causal run. NOT A PRODUCT CONFIG.
+        let last = (first + 26).min(last);
 
         let mut lines = Vec::new();
         let t_shape = Instant::now();

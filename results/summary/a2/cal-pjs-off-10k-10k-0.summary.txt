@@ -13,10 +13,10 @@ idle ticks:
 
 === parse-trace.py cal-pjs-off-10k-10k-0.log ===
 === latency distribution (us) ===
-  input->edit    n=   58 p50=      0.1 p95=      0.4 p99=      0.6 max=      0.7
-  edit->layout   n=   58 p50=  13867.7 p95=  20049.4 p99=  20582.3 max=  20874.9
-  layout         n=  158 p50=     67.9 p95=  17868.3 p99=  20306.3 max=  20874.2
-  render         n=   22 p50=    368.9 p95=    468.7 p99=    550.6 max=    572.0
-  layout->submit n=   22 p50=    647.8 p95=  27430.2 p99=  31958.6 max=  33033.2
-  long frames (>16.7ms layout): 14
+  input->edit    n=   56 p50=      0.1 p95=      0.3 p99=      0.7 max=      0.7
+  edit->layout   n=   57 p50=  14184.5 p95=  19137.2 p99=  20192.5 max=  20787.9
+  layout         n=  157 p50=     65.4 p95=  17545.5 p99=  19512.6 max=  20787.4
+  render         n=   24 p50=    376.2 p95=    496.2 p99=    512.3 max=    514.1
+  layout->submit n=   24 p50=    656.0 p95=  33716.2 p99=  36372.8 max=  36885.5
+  long frames (>16.7ms layout): 10
 
