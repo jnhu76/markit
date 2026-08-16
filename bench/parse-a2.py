@@ -131,7 +131,7 @@ def main() -> None:
                   "paint_us", "lines_shaped", "glyphs", "quads"):
             stats(k, gpui_edit[k])
         print("static frames (no edit):")
-        for k in ("prepaut_us", "prepaint_us", "shape_us", "paint_us", "lines_shaped"):
+        for k in ("prepaint_us", "shape_us", "paint_us", "lines_shaped"):
             stats(k, gpui_static[k])
         print("all frames:")
         for k in ("lines_shaped", "glyphs", "visible", "first", "last",

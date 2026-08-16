@@ -204,35 +204,64 @@ fn parse_a2() -> Option<A2Spec> {
     let mut mode = None;
     let mut n = 50usize;
     let mut it = args.iter().skip(1);
+    let mut pending: Option<&str> = None; // --a2-mode value when not yet consumed
     while let Some(a) = it.next() {
-        let mut next_val = || it.next().cloned();
+        let mut next_val = || it.next().map(|s| s.as_str());
         match a.as_str() {
-            "--a2-mode" => match next_val()?.as_str() {
-                "pos" => {
-                    let pos = next_val()?;
-                    mode = Some(match pos.as_str() {
-                        "begin" => A2Mode::Pos(0.0),
-                        "q1" => A2Mode::Pos(0.25),
-                        "mid" => A2Mode::Pos(0.5),
-                        "q3" => A2Mode::Pos(0.75),
-                        "end" => A2Mode::Pos(1.0),
-                        _ => return None,
-                    });
-                }
-                "vp" => {
-                    mode = Some(match next_val()?.as_str() {
-                        "inside" => A2Mode::VpLine(10),
-                        "near" => A2Mode::VpLine(30),
-                        "far" => A2Mode::VpFar,
-                        _ => return None,
-                    });
-                }
-                "static" => mode = Some(A2Mode::Static),
-                "scale" => mode = Some(A2Mode::Scale),
-                _ => return None,
-            },
+            "--a2-mode" => {
+                let m = next_val()?;
+                mode = Some(match m {
+                    "pos" => {
+                        let mut pos = "begin";
+                        while let Some(v) = next_val() {
+                            match v {
+                                "--a2-pos" => {
+                                    pos = next_val()?;
+                                    break;
+                                }
+                                "--a2-n" => n = next_val()?.parse().ok()?,
+                                _ => {}
+                            }
+                        }
+                        match pos {
+                            "begin" => A2Mode::Pos(0.0),
+                            "q1" => A2Mode::Pos(0.25),
+                            "mid" => A2Mode::Pos(0.5),
+                            "q3" => A2Mode::Pos(0.75),
+                            "end" => A2Mode::Pos(1.0),
+                            _ => return None,
+                        }
+                    }
+                    "vp" => {
+                        let mut vp = "inside";
+                        while let Some(v) = next_val() {
+                            match v {
+                                "--a2-vp" => {
+                                    vp = next_val()?;
+                                    break;
+                                }
+                                "--a2-n" => n = next_val()?.parse().ok()?,
+                                _ => {}
+                            }
+                        }
+                        match vp {
+                            "inside" => A2Mode::VpLine(10),
+                            "near" => A2Mode::VpLine(30),
+                            "far" => A2Mode::VpFar,
+                            _ => return None,
+                        }
+                    }
+                    "static" => A2Mode::Static,
+                    "scale" => A2Mode::Scale,
+                    _ => return None,
+                });
+            }
             "--a2-n" => n = next_val()?.parse().ok()?,
-            _ => {}
+            _ => {
+                if let Some(m) = pending.take() {
+                    let _ = m;
+                }
+            }
         }
     }
     mode.map(|mode| A2Spec { mode, n })

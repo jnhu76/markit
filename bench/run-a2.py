@@ -69,12 +69,15 @@ def run(name, argv, env, corpus, run_i):
         p = subprocess.run(argv, env=env, stdout=f, stderr=subprocess.STDOUT)
     if p.returncode != 0:
         print(f"  !! {log.name}: exit={p.returncode}")
-    # Summaries: parse-a2 for the JSONL streams, parse-trace for the A1
-    # ring dump (only written when the log actually has trace events).
+    # Summaries: parse-a2 for the JSONL streams (family by log name),
+    # parse-trace for the A1 ring dump (only written when the log actually
+    # has trace events).
+    family_flag = ["--gpui"] if name.startswith(("gpui-", "cal-gpui-")) else []
     for parser in (PARSER_A2, PARSER_A1):
         with open(log) as f:
             s = subprocess.run(
-                [sys.executable, str(parser), "--quiet"], stdin=f, capture_output=True, text=True
+                [sys.executable, str(parser), "--quiet", *family_flag],
+                stdin=f, capture_output=True, text=True,
             )
         if "no trace events" in s.stdout:
             continue
@@ -106,7 +109,9 @@ def pjs_cmd(exe, corpus, extra, auto_quit="9", perf=False):
 
 
 def gpui_cmd(corpus, extra, a2=False, workspace=A2):
-    argv = [str(workspace / "mvp" / "gpui" / "target" / "release" / "mvp-gpui.exe")]
+    # A1 kept the pre-unification layout (gpui/ at the workspace root).
+    exe = workspace / ("gpui" if workspace == A1 else "mvp/gpui") / "target" / "release" / "mvp-gpui.exe"
+    argv = [str(exe)]
     if a2:
         argv += ["--a2"]
     return argv + extra + ["--file", win(workspace / f"{corpus}.txt")]
