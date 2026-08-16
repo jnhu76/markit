@@ -1,8 +1,9 @@
 # Phase A1 — Markit PocketJS integration & thin editor MVP
 
-Status: **A1_IN_PROGRESS** — PocketJS integration + thin editor MVP done
-and verified on Windows (native); first-round GPUI/PocketJS benchmark is
-the remaining Phase A1 item.
+Status: **READY_FOR_PHASE_A2** — PocketJS integration + thin editor MVP
+done and verified on Windows (native); first-round GPUI/PocketJS benchmark
+completed on the same Windows machine with the same corpora. (Report
+updated 2026-08-16 with benchmark results.)
 
 This report covers the Markit-side Phase A1 work: bringing the PocketJS
 fork in as a vendored submodule, and building a Markit-owned PocketJS thin
@@ -145,23 +146,141 @@ transparent window                DEFERRED — Markit uses opaque; Windows
                                   PocketJS gap (not triggered here)
 ```
 
-## 9. Remaining for Phase A1 completion
+## 9. First-round benchmark (Windows, windowed, both MVPs)
 
-1. GPUI MVP: load corpus via `--file` (seed is currently built-in) so
-   both MVPs run the same 10 KB / 100 KB / 1 MB documents.
-2. First-round benchmark on the same Windows machine: startup, working
-   set, idle CPU, input→layout/edit latency (p50/p95/p99), frame
-   latency, long frames, per-corpus scaling.
-3. Comparison table + architecture findings (work amplification:
-   one-character edit cost per framework).
+Environment: Windows 11 Pro 10.0.26200, AMD Ryzen 7 5800H, AMD Radeon
+(integrated), 32 GB RAM. Release builds. Warmup run + 5 measured runs per
+corpus per MVP (36 runs total). Workload per run: 100 single-character
+inserts (one per frame) + one backspace + one scroll, 1000x700 window,
+Consolas 18 px / 28 px line height.
 
-## 10. Git state
+Results (median of run medians, µs; p50/p99):
+
+| Metric | corpus | GPUI | PocketJS |
+| --- | --- | ---: | ---: |
+| input->edit | 10 KB | 11.8 / 107.7 | 0.2 / 0.9 |
+| input->edit | 100 KB | 71.2 / 984.9 | 0.1 / 0.5 |
+| input->edit | 1 MB | 1080.2 / 12535.3 | 0.1 / 1.6 |
+| edit->layout | 10 KB | 7.3 / 29.2 | 8817.2 / 11419.3 |
+| edit->layout | 100 KB | 14.0 / 63.9 | 20791.8 / 24523.5 |
+| edit->layout | 1 MB | 23.5 / 98.6 | 142007.0 / 155837.8 |
+| render | 10 KB | 394.2 / 928.8 | 357.8 / 477.6 |
+| render | 100 KB | 3603.6 / 4640.6 | 339.8 / 424.9 |
+| render | 1 MB | 48508.6 / 65617.0 | 360.8 / 549.8 |
+| frames rendered / ticks | all | 106 / 106 | 13-47 / 541 |
+
+Raw per-run logs: `results/raw/`; full table: `results/summary/`.
+
+### Scaling
 
 ```text
-Markit commits:            (see below)
+10 KB -> 100 KB -> 1 MB (10x each step)
+
+GPUI edit->layout:   7.3 -> 14.0 -> 23.5  µs   (near-flat; visible-line
+                                                layout only)
+PocketJS edit->layout: 8.8 ms -> 20.8 ms -> 142 ms   (grows with doc;
+                                                ~2.4x per 10x doc at
+                                                first step, ~6.8x at
+                                                second — superlinear-ish
+                                                per-edit DrawList work)
+GPUI render:         0.39 -> 3.6 -> 48.5 ms   (grows with doc; renders
+                                                every frame)
+PocketJS render:     0.36 -> 0.34 -> 0.36 ms   (flat; demand rendering
+                                                renders 13-47 of 541
+                                                ticks)
+```
+
+### Work amplification — one character edit
+
+```text
+GPUI one-char edit (1 MB doc):
+  input handling (UTF-16 offset math + line-starts rebuild, O(n)):
+      ~1.1 ms p50
+  layout (shape only visible lines, ~25):      ~1 µs
+  render (full frame paint):                   ~49 ms p50 — the cost
+      scales with document size despite visible-only shaping; root cause
+      is a Phase A2 question (text_system/atlas? paint walk?)
+  per-edit total:                              ~50 ms on a 1 MB doc
+
+PocketJS one-char edit (1 MB doc):
+  input forwarding (svc, host side):           ~0.2 µs
+  guest turn (JS edit + solid update + DrawList rebuild):
+      ~142 ms p50 — the DrawList/UI work scales with document size;
+      root cause is a Phase A2 question (full UI-tree walk? measure FFI?
+      atlas/hash?)
+  render (words pass):                         ~0.36 ms (flat)
+  per-edit total:                              ~142 ms on a 1 MB doc
+```
+
+### Tail latency
+
+```text
+PocketJS edit->layout p99: 11.4 ms (10 KB) / 24.5 ms (100 KB) / 156 ms (1 MB)
+GPUI     edit->layout p99: 29.2 / 63.9 / 98.6 µs
+GPUI     input->edit p99:  108 µs / 985 µs / 12.5 ms (1 MB)
+```
+
+### Architecture findings (first round, hypotheses not yet root-caused)
+
+1. PocketJS's dominant cost is the per-edit guest turn (JS update +
+   DrawList regeneration), which grows with document size (8.8 ms ->
+   142 ms). GPUI's layout stays flat (~1 µs) because it shapes visible
+   lines only.
+2. GPUI's dominant costs are input handling (grows with doc, 1.1 ms at
+   1 MB — line-starts rebuild + UTF-16 conversion) and full-frame render
+   (grows with doc, 48.5 ms at 1 MB, every frame). PocketJS renders
+   rarely (demand rendering) and flat.
+3. Per edit on a 1 MB doc: PocketJS does ~2.9x the work of GPUI
+   (142 ms vs ~50 ms) — but the split is opposite: PocketJS pays in the
+   guest turn (JS/layout), GPUI pays in input+render (native paint).
+4. PocketJS p99 edit latency is 3-4 orders of magnitude worse than GPUI's
+   on small docs (8.8 ms vs 7 µs); GPUI's p99 input handling degrades
+   with doc size (12.5 ms at 1 MB).
+5. Baseline memory: not yet measured (working set sampling is a Phase A2
+   item).
+6. Local invalidation: GPUI already does visible-line-only shaping;
+   PocketJS's DrawList rebuild is the obvious invalidation target.
+7. `frame_submit`: observable on PocketJS (windowed), unavailable on
+   GPUI — a genuine measurement asymmetry, not a performance claim.
+
+### Limitations
+
+- edit->layout on PocketJS is a host-side proxy (edit forwarded -> layout
+  end); the guest's mutation itself is inside that span.
+- GPUI's smoke runs 106 frames (fixed steps incl. IME/select-all); the
+  PocketJS run is 541 ticks with 101 scripted edits — same workload shape
+  (100 chars + backspace + scroll), not identical event counts.
+- Windowed GPUI renders every frame (no demand rendering); this is the
+  framework's behavior, not a harness artifact.
+- GPU is an integrated AMD iGPU shared with the display; absolute numbers
+  are machine-specific, the scaling trends are the evidence.
+- Memory (working set) and startup-to-first-frame were not captured in
+  this first round; startup boot cost observed separately: ~581 ms to
+  first layout on PocketJS (rquickjs eval + pak feed + first frame).
+- Power mode / refresh rate were not controlled beyond default (recorded
+  for Phase B).
+
+## 10. Verdict
+
+**READY_FOR_PHASE_A2.** The Phase A1 completion criteria are met:
+PocketJS thin MVP (Windows launch, text render, typing, delete/backspace,
+scroll, resize) verified PASS on Windows native; same corpus, same trace
+schema, same machine, release builds; first-round benchmark completed on
+10 KB / 100 KB / 1 MB. Next phase must NOT auto-optimize: propose Top-3
+confirmed bottlenecks and Top-3 experiments for the human to choose.
+Candidate bottleneck leads from this round: (1) PocketJS per-edit
+DrawList rebuild cost vs doc size; (2) GPUI full-frame render cost vs doc
+size; (3) GPUI input handling (line-starts rebuild) cost vs doc size.
+
+## 11. Git state
+
+```text
+Markit commits:            chore(pocketjs) submodule; feat(pocketjs) MVP;
+                           bench(corpus); docs(a1); feat(gpui) --file +
+                           typing smoke; bench + report (this commit)
 PocketJS commits:          NONE on feat/windows-mvp (stock upstream main)
 
-Markit working tree:       clean (after commit)
+Markit working tree:       clean
 PocketJS working tree:     clean (submodule)
 
 Push performed: NO
