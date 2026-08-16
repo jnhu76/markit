@@ -1,0 +1,22 @@
+=== parse-a2.py cal-pjs-orig-10k-10k-1.log ===
+=== PocketJS (per tick) ===
+edit ticks:
+  gf_us                  n=0
+  ct_us                  n=0
+  dl_us                  n=0
+  words                  n=0
+  r_us                   n=0
+idle ticks:
+  gf_us                  n=0
+  dl_us                  n=0
+  words: first=None last=None
+
+=== parse-trace.py cal-pjs-orig-10k-10k-1.log ===
+=== latency distribution (us) ===
+  input->edit    n=   56 p50=      0.1 p95=      0.3 p99=      0.5 max=      0.6
+  edit->layout   n=   57 p50=  11915.7 p95=  14895.6 p99=  15175.5 max=  15304.1
+  layout         n=  157 p50=     52.1 p95=  14075.2 p99=  15066.9 max=  15303.6
+  render         n=   24 p50=    340.9 p95=    443.2 p99=    466.6 max=    472.8
+  layout->submit n=   24 p50=    608.0 p95=  41466.7 p99=  44334.6 max=  45184.5
+  long frames (>16.7ms layout): 0
+
