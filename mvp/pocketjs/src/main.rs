@@ -82,6 +82,12 @@ struct MarkitGame {
     render_us: u64,
     /// Guest perf reply received this tick (printed by the caller).
     perf_reply: Option<String>,
+    // ---- Phase A3-M startup marker (Markit-owned) ------------------------
+    /// Process start instant (main entry) — marker deltas are process-
+    /// internal, so the external runner needs no clock sync.
+    process_t0: Instant,
+    /// MARKIT_FIRST_USABLE_FRAME printed once after the first submit.
+    first_frame_marked: bool,
 }
 
 enum ScriptEvent {
@@ -432,6 +438,14 @@ impl FlatWidget for MarkitGame {
         })?;
         gpu.queue.submit([encoder.finish()]);
         self.render_us = r_t0.elapsed().as_micros() as u64;
+        // Phase A3-M: first usable frame = application-level frame-ready
+        // (document visible, editor ready to accept input, first command
+        // buffer submitted). No OS present timestamp is available on this
+        // host; the marker is labeled as frame-ready in the A3 report.
+        if !self.first_frame_marked {
+            self.first_frame_marked = true;
+            println!("MARKIT_FIRST_USABLE_FRAME {}", self.process_t0.elapsed().as_millis());
+        }
         instrument::record(Stage::RenderEnd);
         instrument::record(Stage::FrameSubmit);
         Ok(())
@@ -688,6 +702,8 @@ fn main() -> Result<()> {
         perf: args.perf || std::env::var("PJS_PERF").is_ok(),
         render_us: 0,
         perf_reply: None,
+        process_t0: Instant::now(),
+        first_frame_marked: false,
     };
 
     if let Some(out) = args.screenshot.clone() {

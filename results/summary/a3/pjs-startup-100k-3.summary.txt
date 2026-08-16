@@ -1,0 +1,14 @@
+=== startup-memory pjs 100k run 3 ===
+  mvp: pjs
+  corpus: 100k
+  run: 3
+  first_usable_frame_ms: 610
+  ws_bytes_1s: 245600256
+  priv_bytes_1s: 232968192
+  cpu_s_1s: 0.59375
+  ws_bytes_4s: 245719040
+  priv_bytes_4s: 233095168
+  cpu_s_4s: 0.640625
+  ticks: None
+  frames_rendered: None
+  gpui_a2_frames: 0

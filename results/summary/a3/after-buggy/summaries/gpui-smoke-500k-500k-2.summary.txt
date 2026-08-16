@@ -1,0 +1,33 @@
+=== parse-a2.py gpui-smoke-500k-500k-2.log ===
+=== GPUI (per frame) ===
+edit frames:
+  concat_us              n=  103 p50=      96.0 p95=     155.9 p99=     215.3 max=     257.0
+  lines_us               n=  103 p50=     283.0 p95=     298.9 p99=     321.8 max=     323.0
+  prepaint_us            n=  103 p50=      96.0 p95=     129.6 p99=     201.8 max=     505.0
+  shape_us               n=  103 p50=      95.0 p95=     128.7 p99=     200.8 max=     504.0
+  paint_us               n=  103 p50=     105.0 p95=     117.7 p99=     130.8 max=     155.0
+  lines_shaped           n=  103 p50=      25.0 p95=      25.0 p99=      25.0 max=      25.0
+  glyphs                 n=  103 p50=    1722.0 p95=    1767.9 p99=    1785.0 max=    1786.0
+  quads                  n=  103 p50=       0.0 p95=       0.0 p99=       0.0 max=       0.0
+static frames (no edit):
+  prepaint_us            n=    3 p50=      33.0 p95=    2076.9 p99=    2258.6 max=    2304.0
+  shape_us               n=    3 p50=      32.0 p95=    2074.1 p99=    2255.6 max=    2301.0
+  paint_us               n=    3 p50=     268.0 p95=     764.8 p99=     809.0 max=     820.0
+  lines_shaped           n=    3 p50=      25.0 p95=      25.0 p99=      25.0 max=      25.0
+all frames:
+  lines_shaped           n=  106 min=      24 p50=      25 max=      25
+  glyphs                 n=  106 min=    1671 p50=    1722 max=    1786
+  visible                n=  106 min=      26 p50=      26 max=      26
+  first                  n=  106 min=       0 p50=       0 max=       0
+  last                   n=  106 min=      28 p50=      28 max=      28
+  lines_total            n=  106 min=    9560 p50=    9560 max=    9561
+
+=== parse-trace.py gpui-smoke-500k-500k-2.log ===
+=== latency distribution (us) ===
+  input->edit    n=  106 p50=    385.9 p95=    461.6 p99=   5275.2 max=   5646.0
+  edit->layout   n=  103 p50=      8.7 p95=     17.6 p99=     26.7 max=     39.0
+  layout         n=  106 p50=      0.4 p95=      0.9 p99=      2.1 max=      6.6
+  render         n=  106 p50=    220.7 p95=    293.3 p99=    635.2 max=   3232.0
+  layout->submit no samples
+  long frames (>16.7ms layout): 0
+

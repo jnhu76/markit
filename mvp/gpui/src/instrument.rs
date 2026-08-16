@@ -17,6 +17,8 @@
 //! what it can observe and marks the rest as unavailable.
 
 use std::sync::Mutex;
+use std::sync::OnceLock;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -130,5 +132,30 @@ pub fn dump(label: &str, n: usize) {
         if let Some(trace) = guard.as_ref() {
             trace.dump(label, n);
         }
+    }
+}
+
+// ---- Phase A3-M: first-usable-frame marker (Markit-owned) -----------------
+// Both MVPs print the same line so the external runner can measure
+// process startup -> first usable frame. The delta is process-internal
+// (Instant since main entry), so the runner needs no clock sync. This is
+// application-level frame-ready — no OS present timestamp is available on
+// this host (A1-known; labeled as frame-ready in the A3 report).
+
+static PROCESS_START: OnceLock<Instant> = OnceLock::new();
+
+/// Record the process start instant (first line of main()).
+pub fn mark_process_start() {
+    PROCESS_START.get_or_init(Instant::now);
+}
+
+/// Print the marker once, at the first frame whose content is render-ready.
+pub fn first_usable_frame() {
+    static DONE: AtomicBool = AtomicBool::new(false);
+    if DONE.swap(true, Ordering::SeqCst) {
+        return;
+    }
+    if let Some(t0) = PROCESS_START.get() {
+        println!("MARKIT_FIRST_USABLE_FRAME {}", t0.elapsed().as_millis());
     }
 }
