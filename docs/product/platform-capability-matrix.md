@@ -5,7 +5,8 @@ NOT TESTED/DEFERRED — never guessed). "PASS" requires a real run on the
 platform; WSLg runs are labeled as such and do not certify Linux desktop.
 
 Evidence sources: A1–A4 MVP runs (`docs/phase-a1-*`, `docs/phase-a2-*`,
-`docs/phase-a3-*`, `docs/phase-a4-final-research-closeout.md`).
+`docs/phase-a3-*`, `docs/phase-a4-final-research-closeout.md`) and E0
+capability slices (`docs/phase-e0-desktop-enablement.md`).
 
 ## Matrix
 
@@ -19,7 +20,7 @@ Evidence sources: A1–A4 MVP runs (`docs/phase-a1-*`, `docs/phase-a2-*`,
 | Mouse / pointer | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
 | Keyboard | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
 | IME | NOT TESTED (protocol reserved; manual Pinyin validation pending) | NOT TESTED | NOT TESTED | NOT TESTED |
-| CJK fonts | FAIL (tofu — no system font discovery; A1 gap) | FAIL (same) | NOT TESTED | NOT TESTED |
+| CJK fonts | PARTIAL (discovery+build PASS via cargo-xwin; msyh coverage verified; real-machine run pending — E0 slice 1) | PASS (WSLg: wqy-zenhei discovered, no-tofu screenshot; E0 slice 1) | NOT TESTED | NOT TESTED |
 | Clipboard | NOT TESTED (protocol reserved; A1 gap) | NOT TESTED | NOT TESTED | NOT TESTED |
 | Open dialog | NOT TESTED (no FileDialogProvider yet) | NOT TESTED | NOT TESTED | NOT TESTED |
 | Save dialog | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
@@ -34,9 +35,11 @@ Evidence sources: A1–A4 MVP runs (`docs/phase-a1-*`, `docs/phase-a2-*`,
 
 - Evidence base is the strongest: windowed wgpu, keyboard, scroll,
   resize, demand rendering, headless determinism all PASS (A1–A4).
-- Product gaps to close (Tier-0): system font discovery (CJK/emoji),
-  clipboard (text), IME validation, native file dialogs, file
-  association, Ctrl shortcuts beyond Q/A.
+- Product gaps to close (Tier-0): system font discovery (CJK/emoji) —
+  E0 slice 1 landed upstream (jnhu76/pocketjs#5, Windows registry +
+  Linux dir discovery); the real-machine Windows run is staged and
+  pending, emoji/COLR remains open; clipboard (text), IME validation,
+  native file dialogs, file association, Ctrl shortcuts beyond Q/A.
 - Transparent window: DEFERRED — not a product requirement.
 - Startup ~750 ms at 1M (A3): dominated by QuickJS eval + pak feed; a
   product target is to reduce this (bytecode/qjsc is a PocketJS-side
