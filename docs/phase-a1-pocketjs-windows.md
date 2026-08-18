@@ -1,5 +1,12 @@
 # Phase A1 — PocketJS Windows Desktop Host
 
+> Historical research record.
+>
+> This document reflects the state of PocketJS desktop work at the time it
+> was written. Markit later pivoted to direct GPUI as the product
+> foundation — see [ADR-008](adr/ADR-008-direct-gpui-product-substrate.md).
+> Measurements and findings are unedited.
+
 Status: **READY_FOR_PHASE_B**
 
 ## 1. Executive Summary

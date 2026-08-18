@@ -336,8 +336,8 @@ fn main() {
     let smoke = std::env::args().any(|a| a == "--smoke");
     let a2 = parse_a2();
     // --file <path>: load a corpus document instead of the built-in seed
-    // (parity with mvp/pocketjs's --file; both MVPs then edit the same
-    // bytes).
+    // (A1-era parity with the removed PocketJS MVP's --file; both MVPs
+    // then edited the same bytes).
     let seed: String = std::env::args()
         .collect::<Vec<_>>()
         .windows(2)

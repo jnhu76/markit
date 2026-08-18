@@ -2,6 +2,13 @@
 
 Status: accepted (A4-R2).
 
+> Post-pivot note (2026-08-18): the incremental pipeline (Document →
+> Block Index → Incremental Parse → Affected Blocks → Styled Runs →
+> Visible Layout → presentation) transfers to the Rust core. In the
+> direct-GPUI architecture the presentation tail is GPUI elements/shaped
+> text instead of the PocketJS DrawList; the change-range propagation and
+> block-granular invalidation principles are unchanged.
+
 ## Observed problem
 
 A full-document Markdown re-parse per edit is O(N) and defeats the
@@ -34,6 +41,6 @@ ahead).
 ## Decision
 
 Document → Block Index → Incremental Parse → Affected Blocks → Styled
-Runs → Visible Layout → DrawList, with change-range propagation at every
-layer. Structural-edit cost is owned and documented, never benchmarked
-away.
+Runs → Visible Layout → presentation (GPUI elements / shaped text in the
+direct-GPUI architecture), with change-range propagation at every layer.
+Structural-edit cost is owned and documented, never benchmarked away.

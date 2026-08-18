@@ -92,7 +92,8 @@ impl ThinEditor {
     }
 
     /// Seed corpus (plain-10k style): ASCII + regular Chinese — the
-    /// byte-identical twin of mvp/pocketjs/app/sample.ts.
+    /// byte-identical twin of the (removed) PocketJS MVP seed, so the A1-era
+    /// parity comparison stayed on the same bytes.
     pub const DEFAULT_SEED: &'static str = "Markit Phase A0 - GPUI feasibility spike\n\
                     Fixed font, mouse & keyboard input, insert/delete, cursor,\n\
                     selection, scroll, resize, HiDPI baseline, Chinese text.\n\

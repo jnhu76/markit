@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Generate the Markit Phase A1 shared corpus (workloads/corpus/).
 
-Deterministic, fixed-seed ASCII corpus family for the GPUI/PocketJS MVP
-comparison: 10 KB, 100 KB, 1 MB. One generator, one seed — both MVPs read
-the exact same files, so cross-framework measurement stays apples-to-apples.
+Deterministic, fixed-seed ASCII corpus family created for the GPUI/PocketJS
+MVP comparison (historical, A1): 10 KB, 100 KB, 1 MB. One generator, one
+seed — every harness reads the exact same files, so cross-framework
+measurement stays apples-to-apples. Still the Markit benchmark corpus.
 
 Line profile mirrors the MVP seed style: short prose-ish ASCII lines with
 wraps at word boundaries, occasional blank lines, no CJK (the Phase A1

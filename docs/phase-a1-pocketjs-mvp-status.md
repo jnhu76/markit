@@ -1,5 +1,13 @@
 # Phase A1 — Markit PocketJS integration & thin editor MVP
 
+> Historical research record.
+>
+> This document describes the PocketJS integration and thin-editor MVP
+> that supported the A1–A4 substrate comparison. Markit later pivoted to
+> direct GPUI as the product foundation — see
+> [ADR-008](adr/ADR-008-direct-gpui-product-substrate.md). Measurements and
+> findings are unedited.
+
 Status: **READY_FOR_PHASE_A2** — PocketJS integration + thin editor MVP
 done and verified on Windows (native); first-round GPUI/PocketJS benchmark
 completed on the same Windows machine with the same corpora. (Report

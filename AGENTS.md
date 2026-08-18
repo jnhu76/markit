@@ -4,9 +4,10 @@ This file defines working rules for humans and AI coding agents contributing to 
 
 ## 1. Mission
 
-Markit is an evidence-driven low-latency Markdown editor project.
+Markit is an evidence-driven low-latency Markdown editor project, built
+in Rust directly on GPUI.
 
-The project is not primarily about implementing features quickly. It is about discovering which work actually causes editor latency, deriving reusable system principles, and only then applying those principles to PocketJS and Markit.
+The project is not primarily about implementing features quickly. It is about discovering which work actually causes editor latency, deriving reusable system principles, and applying them to the Markit editor core and its GPUI integration.
 
 Core principles:
 
@@ -16,9 +17,11 @@ Core principles:
 
 ## 2. Current Phase
 
-Assume the project is in the **measurement / research phase** unless the repository explicitly says otherwise.
+Assume the project is in the **product foundation / GPUI architecture phase**.
 
-Do not prematurely implement a full editor architecture.
+The substrate decision is made (direct GPUI, ADR-008); the editor
+architecture is not. Do not prematurely implement a full editor
+architecture.
 
 Do not assume that:
 
@@ -29,8 +32,8 @@ Do not assume that:
 - viewport virtualization is the dominant optimization;
 - Rust/native code is automatically faster;
 - JavaScript/native FFI is a bottleneck;
-- GPUI is inherently faster than PocketJS;
-- Electron is inherently the problem.
+- Electron is inherently the problem;
+- GPUI's current prototype version is the product baseline.
 
 Treat these as hypotheses until measured.
 
@@ -210,17 +213,56 @@ Platform-specific fast paths are allowed when the common semantic contract remai
 
 Replaceability is valuable because it supports both portability and causal experiments.
 
-## 10. PocketJS Policy
+## 10. GPUI Product Policy
 
-PocketJS is the intended product foundation, not a result that experiments are required to prove.
+GPUI is the chosen UI/platform substrate (ADR-008). Product work must
+follow these rules:
 
-Changes to PocketJS must correspond to measured bottlenecks.
+1. GPUI is the chosen UI/platform substrate.
 
-Do not turn PocketJS's generic retained UI tree into the document model without evidence.
+2. `markit-core` must remain independent from GPUI wherever this is
+   semantically useful.
 
-Do not move logic into native code solely because native code is presumed faster.
+3. Do not put document ownership into the GPUI element tree.
 
-If Markit eventually bypasses or replaces most PocketJS subsystems, trigger an explicit architecture review rather than describing the result as a minor optimization.
+4. Do not use GPUI entities as the canonical Markdown document model.
+
+5. Platform integration belongs at the GPUI/platform edge:
+
+   ```text
+   window
+   IME
+   clipboard
+   keyboard
+   pointer
+   native text
+   file dialogs
+   presentation
+   ```
+
+6. Editor policy belongs in Markit:
+
+   ```text
+   document
+   selection
+   commands
+   undo
+   Markdown
+   incremental invalidation
+   viewport model
+   ```
+
+7. GPUI-specific code should not leak unnecessarily into editor
+   algorithms.
+
+8. Zed is a REFERENCE IMPLEMENTATION, not proof.
+
+   Do not write: "Zed does X, therefore Markit must do X."
+
+Maintain the current evidence-before-architecture discipline: a change to
+the GPUI integration must correspond to a measured bottleneck, and
+baseline selection (roadmap G0) requires dedicated validation, not the
+assumption that "newer is better".
 
 ## 11. Reference Host
 

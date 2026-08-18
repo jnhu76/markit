@@ -1,125 +1,141 @@
-# Markit Desktop — Product Roadmap
+# Markit — Product Roadmap
 
-Phase A* research naming ends here (A4 closes the research phase). The
+Phase A* research naming ends with A4 (research phase closed). The
 product phases below replace it. Each phase lists goal / scope /
 acceptance / non-goals.
 
 ```text
-A4 Research Closeout
-      ↓
-PocketJS Desktop Enablement      ← immediate next step
-      ↓
-Windows desktop substrate proven
-      ↓
-Markit Product P0 / P1
+Architecture Pivot / Repository Cleanup   ← this change (ADR-008)
+        ↓
+G0  GPUI Baseline Selection
+        ↓
+P0  Markit Rust Core
+        ↓
+P1  Windows Editor MVP + Markdown L1 (v0.1, direct GPUI)
+        ↓
+P2  Markdown L1 hardening
+        ↓
+P3  Typora-style L2
+        ↓
+P4  Rich blocks
+        ↓
+P5  Cross-platform / hardening
 ```
 
-## E0 — PocketJS Desktop Enablement / Windows Reference Host (next)
+## G0 — GPUI Baseline Selection (next)
 
-- Goal: prove the generic desktop capabilities **in PocketJS** on a real
-  Windows host, before Markit productizes on top of them.
-- Scope: normal desktop window, CJK runtime fonts (font discovery +
-  fallback chain + runtime glyph extension), text clipboard, IME
-  composition host binding, platform capability truthfulness (the
-  capability matrix moves from NOT TESTED to PASS only on evidence).
-- Why: `app/platform.ts` (A4-P) is a **Markit-facing interface sketch**,
-  not an OS implementation layer. Generic OS capability implementation
-  belongs to PocketJS; if Markit implements Windows/Linux/macOS
-  mechanics itself behind these interfaces, it grows a Markit-private
-  compatibility stack that will have to be extracted later.
-- Acceptance: the Windows reference host demonstrates the Tier-0
-  capabilities (`docs/product/architecture.md` §9) with evidence; the
-  capability matrix documents the results; the P1 scope below consumes
-  them instead of re-implementing them.
-- Output: PocketJS desktop foundation (upstream, if appropriate) +
-  Markit consumes it via the platform contracts.
-- Non-goals: Markit editor features, packaging, Linux/macOS hosts.
+- Goal: select and pin a GPUI baseline suitable for Windows development.
+- Scope: evaluate the current `mvp/gpui` prototype (gpui 0.2.2) and a
+  current Zed GPUI revision on:
 
-## P0 — Product Foundation
+  ```text
+  build
+  release build
+  window
+  native text
+  CJK
+  IME
+  clipboard
+  resize
+  HiDPI
+  startup
+  RSS
+  basic latency
+  ```
 
-- Goal: architecture frozen enough to implement; shared-core skeleton;
-  platform interfaces; L1 pipeline prototype; capability matrix;
-  Windows next-phase blockers explicit.
-- Scope: docs (`docs/product/*`, ADRs 001–007), core boundaries
-  (Document/LineIndex/BlockIndex/EditTransaction/Selection/Command/
-  ViewModel/Platform interfaces), issue backlog.
-- Acceptance: architecture doc answers the ten questions;
-  performance-invariants battery defined; capability matrix evidence-
-  based; issue backlog ready-to-paste. (A4 delivered this — the phase is
-  the A4-P portion.)
-- Non-goals: platform implementation, packaging.
+- Do not choose merely because newer is newer. Record evidence per item.
+- The pinned GPUI revision is a dependency of the GPUI-facing crates
+  (`markit-gpui` / the app crate, via the workspace dependency) — never
+  of `markit-core` (P0 acceptance: core has no GPUI dependency).
+- Acceptance: a documented, evidence-based GPUI baseline selection with
+  build + Windows runtime evidence; the product's GPUI dependency (in
+  `markit-gpui` / the app crate, not `markit-core`) is frozen to the
+  selected revision.
+- Non-goals: editor features, Linux/macOS hosts.
 
-## P1 — Windows Desktop MVP
+## P0 — Markit Rust Core
 
-- Goal: Markit Desktop v0.1 runs on Windows (`docs/product/mvp-v0.1.md`
-  gates 1–7), consuming the desktop capabilities proven in E0.
-- Scope: markit-core refactor of the MVP guest (editor.ts/markdown.ts
-  become the core modules), consume PocketJS desktop capabilities
-  (fonts/clipboard/IME host binding/native dialogs from E0), Markit-
-  owned editor-model sides (IME composition model, undo/redo
-  transactions with IME-commit grouping), atomic save, crash recovery
-  minimal, Ctrl shortcuts, portable exe, regression battery in CI.
-- Acceptance: mvp-v0.1 gates 1–7 PASS on Windows with evidence;
-  invariants battery green; no Markit-private OS compatibility layer
-  introduced (platform work stays behind the contracts, implemented by
-  PocketJS).
+- Goal: framework-independent core built as a Rust library.
+- Scope: `Document`, `LineIndex` (ADR-003), `Selection`,
+  `EditTransaction` (undo/redo), `Commands` (ADR-006), `BlockIndex`,
+  Markdown L1 (ADR-004), view model, explicit changed-range propagation,
+  Unicode-aware coordinate semantics (AGENTS.md §8), and the regression
+  battery (work-amplification invariants).
+- Acceptance: core tests green (incl. randomized differentials vs
+  full-scan oracles, caretFromX regression); invariants battery defined;
+  core has no GPUI dependency.
+- Non-goals: platform integration, packaging.
+
+## P1 — Windows Editor MVP + Markdown L1 (v0.1)
+
+- Goal: Markit Desktop v0.1 runs on Windows, built directly on GPUI: a
+  single-document, L1-styled Markdown editor (`mvp-v0.1.md`).
+- Scope (from `docs/product/mvp-v0.1.md`): window, editing, Markdown L1
+  styled pipeline (ADR-004: heading, paragraph, bold, emphasis, inline
+  code, link, blockquote, ul/ol list, fenced code), IME (Chinese
+  composition model, ADR-007), clipboard (text), files (open/save/atomic
+  save, crash recovery minimal), CJK + emoji fallback, undo/redo,
+  shortcuts (Ctrl), resize/HiDPI, large-document stability (1M+ flat),
+  regression battery in CI.
+- Acceptance: `docs/product/mvp-v0.1.md` gates PASS on Windows with
+  evidence; invariants battery green; no GPUI code leaked into
+  `markit-core`.
 - Non-goals: tabs, images/tables/math, installer/MSIX (later if needed),
   Linux/macOS.
 
-## P2 — Linux Desktop MVP
+## P2 — Markdown L1 Hardening
 
-- Goal: the same v0.1 on a real Linux desktop.
-- Scope: Wayland host (X11 fallback), fontconfig discovery, IBus/Fcitx
-  IME, xdg portal file dialogs, XDG dirs, portable binary + desktop
-  entry.
-- Acceptance: mvp-v0.1 gates 1–7 PASS on real Linux hardware (WSLg runs
-  are smoke only).
-- Non-goals: AppImage (later), Windows regression.
+- Goal: harden the L1 pipeline shipped in P1 to product-grade conformance
+  and robustness; the L1 feature set itself is already complete and
+  shipped at P1 exit (v0.1).
+- Scope: L1 conformance golden fixtures (CommonMark-derived where
+  applicable), bounded fence recovery + parser checkpoints (issue
+  backlog: bound the cascade, do not hide honest structural
+  propagation), incremental-parser robustness across large structural
+  edits.
+- Acceptance: local-edit radius 1 block at any size; fence edits bounded
+  and documented; differential oracle green; conformance fixtures green.
+- Non-goals: syntax hiding (P3).
 
-## P3 — macOS Desktop MVP
+## P3 — Typora-style L2
 
-- Goal: the same v0.1 on macOS.
-- Scope: Metal/wgpu validation, CoreText fonts, IME, clipboard, Cmd
-  shortcuts, native dialogs, menu bar, window behavior, Retina, .app
-  bundle.
-- Acceptance: mvp-v0.1 gates 1–7 PASS on real hardware.
-- Non-goals: codesign/notarization (later), store submission.
+- Goal: source-aware presentation (syntax hidden outside the active
+  line, revealed on caret entry) without regressing the invariants.
+- Scope: per-line syntax visibility, run-level virtualization,
+  richer inline styling (weights/sizes).
+- Acceptance: L2 editing measured against the invariants; local-edit
+  radius still 1 block.
+- Non-goals: rich blocks (P4).
 
-## P4 — Markdown Visual Editing L2
+## P4 — Rich Markdown Blocks
 
-- Goal: Typora-like source-aware presentation (syntax hidden outside the
-  active line, revealed on caret entry) without regressing the
-  invariants.
-- Scope: L2 view model (per-line syntax visibility), run-level
-  virtualization per the Incremental View Model, bounded fence recovery
-  (the R2 structural-edit cost), richer inline styling (weights/sizes
-  via font slots).
-- Acceptance: L2 editing measured against INV-01…07; local-edit radius
-  still 1 block; fence edits bounded and documented.
-- Non-goals: rich blocks (P5).
-
-## P5 — Rich Markdown Blocks
-
-- Goal: images, tables, math, code highlighting, as viewport-bounded
-  projections (architecture.md §10).
+- Goal: images, tables, math, code highlighting as viewport-bounded
+  projections (architecture.md §8).
 - Scope: block-kind registry extension, lazy per-visible-block
   projection + caching, explicit invalidation.
 - Acceptance: each block kind has a measured invalidation radius and
   stays out of the hot path.
 - Non-goals: Mermaid/plugins (extensions, later).
 
-## P6 — Product Hardening
+## P5 — Cross-platform / hardening
 
-- Goal: shipping quality.
-- Scope: packaging (installer/MSIX, AppImage, codesign/notarization),
-  crash reporting, recovery maturity, performance regression CI on all
-  three platforms, accessibility basics, i18n.
-- Acceptance: release-ready on all three platforms.
+- Goal: shipping quality on Windows, then Linux/macOS.
+- Scope: Windows hardening first (packaging, crash reporting, recovery
+  maturity, performance regression CI, accessibility basics, i18n); then
+  Linux (Wayland/X11, fontconfig, IBus/Fcitx) and macOS (CoreText, IME,
+  clipboard, Cmd, .app bundle) — each gated by the same MVP acceptance
+  on real hardware.
+- Acceptance: release-ready on each platform it claims; Linux/macOS are
+  not blocked by Windows hardening, but each platform must pass its own
+  MVP gates on real hardware.
+- Non-goals: store submission specifics until a platform is release-ready.
 
-## Working rule (the anti-foundation rule, A4 §59)
+## Working rule (the anti-foundation rule, from A4 §59)
 
 > Once a foundation is sufficient for the next product feature, stop
 > improving the foundation and build the product feature.
 
 Real product workload is the only judge that can reopen research (e.g.
-an A5-style investigation) — a synthetic benchmark alone cannot.
+an A5-style investigation) — a synthetic benchmark alone cannot. Do not
+let platform work prevent building the editor once the Windows foundation
+is adequate.
