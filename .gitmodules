@@ -1,3 +1,0 @@
-[submodule "vendor/pocketjs"]
-	path = vendor/pocketjs
-	url = https://github.com/jnhu76/pocketjs.git

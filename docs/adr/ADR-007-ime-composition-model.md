@@ -2,6 +2,15 @@
 
 Status: accepted (A4; implementation P1).
 
+> Post-pivot note (2026-08-18): the model-side semantics transfer —
+> composition start/update/commit/cancel are distinct, commit is one undo
+> transaction, updates are preedit state only. The original "host protocol
+> / wire contract" evidence referred to the PocketJS svc channel; in the
+> direct-GPUI architecture IME arrives through GPUI's platform IME path
+> and candidate docking uses the caret rect the view reports to GPUI.
+> `ImeProvider` remains the semantic boundary; Chinese IME is validated
+> first (P1), JA/KO architecture present.
+
 ## Observed problem
 
 IME text must not be treated as ordinary key events: composition

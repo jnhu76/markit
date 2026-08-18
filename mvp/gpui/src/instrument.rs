@@ -4,7 +4,7 @@
 //! timestamp contract here — no benchmark system yet. Stages follow the E2E
 //! pipeline decomposition (HotMobile 2017): input -> edit -> layout -> render -> submit.
 //!
-//! Contract (shared with a future mvp-pocketjs):
+//! Contract (shared historically with the removed PocketJS MVP):
 //!   input_received  - platform input reached the application
 //!   edit_applied    - document mutation applied
 //!   layout_begin    - layout phase started

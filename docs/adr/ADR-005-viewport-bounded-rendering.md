@@ -2,6 +2,14 @@
 
 Status: accepted (A3-G1, reaffirmed A4).
 
+> Post-pivot note (2026-08-18): the invariant is implementation-neutral
+> and is a core requirement for the GPUI product layer: only visible
+> lines (+ overscan) are laid out and painted; the materialized GPUI
+> element/shaped-text work must scale with the visible presentation, not
+> document size; the idle editor must not request frames. The A4 "DrawList
+> words identical" measurement was the PocketJS-side evidence for the same
+> invariant.
+
 ## Observed problem
 
 A2: GPUI shaped 18 081 lines per frame at 1M because the element was

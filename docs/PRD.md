@@ -1,5 +1,21 @@
 # Markit PRD v3 — Adversarial Audit
 
+> ## Current product direction (2026-08-18)
+>
+> **Chosen product substrate: direct GPUI** (ADR-008 — Rust editor core
+> + direct GPUI desktop UI/platform integration; Windows first).
+>
+> This is an architecture decision, not a claim that GPUI wins every
+> benchmark. The editor core (`markit-core`) must remain separable enough
+> that GPUI-specific code does not become the document architecture.
+>
+> The v3 audit body below is a **historical methodology record** from the
+> research phase. Its findings (measurement semantics, workload
+> equivalence, profiler overhead, scaling corpora) remain the project's
+> methodology rules and are encoded in AGENTS.md. Its future steps that
+> name PocketJS as the optimization target (e.g. the "Optimize PocketJS"
+> step in the Revised Research Spine) are superseded by ADR-008.
+
 ## Executive Verdict
 
 **结论：CONDITIONALLY SOUND**

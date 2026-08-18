@@ -1,9 +1,10 @@
 # workloads/ — shared benchmark corpus & traces
 
-Deterministic inputs shared by BOTH MVPs (GPUI and PocketJS), so a
-measurement on one framework is the same work on the other. Phase A1
-first-round corpus is ASCII/Latin only (PocketJS has no CJK system-font
-discovery on main; CJK is a separate capability item).
+Deterministic benchmark corpus and trace definitions for Markit. The
+corpus was created for the A1-era GPUI/PocketJS MVP comparison so that a
+measurement on one framework was the same work on the other; it remains
+the shared corpus for Markit's benchmark harness. The first-round corpus
+is ASCII/Latin only (CJK is a separate capability item).
 
 ## corpus/
 

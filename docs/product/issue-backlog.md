@@ -1,55 +1,59 @@
-# Markit Desktop — Issue Backlog (P1+ candidates)
+# Markit — Issue Backlog (P1+ candidates)
 
 Ready-to-paste issue bodies for work confirmed by product requirements or
 real evidence (no speculative issues). Each entry: title, labels, body.
 The A4 phase spec §55 rule applies: only items the product will certainly
-need or that have real evidence.
+need or that have real evidence. Items are written for the direct-GPUI
+architecture (ADR-008).
 
 ---
 
-## P1 — Windows
+## P1 — Windows (direct GPUI)
 
-### [P1] Windows system font discovery + CJK/emoji fallback chain
+### [P1] GPUI/DirectWrite CJK + emoji fallback validation for Markit
 
 - Labels: `p1`, `windows`, `fonts`, `tier-0`
 - Body:
-  - **Why**: Markit targets Chinese Markdown editing; CJK currently
-    renders as tofu on the Windows MVP (A1 gap, capability matrix FAIL).
-  - **Evidence**: `docs/phase-a1-pocketjs-windows.md` (CJK DEFERRED);
-    `docs/product/platform-capability-matrix.md`.
-  - **Scope**: enumerate system fonts (GDI), build a Latin → CJK → emoji
-    fallback chain, feed the PocketJS runtime-glyph path
-    (`text.glyphs.runtime`); do NOT hardcode font paths.
+  - **Why**: Markit targets Chinese Markdown editing; CJK must render
+    correctly through the chosen GPUI baseline on Windows.
+  - **Evidence**: `mvp/gpui` (Phase A0) verified Chinese via DirectWrite
+    fallback in the feasibility prototype; product acceptance requires a
+    validation on the selected GPUI baseline.
+  - **Scope**: system font discovery + fallback chain (Latin → CJK →
+    emoji) through GPUI's text system; do NOT hardcode font paths;
+    document any GPUI text-atlas / fallback gaps found.
   - **Acceptance**: Chinese/emoji text renders correctly; the fallback
-    chain is data-driven per platform.
+    behavior is data-driven and recorded; any GPUI gap is filed upstream
+    with a Markit workaround note.
   - **Non-goals**: rich text shaping (U3+), font settings UI.
 
 ### [P1] Windows text clipboard (copy/cut/paste)
 
 - Labels: `p1`, `windows`, `clipboard`, `tier-0`
 - Body:
-  - **Why**: copy/cut/paste is a Tier-0 product requirement; the protocol
-    reserves it (`Copy`/`Cut` keys + `{t:"paste"}`) but nothing implements
-    it.
-  - **Evidence**: `docs/product/platform-capability-matrix.md` (clipboard
-    NOT TESTED everywhere).
-  - **Scope**: `ClipboardProvider` (windows impl: CF_UNICODETEXT),
-    wire Ctrl+C/X/V through the host, text-only first.
+  - **Why**: copy/cut/paste is a Tier-0 product requirement; GPUI
+    exposes clipboard on Windows but the Markit path (commands →
+    GPUI clipboard → OS) must be validated end-to-end.
+  - **Evidence**: `docs/product/platform-capability-matrix.md`
+    (clipboard NOT TESTED on the product path).
+  - **Scope**: wire Copy/Paste/Cut commands through GPUI's Windows
+    clipboard; text-only first.
   - **Acceptance**: copy/cut/paste round-trips with the OS and other
-    apps.
+    apps on the pinned GPUI baseline.
   - **Non-goals**: rich HTML, images, custom MIME.
 
 ### [P1] Windows IME composition model + Chinese validation
 
 - Labels: `p1`, `windows`, `ime`, `tier-0`
 - Body:
-  - **Why**: Chinese IME is an MVP gate; the model (ADR-007) and the wire
-    contract exist, the implementation does not.
+  - **Why**: Chinese IME is an MVP gate; the model (ADR-007) is defined,
+    the GPUI Windows IME path must be validated end-to-end.
   - **Evidence**: `docs/adr/ADR-007-ime-composition-model.md`;
     capability matrix (IME NOT TESTED).
-  - **Scope**: implement composition start/update/commit/cancel in the
-    editor model, candidate docking at the caret rect, commit as one undo
-    transaction; validate Pinyin on Windows.
+  - **Scope**: implement composition start/update/commit/cancel in
+    `markit-core`, candidate docking at the caret rect, commit as one
+    undo transaction; validate Pinyin on Windows through GPUI's IME
+    integration (IMM32/TSF).
   - **Acceptance**: Chinese composition works (commit, cancel, undo
     grouping); no composition text in the undo stack as keystrokes.
 
@@ -57,9 +61,12 @@ need or that have real evidence.
 
 - Labels: `p1`, `windows`, `files`
 - Body:
-  - **Why**: open/save dialogs are MVP scope.
-  - **Scope**: `FileDialogProvider` (windows: IFileDialog), wire
-    Open/Save/Save-As commands.
+  - **Why**: open/save dialogs are MVP scope; GPUI's dialog story must be
+    validated on Windows (or a thin platform adapter added at the GPUI
+    edge — not a Markit-private OS layer).
+  - **Scope**: wire Open/Save/Save-As commands to native dialogs; if
+    GPUI does not provide them on Windows, a minimal `FileDialogProvider`
+    adapter at the GPUI edge.
   - **Acceptance**: native dialogs open/save UTF-8 files; dirty-state
     flow works.
   - **Non-goals**: custom dialog UI, recent-files UI (later).
@@ -81,79 +88,39 @@ need or that have real evidence.
 - Body:
   - **Why**: undo must group typing/delete/paste/IME-commit, not snapshot
     per key.
-  - **Evidence**: ADR-007 (IME grouping); A4 architecture Layer 3.
+  - **Evidence**: ADR-007 (IME grouping); architecture Layer (core).
   - **Scope**: `EditTransaction` in markit-core, typing/delete
     coalescing, paste and IME-commit as single transactions.
   - **Acceptance**: standard undo/redo UX for typing, deletion, paste,
     IME commits; bounded memory.
 
----
+### [P1] Markit core regression battery in CI
 
-## P2 — Linux
-
-### [P2] Real Linux desktop host validation (Wayland + X11 fallback)
-
-- Labels: `p2`, `linux`
+- Labels: `ci`, `performance`, `editor-model`
 - Body:
-  - **Why**: WSLg smoke runs do not certify the Linux product runtime.
-  - **Evidence**: `docs/product/platform-capability-matrix.md` (all Linux
-    real-desktop rows NOT TESTED).
-  - **Scope**: run the MVP on a real Wayland session (X11 fallback),
-    input/scroll/resize/GPU; fix host gaps.
-  - **Acceptance**: MVP gates 1–7 PASS on real Linux hardware with
-    evidence recorded.
-
-### [P2] Linux fontconfig discovery + IBus/Fcitx IME
-
-- Labels: `p2`, `linux`, `fonts`, `ime`
-- Body:
-  - **Why**: Linux needs fontconfig for CJK and IBus/Fcitx for Chinese
-    IME; both are product gates.
-  - **Scope**: `FontProvider` (fontconfig), `ImeProvider` (IBus/Fcitx via
-    the composition model), XDG config/data/cache dirs.
-  - **Acceptance**: CJK renders; Chinese IME composes/commits on a real
-    Linux desktop.
-
-### [P2] Linux file dialogs + packaging (portable binary + desktop entry)
-
-- Labels: `p2`, `linux`, `files`, `packaging`
-- Body:
-  - **Why**: MVP gates need open/save and a launchable install.
-  - **Scope**: `FileDialogProvider` (xdg portals), portable binary +
-    desktop entry (AppImage later).
-  - **Acceptance**: native dialogs work; the binary launches from the
-    desktop entry.
+  - **Why**: the invariants (`docs/product/performance-invariants.md`)
+    need cheap guards: work-amplification checks, not wall-clock
+    thresholds.
+  - **Scope**: core unit tests + the invariants battery on a fixed
+    machine; assert full scans == 0, blocks_reparsed == 1 for local
+    edits, presentation work flat across sizes.
+  - **Acceptance**: green on every PR touching core/edit paths; flake
+    policy documented.
 
 ---
 
-## P3 — macOS
-
-### [P3] macOS validation battery
-
-- Labels: `p3`, `macos`
-- Body:
-  - **Why**: PocketJS's macOS-first heritage is not product evidence;
-    every capability row is NOT TESTED.
-  - **Evidence**: `docs/product/platform-capability-matrix.md`.
-  - **Scope**: run MVP gates 1–7 on real hardware: Metal/wgpu, CoreText
-    fonts, IME, clipboard, Cmd shortcuts, native dialogs, menu bar,
-    window behavior, Retina, .app bundle.
-  - **Acceptance**: gates PASS with evidence; remaining gaps filed
-    separately.
-
----
-
-## Cross-platform
+## Cross-platform / core
 
 ### [X] Bounded fence recovery for L1 structural edits
 
-- Labels: `markdown`, `performance`, `p4`
+- Labels: `markdown`, `performance`, `p2`
 - Body:
   - **Why**: A fence-boundary edit invalidates through the whole fence
-    cascade (1M: 30 197 lines, 68.9 ms — measured). Correct, but too
+    cascade (measured at 1M: 30 197 lines, 68.9 ms). Correct, but too
     broad for a product hot path. The worst case must not propagate
     with unbounded document size.
-  - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.4.
+  - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.4
+    (historical measurement).
   - **Scope**: bound the recovery — candidates are parser checkpoints
     (every N blocks) + parser restart state at the checkpoint + scan
     until the state converges, and/or only treating ``` as an opener
@@ -161,17 +128,16 @@ need or that have real evidence.
     correct (differential oracle); **do not optimize the honest
     structural propagation away** — fence delimiters legitimately change
     later structure, so the fix is *bounding* the cascade, not hiding it.
-    Re-measure M5 at 10K/100K/1M.
-  - **Acceptance**: M5 invalidation radius bounded (no O(document)
-    worst case at 1M) and documented; differential oracle still green;
-    invariants battery green; the measured before/after is recorded
-    honestly.
+    Re-measure at 10K/100K/1M.
+  - **Acceptance**: invalidation radius bounded (no O(document) worst
+    case at 1M) and documented; differential oracle still green;
+    invariants battery green; before/after recorded honestly.
 
 ### [X] Markdown L1 conformance golden fixtures
 
 - Labels: `markdown`, `tests`, `p0`
 - Body:
-  - **Why**: the R2 differential oracle proves *incremental invalidation
+  - **Why**: the differential oracle proves *incremental invalidation
     correctness* (incremental == full scan of the same parser), not
     Markdown/CommonMark conformance — both sides could parse wrong
     together. The parser is the Markit L1 subset (heading, paragraph,
@@ -185,58 +151,33 @@ need or that have real evidence.
   - **Acceptance**: fixtures committed and green in the regression
     battery; deviations documented, not silently "fixed".
 
-### [X] Bound the visible-line identity cache (view-slots)
-
-- Labels: `view-model`, `memory`, `p4`
-- Body:
-  - **Why**: `app/view-slots.ts` caches one item per absolute line
-    number ever visible; the cache grows with the highest line reached
-    (a full scroll of a 1M-line document ≈ 1M small objects). Stateless
-    today, so the cost is bounded memory; it becomes a correctness
-    hazard the moment items gain state.
-  - **Evidence**: `mvp/pocketjs/app/view-slots.ts` invariant 4;
-    `docs/product/architecture.md` §5.
-  - **Scope**: windowed/LRU eviction of the cache (viewport × k), keyed
-    by absolute line number; keep the stateless-projection invariant
-    and its regression tests green.
-  - **Acceptance**: cache size bounded by viewport × k under scroll;
-    `view-slots.test.ts` still green.
-
-### [X] markit-desktop target identity (PocketJS upstream proposal)
-
-- Labels: `pocketjs-upstream`, `identity`, `p4`
-- Body:
-  - **Why**: the Markit runtime must not impersonate `macos-widget`;
-    identity and capability are separate concepts (A4 §26–§27).
-  - **Evidence**: `contracts/spec/platforms.ts` (macos-widget =
-    platform macos, form widget); `docs/product/architecture.md` §11.
-  - **Scope**: propose a `markit-desktop` target (or desktop + runtime
-    capability profile) with a Markit-independent reproduction and a
-    regression test, per the upstream strategy (A4 §57).
-  - **Acceptance**: vendor registry proposal reviewed upstream; Markit
-    builds declare their own identity.
-
 ### [X] caretFromX click regression test
 
 - Labels: `editor-model`, `tests`
 - Body:
   - **Why**: the pre-existing click-placement bug (`lineIndex * doc.length`
     sent clicks on lines ≥ 1 to the document end) corrupted position
-    cells until A4; it needs a permanent regression test.
-  - **Evidence**: `docs/phase-a4-final-research-closeout.md` §11.2.
+    cells until A4; it needs a permanent regression test in the Rust
+    core.
+  - **Evidence**: `docs/phase-a4-final-research-closeout.md` §11.2
+    (historical record).
   - **Scope**: unit test for caretFromX at several line indexes + a
     headless click-caret smoke on a multi-line document.
   - **Acceptance**: test fails on the old formula, passes on the fix.
 
-### [X] Performance regression battery in CI
+### [X] Viewport identity discipline for the GPUI presentation layer
 
-- Labels: `ci`, `performance`
+- Labels: `view-model`, `memory`, `p3`
 - Body:
-  - **Why**: the invariants (`docs/product/performance-invariants.md`)
-    need cheap guards: work-amplification checks, not wall-clock
-    thresholds.
-  - **Scope**: run `bench/run-a4.py` cells (r1-scale, r1-ops, r2-case)
-    in CI on a fixed machine; assert full_scans == 0, blocks_reparsed ==
-    1 for local edits, words flat across sizes.
-  - **Acceptance**: green on every PR touching core/edit paths; flake
-    policy documented.
+  - **Why**: the A4-R1 finding (fresh per-render visible-list identity
+    re-materialized the whole visible list per edit) transfers as a
+    principle to whatever per-line presentation the GPUI layer
+    materializes: per-line presentation must derive statelessly from the
+    model's visible range, and any stateful line widget must be keyed by
+    a stable block/content ID, not the absolute line number (which
+    shifts on edits above the viewport).
+  - **Evidence**: `docs/research/pocketjs-mvp-knowledge-transfer.md` §3.
+  - **Scope**: establish and test the identity discipline in the
+    markit-gpui layer once per-line presentation exists.
+  - **Acceptance**: no per-edit re-materialization of the visible
+    presentation; identity is stable and documented.

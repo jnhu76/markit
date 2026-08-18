@@ -1,6 +1,15 @@
 # ADR-001 — PocketJS as the primary UI/runtime substrate
 
-Status: accepted (A4).
+Status: **superseded** (2026-08-18).
+Superseded by: [ADR-008-direct-gpui-product-substrate.md](ADR-008-direct-gpui-product-substrate.md).
+
+> Historical decision record.
+>
+> This ADR reflects the architecture decision at the time it was written:
+> A4 selected PocketJS as the primary product foundation. Markit later
+> pivoted to direct GPUI as the product foundation (ADR-008). The
+> measurements and reasoning below remain part of the evidence base and
+> are not retroactively edited.
 
 ## Observed problem
 

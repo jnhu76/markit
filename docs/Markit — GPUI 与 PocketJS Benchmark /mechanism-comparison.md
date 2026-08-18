@@ -1,9 +1,17 @@
 # Markit — GPUI 与 PocketJS Benchmark / Mechanism Comparison
 
-> **Status:** Research closeout
-> **Scope:** Phase A1–A4
-> **Primary product foundation:** PocketJS
-> **Reference / performance oracle:** GPUI
+> **Status:** Historical research record (research closeout, Phase A1–A4).
+>
+> > **Historical notice:** this document reflects the A4 architecture
+> > decision at the time it was written: PocketJS as primary product
+> > foundation, GPUI as reference/performance oracle. Markit later pivoted
+> > to **direct GPUI as the product foundation** (2026-08-18,
+> > [ADR-008](../adr/ADR-008-direct-gpui-product-substrate.md)). The
+> > benchmark numbers and causal findings below are **unedited** and remain
+> > part of the evidence base.
+>
+> **Original decision header (historical):** Primary product foundation:
+> PocketJS. Reference / performance oracle: GPUI.
 
 ---
 

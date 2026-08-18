@@ -1,8 +1,22 @@
 # Phase A4 — Final Research Closeout → PocketJS Product Foundation
 
-Status: **RESEARCH_PHASE_CLOSED — READY_FOR_PRODUCT_FOUNDATION** (A4-R
-exit gate passed, see §7; A4-P hands the foundation to PocketJS Desktop
-Enablement first, then Markit Product P0 — see §12 and the roadmap).
+> ## SUPERSEDED ARCHITECTURE DECISION
+>
+> This report is a **historical research closeout**. Its measurements and
+> experimental findings remain part of the evidence base.
+>
+> Its product-foundation decision ("PocketJS") was **superseded on
+> 2026-08-18** by [ADR-008](adr/ADR-008-direct-gpui-product-substrate.md),
+> which selects **direct GPUI** for Markit.
+>
+> Reason: subsequent PocketJS desktop work showed that the modern PocketJS
+> desktop host itself delegates window/render/native-text/input integration
+> to GPUI, making PocketJS an unnecessary intermediate runtime for Markit's
+> product goals. Historical numbers below are unedited.
+
+Status: **RESEARCH_PHASE_CLOSED** (A4-R exit gate passed, see §7).
+**The product-foundation decision in this document is superseded —
+see the notice above.**
 
 ## 0. The answer in one paragraph
 

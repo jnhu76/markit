@@ -2,6 +2,11 @@
 
 Status: accepted (A3-P1, reaffirmed A4).
 
+> Post-pivot note (2026-08-18): this decision is implementation-neutral
+> and transfers directly to the Rust core (`markit-core` Document +
+> LineIndex + explicit `EditResult.change` propagation). No PocketJS
+> binding.
+
 ## Observed problem
 
 A2: one 1M-character edit cost 224.8 ms; 94.6% of the turn was Markit's
