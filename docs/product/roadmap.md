@@ -11,9 +11,9 @@ G0  GPUI Baseline Selection
         ↓
 P0  Markit Rust Core
         ↓
-P1  Windows Editor MVP (direct GPUI)
+P1  Windows Editor MVP + Markdown L1 (v0.1, direct GPUI)
         ↓
-P2  Markdown L1 (product-grade)
+P2  Markdown L1 hardening
         ↓
 P3  Typora-style L2
         ↓
@@ -43,11 +43,14 @@ P5  Cross-platform / hardening
   basic latency
   ```
 
-- Do not choose merely because newer is newer. Record evidence per item;
-  pin the selected revision in `markit-core` / `markit-gpui`.
+- Do not choose merely because newer is newer. Record evidence per item.
+- The pinned GPUI revision is a dependency of the GPUI-facing crates
+  (`markit-gpui` / the app crate, via the workspace dependency) — never
+  of `markit-core` (P0 acceptance: core has no GPUI dependency).
 - Acceptance: a documented, evidence-based GPUI baseline selection with
-  build + Windows runtime evidence; the product dependency is frozen to
-  the selected revision.
+  build + Windows runtime evidence; the product's GPUI dependency (in
+  `markit-gpui` / the app crate, not `markit-core`) is frozen to the
+  selected revision.
 - Non-goals: editor features, Linux/macOS hosts.
 
 ## P0 — Markit Rust Core
@@ -63,29 +66,33 @@ P5  Cross-platform / hardening
   core has no GPUI dependency.
 - Non-goals: platform integration, packaging.
 
-## P1 — Windows Editor MVP
+## P1 — Windows Editor MVP + Markdown L1 (v0.1)
 
-- Goal: Markit Desktop v0.1 runs on Windows, built directly on GPUI.
-- Scope (from `docs/product/mvp-v0.1.md`): window, editing, IME
-  (Chinese composition model, ADR-007), clipboard (text), files
-  (open/save/atomic save, crash recovery minimal), CJK + emoji fallback,
-  undo/redo, shortcuts (Ctrl), resize/HiDPI, large-document stability
-  (1M+ flat), regression battery in CI.
+- Goal: Markit Desktop v0.1 runs on Windows, built directly on GPUI: a
+  single-document, L1-styled Markdown editor (`mvp-v0.1.md`).
+- Scope (from `docs/product/mvp-v0.1.md`): window, editing, Markdown L1
+  styled pipeline (ADR-004: heading, paragraph, bold, emphasis, inline
+  code, link, blockquote, ul/ol list, fenced code), IME (Chinese
+  composition model, ADR-007), clipboard (text), files (open/save/atomic
+  save, crash recovery minimal), CJK + emoji fallback, undo/redo,
+  shortcuts (Ctrl), resize/HiDPI, large-document stability (1M+ flat),
+  regression battery in CI.
 - Acceptance: `docs/product/mvp-v0.1.md` gates PASS on Windows with
   evidence; invariants battery green; no GPUI code leaked into
   `markit-core`.
 - Non-goals: tabs, images/tables/math, installer/MSIX (later if needed),
   Linux/macOS.
 
-## P2 — Markdown L1 (product-grade)
+## P2 — Markdown L1 Hardening
 
-- Goal: the L1 pipeline (heading, paragraph, bold, emphasis, inline
-  code, link, blockquote, ul/ol list, fenced code) with incremental
-  invalidation and bounded fence recovery.
-- Scope: block index with stable-boundary rescan, styled runs, L1
-  conformance golden fixtures, bounded fence recovery (only treat ``` as
-  an opener when a matching close exists ahead — re-measure the cascade
-  before shipping).
+- Goal: harden the L1 pipeline shipped in P1 to product-grade conformance
+  and robustness; the L1 feature set itself is already complete and
+  shipped at P1 exit (v0.1).
+- Scope: L1 conformance golden fixtures (CommonMark-derived where
+  applicable), bounded fence recovery + parser checkpoints (issue
+  backlog: bound the cascade, do not hide honest structural
+  propagation), incremental-parser robustness across large structural
+  edits.
 - Acceptance: local-edit radius 1 block at any size; fence edits bounded
   and documented; differential oracle green; conformance fixtures green.
 - Non-goals: syntax hiding (P3).

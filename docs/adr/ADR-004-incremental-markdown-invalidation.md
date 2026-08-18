@@ -41,6 +41,6 @@ ahead).
 ## Decision
 
 Document → Block Index → Incremental Parse → Affected Blocks → Styled
-Runs → Visible Layout → DrawList, with change-range propagation at every
-layer. Structural-edit cost is owned and documented, never benchmarked
-away.
+Runs → Visible Layout → presentation (GPUI elements / shaped text in the
+direct-GPUI architecture), with change-range propagation at every layer.
+Structural-edit cost is owned and documented, never benchmarked away.

@@ -29,6 +29,6 @@ at 10K/100K/1M (3046); idle redraw ~0 frames/s.
 ## Decision
 
 Frame work is viewport-bounded whenever semantics permit: visible range +
-overscan only, DrawList sized by the visible presentation, demand
-rendering on DrawList change. The document may be huge; the frame must
-not be.
+overscan only, materialized presentation work sized by the visible
+presentation, redraw requested only when the visible presentation
+changes. The document may be huge; the frame must not be.

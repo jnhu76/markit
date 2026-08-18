@@ -17,9 +17,9 @@ baseline (roadmap G0). Historical PocketJS-era rows are preserved in
 | ---------- | ------------------- | ------------ | -------------------- | ----- |
 | Build | PASS (GPUI MVP, cross-build from WSL) | PASS | NOT TESTED | NOT TESTED |
 | Launch | PASS | PASS (WSLg windowed) | NOT TESTED | NOT TESTED |
-| GPU render (wgpu) | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
+| GPU render / presentation | PASS (GPUI Windows backend: DirectX 11 + DirectComposition) | PASS (WSLg, GPUI) | NOT TESTED | NOT TESTED |
 | Resize + relayout | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
-| HiDPI / density | PASS (density 1; Retina untested) | PASS (density 1) | NOT TESTED | NOT TESTED |
+| HiDPI / density | PASS (scale factor 1.0 verified; >100% DPI monitor not yet validated) | PASS (density 1) | NOT TESTED | NOT TESTED |
 | Mouse / pointer | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
 | Keyboard | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
 | IME | NOT TESTED (GPUI IMM32 path exercised in prototype; manual Pinyin validation pending on the selected baseline) | NOT TESTED | NOT TESTED | NOT TESTED |
@@ -36,7 +36,8 @@ baseline (roadmap G0). Historical PocketJS-era rows are preserved in
 
 ### Windows (implementation order P1)
 
-- Prototype evidence (A0, `mvp/gpui`): windowed wgpu, keyboard, scroll,
+- Prototype evidence (A0, `mvp/gpui`): windowed GPUI (Win32 + DirectX 11
+  + DirectComposition), keyboard, scroll,
   resize, IME pipeline, demand rendering, headless determinism all PASS.
 - Product gaps to close (Tier-0) on the selected GPUI baseline: system
   font discovery (CJK/emoji), clipboard (text), IME validation, native
@@ -57,7 +58,7 @@ baseline (roadmap G0). Historical PocketJS-era rows are preserved in
 ### macOS (implementation order P5)
 
 - Not tested in this environment; every row above must be validated on
-  real hardware through GPUI: Metal/wgpu, CoreText fonts, IME, clipboard,
+  real hardware through GPUI: Metal, CoreText fonts, IME, clipboard,
   Cmd shortcuts, file dialogs, menu bar, window behavior, Retina scaling,
   .app bundle + codesign/notarization.
 
