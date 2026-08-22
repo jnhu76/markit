@@ -26,7 +26,7 @@ G0  GPUI Baseline Selection
         ↓
 P0  Markit Rust Core + Change/Revision Model
         ↓
-P1  Windows Editor MVP + Realtime Render Loop + Markdown L1 (v0.1)
+P1  Windows Editor MVP + Realtime Render Scheduling + Markdown L1 (v0.1)
         ↓
 P2  Incremental/Scheduling Hardening
         ↓
@@ -141,7 +141,7 @@ game-engine-inspired techniques. Markit remains demand-driven.
 - Non-goals: final buffer choice, worker thread pool design, platform
   integration, packaging.
 
-## P1 — Windows Editor MVP + Realtime Render Loop + Markdown L1 (v0.1)
+## P1 — Windows Editor MVP + Realtime Render Scheduling + Markdown L1 (v0.1)
 
 - Goal: Markit Desktop v0.1 runs on Windows, built directly on GPUI: a
   single-document, L1-styled Markdown editor whose critical interaction
