@@ -48,11 +48,24 @@ precise cache invalidation
 no permanent idle update loop
 ```
 
+The extension boundary is also fixed at the semantic level by
+`docs/product/plugin-compatibility-contract.md`:
+
+```text
+plugins depend on versioned semantic contracts, not Markit internals
+capability negotiation beats host-version guessing
+stable opaque identity crosses the boundary, not pointers/internal indexes
+plugins consume snapshots/queries and submit commands/results
+old supported plugins require contract tests against new hosts
+plugin failure must not contaminate the input hot path
+```
+
 What is **not** fixed yet is the detailed implementation: buffer data
 structure, worker topology, numeric frame budget, batching policy, cache
-sizes, scheduler data structure, or rich-block machinery.
+sizes, scheduler data structure, rich-block machinery, plugin transport,
+plugin runtime, wire encoding, or marketplace model.
 
-Do not prematurely implement a large editor/game-engine framework.
+Do not prematurely implement a large editor/game-engine/plugin framework.
 
 Do not assume that:
 
@@ -69,7 +82,9 @@ Do not assume that:
 - Rust/native code is automatically faster;
 - JavaScript/native FFI is a bottleneck;
 - Electron is inherently the problem;
-- GPUI's current prototype version is the product baseline.
+- GPUI's current prototype version is the product baseline;
+- Rust dynamic libraries are automatically the right plugin ABI;
+- exposing `markit-core` types is an acceptable shortcut for extensions.
 
 Treat those as hypotheses until measured.
 
@@ -533,8 +548,18 @@ docs/product/realtime-execution-model.md
 + MVP/feature acceptance docs when gates change
 ```
 
-Do not allow architecture, roadmap, invariants, and agent instructions to
-describe different execution models.
+When the plugin/extension compatibility boundary changes, update the
+affected sources together:
+
+```text
+docs/product/plugin-compatibility-contract.md
++ docs/product/architecture.md / roadmap.md when phase or boundary changes
++ AGENTS.md when contributor rules change
++ compatibility fixtures/tests once a plugin API exists
+```
+
+Do not allow architecture, roadmap, invariants, compatibility contracts,
+and agent instructions to describe different systems.
 
 For performance findings, record:
 
@@ -586,4 +611,59 @@ over:
 
 ```text
 rewrite → hope → benchmark
+```
+
+## 18. Plugin Compatibility Rules
+
+Read `docs/product/plugin-compatibility-contract.md` before exposing any
+extension-facing API or making an existing extension surface public.
+
+The extension contract follows these rules:
+
+1. **Do not expose Markit internals as the plugin API.** `markit-core`
+   structs, GPUI entities/elements, scheduler tasks, caches, parser
+   implementation details, buffer representation, and Rust memory layout
+   are private unless explicitly promoted by a compatibility decision.
+2. **Prefer versioned semantic contracts over compiled-layout coupling.**
+   Do not choose a Rust dynamic-library ABI merely because it is easy to
+   prototype.
+3. **Negotiate capabilities.** Plugins declare required and optional
+   capabilities; the host must not infer compatibility only from a Markit
+   application version string.
+4. **Use stable opaque identity across the boundary.** Prefer
+   `DocumentId`, stable block/content IDs, source ranges, revisions, and
+   snapshots. Never use raw pointers, Vec indexes, GPUI entity IDs, or
+   absolute line numbers as durable plugin identity.
+5. **Plugins read snapshots/queries and submit commands/results.** They do
+   not retain mutable references to the live `Document`, Markdown IR, or
+   render tree.
+6. **Validate revision/staleness before commit.** A plugin result computed
+   for an older snapshot cannot overwrite newer document state just
+   because it finished later.
+7. **Keep plugin work out of the typing hot path.** Unbounded plugin work
+   is deferrable/background work unless the current visible interaction
+   explicitly requires a bounded result.
+8. **Compatibility is tested, not asserted.** Once a stable plugin API
+   exists, CI must run representative old-plugin fixtures against new
+   hosts and cover capability negotiation, deprecation, stale results,
+   malformed plugins, and failure isolation.
+9. **Breaking public semantics require a compatibility boundary.** Within
+   one stable API major, evolve additively by default; deprecate with a
+   documented migration window before removal.
+10. **MVP does not need a general plugin runtime.** Preserve the boundary
+    now; implement runtime/transport only when real plugin workloads
+    justify the choice.
+
+Before merging a plugin-facing change, answer:
+
+```text
+Is this additive or breaking?
+Which API major/minor owns it?
+Can an old plugin safely ignore the addition?
+Which capability exposes it?
+What stable identity/revision crosses the boundary?
+What is the deprecation/migration path?
+Which old-plugin contract test proves compatibility?
+Can plugin failure or latency block ordinary typing?
+Does the proposed API leak a Markit internal type or dependency?
 ```
