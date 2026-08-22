@@ -41,7 +41,7 @@ pub struct LineIndexCounters {
 }
 
 impl LineIndexCounters {
-    fn absorb(&mut self, other: &Self) {
+    pub(crate) fn absorb(&mut self, other: &Self) {
         self.bytes_scanned += other.bytes_scanned;
         self.line_entries_touched += other.line_entries_touched;
         self.full_rebuilds += other.full_rebuilds;
@@ -220,6 +220,22 @@ impl LineIndex {
     /// Counters accumulated over the index's lifetime.
     pub fn cumulative_counters(&self) -> LineIndexCounters {
         self.cumulative
+    }
+}
+
+#[cfg(test)]
+impl LineIndex {
+    pub(crate) fn starts(&self) -> &[usize] {
+        &self.line_starts
+    }
+
+    pub(crate) fn assert_invariants(&self) {
+        assert!(!self.line_starts.is_empty());
+        assert_eq!(self.line_starts[0], 0);
+        for w in self.line_starts.windows(2) {
+            assert!(w[0] < w[1], "line starts must be strictly increasing");
+        }
+        assert!(*self.line_starts.last().unwrap() <= self.total_len);
     }
 }
 
@@ -544,21 +560,5 @@ mod tests {
         let late_touched = index.last_update_counters().line_entries_touched;
         assert!(late_touched < begin_touched / 2);
         assert!(late_touched < index.line_count() as u64);
-    }
-}
-
-#[cfg(test)]
-impl LineIndex {
-    fn starts(&self) -> &[usize] {
-        &self.line_starts
-    }
-
-    fn assert_invariants(&self) {
-        assert!(!self.line_starts.is_empty());
-        assert_eq!(self.line_starts[0], 0);
-        for w in self.line_starts.windows(2) {
-            assert!(w[0] < w[1], "line starts must be strictly increasing");
-        }
-        assert!(*self.line_starts.last().unwrap() <= self.total_len);
     }
 }
