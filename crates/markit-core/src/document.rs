@@ -22,6 +22,8 @@ use crate::id::DocumentId;
 use crate::line_index::{LineIndex, LineIndexCounters};
 use crate::position::{ByteOffset, LineNumber, SourceRange};
 use crate::revision::DocumentRevision;
+use crate::snapshot::DocumentSnapshot;
+use crate::transaction::EditTransaction;
 
 /// A UTF-8 text document with incremental line indexing and revision
 /// identity.
@@ -156,10 +158,37 @@ impl Document {
     // ---- mutation -----------------------------------------------------------
 
     /// Applies a single edit. One revision bump; all-or-nothing
-    /// validation. (Transaction-level mutation arrives with the
-    /// transaction seam.)
+    /// validation.
     pub fn apply_edit(&mut self, edit: TextEdit) -> Result<EditResult, EditError> {
         self.apply_edits(vec![edit]).map(|(result, _)| result)
+    }
+
+    /// Applies a transaction atomically: every edit is validated before
+    /// any mutation (all-or-nothing), edits apply at non-overlapping
+    /// offsets, and the revision advances exactly once. Prefer
+    /// [`EditTransaction::apply`], which also returns the inverse.
+    pub fn apply_transaction(
+        &mut self,
+        transaction: EditTransaction,
+    ) -> Result<EditResult, EditError> {
+        self.apply_edits(transaction.into_edits())
+            .map(|(result, _)| result)
+    }
+
+    /// A coherent O(1) read view of this document. See
+    /// [`DocumentSnapshot`] for the coherence and boundary contract.
+    pub fn snapshot(&self) -> DocumentSnapshot<'_> {
+        DocumentSnapshot::new(self)
+    }
+
+    /// Shared mutation path. Returns the result plus the inverse edits
+    /// (post-edit coordinates, original text) — the undo seam consumed
+    /// by [`EditTransaction::apply`].
+    pub(crate) fn apply_transaction_with_inverse(
+        &mut self,
+        transaction: EditTransaction,
+    ) -> Result<(EditResult, Vec<TextEdit>), EditError> {
+        self.apply_edits(transaction.into_edits())
     }
 
     /// Replaces the whole document (load / reload / external rewrite).

@@ -66,6 +66,9 @@ pub mod id;
 pub mod line_index;
 pub mod position;
 pub mod revision;
+pub mod selection;
+pub mod snapshot;
+pub mod transaction;
 
 pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
 pub use document::Document;
@@ -73,3 +76,6 @@ pub use id::DocumentId;
 pub use line_index::{LineIndex, LineIndexCounters};
 pub use position::{ByteOffset, LineNumber, SourceRange};
 pub use revision::{DocumentRevision, Revisioned, StaleResult};
+pub use selection::Selection;
+pub use snapshot::DocumentSnapshot;
+pub use transaction::{AppliedTransaction, EditIntent, EditTransaction};
