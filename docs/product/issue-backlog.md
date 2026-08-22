@@ -11,6 +11,12 @@ architecture (ADR-008) and the real-time execution model in
 
 ## P0 — Core execution semantics
 
+Status note (2026-08): P0-01 (product workspace + incremental document
+core + revision/change model + core instrumentation seams) is
+implemented; the items below remain open for the P0 hardening they
+describe (dirty propagation through future derived layers, full
+instrumentation coverage).
+
 ### [P0] Revision identity + precise dirty propagation in markit-core
 
 - Labels: `p0`, `editor-model`, `performance`, `correctness`
