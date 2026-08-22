@@ -87,7 +87,9 @@ mod line_index;
 pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
 pub use document::Document;
 pub use id::DocumentId;
-pub use markdown::{BlockKind, BlockParseState, BlockRecord, InternalBlockId};
+pub use markdown::{
+    BlockKind, BlockParseState, BlockRecord, InlineIr, InlineNode, InternalBlockId,
+};
 pub use position::{ByteOffset, LineNumber, SourceRange};
 pub use revision::{DocumentRevision, DocumentVersion, Revisioned, StaleResult};
 pub use selection::Selection;

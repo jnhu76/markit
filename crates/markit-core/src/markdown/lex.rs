@@ -292,7 +292,6 @@ pub(crate) fn list_marker(line: &str) -> Option<ListMarkerShape> {
 // ---------------------------------------------------------------------------
 
 /// Length of the backtick run starting exactly at `at`, or 0.
-#[allow(dead_code)] // inline parser (this PR)
 pub(crate) fn backtick_run_at(text: &str, at: usize) -> usize {
     let bytes = text.as_bytes();
     let mut len = 0usize;
@@ -305,7 +304,6 @@ pub(crate) fn backtick_run_at(text: &str, at: usize) -> usize {
 /// Start of the first backtick run of **exactly** `len` at or after
 /// `from` (code-span closer, contract §7.2). Runs of other lengths are
 /// skipped over.
-#[allow(dead_code)] // inline parser (this PR)
 pub(crate) fn find_backtick_string(text: &str, from: usize, len: usize) -> Option<usize> {
     let bytes = text.as_bytes();
     let mut i = from;
@@ -325,7 +323,6 @@ pub(crate) fn find_backtick_string(text: &str, from: usize, len: usize) -> Optio
 
 /// An unescaped emphasis delimiter run starting exactly at `at`:
 /// `(character, length)`, or `None` when `at` does not start one.
-#[allow(dead_code)] // inline parser (this PR)
 pub(crate) fn delimiter_run_at(text: &str, at: usize) -> Option<(u8, usize)> {
     let bytes = text.as_bytes();
     let &ch = bytes.get(at)?;
@@ -340,7 +337,6 @@ pub(crate) fn delimiter_run_at(text: &str, at: usize) -> Option<(u8, usize)> {
 }
 
 /// Whether `c` is ASCII punctuation (the escapable set, contract §7.1).
-#[allow(dead_code)] // inline parser (this PR)
 pub(crate) fn is_ascii_punctuation(c: char) -> bool {
     c.is_ascii_punctuation()
 }

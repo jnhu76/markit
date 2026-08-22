@@ -10,6 +10,7 @@
 use std::ops::Range;
 
 use crate::markdown::identity::InternalBlockId;
+use crate::markdown::inline::InlineIr;
 use crate::markdown::state::{BlockParseState, FenceChar};
 use crate::position::{ByteOffset, LineNumber, SourceRange};
 
@@ -181,6 +182,9 @@ pub struct BlockRecord {
     pub fingerprint: BlockFingerprint,
     /// Kind-specific detail.
     pub detail: BlockDetail,
+    /// Derived inline IR: one parsed run per contract §7.6 segment
+    /// (empty for blank and fenced-code blocks).
+    pub inline: InlineIr,
 }
 
 impl BlockRecord {

@@ -22,6 +22,7 @@
 
 mod block;
 mod identity;
+mod inline;
 mod lex;
 mod parser;
 mod state;
@@ -37,6 +38,7 @@ pub use block::{
     BlockDetail, BlockFingerprint, BlockKind, BlockRecord, FenceInfo, ListItem, ListSignature,
 };
 pub use identity::InternalBlockId;
+pub use inline::{InlineIr, InlineNode, InlineRun};
 pub use state::{BlockParseState, FenceChar};
 
 /// Structural work counters for one Markdown state transition (build or
@@ -108,8 +110,13 @@ impl MarkdownState {
         let mut parser = BlockParser::new(snapshot, 0);
         let mut next_id = 0u64;
         let mut blocks = Vec::new();
+        let mut inline_blocks = 0u64;
         while let Some(parsed) = parser.next_block() {
-            blocks.push(parsed.into_record(InternalBlockId::mint(&mut next_id)));
+            let mut record = parsed.into_record(InternalBlockId::mint(&mut next_id));
+            if inline::attach_inline(&mut record, snapshot) {
+                inline_blocks += 1;
+            }
+            blocks.push(record);
         }
         let work = MarkdownWork {
             dirty_regions: 1,
@@ -119,7 +126,7 @@ impl MarkdownState {
             blocks_examined: blocks.len() as u64,
             blocks_reparsed: 0,
             blocks_created: blocks.len() as u64,
-            inline_blocks_reparsed: 0,
+            inline_blocks_reparsed: inline_blocks,
             convergence_line: snapshot.line_count() as u64,
             ..MarkdownWork::default()
         };
@@ -193,6 +200,11 @@ impl MarkdownState {
             .blocks
             .partition_point(|b| b.line_span.start < lines.end);
         &self.blocks[first..last.max(first)]
+    }
+
+    /// The inline IR of one block (query view; contract §7).
+    pub fn inline_ir(&self, id: InternalBlockId) -> Option<&InlineIr> {
+        self.block_by_id(id).map(|block| &block.inline)
     }
 
     /// Work counters of the last transition (build or update).

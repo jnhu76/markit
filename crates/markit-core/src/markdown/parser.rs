@@ -76,6 +76,8 @@ impl ParsedBlock {
             state_after: self.state_after,
             fingerprint: self.fingerprint,
             detail: self.detail,
+            // Attached by the caller (it needs snapshot access).
+            inline: crate::markdown::inline::InlineIr::default(),
         }
     }
 }
