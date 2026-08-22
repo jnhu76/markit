@@ -136,7 +136,7 @@ Document → Block Index → Incremental Parse → Affected Blocks
   carrying fence state. The consumed range is the structural
   invalidation radius (measured: 1 block for local edits at any size;
   the full fence cascade for fence-boundary edits — a known product cost
-  to bound, see §9).
+  to bound, see §10).
 - **Styled runs** are computed per affected block (inline parse, cached
   by block start line, invalidated for exactly the replaced blocks) and
   sliced per visible line.
@@ -279,7 +279,7 @@ rich clipboard post-processing is not.
 - A deterministic/headless host (or core unit tests) validates
   correctness, algorithmic scaling, dirty propagation, revision
   compatibility, queue policy, and controlled interventions — it is
-  **not** evidence of real desktop interaction latency (AGENTS.md §11).
+  **not** evidence of real desktop interaction latency (AGENTS.md §12).
 - Real OS hosts are required for claims about input delivery, IME, fonts,
   scheduling, compositor behavior, GPU/presentation, and actual frame
   budget calibration.
