@@ -476,6 +476,13 @@ laws:
   model testable.
 - `roadmap.md` makes the scheduler/dirty/version/LOD foundations explicit
   phase acceptance work rather than optional future optimization.
+- `g0-gpui-baseline.md` records the platform facts the frozen GPUI
+  revision actually provides on Windows. Two of them constrain any
+  scheduler design directly: Windows has **no metered idle**
+  (`spawn_when_idle` is low-priority main-thread work;
+  `idle_time_remaining()` is `None`), and **foreground executor priority
+  is ignored**. Idle budgets must therefore be self-metered, and priority
+  semantics must not assume foreground priority works.
 - ADR-003/004/005 remain the accepted evidence-backed decisions for
   incremental line indexing, Markdown invalidation, and viewport-bounded
   rendering.

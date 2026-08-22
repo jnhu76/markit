@@ -5,11 +5,18 @@ Markdown editor on Windows, built in **Rust + direct GPUI** (ADR-008).
 Windows is the first product platform; Linux and macOS follow in later
 phases, each gated by the same acceptance on real hardware.
 
+Delivery is staged (roadmap, issue #12 R10): **P1-A** delivers the dogfood
+editor — enough to edit Markit's own Markdown docs — and **P1-B** owns the
+full acceptance gates below plus hardening. Dogfooding does not weaken any
+gate; it produces the real workload the gates are measured against.
+
 The functional MVP scope below is carried over from the A4-era product
 definition; only the substrate changed (from the PocketJS foundation to
 direct GPUI). The execution model is defined by
 `docs/product/realtime-execution-model.md`: incremental, viewport-bounded,
 revision-safe, demand-driven, and non-blocking for deferrable work.
+The GPUI substrate is the G0-frozen revision
+(`docs/product/g0-gpui-baseline.md`).
 
 The MVP does **not** ship a general plugin runtime, but its boundaries must
 remain compatible with the future extension model in
@@ -81,9 +88,20 @@ plugin transport choice (Rust dylib / Wasm / subprocess IPC / wire encoding)
 6. Performance invariants: `docs/product/performance-invariants.md`
    battery passes (work-amplification + scheduling/revision checks;
    calibrated real-host timing, not arbitrary CI wall-clock SLAs).
-7. 1M-document stability: normal local-edit work stays effectively flat
-   vs 10K except known/owned structural cases; GPUI presentation remains
-   viewport-bound; idle editor does not continuously request frames.
+7. 1M-document stability (P1-B, Buffer/Index Decision Gate): the
+   algorithmic counters (full scans == 0, local-edit reparse == smallest
+   valid region, presentation work viewport-bound, idle: no draw/present
+   work) pass at 10K/100K/1M, AND the Buffer/Index Decision Gate has run on
+   real product workloads — positions begin/q1/middle/q3/end; content
+   ASCII/CJK/emoji/long-lines/mixed-Markdown/fences; observing bytes
+   scanned, bytes moved/copied where measurable, line entries shifted,
+   blocks reparsed, visible materialization, and real input→visible-frame
+   tails / long frames (issue #12 R8). "1M local edit is flat" may not be
+   certified from `bytes_scanned == Δ ∧ full_rebuilds == 0` alone: those
+   counters exclude String suffix movement and LineIndex suffix shifting
+   (known, deliberate P0-01 costs). If suffix movement dominates the
+   user-visible term, reopen the ADR-003 implementation decision; if not,
+   keep the simple representation.
 8. Realtime scheduling: deferrable work can yield/resume without blocking
    caret/input/visible-text progress; current interaction and visible
    viewport outrank distant/background completion.
@@ -104,8 +122,13 @@ plugin transport choice (Rust dylib / Wasm / subprocess IPC / wire encoding)
 
 ## Exit criteria
 
-- P1 (Windows): gates 1–12 on Windows with evidence, installer-free
-  portable exe, crash recovery smoke.
+- P1-A (dogfood): the functional scope above is usable daily on Windows
+  (window, L1 Markdown, caret/selection/scroll, open/save, undo/redo,
+  clipboard, Chinese IME, CJK/emoji, basic find) on the G0-frozen baseline.
+  No scheduler/plugin/rich-block requirement.
+- P1-B (v0.1): gates 1–12 on Windows with evidence, installer-free
+  portable exe, atomic save + crash-recovery smoke, real-host performance
+  matrix, and the Buffer/Index Decision Gate recorded.
 - The exact numeric frame budget, batch size, worker count, overscan, and
   cache sizes are recorded as measured implementation parameters, not as
   architectural constants.

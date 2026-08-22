@@ -65,18 +65,28 @@ rather than work proportional to the total document.
 
 ## Current Goals
 
-1. Select and pin a GPUI baseline suitable for Windows development and
-   observable demand-driven scheduling (roadmap G0).
-2. Build the framework-independent Rust core (`markit-core`): Document,
-   LineIndex, Selection, EditTransaction, Commands, BlockIndex, Markdown
-   L1, explicit dirty/revision semantics.
-3. Build the Windows editor MVP on direct GPUI with viewport-bounded,
-   non-blocking presentation: window, editing, IME, clipboard, files, CJK,
-   undo, large-document stability, cooperative/deferred work seams.
-4. Instrument work amplification, frame work, yields, queue/stale-result
+The roadmap is a dependency graph (see `docs/product/roadmap.md`), not a
+waterfall. Status as of 2026-08-22:
+
+1. ✅ P0-01 — framework-independent document core (`markit-core`):
+   Document, incremental LineIndex, Selection, EditTransaction, explicit
+   change/revision semantics (PR #11).
+2. ✅ G0 — GPUI baseline frozen: `zed` rev `eb8e1c8` (Zed v1.16.1),
+   capability-audited and Windows-validated
+   (`docs/product/g0-gpui-baseline.md`).
+3. P0-02 — Markdown BlockIndex + internal IR with golden fixtures and a
+   differential oracle (GPUI-independent; may proceed independently of
+   G0).
+4. P0-03 — first product vertical slice on the frozen baseline:
+   keystroke → document → Markdown IR → visible GPUI pixels (needs both
+   G0 and P0-02).
+5. P1-A dogfood editor → P1-B v0.1 hardening (real-host performance
+   matrix, buffer/index decision gate, atomic save + crash recovery,
+   portable release artifact).
+6. Instrument work amplification, frame work, yields, queue/stale-result
    behavior, cache invalidation, and interaction tails so the real-time
    model is testable rather than aspirational.
-5. Keep the evidence-before-architecture discipline: measure before tuning
+7. Keep the evidence-before-architecture discipline: measure before tuning
    exact budgets/data structures/worker topology, and never trade
    correctness for a benchmark.
 

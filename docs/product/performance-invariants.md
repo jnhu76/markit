@@ -39,9 +39,18 @@ can be huge; the frame must not be.
 
 ## INV-04 — An idle document must not continuously request frames
 
-Demand rendering: the idle editor must not request frames while nothing
-changed (measured ~0 frames/s, ~1% CPU in A3/A4). No animation/timer loop
-may force frames while nothing changed.
+Demand rendering: the idle editor must not do draw/present work while
+nothing changed (measured ~0 frames/s, ~1% CPU in A3/A4; re-validated on
+the G0 baseline 2026-08-22: 0 draws / 0 frame requests over 2 s at rest
+and 0 % CPU / ~36 MB WS over 6 s external sampling — see
+`g0-gpui-baseline.md` §4/§5). No animation/timer loop may force frames
+while nothing changed.
+
+Precision (G0 finding): on the pinned Windows GPUI baseline a vsync thread
+wakes every window each refresh even when clean, but clean windows skip
+both draw and present. The product claim is therefore "the idle editor
+does no draw/present work", not "the process receives no wakeups"; idle
+CPU is the measured proxy for wake cost.
 
 The game-engine analogy therefore stops at scheduling techniques: Markit
 must not acquire a permanent fixed-rate game loop.
@@ -198,12 +207,18 @@ should be observable during performance investigation.
 
 - INV-05's fence cascade is the known exception: a fence-boundary edit
   re-parsed up to 30K lines at 1M (68.9 ms, honest, A4 measurement). The
-  product must bound fence recovery (only treat ``` as an opener when a
-  matching close exists ahead) and re-measure before shipping L1.
+  product must bound the *synchronous user-blocking* cost with
+  semantics-preserving means (checkpoints, resumable/chunkable
+  propagation) and re-measure before shipping L1. Never change Markdown
+  interpretation to cap the invalidation radius — any dialect change is
+  an explicit documented dialect decision (issue #12 R7).
 - The model's O(lines-after) line-index suffix shift (up to ~2.3 ms at
-  1M begin-position edits, A3 measurement) is instrumented and
-  position-dependent; a buffer redesign is a real-workload decision, not
-  a pre-emptive one.
+  1M begin-position edits, A3 measurement) and the O(document suffix
+  bytes) String splice are instrumented, position-dependent, deliberate
+  P0-01 costs. Before v0.1 certification the Buffer/Index Decision Gate
+  (roadmap P1-B, issue #12 R8) measures whether they dominate the
+  user-visible term on real workloads; only that evidence may reopen
+  ADR-003's implementation choice.
 - The A4-R1 reactive-identity finding (~90 native node recreations per
   edit from fresh visible-list objects) is a design warning for the GPUI
   layer: per-line presentation must derive statelessly from the model's
@@ -224,7 +239,7 @@ core; the A2–A4 battery `bench/run-a4.py` remains as historical tooling):
 | blocks_reparsed == 1 for local edits at 10K and 1M | INV-01/05/08 |
 | materialized presentation work flat across document sizes | INV-02/03/12 |
 | op churn per edit viewport-bound | INV-02/03 |
-| idle: no frame requests | INV-04 |
+| idle: no draw/present work | INV-04 |
 | structural edit radius recorded (bounded recovery to come) | INV-05/08 |
 | frame-work duration + yield/budget-overrun counters recorded | INV-07/09 |
 | old revision result cannot commit after a newer edit | INV-10/13 |
