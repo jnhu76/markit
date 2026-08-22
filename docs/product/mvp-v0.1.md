@@ -7,7 +7,9 @@ phases, each gated by the same acceptance on real hardware.
 
 The functional MVP scope below is carried over from the A4-era product
 definition; only the substrate changed (from the PocketJS foundation to
-direct GPUI).
+direct GPUI). The execution model is defined by
+`docs/product/realtime-execution-model.md`: incremental, viewport-bounded,
+revision-safe, demand-driven, and non-blocking for deferrable work.
 
 ## In scope
 
@@ -27,6 +29,10 @@ Clipboard:           text copy/cut/paste
 Shortcuts:           Copy/Paste/Undo/Redo/SelectAll/Save/Open/Find
                      (Ctrl on Win/Linux, Cmd on macOS via ShortcutPolicy)
 Window:              resize, HiDPI, window-state restore (basic)
+Execution:           explicit changed range + revision identity,
+                     viewport-bounded materialization, demand rendering,
+                     bounded/cooperative deferrable work, stale-result
+                     rejection, coherent publication
 Stability:           large documents (1M+ measured flat), crash recovery
                      (minimal: periodic recovery snapshot + clean-shutdown
                      marker + startup recovery)
@@ -43,6 +49,9 @@ rich HTML clipboard / images / custom MIME
 transparent windows
 legacy encodings (UTF-8 only)
 full Typora-style syntax hiding (L2 is a later phase)
+generic ECS / archetype / game-engine framework
+permanent fixed-rate render/update loop
+final worker-pool topology or hard-coded scheduler tuning copied from references
 ```
 
 ## Acceptance gates (Windows first, in order)
@@ -58,14 +67,31 @@ full Typora-style syntax hiding (L2 is a later phase)
    the undo stack as keystrokes.
 5. Clipboard: copy/cut/paste round-trip with the OS.
 6. Performance invariants: `docs/product/performance-invariants.md`
-   battery passes (work-amplification checks; loose wall-clock
-   guardrails).
-7. 1M-document stability: edit latency flat vs 10K (within noise band),
-   GPUI presentation viewport-bound, no idle redraw.
+   battery passes (work-amplification + scheduling/revision checks;
+   calibrated real-host timing, not arbitrary CI wall-clock SLAs).
+7. 1M-document stability: normal local-edit work stays effectively flat
+   vs 10K except known/owned structural cases; GPUI presentation remains
+   viewport-bound; idle editor does not continuously request frames.
+8. Realtime scheduling: deferrable work can yield/resume without blocking
+   caret/input/visible-text progress; current interaction and visible
+   viewport outrank distant/background completion.
+9. Revision safety: deliberately delayed/out-of-order background or
+   deferred results cannot overwrite a newer document/presentation state.
+10. Publication coherence: a visible frame cannot silently combine
+    incompatible document/parse/layout/highlight revisions unless reused
+    artifacts prove compatibility.
+11. Observability: real-host performance runs expose p50/p95/p99 where
+    statistically meaningful, max/long-frame counts, changed-region and
+    viewport work, frame-work/yield counters, and stale/cancel/reject
+    counts needed to diagnose scheduling failures.
 
 ## Exit criteria
 
-- P1 (Windows): gates 1–7 on Windows with evidence, installer-free
+- P1 (Windows): gates 1–11 on Windows with evidence, installer-free
   portable exe, crash recovery smoke.
-- Later platforms: the same gates on a real Linux desktop and on macOS,
-  each in its own phase (roadmap P5).
+- The exact numeric frame budget, batch size, worker count, overscan, and
+  cache sizes are recorded as measured implementation parameters, not as
+  architectural constants.
+- Later platforms: the same semantic gates on a real Linux desktop and on
+  macOS, each in its own phase (roadmap P5), with platform-appropriate
+  timing/presentation evidence.
