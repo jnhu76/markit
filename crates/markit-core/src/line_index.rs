@@ -53,7 +53,14 @@ impl LineIndexCounters {
 /// The index is text-less by design: it stores only line starts and the
 /// total byte length, so [`Document`](crate::Document) keeps single
 /// ownership of the text. Internal representation (`Vec<usize>`) is
-/// private and replaceable.
+/// private and replaceable — which is why the whole module is
+/// crate-private: the line index is an implementation detail, not
+/// product contract, and algorithmic work leaves through
+/// [`EditWork`](crate::EditWork) instead. This pin is deliberate:
+///
+/// ```compile_fail
+/// use markit_core::LineIndex;
+/// ```
 #[derive(Clone, Debug)]
 pub struct LineIndex {
     /// Byte offset of each line's first byte; strictly increasing.
@@ -148,13 +155,8 @@ impl LineIndex {
         self.line_starts.len()
     }
 
-    /// Total document byte length.
-    pub fn total_len(&self) -> usize {
-        self.total_len
-    }
-
     /// The line containing `offset`. `offset == total_len()` (EOF) maps
-    /// to the last line. Panics if `offset > total_len()`.
+    /// to the last line. Panics if `offset > total_len`.
     pub fn line_of(&self, offset: usize) -> usize {
         assert!(
             offset <= self.total_len,
@@ -168,18 +170,6 @@ impl LineIndex {
     pub fn line_start(&self, line: usize) -> usize {
         assert!(line < self.line_starts.len(), "line {line} out of range");
         self.line_starts[line]
-    }
-
-    /// End of `line` **including** its `'\n'` terminator when present —
-    /// the next line's start, or the document end for the last line.
-    /// Panics if `line >= line_count()`.
-    pub fn line_end(&self, line: usize) -> usize {
-        assert!(line < self.line_starts.len(), "line {line} out of range");
-        if line + 1 < self.line_starts.len() {
-            self.line_starts[line + 1]
-        } else {
-            self.total_len
-        }
     }
 
     /// End of `line`'s content, **excluding** the `'\n'` terminator. A
@@ -216,17 +206,22 @@ impl LineIndex {
     pub fn last_update_counters(&self) -> LineIndexCounters {
         self.last
     }
-
-    /// Counters accumulated over the index's lifetime.
-    pub fn cumulative_counters(&self) -> LineIndexCounters {
-        self.cumulative
-    }
 }
 
 #[cfg(test)]
 impl LineIndex {
     pub(crate) fn starts(&self) -> &[usize] {
         &self.line_starts
+    }
+
+    /// Total document byte length (checked against the oracle in tests).
+    pub(crate) fn total_len(&self) -> usize {
+        self.total_len
+    }
+
+    /// Counters accumulated over the index's lifetime (test assertions).
+    pub(crate) fn cumulative_counters(&self) -> LineIndexCounters {
+        self.cumulative
     }
 
     pub(crate) fn assert_invariants(&self) {

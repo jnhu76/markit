@@ -17,8 +17,9 @@ fn main() {
 
     let mut doc = Document::new("# Markit\n中文编辑器 🙂\n");
 
-    // A derived view (here: line count) is tagged with its revision.
-    let mut derived = Revisioned::new(doc.revision(), doc.line_count());
+    // A derived view (here: line count) is tagged with its document
+    // version: identity + revision, never a bare revision number.
+    let mut derived = Revisioned::new(doc.version(), doc.line_count());
     println!(
         "loaded document {:?} at revision {} — {} lines, {} bytes",
         doc.id(),
@@ -32,40 +33,41 @@ fn main() {
         .with_edit(TextEdit::insert(ByteOffset(2), "产品 "))
         .apply(&mut doc)
         .expect("skeleton edit is valid");
+    let edit = &applied.result.edits[0];
     println!(
         "typed edit: kind {:?}, old [{}, {}), new [{}, {}), byte_delta {}, scanned {} bytes, {} line entries touched",
         applied.result.kind,
-        applied.result.old_range.start.as_usize(),
-        applied.result.old_range.end.as_usize(),
-        applied.result.new_range.start.as_usize(),
-        applied.result.new_range.end.as_usize(),
-        applied.result.byte_delta,
+        edit.old_range.start.as_usize(),
+        edit.old_range.end.as_usize(),
+        edit.new_range.start.as_usize(),
+        edit.new_range.end.as_usize(),
+        edit.byte_delta,
         applied.result.work.bytes_scanned,
         applied.result.work.line_entries_touched,
     );
 
     // The old derived result is stale and must be rejected, not applied.
-    match derived.commit(doc.revision()) {
+    match derived.commit(doc.version()) {
         Ok(_) => unreachable!("skeleton: stale result must not commit"),
         Err(stale) => {
             println!(
                 "stale derived result rejected: base revision {} < current {}",
-                stale.base_revision.as_u64(),
-                stale.current_revision.as_u64(),
+                stale.base_version.revision().as_u64(),
+                stale.current_version.revision().as_u64(),
             );
         }
     }
-    derived = Revisioned::new(doc.revision(), doc.line_count());
+    derived = Revisioned::new(doc.version(), doc.line_count());
     let lines = derived
-        .commit(doc.revision())
-        .expect("current revision commits");
+        .commit(doc.version())
+        .expect("current version commits");
     println!(
         "derived line count committed at revision {}: {lines}",
         doc.revision().as_u64()
     );
 
     // Selection transform over the same edit coordinates.
-    let caret = Selection::caret(ByteOffset(20)).map_over_edit(applied.result.old_range, "产品 ");
+    let caret = Selection::caret(ByteOffset(20)).map_over_edit(edit.old_range, "产品 ");
     println!("caret mapped to byte {}", caret.caret_offset().as_usize());
     println!("line 0 is now: {:?}", doc.line_str(LineNumber(0)));
 

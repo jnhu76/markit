@@ -5,10 +5,16 @@
 //! ([`EditResult`]), and downstream layers consume those ranges instead of
 //! rescanning the document to guess what changed (ADR-003,
 //! `docs/product/realtime-execution-model.md` §4).
+//!
+//! The **canonical** invalidation regions of a mutation are the per-edit
+//! [`AppliedEdit`] entries. Sparsity must survive the change
+//! representation: two distant one-line edits are two one-line regions —
+//! never one region covering everything between them.
 
 use std::fmt;
+use std::ops::Range;
 
-use crate::position::{ByteOffset, SourceRange};
+use crate::position::{ByteOffset, LineNumber, SourceRange};
 use crate::revision::DocumentRevision;
 
 /// Structural classification of an applied edit.
@@ -97,7 +103,9 @@ impl TextEdit {
 }
 
 /// One applied edit, with coordinates in both the pre-edit and the
-/// post-edit document (per-edit detail of [`EditResult`]).
+/// post-edit document. **This is the canonical invalidation region** for
+/// downstream consumers (future BlockIndex, view model): per edit, small,
+/// and never merged across distant edits.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct AppliedEdit {
     /// Structural classification of this edit.
@@ -108,6 +116,14 @@ pub struct AppliedEdit {
     pub new_range: SourceRange,
     /// `new_text.len() - old_range.len()` in bytes.
     pub byte_delta: i64,
+    /// Lines covering [`AppliedEdit::old_range`] in the **pre-edit**
+    /// document (line-granular dirty region for structures keyed by old
+    /// coordinates; provided so consumers need not rescan or guess).
+    pub old_line_span: Range<LineNumber>,
+    /// Lines covering [`AppliedEdit::new_range`] in the **post-edit**
+    /// document (line-granular dirty region for structures keyed by new
+    /// coordinates).
+    pub new_line_span: Range<LineNumber>,
 }
 
 /// Structural work counters for one mutation — the work-amplification
@@ -117,8 +133,11 @@ pub struct AppliedEdit {
 pub struct EditWork {
     /// Old bytes removed plus new bytes inserted (summed per edit).
     pub changed_bytes: u64,
-    /// Number of lines in the post-edit document that cover the changed
-    /// range — the line-granular invalidation radius.
+    /// Post-edit lines covered by the changed regions: the **disjoint
+    /// union of the per-edit new line spans**, so the measure stays
+    /// proportional to what actually changed. It is never the span
+    /// between the first and last edit — two distant one-line edits
+    /// report 2, not the document size (INV-05/INV-08).
     pub changed_lines: u64,
     /// Document bytes actually scanned while updating the line index.
     /// A local edit scans only the bytes of its own new text (INV-01:
@@ -133,9 +152,10 @@ pub struct EditWork {
 
 /// Result of a successful mutation.
 ///
-/// Produced **by the mutation itself**; downstream consumers (line index
-/// users, future BlockIndex, view model) read `old_range`/`new_range`
-/// and never re-derive the changed region by diffing.
+/// Produced **by the mutation itself**; downstream consumers (future
+/// BlockIndex, view model) read [`EditResult::edits`] — the canonical,
+/// per-edit dirty regions — and never re-derive the changed region by
+/// diffing or rescanning.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct EditResult {
     /// Revision before the mutation.
@@ -145,15 +165,25 @@ pub struct EditResult {
     /// Classification of the covering change. Per-edit classifications
     /// live in [`EditResult::edits`].
     pub kind: ChangeKind,
-    /// Minimal covering range in the pre-edit document.
-    pub old_range: SourceRange,
-    /// Minimal covering range in the post-edit document.
-    pub new_range: SourceRange,
+    /// Smallest range covering all edits in the **pre-edit** document.
+    ///
+    /// **Convenience only.** For a multi-edit transaction with distant
+    /// edits this spans everything between the first and last edit; using
+    /// it as an invalidation region reintroduces O(document) work and is
+    /// exactly the failure the per-edit regions exist to prevent.
+    /// Canonical invalidation: [`EditResult::edits`].
+    pub covering_old_range: SourceRange,
+    /// Smallest range covering all edits in the **post-edit** document.
+    ///
+    /// **Convenience only** — same warning as
+    /// [`EditResult::covering_old_range`].
+    pub covering_new_range: SourceRange,
     /// Document byte-length change.
     pub byte_delta: i64,
     /// Document line-count change.
     pub line_delta: i64,
-    /// Per-edit details, in ascending document order.
+    /// Per-edit details, in ascending document order — the **canonical**
+    /// changed regions for downstream invalidation.
     pub edits: Vec<AppliedEdit>,
     /// Structural work counters for this mutation.
     pub work: EditWork,

@@ -21,11 +21,11 @@ use crate::change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, Te
 use crate::id::DocumentId;
 use crate::line_index::{LineIndex, LineIndexCounters};
 use crate::position::{ByteOffset, LineNumber, SourceRange};
-use crate::revision::DocumentRevision;
+use crate::revision::{DocumentRevision, DocumentVersion};
 use crate::snapshot::DocumentSnapshot;
 use crate::transaction::EditTransaction;
 
-/// A UTF-8 text document with incremental line indexing and revision
+/// A UTF-8 text document with incremental line indexing and version
 /// identity.
 ///
 /// Storage is private by design. The known costs of the current
@@ -37,7 +37,23 @@ use crate::transaction::EditTransaction;
 /// - the line-index suffix shift is O(lines after the edit),
 ///   position-dependent and instrumented
 ///   ([`EditWork::line_entries_touched`]).
-#[derive(Clone, Debug)]
+///
+/// ## Not cloneable, on purpose
+///
+/// [`Document`] deliberately does **not** implement `Clone`: a clone would
+/// duplicate the [`DocumentId`] and revision while letting the copies
+/// diverge independently, so `(DocumentId, DocumentRevision)` would stop
+/// naming exactly one coherent state — the invariant the whole
+/// version/staleness model is built on. If document duplication ever
+/// becomes a real workload, it gets an explicit `fork`/`duplicate` API
+/// that mints a fresh `DocumentId` and defines its revision semantics;
+/// identity-preserving duplication stays a compile error until then.
+///
+/// ```compile_fail
+/// let doc = markit_core::Document::new("x");
+/// let _copy = doc.clone();
+/// ```
+#[derive(Debug)]
 pub struct Document {
     id: DocumentId,
     storage: String,
@@ -65,8 +81,17 @@ impl Document {
     }
 
     /// Current revision. Advances by exactly one per successful mutation.
+    /// Only meaningful together with [`Document::id`]; prefer
+    /// [`Document::version`] when the value crosses a seam.
     pub fn revision(&self) -> DocumentRevision {
         self.revision
+    }
+
+    /// The current coherent version: identity + revision. This is the unit
+    /// of validity for derived results ([`Revisioned`]) — a bare revision
+    /// from a different document must never validate against this one.
+    pub fn version(&self) -> DocumentVersion {
+        DocumentVersion::new(self.id, self.revision)
     }
 
     /// Total byte length.
@@ -209,24 +234,29 @@ impl Document {
         let old_range = SourceRange::new(ByteOffset::ZERO, ByteOffset(old_len));
         let new_range = SourceRange::new(ByteOffset::ZERO, ByteOffset(new_len));
         let counters = self.lines.last_update_counters();
+        let new_line_count = self.lines.line_count();
+        let old_line_span = LineNumber(0)..LineNumber(old_line_count);
+        let new_line_span = LineNumber(0)..LineNumber(new_line_count);
 
         EditResult {
             base_revision,
             new_revision: self.revision,
             kind: ChangeKind::ReplaceDocument,
-            old_range,
-            new_range,
+            covering_old_range: old_range,
+            covering_new_range: new_range,
             byte_delta,
-            line_delta: self.lines.line_count() as i64 - old_line_count as i64,
+            line_delta: new_line_count as i64 - old_line_count as i64,
             edits: vec![AppliedEdit {
                 kind: ChangeKind::ReplaceDocument,
                 old_range,
                 new_range,
                 byte_delta,
+                old_line_span,
+                new_line_span,
             }],
             work: EditWork {
                 changed_bytes: (old_len + new_len) as u64,
-                changed_lines: self.lines.line_count() as u64,
+                changed_lines: new_line_count as u64,
                 bytes_scanned: counters.bytes_scanned,
                 line_entries_touched: counters.line_entries_touched,
                 full_rebuilds: counters.full_rebuilds,
@@ -281,12 +311,15 @@ impl Document {
         let old_doc_len = self.storage.len();
         let old_line_count = self.lines.line_count();
 
-        // 2. Capture inverse material and per-edit final coordinates in
-        //    one ascending pass. Because edits are non-overlapping and
-        //    position-sorted, an edit's text in the FINAL document starts
-        //    at its original start plus the deltas of all earlier edits.
+        // 2. Capture inverse material, per-edit final coordinates, and
+        //    per-edit PRE-EDIT line spans in one ascending pass (the line
+        //    index still describes the pre-edit document here). Because
+        //    edits are non-overlapping and position-sorted, an edit's text
+        //    in the FINAL document starts at its original start plus the
+        //    deltas of all earlier edits.
         let mut inverse: Vec<TextEdit> = Vec::with_capacity(edits.len());
         let mut final_new_ranges: Vec<SourceRange> = Vec::with_capacity(edits.len());
+        let mut old_line_spans: Vec<Range<LineNumber>> = Vec::with_capacity(edits.len());
         let mut shift: i64 = 0;
         for edit in &edits {
             let old_text = self.storage[edit.range.as_usize_range()].to_string();
@@ -296,6 +329,7 @@ impl Document {
                 ByteOffset(final_start),
                 ByteOffset(final_end),
             ));
+            old_line_spans.push(self.line_span(edit.range));
             inverse.push(TextEdit::replace(
                 SourceRange::new(ByteOffset(final_start), ByteOffset(final_end)),
                 old_text,
@@ -305,7 +339,6 @@ impl Document {
 
         // 3. Apply back-to-front so earlier coordinates stay valid for
         //    each subsequent edit, updating the line index incrementally.
-        let mut applied: Vec<AppliedEdit> = Vec::with_capacity(edits.len());
         let mut counters = LineIndexCounters::default();
         let mut covering_old: Option<SourceRange> = None;
         let mut covering_new: Option<SourceRange> = None;
@@ -319,18 +352,6 @@ impl Document {
                 .apply_edit(edit.range.as_usize_range(), &edit.new_text);
             counters.absorb(&self.lines.last_update_counters());
 
-            let kind = ChangeKind::classify(
-                edit.range.len(),
-                edit.new_text.len(),
-                edit.range.start.as_usize() == old_doc_len,
-            )
-            .expect("no-op edits are filtered before application");
-            applied.push(AppliedEdit {
-                kind,
-                old_range: edit.range,
-                new_range: final_new_ranges[i],
-                byte_delta: edit.new_text.len() as i64 - edit.range.len() as i64,
-            });
             covering_old = Some(match covering_old {
                 None => edit.range,
                 Some(covering) => covering.covering(edit.range),
@@ -341,32 +362,73 @@ impl Document {
             });
             changed_bytes += (edit.range.len() + edit.new_text.len()) as u64;
         }
-        applied.reverse();
 
-        let old_range = covering_old.expect("at least one effective edit");
-        let new_range = covering_new.expect("at least one effective edit");
+        // 4. Per-edit POST-EDIT line spans from the final line index, and
+        //    the canonical changed-line total: the disjoint union of those
+        //    spans. Two distant edits stay two small regions — the union
+        //    must NOT collapse them into one covering span (a multi-cursor
+        //    or format transaction on a large document would otherwise
+        //    report a document-wide invalidation).
+        let applied: Vec<AppliedEdit> = edits
+            .iter()
+            .enumerate()
+            .map(|(i, edit)| AppliedEdit {
+                kind: ChangeKind::classify(
+                    edit.range.len(),
+                    edit.new_text.len(),
+                    edit.range.start.as_usize() == old_doc_len,
+                )
+                .expect("no-op edits are filtered before application"),
+                old_range: edit.range,
+                new_range: final_new_ranges[i],
+                byte_delta: edit.new_text.len() as i64 - edit.range.len() as i64,
+                old_line_span: old_line_spans[i].clone(),
+                new_line_span: self.line_span(final_new_ranges[i]),
+            })
+            .collect();
+
+        let mut changed_lines: u64 = 0;
+        let mut merged: Option<Range<LineNumber>> = None;
+        for span in applied.iter().map(|edit| edit.new_line_span.clone()) {
+            match merged {
+                // Spans arrive in ascending order; overlap merges, gap sums.
+                Some(open) if span.start <= open.end => {
+                    merged = Some(open.start..open.end.max(span.end));
+                }
+                Some(done) => {
+                    changed_lines += (done.end.as_usize() - done.start.as_usize()) as u64;
+                    merged = Some(span);
+                }
+                None => merged = Some(span),
+            }
+        }
+        if let Some(last) = merged {
+            changed_lines += (last.end.as_usize() - last.start.as_usize()) as u64;
+        }
+
+        let covering_old_range = covering_old.expect("at least one effective edit");
+        let covering_new_range = covering_new.expect("at least one effective edit");
         let kind = ChangeKind::classify(
-            old_range.len(),
-            new_range.len(),
-            old_range.start.as_usize() == old_doc_len,
+            covering_old_range.len(),
+            covering_new_range.len(),
+            covering_old_range.start.as_usize() == old_doc_len,
         )
         .expect("covering range of effective edits is effective");
 
         self.revision = base_revision.next();
-        let span = self.lines.line_span_of_range(new_range.as_usize_range());
 
         let result = EditResult {
             base_revision,
             new_revision: self.revision,
             kind,
-            old_range,
-            new_range,
+            covering_old_range,
+            covering_new_range,
             byte_delta: self.storage.len() as i64 - old_doc_len as i64,
             line_delta: self.lines.line_count() as i64 - old_line_count as i64,
             edits: applied,
             work: EditWork {
                 changed_bytes,
-                changed_lines: (span.end - span.start) as u64,
+                changed_lines,
                 bytes_scanned: counters.bytes_scanned,
                 line_entries_touched: counters.line_entries_touched,
                 full_rebuilds: counters.full_rebuilds,
@@ -534,12 +596,16 @@ mod tests {
         assert_eq!(r.base_revision, DocumentRevision::INITIAL);
         assert_eq!(r.new_revision, DocumentRevision::INITIAL.next());
         assert_eq!(r.kind, ChangeKind::Replace);
-        assert_eq!(r.old_range, range(6, 11));
-        assert_eq!(r.new_range, range(6, 12));
+        assert_eq!(r.covering_old_range, range(6, 11));
+        assert_eq!(r.covering_new_range, range(6, 12));
         assert_eq!(r.byte_delta, 1, "markit(6) - world(5)");
         assert_eq!(r.line_delta, 0);
         assert_eq!(r.edits.len(), 1);
         assert_eq!(r.edits[0].kind, ChangeKind::Replace);
+        assert_eq!(r.edits[0].old_range, range(6, 11));
+        assert_eq!(r.edits[0].new_range, range(6, 12));
+        assert_eq!(r.edits[0].old_line_span, LineNumber(0)..LineNumber(1));
+        assert_eq!(r.edits[0].new_line_span, LineNumber(0)..LineNumber(1));
         assert_eq!(r.work.changed_bytes, 5 + 6);
         assert_eq!(r.work.changed_lines, 1);
         assert_eq!(text_of(&doc), "hello markit");
@@ -631,18 +697,36 @@ mod tests {
 
     #[test]
     fn stale_derived_result_cannot_commit_over_newer_revision() {
-        // INV-10 seam: a derived result captured at revision N must be
-        // rejected once the document has moved on.
+        // INV-10 seam: a derived result captured at version (id, N) must
+        // be rejected once the document has moved on.
         let mut doc = Document::new("line1\nline2");
-        let derived = Revisioned::new(doc.revision(), doc.line_count());
-        assert_eq!(derived.commit(doc.revision()), Ok(2));
+        let derived = Revisioned::new(doc.version(), doc.line_count());
+        assert_eq!(derived.commit(doc.version()), Ok(2));
 
         doc.apply_edit(TextEdit::insert(offset(0), "\n")).unwrap();
-        assert!(doc.revision() > derived.base_revision());
+        assert!(doc.revision() > derived.base_version().revision());
 
-        let stale = derived.commit(doc.revision()).unwrap_err();
+        let stale = derived.commit(doc.version()).unwrap_err();
         assert_eq!(stale.value, 2);
-        assert!(stale.current_revision > stale.base_revision);
+        assert_eq!(stale.current_version.document_id(), doc.id());
+        assert!(stale.current_version.revision() > stale.base_version.revision());
+    }
+
+    #[test]
+    fn derived_result_from_a_different_document_is_rejected() {
+        // Equal numeric revisions from different documents are unrelated
+        // states: the version seam must reject the cross-document commit.
+        let a = Document::new("alpha");
+        let b = Document::new("beta");
+        assert_ne!(a.id(), b.id());
+        assert_eq!(a.revision(), b.revision());
+
+        let derived_from_a = Revisioned::new(a.version(), a.line_count());
+        assert_eq!(derived_from_a.commit(a.version()), Ok(1));
+        assert!(
+            derived_from_a.commit(b.version()).is_err(),
+            "same revision number, different document: must reject"
+        );
     }
 
     #[test]
@@ -773,6 +857,91 @@ mod tests {
         assert_matches_oracle(&doc, &expected);
     }
 
+    // ---- sparse multi-edit invalidation (canonical dirty regions) ---------
+
+    #[test]
+    fn distant_edits_on_million_line_document_stay_sparse() {
+        // Regression for the covering-range failure mode: two tiny edits
+        // at opposite ends of a 1M-line document must remain two small
+        // canonical dirty regions — never a ~1M-line invalidation. The
+        // covering range is convenience-only precisely because here it
+        // spans nearly the whole document.
+        let text = "l\n".repeat(1_000_000);
+        let mut doc = Document::new(&text);
+        let len = text.len();
+
+        let applied = crate::EditTransaction::command()
+            .with_edit(TextEdit::insert(offset(0), "X")) // line 0
+            .with_edit(TextEdit::insert(offset(len), "Y")) // final empty line
+            .apply(&mut doc)
+            .unwrap();
+
+        let result = applied.result;
+        assert_eq!(result.edits.len(), 2, "canonical regions: one per edit");
+
+        let spans: Vec<Range<LineNumber>> = result
+            .edits
+            .iter()
+            .map(|e| e.new_line_span.clone())
+            .collect();
+        for span in &spans {
+            assert_eq!(
+                span.end.as_usize() - span.start.as_usize(),
+                1,
+                "each region stays one line"
+            );
+        }
+        assert!(spans[0].end <= spans[1].start, "regions stay disjoint");
+        assert_eq!(spans[0].start, LineNumber(0));
+        assert_eq!(spans[1].end, LineNumber(doc.line_count()));
+
+        // changed_lines is the union of the actual spans, not the distance
+        // between the edits.
+        assert_eq!(result.work.changed_lines, 2);
+
+        // And the covering range really does span the document — which is
+        // why it must never be used as the invalidation region.
+        assert_eq!(result.covering_new_range, range(0, len + 2));
+
+        let mut expected = text.clone();
+        expected.insert(0, 'X');
+        expected.push('Y');
+        assert_matches_oracle(&doc, &expected);
+    }
+
+    #[test]
+    fn newline_deleting_edit_reports_the_merged_line() {
+        let mut doc = Document::new("aa\nbb\ncc");
+        let r = doc
+            .apply_edits(vec![TextEdit::delete(range(2, 3))])
+            .unwrap()
+            .0;
+        assert_eq!(text_of(&doc), "aabb\ncc");
+        // Pre-edit the '\n' belonged to line 0; post-edit the disturbed
+        // region is the single merged line, which holds the former line-1
+        // content too — one line, not two, and never the document.
+        assert_eq!(r.edits[0].old_line_span, LineNumber(0)..LineNumber(1));
+        assert_eq!(r.edits[0].new_line_span, LineNumber(0)..LineNumber(1));
+        assert_eq!(r.work.changed_lines, 1);
+    }
+
+    #[test]
+    fn same_line_double_edit_counts_one_line() {
+        let mut doc = Document::new("aa\nbb\ncc");
+        let r = doc
+            .apply_edits(vec![
+                TextEdit::replace(range(0, 1), "X"),
+                TextEdit::replace(range(1, 2), "Y"),
+            ])
+            .unwrap()
+            .0;
+        assert_eq!(text_of(&doc), "XY\nbb\ncc");
+        assert_eq!(r.work.changed_lines, 1, "both edits share line 0");
+        assert_eq!(r.edits.len(), 2);
+        assert_eq!(r.edits[0].new_line_span, LineNumber(0)..LineNumber(1));
+        assert_eq!(r.edits[1].new_line_span, LineNumber(0)..LineNumber(1));
+    }
+
     // ---- randomized differential vs mirror string ---------------------------
 
     struct Rng(u64);
@@ -835,8 +1004,11 @@ mod tests {
                 mirror = format!("{}{}{}", &mirror[..start], new_text, &mirror[end..]);
 
                 // Mutation-time propagation is exact, per edit.
-                assert_eq!(result.old_range, range(start, end));
-                assert_eq!(result.new_range, range(start, start + new_text.len()));
+                assert_eq!(result.covering_old_range, range(start, end));
+                assert_eq!(
+                    result.covering_new_range,
+                    range(start, start + new_text.len())
+                );
                 assert_eq!(
                     result.byte_delta,
                     new_text.len() as i64 - (end - start) as i64

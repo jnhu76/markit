@@ -23,13 +23,17 @@
 //!
 //! - every successful mutation produces an [`EditResult`] whose changed
 //!   ranges were computed **at mutation time** — downstream layers consume
-//!   that range and never re-derive it by rescanning the document;
+//!   the per-edit regions and never re-derive them by rescanning the
+//!   document;
 //! - every mutation advances a monotonic [`DocumentRevision`] by exactly
-//!   one, and derived results carry their base revision so stale results
-//!   are rejectable by construction ([`Revisioned`]);
-//! - the [`LineIndex`](crate::line_index::LineIndex) is updated
-//!   incrementally per edit (ADR-003); a normal local edit scans only the
-//!   bytes it inserts, never the document.
+//!   one, and derived results carry their base [`DocumentVersion`]
+//!   (document identity + revision) so stale results — including equal
+//!   revision numbers from a *different* document — are rejectable by
+//!   construction ([`Revisioned`]);
+//! - the line index is updated incrementally per edit (ADR-003); a normal
+//!   local edit scans only the bytes it inserts, never the document. The
+//!   line index itself is a crate-private, replaceable implementation
+//!   detail, not public contract.
 //!
 //! ## Coordinate semantics
 //!
@@ -54,28 +58,36 @@
 //! semantics. Future plugins consume versioned snapshots/queries and
 //! submit commands/results through an adapter described by
 //! `docs/product/plugin-compatibility-contract.md`; the shapes here
-//! (stable [`DocumentId`], [`DocumentRevision`], coherent
+//! (stable [`DocumentId`], [`DocumentVersion`], coherent
 //! [`DocumentSnapshot`], [`EditTransaction`] commands) are the seams that
 //! adapter will build on.
+//!
+//! ## Public surface discipline
+//!
+//! Only deliberate contract types are re-exported. Implementation details
+//! — notably the incremental line index — stay crate-private so they can
+//! be replaced without breaking consumers; algorithmic work surfaces
+//! through [`EditWork`] instead. Pinned by `tests/public_surface.rs` and
+//! compile-fail doctests.
 
 #![forbid(unsafe_code)]
 
 pub mod change;
 pub mod document;
 pub mod id;
-pub mod line_index;
 pub mod position;
 pub mod revision;
 pub mod selection;
 pub mod snapshot;
 pub mod transaction;
 
+mod line_index;
+
 pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
 pub use document::Document;
 pub use id::DocumentId;
-pub use line_index::{LineIndex, LineIndexCounters};
 pub use position::{ByteOffset, LineNumber, SourceRange};
-pub use revision::{DocumentRevision, Revisioned, StaleResult};
+pub use revision::{DocumentRevision, DocumentVersion, Revisioned, StaleResult};
 pub use selection::Selection;
 pub use snapshot::DocumentSnapshot;
 pub use transaction::{AppliedTransaction, EditIntent, EditTransaction};

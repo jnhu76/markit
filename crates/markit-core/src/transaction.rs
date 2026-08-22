@@ -173,9 +173,10 @@ mod tests {
         assert_eq!(text_of(&doc), "1 2 3!");
         assert_eq!(applied.result.new_revision.as_u64(), 1);
         assert_eq!(applied.result.edits.len(), 3);
-        // Covering range spans first..last in old coordinates.
+        // Covering range spans first..last in old coordinates
+        // (convenience-only; canonical regions are the per-edit entries).
         assert_eq!(
-            applied.result.old_range,
+            applied.result.covering_old_range,
             SourceRange::new(offset(0), offset(13))
         );
         // Per-edit new ranges are in FINAL coordinates (3 inserts shift

@@ -9,7 +9,7 @@
 use std::borrow::Cow;
 
 use markit_core::{
-    ByteOffset, ChangeKind, Document, DocumentId, DocumentRevision, DocumentSnapshot, EditIntent,
+    ByteOffset, ChangeKind, Document, DocumentId, DocumentSnapshot, DocumentVersion, EditIntent,
     EditTransaction, LineNumber, Revisioned, Selection, SourceRange, TextEdit,
 };
 
@@ -22,8 +22,8 @@ fn end_to_end_public_flow() {
     // Load: one full scan, stable identity, initial revision.
     let mut doc = Document::new("# Markit\n中文段落 🙂\n");
     let id: DocumentId = doc.id();
-    let initial: DocumentRevision = doc.revision();
-    assert_eq!(initial.as_u64(), 0);
+    let initial: DocumentVersion = doc.version();
+    assert_eq!(initial.revision().as_u64(), 0);
     assert_eq!(doc.line_count(), 3);
     assert_eq!(doc.line_str(LineNumber(0)).as_ref(), "# Markit");
     assert_eq!(doc.line_str(LineNumber(1)).as_ref(), "中文段落 🙂");
@@ -31,12 +31,12 @@ fn end_to_end_public_flow() {
     // Coherent read view.
     let snapshot: DocumentSnapshot<'_> = doc.snapshot();
     assert_eq!(snapshot.id(), id);
-    assert_eq!(snapshot.revision(), initial);
+    assert_eq!(snapshot.version(), initial);
     let first_line: Cow<'_, str> = snapshot.line_str(LineNumber(0));
     assert_eq!(first_line.as_ref(), "# Markit");
 
     // Mutation through the transaction seam, with mutation-time change
-    // propagation.
+    // propagation. Canonical regions are per edit.
     let applied = EditTransaction::typing()
         .with_edit(TextEdit::insert(ByteOffset(2), "产品 "))
         .apply(&mut doc)
@@ -45,20 +45,26 @@ fn end_to_end_public_flow() {
     assert_eq!(applied.result.byte_delta, 7);
     assert_eq!(applied.result.work.bytes_scanned, 7);
     assert_eq!(applied.result.work.full_rebuilds, 0);
-    assert!(doc.revision() > initial);
+    assert_eq!(applied.result.edits.len(), 1);
+    assert_eq!(
+        applied.result.edits[0].old_range,
+        range(2, 2),
+        "single edit: canonical per-edit region"
+    );
+    assert!(doc.revision() > initial.revision());
     assert_eq!(doc.line_str(LineNumber(0)).as_ref(), "# 产品 Markit");
 
     // Selection transform uses the same edit coordinates.
     let selection = Selection::caret(ByteOffset(20));
-    let mapped = selection.map_over_edit(applied.result.old_range, "产品 ");
+    let mapped = selection.map_over_edit(applied.result.edits[0].old_range, "产品 ");
     assert_eq!(mapped.caret_offset(), ByteOffset(27));
 
-    // Derived work is revision-gated: results from the old revision are
+    // Derived work is version-gated: results from the old version are
     // rejected once the document moved on.
     let derived = Revisioned::new(initial, doc.line_count());
-    assert!(derived.commit(doc.revision()).is_err());
-    let derived = Revisioned::new(doc.revision(), doc.line_count());
-    assert_eq!(derived.commit(doc.revision()), Ok(3));
+    assert!(derived.commit(doc.version()).is_err());
+    let derived = Revisioned::new(doc.version(), doc.line_count());
+    assert_eq!(derived.commit(doc.version()), Ok(3));
 
     // Undo seam: the inverse restores the text as a NEW revision.
     let rev_before_undo = doc.revision();
@@ -70,7 +76,38 @@ fn end_to_end_public_flow() {
     let result = doc.replace_all("reset");
     assert_eq!(result.kind, ChangeKind::ReplaceDocument);
     assert_eq!(result.work.full_rebuilds, 1);
+    assert_eq!(result.edits.len(), 1);
     assert_eq!(doc.slice(range(0, 5)).as_ref(), "reset");
+}
+
+#[test]
+fn version_identity_binds_document_and_revision() {
+    // A revision number alone is not a version: equal numeric revisions
+    // from different documents are unrelated states and must not
+    // cross-commit.
+    let a = Document::new("alpha");
+    let b = Document::new("beta");
+    assert_ne!(a.id(), b.id());
+    assert_eq!(a.revision(), b.revision());
+
+    let same_document_same_revision = Revisioned::new(a.version(), 1);
+    assert_eq!(same_document_same_revision.commit(a.version()), Ok(1));
+
+    let from_a = Revisioned::new(a.version(), a.line_count());
+    assert!(
+        from_a.commit(b.version()).is_err(),
+        "different document, same revision number: must reject"
+    );
+
+    // Newer revision of the same document: reject.
+    let mut a = a;
+    markit_core::EditTransaction::typing()
+        .with_edit(TextEdit::insert(ByteOffset(5), "!"))
+        .apply(&mut a)
+        .unwrap();
+    let stale = from_a.commit(a.version()).unwrap_err();
+    assert_eq!(stale.base_version.document_id(), a.id());
+    assert!(stale.current_version.revision() > stale.base_version.revision());
 }
 
 #[test]

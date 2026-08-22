@@ -24,7 +24,7 @@ use std::ops::Range;
 use crate::document::Document;
 use crate::id::DocumentId;
 use crate::position::{ByteOffset, LineNumber, SourceRange};
-use crate::revision::DocumentRevision;
+use crate::revision::{DocumentRevision, DocumentVersion};
 
 /// O(1) coherent read view of a [`Document`].
 ///
@@ -49,6 +49,13 @@ impl<'a> DocumentSnapshot<'a> {
     /// Revision of the snapshotted state.
     pub fn revision(&self) -> DocumentRevision {
         self.document.revision()
+    }
+
+    /// The coherent version (identity + revision) of the snapshotted
+    /// state — what derived work computed from this snapshot must carry
+    /// and re-validate against ([`Revisioned`](crate::Revisioned)).
+    pub fn version(&self) -> DocumentVersion {
+        self.document.version()
     }
 
     /// Total byte length of the snapshotted text.
@@ -111,6 +118,7 @@ mod tests {
         );
         assert_eq!(snapshot.line_str(LineNumber(1)).as_ref(), "beta");
         assert_eq!(snapshot.id(), doc.id());
+        assert_eq!(snapshot.version(), doc.version());
 
         // The snapshot's revision/content describe the borrowed state.
         // (The borrow ends at the last use above; the document is only
