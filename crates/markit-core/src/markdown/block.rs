@@ -192,10 +192,10 @@ impl BlockRecord {
     /// edit elsewhere in the document shifts untouched blocks without
     /// reparsing them (their text, and therefore their fingerprint, is
     /// unchanged by construction).
-    #[allow(dead_code)] // incremental updater (this PR)
     pub(crate) fn shifted(&self, byte_delta: i64, line_delta: i64) -> Self {
         let mut shifted = self.clone();
         shifted.source_range = shift_range(&self.source_range, byte_delta);
+        shifted.inline = self.inline.shifted(byte_delta);
         shifted.line_span = LineNumber((self.line_span.start.0 as i64 + line_delta).max(0) as usize)
             ..LineNumber((self.line_span.end.0 as i64 + line_delta).max(0) as usize);
         shifted.detail = match &self.detail {
@@ -231,7 +231,6 @@ impl BlockRecord {
     }
 }
 
-#[allow(dead_code)] // incremental updater (this PR)
 fn shift_range(range: &SourceRange, delta: i64) -> SourceRange {
     let shift = |offset: ByteOffset| ByteOffset((offset.as_usize() as i64 + delta).max(0) as usize);
     SourceRange::new(shift(range.start), shift(range.end))

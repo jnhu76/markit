@@ -34,7 +34,6 @@ pub(crate) struct ParsedBlock {
 
 impl ParsedBlock {
     /// The parsed block's kind.
-    #[allow(dead_code)] // incremental updater (this PR)
     pub(crate) fn kind(&self) -> BlockKind {
         self.kind
     }
@@ -88,6 +87,10 @@ pub(crate) struct BlockParser<'a> {
     /// Next line to consume (0-based); `== line_count` means end of
     /// document.
     line: usize,
+    /// Parser state entering `line` (contract §9.1): `Ground` at every
+    /// emitted block boundary except after a fence that ran to end of
+    /// document.
+    state: BlockParseState,
     /// Structural work counters for this parse.
     lines_scanned: u64,
     bytes_scanned: u64,
@@ -105,9 +108,15 @@ impl<'a> BlockParser<'a> {
         Self {
             snap,
             line: from_line,
+            state: BlockParseState::Ground,
             lines_scanned: 0,
             bytes_scanned: 0,
         }
+    }
+
+    /// Parser state at the current position (the convergence gate).
+    pub(crate) fn state(&self) -> BlockParseState {
+        self.state
     }
 
     /// Whether the whole document has been consumed.
@@ -116,7 +125,6 @@ impl<'a> BlockParser<'a> {
     }
 
     /// The line the next block would start on.
-    #[allow(dead_code)] // incremental updater (this PR)
     pub(crate) fn current_line(&self) -> usize {
         self.line
     }
@@ -124,7 +132,6 @@ impl<'a> BlockParser<'a> {
     /// The byte offset the next block would start at (document length at
     /// end of document). This is the parser-state position used for the
     /// convergence check (contract §9.2).
-    #[allow(dead_code)] // incremental updater (this PR)
     pub(crate) fn current_offset(&self) -> usize {
         self.line_start(self.line).as_usize()
     }
@@ -178,6 +185,7 @@ impl<'a> BlockParser<'a> {
         let fingerprint = BlockFingerprint::from_bytes(self.snap.slice(source_range).as_bytes());
         self.lines_scanned += (self.line - first) as u64;
         self.bytes_scanned += source_range.len() as u64;
+        self.state = state_after;
         Some(ParsedBlock {
             kind,
             source_range,

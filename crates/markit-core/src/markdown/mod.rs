@@ -22,6 +22,7 @@
 
 mod block;
 mod identity;
+mod incremental;
 mod inline;
 mod lex;
 mod parser;
@@ -83,6 +84,22 @@ pub struct MarkdownWork {
     pub convergence_line: u64,
 }
 
+impl MarkdownWork {
+    pub(crate) fn absorb(&mut self, other: &Self) {
+        self.dirty_regions += other.dirty_regions;
+        self.restart_line = other.restart_line;
+        self.lines_scanned += other.lines_scanned;
+        self.bytes_scanned += other.bytes_scanned;
+        self.blocks_examined += other.blocks_examined;
+        self.blocks_reused += other.blocks_reused;
+        self.blocks_reparsed += other.blocks_reparsed;
+        self.blocks_created += other.blocks_created;
+        self.blocks_removed += other.blocks_removed;
+        self.inline_blocks_reparsed += other.inline_blocks_reparsed;
+        self.convergence_line = other.convergence_line;
+    }
+}
+
 /// The Markdown block index for exactly one document version.
 ///
 /// Version binding is strict: the state carries the
@@ -95,7 +112,6 @@ pub struct MarkdownWork {
 pub struct MarkdownState {
     version: DocumentVersion,
     /// Next id to mint (monotonic; minted ids are never reused).
-    #[allow(dead_code)] // read by the incremental updater (this PR)
     next_id: u64,
     /// The tiling block stream, ordered by position.
     blocks: Vec<BlockRecord>,
@@ -137,6 +153,46 @@ impl MarkdownState {
             last_work: work,
             cumulative_work: work,
         }
+    }
+
+    /// Incremental update from one mutation (contract §9).
+    ///
+    /// `result` is the mutation's canonical per-edit regions;
+    /// `snapshot` must be the document **after** that mutation. The
+    /// whole triple is validated before anything mutates — state@N +
+    /// edit N→N+1 + snapshot@N+1 — and any mismatch fails closed,
+    /// leaving this state exactly as it was (the caller then rebuilds or
+    /// rebases explicitly; nothing pretends to be valid).
+    pub fn update(
+        &mut self,
+        snapshot: &DocumentSnapshot<'_>,
+        result: &crate::change::EditResult,
+    ) -> Result<(), MarkdownStateError> {
+        if result.new_revision != result.base_revision.next() {
+            return Err(MarkdownStateError::InconsistentResult);
+        }
+        if snapshot.id() != self.version.document_id() {
+            return Err(MarkdownStateError::DocumentMismatch);
+        }
+        if snapshot.revision() != result.new_revision {
+            return Err(MarkdownStateError::SnapshotNotAtNewRevision);
+        }
+        if self.version.revision() != result.base_revision {
+            return Err(MarkdownStateError::StaleBase);
+        }
+
+        let mut work = MarkdownWork::default();
+        incremental::apply_edits(
+            &mut self.blocks,
+            &mut self.next_id,
+            snapshot,
+            &result.edits,
+            &mut work,
+        );
+        self.version = snapshot.version();
+        self.last_work = work;
+        self.cumulative_work.absorb(&work);
+        Ok(())
     }
 
     /// The document version this state describes. Downstream consumers
@@ -260,6 +316,8 @@ pub enum MarkdownStateError {
     StaleBase,
     /// The snapshot is not at the edit result's new revision.
     SnapshotNotAtNewRevision,
+    /// The result does not describe a single coherent N→N+1 step.
+    InconsistentResult,
 }
 
 impl std::fmt::Display for MarkdownStateError {
@@ -271,6 +329,9 @@ impl std::fmt::Display for MarkdownStateError {
             }
             Self::SnapshotNotAtNewRevision => {
                 write!(f, "snapshot is not at the edit result's new revision")
+            }
+            Self::InconsistentResult => {
+                write!(f, "edit result is not a single coherent revision step")
             }
         }
     }
@@ -344,5 +405,292 @@ mod tests {
             state.assert_tiling(&snap);
             assert!(state.block_count() >= 1);
         }
+    }
+}
+
+#[cfg(test)]
+mod incremental_tests {
+    use super::*;
+    use crate::change::TextEdit;
+    use crate::document::Document;
+    use crate::position::ByteOffset;
+    use crate::transaction::EditTransaction;
+
+    fn setup(text: &str) -> (Document, MarkdownState) {
+        let doc = Document::new(text);
+        let state = MarkdownState::build(&doc.snapshot());
+        (doc, state)
+    }
+
+    fn apply(doc: &mut Document, state: &mut MarkdownState, edits: TextEdit) -> MarkdownWork {
+        let applied = EditTransaction::typing()
+            .with_edit(edits)
+            .apply(doc)
+            .unwrap();
+        let snapshot = doc.snapshot();
+        state
+            .update(&snapshot, &applied.result)
+            .expect("coherent update");
+        state.assert_tiling(&snapshot);
+        state.last_work()
+    }
+
+    /// The oracle: the incremental stream must equal a fresh full parse
+    /// in every observable way except identity (contract §12).
+    fn assert_matches_rebuild(doc: &Document, state: &MarkdownState) {
+        let rebuilt = MarkdownState::build(&doc.snapshot());
+        assert_eq!(
+            state.version(),
+            rebuilt.version(),
+            "versions must agree after update"
+        );
+        assert_eq!(state.block_count(), rebuilt.block_count(), "block count");
+        for (incremental, fresh) in state.blocks().iter().zip(rebuilt.blocks()) {
+            assert_eq!(incremental.kind, fresh.kind, "kind");
+            assert_eq!(incremental.source_range, fresh.source_range, "range");
+            assert_eq!(incremental.line_span, fresh.line_span, "line span");
+            assert_eq!(incremental.state_before, fresh.state_before);
+            assert_eq!(incremental.state_after, fresh.state_after);
+            assert_eq!(incremental.fingerprint, fresh.fingerprint, "fingerprint");
+            assert_eq!(incremental.detail, fresh.detail, "detail");
+            assert_eq!(incremental.inline, fresh.inline, "inline IR");
+        }
+    }
+
+    #[test]
+    fn local_paragraph_edit_is_local() {
+        let text = "# h\n\nfirst\n\nsecond\n\nthird\n";
+        let (mut doc, mut state) = setup(text);
+        let ids_before: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+
+        // Edit inside the "second" paragraph.
+        let second_at = text.find("second").unwrap();
+        let work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::insert(ByteOffset(second_at + 3), "X"),
+        );
+        assert_matches_rebuild(&doc, &state);
+
+        assert_eq!(work.dirty_regions, 1);
+        assert_eq!(work.blocks_reparsed, 1, "one paragraph reparsed");
+        assert_eq!(work.blocks_reused, 1, "the paragraph keeps its id");
+        assert_eq!(work.blocks_created, 0);
+        assert_eq!(work.blocks_removed, 0);
+        assert_eq!(work.lines_scanned, 1, "one line of text parsed");
+        assert_eq!(work.inline_blocks_reparsed, 1);
+        assert!(work.convergence_line < doc.line_count() as u64);
+
+        // Everything except the edited paragraph kept its id.
+        for (before, after) in ids_before.iter().zip(state.blocks()) {
+            if after.kind == BlockKind::Paragraph
+                && after.source_range.contains(ByteOffset(second_at + 3))
+            {
+                continue;
+            }
+            assert_eq!(*before, after.id, "untouched blocks keep ids");
+        }
+    }
+
+    #[test]
+    fn distant_edits_stay_two_islands() {
+        let text = "aaa\n\nbbb\n\nccc\n";
+        let (mut doc, mut state) = setup(text);
+        let tx = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(1), "X"))
+            .with_edit(TextEdit::insert(ByteOffset(10), "Y"))
+            .apply(&mut doc)
+            .unwrap();
+        let snapshot = doc.snapshot();
+        state.update(&snapshot, &tx.result).unwrap();
+        state.assert_tiling(&snapshot);
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.last_work().dirty_regions, 2, "two semantic islands");
+        assert_eq!(state.last_work().blocks_reparsed, 2, "two paragraphs");
+    }
+
+    #[test]
+    fn fence_content_edit_keeps_fence_identity() {
+        let text = "before\n\n```\ncode line\n```\n\nafter\n";
+        let (mut doc, mut state) = setup(text);
+        let fence_id = state
+            .blocks()
+            .iter()
+            .find(|b| b.kind == BlockKind::FencedCode)
+            .unwrap()
+            .id;
+        let at = text.find("code").unwrap();
+        let work = apply(&mut doc, &mut state, TextEdit::insert(ByteOffset(at), "X"));
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(
+            work.blocks_reparsed, 1,
+            "fence block reparsed (restart at fence start)"
+        );
+        let fence_after = state
+            .blocks()
+            .iter()
+            .find(|b| b.kind == BlockKind::FencedCode)
+            .unwrap();
+        assert_eq!(
+            fence_after.id, fence_id,
+            "fence keeps its id through content edits"
+        );
+        assert_eq!(work.blocks_reused, 1);
+    }
+
+    #[test]
+    fn deleting_closing_fence_propagates_honestly() {
+        let text = "```\ncode\n```\nafter\n";
+        let (mut doc, mut state) = setup(text);
+        let closer = text.find("```\nafter").unwrap();
+        let work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::delete(crate::position::SourceRange::new(
+                ByteOffset(closer),
+                ByteOffset(closer + 4),
+            )),
+        );
+        assert_matches_rebuild(&doc, &state);
+        // The fence now swallows "after" to EOF: paragraphs died inside it.
+        assert!(
+            work.lines_scanned >= doc.line_count() as u64,
+            "rescan to EOF"
+        );
+        assert_eq!(work.convergence_line, doc.line_count() as u64);
+        let kinds: Vec<_> = state.blocks().iter().map(|b| b.kind).collect();
+        assert_eq!(kinds, vec![BlockKind::FencedCode]);
+        let BlockDetail::FencedCode { closed, .. } = &state.blocks()[0].detail else {
+            panic!("fence")
+        };
+        assert!(!closed, "fence is now unclosed and runs to EOF");
+    }
+
+    #[test]
+    fn structural_transforms_follow_identity_rules() {
+        // Kind change: paragraph -> heading mints a fresh id (rule C).
+        let (mut doc, mut state) = setup("plain text\n");
+        let para_id = state.blocks()[0].id;
+        let work = apply(&mut doc, &mut state, TextEdit::insert(ByteOffset(0), "## "));
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.blocks()[0].kind, BlockKind::Heading);
+        assert_ne!(state.blocks()[0].id, para_id);
+        assert_eq!(work.blocks_reused, 0);
+        assert_eq!(work.blocks_created, 1);
+        assert_eq!(work.blocks_removed, 1);
+
+        // Split: paragraph -> paragraph + heading + paragraph. The
+        // leading paragraph pairs with the old one (1:1, rule B);
+        // newcomers mint (rule C).
+        let (mut doc, mut state) = setup("one two three\n");
+        let para_id = state.blocks()[0].id;
+        let two = "one two three".find("two").unwrap();
+        let work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::replace(
+                crate::position::SourceRange::new(ByteOffset(two - 1), ByteOffset(two)),
+                "\n## ",
+            ),
+        );
+        assert_matches_rebuild(&doc, &state);
+        // The heading is the only newcomer; the trailing blank survived
+        // the island (convergence landed exactly on it).
+        assert_eq!(work.blocks_created, 1, "the heading is new");
+        assert_eq!(
+            state.blocks()[0].id,
+            para_id,
+            "surviving leading paragraph keeps its id"
+        );
+    }
+
+    #[test]
+    fn append_extends_last_block() {
+        let (mut doc, mut state) = setup("# h\npara\n");
+        let ids: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+        let len = "# h\npara\n".len();
+        let work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::insert(ByteOffset(len), "more"),
+        );
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(work.blocks_reparsed, 1, "the paragraph grew");
+        for (before, after) in ids.iter().zip(state.blocks()) {
+            assert_eq!(*before, after.id, "append preserves every id");
+        }
+    }
+
+    #[test]
+    fn update_rejects_incoherent_inputs_and_keeps_state() {
+        let (mut doc, mut state) = setup("a\n");
+
+        let applied = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(1), "x"))
+            .apply(&mut doc)
+            .unwrap();
+        let snap1 = doc.snapshot();
+
+        // Coherent triple: state@0 + result 0->1 + snapshot@1.
+        state.update(&snap1, &applied.result).expect("valid update");
+        assert_eq!(state.version(), snap1.version());
+
+        // Replay of the same result: state has moved past its base.
+        assert_eq!(
+            state.update(&snap1, &applied.result),
+            Err(MarkdownStateError::StaleBase)
+        );
+
+        // Snapshot at a revision the result does not produce.
+        let (mut doc2, mut state2) = setup("a\n");
+        let first = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(1), "x"))
+            .apply(&mut doc2)
+            .unwrap();
+        let _second = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(2), "y"))
+            .apply(&mut doc2)
+            .unwrap();
+        let snap2 = doc2.snapshot();
+        assert_eq!(
+            state2.update(&snap2, &first.result),
+            Err(MarkdownStateError::SnapshotNotAtNewRevision)
+        );
+
+        // Result from a different document entirely.
+        let mut other = Document::new("b\n");
+        let other_applied = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(1), "y"))
+            .apply(&mut other)
+            .unwrap();
+        assert_eq!(
+            state2.update(&other.snapshot(), &other_applied.result),
+            Err(MarkdownStateError::DocumentMismatch)
+        );
+
+        // A result that is not a single coherent N->N+1 step.
+        let rev = snap1.revision();
+        let incoherent = crate::change::EditResult {
+            base_revision: rev,
+            new_revision: rev.next().next(),
+            kind: crate::change::ChangeKind::Insert,
+            covering_old_range: crate::position::SourceRange::new(ByteOffset(1), ByteOffset(1)),
+            covering_new_range: crate::position::SourceRange::new(ByteOffset(1), ByteOffset(2)),
+            byte_delta: 1,
+            line_delta: 0,
+            edits: Vec::new(),
+            work: crate::change::EditWork::default(),
+        };
+        assert_eq!(
+            state2.update(&snap2, &incoherent),
+            Err(MarkdownStateError::InconsistentResult)
+        );
+
+        // Every rejection left the state exactly as it was: it still
+        // describes revision 0 of its own document, and the earlier
+        // `state.update` success already proves the happy path.
+        assert_eq!(state2.version().revision().as_u64(), 0);
+        assert_eq!(state2.version().document_id(), doc2.id());
+        assert_eq!(state2.block_count(), 2, "paragraph + trailing blank");
     }
 }

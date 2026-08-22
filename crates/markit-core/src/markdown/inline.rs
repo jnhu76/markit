@@ -79,6 +79,24 @@ pub enum InlineNode {
     },
 }
 
+impl InlineIr {
+    /// The same IR moved by `delta` bytes — used when untouched blocks
+    /// shift; their runs' bytes are unchanged by construction, so the
+    /// tree shape is preserved as-is.
+    pub(crate) fn shifted(&self, delta: i64) -> Self {
+        Self {
+            runs: self
+                .runs
+                .iter()
+                .map(|r| InlineRun {
+                    range: shift(r.range, delta),
+                    nodes: shift_nodes(&r.nodes, delta),
+                })
+                .collect(),
+        }
+    }
+}
+
 impl InlineNode {
     /// Stable node-kind name (oracle comparisons, diagnostics).
     pub fn kind_name(&self) -> &'static str {
@@ -692,6 +710,46 @@ fn merge_adjacent_text(nodes: &mut Vec<InlineNode>) {
         merged.push(node);
     }
     *nodes = merged;
+}
+
+fn shift(range: SourceRange, delta: i64) -> SourceRange {
+    let move_offset = |offset: crate::position::ByteOffset| {
+        crate::position::ByteOffset((offset.as_usize() as i64 + delta).max(0) as usize)
+    };
+    SourceRange::new(move_offset(range.start), move_offset(range.end))
+}
+
+fn shift_nodes(nodes: &[InlineNode], delta: i64) -> Vec<InlineNode> {
+    nodes
+        .iter()
+        .map(|node| match node {
+            InlineNode::Text { range } => InlineNode::Text {
+                range: shift(*range, delta),
+            },
+            InlineNode::Code { range } => InlineNode::Code {
+                range: shift(*range, delta),
+            },
+            InlineNode::Emphasis { range, children } => InlineNode::Emphasis {
+                range: shift(*range, delta),
+                children: shift_nodes(children, delta),
+            },
+            InlineNode::Strong { range, children } => InlineNode::Strong {
+                range: shift(*range, delta),
+                children: shift_nodes(children, delta),
+            },
+            InlineNode::Link {
+                range,
+                children,
+                destination,
+                title,
+            } => InlineNode::Link {
+                range: shift(*range, delta),
+                children: shift_nodes(children, delta),
+                destination: shift(*destination, delta),
+                title: title.map(|t| shift(t, delta)),
+            },
+        })
+        .collect()
 }
 
 #[cfg(test)]
