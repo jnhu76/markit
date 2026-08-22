@@ -13,33 +13,70 @@ Core principles:
 
 > **Nothing gets between your input and the next frame.**
 
+> **Never do work the user cannot observe.**
+
 > **Control → Measure → Attribute → Scale → Intervene → Generalize → Optimize.**
+
+The second rule expands to:
+
+```text
+if it did not change -> do not recompute it
+if it is not visible -> defer it
+if the interaction/frame budget is exhausted -> yield
+if work is stale -> cancel or reject it
+if derived state is incompatible -> do not publish it
+```
 
 ## 2. Current Phase
 
 Assume the project is in the **product foundation / GPUI architecture phase**.
 
-The substrate decision is made (direct GPUI, ADR-008); the editor
-architecture is not. Do not prematurely implement a full editor
-architecture.
+The substrate decision is made (direct GPUI, ADR-008). The high-level
+editor execution laws are also fixed by
+`docs/product/realtime-execution-model.md` and the accepted incremental /
+viewport ADRs:
+
+```text
+explicit changed-range propagation
+smallest semantically valid invalidation
+viewport-bounded presentation
+priority by user observability
+bounded/cooperative deferrable work
+revision-safe cancellation / stale-result rejection
+coherent publication
+precise cache invalidation
+no permanent idle update loop
+```
+
+What is **not** fixed yet is the detailed implementation: buffer data
+structure, worker topology, numeric frame budget, batching policy, cache
+sizes, scheduler data structure, or rich-block machinery.
+
+Do not prematurely implement a large editor/game-engine framework.
 
 Do not assume that:
 
 - Rope is the correct buffer;
 - Piece Tree is the correct buffer;
 - Tree-sitter is required;
-- incremental parsing is the dominant optimization;
-- viewport virtualization is the dominant optimization;
+- incremental parsing is the dominant bottleneck just because incremental
+  invalidation is an architectural invariant;
+- viewport virtualization is the dominant bottleneck just because
+  viewport-bounded presentation is required;
+- a thread pool is always better than cooperative work;
+- a fixed 6 ms / 8 ms frame budget copied from another project is correct;
+- ECS/archetypes are useful for Markit;
 - Rust/native code is automatically faster;
 - JavaScript/native FFI is a bottleneck;
 - Electron is inherently the problem;
 - GPUI's current prototype version is the product baseline.
 
-Treat these as hypotheses until measured.
+Treat those as hypotheses until measured.
 
 ## 3. Evidence Before Architecture
 
-Before proposing a performance-driven architectural change, provide:
+Before proposing a performance-driven architectural change beyond the
+accepted execution laws, provide:
 
 1. the workload that exposes the problem;
 2. the end-to-end metric that regresses;
@@ -55,6 +92,8 @@ Do not justify a rewrite with phrases such as:
 - “this should be faster”;
 - “native is faster”;
 - “Zed does it this way”;
+- “Markstream does it this way”;
+- “game engines do it this way”;
 - “modern editors use this data structure”;
 - “this avoids overhead in theory”.
 
@@ -159,6 +198,15 @@ Maintain controlled corpus families that independently vary:
 
 A local edit whose cost grows with total document size is a strong signal, not an automatic diagnosis.
 
+For normal local edits, Markit's target law is:
+
+```text
+work ~= Δ semantic region + V presentation + bounded overhead
+```
+
+If a normal edit starts scaling with `N`, instrument the fan-out before
+changing data structures.
+
 ## 8. Unicode Policy
 
 Unicode correctness is an architectural requirement, but Unicode complexity is introduced gradually in performance research.
@@ -238,6 +286,7 @@ follow these rules:
    native text
    file dialogs
    presentation
+   frame request / platform timing hooks
    ```
 
 6. Editor policy belongs in Markit:
@@ -249,7 +298,10 @@ follow these rules:
    undo
    Markdown
    incremental invalidation
-   viewport model
+   dirty/revision model
+   viewport / LOD model
+   scheduling priority semantics
+   coherent publication rules
    ```
 
 7. GPUI-specific code should not leak unnecessarily into editor
@@ -257,19 +309,148 @@ follow these rules:
 
 8. Zed is a REFERENCE IMPLEMENTATION, not proof.
 
-   Do not write: "Zed does X, therefore Markit must do X."
+9. Markstream is a REFERENCE for streaming scheduling discipline, not a
+   dependency and not proof that its batch sizes/budgets are correct for
+   Markit.
 
 Maintain the current evidence-before-architecture discipline: a change to
 the GPUI integration must correspond to a measured bottleneck, and
 baseline selection (roadmap G0) requires dedicated validation, not the
 assumption that "newer is better".
 
-## 11. Reference Host
+## 11. Real-time Editor Execution Rules
+
+Read `docs/product/realtime-execution-model.md` before changing any editor
+hot path.
+
+### 11.1 Dirty propagation
+
+Do not use one undifferentiated "document changed" path when downstream
+work differs semantically.
+
+Preserve enough information to distinguish changes such as:
+
+```text
+Append
+LocalEdit
+Delete
+Paste
+StructuralEdit
+ReplaceDocument
+ViewportMove
+Theme/StyleChange
+```
+
+The concrete Rust enum/flags are implementation choices; precise
+invalidation is not.
+
+### 11.2 User-observable priority
+
+Use this semantic order unless a correctness dependency requires otherwise:
+
+```text
+current interaction
+  > visible viewport
+  > near viewport / likely next interaction
+  > distant/background work
+```
+
+FIFO completion is not a product goal.
+
+### 11.3 Bounded/cooperative work
+
+Deferrable work must be chunkable, resumable, or moved off the critical
+UI path. When the calibrated interaction/frame budget is exhausted, yield.
+
+Do not copy a numeric budget from Markstream, a game engine, Zed, or a
+blog. Calibrate it on real Markit Windows/GPUI presentation evidence.
+
+### 11.4 Revision-safe jobs
+
+Every deferred/background result that can race with edits must be able to
+prove that it is valid for the current revision/dependencies.
+
+When newer work supersedes old work:
+
+```text
+reuse if proven compatible
+otherwise cancel if worthwhile
+otherwise reject result at commit
+```
+
+Never allow stale output to overwrite a newer presentation.
+
+### 11.5 Coherent publication
+
+The visible frame may reuse older artifacts only when compatible. Do not
+silently publish mixtures such as:
+
+```text
+AST v103 + layout v102 + highlight v099
+```
+
+unless compatibility is explicitly proven.
+
+"Snapshot" means a coherent version boundary; it does not mean copying the
+whole document.
+
+### 11.6 Viewport / Document LOD
+
+Derived-state materialization follows observability. Far content may keep
+only lightweight metadata/extent; near content may be prefetched; visible
+content gets exact layout/shaping; presented content gets render state.
+
+The concrete representation is open. Scroll drift and layout jumps are
+correctness/performance metrics, not acceptable hidden costs.
+
+### 11.7 Cache discipline
+
+A cache must define:
+
+- key;
+- dependencies;
+- invalidation;
+- revision compatibility;
+- memory bound / eviction;
+- instrumentation seam.
+
+Do not add an opaque cache whose correctness depends on "usually stale is
+fine".
+
+### 11.8 Game-engine analogy limits
+
+Borrow:
+
+```text
+dirty flags
+frame budgets
+job priority/cancellation
+visibility culling
+LOD
+coherent frame publication
+caches
+```
+
+Do not introduce by default:
+
+```text
+ECS
+archetypes
+a permanent 60 Hz tick
+a scene graph as canonical document state
+a generic engine framework
+```
+
+Markit is demand-driven: idle means almost no work.
+
+## 12. Reference Host
 
 A deterministic/headless host may be created for:
 
 - correctness;
 - algorithmic scaling;
+- dirty propagation;
+- revision/cancellation ordering;
 - controlled interventions;
 - reproducible core tests.
 
@@ -282,9 +463,10 @@ Real OS hosts are required for claims involving:
 - fonts;
 - scheduling;
 - compositor behavior;
-- GPU/presentation.
+- GPU/presentation;
+- numeric frame-budget calibration.
 
-## 12. Correctness
+## 13. Correctness
 
 Never trade away correctness to win a benchmark.
 
@@ -295,12 +477,14 @@ Do not silently disable:
 - Markdown semantics;
 - font fallback;
 - required rendering behavior;
+- revision compatibility;
+- scroll/layout stability;
 
 unless the experiment explicitly describes that subsystem as the intervention.
 
 Such experiments are diagnostic, not product benchmarks.
 
-## 13. Code Changes
+## 14. Code Changes
 
 Keep patches small and hypothesis-driven.
 
@@ -310,15 +494,47 @@ Prefer:
 - replaceable subsystems;
 - stable benchmark seams;
 - explicit changed-range propagation;
-- measurable invariants.
+- explicit revision/dependency identity;
+- measurable invariants;
+- bounded work queues;
+- stale-result tests;
+- demand-driven frame requests.
 
 Avoid speculative framework-wide rewrites.
 
-## 14. Documentation Rules
+Before adding a new hot-path feature, answer:
+
+```text
+what becomes dirty?
+what is the invalidation radius?
+what must finish before the next visible frame?
+what can be deferred?
+what makes old work stale?
+what is cached/reused?
+how is the result measured?
+```
+
+## 15. Documentation Rules
 
 Place the PRD in `docs/`.
 
 Place architectural decisions in `docs/adr/` only after sufficient evidence exists.
+
+Current product design lives in `docs/product/`. When a cross-cutting
+hot-path execution rule changes, update **all affected sources of truth in
+the same change**:
+
+```text
+docs/product/realtime-execution-model.md
++ docs/product/architecture.md
++ docs/product/performance-invariants.md
++ docs/product/roadmap.md
++ AGENTS.md when contributor rules change
++ MVP/feature acceptance docs when gates change
+```
+
+Do not allow architecture, roadmap, invariants, and agent instructions to
+describe different execution models.
 
 For performance findings, record:
 
@@ -334,18 +550,31 @@ For performance findings, record:
 
 Distinguish observation from inference.
 
-## 15. Definition of Done for Performance Work
+## 16. Definition of Done for Performance Work
 
 A performance task is not done because:
 
 - a microbenchmark improved;
 - a flame graph looks narrower;
 - CPU usage fell;
-- code became more “native”.
+- code became more “native”;
+- all queued background work completed sooner.
 
 It is done when the relevant end-to-end metric is re-measured and the result is documented.
 
-## 16. When Unsure
+For real-time scheduling work, also verify that the intervention did not
+merely move cost into:
+
+```text
+long frames
+stale work
+queue growth
+scroll drift
+cache memory
+revision races
+```
+
+## 17. When Unsure
 
 Prefer:
 
