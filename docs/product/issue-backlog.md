@@ -1,14 +1,106 @@
-# Markit — Issue Backlog (P1+ candidates)
+# Markit — Issue Backlog (P0/P1+ candidates)
 
 Ready-to-paste issue bodies for work confirmed by product requirements or
 real evidence (no speculative issues). Each entry: title, labels, body.
 The A4 phase spec §55 rule applies: only items the product will certainly
 need or that have real evidence. Items are written for the direct-GPUI
-architecture (ADR-008).
+architecture (ADR-008) and the real-time execution model in
+`docs/product/realtime-execution-model.md`.
+
+---
+
+## P0 — Core execution semantics
+
+### [P0] Revision identity + precise dirty propagation in markit-core
+
+- Labels: `p0`, `editor-model`, `performance`, `correctness`
+- Body:
+  - **Why**: changed-range propagation exists as a product invariant, but
+    the real-time execution model also requires explicit revision identity
+    and precise downstream invalidation so deferred work can be made safe.
+  - **Scope**: define the smallest core semantics needed to distinguish
+    local edit / append / delete / paste / structural edit / document
+    replacement / viewport/style changes where those distinctions affect
+    invalidation; propagate dirty regions through LineIndex, BlockIndex,
+    Markdown IR, view model; add document/derived-state revision identity.
+  - **Acceptance**: local edits invalidate only semantically affected
+    blocks; append is not treated as document replacement; tests can
+    observe dirty ranges/revisions without GPUI; old revision results are
+    rejectable by construction; no speculative ECS/general dependency
+    framework.
+  - **Non-goals**: worker pool, numeric frame budget, final buffer
+    structure.
+
+### [P0] Work-amplification + revision instrumentation seams
+
+- Labels: `p0`, `performance`, `instrumentation`
+- Body:
+  - **Why**: the execution laws are not useful if hidden fan-out cannot be
+    measured.
+  - **Scope**: expose counters/events for changed bytes/lines/blocks,
+    blocks rescanned/reparsed, revision, and derived-result acceptance /
+    stale rejection in headless/core tests.
+  - **Acceptance**: regression tests can assert INV-01/05/08/10/13 without
+    wall-clock thresholds; instrumentation can be disabled or made cheap
+    outside performance builds.
 
 ---
 
 ## P1 — Windows (direct GPUI)
+
+### [P1] Demand-driven frame scheduler + user-observable priority
+
+- Labels: `p1`, `performance`, `gpui`, `scheduler`, `tier-0`
+- Body:
+  - **Why**: viewport-bounded rendering alone does not prevent syntax,
+    layout, indexing, or other derived work from monopolizing the UI path.
+    P1 requires bounded/cooperative work with current interaction and the
+    visible viewport ahead of background completion.
+  - **Scope**: implement the smallest GPUI-facing scheduler seam that can
+    request frames on demand, stop/yield deferrable work at a measured
+    deadline/quota, resume later, and expose critical/high/near/background
+    priority. No permanent fixed-rate tick.
+  - **Evidence**: `realtime-execution-model.md`; Markstream is an external
+    reference for adaptive/incremental scheduling discipline, not for
+    numeric defaults.
+  - **Acceptance**: idle editor does not continuously request frames;
+    sustained typing keeps caret/visible text ahead of background work;
+    frame work/yield/queue-depth counters are observable; exact budget is
+    calibrated on real Windows/GPUI evidence.
+  - **Non-goals**: generic game engine, ECS, copied 6 ms/8 ms constants.
+
+### [P1] Revision-safe deferred jobs + coherent presentation commit
+
+- Labels: `p1`, `correctness`, `performance`, `scheduler`
+- Body:
+  - **Why**: background/deferred parse, highlight, layout, indexing, and
+    later rich-block work can finish out of order. Stale results must never
+    overwrite newer visible state.
+  - **Scope**: define job revision/dependency identity, cancellation or
+    stale-result rejection, and a logical committed-presentation boundary.
+    Build a deterministic test harness that deliberately completes old
+    jobs after new edits.
+  - **Acceptance**: stale results cannot commit; compatible cached results
+    can be reused; visible state cannot silently mix incompatible
+    document/parse/layout/highlight revisions; cancellation/rejection count
+    is observable.
+
+### [P1] Viewport / Document LOD seam
+
+- Labels: `p1`, `view-model`, `performance`, `virtualization`
+- Body:
+  - **Why**: ADR-005 bounds presentation by the viewport; the real-time
+    model also needs far/near/visible priority so distant derived work does
+    not become synchronous typing cost.
+  - **Scope**: represent enough view-model state to distinguish far / near
+    / visible materialization; preserve logical scroll extent; visible
+    content gets exact layout/shaping, near content may prefetch, far
+    content remains lightweight.
+  - **Acceptance**: 10K→1M normal frame materialization remains viewport-
+    bounded; far content does not force exact layout; counters report
+    far/near/visible materialization; no visible scroll jump in the basic
+    P1 path.
+  - **Non-goals**: final height-estimation algorithm (P2 hardening).
 
 ### [P1] GPUI/DirectWrite CJK + emoji fallback validation for Markit
 
@@ -94,22 +186,50 @@ architecture (ADR-008).
   - **Acceptance**: standard undo/redo UX for typing, deletion, paste,
     IME commits; bounded memory.
 
-### [P1] Markit core regression battery in CI
+### [P1] Markit core + realtime regression battery in CI
 
 - Labels: `ci`, `performance`, `editor-model`
 - Body:
-  - **Why**: the invariants (`docs/product/performance-invariants.md`)
-    need cheap guards: work-amplification checks, not wall-clock
-    thresholds.
-  - **Scope**: core unit tests + the invariants battery on a fixed
-    machine; assert full scans == 0, blocks_reparsed == 1 for local
-    edits, presentation work flat across sizes.
-  - **Acceptance**: green on every PR touching core/edit paths; flake
-    policy documented.
+  - **Why**: `docs/product/performance-invariants.md` now covers both
+    work amplification and scheduling/revision correctness.
+  - **Scope**: core unit tests + invariant battery; assert full scans == 0,
+    blocks_reparsed == 1 for local edits, presentation work flat across
+    sizes, stale-result rejection/coherent publication, and idle demand
+    rendering where deterministic host semantics permit. Keep fragile real
+    wall-clock gates out of generic CI.
+  - **Acceptance**: green on every PR touching core/edit paths; real-host
+    timing battery kept separate; flake policy documented.
 
 ---
 
-## Cross-platform / core
+## P2 / cross-platform core
+
+### [P2] Cache dependency + invalidation contracts
+
+- Labels: `p2`, `performance`, `correctness`, `cache`
+- Body:
+  - **Why**: parse/highlight/layout/shaping caches are useful only if
+    stable work is reused and stale work can never leak into presentation.
+  - **Scope**: for each cache used by P1/P2, document key, dependency set,
+    invalidation trigger, revision compatibility, memory bound/eviction,
+    and hit/miss instrumentation. Add tests showing an unrelated local edit
+    preserves reusable artifacts while affected artifacts invalidate.
+  - **Acceptance**: no opaque cache; stale cache result cannot commit;
+    memory bound documented; unrelated cache reuse verified.
+
+### [P2] Document LOD height correction + scroll-drift hardening
+
+- Labels: `p2`, `performance`, `scroll`, `virtualization`
+- Body:
+  - **Why**: keeping far content lightweight may require estimated extents;
+    a CPU win is not acceptable if exact layout causes visible scroll
+    jumps later.
+  - **Scope**: measure far/near/visible height estimation, correction,
+    anchor preservation, fast-scroll behavior, and after-large-navigation
+    cache state.
+  - **Acceptance**: drift/jump metric defined; correction remains within
+    accepted bounds under large documents and rapid navigation; no hidden
+    full-document layout.
 
 ### [X] Bounded fence recovery for L1 structural edits
 
