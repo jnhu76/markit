@@ -59,3 +59,13 @@
 //! adapter will build on.
 
 #![forbid(unsafe_code)]
+
+pub mod change;
+pub mod id;
+pub mod position;
+pub mod revision;
+
+pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
+pub use id::DocumentId;
+pub use position::{ByteOffset, LineNumber, SourceRange};
+pub use revision::{DocumentRevision, Revisioned, StaleResult};
