@@ -120,6 +120,10 @@ The document is a plain string plus the incremental `LineIndex`
 structures (piece table, rope, tree-based) are a decision for the real
 product workload, not a pre-emptive choice.
 
+Implemented as P0-01 in `crates/markit-core::document` (storage private;
+reads go through byte/line queries; every mutation returns an explicit
+changed-range `EditResult` at mutation time).
+
 **Coordinate semantics** (AGENTS.md §8): keep bytes / Unicode scalars /
 grapheme boundaries / logical positions / display positions / platform
 UTF-16 coordinates explicit as Unicode levels rise (U1+ CJK). Avoid

@@ -15,7 +15,8 @@ docs/
 │   ├── roadmap.md
 │   ├── mvp-v0.1.md
 │   ├── platform-capability-matrix.md
-│   └── issue-backlog.md
+│   ├── issue-backlog.md
+│   └── p0-01-implementation-note.md   # P0-01 implementation status
 └── research/             # historical A0–A4 evidence / experiments
 ```
 

@@ -142,6 +142,15 @@ ABI. Transport/runtime remains evidence-driven.
 
 ## P0 — Markit Rust Core + Change/Revision Model
 
+Status note (2026-08): **P0-01 is implemented** — the product Rust
+workspace (`crates/markit-core` + `apps/markit` skeleton, no GPUI yet),
+the incremental document core (private storage, revision/change model,
+incremental LineIndex per ADR-003, selection / edit-transaction /
+snapshot seams, stable `DocumentId`), and the differential test battery
+including work-amplification counters. The remaining P0 scope below
+(BlockIndex, Markdown L1, commands, view model) is open. See
+`docs/product/p0-01-implementation-note.md`.
+
 - Goal: framework-independent core built as a Rust library whose update
   semantics are explicit enough for incremental, cancellable, coherent
   presentation and future stable extension snapshots/commands.
