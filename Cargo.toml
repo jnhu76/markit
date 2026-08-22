@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["crates/markit-core", "apps/markit"]
+
+# mvp/gpui is the Phase A0 feasibility prototype. It keeps its own lockfile
+# and its prototype-pinned GPUI version; it is not part of the product
+# workspace and must not inherit (or define) product dependency decisions.
+# The product GPUI dependency is frozen later by the G0 baseline selection
+# (docs/product/roadmap.md), in the GPUI-facing crates only.
+exclude = ["mvp/gpui"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+
+[workspace.dependencies]
+markit-core = { path = "crates/markit-core" }

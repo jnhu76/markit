@@ -1,0 +1,12 @@
+[package]
+name = "markit-core"
+description = "Framework-independent incremental editor core for Markit"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+# Intentionally empty (P0-01):
+# - no GPUI and no other UI framework: core is framework-independent (ADR-002/008)
+# - no platform/Windows crates: platform integration lives at the GPUI edge
+# - no plugin runtime: only the semantic boundary is preserved

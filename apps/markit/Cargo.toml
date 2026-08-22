@@ -1,0 +1,12 @@
+[package]
+name = "markit"
+description = "Markit product application"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+markit-core = { workspace = true }
+# The GPUI dependency is intentionally absent: the G0 baseline selection
+# (docs/product/roadmap.md) has not frozen a product GPUI revision yet.
+# It will be added here — never in markit-core — once G0 is complete.
