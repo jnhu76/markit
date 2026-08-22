@@ -62,10 +62,12 @@
 
 pub mod change;
 pub mod id;
+pub mod line_index;
 pub mod position;
 pub mod revision;
 
 pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
 pub use id::DocumentId;
+pub use line_index::{LineIndex, LineIndexCounters};
 pub use position::{ByteOffset, LineNumber, SourceRange};
 pub use revision::{DocumentRevision, Revisioned, StaleResult};
