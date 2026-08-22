@@ -11,6 +11,13 @@ direct GPUI). The execution model is defined by
 `docs/product/realtime-execution-model.md`: incremental, viewport-bounded,
 revision-safe, demand-driven, and non-blocking for deferrable work.
 
+The MVP does **not** ship a general plugin runtime, but its boundaries must
+remain compatible with the future extension model in
+`docs/product/plugin-compatibility-contract.md`. Built-in export/print or
+other extension-like features should not force plugins to depend on
+`markit-core` internals, GPUI entities, concrete Markdown IR memory layout,
+or private scheduler/cache structures.
+
 ## In scope
 
 ```text
@@ -33,6 +40,10 @@ Execution:           explicit changed range + revision identity,
                      viewport-bounded materialization, demand rendering,
                      bounded/cooperative deferrable work, stale-result
                      rejection, coherent publication
+Extension seam:      explicit commands/transactions, stable document/block
+                     identity where exposed, coherent snapshot/revision
+                     semantics; no public dependency on internal Rust/GPUI
+                     representation
 Stability:           large documents (1M+ measured flat), crash recovery
                      (minimal: periodic recovery snapshot + clean-shutdown
                      marker + startup recovery)
@@ -41,10 +52,10 @@ Stability:           large documents (1M+ measured flat), crash recovery
 ## Not in scope (v0.1)
 
 ```text
-tabs / workspace / file tree   plugins
+tabs / workspace / file tree   general plugin runtime / marketplace
 images / tables / math / Mermaid
 cloud sync / collaboration / Git integration
-PDF export / themes marketplace
+PDF export marketplace / extension store
 rich HTML clipboard / images / custom MIME
 transparent windows
 legacy encodings (UTF-8 only)
@@ -52,6 +63,7 @@ full Typora-style syntax hiding (L2 is a later phase)
 generic ECS / archetype / game-engine framework
 permanent fixed-rate render/update loop
 final worker-pool topology or hard-coded scheduler tuning copied from references
+plugin transport choice (Rust dylib / Wasm / subprocess IPC / wire encoding)
 ```
 
 ## Acceptance gates (Windows first, in order)
@@ -84,14 +96,21 @@ final worker-pool topology or hard-coded scheduler tuning copied from references
     statistically meaningful, max/long-frame counts, changed-region and
     viewport work, frame-work/yield counters, and stale/cancel/reject
     counts needed to diagnose scheduling failures.
+12. Extension-boundary preservation: no MVP feature requires a future
+    plugin to borrow mutable editor internals or link against GPUI/private
+    `markit-core` representation; extension-like operations can be expressed
+    through explicit snapshot/query + command/result seams compatible with
+    the plugin compatibility contract.
 
 ## Exit criteria
 
-- P1 (Windows): gates 1–11 on Windows with evidence, installer-free
+- P1 (Windows): gates 1–12 on Windows with evidence, installer-free
   portable exe, crash recovery smoke.
 - The exact numeric frame budget, batch size, worker count, overscan, and
   cache sizes are recorded as measured implementation parameters, not as
   architectural constants.
+- Plugin runtime/transport remains a later evidence-driven decision; MVP
+  freezes only the semantic boundary discipline, not an ABI.
 - Later platforms: the same semantic gates on a real Linux desktop and on
   macOS, each in its own phase (roadmap P5), with platform-appropriate
   timing/presentation evidence.
