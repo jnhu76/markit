@@ -98,8 +98,24 @@ Do NOT inherit GPUI 0.2.2 merely because the PocketJS host used 0.2.2.
 
 The current `mvp/gpui` prototype (gpui 0.2.2) is evidence of Windows
 feasibility, not the final product dependency. GPUI baseline selection is
-the next experiment (roadmap G0); the product GPUI baseline is NOT YET
-FROZEN.
+the next experiment (roadmap G0); at this ADR's acceptance the product
+GPUI baseline was NOT YET FROZEN (superseded by the status update below).
+
+### Status update (2026-08-22, G0 closed)
+
+The baseline is now **frozen**: `zed-industries/zed` rev
+`eb8e1c8b5502b7007465fbbc465f4a736fa39210` (Zed v1.16.1), pinned in the
+workspace root `Cargo.toml`. Evidence, capability audit, provenance, and
+the update policy live in `docs/product/g0-gpui-baseline.md`. Note: the
+pinned revision's `gpui` crate still reports version string "0.2.2" while
+being an entirely different implementation (platform code split into
+`gpui_platform`/`gpui_windows`/…) — version strings are not baseline
+identity; the commit SHA is. The frozen baseline is validated on a real
+Windows desktop host (G0 smoke matrix, `results/summary/g0/`): build,
+window, resize, HiDPI@1.0, Latin/CJK/emoji rendering, keyboard/mouse,
+IME composition pipeline (partial), clipboard both directions, demand
+redraw, idle behavior (0 draws / 0 % CPU), startup, and memory all PASS
+or honestly PARTIAL as recorded.
 
 ## Relationship to ADR-001
 

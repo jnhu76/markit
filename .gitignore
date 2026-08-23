@@ -32,4 +32,11 @@ profiles/*
 # Raw benchmark output may be machine-specific or large.
 results/raw/*
 !results/raw/.gitkeep
+
+# Curated frozen-baseline evidence is small and must stay reviewable
+# (docs/product/g0-gpui-baseline.md §5). Explicitly re-include it because
+# the generic *.log rule above would otherwise ignore the trace files.
+!results/evidence/
+!results/evidence/g0/*
+!results/evidence/g0/*.log
 bench/__pycache__/

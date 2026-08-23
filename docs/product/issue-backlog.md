@@ -13,9 +13,12 @@ architecture (ADR-008) and the real-time execution model in
 
 Status note (2026-08): P0-01 (product workspace + incremental document
 core + revision/change model + core instrumentation seams) is
-implemented; the items below remain open for the P0 hardening they
-describe (dirty propagation through future derived layers, full
-instrumentation coverage).
+implemented; P0-02 (Markdown BlockIndex + internal IR, including the
+golden fixtures below) is the next open node — GPUI-independent (it never
+depended on G0; the GPUI baseline has been frozen since 2026-08-22, see
+`docs/product/g0-gpui-baseline.md`). The items below remain open for the
+P0 hardening they describe (dirty propagation through future derived
+layers, full instrumentation coverage).
 
 ### [P0] Revision identity + precise dirty propagation in markit-core
 
@@ -53,6 +56,33 @@ instrumentation coverage).
 ---
 
 ## P1 — Windows (direct GPUI)
+
+P1 is staged (roadmap, issue #12 R10): **P1-A dogfood** (functional
+usability) and **P1-B v0.1 hardening** (gates, performance matrix,
+reliability). The scheduler-shaped items below belong to whichever stage
+first has the real workload that triggers them (issue #12 R3); none
+authorizes a generic scheduler framework.
+
+### [P1] Buffer / Index Decision Gate (P1-B, blocks v0.1 certification)
+
+- Labels: `p1`, `performance`, `buffer`, `evidence`
+- Body:
+  - **Why**: P0-01 deliberately retains `String` splice
+    (O(document suffix bytes)) and flat-LineIndex suffix adjustment
+    (O(lines after edit)). v0.1 cannot claim "1M local edit is flat" from
+    `bytes_scanned == Δ ∧ full_rebuilds == 0` alone — those counters
+    exclude suffix movement (issue #12 R8).
+  - **Scope**: measure real product workloads at positions
+    begin/q1/middle/q3/end; content ASCII / CJK / emoji / long lines /
+    mixed Markdown / fences; sizes small/medium/large + the synthetic
+    1M-line case; observe bytes scanned, bytes moved/copied where
+    measurable, line entries shifted, blocks reparsed, visible
+    materialization, real input→visible-frame tails, long frames.
+  - **Acceptance**: the decision is recorded with data: keep the simple
+    representation, or reopen ADR-003 (Rope/PieceTree/tree index) with
+    the measured justification.
+  - **Non-goals**: pre-emptive buffer rewrite (that is the gate's output,
+    not its input).
 
 ### [P1] Demand-driven frame scheduler + user-observable priority
 
@@ -241,23 +271,24 @@ instrumentation coverage).
 
 - Labels: `markdown`, `performance`, `p2`
 - Body:
-  - **Why**: A fence-boundary edit invalidates through the whole fence
-    cascade (measured at 1M: 30 197 lines, 68.9 ms). Correct, but too
-    broad for a product hot path. The worst case must not propagate
-    with unbounded document size.
+  - **Why**: A fence-boundary edit invalidates forward through the whole
+    fence cascade (measured at 1M: 30 197 lines, 68.9 ms). Correct but
+    broad; the synchronous user-blocking cost must not scale with
+    document size.
   - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.4
-    (historical measurement).
-  - **Scope**: bound the recovery — candidates are parser checkpoints
-    (every N blocks) + parser restart state at the checkpoint + scan
-    until the state converges, and/or only treating ``` as an opener
-    when a matching close exists ahead. Keep the incremental rescan
-    correct (differential oracle); **do not optimize the honest
-    structural propagation away** — fence delimiters legitimately change
-    later structure, so the fix is *bounding* the cascade, not hiding it.
-    Re-measure at 10K/100K/1M.
-  - **Acceptance**: invalidation radius bounded (no O(document) worst
-    case at 1M) and documented; differential oracle still green;
-    invariants battery green; before/after recorded honestly.
+    (historical measurement); issue #12 R7.
+  - **Scope**: bound the recovery with semantics-preserving means — parser
+    checkpoints (every N blocks) + restart state + resumable/chunkable
+    propagation so the work yields. Keep the incremental rescan correct
+    (differential oracle). **Never change Markdown interpretation to cap
+    the invalidation radius** (e.g. treating ``` as an opener only when a
+    closer exists ahead is a dialect change, not an optimization — it
+    requires an explicit documented dialect decision). Re-measure at
+    10K/100K/1M.
+  - **Acceptance**: synchronous blocking work bounded/chunkable at any
+    document size and documented; honest propagation radius still
+    measured and recorded; differential oracle green; invariants battery
+    green; before/after recorded honestly.
 
 ### [X] Markdown L1 conformance golden fixtures
 
@@ -266,14 +297,17 @@ instrumentation coverage).
   - **Why**: the differential oracle proves *incremental invalidation
     correctness* (incremental == full scan of the same parser), not
     Markdown/CommonMark conformance — both sides could parse wrong
-    together. The parser is the Markit L1 subset (heading, paragraph,
-    bold, emphasis, inline code, link, blockquote, ul/ol list, fenced
-    code), not a general Markdown parser.
+    together (issue #12 R5). The parser is the Markit L1 subset (heading,
+    paragraph, bold, emphasis, inline code, link, blockquote, ul/ol list,
+    fenced code), not a general Markdown parser.
   - **Evidence**: `docs/phase-a4-final-research-closeout.md` §3.2
     (conformance scope).
-  - **Scope**: supported-syntax golden fixtures (input → expected
-    blocks/runs), CommonMark-derived cases where applicable, a list of
-    known deviations.
+  - **Scope** (owned by P0-02): a minimal semantic golden suite covering
+    every supported L1 construct — input → expected blocks/runs — using
+    CommonMark-derived cases where the subset intends CommonMark
+    semantics, plus an explicit list of known deviations. P2 expands
+    breadth (adversarial cases, structural recovery); P0-02 cannot ship
+    only a differential oracle.
   - **Acceptance**: fixtures committed and green in the regression
     battery; deviations documented, not silently "fixed".
 

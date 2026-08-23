@@ -19,7 +19,8 @@ Windows is the first product platform.
                  │ block index       │
                  │ view model        │
                  │ dirty/version     │
-                 │ scheduling model  │
+                 │ priority metadata │
+                 │ (framework-free)  │
                  └─────────┬─────────┘
                            │
                   private projections
@@ -34,11 +35,16 @@ Windows is the first product platform.
 │ native text / IME    │          │ commands / results   │
 │ input / clipboard    │          │ stable ids/revisions │
 │ file dialogs         │          │ capabilities/version │
-└──────────┬───────────┘          └──────────┬───────────┘
-           │                                  │
-           ▼                                  ▼
-         GPUI                         future plugin runtime
-           │                         (transport not chosen)
+│ execution timing:    │          └──────────┬───────────┘
+│  executors, frame    │                     │
+│  deadlines, request- │                     ▼
+│  frame, idle/yield,  │          future plugin runtime
+│  presentation timing │          (transport not chosen)
+└──────────┬───────────┘
+           │
+           ▼
+         GPUI (G0-frozen rev eb8e1c8)
+           │
   ┌────────┼────────┐
   ▼        ▼        ▼
 Windows  Linux    macOS
@@ -80,6 +86,28 @@ setup (see `docs/research/`).
 policy and state; it never branches on the platform and never depends on
 GPUI.
 
+The ownership split (issue #12 R4) is:
+
+```text
+markit-core
+  = WHAT changed, WHAT is required, WHAT version is valid:
+    document semantics, semantic dirty/change information, revisions,
+    Markdown semantics, framework-independent dependency/priority
+    metadata, viewport/query semantics.
+
+markit-gpui / app layer
+  = WHEN work executes and HOW it reaches the screen:
+    which GPUI executor runs a job, frame deadlines, request-frame,
+    platform idle scheduling / yielding, presentation timing,
+    Windows-specific scheduling choices.
+```
+
+`markit-core` must not own GPUI executors, thread pools, frame timing, or
+platform scheduling mechanics; the GPUI/app layer must not re-derive
+document semantics. Framework-independent real-time semantics (change
+reasons, invalidation radii, revision identity, priority *metadata*) stay
+in core even though their *execution* lives at the GPUI edge.
+
 ```text
 core (markit-core)               gpui layer (markit-gpui/app)
 ─────────────────────────────    ────────────────────────────
@@ -92,6 +120,8 @@ incremental invalidation         IME
 viewport / LOD model             clipboard
 revision / dirty model           file dialogs
 commands                         frame request / present edge
+change/priority metadata         executor choice / frame deadlines
+                                 idle scheduling / yielding
 ```
 
 GPUI itself already abstracts a large amount of OS behavior. Do not
@@ -456,6 +486,8 @@ plugin loading model merely because another product uses it.
 
 ## 13. Reference documents
 
+- G0 GPUI baseline (frozen rev, capability audit, Windows evidence, update
+  policy): `docs/product/g0-gpui-baseline.md`.
 - Real-time execution model:
   `docs/product/realtime-execution-model.md`.
 - Plugin compatibility contract:
