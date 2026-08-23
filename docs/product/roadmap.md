@@ -207,8 +207,11 @@ in `crates/markit-core`: normative dialect contract
 (`markdown-l1-semantic-contract.md`), tiling block index in a plain
 `Vec` with spliced incremental resynchronization driven by P0-01's
 canonical per-edit regions, internal block identity with deterministic
-pairing, source-referenced inline IR, structural work counters, and the
-golden + randomized differential + large-document batteries. See
+pairing, source-referenced inline IR, CRLF-aware classification with
+byte-identical source, adversarially bounded inline parsing, read-only
+`BlockView` query surface, structural work counters that report parse
+work and state-maintenance work separately, and the golden +
+randomized differential + large-document + adversarial batteries. See
 `docs/product/p0-02-implementation-note.md`. The remaining P0 scope
 below (commands, view model) is open.
 

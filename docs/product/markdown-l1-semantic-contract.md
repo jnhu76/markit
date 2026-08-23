@@ -287,6 +287,9 @@ Inline links only: `[text](destination)` with an optional title:
   may not contain its own unescaped quote. Paren titles must balance.
 - Anything malformed (missing `(`, unbalanced, invalid destination) makes
   the `[` literal text; scanning resumes inside the brackets.
+- Link-text parsing is recursive but **bounded** (D16): past the nesting
+  cap or the per-run work budget the attempt degrades to literal text,
+  deterministically.
 - `!` is ordinary text: with images out of scope, `![alt](url)` renders
   as literal `!` followed by a normal link (§11 D12).
 
@@ -451,6 +454,8 @@ id assignment (pinned by tests).
 | D12 | Images/autolinks/HTML/entities/reference links/hard breaks | parsed | literal text (§7.5); `!` is text so `![a](b)` = `!` + link | out of v0.1 vocabulary; degradation is local and predictable |
 | D13 | Link titles | supported | supported (`"…"`, `'…'`, `(…)`) | alignment, not deviation (listed to pin it) |
 | D14 | Info strings | backtick fence info must not contain backticks; tilde unrestricted | identical | alignment (listed to pin it) |
+| D15 | Unbounded inline nesting | emphasis/link structure nests as deeply as the input | assembled nesting depth capped (256); delimiters beyond the cap stay literal text | IR shift/equality/drop are naturally recursive — the cap keeps adversarial input from overflowing the stack; real documents sit orders of magnitude below it |
+| D16 | Adversarial inline work | unspecified (naive implementations are quadratic or worse) | link-text recursion and total link scanning budgeted per run (`64·len + 4096` steps); a link attempt finding no `]` watermarks the rest of the run; emphasis pairing uses per-character opener stacks (linear) | responsiveness on hostile input is a product requirement; past the budget brackets stay literal — degradation is deterministic, so incremental parses and rebuilds agree (pinned by `tests/markdown_adversarial.rs`) |
 
 Everything not listed: L1 matches CommonMark 0.31.2 for in-scope
 constructs (fence open/close rules, ATX form, interruption rules, marker
@@ -474,4 +479,11 @@ signatures, ordered start, code-span matching, link grammar).
   fence, sparse two-location transaction, blank-run edit).
 - **Structural work tests**: local edits must not rescan the document
   (counters, not milliseconds); sparsity must survive multi-edit
-  transactions (1M-line document, two distant edits, middle untouched).
+  transactions (1M-line document, two distant edits, middle untouched);
+  equal-length local edits must shift no survivor records at any
+  document size.
+- **Adversarial inline regressions** (D15/D16): unmatched brackets,
+  closer-heavy delimiter runs, deep emphasis nesting, nested link
+  attempts, and very long paragraphs must show linear structural growth
+  (`inline_bytes_scanned` within a constant of run length; doubling the
+  input must not change that) and bounded tree depth.

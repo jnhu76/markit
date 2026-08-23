@@ -242,6 +242,8 @@ core; the A2–A4 battery `bench/run-a4.py` remains as historical tooling):
 |-------|-------------------|
 | full_document_scans == 0 per local edit | INV-01 |
 | local edits scan bounded lines regardless of document size | INV-01/05/08 |
+| equal-length local edits shift no survivor block records (any size) | INV-01/05 |
+| survivor records shifted / records moved by splice counted per edit | INV-01/08 |
 | materialized presentation work flat across document sizes | INV-02/03/12 |
 | op churn per edit viewport-bound | INV-02/03 |
 | idle: no draw/present work | INV-04 |
