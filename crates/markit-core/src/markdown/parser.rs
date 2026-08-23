@@ -375,8 +375,28 @@ impl<'a> BlockParser<'a> {
 
     // -- line plumbing ------------------------------------------------------
 
+    /// The line's **classification text**: its content bytes with a
+    /// single trailing `\r` dropped when the line is `'\n'`-terminated
+    /// (contract §2 — a `\r\n` terminator's `\r` is not content; the
+    /// project is Windows-first). Source ranges, fingerprints, and the
+    /// document bytes themselves keep the `\r`: only line-shape
+    /// classification ignores the pre-terminator carriage return. A
+    /// `\r` anywhere else is an ordinary content byte, including at
+    /// end of document without a final newline.
+    ///
+    /// Lexical ranges are line-relative and the dropped `\r` sits at
+    /// the line's end, so they map to absolute bytes unchanged.
     fn line_text(&self, line: usize) -> Cow<'a, str> {
-        self.snap.line_str(LineNumber(line))
+        let raw = self.snap.line_str(LineNumber(line));
+        let terminated = line + 1 < self.snap.line_count();
+        if terminated && raw.as_bytes().last() == Some(&b'\r') {
+            match raw {
+                Cow::Borrowed(content) => Cow::Borrowed(&content[..content.len() - 1]),
+                Cow::Owned(content) => Cow::Owned(content[..content.len() - 1].into()),
+            }
+        } else {
+            raw
+        }
     }
 
     fn line_start(&self, line: usize) -> ByteOffset {
@@ -595,6 +615,50 @@ mod tests {
             .collect();
         assert_eq!(texts, vec!["a", "  spaced", ""]);
         assert!(parser.at_eof());
+    }
+
+    #[test]
+    fn crlf_lines_classify_on_logical_content() {
+        use BlockKind::*;
+        // A `\r\n` terminator's `\r` is not content: blank, fence
+        // closer, and opener classification all see the logical line.
+        assert_eq!(kinds("# h\r\n"), vec![Heading, Blank]);
+        assert_eq!(kinds("```\r\n\r\n```\r\n"), vec![FencedCode, Blank]);
+        assert_eq!(
+            kinds("a\r\n\r\nb\r\n"),
+            vec![Paragraph, Blank, Paragraph, Blank]
+        );
+        assert_eq!(kinds("> q\r\n"), vec![BlockQuote, Blank]);
+        assert_eq!(kinds("- a\r\n- b\r\n"), vec![UnorderedList, Blank]);
+        assert_eq!(kinds("2. x\r\n"), vec![OrderedList, Blank]);
+        // A `\r` with no following `\n` is ordinary content: end of
+        // document without a final newline, and mid-line.
+        assert_eq!(kinds("x\r"), vec![Paragraph]);
+        assert_eq!(kinds("a\rb\n"), vec![Paragraph, Blank]);
+    }
+
+    #[test]
+    fn crlf_details_exclude_terminator_cr() {
+        let doc = Document::new("## h ##\r\n```rust\r\n```\r\n");
+        let snap = doc.snapshot();
+        let mut parser = BlockParser::new(&snap, 0);
+        let heading = parser.next_block().unwrap();
+        let BlockDetail::Heading { content, .. } = heading.detail().clone() else {
+            panic!("heading");
+        };
+        assert_eq!(&snap.slice(content), "h", "closer and \\r excluded");
+        let fence = parser.next_block().unwrap();
+        let BlockDetail::FencedCode {
+            fence: info,
+            closed,
+            ..
+        } = fence.detail().clone()
+        else {
+            panic!("fence");
+        };
+        assert!(closed, "the ```\\r line closed the fence");
+        let info_text = info.info.map(|r| snap.slice(r).into_owned());
+        assert_eq!(info_text.as_deref(), Some("rust"), "info excludes \\r");
     }
 
     #[test]

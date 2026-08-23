@@ -251,6 +251,7 @@ impl Document {
                 old_range,
                 new_range,
                 byte_delta,
+                line_delta: new_line_count as i64 - old_line_count as i64,
                 old_line_span,
                 new_line_span,
             }],
@@ -320,6 +321,7 @@ impl Document {
         let mut inverse: Vec<TextEdit> = Vec::with_capacity(edits.len());
         let mut final_new_ranges: Vec<SourceRange> = Vec::with_capacity(edits.len());
         let mut old_line_spans: Vec<Range<LineNumber>> = Vec::with_capacity(edits.len());
+        let mut line_deltas: Vec<i64> = Vec::with_capacity(edits.len());
         let mut shift: i64 = 0;
         for edit in &edits {
             let old_text = self.storage[edit.range.as_usize_range()].to_string();
@@ -330,6 +332,12 @@ impl Document {
                 ByteOffset(final_end),
             ));
             old_line_spans.push(self.line_span(edit.range));
+            // Exact per-edit line delta: newlines in minus newlines out.
+            // (Span lengths cannot express a replacement ending in a
+            // terminator: its trailing empty line lies past `new_range`.)
+            let removed = old_text.bytes().filter(|&b| b == b'\n').count() as i64;
+            let inserted = edit.new_text.bytes().filter(|&b| b == b'\n').count() as i64;
+            line_deltas.push(inserted - removed);
             inverse.push(TextEdit::replace(
                 SourceRange::new(ByteOffset(final_start), ByteOffset(final_end)),
                 old_text,
@@ -382,6 +390,7 @@ impl Document {
                 old_range: edit.range,
                 new_range: final_new_ranges[i],
                 byte_delta: edit.new_text.len() as i64 - edit.range.len() as i64,
+                line_delta: line_deltas[i],
                 old_line_span: old_line_spans[i].clone(),
                 new_line_span: self.line_span(final_new_ranges[i]),
             })
@@ -408,6 +417,11 @@ impl Document {
 
         let covering_old_range = covering_old.expect("at least one effective edit");
         let covering_new_range = covering_new.expect("at least one effective edit");
+        debug_assert_eq!(
+            line_deltas.iter().sum::<i64>(),
+            self.lines.line_count() as i64 - old_line_count as i64,
+            "per-edit line deltas must sum to the document line delta"
+        );
         let kind = ChangeKind::classify(
             covering_old_range.len(),
             covering_new_range.len(),

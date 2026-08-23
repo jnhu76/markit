@@ -488,7 +488,10 @@ mod incremental_tests {
         let (mut doc, mut state) = setup(text);
         let ids_before: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
 
-        // Edit inside the "second" paragraph.
+        // Edit inside the "second" paragraph, on its first (and only)
+        // line: blank runs are maximal, so the reparse extends one
+        // block back into the blank above — two blocks, two lines, all
+        // local.
         let second_at = text.find("second").unwrap();
         let work = apply(
             &mut doc,
@@ -498,11 +501,14 @@ mod incremental_tests {
         assert_matches_rebuild(&doc, &state);
 
         assert_eq!(work.dirty_regions, 1);
-        assert_eq!(work.blocks_reparsed, 1, "one paragraph reparsed");
-        assert_eq!(work.blocks_reused, 1, "the paragraph keeps its id");
+        assert_eq!(
+            work.blocks_reparsed, 2,
+            "blank boundary neighbor + the paragraph"
+        );
+        assert_eq!(work.blocks_reused, 2, "both keep their ids");
         assert_eq!(work.blocks_created, 0);
         assert_eq!(work.blocks_removed, 0);
-        assert_eq!(work.lines_scanned, 1, "one line of text parsed");
+        assert_eq!(work.lines_scanned, 2, "blank line + paragraph line");
         assert_eq!(work.inline_blocks_reparsed, 1);
         assert!(work.convergence_line < doc.line_count() as u64);
 
@@ -531,7 +537,10 @@ mod incremental_tests {
         state.assert_tiling(&snapshot);
         assert_matches_rebuild(&doc, &state);
         assert_eq!(state.last_work().dirty_regions, 2, "two semantic islands");
-        assert_eq!(state.last_work().blocks_reparsed, 2, "two paragraphs");
+        // The "bbb" edit is on its paragraph's first line, so its
+        // island extends into the blank above (maximal blank runs):
+        // paragraph + [blank, paragraph] = three reparsed blocks.
+        assert_eq!(state.last_work().blocks_reparsed, 3);
     }
 
     #[test]
@@ -644,6 +653,60 @@ mod incremental_tests {
         for (before, after) in ids.iter().zip(state.blocks()) {
             assert_eq!(*before, after.id, "append preserves every id");
         }
+    }
+
+    #[test]
+    fn deleting_the_final_newline_removes_the_final_blank() {
+        // The final empty line's existence is the preceding line's
+        // terminator: deleting it must retire the trailing Blank block,
+        // not converge a phantom empty survivor against it.
+        let (mut doc, mut state) = setup("🙂#\n");
+        assert_eq!(state.block_count(), 2, "paragraph + final empty blank");
+        let len = "🙂#\n".len();
+        let _work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::delete(crate::position::SourceRange::new(
+                ByteOffset(len - 1),
+                ByteOffset(len),
+            )),
+        );
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.block_count(), 1, "no phantom empty block");
+
+        // Re-adding the terminator restores the blank.
+        let _work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::insert(ByteOffset(len - 1), "\n"),
+        );
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.block_count(), 2);
+
+        // Same for CRLF terminators: deleting the `\n` leaves a
+        // content `\r` at EOF, deleting both leaves plain EOF.
+        let (mut doc, mut state) = setup("x\r\n");
+        let _work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::delete(crate::position::SourceRange::new(
+                ByteOffset(2),
+                ByteOffset(3),
+            )),
+        );
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.block_count(), 1);
+        let (mut doc, mut state) = setup("x\r\n");
+        let _work = apply(
+            &mut doc,
+            &mut state,
+            TextEdit::delete(crate::position::SourceRange::new(
+                ByteOffset(1),
+                ByteOffset(3),
+            )),
+        );
+        assert_matches_rebuild(&doc, &state);
+        assert_eq!(state.block_count(), 1);
     }
 
     #[test]

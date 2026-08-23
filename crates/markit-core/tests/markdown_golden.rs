@@ -809,6 +809,113 @@ fn doc_line_start(doc: &Document, line: usize) -> usize {
 }
 
 // ---------------------------------------------------------------------------
+// CRLF line endings (contract §2): classification uses the logical line;
+// source ranges and saved bytes keep `\r\n` verbatim.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn crlf_line_endings_classify_like_lf() {
+    // Heading: content excludes the closing sequence and the `\r`.
+    run_fixture(
+        "crlf-heading",
+        "# 标题\r\n",
+        &[
+            inline_block(BlockKind::Heading, "# 标题\r\n", &[("text", "标题")]),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    // A "\r" line is a blank line.
+    run_fixture(
+        "crlf-blank",
+        "a\r\n\r\nb\r\n",
+        &[
+            block(BlockKind::Paragraph, "a\r\n"),
+            block(BlockKind::Blank, "\r\n"),
+            block(BlockKind::Paragraph, "b\r\n"),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    // The closer line "```\r" closes the fence; the block's bytes and
+    // the trailing blank keep the CRLF terminators.
+    run_fixture(
+        "crlf-fence",
+        "```rust\r\ncode\r\n```\r\n",
+        &[
+            block(BlockKind::FencedCode, "```rust\r\ncode\r\n```\r\n"),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    // Quote segments exclude the marker and the terminator's `\r`;
+    // list item runs keep terminators (source-faithful, like `\n`).
+    run_fixture(
+        "crlf-quote",
+        "> 引用\r\n",
+        &[
+            inline_block(BlockKind::BlockQuote, "> 引用\r\n", &[("text", "引用")]),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    run_fixture(
+        "crlf-list",
+        "- 甲\r\n",
+        &[
+            inline_block(BlockKind::UnorderedList, "- 甲\r\n", &[("text", "甲\r\n")]),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    // EOF without a final newline: the trailing `\r` is content.
+    run_fixture(
+        "crlf-eof-cr-is-content",
+        "para\r",
+        &[inline_block(
+            BlockKind::Paragraph,
+            "para\r",
+            &[("text", "para\r")],
+        )],
+    );
+    // A lone mid-line `\r` is content (only the pre-`\n` `\r` is not).
+    run_fixture(
+        "crlf-mid-line-cr-is-content",
+        "a\rb\r\n",
+        &[
+            inline_block(BlockKind::Paragraph, "a\rb\r\n", &[("text", "a\rb\r\n")]),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+    // Mixed endings in one document: CRLF opener, LF closer.
+    run_fixture(
+        "crlf-mixed-endings",
+        "```rust\r\n```\n",
+        &[
+            block(BlockKind::FencedCode, "```rust\r\n```\n"),
+            block(BlockKind::Blank, ""),
+        ],
+    );
+}
+
+#[test]
+fn crlf_block_details_exclude_terminator_cr() {
+    let doc = Document::new("## 头 ##\r\n```rust\r\n```\r\n");
+    let snapshot = doc.snapshot();
+    let state = MarkdownState::build(&snapshot);
+
+    let heading = &state.blocks()[0];
+    let BlockDetail::Heading { level, content } = &heading.detail else {
+        panic!("heading");
+    };
+    assert_eq!(*level, 2);
+    assert_eq!(snapshot.slice(*content).as_ref(), "头");
+
+    let fence = &state.blocks()[1];
+    let BlockDetail::FencedCode { fence, closed } = &fence.detail else {
+        panic!("fence");
+    };
+    assert!(closed, "```\r closes the fence");
+    let info = fence.info.map(|r| snapshot.slice(r).into_owned());
+    assert_eq!(info.as_deref(), Some("rust"));
+}
+
+// ---------------------------------------------------------------------------
 // Identity battery (contract §10, task §22)
 // ---------------------------------------------------------------------------
 

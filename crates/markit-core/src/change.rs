@@ -116,6 +116,13 @@ pub struct AppliedEdit {
     pub new_range: SourceRange,
     /// `new_text.len() - old_range.len()` in bytes.
     pub byte_delta: i64,
+    /// Net lines added by this edit: newlines inserted minus newlines
+    /// deleted, counted at mutation time. Exact — unlike the line-span
+    /// lengths, whose exclusive-end semantics undercount edits whose
+    /// replacement text ends with a terminator — and sums over `edits`
+    /// to [`EditResult::line_delta`]. Line-coordinate mapping must use
+    /// this field, never span arithmetic.
+    pub line_delta: i64,
     /// Lines covering [`AppliedEdit::old_range`] in the **pre-edit**
     /// document (line-granular dirty region for structures keyed by old
     /// coordinates; provided so consumers need not rescan or guess).

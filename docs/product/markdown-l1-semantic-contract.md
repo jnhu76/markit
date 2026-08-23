@@ -40,8 +40,19 @@ The L1 parser operates on the coordinate model of `markit-core` (P0-01):
   is ordinary text everywhere.
 - Lines are the `Document` line index's lines: split on `'\n'` only;
   a document ending in `'\n'` has a final empty line; `LineNumber` is
-  0-based. `'\r'` is an **ordinary content byte** (no CRLF handling in L1).
-- Line content is the line's bytes excluding its `'\n'` terminator.
+  0-based.
+- **CRLF terminators** (the project is Windows-first): line
+  terminators are `'\n'` or `'\r\n'`. A line's **classification text**
+  drops a single `'\r'` immediately before its `'\n'` — `# h\r\n` is a
+  heading, `"```\r"` closes a fence, `"\r"` alone is blank, and a
+  fence info string excludes the `\r`. Source bytes, source ranges,
+  fingerprints, inline-run text, and saved files keep `\r\n` verbatim:
+  round-trips are byte-identical and no normalization ever happens. A
+  `'\r'` anywhere else — mid-line, or at end of document without a
+  final newline — is an ordinary content byte.
+- Line content is the line's bytes excluding its `'\n'` terminator
+  (a `\r\n` line's content therefore ends with `\r`; classification
+  drops it as above).
 
 Terms used below:
 
@@ -346,15 +357,29 @@ An update consumes the P0-01 canonical per-edit regions (`EditResult`
 1. **Rewind**: find the last old block whose `state_after` is `Ground`
    and which starts at or before the island's first affected old line;
    restart parsing there. Old blocks intersecting the island's old line
-   span are **dead** (candidates for identity pairing only).
+   span are **dead** (candidates for identity pairing only). An edit
+   landing on a block's first line rewinds one block further when the
+   previous block is a paragraph, list, quote, **or blank run** — a
+   continued or blanked line extends the block above (blank runs are
+   maximal), and the reparse must include it or the survivor below
+   would keep a shape a full rebuild would merge away.
 2. **Reparse forward** over the new document, emitting records.
 3. **Converge** at the first subsequent point where all hold:
    parser state is `Ground`; the next parse position equals the
    (delta-shifted) start of the next surviving old block — an old block
    whose old line span lies entirely after the island; that block's
-   `state_before` is `Ground`. Then splice: new records replace the dead
-   ones, and every surviving old block is kept, its ranges shifted by the
-   accumulated byte/line delta of preceding edits.
+   `state_before` is `Ground`. Two refinements for the *empty* survivor
+   (the final-empty-line block): it may not converge when the new
+   document no longer ends with a terminator (deleting the final
+   newline deletes that line's existence), nor when the reparse's last
+   block is a blank run (maximal runs already consumed the final empty
+   line; the survivor would duplicate it). Then splice: new records
+   replace the dead ones, and every surviving old block is kept, its
+   ranges shifted by the accumulated byte/line delta of preceding
+   edits — the shift uses the per-edit exact `line_delta`
+   (newlines in minus newlines out), not line-span arithmetic, whose
+   exclusive-end semantics undercount replacements ending in a
+   terminator.
 4. If convergence never happens before end of document, the document ends
    (honest unclosed-fence propagation, §6.7).
 
@@ -427,8 +452,12 @@ signatures, ordered start, code-span matching, link grammar).
 
 - **Golden fixtures** per construct, each covering: canonical form,
   boundary cases, malformed input, CJK/emoji/multi-byte content, EOF, and
-  missing final newline. CommonMark-derived cases cite the spec example;
-  deviation cases cite their D-number.
+  missing final newline. CRLF line endings get their own fixtures —
+  heading, blank, list, quote, fenced code (closer and info string),
+  mixed endings, EOF without a final newline, mid-line `\r` — all
+  asserting that classification matches the LF behavior while block
+  bytes keep `\r\n` verbatim. CommonMark-derived cases cite the spec
+  example; deviation cases cite their D-number.
 - **Differential oracle**: incremental update == full rebuild after every
   edit in randomized runs (deterministic seeds; compare kinds, ranges,
   line spans, states, fingerprints, inline IR, version — **not** ids).

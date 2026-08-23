@@ -44,9 +44,11 @@ impl Rng {
 }
 
 /// Markdown-dense alphabet: every block opener, every inline delimiter,
-/// multi-byte scalars, and plain text.
-const TOKENS: [&str; 16] = [
-    "a", "x", "#", " ", "-", ">", "`", "*", "_", "[", "]", "(", ")", "\\", "中", "🙂",
+/// multi-byte scalars, CRLF terminators, and plain text. `\r\n` tokens
+/// make the randomized runs exercise mixed line endings end to end
+/// (contract §2).
+const TOKENS: [&str; 17] = [
+    "a", "x", "#", " ", "-", ">", "`", "*", "_", "[", "]", "(", ")", "\\", "中", "🙂", "\r\n",
 ];
 
 fn random_tokens(rng: &mut Rng, max_len: usize) -> String {
@@ -258,6 +260,14 @@ fn heading_family(lines: usize) -> String {
         .collect()
 }
 
+fn crlf_family(lines: usize) -> String {
+    // CRLF terminators throughout (contract §2): classification sees
+    // the logical lines, ranges keep the bytes.
+    (0..lines / 2)
+        .map(|i| format!("# heading {i}\r\n\r\n"))
+        .collect()
+}
+
 fn list_family(lines: usize) -> String {
     // Three-item lists separated by blank lines: each block is bounded.
     (0..lines / 4)
@@ -307,9 +317,10 @@ fn apply_insert(
 /// overhead; `blocks_reparsed == 1` is the expected case, not a law).
 #[test]
 fn local_edits_scan_constant_lines_across_sizes() {
-    let families: [(&str, FamilyFn); 5] = [
+    let families: [(&str, FamilyFn); 6] = [
         ("paragraphs", paragraph_family),
         ("headings", heading_family),
+        ("crlf", crlf_family),
         ("lists", list_family),
         ("inline", inline_family),
         ("fences", fence_family),
@@ -388,8 +399,15 @@ fn sparse_two_location_edit_on_one_million_lines() {
         "parsed {} lines for two one-character edits",
         work.lines_scanned
     );
-    assert_eq!(work.blocks_reparsed, 2, "two paragraphs reparsed");
-    assert_eq!(work.blocks_reused, 2);
+    // Each edit is on its paragraph's first line, so each island
+    // extends into the blank above (maximal blank runs): two
+    // [blank, paragraph] islands = four reparsed blocks, never the
+    // document between them.
+    assert_eq!(
+        work.blocks_reparsed, 4,
+        "two paragraphs plus their blank boundary neighbors"
+    );
+    assert_eq!(work.blocks_reused, 4);
     assert_eq!(work.blocks_created, 0);
     assert!(
         work.convergence_line < doc.line_count() as u64,

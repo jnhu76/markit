@@ -48,7 +48,7 @@ use crate::change::AppliedEdit;
 use crate::markdown::block::{BlockKind, BlockRecord};
 use crate::markdown::identity::InternalBlockId;
 use crate::markdown::inline;
-use crate::markdown::parser::BlockParser;
+use crate::markdown::parser::{BlockParser, ParsedBlock};
 use crate::markdown::MarkdownWork;
 use crate::snapshot::DocumentSnapshot;
 
@@ -117,14 +117,18 @@ pub(crate) fn apply_edits(
         // Backward dependency: an edit landing exactly on a block's
         // first line can extend the *previous* block — a plain or
         // continued line continues a paragraph, list item, or quote
-        // above it. The reparse must then include that block, or the
-        // survivor below it would keep a stale shape (the full rebuild
-        // would have merged the lines into it).
+        // above it, and a blanked line extends a blank run above it
+        // (blank runs are maximal; caught by the randomized
+        // differential once CRLF blank-line edits appeared). The
+        // reparse must then include that block, or the survivor below
+        // it would keep a stale shape (the full rebuild would have
+        // merged the lines into it).
         if restart > cursor
             && blocks[restart].line_span.start.0 == island_start_line
             && matches!(
                 blocks[restart - 1].kind,
-                BlockKind::Paragraph
+                BlockKind::Blank
+                    | BlockKind::Paragraph
                     | BlockKind::BlockQuote
                     | BlockKind::UnorderedList
                     | BlockKind::OrderedList
@@ -145,7 +149,7 @@ pub(crate) fn apply_edits(
         );
 
         let mut parser = BlockParser::new(snapshot, restart_new_line);
-        let mut parsed = Vec::new();
+        let mut parsed: Vec<ParsedBlock> = Vec::new();
         let converged_line;
         loop {
             // Subsume survivors the reparse already passed: their target
@@ -162,12 +166,37 @@ pub(crate) fn apply_edits(
                 }
             }
             // Convergence: Ground state + exact position match with the
-            // next survivor (contract §9.2 step 3).
+            // next survivor (contract §9.2 step 3), with two honesty
+            // rules for the *empty* survivor — the final-empty-line
+            // block:
+            //
+            // 1. It may only converge when the new document still ends
+            //    with a terminator: deleting the final newline deletes
+            //    that line's very existence (a phantom empty block that
+            //    a rebuild does not produce).
+            // 2. A reparse whose last block is a Blank run has already
+            //    consumed the final empty line into that run (blank
+            //    runs are maximal and run to end of document); the
+            //    survivor would duplicate it and must die instead.
+            //
+            // Both were caught by the randomized differential once
+            // `\r\n` tokens made blank-line edits and final-newline
+            // deletions reachable.
             if dead_end < blocks.len() {
                 let target = (blocks[dead_end].source_range.start.as_usize() as i64
                     + deltas.byte_before(blocks[dead_end].source_range.start.as_usize()))
                 .max(0) as usize;
-                if target == parser.current_offset() && parser.state().is_ground() {
+                let final_line_is_empty = snapshot
+                    .line_str(crate::position::LineNumber(snapshot.line_count() - 1))
+                    .is_empty();
+                let parsed_ends_with_blank_run =
+                    parsed.last().is_some_and(|b| b.kind() == BlockKind::Blank);
+                let empty_survivor_ok = !blocks[dead_end].source_range.is_empty()
+                    || (final_line_is_empty && !parsed_ends_with_blank_run);
+                if target == parser.current_offset()
+                    && parser.state().is_ground()
+                    && empty_survivor_ok
+                {
                     converged_line = parser.current_line() as u64;
                     break;
                 }
@@ -308,8 +337,11 @@ impl DeltaMap {
         let (mut bytes, mut lines) = (0i64, 0i64);
         for edit in edits {
             bytes += edit.byte_delta;
-            lines += (edit.new_line_span.end.0 as i64 - edit.new_line_span.start.0 as i64)
-                - (edit.old_line_span.end.0 as i64 - edit.old_line_span.start.0 as i64);
+            // The exact per-edit line delta, counted at mutation time —
+            // not span-length arithmetic: an exclusive-end line span
+            // undercounts a replacement whose text ends with a
+            // terminator (its trailing empty line lies past `new_range`).
+            lines += edit.line_delta;
             byte_prefix.push(bytes);
             line_prefix.push(lines);
             byte_ends.push(edit.old_range.end.as_usize());
@@ -408,6 +440,9 @@ mod tests {
         let span = |a: usize, b: usize| LineNumber(a)..LineNumber(b);
         let range = |a: usize, b: usize| SourceRange::new(ByteOffset(a), ByteOffset(b));
         // Three edits with mixed deltas, ascending in old coordinates.
+        // Note edit 1: text ending in a terminator whose exclusive-end
+        // line span undercounts the created line — the exact
+        // `line_delta` field says +1 regardless of the spans.
         let edits = vec![
             AppliedEdit {
                 kind: ChangeKind::Insert,
@@ -416,6 +451,7 @@ mod tests {
                 old_line_span: span(0, 1),
                 new_line_span: span(0, 1),
                 byte_delta: 3,
+                line_delta: 1,
             },
             AppliedEdit {
                 kind: ChangeKind::Delete,
@@ -424,6 +460,7 @@ mod tests {
                 old_line_span: span(2, 3),
                 new_line_span: span(2, 3),
                 byte_delta: -4,
+                line_delta: 0,
             },
             AppliedEdit {
                 kind: ChangeKind::Insert,
@@ -432,6 +469,7 @@ mod tests {
                 old_line_span: span(4, 4),
                 new_line_span: span(4, 7),
                 byte_delta: 6,
+                line_delta: 3,
             },
         ];
         let deltas = DeltaMap::new(&edits);
@@ -444,7 +482,7 @@ mod tests {
                 .sum()
         };
         let byte_ds = [3i64, -4, 6];
-        let line_ds = [0i64, 0, 3];
+        let line_ds = [1i64, 0, 3];
         for probe in [0usize, 4, 5, 6, 19, 20, 24, 25, 29, 30, 100] {
             assert_eq!(
                 deltas.byte_before(probe),
