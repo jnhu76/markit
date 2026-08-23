@@ -165,3 +165,50 @@ fn very_long_paragraphs_scan_linearly() {
         );
     }
 }
+
+#[test]
+fn unmatched_backtick_runs_scan_linearly() {
+    // Adversarial input: backtick runs of increasing length with no
+    // matching closer. The old find_backtick_string rescanned the suffix
+    // for each opener (O(n²) total). BacktickIndex pre-scans all runs
+    // once, so each lookup is O(log n) and total work is O(n).
+    //
+    // Build: `x ``x ```x ````x ... up to k runs.
+    // Text length is O(k²), so we double k and check work stays
+    // proportional to text length (not to k² or worse).
+    fn build_adversarial(k: usize) -> String {
+        let mut text = String::new();
+        for i in 1..=k {
+            text.push_str(&"`".repeat(i));
+            text.push('x');
+        }
+        text.push('\n');
+        text
+    }
+
+    let (small_len, scanned_small) = {
+        let text = build_adversarial(200);
+        let (_, scanned) = build_scanned(&text);
+        (text.len(), scanned)
+    };
+    let (big_len, scanned_big) = {
+        let text = build_adversarial(800);
+        let (_, scanned) = build_scanned(&text);
+        (text.len(), scanned)
+    };
+    // Work must be proportional to text length (not k²).
+    // 800/200 = 4x k, but text ratio is ~16x (O(k²)).
+    // If work were quadratic in text length, big would be ~256x small.
+    // Linear means big ≈ 16x small (matching the text size ratio).
+    let text_ratio = big_len as f64 / small_len as f64;
+    let work_ratio = scanned_big as f64 / scanned_small as f64;
+    assert!(
+        work_ratio <= text_ratio * 2.0,
+        "work must scale with text length: text_ratio={text_ratio:.1}x, work_ratio={work_ratio:.1}x (small={scanned_small}/{small_len}, big={scanned_big}/{big_len})"
+    );
+    // Absolute bound: scanned <= 2 * text_len + overhead.
+    assert!(
+        scanned_big <= 2 * big_len as u64 + 256,
+        "big: {scanned_big} for {big_len} bytes"
+    );
+}

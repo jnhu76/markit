@@ -69,7 +69,7 @@ pub use state::FenceChar;
 /// identity, kind, ranges, semantic detail, and the inline IR; parser
 /// bookkeeping (restart state, fingerprints) and the record layout stay
 /// crate-private so the internal representation can evolve freely.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug)]
 pub struct BlockView<'a> {
     record: &'a BlockRecord,
 }
@@ -250,16 +250,18 @@ impl MarkdownState {
         snapshot: &DocumentSnapshot<'_>,
         result: &crate::change::EditResult,
     ) -> Result<(), MarkdownStateError> {
-        if result.new_revision != result.base_revision.next() {
+        if result.new_version.document_id() != result.base_version.document_id()
+            || result.new_version.revision() != result.base_version.revision().next()
+        {
             return Err(MarkdownStateError::InconsistentResult);
         }
         if snapshot.id() != self.version.document_id() {
             return Err(MarkdownStateError::DocumentMismatch);
         }
-        if snapshot.revision() != result.new_revision {
+        if snapshot.version() != result.new_version {
             return Err(MarkdownStateError::SnapshotNotAtNewRevision);
         }
-        if self.version.revision() != result.base_revision {
+        if self.version != result.base_version {
             return Err(MarkdownStateError::StaleBase);
         }
 
@@ -831,10 +833,13 @@ mod incremental_tests {
         );
 
         // A result that is not a single coherent N->N+1 step.
-        let rev = snap1.revision();
+        let ver = snap1.version();
         let incoherent = crate::change::EditResult {
-            base_revision: rev,
-            new_revision: rev.next().next(),
+            base_version: ver,
+            new_version: crate::DocumentVersion::new(
+                ver.document_id(),
+                ver.revision().next().next(),
+            ),
             kind: crate::change::ChangeKind::Insert,
             covering_old_range: crate::position::SourceRange::new(ByteOffset(1), ByteOffset(1)),
             covering_new_range: crate::position::SourceRange::new(ByteOffset(1), ByteOffset(2)),
@@ -854,5 +859,61 @@ mod incremental_tests {
         assert_eq!(state2.version().revision().as_u64(), 0);
         assert_eq!(state2.version().document_id(), doc2.id());
         assert_eq!(state2.block_count(), 2, "paragraph + trailing blank");
+    }
+
+    /// A result from document B at the same numeric revision as A must
+    /// be rejected by A's state: identity + revision together form the
+    /// version gate, not revision alone.
+    #[test]
+    fn cross_document_result_is_rejected_by_version_binding() {
+        let (mut doc_a, mut state_a) = setup("alpha\n");
+        let (mut doc_b, _state_b) = setup("beta\n");
+        assert_ne!(doc_a.id(), doc_b.id());
+
+        // Both documents are at revision 0. Apply an edit to B.
+        let applied_b = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(4), "X"))
+            .apply(&mut doc_b)
+            .unwrap();
+        // Both results are revision 0 -> 1, but from different documents.
+        assert_eq!(applied_b.result.base_version.revision().as_u64(), 0);
+        assert_eq!(applied_b.result.new_version.revision().as_u64(), 1);
+
+        // A's snapshot at revision 1 (advance A so snapshot revision matches
+        // the result's new revision numerically).
+        let applied_a = EditTransaction::typing()
+            .with_edit(TextEdit::insert(ByteOffset(5), "Y"))
+            .apply(&mut doc_a)
+            .unwrap();
+        let snap_a = doc_a.snapshot();
+        assert_eq!(snap_a.revision().as_u64(), 1);
+        assert_eq!(applied_b.result.new_version.revision().as_u64(), 1);
+
+        // state_a is still at revision 0 of doc_a; feeding it B's result
+        // with A's snapshot must fail even though all numeric revisions
+        // line up: base=0, new=1, snapshot=1.
+        //
+        // The InconsistentResult check fires first (B's document_id in
+        // base_version != B's document_id in new_version is fine, but
+        // state_a.version.document_id() != result.base_version.document_id()).
+        // In fact the StaleBase check catches it: state_a.version is
+        // (doc_a, 0) but result.base_version is (doc_b, 0) — different
+        // DocumentVersion values.
+        let err = state_a.update(&snap_a, &applied_b.result).unwrap_err();
+        // The exact variant depends on check ordering; the important
+        // invariant is that it IS rejected.
+        assert_ne!(
+            err,
+            MarkdownStateError::InconsistentResult,
+            "cross-document result must not be accepted as consistent"
+        );
+        // A's state is untouched.
+        assert_eq!(state_a.version().revision().as_u64(), 0);
+        assert_eq!(state_a.version().document_id(), doc_a.id());
+
+        // And the happy path still works.
+        state_a
+            .update(&snap_a, &applied_a.result)
+            .expect("same-document result is accepted");
     }
 }

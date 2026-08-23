@@ -31,7 +31,7 @@ use crate::markdown::block::BlockDetail;
 use crate::markdown::block::BlockKind;
 use crate::markdown::block::BlockRecord;
 use crate::markdown::lex::{
-    backtick_run_at, delimiter_run_at, find_backtick_string, is_ascii_punctuation,
+    backtick_run_at, delimiter_run_at, is_ascii_punctuation, BacktickIndex,
 };
 use crate::markdown::MarkdownWork;
 use crate::position::SourceRange;
@@ -192,7 +192,8 @@ impl InlineNode {
 /// nodes. Every returned range is absolute.
 pub(crate) fn parse_run(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<InlineNode> {
     ctx.charge(text.len() as u64);
-    let toks = scan_tokens(text, base, ctx);
+    let bt_index = BacktickIndex::build(text);
+    let toks = scan_tokens(text, base, ctx, &bt_index);
     let mut delims: Vec<DelimRun> = toks
         .iter()
         .filter_map(|t| match t {
@@ -305,7 +306,7 @@ fn is_ws(b: u8) -> bool {
     b == b' ' || b == b'\t' || b == b'\n' || b == b'\r'
 }
 
-fn scan_tokens(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<Tok> {
+fn scan_tokens(text: &str, base: usize, ctx: &mut InlineCtx, bt: &BacktickIndex) -> Vec<Tok> {
     let bytes = text.as_bytes();
     let mut toks = Vec::new();
     let mut text_start = 0usize;
@@ -333,7 +334,7 @@ fn scan_tokens(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<Tok> {
             }
             b'`' => {
                 let run = backtick_run_at(text, i);
-                match find_backtick_string(text, i + run, run) {
+                match bt.find(i + run, run) {
                     Some(close) => {
                         flush_text(&mut text_start, i, &mut toks);
                         toks.push(Tok::Code(i..close + run));
@@ -347,7 +348,7 @@ fn scan_tokens(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<Tok> {
                 let outcome = if i >= no_close_from {
                     LinkOutcome::NoCloseAhead
                 } else {
-                    try_link(text, i, base, ctx)
+                    try_link(text, i, base, ctx, bt)
                 };
                 match outcome {
                     LinkOutcome::Link(link) => {
@@ -398,8 +399,8 @@ enum LinkOutcome {
     Literal,
 }
 
-fn try_link(text: &str, open: usize, base: usize, ctx: &mut InlineCtx) -> LinkOutcome {
-    let (outcome, seen) = try_link_inner(text, open, base, ctx);
+fn try_link(text: &str, open: usize, base: usize, ctx: &mut InlineCtx, bt: &BacktickIndex) -> LinkOutcome {
+    let (outcome, seen) = try_link_inner(text, open, base, ctx, bt);
     // Charge the bytes this attempt actually examined (bracket match +
     // destination/title). The budget exists to bound *repeated*
     // attempts; a single scan is always allowed to finish.
@@ -413,6 +414,7 @@ fn try_link_inner(
     open: usize,
     base: usize,
     ctx: &mut InlineCtx,
+    bt: &BacktickIndex,
 ) -> (LinkOutcome, usize) {
     if ctx.depth >= MAX_INLINE_NESTING as u32 || ctx.budget == 0 {
         return (LinkOutcome::Literal, open);
@@ -427,7 +429,7 @@ fn try_link_inner(
             b'\\' if j + 1 < bytes.len() && is_ascii_punctuation(bytes[j + 1] as char) => j += 2,
             b'`' => {
                 let run = backtick_run_at(text, j);
-                j = match find_backtick_string(text, j + run, run) {
+                j = match bt.find(j + run, run) {
                     Some(close) => close + run,
                     None => j + run,
                 };
@@ -728,7 +730,60 @@ fn pair_emphasis(delims: &mut [DelimRun], ctx: &mut InlineCtx) -> Vec<Pairing> {
             .cmp(&b.open.start)
             .then(b.close.end.cmp(&a.close.end))
     });
+    reject_crossing_pairs(&mut pairs, delims);
     pairs
+}
+
+/// Removes pairs that cross (overlap without nesting). Two pairs cross
+/// when `A.open < B.open < A.close.end < B.close.end` — neither nested
+/// nor disjoint. The later pair (by opener position) is rejected; its
+/// delimiter bytes are refunded to the delim runs so they become literal
+/// text in assembly.
+///
+/// Pairs must be sorted `(open.start asc, close.end desc)` on entry.
+/// The algorithm is one linear walk using a stack of accepted frames'
+/// close-end positions.
+fn reject_crossing_pairs(pairs: &mut Vec<Pairing>, delims: &mut [DelimRun]) {
+    if pairs.is_empty() {
+        return;
+    }
+    let mut kept: Vec<usize> = Vec::with_capacity(pairs.len());
+    let mut open_ends: Vec<usize> = Vec::new();
+    for (idx, pair) in pairs.iter().enumerate() {
+        // Close frames that finished before this pair's opener.
+        while open_ends.last().is_some_and(|&end| end <= pair.open.start) {
+            open_ends.pop();
+        }
+        // If the innermost open frame closes before this pair does,
+        // the new pair would cross it — reject and refund its bytes.
+        if open_ends.last().is_some_and(|&end| end < pair.close.end) {
+            refund_pair_bytes(pair, delims);
+            continue;
+        }
+        kept.push(idx);
+        open_ends.push(pair.close.end);
+    }
+    if kept.len() < pairs.len() {
+        let all = std::mem::take(pairs);
+        *pairs = kept.into_iter().map(|i| all[i].clone()).collect();
+    }
+}
+
+/// Returns a rejected pair's delimiter bytes to their runs so they
+/// become literal text in assembly.
+fn refund_pair_bytes(pair: &Pairing, delims: &mut [DelimRun]) {
+    let use_len = pair.open.len();
+    // Find the opener and closer delims by position.
+    for delim in delims.iter_mut() {
+        // Opener: the pair's open range is within this delim's span.
+        if delim.start <= pair.open.start && pair.open.end <= delim.start + delim.len {
+            delim.used_right = delim.used_right.saturating_sub(use_len);
+        }
+        // Closer: the pair's close range is within this delim's span.
+        if delim.start <= pair.close.start && pair.close.end <= delim.start + delim.len {
+            delim.used_left = delim.used_left.saturating_sub(use_len);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1069,6 +1124,72 @@ mod tests {
         // Literal leftovers between pairs: a**b -> em, text.
         let nodes = parse("*a**b*");
         assert_eq!(shape(&nodes), vec![("em", 0, 3), ("em", 3, 6)]);
+    }
+
+    #[test]
+    fn crossing_emphasis_ranges_are_rejected() {
+        // *a _b* c_ produces crossing pairs: * pairs [0,6) and _ pairs
+        // [3,9) — neither nested nor disjoint. The later pair is
+        // rejected; its delimiter bytes become literal text.
+        assert_ranges_laminar("*a _b* c_");
+        assert_ranges_laminar("_a *b_ c*");
+        // Both crossing forms: whichever opens first wins, the other
+        // stays literal.
+        let nodes = parse("*a _b* c_");
+        // The * pair wraps: *a _b* is em, " c_" is literal text.
+        assert_eq!(shape(&nodes), vec![("em", 0, 6), ("text", 6, 9)]);
+        // Symmetric case: _ opens first and wins.
+        let nodes = parse("_a *b_ c*");
+        assert_eq!(shape(&nodes), vec![("em", 0, 6), ("text", 6, 9)]);
+        // Non-crossing mixed emphasis still nests correctly.
+        assert_eq!(
+            shape(&parse("*a _b_ c*")),
+            vec![("em", 0, 9)]
+        );
+        let nodes = parse("*a _b_ c*");
+        let InlineNode::Emphasis { children, .. } = &nodes[0] else {
+            panic!()
+        };
+        assert_eq!(
+            shape(children),
+            vec![("text", 1, 3), ("em", 3, 6), ("text", 6, 8)]
+        );
+    }
+
+    /// Structural invariant: every child's range is contained within
+    /// its parent's range (laminar nesting).
+    fn assert_ranges_laminar(text: &str) {
+        let nodes = parse(text);
+        check_laminar(&nodes);
+    }
+
+    fn check_laminar(nodes: &[InlineNode]) {
+        for node in nodes {
+            match node {
+                InlineNode::Emphasis {
+                    range, children, ..
+                }
+                | InlineNode::Strong {
+                    range, children, ..
+                }
+                | InlineNode::Link {
+                    range, children, ..
+                } => {
+                    for child in children {
+                        let child_range = node_range(child);
+                        assert!(
+                            child_range.start.as_usize() >= range.start.as_usize()
+                                && child_range.end.as_usize() <= range.end.as_usize(),
+                            "child {:?} escapes parent {:?}",
+                            child_range,
+                            range
+                        );
+                    }
+                    check_laminar(children);
+                }
+                _ => {}
+            }
+        }
     }
 
     #[test]

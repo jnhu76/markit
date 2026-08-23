@@ -239,8 +239,8 @@ impl Document {
         let new_line_span = LineNumber(0)..LineNumber(new_line_count);
 
         EditResult {
-            base_revision,
-            new_revision: self.revision,
+            base_version: DocumentVersion::new(self.id, base_revision),
+            new_version: DocumentVersion::new(self.id, self.revision),
             kind: ChangeKind::ReplaceDocument,
             covering_old_range: old_range,
             covering_new_range: new_range,
@@ -432,8 +432,8 @@ impl Document {
         self.revision = base_revision.next();
 
         let result = EditResult {
-            base_revision,
-            new_revision: self.revision,
+            base_version: DocumentVersion::new(self.id, base_revision),
+            new_version: DocumentVersion::new(self.id, self.revision),
             kind,
             covering_old_range,
             covering_new_range,
@@ -607,8 +607,16 @@ mod tests {
         let r = doc
             .apply_edit(TextEdit::replace(range(6, 11), "markit"))
             .unwrap();
-        assert_eq!(r.base_revision, DocumentRevision::INITIAL);
-        assert_eq!(r.new_revision, DocumentRevision::INITIAL.next());
+        assert_eq!(
+            r.base_version.revision(),
+            DocumentRevision::INITIAL
+        );
+        assert_eq!(r.base_version.document_id(), doc.id());
+        assert_eq!(
+            r.new_version.revision(),
+            DocumentRevision::INITIAL.next()
+        );
+        assert_eq!(r.new_version.document_id(), doc.id());
         assert_eq!(r.kind, ChangeKind::Replace);
         assert_eq!(r.covering_old_range, range(6, 11));
         assert_eq!(r.covering_new_range, range(6, 12));
@@ -699,8 +707,8 @@ mod tests {
         assert_eq!(doc.revision(), DocumentRevision::INITIAL);
         for i in 1..=5 {
             let r = doc.apply_edit(TextEdit::insert(offset(0), "x")).unwrap();
-            assert_eq!(r.base_revision.as_u64(), i - 1);
-            assert_eq!(r.new_revision.as_u64(), i);
+            assert_eq!(r.base_version.revision().as_u64(), i - 1);
+            assert_eq!(r.new_version.revision().as_u64(), i);
             assert_eq!(doc.revision().as_u64(), i);
         }
         // Rejected mutation: no bump.
@@ -748,8 +756,10 @@ mod tests {
         let mut doc = Document::new("a\nb\nc");
         let r = doc.replace_all("x\ny");
         assert_eq!(r.kind, ChangeKind::ReplaceDocument);
-        assert_eq!(r.base_revision, DocumentRevision::INITIAL);
-        assert_eq!(r.new_revision, DocumentRevision::INITIAL.next());
+        assert_eq!(r.base_version.revision(), DocumentRevision::INITIAL);
+        assert_eq!(r.base_version.document_id(), doc.id());
+        assert_eq!(r.new_version.revision(), DocumentRevision::INITIAL.next());
+        assert_eq!(r.new_version.document_id(), doc.id());
         assert_eq!(r.byte_delta, -2, "x\\ny(3) - a\\nb\\nc(5)");
         assert_eq!(r.line_delta, -1);
         assert_eq!(r.work.full_rebuilds, 1);

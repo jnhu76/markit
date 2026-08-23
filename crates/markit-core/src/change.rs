@@ -15,7 +15,7 @@ use std::fmt;
 use std::ops::Range;
 
 use crate::position::{ByteOffset, LineNumber, SourceRange};
-use crate::revision::DocumentRevision;
+use crate::revision::DocumentVersion;
 
 /// Structural classification of an applied edit.
 ///
@@ -165,10 +165,10 @@ pub struct EditWork {
 /// diffing or rescanning.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct EditResult {
-    /// Revision before the mutation.
-    pub base_revision: DocumentRevision,
-    /// Revision after the mutation (always `base_revision.next()`).
-    pub new_revision: DocumentRevision,
+    /// Version before the mutation (identity + revision).
+    pub base_version: DocumentVersion,
+    /// Version after the mutation (always same identity, revision + 1).
+    pub new_version: DocumentVersion,
     /// Classification of the covering change. Per-edit classifications
     /// live in [`EditResult::edits`].
     pub kind: ChangeKind,

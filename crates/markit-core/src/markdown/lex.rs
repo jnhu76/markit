@@ -301,24 +301,54 @@ pub(crate) fn backtick_run_at(text: &str, at: usize) -> usize {
     len
 }
 
-/// Start of the first backtick run of **exactly** `len` at or after
-/// `from` (code-span closer, contract §7.2). Runs of other lengths are
-/// skipped over.
-pub(crate) fn find_backtick_string(text: &str, from: usize, len: usize) -> Option<usize> {
-    let bytes = text.as_bytes();
-    let mut i = from;
-    while i < bytes.len() {
-        if bytes[i] == b'`' {
-            let run = backtick_run_at(text, i);
-            if run == len {
-                return Some(i);
+/// Pre-scanned index of backtick runs for O(log n) closer lookup.
+///
+/// Built once per inline run; avoids the quadratic repeated-suffix scan
+/// that naive scanning performs when many runs of different lengths have
+/// no matching closer.
+pub(crate) struct BacktickIndex {
+    /// `(run_length, start_position)` entries, sorted by
+    /// `(run_length, start_position)`.
+    entries: Vec<(usize, usize)>,
+}
+
+impl BacktickIndex {
+    /// Scans `text` once, recording every backtick run's length and
+    /// position.
+    pub(crate) fn build(text: &str) -> Self {
+        let bytes = text.as_bytes();
+        let mut entries = Vec::new();
+        let mut i = 0;
+        while i < bytes.len() {
+            if bytes[i] == b'`' {
+                let start = i;
+                let mut len = 0;
+                while i < bytes.len() && bytes[i] == b'`' {
+                    len += 1;
+                    i += 1;
+                }
+                entries.push((len, start));
+            } else {
+                i += 1;
             }
-            i += run;
-        } else {
-            i += 1;
         }
+        entries.sort();
+        Self { entries }
     }
-    None
+
+    /// Finds the start of the first backtick run of exactly `len` at or
+    /// after `from`. O(log n) via binary search over the pre-scanned
+    /// entries.
+    pub(crate) fn find(&self, from: usize, len: usize) -> Option<usize> {
+        // Binary search for the first entry with (len, pos >= from).
+        let idx = self
+            .entries
+            .partition_point(|&(l, p)| l < len || (l == len && p < from));
+        self.entries
+            .get(idx)
+            .filter(|&&(l, _)| l == len)
+            .map(|&(_, p)| p)
+    }
 }
 
 /// An unescaped emphasis delimiter run starting exactly at `at`:
@@ -471,13 +501,12 @@ mod tests {
     #[test]
     fn inline_scans() {
         assert_eq!(backtick_run_at("a``b", 1), 2);
-        assert_eq!(
-            find_backtick_string("a` `` b``c", 0, 2),
-            Some(3),
-            "first run of exactly 2"
-        );
-        assert_eq!(find_backtick_string("```x``", 0, 2), Some(4));
-        assert_eq!(find_backtick_string("no ticks", 0, 1), None);
+        let idx = BacktickIndex::build("a` `` b``c");
+        assert_eq!(idx.find(0, 2), Some(3), "first run of exactly 2");
+        let idx = BacktickIndex::build("```x``");
+        assert_eq!(idx.find(0, 2), Some(4));
+        let idx = BacktickIndex::build("no ticks");
+        assert_eq!(idx.find(0, 1), None);
         assert_eq!(delimiter_run_at("**a", 0), Some((b'*', 2)));
         assert_eq!(delimiter_run_at("a", 0), None);
     }
