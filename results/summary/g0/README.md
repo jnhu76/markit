@@ -1,118 +1,159 @@
 # G0 — GPUI baseline Windows real-host evidence (summary)
 
-Committed summary of the G0 smoke matrix. Raw logs (full probe traces,
-external sampling files, build receipt) are archived locally under
-`results/raw/g0/` (gitignored) and are NOT reproduced here; this file
-quotes the verbatim `G0 …` lines that `docs/product/g0-gpui-baseline.md`
-§5 references.
+Committed summary of the G0 smoke matrix. Two layers of committed evidence:
+
+- this file: verbatim `G0 …` lines + external sampling that
+  `docs/product/g0-gpui-baseline.md` §5 references;
+- `results/evidence/g0/`: curated key artifacts (canonical trace, build
+  receipts, HiDPI + real-IME traces, screenshots, host summary) so the
+  frozen-baseline PASS claims stay re-checkable when the pin ever changes.
+
+Full raw captures stay local under `results/raw/g0/` (gitignored).
 
 ## Run metadata
 
-- date: 2026-08-22 (UTC timestamps in trace; local 2026-08-23)
+- canonical run: 2026-08-23 (UTC timestamps in trace), display scale 100 %,
+  **review-fixed probe binary** (corrected IME input-handler semantics;
+  `next_frame_callbacks` counter naming)
+- earlier run: 2026-08-22 (scale 100 %, first full matrix — superseded
+  counter naming `frame_requests`; numbers quoted below where still cited)
 - host: `HU` — AMD Ryzen 7 5800H, 29 GB RAM, AMD Radeon(TM) Graphics
-  (integrated), Windows 11 Pro 10.0.26100, display 2560x1440 @ scale 1
+  (integrated), Windows 11 Pro 10.0.26200, display 2560x1440 @ 60 Hz
+- scale coverage: 100 % (both matrix runs) + 125 % (HiDPI validation,
+  2026-08-23: `scale_factor=1.25`, DPI-aware physical screenshot; scale set
+  via Settings and restored afterwards)
 - build: native `cargo build --release -p markit --features g0-probe`
-  ON THE WINDOWS HOST, 6m02s, zero warnings in receipt
-  (cross-building release from WSL is impossible: `gpui_windows` compiles
-  HLSL shaders with `fxc.exe` only when the build host is Windows — see
-  baseline doc §5; `cargo check`/clippy cross-builds are unaffected)
+  ON THE WINDOWS HOST, 6m02s full + 7.3 s incremental after the review
+  fixes, zero warnings (receipts: `results/evidence/g0/windows-build-receipt.txt`).
+  Release cross-builds from WSL are unsupported under the current
+  Linux-host cross path at this pinned revision (`gpui_windows` compiles
+  HLSL shaders with `fxc.exe` only when the build host is Windows; the
+  `shaders_bytes.rs` include is release-only — baseline doc §5).
+  `cargo check`/clippy cross-builds are unaffected.
 - rustc: `rustc 1.96.0 (ac68faa20 2026-05-25)` (host stable; the pin also
   builds under WSL rustc 1.97.1 for check/clippy — Zed's own toolchain
   file pins 1.97.1)
 - GPUI: zed rev `eb8e1c8b5502b7007465fbbc465f4a736fa39210` (v1.16.1),
   Apache-2.0, zero Markit patches
-- runs:
-  1. `markit.exe --g0-probe --smoke` (scripted matrix, auto-quit,
-     8.98 s wall) + external `Get-Clipboard` verification
-  2. `markit.exe --g0-probe` interactive + external `Get-Process`
-     idle CPU/RSS sampling (12 × 500 ms after settle) — run 2a
-  3. `markit.exe --g0-probe` interactive + synthesized input
-     (AppActivate → click @ window center → SendKeys F1/F3/'a'/'b') — run 2b
-  4. `markit.exe --g0-probe` interactive + window screen capture
-     (CopyFromScreen of the window rect → `g0-window.png`) — run 2c
+- runs behind this summary:
+  1. `markit.exe --g0-probe --smoke` scripted matrix, auto-quit,
+     8.33 s wall (canonical, 2026-08-23) + external `Get-Clipboard`
+     verification
+  2. `markit.exe --g0-probe --smoke` at display scale 125 % (HiDPI matrix
+     observation; per-line evidence preserved via `hidpi-125.log`)
+  3. `markit.exe --g0-probe` interactive + external `Get-Process` idle
+     CPU/RSS sampling (12 × 500 ms after settle, at 125 %; the 2026-08-22
+     run sampled at 100 %)
+  4. real Microsoft Pinyin IME pass (interactive probe, layout HKL
+     0x08040804, raw key injection: n-i-h-a-o + SPACE commit,
+     z-h-o-n-g-w-e-n + ESC cancel) — `results/evidence/g0/pinyin-ime.log`
+  5. window screen captures at 100 % and 125 % (the 125 % capture is
+     DPI-aware, physical resolution)
 
-## Matrix (verbatim probe lines, run 1)
+## Matrix (verbatim probe lines, canonical run 2026-08-23, scale 100 %)
 
 ```
-[22:45:52.713623Z] Using GPU: AMD Radeon(TM) Graphics
-[22:45:52.747287Z] Created device with Direct3D 11.1 feature level.
-[22:45:52.748968Z] Use Microsoft YaHei UI as UI font.
-[22:45:52.969252Z] G0 bounds w=720 h=480
-[22:45:52.969293Z] G0 scale_factor=1
-[22:45:53.284370Z] G0 boot first_draw_ms=314.5
-[22:45:55.285215Z] G0 idle_passive_2s draws=0 frame_requests=0 (draws/s=0.0 wakes/s=0.0)
-[22:45:57.297280Z] G0 idle_nextframe_2s draws=1 frame_requests=25 (draws/s=0.5 wakes/s=12.5)
-[22:45:58.526250Z] G0 demand_1p2s notifies=41 draws=15 frame_requests=1
-[22:45:59.038376Z] G0 idle_sched idle_time_remaining=None ran_right_after_busy=0 ran_total=100 during_busy=0 (expect remaining=None during_busy=0)
-[22:45:59.641496Z] G0 bg_priority first12=HHHHHHHHHHHH total=36 L=12 M=12 H=12
-[22:45:59.700207Z] G0 timer 1 requested_ms=50 actual_ms=58.68
-[22:45:59.761625Z] G0 timer 2 requested_ms=50 actual_ms=61.39
-[22:45:59.825491Z] G0 timer 3 requested_ms=50 actual_ms=63.84
-[22:45:59.887390Z] G0 timer 4 requested_ms=50 actual_ms=61.87
-[22:46:00.295521Z] G0 cancel_by_drop ran=0 (expect 0)
-[22:46:00.297833Z] G0 clipboard roundtrip=ok token=markit-g0-probe-7630633
-[22:46:00.300227Z] G0 bounds w=900 h=600
-[22:46:00.711283Z] G0 resize 720x480->900x600 draws_after=1
-[22:46:00.711313Z] G0 MATRIX DONE
-[22:46:00.915425Z] G0 dump draws=20 frame_requests=26 key_actions=1 mouse=0 ime_updates=0 ime_commits=0 first_draw_ms=314.5 input_latency[last_us=6292 max_us=6292 n=1]
+[04:46:06.333279Z] G0 probe start smoke=true pid=6372
+[04:46:06.628457Z] G0 scale_factor=1
+[04:46:06.949324Z] G0 boot first_draw_ms=312.2
+[04:46:08.954250Z] G0 idle_passive_2s draws=0 next_frame_callbacks=0 (draws/s=0.0 callbacks/s=0.0)
+[04:46:10.957420Z] G0 idle_nextframe_2s draws=1 next_frame_callbacks=119 (draws/s=0.5 callbacks/s=59.5)
+[04:46:12.184113Z] G0 demand_1p2s notifies=42 draws=42 next_frame_callbacks=1
+[04:46:12.697855Z] G0 idle_sched idle_time_remaining=None ran_right_after_busy=0 ran_total=100 during_busy=0 (expect remaining=None during_busy=0)
+[04:46:13.308057Z] G0 bg_priority first12=HHHHHHHHHHHH total=36 L=12 M=12 H=12
+[04:46:13.369782Z] G0 timer 1 requested_ms=50 actual_ms=61.68
+[04:46:13.432543Z] G0 timer 2 requested_ms=50 actual_ms=62.73
+[04:46:13.495178Z] G0 timer 3 requested_ms=50 actual_ms=62.60
+[04:46:13.556425Z] G0 timer 4 requested_ms=50 actual_ms=61.20
+[04:46:13.959220Z] G0 cancel_by_drop ran=0 (expect 0)
+[04:46:13.967867Z] G0 clipboard roundtrip=ok token=markit-g0-probe-7625989
+[04:46:14.376390Z] G0 resize 720x480->900x600 draws_after=1
+[04:46:14.376432Z] G0 MATRIX DONE
+[04:46:14.577042Z] G0 dump draws=46 next_frame_callbacks=120 key_actions=1 mouse=0 ime_updates=0 ime_commits=0 first_draw_ms=312.2 input_latency[last_us=13016 max_us=13016 n=1] status=clipboard roundtrip OK (markit-g0-probe-7625989)
 ```
+
+## Real Microsoft Pinyin IME evidence (2026-08-23, verbatim excerpts)
+
+Full trace: `results/evidence/g0/pinyin-ime.log`.
+
+```
+G0 ime bounds_for_range requested_utf16=108..108 element=688x0   # candidate docking on composition start
+G0 ime composition start
+G0 ime composition update text="n" marked_utf16=Some(108..109) selected_utf16=109..109
+G0 ime composition update text="n'ni'hao" marked_utf16=Some(108..116) selected_utf16=116..116
+G0 ime commit text="拿你号" marked_replaced=144..152 tail="type here (IME ok): 拿你号"
+G0 ime composition start
+G0 ime composition update text="zhong'wen" marked_utf16=Some(111..120) selected_utf16=120..120
+G0 ime composition cleared (cancel path)
+G0 ime composition update text="" marked_utf16=None selected_utf16=111..111
+G0 dump ... ime_updates=15 ime_commits=1 ...
+```
+
+→ the marked range covers the **whole** composing text and grows per key;
+SPACE commits via `replace_text_in_range(None, result)` which **replaces**
+the marked span (GCS_RESULTSTR semantics); ESC clears the composition and
+the selection returns to the composition start; candidate-window docking
+reaches the handler (`bounds_for_range`). Product-level IME UX (candidate
+visuals, arrow-key navigation) is P1-A scope, not G0.
 
 ## External host evidence
 
-Clipboard (run 1, OS-level `Get-Clipboard` after auto-quit):
+Clipboard (canonical run, OS-level `Get-Clipboard` after auto-quit):
 
 ```
-clipboard_token=markit-g0-probe-7630633      # matches probe roundtrip token
+clipboard_token=markit-g0-probe-7625989      # matches probe roundtrip token
 ```
 
-Idle CPU/RSS (run 2a, `Get-Process` 12 × 500 ms while window idle at
-rest; first→last sample):
+Idle CPU/RSS (2026-08-23 @125 %, `Get-Process` 12 × 500 ms while window
+idle at rest; 2026-08-22 @100 % showed the same shape):
 
 ```
-cpu_s=0.375 ws_mb=35.9 pm_mb=32   threads=27 handles=371
-... (10 identical intermediate samples; cpu_s never advances)
-cpu_s=0.375 ws_mb=36   pm_mb=32.1 threads=29 handles=374
+cpu_s=0.344 → 0.406 (advance ≈ 0.06 s over 6 s wall ≈ 1 % of one core)
+ws_mb=38.2–38.3   threads=27–29
 ```
 
-→ **0.00 % CPU while idle** (TotalProcessorTime frozen at 0.375 s across
-the full 6 s window; the process consumes no measurable CPU at rest),
-working set ~36 MB, 27–29 threads.
+2026-08-22 @100 %: `cpu_s` frozen at 0.375 across the full 6 s window
+(0.00 % measurable CPU at rest), WS ~36 MB, handles 371–374.
 
-Synthesized input (run 2b, click-to-focus then SendKeys; probe log):
+Synthesized input (2026-08-22 run, click-to-focus then synthesized keys;
+field names from the superseded binary):
 
 ```
 G0 dump draws=4 frame_requests=0 key_actions=1 mouse=1 ...   # F1 after click
 G0 clipboard read="hello-from-host"                          # F3 read host-written text
-G0 ime composition start
-G0 ime composition update text="a" marked=Some(1..1)
-G0 ime composition update text="a'b" marked=Some(3..3)
 ```
 
 → click lands (`mouse=1`), bound keyboard action lands (`key_actions=1`),
-clipboard host→probe read works, and plain synthesized text traverses the
-IMM32 composition pipeline (start/update with UTF-16 marked ranges).
+clipboard host→probe read works. (The 2026-08-22 log's
+`ime composition update text="a" …` lines came from the same MS Pinyin
+layout with the OLD, incorrect marked-range semantics — superseded by the
+real Pinyin trace above.)
 
 ## Notes
 
-- `first_draw_ms` instrumentation fix: the first run logged `0.0` because
-  the process-entry `OnceLock` timestamp was lazily initialized inside
-  the first paint. Fixed (eager init at probe entry) and re-run; 314.5 ms
-  is the corrected, real number. The broken run is superseded.
-- Rendering text (Latin/CJK/emoji lines in the window) verified by
-  screen capture of the live window (`g0-window.png`, 736x519, visual
-  inspection): Latin "the quick brown fox 0123", Chinese
-  `中文渲染测试：汉字与标点` as real glyphs (no tofu), emoji
-  `🙂👍🧑‍💻🌍` in color. Presented on D3D11 with DirectWrite
-  (Microsoft YaHei UI selected).
-- IME: composition start/update/marked-range exercised via the input
-  pipeline; a true Pinyin IME composition+commit needs human IME input
-  and remains PENDING for P0-03/manual validation on this baseline.
+- `first_draw_ms` instrumentation fix (2026-08-22): the first run logged
+  `0.0` because the process-entry `OnceLock` timestamp was lazily
+  initialized inside the first paint. Fixed (eager init at probe entry) and
+  re-run; corrected numbers: 314.5 ms (08-22), 312.2 ms (08-23 canonical,
+  100 %), 309.6 ms (08-23, 125 %).
+- Rendering text (Latin/CJK/emoji lines) verified by screen capture of the
+  live window at both 100 % (`g0-window-100.png`) and 125 %
+  (`g0-window-125.png`, DPI-aware physical capture, 918×647 px for a
+  720×480 logical window): Latin "the quick brown fox 0123", Chinese
+  `中文渲染测试：汉字与标点` as real glyphs (no tofu, sharp at both
+  scales), emoji `🙂👍🧑‍💻🌍` in color. Presented on D3D11 with
+  DirectWrite (Microsoft YaHei UI selected).
+- `idle_passive_2s`: with NO pending `on_next_frame` callback the app
+  observes zero callback deliveries and zero draws. The Windows vsync
+  thread still wakes every window below the API (baseline doc §4); idle
+  CPU sampling is the external proxy for that wake cost.
+- `idle_nextframe_2s`: with a self-sustaining `on_next_frame`,
+  callbacks deliver at ~60/s (≈ every 60 Hz vsync) while painting is
+  skipped (1 draw in 2 s). The superseded 2026-08-22 binary observed
+  ~12.5/s in its run; delivery rate is run-dependent and NOT a platform
+  contract — the stable claim is "no draw/present work while idle".
+- Background timers: 50 ms requested → 61.2–62.7 ms actual (canonical
+  run; the 08-22 run observed 58.7–63.8 ms), consistent with default
+  Windows timer granularity on this host.
 - Mouse: single synthesized click verified (counter + focus path);
   drag/wheel/pointer-routing not covered by G0.
-- `idle_nextframe_2s`: with a self-sustaining `on_next_frame` callback,
-  frame callbacks fire at ~12.5/s on this host while the window is
-  clean, and painting is skipped (1 draw in 2 s) — consistent with the
-  source-audit model (§4 of the baseline doc): wakeups below the API are
-  platform behavior; above the API, no draw/present work occurs.
-- Background timers: 50 ms requested → 58.7–63.8 ms actual (~+12 ms),
-  consistent with default Windows timer granularity on this host.

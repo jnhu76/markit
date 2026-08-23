@@ -1,0 +1,85 @@
+# G0 frozen-baseline evidence — host + run summary
+
+Purpose: make the key PASS claims of `docs/product/g0-gpui-baseline.md` §5
+re-checkable in the future (old-baseline vs new-baseline comparison when the
+GPUI pin ever changes). Minimal curated set; full raw captures stay local
+under `results/raw/g0/` (gitignored).
+
+## Host
+
+```text
+name        HU
+CPU         AMD Ryzen 7 5800H (8C/16T)
+RAM         29 GB
+GPU         AMD Radeon(TM) Graphics (integrated)
+OS          Windows 11 Pro 10.0.26200
+display     2560x1440, refresh 60 Hz
+scale runs  100% canonical matrix (2026-08-22 first run + 2026-08-23
+            review-fix rerun) and 125% HiDPI validation (2026-08-23,
+            scale changed via Settings, restored afterwards)
+session     interactive desktop; input injected via user32 (mouse_event /
+            keybd_event), clipboard via Get-Clipboard/Set-Clipboard
+build host  native Windows cargo on the same machine
+            (C:\Users\fred1\.cargo), rustc 1.96.0 stable
+```
+
+Toolchain note: Zed pins rustc 1.97.1 at this revision; 1.96.0 compiles the
+pinned GPUI cleanly (recorded in `results/summary/g0/README.md`).
+
+## Files in this directory
+
+```text
+canonical-smoke.log      verbatim G0 trace of the canonical matrix rerun
+                         (2026-08-23, display scale 100%, review-fixed
+                         probe binary)
+canonical-smoke-meta.txt runner metadata (exit code, elapsed ms) + external
+                         Get-Clipboard verification of the P7 token
+hidpi-125.log            125% HiDPI evidence: verbatim probe log lines
+                         (scale_factor=1.25, window bounds) + DPI-aware
+                         physical screenshot metadata
+pinyin-ime.log           real Microsoft Pinyin IME pass: host-side driver
+                         record (layout HKLs, submode, sequences) + verbatim
+                         probe trace (composition start/update/commit/cancel,
+                         candidate bounds_for_range calls)
+external-idle.txt        external Get-Process sampling at 125% (CPU seconds
+                         frozen, working set, threads)
+g0-window-100.png        probe window screenshot, scale 100% (2026-08-22 run)
+g0-window-125.png        probe window screenshot, scale 125%, physical
+                         resolution (918x647 px for a 720x480 logical window,
+                         captured DPI-aware)
+windows-build-receipt.txt native release build receipts (full 6m02s build
+                         2026-08-22; 7.3s incremental rebuild 2026-08-23
+                         after the review-fix probe changes)
+host-summary.txt         this file
+```
+
+## How the runs were produced
+
+```text
+build    rsync PR tree -> C:\markit-g0\src
+         cargo build --release -p markit --features g0-probe   (native host)
+deploy   copy src\target\release\markit.exe -> C:\markit-g0\markit.exe
+matrix   C:\markit-g0\markit.exe --g0-probe --smoke            (canonical)
+ime      C:\markit-g0\run-pinyin.ps1  (activates MS Pinyin HKL 0x08040804
+         for the probe thread, injects raw keys: n-i-h-a-o + SPACE commit,
+         z-h-o-n-g-w-e-n + ESC cancel, F1 dump, restores layout)
+scale    display scale set to 125% via Settings (manual), verified by the
+         probe's own `G0 scale_factor=1.25` log line; restored to 100%
+         afterwards (verified `G0 scale_factor=1` before teardown of G0)
+idle     external Get-Process sampling loop while the interactive probe sat
+         focused and untouched
+```
+
+## Honesty limits (unchanged from the G0 report)
+
+- F2/Q keyboard actions were not separately exercised (same dispatch path
+  as F1/F3); mouse coverage is click-only (no drag/wheel).
+- IME evidence is pipeline-level: composition start/update, GCS_RESULTSTR
+  commit replacing the marked range, ESC cancel clearing it, and candidate
+  `bounds_for_range` docking calls. Product-level IME UX (candidate window
+  visuals, arrow-key candidate navigation) belongs to P1-A.
+- The 2026-08-22 run (superseded probe binary) observed ~12.5/s armed
+  `on_next_frame` delivery; the review-fixed binary observed ~60/s at both
+  100 % and 125 % (≈ every 60 Hz vsync). Draws stayed ~0 in all runs.
+  Callback delivery rate is recorded as run/binary-dependent, not a
+  platform contract; the stable claim is "no draw/present work while idle".

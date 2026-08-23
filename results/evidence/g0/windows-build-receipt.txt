@@ -1,0 +1,16 @@
+# Native Windows release build receipt (2026-08-22, first full build)
+# command: cargo build --release -p markit --features g0-probe
+# tree: rsync of the PR branch to C:\markit-g0\src
+# (rustc/host details: results/summary/g0/README.md and host-summary.txt)
+
+   Compiling markit-core v0.1.0 (C:\markit-g0\src\crates\markit-core)
+   Compiling accesskit_windows v0.33.1
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?rev=eb8e1c8b5502b7007465fbbc465f4a736fa39210#e
+   Compiling markit v0.1.0 (C:\markit-g0\src\apps\markit)
+    Finished `release` profile [optimized] target(s) in 6m 02s
+
+# Incremental rebuild after the review-fix probe changes (2026-08-23)
+# command: cargo build --release -p markit --features g0-probe (same host, same tree after rsync)
+    Compiling markit v0.1.0 (C:\markit-g0\srcpps\markit)
+    Finished `release` profile [optimized] target(s) in 7.30s
+exit=0
