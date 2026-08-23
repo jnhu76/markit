@@ -658,6 +658,12 @@ fn classify_flanking(text: &str, delim: &mut DelimRun) {
 
 #[derive(Clone, Debug)]
 struct Pairing {
+    /// Indexes of the opener/closer [`DelimRun`]s in the `delims` slice,
+    /// captured when the pair was formed so a rejected pair can refund
+    /// its bytes in O(1). Meaningful only before assembly (the `delims`
+    /// slice no longer exists there).
+    opener_delim: usize,
+    closer_delim: usize,
     /// Opener bytes consumed by this pair (relative).
     open: std::ops::Range<usize>,
     /// Closer bytes consumed by this pair (relative).
@@ -713,6 +719,8 @@ fn pair_emphasis(delims: &mut [DelimRun], ctx: &mut InlineCtx) -> Vec<Pairing> {
             let close_start = delims[i].start + delims[i].used_left;
             delims[i].used_left += use_len;
             pairs.push(Pairing {
+                opener_delim: oi,
+                closer_delim: i,
                 open: open_start..open_start + use_len,
                 close: close_start..close_start + use_len,
                 strong,
@@ -730,7 +738,7 @@ fn pair_emphasis(delims: &mut [DelimRun], ctx: &mut InlineCtx) -> Vec<Pairing> {
             .cmp(&b.open.start)
             .then(b.close.end.cmp(&a.close.end))
     });
-    reject_crossing_pairs(&mut pairs, delims);
+    reject_crossing_pairs(&mut pairs, delims, ctx);
     pairs
 }
 
@@ -742,14 +750,17 @@ fn pair_emphasis(delims: &mut [DelimRun], ctx: &mut InlineCtx) -> Vec<Pairing> {
 ///
 /// Pairs must be sorted `(open.start asc, close.end desc)` on entry.
 /// The algorithm is one linear walk using a stack of accepted frames'
-/// close-end positions.
-fn reject_crossing_pairs(pairs: &mut Vec<Pairing>, delims: &mut [DelimRun]) {
+/// close-end positions; each candidate pair is charged one step, plus
+/// one for a rejected pair's O(1) refund, so a crossing-heavy run
+/// reports O(pairs) work — never O(pairs × delims).
+fn reject_crossing_pairs(pairs: &mut Vec<Pairing>, delims: &mut [DelimRun], ctx: &mut InlineCtx) {
     if pairs.is_empty() {
         return;
     }
     let mut kept: Vec<usize> = Vec::with_capacity(pairs.len());
     let mut open_ends: Vec<usize> = Vec::new();
     for (idx, pair) in pairs.iter().enumerate() {
+        ctx.charge(1);
         // Close frames that finished before this pair's opener.
         while open_ends.last().is_some_and(|&end| end <= pair.open.start) {
             open_ends.pop();
@@ -757,6 +768,7 @@ fn reject_crossing_pairs(pairs: &mut Vec<Pairing>, delims: &mut [DelimRun]) {
         // If the innermost open frame closes before this pair does,
         // the new pair would cross it — reject and refund its bytes.
         if open_ends.last().is_some_and(|&end| end < pair.close.end) {
+            ctx.charge(1);
             refund_pair_bytes(pair, delims);
             continue;
         }
@@ -770,20 +782,14 @@ fn reject_crossing_pairs(pairs: &mut Vec<Pairing>, delims: &mut [DelimRun]) {
 }
 
 /// Returns a rejected pair's delimiter bytes to their runs so they
-/// become literal text in assembly.
+/// become literal text in assembly. O(1): the delim indexes were
+/// captured when the pair was formed.
 fn refund_pair_bytes(pair: &Pairing, delims: &mut [DelimRun]) {
     let use_len = pair.open.len();
-    // Find the opener and closer delims by position.
-    for delim in delims.iter_mut() {
-        // Opener: the pair's open range is within this delim's span.
-        if delim.start <= pair.open.start && pair.open.end <= delim.start + delim.len {
-            delim.used_right = delim.used_right.saturating_sub(use_len);
-        }
-        // Closer: the pair's close range is within this delim's span.
-        if delim.start <= pair.close.start && pair.close.end <= delim.start + delim.len {
-            delim.used_left = delim.used_left.saturating_sub(use_len);
-        }
-    }
+    delims[pair.opener_delim].used_right =
+        delims[pair.opener_delim].used_right.saturating_sub(use_len);
+    delims[pair.closer_delim].used_left =
+        delims[pair.closer_delim].used_left.saturating_sub(use_len);
 }
 
 // ---------------------------------------------------------------------------
@@ -852,6 +858,7 @@ fn assemble(base: usize, toks: &[Tok], delims: &[DelimRun], pairs: &[Pairing]) -
             open: pairs[i].open.start + base..pairs[i].open.end + base,
             close: pairs[i].close.start + base..pairs[i].close.end + base,
             strong: pairs[i].strong,
+            ..pairs[i].clone()
         })
         .collect();
     let pairs = &pairs[..];

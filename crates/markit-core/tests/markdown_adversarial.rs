@@ -10,7 +10,7 @@
 //! here instead of in a user's paragraph.
 
 use markit_core::markdown::MarkdownState;
-use markit_core::{ByteOffset, Document, EditTransaction, InlineNode, TextEdit};
+use markit_core::{ByteOffset, Document, EditTransaction, InlineNode, SourceRange, TextEdit};
 
 /// Scanning steps of one full build over a single-paragraph document.
 fn build_scanned(text: &str) -> (MarkdownState, u64) {
@@ -170,11 +170,17 @@ fn very_long_paragraphs_scan_linearly() {
 fn unmatched_backtick_runs_scan_linearly() {
     // Adversarial input: backtick runs of increasing length with no
     // matching closer. The old find_backtick_string rescanned the suffix
-    // for each opener (O(n²) total). BacktickIndex pre-scans all runs
-    // once, so each lookup is O(log n) and total work is O(n).
+    // for each opener (O(n²) total). BacktickIndex replaces that with a
+    // per-run pre-scan, so each lookup is O(log n) over the index and
+    // the repeated suffix scan no longer appears in charged parser work
+    // (`inline_bytes_scanned`).
+    //
+    // This proves the *charged* work stays linear; the index's own
+    // scan + sort (O(R log R) in the number of runs) is not charged
+    // and is left to a real profiler.
     //
     // Build: `x ``x ```x ````x ... up to k runs.
-    // Text length is O(k²), so we double k and check work stays
+    // Text length is O(k²), so we double k and check charged work stays
     // proportional to text length (not to k² or worse).
     fn build_adversarial(k: usize) -> String {
         let mut text = String::new();
@@ -211,4 +217,68 @@ fn unmatched_backtick_runs_scan_linearly() {
         scanned_big <= 2 * big_len as u64 + 256,
         "big: {scanned_big} for {big_len} bytes"
     );
+}
+
+#[test]
+fn crossing_heavy_delimiter_runs_pair_linearly() {
+    // Each `*a _b* c_` unit forms one crossing pair: the `*` pair opens
+    // first and is kept, the `_` pair is rejected and its delimiter
+    // bytes refunded. k units → k rejected pairs; the refund must be
+    // O(1) per pair (the delim indexes are captured at pairing time),
+    // never a scan of every delimiter, so charged work stays linear in
+    // bytes. A per-rejection full-delimiter scan would be O(k²) here.
+    fn make(k: usize) -> String {
+        format!("{}\n", "*a _b* c_ ".repeat(k))
+    }
+    let small = make(1_000);
+    let big = make(4_000);
+    let (_, scanned_small) = build_scanned(&small);
+    let (state, scanned_big) = build_scanned(&big);
+    assert!(
+        scanned_big <= 6 * big.len() as u64 + 1024,
+        "{} bytes scanned {scanned_big}",
+        big.len()
+    );
+    // 4x input must not scale work superlinearly (quadratic refund
+    // would grow ~16x).
+    assert!(
+        scanned_big <= 4 * scanned_small + 1024,
+        "4x input: {scanned_small} -> {scanned_big}"
+    );
+    // Rejected delimiters stay literal; kept pairs still assemble a
+    // laminar tree.
+    let nodes = first_run_nodes(&state);
+    assert_laminar(nodes);
+    assert!(
+        nodes.len() <= small.len(),
+        "top-level nodes ({}) bounded by unit bytes",
+        nodes.len()
+    );
+}
+
+/// Structural invariant: every child's range is contained within its
+/// parent's range (laminar nesting).
+fn assert_laminar(nodes: &[InlineNode]) {
+    for node in nodes {
+        let (range, children): (&SourceRange, &[InlineNode]) = match node {
+            InlineNode::Text { range } | InlineNode::Code { range } => (range, &[]),
+            InlineNode::Emphasis { range, children }
+            | InlineNode::Strong { range, children }
+            | InlineNode::Link { range, children, .. } => (range, children),
+        };
+        for child in children {
+            let cr = match child {
+                InlineNode::Text { range } | InlineNode::Code { range } => range,
+                InlineNode::Emphasis { range, .. }
+                | InlineNode::Strong { range, .. }
+                | InlineNode::Link { range, .. } => range,
+            };
+            assert!(
+                cr.start.as_usize() >= range.start.as_usize()
+                    && cr.end.as_usize() <= range.end.as_usize(),
+                "child {cr:?} escapes parent {range:?}"
+            );
+        }
+        assert_laminar(children);
+    }
 }

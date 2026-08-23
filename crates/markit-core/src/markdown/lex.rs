@@ -303,9 +303,13 @@ pub(crate) fn backtick_run_at(text: &str, at: usize) -> usize {
 
 /// Pre-scanned index of backtick runs for O(log n) closer lookup.
 ///
-/// Built once per inline run; avoids the quadratic repeated-suffix scan
-/// that naive scanning performs when many runs of different lengths have
-/// no matching closer.
+/// Built once per inline run; eliminates the quadratic repeated-suffix
+/// scan that naive scanning performs when many runs of different lengths
+/// have no matching closer. Construction is currently sort-based
+/// (`entries.sort()`), so build is O(R log R) in the number of runs R —
+/// not linear by construction. If a real profiler ever shows the sort
+/// dominating, switch to per-length position buckets or next-same-length
+/// links; not worth the complexity until measured.
 pub(crate) struct BacktickIndex {
     /// `(run_length, start_position)` entries, sorted by
     /// `(run_length, start_position)`.
@@ -314,7 +318,8 @@ pub(crate) struct BacktickIndex {
 
 impl BacktickIndex {
     /// Scans `text` once, recording every backtick run's length and
-    /// position.
+    /// position, then sorts by `(len, pos)` for binary-search lookup —
+    /// O(R log R) in the number of runs.
     pub(crate) fn build(text: &str) -> Self {
         let bytes = text.as_bytes();
         let mut entries = Vec::new();
