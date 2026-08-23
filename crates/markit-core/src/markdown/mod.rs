@@ -72,9 +72,20 @@ pub struct MarkdownWork {
     /// Block bytes fingerprinted (the parse's byte cost).
     pub bytes_scanned: u64,
     /// Old records inspected while planning (rewind, dead set,
-    /// convergence checks). Shifting survivor ranges is bookkeeping and
-    /// is not counted as examining.
+    /// convergence checks) plus survivors actually rewritten by the
+    /// mutation pass. Zero-delta survivor segments are skipped
+    /// untouched and are not counted.
     pub blocks_examined: u64,
+    /// Survivor records whose stored ranges were rewritten in place
+    /// (nonzero byte/line delta). An equal-length local edit shifts
+    /// none, at any document size.
+    pub survivor_blocks_shifted: u64,
+    /// Inline nodes inside those shifted survivors.
+    pub survivor_inline_nodes_shifted: u64,
+    /// Records physically relocated by an island splice (the `Vec` tail
+    /// after a block-count-changing island). Equal-count islands
+    /// overwrite in place and move none.
+    pub block_records_moved: u64,
     /// Island blocks whose id was paired with a dead old block (kept id).
     pub blocks_reused: u64,
     /// Blocks emitted by island reparsing (all of them, reused ids
@@ -87,6 +98,11 @@ pub struct MarkdownWork {
     /// Blocks whose inline IR was recomputed (island blocks with inline
     /// runs; kept survivors are never reparsed).
     pub inline_blocks_reparsed: u64,
+    /// Inline scanning steps: run bytes parsed (including nested
+    /// link-text attempts) plus delimiter pairing steps. Structural
+    /// growth characterization for adversarial input (contract §11
+    /// D15/D16, §12); linear in run length by construction.
+    pub inline_bytes_scanned: u64,
     /// Highest line at which an island converged (document end when a
     /// reparse ran to end of document — the honest unclosed-fence case).
     pub convergence_line: u64,
@@ -99,11 +115,15 @@ impl MarkdownWork {
         self.lines_scanned += other.lines_scanned;
         self.bytes_scanned += other.bytes_scanned;
         self.blocks_examined += other.blocks_examined;
+        self.survivor_blocks_shifted += other.survivor_blocks_shifted;
+        self.survivor_inline_nodes_shifted += other.survivor_inline_nodes_shifted;
+        self.block_records_moved += other.block_records_moved;
         self.blocks_reused += other.blocks_reused;
         self.blocks_reparsed += other.blocks_reparsed;
         self.blocks_created += other.blocks_created;
         self.blocks_removed += other.blocks_removed;
         self.inline_blocks_reparsed += other.inline_blocks_reparsed;
+        self.inline_bytes_scanned += other.inline_bytes_scanned;
         self.convergence_line = other.convergence_line;
     }
 }
@@ -134,26 +154,23 @@ impl MarkdownState {
         let mut parser = BlockParser::new(snapshot, 0);
         let mut next_id = 0u64;
         let mut blocks = Vec::new();
-        let mut inline_blocks = 0u64;
-        while let Some(parsed) = parser.next_block() {
-            let mut record = parsed.into_record(InternalBlockId::mint(&mut next_id));
-            if inline::attach_inline(&mut record, snapshot) {
-                inline_blocks += 1;
-            }
-            blocks.push(record);
-        }
-        let work = MarkdownWork {
+        let mut work = MarkdownWork {
             dirty_regions: 1,
             restart_line: 0,
-            lines_scanned: parser.lines_scanned(),
-            bytes_scanned: parser.bytes_scanned(),
-            blocks_examined: blocks.len() as u64,
-            blocks_reparsed: 0,
-            blocks_created: blocks.len() as u64,
-            inline_blocks_reparsed: inline_blocks,
             convergence_line: snapshot.line_count() as u64,
             ..MarkdownWork::default()
         };
+        while let Some(parsed) = parser.next_block() {
+            let mut record = parsed.into_record(InternalBlockId::mint(&mut next_id));
+            if inline::attach_inline(&mut record, snapshot, &mut work) {
+                work.inline_blocks_reparsed += 1;
+            }
+            blocks.push(record);
+        }
+        work.lines_scanned = parser.lines_scanned();
+        work.bytes_scanned = parser.bytes_scanned();
+        work.blocks_examined = blocks.len() as u64;
+        work.blocks_created = blocks.len() as u64;
         Self {
             version: snapshot.version(),
             next_id,

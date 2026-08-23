@@ -188,46 +188,39 @@ pub struct BlockRecord {
 }
 
 impl BlockRecord {
-    /// The same record moved by `(byte_delta, line_delta)` — used when an
-    /// edit elsewhere in the document shifts untouched blocks without
-    /// reparsing them (their text, and therefore their fingerprint, is
-    /// unchanged by construction).
-    pub(crate) fn shifted(&self, byte_delta: i64, line_delta: i64) -> Self {
-        let mut shifted = self.clone();
-        shifted.source_range = shift_range(&self.source_range, byte_delta);
-        shifted.inline = self.inline.shifted(byte_delta);
-        shifted.line_span = LineNumber((self.line_span.start.0 as i64 + line_delta).max(0) as usize)
+    /// Moves this record by `(byte_delta, line_delta)` in place — no
+    /// clone of the detail or inline IR. The incremental mutation pass
+    /// uses this so a survivor's cost is one in-place rewrite, not a
+    /// record copy (and zero-delta segments are not touched at all).
+    pub(crate) fn shift_in_place(&mut self, byte_delta: i64, line_delta: i64) {
+        self.source_range = shift_range(&self.source_range, byte_delta);
+        self.line_span = LineNumber((self.line_span.start.0 as i64 + line_delta).max(0) as usize)
             ..LineNumber((self.line_span.end.0 as i64 + line_delta).max(0) as usize);
-        shifted.detail = match &self.detail {
-            BlockDetail::Heading { level, content } => BlockDetail::Heading {
-                level: *level,
-                content: shift_range(content, byte_delta),
-            },
-            BlockDetail::BlockQuote { content } => BlockDetail::BlockQuote {
-                content: content.iter().map(|r| shift_range(r, byte_delta)).collect(),
-            },
-            BlockDetail::List { signature, items } => BlockDetail::List {
-                signature: *signature,
-                items: items
-                    .iter()
-                    .map(|item| ListItem {
-                        marker_range: shift_range(&item.marker_range, byte_delta),
-                        content: shift_range(&item.content, byte_delta),
-                        number: item.number,
-                    })
-                    .collect(),
-            },
-            BlockDetail::FencedCode { fence, closed } => BlockDetail::FencedCode {
-                fence: FenceInfo {
-                    fence_char: fence.fence_char,
-                    fence_len: fence.fence_len,
-                    info: fence.info.map(|r| shift_range(&r, byte_delta)),
-                },
-                closed: *closed,
-            },
-            other => other.clone(),
-        };
-        shifted
+        shift_detail_in_place(&mut self.detail, byte_delta);
+        self.inline.shift_in_place(byte_delta);
+    }
+}
+
+fn shift_detail_in_place(detail: &mut BlockDetail, byte_delta: i64) {
+    match detail {
+        BlockDetail::Heading { content, .. } => *content = shift_range(content, byte_delta),
+        BlockDetail::BlockQuote { content } => {
+            for range in content {
+                *range = shift_range(range, byte_delta);
+            }
+        }
+        BlockDetail::List { items, .. } => {
+            for item in items {
+                item.marker_range = shift_range(&item.marker_range, byte_delta);
+                item.content = shift_range(&item.content, byte_delta);
+            }
+        }
+        BlockDetail::FencedCode { fence, .. } => {
+            if let Some(range) = &mut fence.info {
+                *range = shift_range(range, byte_delta);
+            }
+        }
+        BlockDetail::Blank | BlockDetail::Paragraph => {}
     }
 }
 

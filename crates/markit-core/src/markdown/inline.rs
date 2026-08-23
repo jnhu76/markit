@@ -7,6 +7,25 @@
 //! an iterative tree assembly. Nodes reference source bytes only — text
 //! materialization is `snapshot.slice(range)`; presentation rules
 //! (code-span space stripping, newline conversion) belong downstream.
+//!
+//! ## Adversarial bounds (contract §11 D15/D16)
+//!
+//! Inline syntax admits inputs that make a naive parser quadratic or
+//! exponentially redundant (long unmatched-bracket scans, per-closer
+//! opener rescans, nested link-text re-parsing). Parsing is therefore
+//! bounded *structurally*, not by trust in input shape:
+//!
+//! - emphasis pairing keeps per-character opener stacks (each delimiter
+//!   is pushed and popped at most once — linear);
+//! - a link attempt that scans to the run's end without finding `]`
+//!   marks the rest of the run bracket-free (one such scan, ever);
+//! - link-text recursion and total link scanning are budgeted; past the
+//!   budget brackets stay literal text;
+//! - assembled nesting depth is capped, so IR shift/equality/drop —
+//!   naturally recursive — cannot overflow the stack.
+//!
+//! All bounds are deterministic functions of the run text, so an
+//! incremental parse and a full rebuild agree by construction.
 
 use crate::markdown::block::BlockDetail;
 use crate::markdown::block::BlockKind;
@@ -14,8 +33,55 @@ use crate::markdown::block::BlockRecord;
 use crate::markdown::lex::{
     backtick_run_at, delimiter_run_at, find_backtick_string, is_ascii_punctuation,
 };
+use crate::markdown::MarkdownWork;
 use crate::position::SourceRange;
 use crate::snapshot::DocumentSnapshot;
+
+/// Maximum assembled nesting depth of emphasis/link structure in one
+/// inline run (contract §11 D15). Real documents sit orders of magnitude
+/// below this; the cap keeps naturally-recursive IR operations (shift,
+/// equality, drop) safe on adversarial input. Delimiters that would nest
+/// deeper stay literal text.
+const MAX_INLINE_NESTING: usize = 256;
+
+/// Link-attempt work budget for one inline run, in scanning steps
+/// (contract §11 D16): `64·len + 4096`. Generous for real documents
+/// (whose link attempts scan locally), decisive against nested-attempt
+/// blowups; past it, brackets stay literal text.
+fn inline_work_budget(len: usize) -> u64 {
+    64 * len as u64 + 4096
+}
+
+/// Per-run parsing context: recursion depth, work budget, and the
+/// scanning-step counter (`MarkdownWork::inline_bytes_scanned`).
+pub(crate) struct InlineCtx {
+    depth: u32,
+    budget: u64,
+    scanned: u64,
+}
+
+impl InlineCtx {
+    pub(crate) fn new(run_len: usize) -> Self {
+        Self {
+            depth: 0,
+            budget: inline_work_budget(run_len),
+            scanned: 0,
+        }
+    }
+
+    /// Records `steps` of scanning work. Returns whether the budget
+    /// still allows further *optional* work (nested link attempts).
+    fn charge(&mut self, steps: u64) -> bool {
+        self.scanned += steps;
+        if self.budget >= steps {
+            self.budget -= steps;
+            true
+        } else {
+            self.budget = 0;
+            false
+        }
+    }
+}
 
 /// The inline IR of one block: the parsed nodes of each independent
 /// inline run, with the run's source range.
@@ -80,21 +146,33 @@ pub enum InlineNode {
 }
 
 impl InlineIr {
-    /// The same IR moved by `delta` bytes — used when untouched blocks
-    /// shift; their runs' bytes are unchanged by construction, so the
-    /// tree shape is preserved as-is.
-    pub(crate) fn shifted(&self, delta: i64) -> Self {
-        Self {
-            runs: self
-                .runs
-                .iter()
-                .map(|r| InlineRun {
-                    range: shift(r.range, delta),
-                    nodes: shift_nodes(&r.nodes, delta),
-                })
-                .collect(),
+    /// Moves every run and node range by `delta` bytes, in place — used
+    /// when untouched blocks shift; their runs' bytes are unchanged by
+    /// construction, so the tree shape is preserved as-is. Recursion is
+    /// bounded by the nesting cap (D15).
+    pub(crate) fn shift_in_place(&mut self, delta: i64) {
+        for run in &mut self.runs {
+            run.range = shift(run.range, delta);
+            shift_nodes(&mut run.nodes, delta);
         }
     }
+
+    /// Total node count across runs (survivor-shift work counter input).
+    pub(crate) fn node_count(&self) -> usize {
+        self.runs.iter().map(|r| count_nodes(&r.nodes)).sum()
+    }
+}
+
+fn count_nodes(nodes: &[InlineNode]) -> usize {
+    nodes
+        .iter()
+        .map(|node| match node {
+            InlineNode::Emphasis { children, .. }
+            | InlineNode::Strong { children, .. }
+            | InlineNode::Link { children, .. } => 1 + count_nodes(children),
+            _ => 1,
+        })
+        .sum()
 }
 
 impl InlineNode {
@@ -112,8 +190,9 @@ impl InlineNode {
 
 /// Parses `text` (one inline run, at absolute byte offset `base`) into
 /// nodes. Every returned range is absolute.
-pub(crate) fn parse_run(text: &str, base: usize) -> Vec<InlineNode> {
-    let toks = scan_tokens(text, base);
+pub(crate) fn parse_run(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<InlineNode> {
+    ctx.charge(text.len() as u64);
+    let toks = scan_tokens(text, base, ctx);
     let mut delims: Vec<DelimRun> = toks
         .iter()
         .filter_map(|t| match t {
@@ -124,28 +203,35 @@ pub(crate) fn parse_run(text: &str, base: usize) -> Vec<InlineNode> {
     for delim in &mut delims {
         classify_flanking(text, delim);
     }
-    let pairs = pair_emphasis(&mut delims);
+    let pairs = pair_emphasis(&mut delims, ctx);
     assemble(base, &toks, &delims, &pairs)
 }
 
 /// Computes and stores a block's inline IR from its detail runs.
 /// Returns whether the block has inline runs at all (the
-/// `inline_blocks_reparsed` counter input).
-pub(crate) fn attach_inline(record: &mut BlockRecord, snapshot: &DocumentSnapshot<'_>) -> bool {
+/// `inline_blocks_reparsed` counter input); scanning steps land in
+/// `work.inline_bytes_scanned`.
+pub(crate) fn attach_inline(
+    record: &mut BlockRecord,
+    snapshot: &DocumentSnapshot<'_>,
+    work: &mut MarkdownWork,
+) -> bool {
     let runs = runs_for(record);
     if runs.is_empty() {
         record.inline = InlineIr::default();
         return false;
     }
     let mut parsed = Vec::with_capacity(runs.len());
+    let mut scanned = 0u64;
     for range in runs {
         let text = snapshot.slice(range).into_owned();
-        parsed.push(InlineRun {
-            range,
-            nodes: parse_run(&text, range.start.as_usize()),
-        });
+        let mut ctx = InlineCtx::new(text.len());
+        let nodes = parse_run(&text, range.start.as_usize(), &mut ctx);
+        scanned += ctx.scanned;
+        parsed.push(InlineRun { range, nodes });
     }
     record.inline = InlineIr { runs: parsed };
+    work.inline_bytes_scanned += scanned;
     true
 }
 
@@ -219,10 +305,14 @@ fn is_ws(b: u8) -> bool {
     b == b' ' || b == b'\t' || b == b'\n' || b == b'\r'
 }
 
-fn scan_tokens(text: &str, base: usize) -> Vec<Tok> {
+fn scan_tokens(text: &str, base: usize, ctx: &mut InlineCtx) -> Vec<Tok> {
     let bytes = text.as_bytes();
     let mut toks = Vec::new();
     let mut text_start = 0usize;
+    // Watermark (D16): once a link attempt scanned ahead and found no
+    // `]` at all, no later `[` in this run can close either — skip
+    // their attempts instead of rescanning the suffix per bracket.
+    let mut no_close_from = usize::MAX;
     let mut i = 0usize;
     while i < bytes.len() {
         let flush_text = |text_start: &mut usize, end: usize, toks: &mut Vec<Tok>| {
@@ -253,15 +343,26 @@ fn scan_tokens(text: &str, base: usize) -> Vec<Tok> {
                     None => i += run, // unmatched: literal text
                 }
             }
-            b'[' => match try_link(text, i, base) {
-                Some(link) => {
-                    flush_text(&mut text_start, i, &mut toks);
-                    i = link.full.end;
-                    toks.push(Tok::Link(link));
-                    text_start = i;
+            b'[' => {
+                let outcome = if i >= no_close_from {
+                    LinkOutcome::NoCloseAhead
+                } else {
+                    try_link(text, i, base, ctx)
+                };
+                match outcome {
+                    LinkOutcome::Link(link) => {
+                        flush_text(&mut text_start, i, &mut toks);
+                        i = link.full.end;
+                        toks.push(Tok::Link(link));
+                        text_start = i;
+                    }
+                    LinkOutcome::NoCloseAhead => {
+                        no_close_from = no_close_from.min(i);
+                        i += 1; // literal '['; rescan finds inner constructs
+                    }
+                    LinkOutcome::Literal => i += 1,
                 }
-                None => i += 1, // literal '['; rescan finds inner constructs
-            },
+            }
             b'*' | b'_' => {
                 let (_, len) = delimiter_run_at(text, i).expect("delimiter run");
                 flush_text(&mut text_start, i, &mut toks);
@@ -286,7 +387,36 @@ fn scan_tokens(text: &str, base: usize) -> Vec<Tok> {
     toks
 }
 
-fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
+/// Outcome of a link attempt at one `[`.
+enum LinkOutcome {
+    Link(LinkTok),
+    /// The attempt scanned ahead without finding any `]`: no later `[`
+    /// in this run needs to try.
+    NoCloseAhead,
+    /// Malformed, or past the depth/work budget (D15/D16): the `[` is
+    /// literal text and scanning resumes inside it.
+    Literal,
+}
+
+fn try_link(text: &str, open: usize, base: usize, ctx: &mut InlineCtx) -> LinkOutcome {
+    let (outcome, seen) = try_link_inner(text, open, base, ctx);
+    // Charge the bytes this attempt actually examined (bracket match +
+    // destination/title). The budget exists to bound *repeated*
+    // attempts; a single scan is always allowed to finish.
+    ctx.charge((seen - open + 1) as u64);
+    outcome
+}
+
+/// Returns the outcome and the last byte index examined (for charging).
+fn try_link_inner(
+    text: &str,
+    open: usize,
+    base: usize,
+    ctx: &mut InlineCtx,
+) -> (LinkOutcome, usize) {
+    if ctx.depth >= MAX_INLINE_NESTING as u32 || ctx.budget == 0 {
+        return (LinkOutcome::Literal, open);
+    }
     let bytes = text.as_bytes();
     // Matching ']' with code spans skipped and escapes honored; balanced
     // brackets nest.
@@ -316,8 +446,11 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
             _ => j += 1,
         }
     }
-    if j >= bytes.len() || bytes.get(j + 1) != Some(&b'(') {
-        return None;
+    if j >= bytes.len() {
+        return (LinkOutcome::NoCloseAhead, bytes.len().saturating_sub(1));
+    }
+    if bytes.get(j + 1) != Some(&b'(') {
+        return (LinkOutcome::Literal, j + 1);
     }
 
     let mut k = j + 2;
@@ -333,12 +466,12 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
                     m += 2
                 }
                 b'>' => break,
-                b'<' | b'\n' => return None,
+                b'<' | b'\n' => return (LinkOutcome::Literal, m),
                 _ => m += 1,
             }
         }
         if m >= bytes.len() {
-            return None;
+            return (LinkOutcome::Literal, bytes.len().saturating_sub(1));
         }
         let range = k + 1..m;
         k = m + 1;
@@ -366,7 +499,7 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
             m += 1;
         }
         if parens != 0 || m == k {
-            return None; // unbalanced or empty bare destination
+            return (LinkOutcome::Literal, m); // unbalanced or empty bare destination
         }
         let range = k..m;
         k = m;
@@ -394,7 +527,7 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
                     };
                 }
                 if m >= bytes.len() {
-                    return None;
+                    return (LinkOutcome::Literal, bytes.len().saturating_sub(1));
                 }
                 let range = k + 1..m;
                 k = m + 1;
@@ -426,7 +559,7 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
                     }
                 }
                 if m >= bytes.len() {
-                    return None;
+                    return (LinkOutcome::Literal, bytes.len().saturating_sub(1));
                 }
                 let range = k + 1..m;
                 k = m + 1;
@@ -442,21 +575,31 @@ fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
         k += 1;
     }
     if bytes.get(k) != Some(&b')') {
-        return None;
+        return (LinkOutcome::Literal, k.min(bytes.len().saturating_sub(1)));
     }
 
     let full = open..k + 1;
     let inner = open + 1..j;
-    let children = parse_run(&text[inner.clone()], base + open + 1);
-    if children.iter().any(contains_link) {
-        return None; // links do not nest at any level (contract §7.4)
+    if ctx.budget == 0 {
+        // Past the budget, link-text re-parsing stops (D16): the bracket
+        // stays literal and inner constructs are found by the rescan.
+        return (LinkOutcome::Literal, k);
     }
-    Some(LinkTok {
-        full,
-        dest,
-        title,
-        children,
-    })
+    ctx.depth += 1;
+    let children = parse_run(&text[inner], base + open + 1, ctx);
+    ctx.depth -= 1;
+    if children.iter().any(contains_link) {
+        return (LinkOutcome::Literal, k); // links do not nest (contract §7.4)
+    }
+    (
+        LinkOutcome::Link(LinkTok {
+            full,
+            dest,
+            title,
+            children,
+        }),
+        k,
+    )
 }
 
 fn contains_link(node: &InlineNode) -> bool {
@@ -474,11 +617,17 @@ fn contains_link(node: &InlineNode) -> bool {
 // ---------------------------------------------------------------------------
 
 fn prev_char(text: &str, byte_idx: usize) -> Option<char> {
-    if byte_idx == 0 {
-        None
-    } else {
-        text[..byte_idx].chars().next_back()
+    // Step back at most one UTF-8 scalar (≤ 3 continuation bytes) —
+    // slicing the whole prefix per delimiter made long runs quadratic.
+    let bytes = text.as_bytes();
+    let mut i = byte_idx;
+    while i > 0 {
+        i -= 1;
+        if bytes[i] & 0xC0 != 0x80 {
+            return text[i..].chars().next();
+        }
     }
+    None
 }
 
 fn next_char(text: &str, byte_idx: usize) -> Option<char> {
@@ -514,19 +663,41 @@ struct Pairing {
     strong: bool,
 }
 
-fn pair_emphasis(delims: &mut [DelimRun]) -> Vec<Pairing> {
+/// Stack slot of a delimiter character (opener stacks are per character
+/// so `*` and `_` never interact).
+fn opener_slot(ch: u8) -> usize {
+    if ch == b'*' {
+        0
+    } else {
+        1
+    }
+}
+
+fn pair_emphasis(delims: &mut [DelimRun], ctx: &mut InlineCtx) -> Vec<Pairing> {
     let mut pairs = Vec::new();
-    for ci in 0..delims.len() {
-        loop {
-            if delims[ci].remaining() == 0 || !delims[ci].can_close {
-                break;
+    // Live opener stacks per delimiter character. A delimiter qualifies
+    // as an opener exactly when `can_open` (static after flanking
+    // classification) and it has bytes left — both monotone, so a popped
+    // opener can never requalify and the stacks always hold precisely
+    // the openers a backward scan would find. Each delimiter is pushed
+    // and popped at most once: linear where a per-closer backward rescan
+    // is quadratic (cmark's `openers_bottom` idea, simplified because
+    // D10/D11 make the predicate closer-independent).
+    let mut openers: [Vec<usize>; 2] = [Vec::new(), Vec::new()];
+    for i in 0..delims.len() {
+        // Closer duty first: the opener stacks hold only earlier
+        // delimiters, so a run can never pair with itself.
+        while delims[i].remaining() > 0 && delims[i].can_close {
+            ctx.charge(1);
+            let stack = &mut openers[opener_slot(delims[i].ch)];
+            while stack.last().is_some_and(|&o| delims[o].remaining() == 0) {
+                stack.pop();
+                ctx.charge(1);
             }
-            let Some(oi) = (0..ci).rev().find(|&o| {
-                delims[o].ch == delims[ci].ch && delims[o].can_open && delims[o].remaining() > 0
-            }) else {
+            let Some(&oi) = stack.last() else {
                 break;
             };
-            let use_len = if delims[oi].remaining() >= 2 && delims[ci].remaining() >= 2 {
+            let use_len = if delims[oi].remaining() >= 2 && delims[i].remaining() >= 2 {
                 2
             } else {
                 1
@@ -537,13 +708,16 @@ fn pair_emphasis(delims: &mut [DelimRun]) -> Vec<Pairing> {
             // the bytes adjacent to the content (`***x***` = em > strong).
             let open_start = delims[oi].start + delims[oi].len - delims[oi].used_right - use_len;
             delims[oi].used_right += use_len;
-            let close_start = delims[ci].start + delims[ci].used_left;
-            delims[ci].used_left += use_len;
+            let close_start = delims[i].start + delims[i].used_left;
+            delims[i].used_left += use_len;
             pairs.push(Pairing {
                 open: open_start..open_start + use_len,
                 close: close_start..close_start + use_len,
                 strong,
             });
+        }
+        if delims[i].can_open {
+            openers[opener_slot(delims[i].ch)].push(i);
         }
     }
     // Outer pairs were recorded after their inner pairs (later closers
@@ -562,6 +736,29 @@ fn pair_emphasis(delims: &mut [DelimRun]) -> Vec<Pairing> {
 // ---------------------------------------------------------------------------
 
 fn assemble(base: usize, toks: &[Tok], delims: &[DelimRun], pairs: &[Pairing]) -> Vec<InlineNode> {
+    // Nesting cap (D15): pairs are laminar and sorted (start asc, end
+    // desc — pre-order), so a stack of close-ends yields each pair's
+    // depth in one linear walk. Pairs at depth >= MAX_INLINE_NESTING
+    // are dropped and their delimiter bytes become literal text, like
+    // leftover delimiters; inner pairs survive untouched.
+    let mut capped_delims: Vec<std::ops::Range<usize>> = Vec::new();
+    let mut kept: Vec<usize> = Vec::with_capacity(pairs.len());
+    {
+        let mut open_ends: Vec<usize> = Vec::new();
+        for (idx, pair) in pairs.iter().enumerate() {
+            while open_ends.last().is_some_and(|&end| end <= pair.open.start) {
+                open_ends.pop();
+            }
+            if open_ends.len() >= MAX_INLINE_NESTING {
+                capped_delims.push(pair.open.clone());
+                capped_delims.push(pair.close.clone());
+            } else {
+                kept.push(idx);
+            }
+            open_ends.push(pair.close.end);
+        }
+    }
+
     // Leaves: text/code/link tokens plus each run's unclaimed middle
     // bytes (leftover delimiters are literal text).
     let mut leaves: Vec<InlineNode> = Vec::new();
@@ -587,16 +784,19 @@ fn assemble(base: usize, toks: &[Tok], delims: &[DelimRun], pairs: &[Pairing]) -
             push_text(&mut leaves, base + leftover_start, base + leftover_end);
         }
     }
+    for range in &capped_delims {
+        push_text(&mut leaves, base + range.start, base + range.end);
+    }
     leaves.sort_by_key(|node| node_range(node).start.as_usize());
     merge_adjacent_text(&mut leaves);
 
     // Pairs are relative to the run; everything below is absolute.
-    let pairs: Vec<Pairing> = pairs
-        .iter()
-        .map(|p| Pairing {
-            open: p.open.start + base..p.open.end + base,
-            close: p.close.start + base..p.close.end + base,
-            strong: p.strong,
+    let pairs: Vec<Pairing> = kept
+        .into_iter()
+        .map(|i| Pairing {
+            open: pairs[i].open.start + base..pairs[i].open.end + base,
+            close: pairs[i].close.start + base..pairs[i].close.end + base,
+            strong: pairs[i].strong,
         })
         .collect();
     let pairs = &pairs[..];
@@ -719,37 +919,33 @@ fn shift(range: SourceRange, delta: i64) -> SourceRange {
     SourceRange::new(move_offset(range.start), move_offset(range.end))
 }
 
-fn shift_nodes(nodes: &[InlineNode], delta: i64) -> Vec<InlineNode> {
-    nodes
-        .iter()
-        .map(|node| match node {
-            InlineNode::Text { range } => InlineNode::Text {
-                range: shift(*range, delta),
-            },
-            InlineNode::Code { range } => InlineNode::Code {
-                range: shift(*range, delta),
-            },
-            InlineNode::Emphasis { range, children } => InlineNode::Emphasis {
-                range: shift(*range, delta),
-                children: shift_nodes(children, delta),
-            },
-            InlineNode::Strong { range, children } => InlineNode::Strong {
-                range: shift(*range, delta),
-                children: shift_nodes(children, delta),
-            },
+/// Shifts node ranges in place. Recursion depth is bounded by the
+/// nesting cap (D15), so adversarial trees cannot overflow the stack.
+fn shift_nodes(nodes: &mut [InlineNode], delta: i64) {
+    for node in nodes.iter_mut() {
+        match node {
+            InlineNode::Text { range } | InlineNode::Code { range } => {
+                *range = shift(*range, delta)
+            }
+            InlineNode::Emphasis { range, children } | InlineNode::Strong { range, children } => {
+                *range = shift(*range, delta);
+                shift_nodes(children, delta);
+            }
             InlineNode::Link {
                 range,
                 children,
                 destination,
                 title,
-            } => InlineNode::Link {
-                range: shift(*range, delta),
-                children: shift_nodes(children, delta),
-                destination: shift(*destination, delta),
-                title: title.map(|t| shift(t, delta)),
-            },
-        })
-        .collect()
+            } => {
+                *range = shift(*range, delta);
+                *destination = shift(*destination, delta);
+                if let Some(t) = title {
+                    *t = shift(*t, delta);
+                }
+                shift_nodes(children, delta);
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -758,7 +954,28 @@ mod tests {
     use crate::position::ByteOffset;
 
     fn parse(text: &str) -> Vec<InlineNode> {
-        parse_run(text, 0)
+        let mut ctx = InlineCtx::new(text.len());
+        parse_run(text, 0, &mut ctx)
+    }
+
+    fn parse_counted(text: &str) -> (Vec<InlineNode>, u64) {
+        let mut ctx = InlineCtx::new(text.len());
+        let nodes = parse_run(text, 0, &mut ctx);
+        (nodes, ctx.scanned)
+    }
+
+    /// Maximum nesting depth of a parsed tree.
+    fn max_depth(nodes: &[InlineNode]) -> usize {
+        nodes
+            .iter()
+            .map(|node| match node {
+                InlineNode::Emphasis { children, .. }
+                | InlineNode::Strong { children, .. }
+                | InlineNode::Link { children, .. } => 1 + max_depth(children),
+                _ => 0,
+            })
+            .max()
+            .unwrap_or(0)
     }
 
     /// `(kind, start, end)` summary for compact assertions.
@@ -785,7 +1002,8 @@ mod tests {
         let nodes = parse("hello 世界 🙂");
         assert_eq!(shape(&nodes), vec![("text", 0, 17)]);
         // Absolute offsets survive a nonzero base.
-        let shifted = parse_run("ab", 100);
+        let mut ctx = InlineCtx::new(2);
+        let shifted = parse_run("ab", 100, &mut ctx);
         assert_eq!(shape(&shifted), vec![("text", 100, 102)]);
     }
 
@@ -968,5 +1186,107 @@ mod tests {
         assert_eq!(ir.runs.len(), 1);
         assert_eq!(shape(&ir.runs[0].nodes), vec![("em", 0, 3), ("text", 3, 5)]);
         let _ = ByteOffset(0);
+    }
+
+    // -- adversarial bounds (D15/D16) ----------------------------------
+
+    #[test]
+    fn unmatched_brackets_scan_the_suffix_once() {
+        // No `]` at all: the first attempt scans ahead, the watermark
+        // makes every later `[` free.
+        for n in [100usize, 1_000, 10_000] {
+            let text = "[".repeat(n);
+            let (nodes, scanned) = parse_counted(&text);
+            assert_eq!(nodes.len(), 1, "all literal");
+            assert!(
+                scanned <= 2 * n as u64 + 8,
+                "n={n}: scanned {scanned} for a {n}-bracket run"
+            );
+        }
+    }
+
+    #[test]
+    fn closer_heavy_runs_pair_without_rescans() {
+        // Every delimiter is a closer (preceded by text, followed by a
+        // space), so no opener ever exists: the per-closer backward
+        // search must not rescan earlier delimiters. Scanned = one walk
+        // (3n bytes) + one pairing step per delimiter.
+        for n in [100usize, 1_000, 10_000] {
+            let text = "a* ".repeat(n);
+            let (nodes, scanned) = parse_counted(&text);
+            assert_eq!(nodes.len(), 1, "all literal");
+            assert!(
+                scanned <= 4 * n as u64 + 16,
+                "n={n}: scanned {scanned} for {n} closers"
+            );
+        }
+    }
+
+    #[test]
+    fn deep_emphasis_nesting_is_capped() {
+        let n = 2_000;
+        let text = format!("{}x{}", "*".repeat(n), "*".repeat(n));
+        let (nodes, scanned) = parse_counted(&text);
+        assert_eq!(max_depth(&nodes), MAX_INLINE_NESTING, "depth hits the cap");
+        // Beyond the cap the delimiters are literal text: the tree stays
+        // small even though the input nests ~n/2 levels deep.
+        assert!(scanned <= 4 * (2 * n + 1) as u64, "scanned {scanned}");
+    }
+
+    #[test]
+    fn nested_link_attempts_are_budgeted() {
+        // Each level's link text contains a link, so the outer attempt
+        // fails after parsing its inner text — unbounded re-parsing of
+        // overlapping suffixes. The budget (D16) caps total scanning at
+        // a small constant multiple of the run length (each descent
+        // level does one bracket scan plus one nested parse before the
+        // budget gate stops further recursion); the structure degrades
+        // to the innermost valid links, deterministically.
+        let mut text = String::from("a");
+        for _ in 0..600 {
+            text = format!("[{text}](u)");
+        }
+        let (nodes, scanned) = parse_counted(&text);
+        // ~2 × budget (64·len + 4096) plus overshoot of the in-flight
+        // charges that straddle exhaustion.
+        assert!(
+            scanned <= 150 * text.len() as u64 + 16_384,
+            "len {}: scanned {scanned}",
+            text.len()
+        );
+        assert!(
+            max_depth(&nodes) <= MAX_INLINE_NESTING,
+            "link/emphasis depth within the cap"
+        );
+        // Degradation past the budget is total but deterministic.
+        let (again, rescan) = parse_counted(&text);
+        assert_eq!(rescan, scanned);
+        assert_eq!(again, nodes);
+
+        // Within the budget, nested attempts still resolve: a shallow
+        // chain keeps its innermost link.
+        let mut shallow = String::from("a");
+        for _ in 0..5 {
+            shallow = format!("[{shallow}](u)");
+        }
+        let (nodes, _) = parse_counted(&shallow);
+        assert!(
+            nodes.iter().any(|n| matches!(n, InlineNode::Link { .. })),
+            "shallow chains still parse links"
+        );
+    }
+
+    #[test]
+    fn long_plain_paragraph_is_linear() {
+        let unit = "段落 *强调* `代码` [链接](u) 尾部 ";
+        for reps in [100usize, 1_000, 5_000] {
+            let text = unit.repeat(reps);
+            let (_, scanned) = parse_counted(&text);
+            assert!(
+                scanned <= 2 * text.len() as u64 + 16,
+                "reps={reps}: scanned {scanned} for {} bytes",
+                text.len()
+            );
+        }
     }
 }

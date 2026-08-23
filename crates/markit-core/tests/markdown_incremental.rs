@@ -12,10 +12,13 @@
 //!   number of lines regardless of document size, and a sparse
 //!   two-location transaction must never rescan the middle.
 //!
-//! Known residual, deliberately not counted as scanning: untouched
-//! survivors have their ranges shifted (O(blocks after the edit)), the
-//! same accepted cost class as the P0-01 line index's suffix shift
-//! (ADR-003 Notes). What must stay local is *parsing*.
+//! State-maintenance work is counted separately from parsing: an edit
+//! that changes lengths honestly rewrites the survivor records after it
+//! (`survivor_blocks_shifted` / `survivor_inline_nodes_shifted`) and may
+//! relocate records when an island changes the block count
+//! (`block_records_moved`) — the same accepted cost class as the P0-01
+//! line index's suffix shift (ADR-003 Notes). What must stay local is
+//! *parsing*, and an equal-length edit must touch no survivor at all.
 
 use markit_core::markdown::MarkdownState;
 use markit_core::{ByteOffset, Document, EditTransaction, LineNumber, SourceRange, TextEdit};
@@ -392,6 +395,20 @@ fn sparse_two_location_edit_on_one_million_lines() {
         work.convergence_line < doc.line_count() as u64,
         "both islands converged before EOF"
     );
+    // Honest state-maintenance accounting: inserting bytes rewrites the
+    // survivor records after the first island (roughly everything up to
+    // the second one), each island keeps the block count so no record is
+    // physically relocated. Parsing stayed local; bookkeeping is
+    // reported, not hidden.
+    assert!(
+        work.survivor_blocks_shifted > 400_000,
+        "insertions shift the tail in place: {} survivors rewritten",
+        work.survivor_blocks_shifted
+    );
+    assert_eq!(
+        work.block_records_moved, 0,
+        "equal-count islands splice nothing"
+    );
     // The middle and the far end kept their identity.
     assert_eq!(
         state.block_by_id(id_middle).map(|b| b.kind),
@@ -401,6 +418,60 @@ fn sparse_two_location_edit_on_one_million_lines() {
     assert!(state.block_by_id(id_far).is_some(), "far end untouched");
     // And the stream is still exactly what a full rebuild produces.
     assert_matches_rebuild(&doc, &state, "1m-sparse");
+}
+
+/// An equal-length local edit (no byte/line delta) rebinds one block
+/// and touches no survivor record and moves nothing, at any document
+/// size — the "did the editor secretly rewrite the index" regression.
+#[test]
+fn equal_length_local_edit_touches_no_survivors() {
+    for size in [10_000usize, 100_000] {
+        let text = inline_family(size);
+        let mut doc = Document::new(&text);
+        let mut state = MarkdownState::build(&doc.snapshot());
+
+        let mid_line = doc.line_count() / 2;
+        let line_text = doc.line_str(LineNumber(mid_line)).into_owned();
+        let at = offset_of_line(&text, mid_line) + line_text.len() / 2;
+        // Replace one character with another: zero byte delta, zero
+        // line delta.
+        let applied = EditTransaction::typing()
+            .with_edit(TextEdit::replace(
+                SourceRange::new(ByteOffset(at), ByteOffset(at + 1)),
+                "Z",
+            ))
+            .apply(&mut doc)
+            .expect("replace applies");
+        state
+            .update(&doc.snapshot(), &applied.result)
+            .expect("update");
+
+        let work = state.last_work();
+        assert_eq!(work.dirty_regions, 1, "{size}: one island");
+        assert!(
+            work.lines_scanned <= 6,
+            "{size}: scanned {} lines",
+            work.lines_scanned
+        );
+        assert!(
+            work.blocks_reparsed <= 2,
+            "{size}: reparsed {} blocks",
+            work.blocks_reparsed
+        );
+        assert_eq!(
+            work.survivor_blocks_shifted, 0,
+            "{size}: equal-length edits shift no survivor"
+        );
+        assert_eq!(
+            work.block_records_moved, 0,
+            "{size}: equal-length edits move no record"
+        );
+        assert!(
+            work.survivor_inline_nodes_shifted == 0,
+            "{size}: no inline IR rewritten"
+        );
+        assert_matches_rebuild(&doc, &state, &format!("equal-length/{size}"));
+    }
 }
 
 /// Fence delimiter edits propagate honestly: closing-fence deletion

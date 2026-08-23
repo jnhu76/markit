@@ -26,6 +26,23 @@
 //! overlap). If a reparse runs into an unclosed fence it honestly
 //! continues to end of document (contract §6.7, issue #12) — visible in
 //! `lines_scanned`/`convergence_line`, never hidden.
+//!
+//! ## Work discipline (the review's core finding)
+//!
+//! "Reparsed one block" must not quietly mean "rewrote every record".
+//! The update therefore runs in two passes:
+//!
+//! - **Analysis** (read-only over the old stream): island boundaries,
+//!   the reparse itself, identity pairing — no mutation.
+//! - **Mutation**: survivors before an island are *never touched*
+//!   (records are not even copied); a survivor segment is rewritten in
+//!   place only when the edits before it moved bytes or lines — and
+//!   that rewrite is counted (`survivor_blocks_shifted`,
+//!   `survivor_inline_nodes_shifted`); the island splice overwrites in
+//!   place when the block count is unchanged and otherwise splices,
+//!   counting the records the `Vec` relocates
+//!   (`block_records_moved`). An equal-length local edit shifts no
+//!   survivor and moves no record at any document size.
 
 use crate::change::AppliedEdit;
 use crate::markdown::block::{BlockKind, BlockRecord};
@@ -36,10 +53,21 @@ use crate::markdown::MarkdownWork;
 use crate::snapshot::DocumentSnapshot;
 
 /// Above this `dead × fresh` product, island kind-pairing falls back
-/// from the exact longest-common-subsequence alignment to a linear
-/// heuristic (contract §10 requires a deterministic rule, not an
-/// unbounded DP on paste-scale islands).
+/// from the exact longest-common-subsequence alignment to bounded
+/// common-prefix/suffix run pairing (contract §10 requires a
+/// deterministic rule, not an unbounded DP on paste-scale islands —
+/// and identity preservation is never worth unbounded work).
 const LCS_LIMIT: usize = 1_000_000;
+
+/// One island's analysis: what to splice where, with replacement
+/// records already identified and inline-attached.
+struct IslandPlan {
+    /// Old-index range of dead records, `[restart, dead_end)`.
+    restart: usize,
+    dead_end: usize,
+    /// Replacement records for the dead range.
+    records: Vec<BlockRecord>,
+}
 
 pub(crate) fn apply_edits(
     blocks: &mut Vec<BlockRecord>,
@@ -55,30 +83,14 @@ pub(crate) fn apply_edits(
         "canonical edits are ascending and non-overlapping"
     );
 
-    // Per-edit byte/line deltas and prefix sums, so any old position can
-    // ask "by how much have the edits entirely before me moved me?" in
-    // one binary search — correct even when an island's reparse
-    // overshoots past later islands.
-    let byte_deltas: Vec<i64> = edits.iter().map(|e| e.byte_delta).collect();
-    let line_deltas: Vec<i64> = edits
-        .iter()
-        .map(|e| {
-            (e.new_line_span.end.0 as i64 - e.new_line_span.start.0 as i64)
-                - (e.old_line_span.end.0 as i64 - e.old_line_span.start.0 as i64)
-        })
-        .collect();
-    let ends: Vec<usize> = edits.iter().map(|e| e.old_range.end.as_usize()).collect();
-    let line_ends: Vec<usize> = edits.iter().map(|e| e.old_line_span.end.0).collect();
-    let byte_before = |old_offset: usize| -> i64 {
-        let count = ends.partition_point(|&end| end <= old_offset);
-        byte_deltas[..count].iter().sum()
-    };
-    let line_before = |old_line: usize| -> i64 {
-        let count = line_ends.partition_point(|&end| end <= old_line);
-        line_deltas[..count].iter().sum()
-    };
+    // Per-edit byte/line deltas as true prefix sums: one binary search
+    // per query (O(log E)), correct even when an island's reparse
+    // overshoots past later islands. (The previous per-query
+    // re-summation made multi-edit transactions O(blocks × edits).)
+    let deltas = DeltaMap::new(edits);
 
-    let mut new_blocks: Vec<BlockRecord> = Vec::with_capacity(blocks.len());
+    // -------- pass 1: analysis (read-only over `blocks`) ---------------
+    let mut plans: Vec<IslandPlan> = Vec::new();
     let mut cursor = 0usize; // first old block not yet handled
     let mut restart_line_min: Option<u64> = None;
     let mut convergence_line_max: Option<u64> = None;
@@ -125,17 +137,8 @@ pub(crate) fn apply_edits(
             restart + blocks[restart..].partition_point(|b| b.line_span.start.0 < island_end_line);
         work.blocks_examined += (dead_end - restart) as u64;
 
-        // Survivors between the previous island and this one: shifted,
-        // never parsed.
-        for block in &blocks[cursor..restart] {
-            let byte_delta = byte_before(block.source_range.start.as_usize());
-            let line_delta = line_before(block.line_span.start.0);
-            new_blocks.push(block.shifted(byte_delta, line_delta));
-            work.blocks_examined += 1;
-        }
-
         let restart_new_line = (blocks[restart].line_span.start.0 as i64
-            + line_before(blocks[restart].line_span.start.0))
+            + deltas.line_before(blocks[restart].line_span.start.0))
         .max(0) as usize;
         restart_line_min = Some(
             restart_line_min.map_or(restart_new_line as u64, |m| m.min(restart_new_line as u64)),
@@ -149,7 +152,7 @@ pub(crate) fn apply_edits(
             // position lies strictly behind the parser.
             while dead_end < blocks.len() {
                 let target = (blocks[dead_end].source_range.start.as_usize() as i64
-                    + byte_before(blocks[dead_end].source_range.start.as_usize()))
+                    + deltas.byte_before(blocks[dead_end].source_range.start.as_usize()))
                 .max(0) as usize;
                 if target < parser.current_offset() {
                     dead_end += 1;
@@ -162,7 +165,7 @@ pub(crate) fn apply_edits(
             // next survivor (contract §9.2 step 3).
             if dead_end < blocks.len() {
                 let target = (blocks[dead_end].source_range.start.as_usize() as i64
-                    + byte_before(blocks[dead_end].source_range.start.as_usize()))
+                    + deltas.byte_before(blocks[dead_end].source_range.start.as_usize()))
                 .max(0) as usize;
                 if target == parser.current_offset() && parser.state().is_ground() {
                     converged_line = parser.current_line() as u64;
@@ -204,28 +207,129 @@ pub(crate) fn apply_edits(
             }
             assigned
         };
+        let mut records = Vec::with_capacity(parsed.len());
         for (block, reused) in parsed.into_iter().zip(pair_of_fresh) {
             let id = reused.unwrap_or_else(|| InternalBlockId::mint(next_id));
             let mut record = block.into_record(id);
-            if inline::attach_inline(&mut record, snapshot) {
+            if inline::attach_inline(&mut record, snapshot, work) {
                 work.inline_blocks_reparsed += 1;
             }
-            new_blocks.push(record);
+            records.push(record);
         }
+        plans.push(IslandPlan {
+            restart,
+            dead_end,
+            records,
+        });
         cursor = dead_end;
     }
 
-    // Tail survivors after the last island.
-    for block in &blocks[cursor..] {
-        let byte_delta = byte_before(block.source_range.start.as_usize());
-        let line_delta = line_before(block.line_span.start.0);
-        new_blocks.push(block.shifted(byte_delta, line_delta));
-        work.blocks_examined += 1;
+    // -------- pass 2: mutation -----------------------------------------
+    // Index translation from old to live positions: splices only affect
+    // indices after the splice point, so live = old + idx_shift holds
+    // uniformly for everything not yet handled.
+    let mut idx_shift: isize = 0;
+    let mut cursor_old = 0usize;
+    for plan in plans {
+        // Survivors between the previous island and this one. Their
+        // applicable delta is uniform (no edit ends inside the segment),
+        // so one probe decides: zero-delta segments are left untouched —
+        // not copied, not shifted, not even examined.
+        let live_lo = cursor_old.wrapping_add_signed(idx_shift);
+        let live_hi = plan.restart.wrapping_add_signed(idx_shift);
+        shift_survivors(&mut blocks[live_lo..live_hi], &deltas, work);
+
+        // The island splice. Equal block count overwrites in place (no
+        // record moves); otherwise splice and count the tail records the
+        // Vec physically relocates.
+        let dead_len = plan.dead_end - plan.restart;
+        let fresh_len = plan.records.len();
+        if fresh_len == dead_len {
+            blocks[live_hi..live_hi + dead_len]
+                .iter_mut()
+                .zip(plan.records)
+                .for_each(|(slot, record)| *slot = record);
+        } else {
+            let tail_moved = blocks.len() - (live_hi + dead_len);
+            blocks.splice(live_hi..live_hi + dead_len, plan.records);
+            work.block_records_moved += tail_moved as u64;
+        }
+        idx_shift += fresh_len as isize - dead_len as isize;
+        cursor_old = plan.dead_end;
     }
+
+    // Tail survivors after the last island.
+    let live_lo = cursor_old.wrapping_add_signed(idx_shift);
+    shift_survivors(&mut blocks[live_lo..], &deltas, work);
 
     work.restart_line = restart_line_min.unwrap_or(0);
     work.convergence_line = convergence_line_max.unwrap_or(snapshot.line_count() as u64);
-    *blocks = new_blocks;
+}
+
+/// Rewrites a survivor segment in place when (and only when) the edits
+/// before it moved bytes or lines. The segment's delta is uniform — no
+/// canonical edit ends inside a survivor segment — so one probe decides
+/// for the whole segment.
+fn shift_survivors(segment: &mut [BlockRecord], deltas: &DeltaMap, work: &mut MarkdownWork) {
+    let Some(first) = segment.first() else {
+        return;
+    };
+    let byte_delta = deltas.byte_before(first.source_range.start.as_usize());
+    let line_delta = deltas.line_before(first.line_span.start.0);
+    if byte_delta == 0 && line_delta == 0 {
+        return;
+    }
+    for block in segment {
+        block.shift_in_place(byte_delta, line_delta);
+        work.blocks_examined += 1;
+        work.survivor_blocks_shifted += 1;
+        work.survivor_inline_nodes_shifted += block.inline.node_count() as u64;
+    }
+}
+
+/// Old→new coordinate deltas as prefix sums: `byte_before(p)` is the
+/// summed byte delta of all edits whose old range ends at or before
+/// `p`, in one binary search.
+struct DeltaMap {
+    byte_ends: Vec<usize>,
+    byte_prefix: Vec<i64>,
+    line_ends: Vec<usize>,
+    line_prefix: Vec<i64>,
+}
+
+impl DeltaMap {
+    fn new(edits: &[AppliedEdit]) -> Self {
+        let mut byte_ends = Vec::with_capacity(edits.len());
+        let mut line_ends = Vec::with_capacity(edits.len());
+        let mut byte_prefix = Vec::with_capacity(edits.len() + 1);
+        let mut line_prefix = Vec::with_capacity(edits.len() + 1);
+        byte_prefix.push(0i64);
+        line_prefix.push(0i64);
+        let (mut bytes, mut lines) = (0i64, 0i64);
+        for edit in edits {
+            bytes += edit.byte_delta;
+            lines += (edit.new_line_span.end.0 as i64 - edit.new_line_span.start.0 as i64)
+                - (edit.old_line_span.end.0 as i64 - edit.old_line_span.start.0 as i64);
+            byte_prefix.push(bytes);
+            line_prefix.push(lines);
+            byte_ends.push(edit.old_range.end.as_usize());
+            line_ends.push(edit.old_line_span.end.0);
+        }
+        Self {
+            byte_ends,
+            byte_prefix,
+            line_ends,
+            line_prefix,
+        }
+    }
+
+    fn byte_before(&self, old_offset: usize) -> i64 {
+        self.byte_prefix[self.byte_ends.partition_point(|&end| end <= old_offset)]
+    }
+
+    fn line_before(&self, old_line: usize) -> i64 {
+        self.line_prefix[self.line_ends.partition_point(|&end| end <= old_line)]
+    }
 }
 
 /// Order-preserving alignment of dead and fresh kind sequences that
@@ -237,7 +341,7 @@ fn pair_kinds(dead: &[BlockKind], fresh: &[BlockKind]) -> Vec<(usize, usize)> {
         return Vec::new();
     }
     if dead.len() * fresh.len() > LCS_LIMIT {
-        return pair_kinds_heuristic(dead, fresh);
+        return pair_kinds_runs(dead, fresh);
     }
     let n = dead.len();
     let m = fresh.len();
@@ -268,24 +372,108 @@ fn pair_kinds(dead: &[BlockKind], fresh: &[BlockKind]) -> Vec<(usize, usize)> {
     pairs
 }
 
-/// Linear fallback for islands beyond [`LCS_LIMIT`]: two pointers; on
-/// mismatch advance the side whose head does not reappear in the other's
-/// remainder (ties advance dead). Deterministic, O(n + m).
-fn pair_kinds_heuristic(dead: &[BlockKind], fresh: &[BlockKind]) -> Vec<(usize, usize)> {
+/// Bounded fallback for islands beyond [`LCS_LIMIT`] (paste-scale
+/// restructures): pair the unambiguous common prefix and suffix runs
+/// positionally; the ambiguous middle mints fresh ids (contract §10 C).
+/// Genuinely O(dead + fresh) — the previous "linear" fallback contained
+/// per-step `contains` scans over the remainders and could degrade to
+/// O(dead × fresh), the very blowup it existed to avoid. Identity is a
+/// UX optimization; responsiveness owns the budget.
+fn pair_kinds_runs(dead: &[BlockKind], fresh: &[BlockKind]) -> Vec<(usize, usize)> {
     let mut pairs = Vec::new();
-    let (mut i, mut j) = (0usize, 0usize);
-    while i < dead.len() && j < fresh.len() {
-        if dead[i] == fresh[j] {
-            pairs.push((i, j));
-            i += 1;
-            j += 1;
-        } else if dead[i + 1..].contains(&fresh[j]) && !fresh[j + 1..].contains(&dead[i]) {
-            i += 1;
-        } else if !dead[i + 1..].contains(&fresh[j]) && fresh[j + 1..].contains(&dead[i]) {
-            j += 1;
-        } else {
-            i += 1;
+    let prefix = dead
+        .iter()
+        .zip(fresh.iter())
+        .take_while(|(a, b)| a == b)
+        .count();
+    pairs.extend((0..prefix).map(|i| (i, i)));
+    let max_tail = (dead.len() - prefix).min(fresh.len() - prefix);
+    let mut suffix = 0usize;
+    while suffix < max_tail && dead[dead.len() - 1 - suffix] == fresh[fresh.len() - 1 - suffix] {
+        suffix += 1;
+    }
+    pairs.extend((0..suffix).map(|k| (dead.len() - suffix + k, fresh.len() - suffix + k)));
+    pairs
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn prefix_sum_deltas_match_per_edit_summation() {
+        use crate::change::ChangeKind;
+        use crate::position::{ByteOffset, LineNumber, SourceRange};
+
+        let span = |a: usize, b: usize| LineNumber(a)..LineNumber(b);
+        let range = |a: usize, b: usize| SourceRange::new(ByteOffset(a), ByteOffset(b));
+        // Three edits with mixed deltas, ascending in old coordinates.
+        let edits = vec![
+            AppliedEdit {
+                kind: ChangeKind::Insert,
+                old_range: range(5, 5),
+                new_range: range(5, 8),
+                old_line_span: span(0, 1),
+                new_line_span: span(0, 1),
+                byte_delta: 3,
+            },
+            AppliedEdit {
+                kind: ChangeKind::Delete,
+                old_range: range(20, 24),
+                new_range: range(23, 23),
+                old_line_span: span(2, 3),
+                new_line_span: span(2, 3),
+                byte_delta: -4,
+            },
+            AppliedEdit {
+                kind: ChangeKind::Insert,
+                old_range: range(30, 30),
+                new_range: range(26, 32),
+                old_line_span: span(4, 4),
+                new_line_span: span(4, 7),
+                byte_delta: 6,
+            },
+        ];
+        let deltas = DeltaMap::new(&edits);
+        // Brute-force reference: sum deltas of edits ending <= position.
+        let expect = |offset: usize, ends: &[usize], ds: &[i64]| -> i64 {
+            ends.iter()
+                .zip(ds)
+                .take_while(|(end, _)| **end <= offset)
+                .map(|(_, d)| *d)
+                .sum()
+        };
+        let byte_ds = [3i64, -4, 6];
+        let line_ds = [0i64, 0, 3];
+        for probe in [0usize, 4, 5, 6, 19, 20, 24, 25, 29, 30, 100] {
+            assert_eq!(
+                deltas.byte_before(probe),
+                expect(probe, &[5, 24, 30], &byte_ds),
+                "byte_before({probe})"
+            );
+        }
+        for probe in [0usize, 1, 2, 3, 4, 5, 100] {
+            assert_eq!(
+                deltas.line_before(probe),
+                expect(probe, &[1, 3, 4], &line_ds),
+                "line_before({probe})"
+            );
         }
     }
-    pairs
+
+    #[test]
+    fn bounded_fallback_pairs_prefix_and_suffix_runs() {
+        use BlockKind::*;
+        // Shared head, differing middle, shared tail.
+        let dead = [Blank, Paragraph, Heading, Blank, Paragraph];
+        let fresh = [Blank, Paragraph, Paragraph, Blank, Paragraph];
+        let pairs = pair_kinds_runs(&dead, &fresh);
+        // Prefix [Blank, Paragraph] pairs; suffix [Blank, Paragraph]
+        // pairs; the Heading→Paragraph middle mints.
+        assert_eq!(pairs, vec![(0, 0), (1, 1), (3, 3), (4, 4)]);
+        // Order-preserving by construction.
+        let mut sorted = pairs.clone();
+        sorted.sort();
+        assert_eq!(sorted, pairs);
+    }
 }
