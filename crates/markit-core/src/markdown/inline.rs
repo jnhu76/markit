@@ -113,7 +113,7 @@ impl InlineNode {
 /// Parses `text` (one inline run, at absolute byte offset `base`) into
 /// nodes. Every returned range is absolute.
 pub(crate) fn parse_run(text: &str, base: usize) -> Vec<InlineNode> {
-    let toks = scan_tokens(text);
+    let toks = scan_tokens(text, base);
     let mut delims: Vec<DelimRun> = toks
         .iter()
         .filter_map(|t| match t {
@@ -219,7 +219,7 @@ fn is_ws(b: u8) -> bool {
     b == b' ' || b == b'\t' || b == b'\n' || b == b'\r'
 }
 
-fn scan_tokens(text: &str) -> Vec<Tok> {
+fn scan_tokens(text: &str, base: usize) -> Vec<Tok> {
     let bytes = text.as_bytes();
     let mut toks = Vec::new();
     let mut text_start = 0usize;
@@ -253,7 +253,7 @@ fn scan_tokens(text: &str) -> Vec<Tok> {
                     None => i += run, // unmatched: literal text
                 }
             }
-            b'[' => match try_link(text, i) {
+            b'[' => match try_link(text, i, base) {
                 Some(link) => {
                     flush_text(&mut text_start, i, &mut toks);
                     i = link.full.end;
@@ -286,7 +286,7 @@ fn scan_tokens(text: &str) -> Vec<Tok> {
     toks
 }
 
-fn try_link(text: &str, open: usize) -> Option<LinkTok> {
+fn try_link(text: &str, open: usize, base: usize) -> Option<LinkTok> {
     let bytes = text.as_bytes();
     // Matching ']' with code spans skipped and escapes honored; balanced
     // brackets nest.
@@ -447,7 +447,7 @@ fn try_link(text: &str, open: usize) -> Option<LinkTok> {
 
     let full = open..k + 1;
     let inner = open + 1..j;
-    let children = parse_run(&text[inner.clone()], open + 1);
+    let children = parse_run(&text[inner.clone()], base + open + 1);
     if children.iter().any(contains_link) {
         return None; // links do not nest at any level (contract §7.4)
     }
