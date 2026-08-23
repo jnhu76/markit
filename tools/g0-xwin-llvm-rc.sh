@@ -11,11 +11,15 @@
 # before exec'ing llvm-rc. The .rc input and /fo output paths passed by
 # embed-resource are absolute, so they are unaffected.
 #
-# Usage (cross-build from WSL/Linux):
+# Usage (cross-build from WSL/Linux — check/clippy only; release
+# cross-builds are unsupported under the current Linux-host path because
+# gpui_windows' fxc shader step never runs on a Linux build host — see
+# docs/product/g0-gpui-baseline.md §5/§7 and build natively on Windows
+# for release):
 #   export RC_x86_64_pc_windows_msvc="$PWD/tools/g0-xwin-llvm-rc.sh"
 #   export PATH="/usr/lib/llvm-22/bin:$PATH"   # llvm tools incl. llvm-rc
-#   cargo xwin build --release -p markit --features g0-probe \
-#       --target x86_64-pc-windows-msvc
+#   cargo xwin check -p markit --features g0-probe --target x86_64-pc-windows-msvc
+#   cargo xwin clippy -p markit --features g0-probe --target x86_64-pc-windows-msvc
 #
 # This is a build-environment workaround only: the Markit tree carries no
 # GPUI source patches.

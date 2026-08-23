@@ -139,8 +139,9 @@ ABI. Transport/runtime remains evidence-driven.
   - the pinned revision provides demand-driven draw/present, view-granular
     invalidation, real Windows background priorities, threadpool timers, and
     drop-cancels-future task semantics — all behaviorally confirmed on the
-    real Windows host (`results/summary/g0/`: 0 draws/0 frame requests at
-    rest, 0 % idle CPU, ~36 MB WS, threadpool priority order H-first,
+    real Windows host (`results/summary/g0/` + `results/evidence/g0/`:
+    0 draws / 0 presents / 0 delivered `on_next_frame` callbacks at rest,
+    ~0–1 % idle CPU, 36–38 MB WS, threadpool priority order H-first,
     50 ms timers → ~59–64 ms actual);
   - **Windows has no metered idle scheduling**: `spawn_when_idle` falls back
     to low-priority main-thread work and `idle_time_remaining()` is `None`
@@ -149,13 +150,24 @@ ABI. Transport/runtime remains evidence-driven.
     budget must be self-metered;
   - a vsync thread wakes every window each refresh; clean windows skip
     draw/present, so idle evidence is stated as "no draw/present work", not
-    "no wakeups" (with an always-armed `on_next_frame`, callbacks arrive at
-    ~12.5/s on the test host while painting stays ~0);
+    "no wakeups" (with an always-armed `on_next_frame`, callback delivery
+    was observed at ~60/s — every vsync — with the review-fixed probe, and
+    ~12.5/s in the superseded first run; painting stays ~0 either way, and
+    delivery rate is not a platform contract);
   - foreground executor priority is ignored — Markit priority semantics must
     not assume foreground priority works;
+  - **IME pipeline validated with real Microsoft Pinyin** (2026-08-23):
+    composition start/update with the marked range covering the whole
+    composition, SPACE commit replacing the marked span (GCS_RESULTSTR),
+    ESC cancel, and candidate `bounds_for_range` docking —
+    `results/evidence/g0/pinyin-ime.log`; product-level IME UX is P1-A;
+  - **HiDPI validated at 125 %** (scale_factor=1.25, DPI-aware physical
+    screenshot; restored to 100 % after the run) on top of the 100 % runs;
   - release builds for Windows must be produced **natively on a Windows
     host** (gpui_windows compiles HLSL shaders with fxc only when the build
-    host is Windows); cross-builds from WSL cover `cargo check`/clippy only.
+    host is Windows); release cross-builds from WSL are unsupported under
+    the current Linux-host cross path — cross-builds cover
+    `cargo check`/clippy only.
 - Original scope (for history): evaluate the `mvp/gpui` prototype baseline
   (crates.io gpui 0.2.2) and a current Zed revision on build, release build,
   window, native text, CJK, IME, clipboard, resize, HiDPI, startup, RSS,

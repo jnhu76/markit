@@ -1,6 +1,14 @@
 # Markit — G0 Product GPUI Baseline (frozen)
 
 Status: **frozen dependency decision (2026-08-22)** — roadmap G0.
+Re-validated 2026-08-23 after the PR #13 review round: IME input-handler
+semantics corrected (UTF-16 boundary contract, marked-range covers the whole
+composition, `range=None` commits replace the marked span), the frame counter
+renamed to `next_frame_callbacks` (it counts `on_next_frame` deliveries, not
+platform frame requests), real Microsoft Pinyin start/update/commit/cancel
+evidence added, and HiDPI validated at 125 %. The canonical matrix quoted
+below is the 2026-08-23 100 % rerun with the review-fixed probe; curated
+artifacts are committed under `results/evidence/g0/`.
 
 This document records the G0 baseline selection: what was compared, what was
 pinned, what the pinned revision actually provides on Windows (source +
@@ -117,10 +125,13 @@ have pending work. Platform-level wakeups are NOT demand-driven on Windows: a
 dedicated vsync thread (`gpui_windows/src/platform.rs:311-352`) calls
 `RedrawWindow(RDW_INVALIDATE)` on **every window every vsync**, producing
 WM_PAINT → `request_frame` invocations that are then skipped as no-ops for
-clean windows. Runtime numbers (idle draw rate ≈ 0, idle wake rate, idle CPU)
-are recorded in §5. This is an accepted property of the baseline, not a Markit
-defect; Markit's INV-04 claim must therefore be stated as *"the idle editor
-does no draw/present work"*, not *"the process receives no wakeups"*.
+clean windows. Runtime numbers (idle draw rate ≈ 0, armed `on_next_frame`
+delivery rate, idle CPU) are recorded in §5. This is an accepted property of
+the baseline, not a Markit defect; Markit's INV-04 claim must therefore be
+stated as *"the idle editor does no draw/present work"*, not *"the process
+receives no wakeups"*. The probe's counter is named `next_frame_callbacks`
+precisely because it observes `on_next_frame` deliveries to the application,
+not the platform's WM_PAINT/request-frame traffic underneath.
 
 ## 5. Windows real-host evidence (G0 smoke matrix)
 
@@ -128,37 +139,47 @@ Machine/host: recorded per run below. Build: **native release build on the
 Windows host** (`cargo build --release -p markit --features g0-probe`,
 rustc version recorded in `results/summary/g0/`), run windowed on the
 interactive desktop session. Cross-building from WSL2 works for
-`cargo check`/clippy but **not** for release builds: `gpui_windows`'s
-build script compiles its HLSL shaders with `fxc.exe` only when the build
-host is Windows (`#[cfg(target_os = "windows")]` in its `build.rs`), and
-the `shaders_bytes.rs` include is release-only — so a Linux-hosted
-release build fails with a missing `shaders_bytes.rs`. Debug builds
-compile shaders at runtime instead and do cross-build. Raw logs are
-archived locally under `results/raw/g0/` (gitignored); the committed
-summary lives in `results/summary/g0/`.
+`cargo check`/clippy but release cross-builds are **unsupported under the
+current Linux-host cross-build path at this pinned revision**:
+`gpui_windows`'s build script compiles its HLSL shaders with `fxc.exe` only
+when the build host is Windows (`#[cfg(target_os = "windows")]` in its
+`build.rs`), and the `shaders_bytes.rs` include is release-only — so a
+Linux-hosted release build fails with a missing `shaders_bytes.rs`. (This is
+a property of the current cross path, not an absolute impossibility:
+pre-generated shader bytes, a Wine-hosted fxc, or an upstream build.rs
+change would alter it.) Debug builds compile shaders at runtime instead and
+do cross-build. Full raw logs stay local under `results/raw/g0/`
+(gitignored); the committed record is `results/summary/g0/` plus the curated
+key artifacts in `results/evidence/g0/` (canonical trace, build receipts,
+IME trace, idle sampling, screenshots, host summary).
 
 <!-- G0-RUN 2026-08-22: host HU (Ryzen 7 5800H, Win11 Pro 10.0.26100,
-     2560x1440 @ scale 1, AMD Radeon iGPU); verbatim lines + external
-     sampling in results/summary/g0/ -->
+     2560x1440 @ scale 1, AMD Radeon iGPU); first full matrix. -->
+<!-- G0-RUN 2026-08-23: same host. Canonical matrix rerun at scale 100% with
+     the review-fixed probe (results/evidence/g0/canonical-smoke.log); HiDPI
+     validated at 125% (hidpi-125.log + g0-window-125.png); real MS Pinyin
+     IME pass at scale 100% (pinyin-ime.log); external idle sampling at
+     125% (external-idle.txt). Verbatim summary: results/summary/g0/. -->
 
 | Check | Result | Evidence |
 |---|---|---|
-| Release build (native Windows host) | PASS | `Finished release [optimized] in 6m02s`, zero warnings; cross release impossible (§5 preamble) |
-| Create/show window | PASS | `G0 bounds w=720 h=480`; window pixels captured (screenshot) |
+| Release build (native Windows host) | PASS | `Finished release [optimized] in 6m02s` (2026-08-22) + 7.3 s incremental rebuild after the review fixes, zero warnings; receipts in `results/evidence/g0/windows-build-receipt.txt`; release cross-build unsupported under the current Linux-host path (§5 preamble) |
+| Create/show window | PASS | `G0 bounds w=720 h=480`; window pixels captured (screenshots at 100 % and 125 %) |
 | Resize (programmatic) | PASS | `G0 resize 720x480->900x600 draws_after=1` |
-| HiDPI scale factor | PASS @ 1.0 | `G0 scale_factor=1`; >100 % DPI display not available on this host — PENDING for a HiDPI display |
+| HiDPI scale factor | PASS @ 1.0 and 1.25 | `G0 scale_factor=1` (2026-08-22 + 2026-08-23 canonical) and `G0 scale_factor=1.25` (2026-08-23, Settings 125 %); DPI-aware capture shows the 720×480 logical window at 918×647 physical px with sharp text (`results/evidence/g0/hidpi-125.log`, `g0-window-125.png`) |
 | Latin rendering | PASS | screenshot: "Latin: the quick brown fox 0123" |
 | Chinese (CJK) rendering | PASS | screenshot: `中文渲染测试：汉字与标点` as real glyphs; DirectWrite picked Microsoft YaHei UI |
 | Emoji / fallback rendering | PASS | screenshot: `🙂👍🧑‍💻🌍` in color |
 | Keyboard actions (F1/F2/F3/Q) | PASS (F1, F3) | synthesized after click-to-focus: `key_actions=1` (F1 dump); F3 read host clipboard. F2/Q not separately exercised (same dispatch path) |
 | Mouse events | PASS (click) | `mouse=1` on synthesized click at window center; drag/wheel/pointer-routing not covered |
-| Chinese IME composition start/update/commit | PARTIAL | composition start + updates + UTF-16 marked ranges exercised (`text="a"`, `text="a'b" marked=Some(3..3)`); human Pinyin composition + commit on this baseline PENDING (P0-03 manual) |
-| Clipboard write + read roundtrip | PASS | probe `roundtrip=ok token=markit-g0-probe-7630633` + external `Get-Clipboard` match + F3 read host-written `hello-from-host` |
-| Demand redraw (notify → draws) | PASS | `G0 demand_1p2s notifies=41 draws=15 frame_requests=1` |
-| Idle behavior (draws ≈ 0, CPU) | PASS | passive 2 s: `draws=0 frame_requests=0`; external: CPU frozen (0 %) over 6 s, WS ~36 MB; with a self-sustaining `on_next_frame`: callbacks ~12.5/s, draws still ~0 (§4) |
-| Startup sanity (first draw ms) | PASS | `G0 boot first_draw_ms=314.5` (probe instrumentation; incl. device+font init) |
-| Memory/RSS sanity | PASS | WS ~36 MB, private ~32 MB, 27–29 threads (idle, interactive run) |
-| Input→frame instrumentation availability | PASS | pending-input seam measured action→paint 6.29 ms (n=1 scripted run); seam reusable for P0-03 |
+| Chinese IME composition start/update | PASS | real Microsoft Pinyin (HKL 0x08040804): `G0 ime composition start` on first key, per-key updates with the marked range covering the whole composition (`text="n'ni'hao" marked_utf16=Some(108..116)`) and the selection advancing inside it (2026-08-23; `results/evidence/g0/pinyin-ime.log`) |
+| Chinese IME commit + cancel | PASS | SPACE commit: `G0 ime commit text="拿你号" marked_replaced=144..152` (GCS_RESULTSTR arrives as `replace_text_in_range(None, …)` and replaces the marked span). ESC cancel: `G0 ime composition cleared (cancel path)`, selection returns to the composition start. Candidate docking observed via `bounds_for_range` calls on composition start |
+| Clipboard write + read roundtrip | PASS | probe `roundtrip=ok token=markit-g0-probe-7625989` + external `Get-Clipboard` match + F3 read host-written `hello-from-host` |
+| Demand redraw (notify → draws) | PASS | `G0 demand_1p2s notifies=42 draws=42 next_frame_callbacks=1` (2026-08-23 canonical; 2026-08-22 run: notifies=41 draws=15) |
+| Idle behavior (draws ≈ 0, CPU) | PASS | passive 2 s: `draws=0 next_frame_callbacks=0` (no callback registered → nothing delivered); external: CPU seconds frozen over 6 s, WS ~36 MB @100 % / ~38 MB @125 %; with a self-sustaining `on_next_frame`: draws ≈ 0 while callbacks deliver at ~60/s (≈ every 60 Hz vsync) with the review-fixed binary at both scales — the superseded 2026-08-22 binary observed ~12.5/s; delivery rate is run-dependent, not a contract, and the platform vsync wake itself continues regardless (§4) |
+| Startup sanity (first draw ms) | PASS | `G0 boot first_draw_ms=312.2` @100 % canonical (309.6 @125 %; 314.5 in the 2026-08-22 run; probe instrumentation; incl. device+font init) |
+| Memory/RSS sanity | PASS | WS ~36 MB @100 % (2026-08-22 external sampling), ~38 MB @125 % (2026-08-23); 27–29 threads (idle, interactive run) |
+| Input→frame instrumentation availability | PASS | pending-input seam measured action→paint 13.0 ms @100 % canonical / 6.29 ms (2026-08-22 run) — n=1 per run, treat as seam-availability evidence, not a latency statistic |
 
 ## 6. Update policy (changing the pin)
 
@@ -185,8 +206,9 @@ export PATH="/usr/lib/llvm-22/bin:$PATH"
 export RC_x86_64_pc_windows_msvc="$PWD/tools/g0-xwin-llvm-rc.sh"
 cargo xwin check -p markit --features g0-probe --target x86_64-pc-windows-msvc
 
-# release build: MUST run on the Windows host (see §5 — cross release
-# builds cannot produce gpui_windows' fxc-compiled shaders)
+# release build: run on the Windows host (see §5 — release cross-builds are
+# unsupported under the current Linux-host path: gpui_windows' fxc shader
+# step is host-cfg'd and its output include is release-only)
 cargo build --release -p markit --features g0-probe
 
 # run on the Windows desktop session

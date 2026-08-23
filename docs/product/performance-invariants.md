@@ -41,10 +41,10 @@ can be huge; the frame must not be.
 
 Demand rendering: the idle editor must not do draw/present work while
 nothing changed (measured ~0 frames/s, ~1% CPU in A3/A4; re-validated on
-the G0 baseline 2026-08-22: 0 draws / 0 frame requests over 2 s at rest
-and 0 % CPU / ~36 MB WS over 6 s external sampling — see
-`g0-gpui-baseline.md` §4/§5). No animation/timer loop may force frames
-while nothing changed.
+the G0 baseline 2026-08-22/23: 0 draws / 0 presents and 0 delivered
+`on_next_frame` callbacks over 2 s at rest, ~0–1 % CPU / 36–38 MB WS over
+6 s external sampling — see `g0-gpui-baseline.md` §4/§5). No
+animation/timer loop may force frames while nothing changed.
 
 Precision (G0 finding): on the pinned Windows GPUI baseline a vsync thread
 wakes every window each refresh even when clean, but clean windows skip

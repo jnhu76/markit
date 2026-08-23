@@ -11,30 +11,31 @@ evidence** — product acceptance is re-validated on the selected GPUI
 baseline (roadmap G0). Historical PocketJS-era rows are preserved in
 `docs/research/`.
 
-## G0 product baseline (zed rev eb8e1c8, 2026-08-22)
+## G0 product baseline (zed rev eb8e1c8, frozen 2026-08-22, re-validated 2026-08-23)
 
 Evidence source: `apps/markit --g0-probe --smoke` on the Windows desktop
 session (probe + external host sampling); details and raw numbers in
-`docs/product/g0-gpui-baseline.md` §5 and `results/summary/g0/`.
+`docs/product/g0-gpui-baseline.md` §5, `results/summary/g0/`, and the
+curated artifacts under `results/evidence/g0/`.
 
 | Capability | Windows (product baseline) |
 | ---------- | -------------------------- |
-| Cross-build (WSL → x86_64-pc-windows-msvc) | PASS for `cargo check`/clippy; **release cross-build impossible** (gpui_windows compiles HLSL via host-Windows-only fxc) — release builds are native on the Windows host |
-| Release build | PASS (native host, 6m02s, zero warnings, rustc 1.96.0) |
+| Cross-build (WSL → x86_64-pc-windows-msvc) | PASS for `cargo check`/clippy; **release cross-build unsupported under the current Linux-host path** (gpui_windows compiles HLSL via host-Windows-only fxc) — release builds are native on the Windows host |
+| Release build | PASS (native host, 6m02s + 7.3s incremental re-validation, zero warnings, rustc 1.96.0; receipts in `results/evidence/g0/windows-build-receipt.txt`) |
 | Launch / show window | PASS (bounds 720x480, GPU AMD Radeon iGPU, D3D 11.1) |
 | Resize + relayout | PASS (720x480→900x600, 1 draw) |
-| HiDPI scale factor | PASS @ 1.0 (2560x1440 100 %); >100 % DPI PENDING (no such display) |
+| HiDPI scale factor | PASS @ 1.0 (2560x1440 100 %) and @ 1.25 (Settings 125 %: `scale_factor=1.25`, DPI-aware physical capture 918×647 px, sharp text) |
 | Latin rendering | PASS (screenshot-verified) |
 | CJK rendering (fallback) | PASS (real glyphs, Microsoft YaHei UI via DirectWrite) |
 | Emoji rendering (fallback) | PASS (color, screenshot-verified) |
 | Keyboard actions | PASS (F1/F3 via synthesized input after click-to-focus) |
 | Mouse events | PASS (click; drag/wheel not covered) |
-| IME composition pipeline | PARTIAL (start/update/UTF-16 marked ranges exercised; human Pinyin commit PENDING → P0-03) |
+| IME composition pipeline | PASS (real Microsoft Pinyin: composition start/update with marked range covering the whole composition, SPACE commit replacing the marked span, ESC cancel, candidate `bounds_for_range` docking — `results/evidence/g0/pinyin-ime.log`; product-level IME UX → P1-A) |
 | Clipboard text write/read | PASS (both directions + external Get-Clipboard match) |
-| Demand redraw | PASS (notify→draws track; 0 draw/0 request at rest) |
-| Idle behavior (no draw/present) | PASS (2 s passive: 0 draws 0 requests; external 0 % CPU, ~36 MB WS; on_next_frame armed: ~12.5 callbacks/s, ~0 draws) |
-| Startup / first frame | PASS (314.5 ms process→first paint, incl. device+font init) |
-| Memory sanity | PASS (~36 MB WS idle) |
+| Demand redraw | PASS (notify→draws track 1:1 in the canonical run; 0 draws at rest) |
+| Idle behavior (no draw/present) | PASS (2 s passive: 0 draws, 0 delivered `on_next_frame` callbacks; external ~0–1 % CPU, 36–38 MB WS; on_next_frame armed: ~60 callbacks/s ≈ every vsync, ~0 draws) |
+| Startup / first frame | PASS (312.2 ms process→first paint canonical; 309.6–314.5 ms across runs, incl. device+font init) |
+| Memory sanity | PASS (36–38 MB WS idle) |
 
 ## Matrix (prototype evidence, crates.io gpui 0.2.2)
 
@@ -47,7 +48,7 @@ session (probe + external host sampling); details and raw numbers in
 | HiDPI / density | PASS (scale factor 1.0 verified; >100% DPI monitor not yet validated) | PASS (density 1) | NOT TESTED | NOT TESTED |
 | Mouse / pointer | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
 | Keyboard | PASS | PASS (WSLg) | NOT TESTED | NOT TESTED |
-| IME | NOT TESTED (GPUI IMM32 path exercised in prototype; product-baseline result now in the G0 table above: PARTIAL) | NOT TESTED | NOT TESTED | NOT TESTED |
+| IME | NOT TESTED (GPUI IMM32 path exercised in prototype; product-baseline result now in the G0 table above: PASS) | NOT TESTED | NOT TESTED | NOT TESTED |
 | CJK fonts | PARTIAL (DirectWrite fallback verified in prototype; product-baseline result now in the G0 table above: PASS) | NOT TESTED | NOT TESTED | NOT TESTED |
 | Clipboard | NOT TESTED (prototype scope; product-baseline result now in the G0 table above: PASS) | NOT TESTED | NOT TESTED | NOT TESTED |
 | Open dialog | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
@@ -64,9 +65,15 @@ session (probe + external host sampling); details and raw numbers in
 - Prototype evidence (A0, `mvp/gpui`): windowed GPUI (Win32 + DirectX 11
   + DirectComposition), keyboard, scroll,
   resize, IME pipeline, demand rendering, headless determinism all PASS.
-- Product gaps to close (Tier-0) on the G0-frozen baseline: system
-  font discovery (CJK/emoji), clipboard (text), IME validation, native
-  file dialogs, file association, Ctrl shortcuts beyond Q/A.
+- Substrate capabilities closed by G0 on the product pin (2026-08-22/23):
+  window/render/resize, HiDPI 100 %+125 %, system fonts incl. CJK/emoji
+  fallback, clipboard text, IME pipeline (real Pinyin start/update/commit/
+  cancel), demand redraw, idle behavior, startup, memory — see the G0
+  table above.
+- Remaining product gaps to close (Tier-0): native file dialogs, file
+  association, Ctrl shortcuts beyond Q/A, drag/drop, window restore, and
+  product-level IME UX (candidate presentation, arrow-key navigation —
+  P1-A scope, substrate already validated).
 - G0 re-validation on the product pin (2026-08-22): see the G0 table
   above and `docs/product/g0-gpui-baseline.md` §5.
 - Transparent window: DEFERRED — not a product requirement.

@@ -14,8 +14,8 @@ architecture (ADR-008) and the real-time execution model in
 Status note (2026-08): P0-01 (product workspace + incremental document
 core + revision/change model + core instrumentation seams) is
 implemented; P0-02 (Markdown BlockIndex + internal IR, including the
-golden fixtures below) is the next open node — GPUI-independent, runnable
-in parallel with G0 (which closed 2026-08-22, see
+golden fixtures below) is the next open node — GPUI-independent (it never
+depended on G0; the GPUI baseline has been frozen since 2026-08-22, see
 `docs/product/g0-gpui-baseline.md`). The items below remain open for the
 P0 hardening they describe (dirty propagation through future derived
 layers, full instrumentation coverage).
