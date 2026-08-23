@@ -18,7 +18,15 @@
 //!
 //! Parser internals (the line classifier, the incremental updater) are
 //! crate-private and replaceable; the public surface is the state, the
-//! record types, and the query views.
+//! record types, and the query views. Pinned by construction:
+//!
+//! ```compile_fail
+//! use markit_core::markdown::parser::BlockParser;
+//! ```
+//!
+//! ```compile_fail
+//! use markit_core::markdown::lex::leading_spaces;
+//! ```
 
 mod block;
 mod identity;
