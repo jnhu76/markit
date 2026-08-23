@@ -20,8 +20,10 @@ lands.
 The A2 root cause (per-edit `lineStarts()` full scan, 94.6% of the 1M
 edit turn) is removed by the incremental LineIndex (A3-P1) and the
 incremental Markdown BlockIndex (A4-R2). Guard: full-document scans per
-edit == 0; blocks_reparsed for local edits == 1 at any document size
-(measured 10K→1M).
+edit == 0; local edits reparse the smallest semantically valid region —
+for ordinary measured local edits that is one block at any document size
+(10K→1M), but one-block-per-edit is an observation, not a law (issue
+#12 R6; correctness always wins over the counter).
 
 ## INV-02 — Normal frame work must be viewport-bounded
 
@@ -58,9 +60,11 @@ must not acquire a permanent fixed-rate game loop.
 ## INV-05 — A local Markdown edit reparses the smallest semantically valid region
 
 The BlockIndex rescan stops at the first stable boundary; local edits
-reparse exactly one block (measured). Structural edits (fence boundaries)
-may invalidate broadly — that cost is owned, documented, and bounded by a
-product strategy (see Notes and `architecture.md` §10).
+reparse the smallest semantically valid region (typically one block,
+measured). Structural edits (fence boundaries) may invalidate broadly —
+that cost is owned, documented, and reported through structural counters;
+bounding it must not bend Markdown semantics (see Notes and
+`architecture.md` §10).
 
 ## INV-06 — Platform integration must not add unnecessary work to the per-edit hot path
 
@@ -206,12 +210,13 @@ should be observable during performance investigation.
 ## Notes
 
 - INV-05's fence cascade is the known exception: a fence-boundary edit
-  re-parsed up to 30K lines at 1M (68.9 ms, honest, A4 measurement). The
-  product must bound the *synchronous user-blocking* cost with
-  semantics-preserving means (checkpoints, resumable/chunkable
-  propagation) and re-measure before shipping L1. Never change Markdown
-  interpretation to cap the invalidation radius — any dialect change is
-  an explicit documented dialect decision (issue #12 R7).
+  re-parses onward — up to 30K lines at 1M (68.9 ms, honest, A4
+  measurement; the P0-02 Rust core rescans to end of document for a
+  deleted closing fence, per the L1 semantic contract). Bounding this by
+  treating ``` as an opener only when a close exists ahead was rejected
+  (issue #12 R7): it changes Markdown semantics. L1 ships spec-faithful
+  fence behavior; any future mitigation must preserve rendered semantics
+  and be justified by measured editor-latency evidence.
 - The model's O(lines-after) line-index suffix shift (up to ~2.3 ms at
   1M begin-position edits, A3 measurement) and the O(document suffix
   bytes) String splice are instrumented, position-dependent, deliberate
@@ -236,7 +241,7 @@ core; the A2–A4 battery `bench/run-a4.py` remains as historical tooling):
 | check | invariant covered |
 |-------|-------------------|
 | full_document_scans == 0 per local edit | INV-01 |
-| blocks_reparsed == 1 for local edits at 10K and 1M | INV-01/05/08 |
+| local edits scan bounded lines regardless of document size | INV-01/05/08 |
 | materialized presentation work flat across document sizes | INV-02/03/12 |
 | op churn per edit viewport-bound | INV-02/03 |
 | idle: no draw/present work | INV-04 |

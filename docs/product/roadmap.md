@@ -200,12 +200,23 @@ String splice               = O(document suffix bytes) movement
 LineIndex suffix adjustment = O(lines after edit)
 ```
 
-### P0-02 — Markdown BlockIndex + internal IR (next)
+### P0-02 — Markdown BlockIndex + internal IR ✅ DONE
+
+Status note (2026-08): **P0-02 is implemented** — the Markdown L1 layer
+in `crates/markit-core`: normative dialect contract
+(`markdown-l1-semantic-contract.md`), tiling block index in a plain
+`Vec` with spliced incremental resynchronization driven by P0-01's
+canonical per-edit regions, internal block identity with deterministic
+pairing, source-referenced inline IR, structural work counters, and the
+golden + randomized differential + large-document batteries. See
+`docs/product/p0-02-implementation-note.md`. The remaining P0 scope
+below (commands, view model) is open.
 
 GPUI-independent; does not wait for G0.
 
-- Goal: the framework-independent Markdown layer whose update semantics are
-  explicit enough for incremental, cancellable, coherent presentation.
+- Goal: framework-independent core built as a Rust library whose update
+  semantics are explicit enough for incremental, cancellable, coherent
+  presentation and future stable extension snapshots/commands.
 - Scope:
 
   ```text
