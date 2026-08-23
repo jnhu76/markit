@@ -27,9 +27,19 @@ differential vs the full-scan oracle: 0 failures.
 Local edits (paragraph, inline, heading, list, off-viewport): exactly 1
 block re-parsed at 10K and 1M; edit time viewport-constant (~1.4–1.6 ms).
 Structural fence-boundary edits invalidate honestly through the fence
-cascade (1M: 30 197 lines, 68.9 ms) — recorded, owned, and to be bounded
-by a product strategy (only treat ``` as an opener when a close exists
-ahead).
+cascade (1M: 30 197 lines, 68.9 ms) — recorded, owned, and reported
+through structural counters.
+
+> P0-02 qualification (2026-08-23, issue #12 R6/R7): "exactly 1 block"
+> is an observation of ordinary measured local edits, not a law — the
+> requirement is the *smallest semantically valid region*. And fence
+> recovery must **not** be bounded by changing Markdown semantics: the
+> Markit L1 dialect (`docs/product/markdown-l1-semantic-contract.md`
+> §6.7) keeps CommonMark fence behavior, so an unclosed fence honestly
+> swallows to end of document and the counters say so. Any future bound
+> must be a semantics-preserving, evidence-driven product decision
+> (for example a presentation-level deferral), never a parser rule that
+> renders differently than the spec.
 
 ## Alternatives considered
 

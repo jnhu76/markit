@@ -383,8 +383,12 @@ new hosts, not merely compile against the newest SDK.
    invalidate broadly (fences today; tables with row-span semantics
    later) must document their invalidation radius and provide a bounded
    recovery strategy. The fence cascade (30K lines at 1M, measured) is
-   the first such case — bound fence recovery (e.g. only treat ``` as an
-   opener when a matching close exists ahead) and re-measure.
+   the first such case. A semantics change (treating ``` as an opener
+   only when a close exists ahead) is ruled out — it renders differently
+   than CommonMark (issue #12 R7); L1 keeps spec-faithful fences and the
+   honest propagation is reported through structural counters. Any bound
+   must be semantics-preserving (e.g. presentation-level deferral) and
+   re-measured against real editor latency.
 5. **No synchronous rich-block tax on typing**: expensive projections
    cannot become mandatory critical-path work merely because a block is
    present elsewhere in the document.

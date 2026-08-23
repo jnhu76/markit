@@ -75,6 +75,7 @@
 pub mod change;
 pub mod document;
 pub mod id;
+pub mod markdown;
 pub mod position;
 pub mod revision;
 pub mod selection;
@@ -86,6 +87,7 @@ mod line_index;
 pub use change::{AppliedEdit, ChangeKind, EditError, EditResult, EditWork, TextEdit};
 pub use document::Document;
 pub use id::DocumentId;
+pub use markdown::{BlockKind, BlockView, InlineIr, InlineNode, InternalBlockId};
 pub use position::{ByteOffset, LineNumber, SourceRange};
 pub use revision::{DocumentRevision, DocumentVersion, Revisioned, StaleResult};
 pub use selection::Selection;

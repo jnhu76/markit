@@ -145,8 +145,8 @@ mod tests {
             .apply(&mut doc)
             .unwrap();
         assert_eq!(text_of(&doc), "hello world");
-        assert_eq!(applied.result.base_revision.as_u64(), 0);
-        assert_eq!(applied.result.new_revision.as_u64(), 1);
+        assert_eq!(applied.result.base_version.revision().as_u64(), 0);
+        assert_eq!(applied.result.new_version.revision().as_u64(), 1);
         assert_eq!(applied.result.kind, crate::ChangeKind::Append);
         assert_eq!(applied.inverse.intent(), EditIntent::Typing);
     }
@@ -171,7 +171,7 @@ mod tests {
             .unwrap();
 
         assert_eq!(text_of(&doc), "1 2 3!");
-        assert_eq!(applied.result.new_revision.as_u64(), 1);
+        assert_eq!(applied.result.new_version.revision().as_u64(), 1);
         assert_eq!(applied.result.edits.len(), 3);
         // Covering range spans first..last in old coordinates
         // (convenience-only; canonical regions are the per-edit entries).
@@ -309,7 +309,7 @@ mod tests {
             .with_edit(TextEdit::replace(marked, "，世界"))
             .apply(&mut doc)
             .unwrap();
-        assert_eq!(applied.result.new_revision.as_u64(), 1);
+        assert_eq!(applied.result.new_version.revision().as_u64(), 1);
         applied.inverse.apply(&mut doc).unwrap();
         assert_eq!(text_of(&doc), "hello, world");
     }

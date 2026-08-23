@@ -130,3 +130,102 @@ fn invalid_input_cannot_corrupt_state() {
     assert_eq!(doc.slice(range(0, 3)).as_ref(), "边");
     assert_eq!(doc.try_slice(range(1, 2)), None);
 }
+
+#[test]
+fn markdown_surface_is_query_views_not_parser_internals() {
+    use markit_core::markdown::{
+        BlockDetail, BlockKind, BlockView, FenceChar, FenceInfo, InlineIr, InlineNode, InlineRun,
+        ListItem, ListSignature, MarkdownState, MarkdownStateError, MarkdownWork,
+    };
+    use markit_core::InternalBlockId;
+
+    // The consumer workflow: build from a snapshot, query by position and
+    // id, read inline IR, gate on version — with no access to parsers,
+    // indexes, record layout, restart state, or fingerprints (the
+    // internal Markdown IR stays free to evolve behind BlockView).
+    let mut doc = Document::new("# 标题\n\n段落 *强调* `code` [链接](u)\n");
+    let snapshot = doc.snapshot();
+    let mut state = MarkdownState::build(&snapshot);
+
+    let version: markit_core::DocumentVersion = state.version();
+    assert_eq!(version, snapshot.version());
+    let count = state.block_count();
+    assert!(count >= 2);
+    let blocks: Vec<BlockView> = state.blocks().collect();
+    let _work: MarkdownWork = state.last_work();
+    let _cumulative: MarkdownWork = state.cumulative_work();
+
+    let heading = state.block_at_offset(ByteOffset(0)).expect("heading at 0");
+    assert_eq!(heading.kind(), BlockKind::Heading);
+    let BlockDetail::Heading { level, content } = heading.detail() else {
+        panic!("heading detail");
+    };
+    assert_eq!(*level, 1);
+    assert!(!content.is_empty());
+
+    let mid = ByteOffset(doc.len_bytes() / 2);
+    let _range_blocks: Vec<BlockView> = state.blocks_in_range(range(0, mid.as_usize())).collect();
+    let _line_blocks: Vec<BlockView> = state
+        .blocks_in_lines(LineNumber(0)..LineNumber(2))
+        .collect();
+
+    let id: InternalBlockId = blocks[0].id();
+    let _again: Option<BlockView> = state.block_by_id(id);
+    let ir: &InlineIr = state.inline_ir(id).expect("headings have inline IR");
+    assert_eq!(ir.runs.len(), 1);
+    let _run: &InlineRun = &ir.runs[0];
+    let paragraph = blocks
+        .iter()
+        .find(|b| b.kind() == BlockKind::Paragraph)
+        .unwrap();
+    let InlineIr { runs } = paragraph.inline();
+    assert!(!runs.is_empty());
+    let InlineRun { range: _, nodes } = &runs[0];
+    assert!(nodes
+        .iter()
+        .any(|n| matches!(n, InlineNode::Emphasis { .. }) || matches!(n, InlineNode::Text { .. })));
+    let BlockDetail::Paragraph = paragraph.detail() else {
+        panic!("paragraph detail");
+    };
+    let _ = (
+        FenceChar::Backtick.as_char(),
+        ListSignature::Bullet { marker: '-' },
+        MarkdownStateError::StaleBase.to_string(),
+    );
+    let _item = ListItem {
+        marker_range: range(0, 1),
+        content: range(0, 1),
+        number: Some(1),
+    };
+    let _fence = FenceInfo {
+        fence_char: FenceChar::Tilde,
+        fence_len: 3,
+        info: None,
+    };
+
+    // The update seam gates on the whole version triple. Borrowing
+    // rules force the same discipline the runtime enforces: a snapshot
+    // cannot outlive an edit. The pre-edit view is reconstructed as a
+    // new revision (undo), which the update must reject because its
+    // revision is not the result's new revision.
+    let applied = EditTransaction::typing()
+        .with_edit(TextEdit::insert(ByteOffset(2), "X"))
+        .apply(&mut doc)
+        .expect("applies");
+    applied.inverse.apply(&mut doc).expect("undo applies");
+    let reverted = doc.snapshot();
+    assert_eq!(
+        state.update(&reverted, &applied.result),
+        Err(MarkdownStateError::SnapshotNotAtNewRevision)
+    );
+    // Skipped revisions cannot be absorbed either: rebuild at the
+    // reverted version and take one coherent step from there.
+    let mut rebuilt = MarkdownState::build(&reverted);
+    let redo = EditTransaction::typing()
+        .with_edit(TextEdit::insert(ByteOffset(2), "X"))
+        .apply(&mut doc)
+        .expect("redo applies");
+    rebuilt
+        .update(&doc.snapshot(), &redo.result)
+        .expect("one coherent step from the matching base");
+}

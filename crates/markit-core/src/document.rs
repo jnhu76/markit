@@ -239,8 +239,8 @@ impl Document {
         let new_line_span = LineNumber(0)..LineNumber(new_line_count);
 
         EditResult {
-            base_revision,
-            new_revision: self.revision,
+            base_version: DocumentVersion::new(self.id, base_revision),
+            new_version: DocumentVersion::new(self.id, self.revision),
             kind: ChangeKind::ReplaceDocument,
             covering_old_range: old_range,
             covering_new_range: new_range,
@@ -251,6 +251,7 @@ impl Document {
                 old_range,
                 new_range,
                 byte_delta,
+                line_delta: new_line_count as i64 - old_line_count as i64,
                 old_line_span,
                 new_line_span,
             }],
@@ -320,6 +321,7 @@ impl Document {
         let mut inverse: Vec<TextEdit> = Vec::with_capacity(edits.len());
         let mut final_new_ranges: Vec<SourceRange> = Vec::with_capacity(edits.len());
         let mut old_line_spans: Vec<Range<LineNumber>> = Vec::with_capacity(edits.len());
+        let mut line_deltas: Vec<i64> = Vec::with_capacity(edits.len());
         let mut shift: i64 = 0;
         for edit in &edits {
             let old_text = self.storage[edit.range.as_usize_range()].to_string();
@@ -330,6 +332,12 @@ impl Document {
                 ByteOffset(final_end),
             ));
             old_line_spans.push(self.line_span(edit.range));
+            // Exact per-edit line delta: newlines in minus newlines out.
+            // (Span lengths cannot express a replacement ending in a
+            // terminator: its trailing empty line lies past `new_range`.)
+            let removed = old_text.bytes().filter(|&b| b == b'\n').count() as i64;
+            let inserted = edit.new_text.bytes().filter(|&b| b == b'\n').count() as i64;
+            line_deltas.push(inserted - removed);
             inverse.push(TextEdit::replace(
                 SourceRange::new(ByteOffset(final_start), ByteOffset(final_end)),
                 old_text,
@@ -382,6 +390,7 @@ impl Document {
                 old_range: edit.range,
                 new_range: final_new_ranges[i],
                 byte_delta: edit.new_text.len() as i64 - edit.range.len() as i64,
+                line_delta: line_deltas[i],
                 old_line_span: old_line_spans[i].clone(),
                 new_line_span: self.line_span(final_new_ranges[i]),
             })
@@ -408,6 +417,11 @@ impl Document {
 
         let covering_old_range = covering_old.expect("at least one effective edit");
         let covering_new_range = covering_new.expect("at least one effective edit");
+        debug_assert_eq!(
+            line_deltas.iter().sum::<i64>(),
+            self.lines.line_count() as i64 - old_line_count as i64,
+            "per-edit line deltas must sum to the document line delta"
+        );
         let kind = ChangeKind::classify(
             covering_old_range.len(),
             covering_new_range.len(),
@@ -418,8 +432,8 @@ impl Document {
         self.revision = base_revision.next();
 
         let result = EditResult {
-            base_revision,
-            new_revision: self.revision,
+            base_version: DocumentVersion::new(self.id, base_revision),
+            new_version: DocumentVersion::new(self.id, self.revision),
             kind,
             covering_old_range,
             covering_new_range,
@@ -593,8 +607,16 @@ mod tests {
         let r = doc
             .apply_edit(TextEdit::replace(range(6, 11), "markit"))
             .unwrap();
-        assert_eq!(r.base_revision, DocumentRevision::INITIAL);
-        assert_eq!(r.new_revision, DocumentRevision::INITIAL.next());
+        assert_eq!(
+            r.base_version.revision(),
+            DocumentRevision::INITIAL
+        );
+        assert_eq!(r.base_version.document_id(), doc.id());
+        assert_eq!(
+            r.new_version.revision(),
+            DocumentRevision::INITIAL.next()
+        );
+        assert_eq!(r.new_version.document_id(), doc.id());
         assert_eq!(r.kind, ChangeKind::Replace);
         assert_eq!(r.covering_old_range, range(6, 11));
         assert_eq!(r.covering_new_range, range(6, 12));
@@ -685,8 +707,8 @@ mod tests {
         assert_eq!(doc.revision(), DocumentRevision::INITIAL);
         for i in 1..=5 {
             let r = doc.apply_edit(TextEdit::insert(offset(0), "x")).unwrap();
-            assert_eq!(r.base_revision.as_u64(), i - 1);
-            assert_eq!(r.new_revision.as_u64(), i);
+            assert_eq!(r.base_version.revision().as_u64(), i - 1);
+            assert_eq!(r.new_version.revision().as_u64(), i);
             assert_eq!(doc.revision().as_u64(), i);
         }
         // Rejected mutation: no bump.
@@ -734,8 +756,10 @@ mod tests {
         let mut doc = Document::new("a\nb\nc");
         let r = doc.replace_all("x\ny");
         assert_eq!(r.kind, ChangeKind::ReplaceDocument);
-        assert_eq!(r.base_revision, DocumentRevision::INITIAL);
-        assert_eq!(r.new_revision, DocumentRevision::INITIAL.next());
+        assert_eq!(r.base_version.revision(), DocumentRevision::INITIAL);
+        assert_eq!(r.base_version.document_id(), doc.id());
+        assert_eq!(r.new_version.revision(), DocumentRevision::INITIAL.next());
+        assert_eq!(r.new_version.document_id(), doc.id());
         assert_eq!(r.byte_delta, -2, "x\\ny(3) - a\\nb\\nc(5)");
         assert_eq!(r.line_delta, -1);
         assert_eq!(r.work.full_rebuilds, 1);
