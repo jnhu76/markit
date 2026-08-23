@@ -42,13 +42,18 @@ fn t_main() -> Instant {
 #[derive(Default)]
 struct Counters {
     draws: AtomicU64,
-    frame_requests: AtomicU64,
+    /// Deliveries of `on_next_frame` callbacks. This is NOT the platform's
+    /// frame-request / WM_PAINT count: on the pinned Windows baseline a
+    /// vsync thread still wakes every window each refresh even when clean
+    /// (G0 report §4); clean windows skip draw/present. The counter measures
+    /// what the application can observe — callback delivery.
+    next_frame_callbacks: AtomicU64,
     key_actions: AtomicU64,
     mouse_events: AtomicU64,
     ime_composition_updates: AtomicU64,
     ime_commits: AtomicU64,
     /// When true, render re-registers an `on_next_frame` callback each time
-    /// one fires (self-sustaining), so frame-request delivery can be measured
+    /// one fires (self-sustaining), so callback delivery can be measured
     /// while the window is otherwise idle.
     frame_probe_armed: AtomicBool,
     /// Input timestamp recorded at action entry; consumed by the next paint.
@@ -88,10 +93,11 @@ impl Counters {
 }
 
 /// Self-sustaining `on_next_frame` registration: each delivered callback
-/// counts one frame request and re-arms itself while `armed` is set.
+/// counts one `on_next_frame` delivery (not a platform frame request) and
+/// re-arms itself while `armed` is set.
 fn rearm_frame_probe(counters: Arc<Counters>, window: &mut Window) {
     window.on_next_frame(move |window, _| {
-        counters.frame_requests.fetch_add(1, Relaxed);
+        counters.next_frame_callbacks.fetch_add(1, Relaxed);
         if counters.frame_probe_armed.load(Relaxed) {
             rearm_frame_probe(counters.clone(), window);
         }
@@ -103,21 +109,30 @@ struct G0Probe {
     counters: Arc<Counters>,
     /// Editable buffer driven by the IME/input-handler pipeline.
     buffer: String,
-    /// UTF-16 range of the active IME composition, if any.
-    marked: Option<Range<usize>>,
-    caret_utf16: usize,
+    /// Selection in UTF-8 byte offsets. The GPUI input-handler boundary is
+    /// UTF-16 (see `EntityInputHandler` in the pinned gpui source and its
+    /// canonical `examples/input.rs`); conversions happen only in the trait
+    /// methods below.
+    selected_range: Range<usize>,
+    /// Active IME composition span in UTF-8 byte offsets. Covers the whole
+    /// composing text (what the platform underlines), NOT the composition
+    /// caret.
+    marked_range: Option<Range<usize>>,
     last_bounds: Option<Bounds<Pixels>>,
     last_scale_factor: Option<f32>,
 }
 
 impl G0Probe {
     fn new(cx: &mut Context<Self>) -> Self {
+        let buffer = "Markit G0 probe\nLatin: the quick brown fox 0123\n中文渲染测试：汉字与标点\nEmoji fallback 🙂👍🧑‍💻🌍\ntype here (IME ok): "
+            .to_string();
+        let caret = buffer.len();
         Self {
             focus_handle: cx.focus_handle(),
             counters: Arc::new(Counters::default()),
-            buffer: "Markit G0 probe\nLatin: the quick brown fox 0123\n中文渲染测试：汉字与标点\nEmoji fallback 🙂👍🧑‍💻🌍\ntype here (IME ok): ".into(),
-            marked: None,
-            caret_utf16: 0,
+            selected_range: caret..caret,
+            buffer,
+            marked_range: None,
             last_bounds: None,
             last_scale_factor: None,
         }
@@ -127,31 +142,12 @@ impl G0Probe {
         *self.counters.last_status.lock().unwrap() = status;
     }
 
-    fn utf16_to_byte(&self, ix: usize) -> usize {
-        let mut u16_count = 0;
-        for (byte, ch) in self.buffer.char_indices() {
-            if u16_count >= ix {
-                return byte;
-            }
-            u16_count += ch.len_utf16();
-        }
-        self.buffer.len()
-    }
-
-    fn byte_to_utf16(&self, byte_ix: usize) -> usize {
-        self.buffer
-            .char_indices()
-            .take_while(|(byte, _)| *byte < byte_ix)
-            .map(|(_, ch)| ch.len_utf16())
-            .sum()
-    }
-
     fn dump(&self) {
         let c = &self.counters;
         log::info!(
-            "G0 dump draws={} frame_requests={} key_actions={} mouse={} ime_updates={} ime_commits={} first_draw_ms={:.1} input_latency[{}] status={}",
+            "G0 dump draws={} next_frame_callbacks={} key_actions={} mouse={} ime_updates={} ime_commits={} first_draw_ms={:.1} input_latency[{}] status={}",
             c.draws.load(Relaxed),
-            c.frame_requests.load(Relaxed),
+            c.next_frame_callbacks.load(Relaxed),
             c.key_actions.load(Relaxed),
             c.mouse_events.load(Relaxed),
             c.ime_composition_updates.load(Relaxed),
@@ -214,7 +210,7 @@ impl Render for G0Probe {
         let probe = cx.entity();
         let focus_handle = self.focus_handle.clone();
         let status = self.counters.last_status.lock().unwrap().clone();
-        let composition_active = self.marked.is_some();
+        let composition_active = self.marked_range.is_some();
 
         div()
             .track_focus(&self.focus_handle)
@@ -284,18 +280,62 @@ impl Render for G0Probe {
     }
 }
 
+/// UTF-16 offset → UTF-8 byte offset, clamped to a char boundary. Mirrors the
+/// conversion helpers in the pinned gpui's `examples/input.rs`.
+fn offset_from_utf16(text: &str, offset: usize) -> usize {
+    let mut utf8_offset = 0;
+    let mut utf16_count = 0;
+    for ch in text.chars() {
+        if utf16_count >= offset {
+            break;
+        }
+        utf16_count += ch.len_utf16();
+        utf8_offset += ch.len_utf8();
+    }
+    utf8_offset
+}
+
+/// UTF-8 byte offset → UTF-16 offset, clamped to a char boundary.
+fn offset_to_utf16(text: &str, offset: usize) -> usize {
+    let mut utf16_offset = 0;
+    let mut utf8_count = 0;
+    for ch in text.chars() {
+        if utf8_count >= offset {
+            break;
+        }
+        utf8_count += ch.len_utf8();
+        utf16_offset += ch.len_utf16();
+    }
+    utf16_offset
+}
+
+/// Convert a UTF-16 range to a byte range over `text`.
+fn range_from_utf16(text: &str, range: &Range<usize>) -> Range<usize> {
+    let start = offset_from_utf16(text, range.start);
+    start..offset_from_utf16(text, range.end).max(start)
+}
+
+/// Convert a byte range to a UTF-16 range over `text`.
+fn range_to_utf16(text: &str, range: &Range<usize>) -> Range<usize> {
+    offset_to_utf16(text, range.start)..offset_to_utf16(text, range.end)
+}
+
 impl EntityInputHandler for G0Probe {
+    // Boundary contract (pinned gpui `input.rs` + its canonical
+    // `examples/input.rs`): every range crossing this trait is UTF-16. The
+    // buffer is addressed in UTF-8 bytes internally and converted only at
+    // these methods.
+
     fn text_for_range(
         &mut self,
-        range: Range<usize>,
-        adjusted: &mut Option<Range<usize>>,
+        range_utf16: Range<usize>,
+        actual_range: &mut Option<Range<usize>>,
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> Option<String> {
-        let start = self.utf16_to_byte(range.start);
-        let end = self.utf16_to_byte(range.end).max(start);
-        *adjusted = Some(start..end);
-        Some(self.buffer[start..end].to_string())
+        let range = range_from_utf16(&self.buffer, &range_utf16);
+        *actual_range = Some(range_to_utf16(&self.buffer, &range));
+        Some(self.buffer[range].to_string())
     }
 
     fn selected_text_range(
@@ -305,7 +345,7 @@ impl EntityInputHandler for G0Probe {
         _cx: &mut Context<Self>,
     ) -> Option<UTF16Selection> {
         Some(UTF16Selection {
-            range: self.caret_utf16..self.caret_utf16,
+            range: range_to_utf16(&self.buffer, &self.selected_range),
             reversed: false,
         })
     }
@@ -315,61 +355,103 @@ impl EntityInputHandler for G0Probe {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> Option<Range<usize>> {
-        self.marked.clone()
+        self.marked_range
+            .as_ref()
+            .map(|r| range_to_utf16(&self.buffer, r))
     }
 
     fn unmark_text(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
-        if self.marked.take().is_some() {
-            self.counters.ime_commits.fetch_add(1, Relaxed);
-            log::info!("G0 ime commit (unmark) tail={:?}", self.buffer_tail());
+        // Windows commits through `replace_text_in_range` (GCS_RESULTSTR)
+        // instead; this path is for platforms with an explicit unmark step.
+        if self.marked_range.take().is_some() {
+            log::info!("G0 ime unmark tail={:?}", self.buffer_tail());
         }
         cx.notify();
     }
 
     fn replace_text_in_range(
         &mut self,
-        _range: Option<Range<usize>>,
+        range_utf16: Option<Range<usize>>,
         text: &str,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        if self.marked.is_some() {
+        // `None` means "replace the active composition, else the selection"
+        // (canonical example). Windows IMM32 commits the result string with
+        // `None`, so honoring this is what makes commits REPLACE the marked
+        // span instead of appending after it.
+        let range = range_utf16
+            .as_ref()
+            .map(|r| range_from_utf16(&self.buffer, r))
+            .or_else(|| self.marked_range.clone())
+            .unwrap_or_else(|| self.selected_range.clone());
+        let was_composition = self.marked_range.is_some();
+        self.buffer.replace_range(range.clone(), text);
+        let caret = range.start + text.len();
+        self.selected_range = caret..caret;
+        self.marked_range = None;
+        if was_composition {
             self.counters.ime_commits.fetch_add(1, Relaxed);
-            log::info!("G0 ime commit text={text:?}");
+            log::info!(
+                "G0 ime commit text={text:?} marked_replaced={:?} tail={:?}",
+                range,
+                self.buffer_tail()
+            );
         } else {
-            log::info!("G0 text replace text={text:?}");
+            log::info!("G0 text replace range={:?} text={text:?}", range);
         }
-        self.marked = None;
-        self.buffer.push_str(text);
-        self.caret_utf16 = self.byte_to_utf16(self.buffer.len());
         cx.notify();
     }
 
     fn replace_and_mark_text_in_range(
         &mut self,
-        _range: Option<Range<usize>>,
+        range_utf16: Option<Range<usize>>,
         new_text: &str,
-        new_selected_range: Option<Range<usize>>,
+        new_selected_range_utf16: Option<Range<usize>>,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) {
+        let range = range_utf16
+            .as_ref()
+            .map(|r| range_from_utf16(&self.buffer, r))
+            .or_else(|| self.marked_range.clone())
+            .unwrap_or_else(|| self.selected_range.clone());
+        let had_composition = self.marked_range.is_some();
+        self.buffer.replace_range(range.clone(), new_text);
+        // The marked range covers the whole inserted composition text — the
+        // span the platform underlines and replaces on the next update. It
+        // is NOT the in-composition caret.
+        self.marked_range = if new_text.is_empty() {
+            None
+        } else {
+            Some(range.start..range.start + new_text.len())
+        };
+        // `new_selected_range_utf16` is relative to the NEW text: Windows
+        // passes the IMM32 cursor position inside the composition string.
+        self.selected_range = new_selected_range_utf16
+            .as_ref()
+            .map(|r| {
+                let sel = range_from_utf16(new_text, r);
+                range.start + sel.start..range.start + sel.end
+            })
+            .unwrap_or_else(|| {
+                let caret = range.start + new_text.len();
+                caret..caret
+            });
+
         self.counters.ime_composition_updates.fetch_add(1, Relaxed);
-        if self.marked.is_none() {
+        if !had_composition && !new_text.is_empty() {
             log::info!("G0 ime composition start");
         }
-        // Replace any previous composition span, then store the new one.
-        if let Some(m) = self.marked.take() {
-            let start = self.utf16_to_byte(m.start);
-            let end = self.utf16_to_byte(m.end).max(start);
-            self.buffer.replace_range(start..end, "");
+        if had_composition && new_text.is_empty() {
+            log::info!("G0 ime composition cleared (cancel path)");
         }
-        let start_utf16 = self.byte_to_utf16(self.buffer.len());
-        self.buffer.push_str(new_text);
-        let end_utf16 = self.byte_to_utf16(self.buffer.len());
-        self.marked = Some(new_selected_range.unwrap_or(start_utf16..end_utf16));
         log::info!(
-            "G0 ime composition update text={new_text:?} marked={:?}",
-            self.marked
+            "G0 ime composition update text={new_text:?} marked_utf16={:?} selected_utf16={:?}",
+            self.marked_range
+                .as_ref()
+                .map(|r| range_to_utf16(&self.buffer, r)),
+            range_to_utf16(&self.buffer, &self.selected_range),
         );
         cx.notify();
     }
@@ -382,6 +464,16 @@ impl EntityInputHandler for G0Probe {
         _cx: &mut Context<Self>,
     ) -> Option<Bounds<Pixels>> {
         // Candidate-window docking rect: bottom edge of the text block.
+        // Log once per call: on Windows this is driven by
+        // WM_IME_STARTCOMPOSITION (candidate repositioning), so its presence
+        // in the log is evidence the IMM32 candidate path reached the
+        // handler.
+        log::info!(
+            "G0 ime bounds_for_range requested_utf16={:?} element={:.0}x{:.0}",
+            _range_utf16,
+            element_bounds.size.width.as_f32(),
+            element_bounds.size.height.as_f32()
+        );
         Some(Bounds {
             origin: gpui::Point {
                 x: element_bounds.origin.x,
@@ -400,7 +492,25 @@ impl EntityInputHandler for G0Probe {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> Option<usize> {
-        Some(self.caret_utf16)
+        Some(offset_to_utf16(&self.buffer, self.selected_range.end))
+    }
+
+    fn set_selected_text_range(
+        &mut self,
+        range_utf16: Range<usize>,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        self.selected_range = range_from_utf16(&self.buffer, &range_utf16);
+        cx.notify();
+    }
+
+    fn text_length_utf16(
+        &mut self,
+        _window: &mut Window,
+        _cx: &mut Context<Self>,
+    ) -> Option<usize> {
+        Some(offset_to_utf16(&self.buffer, self.buffer.len()))
     }
 }
 
@@ -484,19 +594,22 @@ async fn run_smoke_matrix(
     );
 
     // P1a — passive idle (no pending next-frame callback, nothing dirty):
-    // draws must collapse to ~zero. Platform wakeups below the API are
-    // measured externally via CPU sampling.
+    // application-observable work must collapse to ~zero draws and zero
+    // callback deliveries. The Windows vsync thread still wakes every window
+    // each refresh BELOW this API (G0 report §4) — that platform wake is
+    // evidenced by the source audit + external CPU sampling, not by this
+    // counter, which only counts `on_next_frame` deliveries to the app.
     let (d0, r0) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     bg.timer(Duration::from_millis(2000)).await;
     let (d1, r1) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     log::info!(
-        "G0 idle_passive_2s draws={} frame_requests={} (draws/s={:.1} wakes/s={:.1})",
+        "G0 idle_passive_2s draws={} next_frame_callbacks={} (draws/s={:.1} callbacks/s={:.1})",
         d1 - d0,
         r1 - r0,
         (d1 - d0) as f64 / 2.0,
@@ -504,21 +617,21 @@ async fn run_smoke_matrix(
     );
 
     // P1b — sustained on_next_frame registration while otherwise idle:
-    // measures how often the platform delivers frame requests to a clean
-    // window that has a pending callback.
+    // measures how often the platform delivers next-frame callbacks to a
+    // clean window that has a pending callback.
     counters.frame_probe_armed.store(true, Relaxed);
     probe.update(cx, |_, cx| cx.notify()); // one render to arm the loop
     let (d0, r0) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     bg.timer(Duration::from_millis(2000)).await;
     let (d1, r1) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     log::info!(
-        "G0 idle_nextframe_2s draws={} frame_requests={} (draws/s={:.1} wakes/s={:.1})",
+        "G0 idle_nextframe_2s draws={} next_frame_callbacks={} (draws/s={:.1} callbacks/s={:.1})",
         d1 - d0,
         r1 - r0,
         (d1 - d0) as f64 / 2.0,
@@ -529,7 +642,7 @@ async fn run_smoke_matrix(
     // P2 — demand redraw: notify at ~60 Hz for 1.2 s; draws should track.
     let (d0, r0) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     let mut notifies = 0u64;
     let t_start = Instant::now();
@@ -540,10 +653,10 @@ async fn run_smoke_matrix(
     }
     let (d1, r1) = (
         counters.draws.load(Relaxed),
-        counters.frame_requests.load(Relaxed),
+        counters.next_frame_callbacks.load(Relaxed),
     );
     log::info!(
-        "G0 demand_1p2s notifies={notifies} draws={} frame_requests={}",
+        "G0 demand_1p2s notifies={notifies} draws={} next_frame_callbacks={}",
         d1 - d0,
         r1 - r0
     );
