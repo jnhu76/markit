@@ -270,7 +270,7 @@ authorizes a generic scheduler framework.
 ### [X] Bounded fence recovery for L1 structural edits
 
 - Labels: `markdown`, `performance`, `p2`
-  - Body:
+- Body:
   - **Why**: A fence-boundary edit invalidates forward through the whole
     fence cascade (measured at 1M: 30 197 lines, 68.9 ms). Correct but
     broad; the synchronous user-blocking cost must not scale with

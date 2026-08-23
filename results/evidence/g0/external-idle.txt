@@ -1,5 +1,5 @@
 # external idle sampling, 2026-08-23, display scale 125% (12 x 500ms, Get-Process)
-﻿--- external idle sampling at 125% (6 x 500ms) ---
+--- external idle sampling at 125% (12 x 500ms) ---
 t=00 cpu_s=0.344 ws_mb=38.2 threads=27
 t=01 cpu_s=0.344 ws_mb=38.2 threads=27
 t=02 cpu_s=0.344 ws_mb=38.2 threads=27

@@ -41,8 +41,9 @@ pinyin-ime.log           real Microsoft Pinyin IME pass: host-side driver
                          record (layout HKLs, submode, sequences) + verbatim
                          probe trace (composition start/update/commit/cancel,
                          candidate bounds_for_range calls)
-external-idle.txt        external Get-Process sampling at 125% (CPU seconds
-                         frozen, working set, threads)
+external-idle.txt        external Get-Process sampling at 125% (cpu_s
+                         0.344→0.406, ≈ 0.06 CPU-s / 6 s ≈ 1% of one core;
+                         working set, threads)
 g0-window-100.png        probe window screenshot, scale 100% (2026-08-22 run)
 g0-window-125.png        probe window screenshot, scale 125%, physical
                          resolution (918x647 px for a 720x480 logical window,

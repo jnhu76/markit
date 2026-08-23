@@ -11,6 +11,6 @@
 
 # Incremental rebuild after the review-fix probe changes (2026-08-23)
 # command: cargo build --release -p markit --features g0-probe (same host, same tree after rsync)
-    Compiling markit v0.1.0 (C:\markit-g0\srcpps\markit)
+    Compiling markit v0.1.0 (C:\markit-g0\src\apps\markit)
     Finished `release` profile [optimized] target(s) in 7.30s
 exit=0
