@@ -72,11 +72,6 @@ impl BlockFingerprint {
         }
         Self(hash)
     }
-
-    /// Numeric form (diagnostics, oracle comparisons).
-    pub fn as_u64(self) -> u64 {
-        self.0
-    }
 }
 
 /// What makes list marker lines belong to one list (contract §6.5):

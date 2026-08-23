@@ -134,15 +134,15 @@ fn invalid_input_cannot_corrupt_state() {
 #[test]
 fn markdown_surface_is_query_views_not_parser_internals() {
     use markit_core::markdown::{
-        BlockDetail, BlockFingerprint, BlockKind, BlockParseState, FenceChar, FenceInfo, InlineIr,
-        InlineNode, InlineRun, ListItem, ListSignature, MarkdownState, MarkdownStateError,
-        MarkdownWork,
+        BlockDetail, BlockKind, BlockView, FenceChar, FenceInfo, InlineIr, InlineNode, InlineRun,
+        ListItem, ListSignature, MarkdownState, MarkdownStateError, MarkdownWork,
     };
-    use markit_core::{BlockRecord, InternalBlockId};
+    use markit_core::InternalBlockId;
 
     // The consumer workflow: build from a snapshot, query by position and
     // id, read inline IR, gate on version — with no access to parsers,
-    // indexes, or lexical machinery.
+    // indexes, record layout, restart state, or fingerprints (the
+    // internal Markdown IR stays free to evolve behind BlockView).
     let mut doc = Document::new("# 标题\n\n段落 *强调* `code` [链接](u)\n");
     let snapshot = doc.snapshot();
     let mut state = MarkdownState::build(&snapshot);
@@ -151,42 +151,40 @@ fn markdown_surface_is_query_views_not_parser_internals() {
     assert_eq!(version, snapshot.version());
     let count = state.block_count();
     assert!(count >= 2);
-    let blocks: &[BlockRecord] = state.blocks();
+    let blocks: Vec<BlockView> = state.blocks().collect();
     let _work: MarkdownWork = state.last_work();
     let _cumulative: MarkdownWork = state.cumulative_work();
 
     let heading = state.block_at_offset(ByteOffset(0)).expect("heading at 0");
-    assert_eq!(heading.kind, BlockKind::Heading);
-    let BlockDetail::Heading { level, content } = &heading.detail else {
+    assert_eq!(heading.kind(), BlockKind::Heading);
+    let BlockDetail::Heading { level, content } = heading.detail() else {
         panic!("heading detail");
     };
     assert_eq!(*level, 1);
     assert!(!content.is_empty());
 
     let mid = ByteOffset(doc.len_bytes() / 2);
-    let _slice: &[BlockRecord] = state.blocks_in_range(range(0, mid.as_usize()));
-    let _lines: &[BlockRecord] = state.blocks_in_lines(LineNumber(0)..LineNumber(2));
+    let _range_blocks: Vec<BlockView> = state.blocks_in_range(range(0, mid.as_usize())).collect();
+    let _line_blocks: Vec<BlockView> = state
+        .blocks_in_lines(LineNumber(0)..LineNumber(2))
+        .collect();
 
-    let id: InternalBlockId = blocks[0].id;
-    let _again: Option<&BlockRecord> = state.block_by_id(id);
-    let ir: Option<&InlineIr> = state.inline_ir(id);
-    let heading_ir = ir.expect("headings have inline IR");
-    assert_eq!(heading_ir.runs.len(), 1);
-    let _run: &InlineRun = &heading_ir.runs[0];
+    let id: InternalBlockId = blocks[0].id();
+    let _again: Option<BlockView> = state.block_by_id(id);
+    let ir: &InlineIr = state.inline_ir(id).expect("headings have inline IR");
+    assert_eq!(ir.runs.len(), 1);
+    let _run: &InlineRun = &ir.runs[0];
     let paragraph = blocks
         .iter()
-        .find(|b| b.kind == BlockKind::Paragraph)
+        .find(|b| b.kind() == BlockKind::Paragraph)
         .unwrap();
-    let InlineIr { runs }: &InlineIr = &paragraph.inline;
+    let InlineIr { runs } = paragraph.inline();
     assert!(!runs.is_empty());
     let InlineRun { range: _, nodes } = &runs[0];
     assert!(nodes
         .iter()
         .any(|n| matches!(n, InlineNode::Emphasis { .. }) || matches!(n, InlineNode::Text { .. })));
-
-    let _fingerprint: BlockFingerprint = paragraph.fingerprint;
-    let _state_after: BlockParseState = paragraph.state_after;
-    let BlockDetail::Paragraph = paragraph.detail else {
+    let BlockDetail::Paragraph = paragraph.detail() else {
         panic!("paragraph detail");
     };
     let _ = (

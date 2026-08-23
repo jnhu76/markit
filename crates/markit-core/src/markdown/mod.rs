@@ -18,7 +18,10 @@
 //!
 //! Parser internals (the line classifier, the incremental updater) are
 //! crate-private and replaceable; the public surface is the state, the
-//! record types, and the query views. Pinned by construction:
+//! semantic vocabulary (kinds, details, inline IR), and read-only query
+//! views over the records — never the record layout itself, so the
+//! internal stream representation can change without breaking
+//! consumers. Pinned by construction:
 //!
 //! ```compile_fail
 //! use markit_core::markdown::parser::BlockParser;
@@ -26,6 +29,18 @@
 //!
 //! ```compile_fail
 //! use markit_core::markdown::lex::leading_spaces;
+//! ```
+//!
+//! ```compile_fail
+//! use markit_core::markdown::BlockRecord;
+//! ```
+//!
+//! ```compile_fail
+//! use markit_core::markdown::BlockParseState;
+//! ```
+//!
+//! ```compile_fail
+//! use markit_core::markdown::BlockFingerprint;
 //! ```
 
 mod block;
@@ -43,12 +58,54 @@ use crate::position::{ByteOffset, LineNumber, SourceRange};
 use crate::revision::DocumentVersion;
 use crate::snapshot::DocumentSnapshot;
 
-pub use block::{
-    BlockDetail, BlockFingerprint, BlockKind, BlockRecord, FenceInfo, ListItem, ListSignature,
-};
+use block::BlockRecord;
+pub use block::{BlockDetail, BlockKind, FenceInfo, ListItem, ListSignature};
 pub use identity::InternalBlockId;
 pub use inline::{InlineIr, InlineNode, InlineRun};
-pub use state::{BlockParseState, FenceChar};
+pub use state::FenceChar;
+
+/// Read-only query view of one block — the consumer-facing Markdown
+/// surface (P0-03's view model depends on exactly this). Exposes
+/// identity, kind, ranges, semantic detail, and the inline IR; parser
+/// bookkeeping (restart state, fingerprints) and the record layout stay
+/// crate-private so the internal representation can evolve freely.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BlockView<'a> {
+    record: &'a BlockRecord,
+}
+
+impl<'a> BlockView<'a> {
+    /// The block's internal product identity (contract §10).
+    pub fn id(&self) -> InternalBlockId {
+        self.record.id
+    }
+
+    /// The block's kind.
+    pub fn kind(&self) -> BlockKind {
+        self.record.kind
+    }
+
+    /// Full source bytes of the block, line terminators included.
+    pub fn source_range(&self) -> SourceRange {
+        self.record.source_range
+    }
+
+    /// Half-open `[first_line, last_line + 1)`.
+    pub fn line_span(&self) -> Range<LineNumber> {
+        self.record.line_span.clone()
+    }
+
+    /// Kind-specific detail (heading level/content, list items, fence
+    /// facts, quote segments).
+    pub fn detail(&self) -> &BlockDetail {
+        &self.record.detail
+    }
+
+    /// The block's inline IR (empty for blank and fenced-code blocks).
+    pub fn inline(&self) -> &InlineIr {
+        &self.record.inline
+    }
+}
 
 /// Structural work counters for one Markdown state transition (build or
 /// incremental update). Like [`EditWork`](crate::EditWork), these are
@@ -231,21 +288,26 @@ impl MarkdownState {
         self.blocks.len()
     }
 
-    /// The whole tiling stream, ordered by position.
-    pub fn blocks(&self) -> &[BlockRecord] {
-        &self.blocks
+    /// The whole tiling stream, ordered by position, as query views.
+    pub fn blocks(
+        &self,
+    ) -> impl DoubleEndedIterator<Item = BlockView<'_>> + ExactSizeIterator + Clone {
+        self.blocks.iter().map(|record| BlockView { record })
     }
 
     /// Record lookup by internal id. O(blocks) — a query convenience for
     /// the future view model, not a hot path (a position query exists
     /// for that).
-    pub fn block_by_id(&self, id: InternalBlockId) -> Option<&BlockRecord> {
-        self.blocks.iter().find(|block| block.id == id)
+    pub fn block_by_id(&self, id: InternalBlockId) -> Option<BlockView<'_>> {
+        self.blocks
+            .iter()
+            .find(|block| block.id == id)
+            .map(|record| BlockView { record })
     }
 
     /// The block containing `offset` (the final block also owns the
     /// document-end offset). O(log blocks).
-    pub fn block_at_offset(&self, offset: ByteOffset) -> Option<&BlockRecord> {
+    pub fn block_at_offset(&self, offset: ByteOffset) -> Option<BlockView<'_>> {
         if self.blocks.is_empty() {
             return None;
         }
@@ -258,34 +320,38 @@ impl MarkdownState {
         let block = &self.blocks[idx];
         let inside = offset < block.source_range.end
             || (idx + 1 == self.blocks.len() && offset == block.source_range.end);
-        inside.then_some(block)
+        inside.then_some(BlockView { record: block })
     }
 
     /// Blocks overlapping the byte `range`, in order. O(log blocks).
-    pub fn blocks_in_range(&self, range: SourceRange) -> &[BlockRecord] {
+    pub fn blocks_in_range(&self, range: SourceRange) -> impl Iterator<Item = BlockView<'_>> {
         let first = self
             .blocks
             .partition_point(|b| b.source_range.end <= range.start);
         let last = self
             .blocks
             .partition_point(|b| b.source_range.start < range.end);
-        &self.blocks[first..last.max(first)]
+        self.blocks[first..last.max(first)]
+            .iter()
+            .map(|record| BlockView { record })
     }
 
     /// Blocks overlapping the line span, in order. O(log blocks).
-    pub fn blocks_in_lines(&self, lines: Range<LineNumber>) -> &[BlockRecord] {
+    pub fn blocks_in_lines(&self, lines: Range<LineNumber>) -> impl Iterator<Item = BlockView<'_>> {
         let first = self
             .blocks
             .partition_point(|b| b.line_span.end <= lines.start);
         let last = self
             .blocks
             .partition_point(|b| b.line_span.start < lines.end);
-        &self.blocks[first..last.max(first)]
+        self.blocks[first..last.max(first)]
+            .iter()
+            .map(|record| BlockView { record })
     }
 
     /// The inline IR of one block (query view; contract §7).
     pub fn inline_ir(&self, id: InternalBlockId) -> Option<&InlineIr> {
-        self.block_by_id(id).map(|block| &block.inline)
+        self.blocks.iter().find(|b| b.id == id).map(|b| &b.inline)
     }
 
     /// Work counters of the last transition (build or update).
@@ -399,23 +465,32 @@ mod tests {
                 .block_at_offset(ByteOffset(offset))
                 .expect("tiling covers every offset");
             assert!(
-                block.source_range.start.as_usize() <= offset
-                    && (offset < block.source_range.end.as_usize()
-                        || block.source_range.end.as_usize() == snap.len_bytes()),
+                block.source_range().start.as_usize() <= offset
+                    && (offset < block.source_range().end.as_usize()
+                        || block.source_range().end.as_usize() == snap.len_bytes()),
                 "offset {offset} outside its block"
             );
         }
 
         // Byte-range and line-range slices are ordered and overlapping.
-        let heading_bytes = state.blocks_in_range(SourceRange::new(ByteOffset(0), ByteOffset(4)));
+        let heading_bytes: Vec<_> = state
+            .blocks_in_range(SourceRange::new(ByteOffset(0), ByteOffset(4)))
+            .collect();
         assert_eq!(heading_bytes.len(), 1);
-        assert_eq!(heading_bytes[0].kind, BlockKind::Heading);
+        assert_eq!(heading_bytes[0].kind(), BlockKind::Heading);
 
-        let fence_lines = state.blocks_in_lines(LineNumber(11)..LineNumber(14));
-        assert!(fence_lines.iter().any(|b| b.kind == BlockKind::FencedCode));
+        let fence_lines: Vec<_> = state
+            .blocks_in_lines(LineNumber(11)..LineNumber(14))
+            .collect();
+        assert!(fence_lines
+            .iter()
+            .any(|b| b.kind() == BlockKind::FencedCode));
 
-        let first = &state.blocks()[0];
-        assert_eq!(state.block_by_id(first.id).map(|b| b.id), Some(first.id));
+        let first = state.blocks().next().expect("non-empty");
+        assert_eq!(
+            state.block_by_id(first.id()).map(|b| b.id()),
+            Some(first.id())
+        );
         assert!(state
             .block_by_id(InternalBlockId::from_u64_for_test(9999))
             .is_none());
@@ -470,7 +545,7 @@ mod incremental_tests {
             "versions must agree after update"
         );
         assert_eq!(state.block_count(), rebuilt.block_count(), "block count");
-        for (incremental, fresh) in state.blocks().iter().zip(rebuilt.blocks()) {
+        for (incremental, fresh) in state.blocks.iter().zip(rebuilt.blocks.iter()) {
             assert_eq!(incremental.kind, fresh.kind, "kind");
             assert_eq!(incremental.source_range, fresh.source_range, "range");
             assert_eq!(incremental.line_span, fresh.line_span, "line span");
@@ -486,7 +561,7 @@ mod incremental_tests {
     fn local_paragraph_edit_is_local() {
         let text = "# h\n\nfirst\n\nsecond\n\nthird\n";
         let (mut doc, mut state) = setup(text);
-        let ids_before: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+        let ids_before: Vec<_> = state.blocks.iter().map(|b| b.id).collect();
 
         // Edit inside the "second" paragraph, on its first (and only)
         // line: blank runs are maximal, so the reparse extends one
@@ -513,7 +588,7 @@ mod incremental_tests {
         assert!(work.convergence_line < doc.line_count() as u64);
 
         // Everything except the edited paragraph kept its id.
-        for (before, after) in ids_before.iter().zip(state.blocks()) {
+        for (before, after) in ids_before.iter().zip(state.blocks.iter()) {
             if after.kind == BlockKind::Paragraph
                 && after.source_range.contains(ByteOffset(second_at + 3))
             {
@@ -548,7 +623,7 @@ mod incremental_tests {
         let text = "before\n\n```\ncode line\n```\n\nafter\n";
         let (mut doc, mut state) = setup(text);
         let fence_id = state
-            .blocks()
+            .blocks
             .iter()
             .find(|b| b.kind == BlockKind::FencedCode)
             .unwrap()
@@ -561,7 +636,7 @@ mod incremental_tests {
             "fence block reparsed (restart at fence start)"
         );
         let fence_after = state
-            .blocks()
+            .blocks
             .iter()
             .find(|b| b.kind == BlockKind::FencedCode)
             .unwrap();
@@ -592,9 +667,9 @@ mod incremental_tests {
             "rescan to EOF"
         );
         assert_eq!(work.convergence_line, doc.line_count() as u64);
-        let kinds: Vec<_> = state.blocks().iter().map(|b| b.kind).collect();
+        let kinds: Vec<_> = state.blocks.iter().map(|b| b.kind).collect();
         assert_eq!(kinds, vec![BlockKind::FencedCode]);
-        let BlockDetail::FencedCode { closed, .. } = &state.blocks()[0].detail else {
+        let BlockDetail::FencedCode { closed, .. } = &state.blocks[0].detail else {
             panic!("fence")
         };
         assert!(!closed, "fence is now unclosed and runs to EOF");
@@ -604,11 +679,11 @@ mod incremental_tests {
     fn structural_transforms_follow_identity_rules() {
         // Kind change: paragraph -> heading mints a fresh id (rule C).
         let (mut doc, mut state) = setup("plain text\n");
-        let para_id = state.blocks()[0].id;
+        let para_id = state.blocks[0].id;
         let work = apply(&mut doc, &mut state, TextEdit::insert(ByteOffset(0), "## "));
         assert_matches_rebuild(&doc, &state);
-        assert_eq!(state.blocks()[0].kind, BlockKind::Heading);
-        assert_ne!(state.blocks()[0].id, para_id);
+        assert_eq!(state.blocks[0].kind, BlockKind::Heading);
+        assert_ne!(state.blocks[0].id, para_id);
         assert_eq!(work.blocks_reused, 0);
         assert_eq!(work.blocks_created, 1);
         assert_eq!(work.blocks_removed, 1);
@@ -617,7 +692,7 @@ mod incremental_tests {
         // leading paragraph pairs with the old one (1:1, rule B);
         // newcomers mint (rule C).
         let (mut doc, mut state) = setup("one two three\n");
-        let para_id = state.blocks()[0].id;
+        let para_id = state.blocks[0].id;
         let two = "one two three".find("two").unwrap();
         let work = apply(
             &mut doc,
@@ -632,8 +707,7 @@ mod incremental_tests {
         // the island (convergence landed exactly on it).
         assert_eq!(work.blocks_created, 1, "the heading is new");
         assert_eq!(
-            state.blocks()[0].id,
-            para_id,
+            state.blocks[0].id, para_id,
             "surviving leading paragraph keeps its id"
         );
     }
@@ -641,7 +715,7 @@ mod incremental_tests {
     #[test]
     fn append_extends_last_block() {
         let (mut doc, mut state) = setup("# h\npara\n");
-        let ids: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+        let ids: Vec<_> = state.blocks.iter().map(|b| b.id).collect();
         let len = "# h\npara\n".len();
         let work = apply(
             &mut doc,
@@ -650,7 +724,7 @@ mod incremental_tests {
         );
         assert_matches_rebuild(&doc, &state);
         assert_eq!(work.blocks_reparsed, 1, "the paragraph grew");
-        for (before, after) in ids.iter().zip(state.blocks()) {
+        for (before, after) in ids.iter().zip(state.blocks.iter()) {
             assert_eq!(*before, after.id, "append preserves every id");
         }
     }

@@ -325,6 +325,14 @@ For each block the parser produces a `BlockRecord`:
   signature and ordered start; quote segments; per-item marker ranges;
 - `fingerprint`: FNV-1a-64 over the block's source bytes.
 
+`BlockRecord` (with its restart states and fingerprint) is
+**crate-internal**: consumers — including P0-03's view model — read the
+stream through read-only query views exposing identity, kind, ranges,
+kind detail, and inline IR. This is deliberate: the record layout and
+the whole internal IR must stay free to evolve (representation swaps,
+cache fields) without breaking downstream layers; only the semantic
+query surface is contract.
+
 Fingerprints are diagnostics and identity-pairing evidence; **soundness of
 incremental updates never depends on them** (§9.3). Inline IR (nodes with
 source ranges into the run; emphasis/strong have children; code/link

@@ -3,10 +3,11 @@
 //!
 //! - The randomized differential applies thousands of edits over
 //!   Markdown-dense alphabets (fences, markers, emphasis, CJK, emoji,
-//!   backslashes) and asserts after **every** edit that the incrementally
-//!   updated state equals a fresh full parse in every observable except
-//!   identity: kinds, source ranges, line spans, restart states,
-//!   fingerprints, kind detail, inline IR, and version.
+//!   backslashes, CRLF) and asserts after **every** edit that the
+//!   incrementally updated state equals a fresh full parse in every
+//!   public observable: kinds, source ranges, line spans, kind detail,
+//!   inline IR, and version. (Restart states and fingerprints are
+//!   compared by the stronger in-crate oracle over the full records.)
 //! - The large-document tests assert **algorithmic work** (structural
 //!   counters), never milliseconds: a local edit must scan a bounded
 //!   number of lines regardless of document size, and a sparse
@@ -75,40 +76,35 @@ fn assert_matches_rebuild(doc: &Document, state: &MarkdownState, context: &str) 
         "{context}: block count ({})\ntext: {:?}",
         state
             .blocks()
-            .iter()
-            .map(|b| b.kind.name())
+            .map(|b| b.kind().name())
             .collect::<Vec<_>>()
             .join(","),
         doc_text(doc)
     );
-    for (i, (incremental, fresh)) in state.blocks().iter().zip(rebuilt.blocks()).enumerate() {
-        assert_eq!(incremental.kind, fresh.kind, "{context}: block {i} kind");
+    for (i, (incremental, fresh)) in state.blocks().zip(rebuilt.blocks()).enumerate() {
         assert_eq!(
-            incremental.source_range, fresh.source_range,
+            incremental.kind(),
+            fresh.kind(),
+            "{context}: block {i} kind"
+        );
+        assert_eq!(
+            incremental.source_range(),
+            fresh.source_range(),
             "{context}: block {i} range"
         );
         assert_eq!(
-            incremental.line_span, fresh.line_span,
+            incremental.line_span(),
+            fresh.line_span(),
             "{context}: block {i} lines"
         );
         assert_eq!(
-            incremental.state_before, fresh.state_before,
-            "{context}: block {i} state_before"
-        );
-        assert_eq!(
-            incremental.state_after, fresh.state_after,
-            "{context}: block {i} state_after"
-        );
-        assert_eq!(
-            incremental.fingerprint, fresh.fingerprint,
-            "{context}: block {i} fingerprint"
-        );
-        assert_eq!(
-            incremental.detail, fresh.detail,
+            incremental.detail(),
+            fresh.detail(),
             "{context}: block {i} detail"
         );
         assert_eq!(
-            incremental.inline, fresh.inline,
+            incremental.inline(),
+            fresh.inline(),
             "{context}: block {i} inline IR"
         );
     }
@@ -122,13 +118,13 @@ fn doc_text(doc: &Document) -> String {
 
 fn assert_public_tiling(state: &MarkdownState, len: usize, context: &str) {
     let mut expected = 0usize;
-    for (i, b) in state.blocks().iter().enumerate() {
+    for (i, b) in state.blocks().enumerate() {
         assert_eq!(
-            b.source_range.start.as_usize(),
+            b.source_range().start.as_usize(),
             expected,
             "{context}: block {i} start"
         );
-        expected = b.source_range.end.as_usize();
+        expected = b.source_range().end.as_usize();
     }
     assert_eq!(expected, len, "{context}: stream must end at EOF");
 }
@@ -375,8 +371,8 @@ fn sparse_two_location_edit_on_one_million_lines() {
     let mut state = MarkdownState::build(&doc.snapshot());
     assert!(state.block_count() > 900_000);
 
-    let id_far = state.blocks().iter().rev().nth(10).unwrap().id;
-    let id_middle = state.blocks()[state.block_count() / 2].id;
+    let id_far = state.blocks().rev().nth(10).unwrap().id();
+    let id_middle = state.blocks().nth(state.block_count() / 2).unwrap().id();
 
     let at_a = offset_of_line(&text, 10) + 4;
     let at_b = offset_of_line(&text, 999_990) + 4;
@@ -429,7 +425,7 @@ fn sparse_two_location_edit_on_one_million_lines() {
     );
     // The middle and the far end kept their identity.
     assert_eq!(
-        state.block_by_id(id_middle).map(|b| b.kind),
+        state.block_by_id(id_middle).map(|b| b.kind()),
         Some(markit_core::BlockKind::Paragraph),
         "middle block untouched"
     );
@@ -550,13 +546,13 @@ fn replace_document_pairs_identical_structure() {
     let text = paragraph_family(2_000);
     let mut doc = Document::new(&text);
     let mut state = MarkdownState::build(&doc.snapshot());
-    let ids_before: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+    let ids_before: Vec<_> = state.blocks().map(|b| b.id()).collect();
 
     let result = doc.replace_all(&text); // same text, new revision
     state
         .update(&doc.snapshot(), &result)
         .expect("reload update");
-    let ids_after: Vec<_> = state.blocks().iter().map(|b| b.id).collect();
+    let ids_after: Vec<_> = state.blocks().map(|b| b.id()).collect();
     assert_eq!(ids_before, ids_after, "identical reload keeps every id");
     assert_matches_rebuild(&doc, &state, "replace-all");
 

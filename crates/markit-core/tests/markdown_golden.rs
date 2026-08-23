@@ -7,10 +7,9 @@
 //! through public data only. Deviation cases cite their D-number from
 //! the contract; CommonMark-aligned cases adopt the 0.31.2 behavior.
 
-use markit_core::markdown::{BlockDetail, MarkdownState, MarkdownStateError};
+use markit_core::markdown::{BlockDetail, BlockView, MarkdownState, MarkdownStateError};
 use markit_core::{
-    BlockKind, BlockRecord, ByteOffset, Document, EditTransaction, InlineNode, LineNumber,
-    SourceRange, TextEdit,
+    BlockKind, ByteOffset, Document, EditTransaction, InlineNode, LineNumber, SourceRange, TextEdit,
 };
 
 struct ExpectedBlock {
@@ -43,20 +42,20 @@ fn inline_block(
     }
 }
 
-fn assert_tiling(blocks: &[BlockRecord], len: usize) {
+fn assert_tiling(blocks: &[BlockView], len: usize) {
     let mut expected_start = 0;
     for (i, b) in blocks.iter().enumerate() {
         assert_eq!(
-            b.source_range.start.as_usize(),
+            b.source_range().start.as_usize(),
             expected_start,
             "fixture block {i}"
         );
         assert!(
-            b.source_range.end.as_usize() > expected_start
+            b.source_range().end.as_usize() > expected_start
                 || (i + 1 == blocks.len() && expected_start == len),
             "fixture block {i} is empty mid-document"
         );
-        expected_start = b.source_range.end.as_usize();
+        expected_start = b.source_range().end.as_usize();
     }
     assert_eq!(expected_start, len, "stream must end at EOF");
 }
@@ -77,28 +76,28 @@ fn run_fixture(name: &str, text: &str, expected: &[ExpectedBlock]) {
     let doc = Document::new(text);
     let snapshot = doc.snapshot();
     let state = MarkdownState::build(&snapshot);
-    let blocks = state.blocks();
+    let blocks: Vec<BlockView> = state.blocks().collect();
 
     assert_eq!(
         blocks.len(),
         expected.len(),
         "{name}: block count\n  got kinds: {:?}",
-        blocks.iter().map(|b| b.kind.name()).collect::<Vec<_>>()
+        blocks.iter().map(|b| b.kind().name()).collect::<Vec<_>>()
     );
     for (i, (got, want)) in blocks.iter().zip(expected).enumerate() {
-        assert_eq!(got.kind, want.kind, "{name}: block {i} kind");
+        assert_eq!(got.kind(), want.kind, "{name}: block {i} kind");
         assert_eq!(
-            snapshot.slice(got.source_range).as_ref(),
+            snapshot.slice(got.source_range()).as_ref(),
             want.text,
             "{name}: block {i} bytes"
         );
         if !want.inlines.is_empty() {
             assert!(
-                !got.inline.runs.is_empty(),
+                !got.inline().runs.is_empty(),
                 "{name}: block {i} should have inline runs"
             );
             let mut flat = Vec::new();
-            flatten(&got.inline.runs[0].nodes, &mut flat);
+            flatten(&got.inline().runs[0].nodes, &mut flat);
             let text_of = |node: &InlineNode| -> String {
                 let range = node_range(node);
                 text[range.start.as_usize()..range.end.as_usize()].to_string()
@@ -113,12 +112,12 @@ fn run_fixture(name: &str, text: &str, expected: &[ExpectedBlock]) {
             assert_eq!(shape, want_shape, "{name}: block {i} inline IR");
         }
     }
-    assert_tiling(blocks, text.len());
+    assert_tiling(&blocks, text.len());
 
     // Determinism: a second build is bit-identical.
     let again = MarkdownState::build(&snapshot);
     assert_eq!(
-        again.blocks(),
+        again.blocks().collect::<Vec<_>>(),
         blocks,
         "{name}: build must be deterministic"
     );
@@ -769,15 +768,15 @@ fn block_details_are_queryable() {
     let snapshot = doc.snapshot();
     let state = MarkdownState::build(&snapshot);
 
-    let heading = &state.blocks()[0];
-    let BlockDetail::Heading { level, content } = &heading.detail else {
+    let heading = state.blocks().next().unwrap();
+    let BlockDetail::Heading { level, content } = heading.detail() else {
         panic!("heading");
     };
     assert_eq!(*level, 2);
     assert_eq!(snapshot.slice(*content).as_ref(), "h");
 
-    let list = &state.blocks()[2];
-    let BlockDetail::List { items, .. } = &list.detail else {
+    let list = state.blocks().nth(2).unwrap();
+    let BlockDetail::List { items, .. } = list.detail() else {
         panic!("list");
     };
     assert_eq!(items.len(), 2);
@@ -786,10 +785,9 @@ fn block_details_are_queryable() {
 
     let fence = state
         .blocks()
-        .iter()
-        .find(|b| b.kind == BlockKind::FencedCode)
+        .find(|b| b.kind() == BlockKind::FencedCode)
         .unwrap();
-    let BlockDetail::FencedCode { fence, closed } = &fence.detail else {
+    let BlockDetail::FencedCode { fence, closed } = fence.detail() else {
         panic!("fence");
     };
     assert!(*closed);
@@ -800,8 +798,8 @@ fn block_details_are_queryable() {
     // Range queries agree with positions.
     let mid = ByteOffset(doc_line_start(&doc, 3));
     let hit = state.block_at_offset(mid).unwrap();
-    assert_eq!(hit.kind, BlockKind::UnorderedList);
-    assert_eq!(hit.line_span, LineNumber(2)..LineNumber(4));
+    assert_eq!(hit.kind(), BlockKind::UnorderedList);
+    assert_eq!(hit.line_span(), LineNumber(2)..LineNumber(4));
 }
 
 fn doc_line_start(doc: &Document, line: usize) -> usize {
@@ -899,15 +897,15 @@ fn crlf_block_details_exclude_terminator_cr() {
     let snapshot = doc.snapshot();
     let state = MarkdownState::build(&snapshot);
 
-    let heading = &state.blocks()[0];
-    let BlockDetail::Heading { level, content } = &heading.detail else {
+    let heading = state.blocks().next().unwrap();
+    let BlockDetail::Heading { level, content } = heading.detail() else {
         panic!("heading");
     };
     assert_eq!(*level, 2);
     assert_eq!(snapshot.slice(*content).as_ref(), "头");
 
-    let fence = &state.blocks()[1];
-    let BlockDetail::FencedCode { fence, closed } = &fence.detail else {
+    let fence = state.blocks().nth(1).unwrap();
+    let BlockDetail::FencedCode { fence, closed } = fence.detail() else {
         panic!("fence");
     };
     assert!(closed, "```\r closes the fence");
@@ -920,7 +918,7 @@ fn crlf_block_details_exclude_terminator_cr() {
 // ---------------------------------------------------------------------------
 
 fn ids(state: &MarkdownState) -> Vec<u64> {
-    state.blocks().iter().map(|b| b.id.as_u64()).collect()
+    state.blocks().map(|b| b.id().as_u64()).collect()
 }
 
 fn edit_at(doc: &mut Document, state: &mut MarkdownState, at: usize, text: &str) {
@@ -1022,10 +1020,11 @@ fn identity_battery() {
         let text = "```\ncode\n```\n";
         let mut doc = Document::new(text);
         let mut state = MarkdownState::build(&doc.snapshot());
-        let fence_before = state.blocks()[0].id;
+        let fence_before = state.blocks().next().unwrap().id();
         edit_at(&mut doc, &mut state, 5, "X");
-        assert_eq!(state.blocks()[0].id, fence_before);
-        assert_eq!(state.blocks()[0].kind, BlockKind::FencedCode);
+        let fence = state.blocks().next().unwrap();
+        assert_eq!(fence.id(), fence_before);
+        assert_eq!(fence.kind(), BlockKind::FencedCode);
     }
 
     // 8: fence reinterpretation of the closer keeps the fence id; the
@@ -1034,12 +1033,19 @@ fn identity_battery() {
         let text = "```\ncode\n```\nafter\n";
         let mut doc = Document::new(text);
         let mut state = MarkdownState::build(&doc.snapshot());
-        let (fence, para) = (state.blocks()[0].id, state.blocks()[1].id);
+        let (fence, para) = (
+            state.blocks().next().unwrap().id(),
+            state.blocks().nth(1).unwrap().id(),
+        );
         delete_range(&mut doc, &mut state, 10, 14);
-        assert_eq!(state.blocks().len(), 1);
-        assert_eq!(state.blocks()[0].id, fence, "the fence survived and grew");
+        assert_eq!(state.block_count(), 1);
+        assert_eq!(
+            state.blocks().next().unwrap().id(),
+            fence,
+            "the fence survived and grew"
+        );
         assert!(
-            !state.blocks().iter().any(|b| b.id == para),
+            !state.blocks().any(|b| b.id() == para),
             "the swallowed paragraph's id retired"
         );
     }
@@ -1074,12 +1080,13 @@ fn identity_battery() {
     {
         let mut doc = Document::new("a\n\n\n\nb\n");
         let mut state = MarkdownState::build(&doc.snapshot());
-        let blank_before = state.blocks()[1].id;
+        let blank_before = state.blocks().nth(1).unwrap().id();
         delete_range(&mut doc, &mut state, 2, 3);
-        let blank_after = &state.blocks()[1];
-        assert_eq!(blank_after.kind, BlockKind::Blank);
+        let blank_after = state.blocks().nth(1).unwrap();
+        assert_eq!(blank_after.kind(), BlockKind::Blank);
         assert_eq!(
-            blank_after.id, blank_before,
+            blank_after.id(),
+            blank_before,
             "shortened blank run keeps its id"
         );
     }

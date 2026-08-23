@@ -1154,7 +1154,7 @@ mod tests {
         let snap = doc.snapshot();
         let state = crate::markdown::MarkdownState::build(&snap);
         let kinds: Vec<_> = state
-            .blocks()
+            .blocks
             .iter()
             .map(|b| (b.kind, b.inline.runs.len(), has_nodes(b)))
             .collect();
@@ -1167,7 +1167,7 @@ mod tests {
             (crate::markdown::BlockKind::UnorderedList, 1, true)
         );
         assert_eq!(kinds[4], (crate::markdown::BlockKind::FencedCode, 0, false));
-        let em = state.blocks()[0].inline.runs[0].nodes[0].clone();
+        let em = state.blocks[0].inline.runs[0].nodes[0].clone();
         assert_eq!(em.kind_name(), "text");
     }
 
@@ -1181,7 +1181,7 @@ mod tests {
         let doc = Document::new("*a* b");
         let snap = doc.snapshot();
         let state = crate::markdown::MarkdownState::build(&snap);
-        let id = state.blocks()[0].id;
+        let id = state.blocks[0].id;
         let ir = state.inline_ir(id).expect("paragraph has inline IR");
         assert_eq!(ir.runs.len(), 1);
         assert_eq!(shape(&ir.runs[0].nodes), vec![("em", 0, 3), ("text", 3, 5)]);

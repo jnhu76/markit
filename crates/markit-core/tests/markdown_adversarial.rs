@@ -21,9 +21,9 @@ fn build_scanned(text: &str) -> (MarkdownState, u64) {
 }
 
 fn first_run_nodes(state: &MarkdownState) -> &[InlineNode] {
-    let block = state.blocks().first().expect("one paragraph");
+    let block = state.blocks().next().expect("one paragraph");
     &state
-        .inline_ir(block.id)
+        .inline_ir(block.id())
         .expect("paragraph has inline IR")
         .runs[0]
         .nodes
@@ -140,13 +140,13 @@ fn deeply_nested_link_attempts_are_budgeted() {
         .expect("update");
     let rebuilt = MarkdownState::build(&doc.snapshot());
     assert_eq!(doc_state.block_count(), rebuilt.block_count());
-    let a = doc_state.blocks().first().unwrap();
-    let b = rebuilt.blocks().first().unwrap();
-    assert_eq!(a.kind, b.kind);
-    assert_eq!(a.source_range, b.source_range);
+    let a = doc_state.blocks().next().unwrap();
+    let b = rebuilt.blocks().next().unwrap();
+    assert_eq!(a.kind(), b.kind());
+    assert_eq!(a.source_range(), b.source_range());
     assert_eq!(
-        doc_state.inline_ir(a.id).unwrap().runs[0].nodes,
-        rebuilt.inline_ir(b.id).unwrap().runs[0].nodes,
+        doc_state.inline_ir(a.id()).unwrap().runs[0].nodes,
+        rebuilt.inline_ir(b.id()).unwrap().runs[0].nodes,
         "bounded degradation is deterministic"
     );
 }
