@@ -8,17 +8,20 @@ publish = false
 [dependencies]
 markit-core = { workspace = true }
 # G0-frozen GPUI baseline (see workspace.dependencies and
-# docs/product/g0-gpui-baseline.md). Optional until P0-03 makes the GPUI path
-# the product default: core-only PRs must not be forced to build GPUI, and
-# hosts without UI system libraries must still run `cargo test --workspace`.
-# The dependency never moves to markit-core.
+# docs/product/g0-gpui-baseline.md). Since P0-03 the GPUI editor slice is
+# the product default (feature `editor`, on by default);
+# `--no-default-features` keeps a headless build for hosts without UI
+# system libraries so `cargo test --workspace` stays runnable there. The
+# dependency never moves to markit-core.
 gpui = { workspace = true, optional = true }
 gpui_platform = { workspace = true, optional = true }
 env_logger = { version = "0.11", optional = true }
 log = { version = "0.4", optional = true }
 
 [features]
-# G0 baseline probe (roadmap G0): minimal windowed capability/instrumentation
-# probe for the pinned GPUI revision. Not an editor; P0-03 replaces it with
-# the first real product slice.
+default = ["editor"]
+# P0-03 first product vertical slice: the real GPUI Markit window.
+editor = ["dep:gpui", "dep:gpui_platform", "dep:env_logger", "dep:log"]
+# G0 baseline probe (roadmap G0): diagnostic instrumentation for the pinned
+# GPUI revision. Not an editor; kept for baseline evidence reruns.
 g0-probe = ["dep:gpui", "dep:gpui_platform", "dep:env_logger", "dep:log"]
