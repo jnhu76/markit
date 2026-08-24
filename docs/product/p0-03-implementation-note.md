@@ -22,8 +22,9 @@ keystroke
   → EditTransaction
   → Document revision N → N+1 with canonical per-edit EditResult regions
   → MarkdownState::update(snapshot, &EditResult)   [incremental, exact]
-  → visible projection (blocks_in_lines over a viewport-bounded line span
-    + snapshot.slice materialization)
+  → visible projection (blocks_in_lines over a viewport-bounded line
+    span; each block's bytes clipped to that span's bytes, then
+    snapshot.slice materialization)
   → GPUI layout/paint in the next demanded frame
   → changed pixels
 ```
@@ -45,18 +46,26 @@ without UI system libraries can still run `cargo test --workspace`;
   core stays byte-addressed.
 - **The app never reparses.** Every successful transaction calls
   `MarkdownState::update` with the exact `EditResult`. `update` fails
-  closed on any version mismatch; the only other rebuild owner besides
-  the initial build is the explicit, loudly-logged recovery inside
-  `apply_transaction` (cannot fire while both states advance in
-  lockstep; it exists so the failure mode is defined, not silent).
+  closed on any version mismatch, and so does the transaction path: on
+  rejection the slice retains `Document@N+1` with the stale
+  `MarkdownState@N`, marks itself INCOHERENT, publishes no
+  Markdown-derived pixels, and performs **no automatic rebuild** —
+  `MarkdownState::build` is owned by explicit initial load (and a future
+  explicit reset/reload action), never by typing recovery. The breach
+  stays loud instead of being masked (PR #17 review).
 - **Coherent publication**: the projection styles through the Markdown
   state only when `markdown.version() == document.version()`; a mixture
   is never painted.
-- **Viewport-bounded visible work**: the render queries
-  `blocks_in_lines(0..visible_rows)` where `visible_rows` is a window-
-  height-over-fixed-line-height estimate + 1 line overscan (element-
-  measured viewports arrive with real scrolling in P1-A). Materialization
-  goes through `snapshot.slice(block.source_range())`.
+- **Viewport-bounded visible work — including materialization**: the
+  render queries `blocks_in_lines(0..visible_rows)` where `visible_rows`
+  is a window-height-over-fixed-line-height estimate + 1 line overscan
+  (element-measured viewports arrive with real scrolling in P1-A). A
+  block may span far beyond the viewport (one paragraph can be the whole
+  document), so the projection derives the byte span of the requested
+  lines, intersects every returned block's `source_range` with it, and
+  materializes only the intersection — visible text is bounded by the
+  viewport span (+ explicit overscan), never by block/document size
+  (regression: `projection_materializes_only_the_requested_span_for_huge_blocks`).
 - **One Markdown semantic → one visual fact (minimum)**: heading level →
   size/bold/color; fenced code → distinct color. Markdown markers remain
   visible — no syntax hiding (P3).
@@ -104,8 +113,12 @@ P0-03 dump draws=6 rev=2 md_rev=2 coherent=true …   (2 s later, idle)
 
 - window opens; initial Markdown visibly styled (`p0-03-before.png`:
   `# Markit` large/bold/blue vs ordinary paragraph text);
-- one real key changes the `Document`: revision 0→1→2, each transaction
-  exactly one step; `MarkdownState` reaches the same version
+- real input changes the `Document` as two transactions, each advancing
+  exactly one revision: the `x` keypress opened a Pinyin composition
+  (transaction 1: provisional insert, `Typing` intent, rev 0→1) and
+  `ENTER` committed it (transaction 2: `replace_text_in_range`,
+  `ImeCommit` intent, rev 1→2). The pair 0→1→2 is key+commit, not "one
+  key"; `MarkdownState` reaches the same version as the document
   (`rev=2 md_rev=2 coherent=true`);
 - edited pixels visibly change: before/after window captures differ
   (SHA256 in `p0-03-meta.txt`; `x` line visible in `p0-03-after.png`);
@@ -139,7 +152,23 @@ path — no other notify source exists in the slice).
   lockstep;
 - `version_mismatch_fails_closed_at_the_product_seam` — stale /
   non-matching results are rejected (`SnapshotNotAtNewRevision`,
-  `StaleBase`) with the state untouched; recovery is an explicit rebuild.
+  `StaleBase`) with the state untouched; `MarkdownState::build` stays
+  owned by explicit initial load/reset — the app keeps
+  `Document@N+1` + stale `MarkdownState@N` and renders INCOHERENT
+  rather than rebuilding.
+
+Plus three windowless unit tests inside
+`apps/markit/src/editor_slice.rs` (they link GPUI but open no window):
+`line_span_bytes_covers_exactly_the_requested_lines` (span derivation,
+EOF clamp, degenerate ranges), `projection_full_document_viewport_is_
+unclipped` (clipping changes nothing on the normal full-document
+path), and the adversarial `projection_materializes_only_the_requested_
+span_for_huge_blocks`: one ~50 KB single-paragraph block (400 joined
+lines) queried through a 2-line viewport deep inside it — materialized
+bytes must stay ≤ the requested span's bytes (~100× smaller than the
+block/document) and be exactly the two requested lines. This is the PR
+#17 review regression: the pre-fix projection materialized
+`slice(block.source_range())`, i.e. O(block) text per frame.
 
 `blocks_reparsed == 1/2` here is fixture evidence, not a law (issue #12
 R6): structural edits may honestly propagate further, and the counters

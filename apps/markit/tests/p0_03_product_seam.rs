@@ -224,9 +224,12 @@ fn version_mismatch_fails_closed_at_the_product_seam() {
     assert_eq!(state.version().document_id(), doc.id());
     assert_eq!(doc.version().revision().as_u64(), 2);
 
-    // Recovery is an explicit full rebuild at the current version — never
-    // a silent one hidden inside `update` (the app's only other rebuild
-    // owner besides the initial build).
+    // `MarkdownState::build` stays valid ONLY for explicit ownership
+    // moments — initial load, and a future explicit reset/reload action —
+    // never as automatic recovery inside the transaction hot path
+    // (`apply_transaction` keeps Document@N+1 + stale MarkdownState@N
+    // and renders INCOHERENT; it never rebuilds). This build only proves
+    // the document itself is still fully recoverable:
     let rebuilt = MarkdownState::build(&doc.snapshot());
     assert_eq!(rebuilt.version(), doc.version());
     assert_eq!(rebuilt.block_count(), state.block_count());

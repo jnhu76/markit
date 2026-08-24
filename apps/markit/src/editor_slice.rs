@@ -7,7 +7,8 @@
 //!   -> EditTransaction
 //!   -> Document (revision + canonical EditResult regions)
 //!   -> MarkdownState::update(snapshot, &EditResult)
-//!   -> visible projection (blocks_in_lines + snapshot.slice)
+//!   -> visible projection (blocks_in_lines; each block's bytes clipped
+//!      to the visible lines' byte span before snapshot.slice)
 //!   -> GPUI layout/paint in the next demanded frame
 //!   -> changed pixels
 //! ```
@@ -108,10 +109,14 @@ impl EditorSlice {
     /// Applies `tx` and advances the Markdown state from the exact
     /// canonical `EditResult` — the entire semantic half of the slice.
     ///
-    /// The app never reparses independently. `MarkdownState::update` fails
-    /// closed on any version mismatch; the only recovery is this explicit,
-    /// loudly-logged full rebuild (the same rebuild owner as initial
-    /// load), never a silent one.
+    /// The app never reparses independently. `MarkdownState::update`
+    /// fails closed on any version mismatch, and so does this path: on
+    /// rejection the document keeps its new revision, the Markdown state
+    /// keeps its last coherent one, and the render gate publishes no
+    /// Markdown-derived pixels for the incoherent pair. There is
+    /// deliberately NO automatic rebuild here — `MarkdownState::build`
+    /// belongs to explicit initial-load/reset ownership, and a hot-path
+    /// rebuild would mask the invariant breach instead of exposing it.
     fn apply_transaction(&mut self, tx: EditTransaction) -> Option<EditResult> {
         let intent = tx.intent();
         let applied = match tx.apply(&mut self.document) {
@@ -125,20 +130,30 @@ impl EditorSlice {
         let result = applied.result;
         let snapshot = self.document.snapshot();
         if let Err(err) = self.markdown.update(&snapshot, &result) {
+            // Fail closed: keep Document@N+1 + stale MarkdownState@N and go
+            // INCOHERENT. `last_work()` still describes the stale state's
+            // previous transition, so this branch must not log it as if it
+            // were this edit's Markdown work.
             log::error!(
-                "P0-03 MarkdownState::update rejected rev {}->{} ({err}); explicit full rebuild",
+                "P0-03 MarkdownState::update rejected rev {}->{} ({err}); \
+                 retaining Document@{} + stale MarkdownState@{} — INCOHERENT, \
+                 no automatic rebuild",
                 result.base_version.revision().as_u64(),
                 result.new_version.revision().as_u64(),
+                result.new_version.revision().as_u64(),
+                self.markdown.version().revision().as_u64(),
             );
-            self.markdown = MarkdownState::build(&snapshot);
+            self.last_status = format!(
+                "INCOHERENT doc@{} md@{}: {err}",
+                result.new_version.revision().as_u64(),
+                self.markdown.version().revision().as_u64(),
+            );
+            return Some(result);
         }
-        debug_assert_eq!(
-            self.markdown.version(),
-            self.document.version(),
-            "markdown state must track the document version"
-        );
 
         // P0-01 + P0-02 structural counters, end-to-end on the product path.
+        // Only reached on a coherent transition, so both counters describe
+        // this edit.
         let ew = result.work;
         let mw = self.markdown.last_work();
         log::info!(
@@ -273,31 +288,66 @@ struct VisibleBlock {
     text: String,
 }
 
+/// The byte span covering exactly `lines` (clamped to the document):
+/// first byte of the first requested line through the last requested
+/// line's terminator. This is the hard bound on what the projection may
+/// materialize — the caller's explicit overscan is part of `lines`.
+fn line_span_bytes(snapshot: &DocumentSnapshot<'_>, lines: &Range<LineNumber>) -> SourceRange {
+    let last_line = snapshot.line_count().saturating_sub(1);
+    let start = snapshot
+        .line_range(LineNumber(lines.start.as_usize().min(last_line)))
+        .start;
+    if lines.start >= lines.end {
+        return SourceRange::new(start, start);
+    }
+    let end_line = (lines.end.as_usize() - 1).min(last_line);
+    let end = if end_line + 1 < snapshot.line_count() {
+        snapshot.line_range(LineNumber(end_line + 1)).start
+    } else {
+        ByteOffset(snapshot.len_bytes())
+    };
+    SourceRange::new(start, end.max(start))
+}
+
+/// Overlap of `range` with `to`; `None` when they share no bytes.
+fn clip_range(range: SourceRange, to: SourceRange) -> Option<SourceRange> {
+    let start = range.start.0.max(to.start.0);
+    let end = range.end.0.min(to.end.0);
+    (start < end).then(|| SourceRange::new(ByteOffset(start), ByteOffset(end)))
+}
+
 /// The tiny P0-03 projection: query only the visible line span, then
-/// materialize each block's text through the snapshot. Heading level is
-/// the one Markdown semantic fact that becomes a visual style fact.
+/// materialize each block's text clipped to that span's bytes. A block
+/// may span far beyond the viewport (one paragraph can be the whole
+/// document), so materializing a block's full `source_range` would make
+/// visible work O(block) or worse; the clip keeps it bounded by the
+/// requested span while `BlockKind`/`BlockDetail` stay the semantic and
+/// style source. Heading level is the one Markdown semantic fact that
+/// becomes a visual style fact.
 fn project_visible_blocks(
     snapshot: &DocumentSnapshot<'_>,
     markdown: &MarkdownState,
     lines: Range<LineNumber>,
 ) -> Vec<VisibleBlock> {
+    let visible_bytes = line_span_bytes(snapshot, &lines);
     markdown
         .blocks_in_lines(lines)
         .filter(|view| view.kind() != BlockKind::Blank)
-        .map(|view| {
+        .filter_map(|view| {
             let heading_level = match view.detail() {
                 BlockDetail::Heading { level, .. } => Some(*level),
                 _ => None,
             };
+            let clipped = clip_range(view.source_range(), visible_bytes)?;
             let text = snapshot
-                .slice(view.source_range())
+                .slice(clipped)
                 .trim_end_matches(['\n', '\r'])
                 .to_string();
-            VisibleBlock {
+            Some(VisibleBlock {
                 kind: view.kind(),
                 heading_level,
                 text,
-            }
+            })
         })
         .collect()
 }
@@ -551,8 +601,9 @@ impl Render for EditorSlice {
         // Coherent publication: style through the Markdown state only when
         // it describes exactly the current document version. The two
         // advance in lockstep in `apply_transaction`; a mismatch here is
-        // the logged recovery path's business and must not paint a
-        // doc-vN + markdown-vM mixture.
+        // the fail-closed INCOHERENT state's business (update rejected,
+        // no automatic rebuild) and must not paint a doc-vN + markdown-vM
+        // mixture.
         let coherent = self.markdown.version() == self.document.version();
         let blocks = if coherent {
             let snapshot = self.document.snapshot();
@@ -654,4 +705,131 @@ pub fn run() {
             .update(cx, |_, window, cx| window.focus(&focus.1, cx))
             .ok();
     });
+}
+
+#[cfg(test)]
+mod tests {
+    //! Structural viewport-boundedness regressions for the projection
+    //! (PR #17 review): the materialized text must be bounded by the
+    //! REQUESTED line span, never by block or document size. These run
+    //! windowless; only the projection's pure functions are exercised.
+
+    use super::*;
+
+    #[test]
+    fn line_span_bytes_covers_exactly_the_requested_lines() {
+        // Fixture bytes: "# Markit\n" 0..9, blank "\n" at 9, "Edit **me**.\n"
+        // 10..23, final empty line 3 at 23 (23 bytes total).
+        let doc = Document::new(INITIAL_DOCUMENT);
+        let snapshot = doc.snapshot();
+        assert_eq!(snapshot.len_bytes(), 23);
+        assert_eq!(snapshot.line_count(), 4);
+
+        let span = |a: usize, b: usize| line_span_bytes(&snapshot, &(LineNumber(a)..LineNumber(b)));
+
+        // One line including its terminator.
+        assert_eq!(
+            span(2, 3),
+            SourceRange::new(ByteOffset(10), ByteOffset(23)),
+            "line 2 through its '\\n'"
+        );
+        // Two lines from the document start.
+        assert_eq!(span(0, 2), SourceRange::new(ByteOffset(0), ByteOffset(10)));
+        // The final (empty) line has no terminator: empty span at EOF.
+        assert_eq!(span(3, 4), SourceRange::new(ByteOffset(23), ByteOffset(23)));
+        // Clamped past EOF, and degenerate/empty requests stay well-formed.
+        assert_eq!(
+            span(9, 20),
+            SourceRange::new(ByteOffset(23), ByteOffset(23))
+        );
+        assert_eq!(span(2, 2), SourceRange::new(ByteOffset(10), ByteOffset(10)));
+        assert_eq!(span(3, 1), SourceRange::new(ByteOffset(23), ByteOffset(23)));
+    }
+
+    #[test]
+    fn projection_full_document_viewport_is_unclipped() {
+        // Guard: with the viewport covering the whole fixture, clipping
+        // must not change the normal-path output (markers stay visible).
+        let doc = Document::new(INITIAL_DOCUMENT);
+        let snapshot = doc.snapshot();
+        let markdown = MarkdownState::build(&snapshot);
+
+        let visible = project_visible_blocks(
+            &snapshot,
+            &markdown,
+            LineNumber(0)..LineNumber(snapshot.line_count()),
+        );
+
+        let summary: Vec<(BlockKind, Option<u8>, &str)> = visible
+            .iter()
+            .map(|b| (b.kind, b.heading_level, b.text.as_str()))
+            .collect();
+        assert_eq!(
+            summary,
+            vec![
+                (BlockKind::Heading, Some(1), "# Markit"),
+                (BlockKind::Paragraph, None, "Edit **me**."),
+            ],
+            "blank runs are filtered; heading keeps its level; markers visible"
+        );
+    }
+
+    #[test]
+    fn projection_materializes_only_the_requested_span_for_huge_blocks() {
+        // Adversarial shape (PR #17 review blocker 1): one paragraph of
+        // 400 joined lines (~50 KB) is ONE block spanning the whole
+        // document, queried through a 2-line viewport deep inside it.
+        // Pre-fix behavior materialized `slice(block.source_range())` —
+        // O(block) text per frame; the bound must be the requested span.
+        let line = "w".repeat(120);
+        let text = (0..400)
+            .map(|i| format!("{line} {i}"))
+            .collect::<Vec<_>>()
+            .join("\n");
+        let doc = Document::new(&text);
+        let snapshot = doc.snapshot();
+        let markdown = MarkdownState::build(&snapshot);
+
+        // The adversarial premise holds: the entire document is one block.
+        assert_eq!(markdown.block_count(), 1);
+        let block = markdown
+            .blocks_in_lines(LineNumber(0)..LineNumber(1))
+            .next()
+            .expect("the one block");
+        assert_eq!(block.kind(), BlockKind::Paragraph);
+        assert_eq!(block.source_range().len(), text.len());
+
+        let viewport = LineNumber(150)..LineNumber(152);
+        let span = line_span_bytes(&snapshot, &viewport);
+        assert!(
+            span.len() * 100 < text.len(),
+            "span {} must be tiny against the {} byte document",
+            span.len(),
+            text.len()
+        );
+
+        let visible = project_visible_blocks(&snapshot, &markdown, viewport);
+        assert_eq!(visible.len(), 1, "the huge block, clipped");
+        let materialized: usize = visible.iter().map(|b| b.text.len()).sum();
+
+        // Bounded by the requested span's bytes (the caller asked for
+        // exactly two lines; overscan would be the caller's explicit
+        // addition to `viewport`, not something the projection adds).
+        assert!(
+            materialized <= span.len(),
+            "materialized {materialized} bytes exceeds the {span_len} byte span",
+            span_len = span.len()
+        );
+        assert!(
+            materialized * 100 < text.len(),
+            "materialized {materialized} bytes scales with the document ({} bytes)",
+            text.len()
+        );
+
+        // And it is the RIGHT text: exactly the two requested lines, not
+        // a block-aligned surrogate.
+        assert_eq!(visible[0].kind, BlockKind::Paragraph);
+        assert_eq!(visible[0].heading_level, None);
+        assert_eq!(visible[0].text, format!("{line} 150\n{line} 151"));
+    }
 }
