@@ -82,7 +82,9 @@ without UI system libraries can still run `cargo test --workspace`;
 ## Windows real-host smoke evidence
 
 Receipt: `results/evidence/p0-03/` (log, before/after PNGs, meta, driver
-script). Setup: the G0 host (AMD Ryzen 7 5800H, Windows 11, 2560x1440@60,
+script), captured at commit `0eb0806` (the post-review-remediation
+build; viewport clipping + fail-closed incoherence). Setup: the G0 host
+(AMD Ryzen 7 5800H, Windows 11, 2560x1440@60,
 scale 100%), native Windows release build of the pinned baseline, real
 input via `SendKeys` after `AppActivate`, DPI-aware window capture, idle
 CPU/RSS via `Process` counters. The host's default input method is
@@ -94,7 +96,7 @@ opened a composition (provisional transaction, `Typing` intent) and
 Facts from the receipt (`p0-03-smoke.log`):
 
 ```text
-P0-03 editor slice start pid=11672
+P0-03 editor slice start pid=28848
 P0-03 initial build rev=0 lines=4 blocks=4 md_work[dirty_regions=1
   lines_scanned=4 bytes_scanned=23 blocks_created=4]
 P0-03 composition update text="x" …            ← real key 'x'
@@ -121,14 +123,28 @@ P0-03 dump draws=6 rev=2 md_rev=2 coherent=true …   (2 s later, idle)
   key"; `MarkdownState` reaches the same version as the document
   (`rev=2 md_rev=2 coherent=true`);
 - edited pixels visibly change: before/after window captures differ
-  (SHA256 in `p0-03-meta.txt`; `x` line visible in `p0-03-after.png`);
+  (SHA256 in `p0-03-meta.txt`); a pixel-diff of the two captures
+  localizes the change to exactly the expected bands — the appended `x`
+  glyph line inside the joined paragraph (~52 px), the fully rewritten
+  status line (counters/rev), and ~40 px of glyph-antialiasing noise in
+  the heading band;
 - P0-01/P0-02 counters emitted per edit (above) and visible in the
   status bar;
 - idle has no application update loop: across the 2 s between the two
   F12 dumps, draws advanced 5→6 — the +1 is the first dump's own
   `cx.notify()` repaint; a frame loop would have added ~120. Idle CPU
-  ≈ 0.4 % over 4 s of sampling (the baseline's documented vsync-thread
-  wakeup floor; G0 report §4), 38 MB WS, no growth.
+  ≈ 0.4–0.8 % across runs (0.02–0.06 CPU-seconds over the 4 s sampling
+  window; the baseline's documented vsync-thread wakeup floor; G0
+  report §4), 38 MB WS, no growth.
+
+Incidental observation (log not retained): an earlier run of this same
+build on the live host was contaminated by real human typing through
+the still-focused window — ~120 additional IME transactions (compositions
+plus multi-character sentence commits, revs 3–121). Every one stayed in
+lockstep (`coherent=true` at each dump, zero update rejections) with
+Markdown work local throughout (`dirty_regions=1`, `blocks_reparsed=1`,
+`lines_scanned=2`). Not a controlled benchmark; recorded only because
+it is the largest sustained-real-IME sample so far.
 
 Observation vs inference (the log is observation; the attribution of the
 +1 draw to the dump's own notify is inference from the demand-driven code
