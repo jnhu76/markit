@@ -46,7 +46,8 @@ Notes on the declaration:
 
 - The pin is an **immutable commit SHA**, never a branch or moving tag.
 - The dependency lives in the product workspace and is consumed only by
-  GPUI-facing crates (`apps/markit` via the `g0-probe` feature until P0-03).
+  GPUI-facing crates (`apps/markit`: the `editor` product feature since
+  P0-03, default on; the `g0-probe` diagnostic feature before that).
   `markit-core` stays GPUI-free (P0 acceptance, G2 gate).
 - `mvp/gpui` remains the historical Phase A0 prototype with its own crates.io
   lockfile; it is not rewritten and does not follow the product pin.
@@ -197,8 +198,9 @@ IME trace, idle sampling, screenshots, host summary).
 
 ## 7. Probe
 
-`apps/markit` (feature `g0-probe`, default off) contains the minimal probe
-used for §5:
+`apps/markit` (feature `g0-probe`; since P0-03 it is a diagnostic on top
+of the default `editor` product path, no longer the app's raison d'être)
+contains the minimal probe used for §5:
 
 ```bash
 # static gates from WSL (cross target): cargo check + clippy work cross-built

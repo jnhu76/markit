@@ -1,0 +1,11 @@
+[2026-08-24T17:45:39.700159Z INFO  markit::editor_slice] P0-03 editor slice start pid=11672
+[2026-08-24T17:45:39.732441Z INFO  gpui_windows::directx_devices] Using GPU: AMD Radeon(TM) Graphics
+[2026-08-24T17:45:39.766796Z INFO  gpui_windows::directx_devices] Created device with Direct3D 11.1 feature level.
+[2026-08-24T17:45:39.769319Z INFO  gpui_windows::direct_write] Use Microsoft YaHei UI as UI font.
+[2026-08-24T17:45:40.027650Z INFO  markit::editor_slice] P0-03 initial build rev=0 lines=4 blocks=4 md_work[dirty_regions=1 lines_scanned=4 bytes_scanned=23 blocks_created=4]
+[2026-08-24T17:45:42.799308Z INFO  markit::editor_slice] P0-03 composition update text="x" replaced=SourceRange { start: ByteOffset(23), end: ByteOffset(23) } selected_utf16=Some(1..1)
+[2026-08-24T17:45:42.803269Z INFO  markit::editor_slice] P0-03 edit rev=1 intent=Typing edit_work[changed_bytes=1 changed_lines=1 bytes_scanned=1 line_entries_touched=0 full_rebuilds=0] md_work[dirty_regions=1 restart_line=2 lines_scanned=2 bytes_scanned=14 blocks_examined=2 blocks_reparsed=1 blocks_created=0 blocks_removed=1 inline_blocks_reparsed=1 inline_bytes_scanned=16 convergence_line=4]
+[2026-08-24T17:45:43.598777Z INFO  markit::editor_slice] P0-03 ime commit text="x" replaced=SourceRange { start: ByteOffset(23), end: ByteOffset(24) }
+[2026-08-24T17:45:43.599032Z INFO  markit::editor_slice] P0-03 edit rev=2 intent=ImeCommit edit_work[changed_bytes=2 changed_lines=1 bytes_scanned=1 line_entries_touched=0 full_rebuilds=0] md_work[dirty_regions=1 restart_line=2 lines_scanned=2 bytes_scanned=14 blocks_examined=1 blocks_reparsed=1 blocks_created=0 blocks_removed=0 inline_blocks_reparsed=1 inline_bytes_scanned=16 convergence_line=4]
+[2026-08-24T17:45:46.454363Z INFO  markit::editor_slice] P0-03 dump draws=5 rev=2 md_rev=2 coherent=true blocks=3 lines=4 caret=24 composition=None status=rev 2 | doc[cb=2 cl=1 scan=1 le=0] md[dirty=1 reparsed=1 lines=2]
+[2026-08-24T17:45:48.463816Z INFO  markit::editor_slice] P0-03 dump draws=6 rev=2 md_rev=2 coherent=true blocks=3 lines=4 caret=24 composition=None status=rev 2 | doc[cb=2 cl=1 scan=1 le=0] md[dirty=1 reparsed=1 lines=2]

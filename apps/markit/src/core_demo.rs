@@ -1,8 +1,9 @@
-//! markit-core seam demo (P0-01 product-workspace smoke).
+//! markit-core seam demo (P0-01 product-workspace smoke; headless
+//! diagnostic, kept alive via `markit --core-demo`).
 //!
-//! Exercises the exact seams the editor shell will use: transaction mutation,
-//! mutation-time change propagation, revision-gated derived work. No UI
-//! substrate — the window/editor shell lands with P0-03.
+//! Exercises the exact seams the GPUI editor slice uses: transaction
+//! mutation, mutation-time change propagation, revision-gated derived work.
+//! The real window/editor path is `editor_slice.rs` (P0-03).
 
 use markit_core::{
     ByteOffset, Document, EditTransaction, LineNumber, Revisioned, Selection, TextEdit,

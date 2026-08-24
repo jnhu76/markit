@@ -263,7 +263,26 @@ GPUI-independent; does not wait for G0.
 - Non-goals: everything GPUI (that is P0-03), view model, commands beyond
   what P0-01 already owns.
 
-### P0-03 — First product vertical slice
+### P0-03 — First product vertical slice ✅ DONE (2026-08-25)
+
+Status note: **P0-03 is implemented** — the default `markit` binary is a
+real GPUI window (feature `editor`, on by default; `--no-default-features`
+keeps a headless build): platform text input (UTF-16 only at the
+`EntityInputHandler` boundary) → `EditTransaction` → canonical
+`EditResult` regions → `MarkdownState::update(snapshot, &result)` →
+viewport-bounded `blocks_in_lines` projection → styled GPUI paint in the
+next demanded frame. Heading level and fenced code render as visible
+style differences; Markdown markers stay visible. Authoritative state is
+exactly `Document` + `MarkdownState` + input-boundary selection; the app
+never reparses independently and `update` fails closed on version
+mismatch. P0-01 `EditWork` and P0-02 `MarkdownWork` counters are logged
+and shown per edit; rendering is demand-driven (no frame/timer loop;
+Windows smoke shows draws advancing only with observable changes).
+Headless product-seam regression: `apps/markit/tests/p0_03_product_seam.rs`.
+Windows real-host smoke receipt: `results/evidence/p0-03/`. See
+`docs/product/p0-03-implementation-note.md`.
+
+Original scope (for history):
 
 Begins only after **both** G0 and P0-02 are ready.
 

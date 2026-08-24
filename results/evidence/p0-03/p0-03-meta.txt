@@ -1,0 +1,14 @@
+﻿before_shot=736x519 at (912,461)
+sendkeys AppActivate=True
+after_shot=736x519 at (912,461)
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.453 ws_mb=38.4 threads=29
+idle_sample cpu_s=0.469 ws_mb=38.6 threads=29
+before_sha256=529DD0A505D22E846808AF35DFE0EF5A266E2E243167F21041E7FA4DCB88D3BD
+after_sha256=A4ED5E62430E074B0EBBAF6CD53B555AFFB43D418E64ADFA8E7C6BC0A871C3B2
+pixels_changed=True

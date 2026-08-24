@@ -36,7 +36,10 @@ results/raw/*
 # Curated frozen-baseline evidence is small and must stay reviewable
 # (docs/product/g0-gpui-baseline.md §5). Explicitly re-include it because
 # the generic *.log rule above would otherwise ignore the trace files.
+# Same policy for the P0-03 product-slice smoke receipt.
 !results/evidence/
 !results/evidence/g0/*
 !results/evidence/g0/*.log
+!results/evidence/p0-03/*
+!results/evidence/p0-03/*.log
 bench/__pycache__/

@@ -66,7 +66,7 @@ rather than work proportional to the total document.
 ## Current Goals
 
 The roadmap is a dependency graph (see `docs/product/roadmap.md`), not a
-waterfall. Status as of 2026-08-22:
+waterfall. Status as of 2026-08-25:
 
 1. ✅ P0-01 — framework-independent document core (`markit-core`):
    Document, incremental LineIndex, Selection, EditTransaction, explicit
@@ -74,12 +74,12 @@ waterfall. Status as of 2026-08-22:
 2. ✅ G0 — GPUI baseline frozen: `zed` rev `eb8e1c8` (Zed v1.16.1),
    capability-audited and Windows-validated
    (`docs/product/g0-gpui-baseline.md`).
-3. P0-02 — Markdown BlockIndex + internal IR with golden fixtures and a
-   differential oracle (GPUI-independent; may proceed independently of
-   G0).
-4. P0-03 — first product vertical slice on the frozen baseline:
-   keystroke → document → Markdown IR → visible GPUI pixels (needs both
-   G0 and P0-02).
+3. ✅ P0-02 — Markdown BlockIndex + internal IR with golden fixtures and
+   a differential oracle (PR #14).
+4. ✅ P0-03 — first product vertical slice on the frozen baseline:
+   keystroke → EditTransaction → Document/MarkdownState → visible styled
+   GPUI pixels, Windows smoke-evidenced
+   (`docs/product/p0-03-implementation-note.md`).
 5. P1-A dogfood editor → P1-B v0.1 hardening (real-host performance
    matrix, buffer/index decision gate, atomic save + crash recovery,
    portable release artifact).
