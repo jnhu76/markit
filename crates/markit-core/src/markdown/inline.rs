@@ -399,7 +399,13 @@ enum LinkOutcome {
     Literal,
 }
 
-fn try_link(text: &str, open: usize, base: usize, ctx: &mut InlineCtx, bt: &BacktickIndex) -> LinkOutcome {
+fn try_link(
+    text: &str,
+    open: usize,
+    base: usize,
+    ctx: &mut InlineCtx,
+    bt: &BacktickIndex,
+) -> LinkOutcome {
     let (outcome, seen) = try_link_inner(text, open, base, ctx, bt);
     // Charge the bytes this attempt actually examined (bracket match +
     // destination/title). The budget exists to bound *repeated*
@@ -1149,10 +1155,7 @@ mod tests {
         let nodes = parse("_a *b_ c*");
         assert_eq!(shape(&nodes), vec![("em", 0, 6), ("text", 6, 9)]);
         // Non-crossing mixed emphasis still nests correctly.
-        assert_eq!(
-            shape(&parse("*a _b_ c*")),
-            vec![("em", 0, 9)]
-        );
+        assert_eq!(shape(&parse("*a _b_ c*")), vec![("em", 0, 9)]);
         let nodes = parse("*a _b_ c*");
         let InlineNode::Emphasis { children, .. } = &nodes[0] else {
             panic!()

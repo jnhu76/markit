@@ -264,7 +264,9 @@ fn assert_laminar(nodes: &[InlineNode]) {
             InlineNode::Text { range } | InlineNode::Code { range } => (range, &[]),
             InlineNode::Emphasis { range, children }
             | InlineNode::Strong { range, children }
-            | InlineNode::Link { range, children, .. } => (range, children),
+            | InlineNode::Link {
+                range, children, ..
+            } => (range, children),
         };
         for child in children {
             let cr = match child {

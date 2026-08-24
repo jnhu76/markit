@@ -117,11 +117,19 @@ fn run_fixture(name: &str, text: &str, expected: &[ExpectedBlock]) {
     // Determinism: a second build is bit-identical in observable properties.
     let again = MarkdownState::build(&snapshot);
     let again_blocks: Vec<BlockView> = again.blocks().collect();
-    assert_eq!(again_blocks.len(), blocks.len(), "{name}: block count drift");
+    assert_eq!(
+        again_blocks.len(),
+        blocks.len(),
+        "{name}: block count drift"
+    );
     for (i, (a, b)) in again_blocks.iter().zip(blocks.iter()).enumerate() {
         assert_eq!(a.id(), b.id(), "{name}: block {i} id");
         assert_eq!(a.kind(), b.kind(), "{name}: block {i} kind");
-        assert_eq!(a.source_range(), b.source_range(), "{name}: block {i} range");
+        assert_eq!(
+            a.source_range(),
+            b.source_range(),
+            "{name}: block {i} range"
+        );
         assert_eq!(a.line_span(), b.line_span(), "{name}: block {i} line_span");
         assert_eq!(a.detail(), b.detail(), "{name}: block {i} detail");
         assert_eq!(a.inline(), b.inline(), "{name}: block {i} inline");

@@ -607,15 +607,9 @@ mod tests {
         let r = doc
             .apply_edit(TextEdit::replace(range(6, 11), "markit"))
             .unwrap();
-        assert_eq!(
-            r.base_version.revision(),
-            DocumentRevision::INITIAL
-        );
+        assert_eq!(r.base_version.revision(), DocumentRevision::INITIAL);
         assert_eq!(r.base_version.document_id(), doc.id());
-        assert_eq!(
-            r.new_version.revision(),
-            DocumentRevision::INITIAL.next()
-        );
+        assert_eq!(r.new_version.revision(), DocumentRevision::INITIAL.next());
         assert_eq!(r.new_version.document_id(), doc.id());
         assert_eq!(r.kind, ChangeKind::Replace);
         assert_eq!(r.covering_old_range, range(6, 11));
