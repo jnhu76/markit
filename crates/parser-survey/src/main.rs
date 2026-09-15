@@ -22,6 +22,7 @@ mod md4c;
 mod measure;
 mod mutate;
 mod text;
+mod tsitter;
 
 use std::path::PathBuf;
 use std::process::Command;
@@ -36,6 +37,8 @@ struct Args {
     out: PathBuf,
     commonmark: Option<PathBuf>,
     md4c: bool,
+    ts: bool,
+    ts_deep200: bool,
 }
 
 fn parse_size(s: &str) -> Option<usize> {
@@ -56,6 +59,8 @@ fn parse_args() -> Args {
         warm: 2,
         commonmark: None,
         md4c: false,
+        ts: false,
+        ts_deep200: false,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
             SystemTime::now()
@@ -86,6 +91,8 @@ fn parse_args() -> Args {
                 args.commonmark = it.next().map(PathBuf::from);
             }
             "--md4c" => args.md4c = true,
+            "--ts" => args.ts = true,
+            "--ts-deep200" => args.ts_deep200 = true,
             other => {
                 eprintln!("unknown arg {other}");
                 std::process::exit(2);
@@ -124,6 +131,25 @@ fn first_successful_run(
 
 fn main() {
     let args = parse_args();
+
+    // RUN-2b mode: tree-sitter markdown incremental baseline.
+    if args.ts_deep200 {
+        let summary = tsitter::run_deep200(&args.out.join("ts")).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        return;
+    }
+    if args.ts {
+        let summary = tsitter::run(&args.out.join("ts")).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("ts").display());
+        return;
+    }
 
     // M0-B mode: MD4C full-parse baseline (sizes sweep + CommonMark
     // cross-check).
