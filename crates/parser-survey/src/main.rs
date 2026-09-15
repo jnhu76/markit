@@ -13,6 +13,7 @@
 //! Research-only: not product code.
 
 mod alloc;
+mod cmoracle;
 mod corpus;
 mod emit;
 mod influence;
@@ -31,6 +32,7 @@ struct Args {
     iters: Option<usize>,
     warm: usize,
     out: PathBuf,
+    commonmark: Option<PathBuf>,
 }
 
 fn parse_size(s: &str) -> Option<usize> {
@@ -49,6 +51,7 @@ fn parse_args() -> Args {
         sizes: vec![1024, 10 * 1024, 100 * 1024, 1024 * 1024],
         iters: None,
         warm: 2,
+        commonmark: None,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
             SystemTime::now()
@@ -74,6 +77,9 @@ fn parse_args() -> Args {
                 if let Some(d) = it.next() {
                     args.out = PathBuf::from(d);
                 }
+            }
+            "--commonmark" => {
+                args.commonmark = it.next().map(PathBuf::from);
             }
             other => {
                 eprintln!("unknown arg {other}");
@@ -113,6 +119,25 @@ fn first_successful_run(
 
 fn main() {
     let args = parse_args();
+
+    // ORACLE-B mode: CommonMark dialect-semantics battery over a pinned
+    // spec.json (no mutation battery).
+    if let Some(spec) = args.commonmark.as_ref() {
+        let summary = cmoracle::run(
+            spec,
+            &args
+                .out
+                .join("oracle-b"),
+        )
+        .unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("oracle-b").display());
+        return;
+    }
+
     let cases = mutate::cases();
     let find = |id: &str| cases.iter().find(|c| c.id == id).unwrap();
 

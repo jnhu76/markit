@@ -3606,6 +3606,7 @@ name = "parser-survey"
 version = "0.1.0"
 dependencies = [
  "markit-core",
+ "serde_json",
 ]
 
 [[package]]

@@ -199,16 +199,26 @@ corrections to this document:
   cover; phase timers deliberately not added (structural counters stay
   primary; timers are an intervention-time instrument).
 
+## Run ORACLE-B — CommonMark dialect semantics (done)
+
+Report: `results/summary/parser-survey-oracle-b-commonmark.md`. Pinned
+CommonMark 0.31.2 (sha256 `d431b29d…`, 652 examples). Block-level
+verdicts: **PASS 391 (60.0%), FLAT_CONTAINER 22 (3.4%), FAIL 109
+(16.7%), UNSUPPORTED 130 (19.9%)**. The 109 FAILs are four root causes:
+no reference-definition block construct (~70), no setext headings (13),
+list grouping/continuation semantics (23), html-block boundaries (2).
+FLAT_CONTAINER measures E3 on the spec corpus. RUN-4's ReferenceIndex
+must extract definitions from paragraph inline runs — that is how L1
+actually represents them.
+
 ## Next steps
 
-1. ORACLE-B: pin a CommonMark spec version, wire spec examples as a
-   semantic-expansion battery.
-2. External baselines: MD4C full parse, tree-sitter-markdown,
+1. External baselines: MD4C full parse, tree-sitter-markdown,
    Lezer Markdown (persistent node worker; native time separated from
    IPC), same corpus + oracle where applicable.
-3. M1 green-tree representation prototype (G1 naive Vec / G2 balanced
+2. M1 green-tree representation prototype (G1 naive Vec / G2 balanced
    persistent sequence) to test H4 against the measured O(N) terms.
-4. ReferenceIndex sketch to measure semantic fanout separately from
+3. ReferenceIndex sketch to measure semantic fanout separately from
    syntax radius (H3) and fill the D-axis.
-5. §30 matrix expansion with depth-seeded construct anchors (removes
+4. §30 matrix expansion with depth-seeded construct anchors (removes
    the header-anchor geometry bias noted in run 1.1).

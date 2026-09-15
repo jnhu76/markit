@@ -12,3 +12,5 @@ publish = false
 
 [dependencies]
 markit-core = { path = "../markit-core" }
+# research-only: spec.json parsing for the ORACLE-B CommonMark battery
+serde_json = "1"
