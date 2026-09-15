@@ -15,6 +15,7 @@
 mod alloc;
 mod corpus;
 mod emit;
+mod influence;
 mod measure;
 mod mutate;
 mod text;
@@ -154,6 +155,7 @@ fn main() {
         (Adv::CrlfMixed, &["para_insert_char", "blank_delete"]),
         (Adv::HalfWritten, &["emphasis_close_completion"]),
         (Adv::FenceNearBof, &["fence_body_char", "fence_closer_delete"]),
+        (Adv::Emoji, &["para_insert_char", "eof_append_char"]),
     ];
     for (kind, _case_ids) in adversarial_plan {
         let (doc, label) = adversarial(kind.clone());

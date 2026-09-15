@@ -80,7 +80,7 @@ from 10 KB to 1 MB). The only forward-propagating construct in L1 is the
 fence opener/closer family — supporting H2's "limited, enumerable set of
 propagation mechanisms".
 
-Two notable zero-work convergence cases: deleting a blank line whose
+Two notable ZERO_REPARSE_CONVERGENCE cases: deleting a blank line whose
 neighbors cannot merge (e.g. heading | paragraph) converges immediately —
 **zero bytes scanned, zero blocks reparsed**, only the blank record is
 removed and survivors shift. Deleting a 210 KB middle region (`large_delete_mid`)
@@ -147,7 +147,7 @@ the crossover, per H6.
 |---|---|---|
 | I0 | CONFIRMED | all content edits 1–2 blocks, size-independent |
 | I1 | CONFIRMED at block granularity | delimiter edits reparse their block; upper bound = block, as predicted |
-| I2 | CONFIRMED + SPLIT | merge-class (1–3 blocks) vs zero-work convergence class (blank delete between non-mergeable neighbors) |
+| I2 | CONFIRMED + SPLIT | merge-class (1–3 blocks) vs ZERO_REPARSE_CONVERGENCE class (blank delete between non-mergeable neighbors) |
 | I3 | REFINED | container scope = whole flattened L1 block; deep-quote R=42k shows the cost of flat containers |
 | I4 | CONFIRMED | fence family is the only forward propagator; EOF propagation honest; crossover vs full parse |
 | I5 | SYNTAX HALF CONFIRMED | syntax radius tiny; semantic dependency fanout unmeasured (no reference index exists) |
@@ -178,14 +178,37 @@ the crossover, per H6.
 - Wall-clock numbers include allocator counting overhead; medians damp but
   do not eliminate it.
 
+## Run 1.1 — measurement corrective (done)
+
+Report: `results/summary/parser-survey-1-run1-corrective.md`. Key
+corrections to this document:
+
+- The single-axis I0–I6 taxonomy is demoted to *predictions*; observed
+  truth is the four-axis influence vector (syntax S0–S6, semantic
+  D0–D5/D_UNKNOWN, representation M0–M5, downstream P_semantic /
+  P_coordinate / P_provider), derived only from observed counters.
+  `blank_delete@BOF` reproduces **ZERO_REPARSE_CONVERGENCE**: zero parse
+  work, 13 657 records moved, 215 µs at 1 MB.
+- Oracles renamed: run 1's oracle is **ORACLE-A (SELF_EQUIVALENCE)**.
+  **ORACLE-C (LOSSLESSNESS)** added (byte-coverage tiling + whitespace
+  gaps): 397/397 pass, including a new `adv-emoji` U3 corpus.
+  ORACLE-B (CommonMark semantics) is still open.
+- E2 attribution upgraded from assertion to fit:
+  `inc_us ≈ 0.37 µs + 9.0 ns × survivor_records` (R² = 0.971, 48 rows).
+  Known gap: `blocks_examined` is a second O(B) term the slope does not
+  cover; phase timers deliberately not added (structural counters stay
+  primary; timers are an intervention-time instrument).
+
 ## Next steps
 
-1. M1 generic subtree-reuse prototype + rowan/green-tree representation
-   study (Q7).
-2. External baselines: tree-sitter-markdown, Lezer Markdown (via node),
-   MD4C-class full parse; same corpus + oracle where applicable.
-3. ReferenceIndex sketch to measure I5 semantic fanout separately from
-   syntax radius (H3).
-4. Corpus A: CommonMark spec examples as an oracle-expansion battery.
-5. Influence-tree recording: per-mutation ancestor/suffix-convergence
-   profiles for §14's validation table.
+1. ORACLE-B: pin a CommonMark spec version, wire spec examples as a
+   semantic-expansion battery.
+2. External baselines: MD4C full parse, tree-sitter-markdown,
+   Lezer Markdown (persistent node worker; native time separated from
+   IPC), same corpus + oracle where applicable.
+3. M1 green-tree representation prototype (G1 naive Vec / G2 balanced
+   persistent sequence) to test H4 against the measured O(N) terms.
+4. ReferenceIndex sketch to measure semantic fanout separately from
+   syntax radius (H3) and fill the D-axis.
+5. §30 matrix expansion with depth-seeded construct anchors (removes
+   the header-anchor geometry bias noted in run 1.1).

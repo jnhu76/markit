@@ -108,6 +108,7 @@ pub enum Adv {
     CrlfMixed,
     HalfWritten,
     FenceNearBof,
+    Emoji,
 }
 
 /// Adversarial documents, each attacking one part of the taxonomy
@@ -168,6 +169,31 @@ pub fn adversarial(kind: Adv) -> (String, &'static str) {
         Adv::FenceNearBof => (
             "```\nbody line one\nbody line two\n```\n\nafter paragraph\n".to_string(),
             "adv-fence-near-bof",
+        ),
+        // ORACLE-C (losslessness) corpus: U3 on the Unicode ladder —
+        // BMP emoji, surrogate-pair astral emoji, flag sequences (regional
+        // indicators), ZWJ family and skin-tone sequences, combining
+        // marks, across heading/paragraph/quote/list/fence constructs.
+        Adv::Emoji => (
+            "\
+# Emoji 语料 😀 heading with astral 👨‍👩‍👧‍👦 family
+
+Paragraph with 👍🏻 thumbs-up skin tone, 🇺🇸 flag, é combining acute, \
+and mixed CJK 汉字 🎉 end.
+
+> quote line with 🚀 rocket and ZWJ 👩‍💻 woman technologist
+
+- item with ❤️ heart
+- item with 👱🏽‍♀️ andcaf\u{301}é
+
+```text
+fence body with 😀 raw surrogate-pair emoji
+```
+
+Trailing paragraph 😄
+"
+            .to_string(),
+            "adv-emoji",
         ),
     }
 }
