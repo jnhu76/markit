@@ -18,6 +18,7 @@ mod cmoracle;
 mod corpus;
 mod emit;
 mod influence;
+mod lezer;
 mod md4c;
 mod measure;
 mod mutate;
@@ -39,6 +40,7 @@ struct Args {
     md4c: bool,
     ts: bool,
     ts_deep200: bool,
+    lezer: bool,
 }
 
 fn parse_size(s: &str) -> Option<usize> {
@@ -61,6 +63,7 @@ fn parse_args() -> Args {
         md4c: false,
         ts: false,
         ts_deep200: false,
+        lezer: false,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
             SystemTime::now()
@@ -93,6 +96,7 @@ fn parse_args() -> Args {
             "--md4c" => args.md4c = true,
             "--ts" => args.ts = true,
             "--ts-deep200" => args.ts_deep200 = true,
+            "--lezer" => args.lezer = true,
             other => {
                 eprintln!("unknown arg {other}");
                 std::process::exit(2);
@@ -131,6 +135,17 @@ fn first_successful_run(
 
 fn main() {
     let args = parse_args();
+
+    // RUN-2c mode: Lezer Markdown baseline (persistent node worker).
+    if args.lezer {
+        let summary = lezer::run(&args.out.join("lezer")).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("lezer").display());
+        return;
+    }
 
     // RUN-2b mode: tree-sitter markdown incremental baseline.
     if args.ts_deep200 {
