@@ -24,6 +24,8 @@ mod lezer;
 mod md4c;
 mod measure;
 mod mutate;
+mod refbench;
+mod refindex;
 mod text;
 mod tsitter;
 
@@ -44,6 +46,7 @@ struct Args {
     ts_deep200: bool,
     lezer: bool,
     green: bool,
+    refs: bool,
 }
 
 fn parse_size(s: &str) -> Option<usize> {
@@ -68,6 +71,7 @@ fn parse_args() -> Args {
         ts_deep200: false,
         lezer: false,
         green: false,
+        refs: false,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
             SystemTime::now()
@@ -102,6 +106,7 @@ fn parse_args() -> Args {
             "--ts-deep200" => args.ts_deep200 = true,
             "--lezer" => args.lezer = true,
             "--green" => args.green = true,
+            "--refs" => args.refs = true,
             other => {
                 eprintln!("unknown arg {other}");
                 std::process::exit(2);
@@ -140,6 +145,17 @@ fn first_successful_run(
 
 fn main() {
     let args = parse_args();
+
+    // RUN-4 mode: ReferenceIndex semantic dependency experiment.
+    if args.refs {
+        let summary = refbench::run(&args.out.join("refs")).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("refs").display());
+        return;
+    }
 
     // RUN-3 mode: green-tree representation prototype.
     if args.green {
