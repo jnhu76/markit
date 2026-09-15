@@ -1,269 +1,227 @@
 # Markit
 
-**Markit** is a low-latency, Markdown-native desktop editor built in Rust
-directly on GPUI.
+**Markit** is a local-first Markdown workspace editor with two first-class editing modes over one authoritative Markdown source:
 
-> Product principle: **Nothing gets between your input and the next frame.**  
-> Execution principle: **Never do work the user cannot observe.**  
-> Research principle: **Control → Measure → Attribute → Scale → Intervene → Generalize → Optimize.**
+- **Source Mode** — direct plain-text Markdown editing;
+- **Live Mode** — source-aware WYSIWYG editing that still writes through the same Markdown source.
 
-The execution principle means:
+It also targets workspace search, split preview, Mermaid, LaTeX-style math, browser preview, and reliable browser Print/PDF.
 
-```text
-if it did not change -> do not recompute it
-if it is not visible -> defer it
-if the interaction/frame budget is exhausted -> yield
-if work is stale -> cancel or reject it
-if derived state is incompatible -> do not publish it
-```
+> **Markdown Source is the single source of truth.**
+>
+> **Parse incrementally; publish progressively; print completely.**
 
-## Project Status
+## Product reset status
 
-Markit is in the **product foundation / GPUI architecture phase**.
+Markit is currently in **MARKIT-PRODUCT-RESET-0**.
 
-The chosen product substrate is **Rust + direct GPUI** (architecture
-decision ADR-008):
+The repository previously centered on architecture/performance experiments around GPUI/PocketJS, incremental Markdown, viewport rendering, and editor latency. Those experiments are preserved as evidence, but they no longer define the product.
+
+The pre-reset authority boundary is repository revision:
 
 ```text
-Markit
-  =
-Rust editor core (markit-core)
-  +
-direct GPUI desktop UI/platform integration
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
 ```
 
-Windows is the first product platform.
+Existing code is treated as an **experimental/reference implementation** until each component earns reuse against the new product contracts.
 
-The project began as an evidence-driven comparison of editor
-architectures, including PocketJS and GPUI (A0–A4). That research remains
-in the repository as historical evidence (`docs/research/`, `docs/phase-a*`,
-`results/`), but **PocketJS is no longer a Markit dependency or product
-foundation**.
+See `docs/archive/product-reset-2026-09-16/README.md`.
 
-The research-established design principles — incremental line indexing,
-block-granular Markdown invalidation, viewport-bounded rendering, and
-explicit changed-range propagation — are now combined with a real-time
-editor execution model:
+## What Markit is for
+
+The core workflow is deliberately small:
 
 ```text
-change
-  -> precise dirty propagation
-  -> revision-aware derived work
-  -> user-observable priority
-  -> viewport / Document LOD
-  -> coherent publication
-  -> frame-budgeted, demand-driven presentation
+Open Markdown file or workspace
+        ↓
+Edit in Source Mode or Live Mode
+        ↓
+Search across the workspace
+        ↓
+Preview beside source
+        ↓
+Render Mermaid + LaTeX math
+        ↓
+Open complete document in browser
+        ↓
+Browser Print / Save as PDF
 ```
 
-The target scaling law for normal local edits is:
+### Source Mode
+
+Source Mode edits the real Markdown text directly. It is the reliable escape hatch for every document and remains usable even if a rich renderer/plugin fails.
+
+### Live Mode
+
+Live Mode is editable rendered Markdown, but it is **not** an independent rich-text document that later serializes back to Markdown.
+
+The model is:
 
 ```text
-work ~= changed semantic region + visible presentation + bounded overhead
+Markdown Source
+  -> Markdown Semantics
+  -> Live Projection
+  -> user gesture / formatting command
+  -> source-aware EditTransaction
+  -> same Markdown Source
 ```
 
-rather than work proportional to the total document.
+Switching Source <-> Live must not mutate the file by itself.
 
-## Current Goals
+### Workspace search
 
-The roadmap is a dependency graph (see `docs/product/roadmap.md`), not a
-waterfall. Status as of 2026-08-22:
+A folder can be opened as a workspace. Markit provides file navigation and basic VS Code-like text search with file, line, matching span, context, and click-to-open/jump behavior.
 
-1. ✅ P0-01 — framework-independent document core (`markit-core`):
-   Document, incremental LineIndex, Selection, EditTransaction, explicit
-   change/revision semantics (PR #11).
-2. ✅ G0 — GPUI baseline frozen: `zed` rev `eb8e1c8` (Zed v1.16.1),
-   capability-audited and Windows-validated
-   (`docs/product/g0-gpui-baseline.md`).
-3. P0-02 — Markdown BlockIndex + internal IR with golden fixtures and a
-   differential oracle (GPUI-independent; may proceed independently of
-   G0).
-4. P0-03 — first product vertical slice on the frozen baseline:
-   keystroke → document → Markdown IR → visible GPUI pixels (needs both
-   G0 and P0-02).
-5. P1-A dogfood editor → P1-B v0.1 hardening (real-host performance
-   matrix, buffer/index decision gate, atomic save + crash recovery,
-   portable release artifact).
-6. Instrument work amplification, frame work, yields, queue/stale-result
-   behavior, cache invalidation, and interaction tails so the real-time
-   model is testable rather than aspirational.
-7. Keep the evidence-before-architecture discipline: measure before tuning
-   exact budgets/data structures/worker topology, and never trade
-   correctness for a benchmark.
+The first implementation should prefer a direct scanner/search engine over a speculative permanent index database.
 
-## Real-time execution model
+### Split Preview
 
-Markit borrows real-time techniques commonly seen in game engines and
-streaming renderers, without becoming a game engine:
+Source Mode can be shown beside a read-only Preview. Preview and Live Mode share Markdown semantics but do not share mutable editor state.
 
-- dirty flags / precise dependency invalidation;
-- bounded per-frame/cooperative work;
-- user-observable priority;
-- cancellable or stale-result-safe jobs;
-- viewport culling / Document LOD;
-- coherent versioned publication;
-- explicit cache keys and invalidation;
-- demand rendering — no permanent idle tick.
+### Mermaid
 
-Markstream (`Simon-He95/markstream-vue`) is an explicit reference for the
-**discipline** of incremental/adaptive streaming Markdown rendering. Markit
-does not adopt Vue/DOM or copy Markstream's numeric frame budgets.
+Fenced `mermaid` blocks are a first-class built-in rich projection. Heavy Mermaid rendering is revision-aware and stale-safe; it must not synchronously poison ordinary typing.
 
-See [docs/product/realtime-execution-model.md](docs/product/realtime-execution-model.md).
+### LaTeX-style math
 
-## Non-Goals — For Now
+Inline `$...$` and display `$$...$$` math are first-class built-in projections. Math rendering must work in Preview, Live Mode where applicable, Browser Preview, and Print/PDF, with visible fallback for invalid expressions.
 
-- building a full Typora clone immediately;
-- proving GPUI is the fastest UI runtime;
-- implementing Linux/macOS product support before the Windows foundation
-  is adequate;
-- introducing a new large framework abstraction;
-- building an ECS/archetype/game-engine framework;
-- adding a permanent 60 Hz update loop to a demand-driven editor;
-- adding plugins, AI features, or a marketplace;
-- tuning worker counts, frame budgets, cache sizes, or buffer structures
-  before the product workload measures the need.
+### Browser Preview and Print/PDF
 
-## Repository Layout
+Markit opens a complete local browser representation and delegates final pagination/PDF generation to the browser.
+
+The print path intentionally follows different rules from interactive viewport rendering:
 
 ```text
-.
-├── AGENTS.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── bench/            # benchmark harness + experiment drivers (A2–A4 historical battery)
-├── docs/
-│   ├── PRD.md
-│   ├── adr/          # evidence-backed architectural decisions
-│   ├── product/      # current architecture, execution model, roadmap, MVP, invariants
-│   └── research/     # historical research record (A0–A4, PocketJS-era)
-├── mvp/
-│   └── gpui/         # GPUI Windows feasibility prototype (gpui 0.2.2, not the product baseline)
-├── workloads/        # shared benchmark corpora
-├── profiles/
-└── results/          # benchmark results (raw + summaries)
+Interactive: viewport-first, latency-first, progressive
+Print:       full-document, completeness-first, completion barrier
 ```
 
-The PRD lives at [docs/PRD.md](docs/PRD.md).
+Printing must not depend on whether the user scrolled to a region first. Offscreen Mermaid, math, images, and text are part of the Print Document before `PrintReady`.
 
-The product architecture lives at
-[docs/product/architecture.md](docs/product/architecture.md), with the
-real-time execution model at
-[docs/product/realtime-execution-model.md](docs/product/realtime-execution-model.md).
+See `docs/product/print-browser-contract.md`.
 
-The current substrate decision is
-[ADR-008](docs/adr/ADR-008-direct-gpui-product-substrate.md).
+### OS integration
 
-The GPUI feasibility prototype lives under [mvp/gpui](mvp/gpui/README.md).
+Windows is the first shipping target. V0.1 includes `.md` Open With/file-association integration and direct shell/path opening, including paths with spaces and Unicode/CJK characters.
 
-## Research Workflow
-
-Every performance investigation should follow this order:
+## Architecture at a glance
 
 ```text
-Question
-  ↓
-Controlled workload
-  ↓
-Measurement validation
-  ↓
-Latency measurement
-  ↓
-Attribution
-  ↓
-Scaling experiment
-  ↓
-Root-cause hypothesis
-  ↓
-Controlled intervention
-  ↓
-Cross-workload / cross-platform validation
-  ↓
-Design principle
-  ↓
-Implementation
-  ↓
-Re-measurement
+Workspace
+   │ open
+   ▼
+Document  ← authoritative Markdown source
+   │ ChangeSet
+   ▼
+Markdown Semantics
+   │ SemanticDelta
+   ├───────────────┬────────────────┐
+   ▼               ▼                ▼
+Source          Live             Preview
+Projection      Projection       Projection
+   │               │                │
+   └───────────────┴────────────────┘
+                   │
+                 Desktop
+
+Markdown Semantic Snapshot
+          │
+          ▼
+ Browser / Print Projection
+          │
+          ▼
+       HTML/CSS
+          │
+          ▼
+   System Browser -> Print/PDF
+
+Rich Projection Services: Mermaid / LaTeX math / later blocks
+Plugin Boundary: semantic capabilities, never private authority
 ```
 
-A flame graph is evidence for **where CPU time is spent**. It is not, by itself, proof of causality.
+The architecture avoids a Source Document vs Live Document synchronization protocol. There is one source; every other representation is derived.
 
-## Performance Metrics
+## Incremental / streaming rendering
 
-Primary metric:
+Markit is an editor, so its rendering model must handle arbitrary insertion, deletion, and replacement — not only append-only token streams.
+
+Conceptually:
 
 ```text
-interaction-to-present latency
+EditTransaction
+  -> revision + ChangeSet
+  -> incremental Markdown update
+  -> SemanticDelta
+  -> RenderPatch stream
+  -> visible/current presentation first
 ```
 
-Report distributions, not only averages:
+Streaming Markdown projects are useful references for progressive publication and avoiding repeated full rebuilds. Markit generalizes that discipline to arbitrary document mutations.
 
-- p50
-- p95
-- p99 (when sample size supports it)
-- max
-- long-frame counts
+Broad structural Markdown changes are allowed to propagate honestly. Work may be chunked/yielded, but semantics are not changed merely to manufacture a small invalidation radius.
 
-For real-time execution also record, where relevant:
+## Plugin extensibility
 
-- changed bytes / lines / blocks;
-- blocks rescanned / reparsed;
-- visible / near / far materialization;
-- layout / shaping work;
-- frame-work duration and yields/budget overruns;
-- queue depth and priority inversion;
-- cancelled/stale-result counts;
-- cache hit/miss and memory bounds;
-- scroll drift / layout jumps.
+Markit should remain extensible without making a plugin system the core editor.
 
-Where supported, also collect:
+Future providers/plugins operate through versioned semantic capabilities:
 
-- CPU profiles;
-- off-CPU/blocking traces;
-- allocations and RSS;
-- GPU/presentation timing;
-- cycles / instructions / IPC;
-- cache and branch behavior;
-- page faults and context switches.
+```text
+snapshot/query -> plugin/provider -> result/command -> Markit validation
+```
 
-## Evidence Rules
+They do not receive mutable Document internals, GPUI entity identity, private Markdown IR memory layout, or scheduler/cache internals as their contract.
 
-Performance claims should include enough metadata to reproduce the result:
+V0.1 does **not** require a marketplace or general third-party runtime. Built-in Mermaid, math, and browser/export workloads are used to keep the semantic seams clean so a runtime can be added later when real extension workloads justify it.
 
-- commit SHA;
-- OS and version;
-- hardware;
-- compiler/toolchain;
-- build configuration;
-- display configuration;
-- corpus hash/version;
-- workload version;
-- profiler configuration.
+## Local-first
 
-Negative results are valid results.
+Core editing, workspace search, Preview, mandatory Mermaid/math rendering, Browser Preview preparation, and Print/PDF preparation work without a cloud account and without uploading document contents to a remote service.
 
-Reference systems (Zed, Markstream, game engines, other editors) provide
-hypotheses and vocabulary, not proof of Markit's bottleneck or tuning
-parameters.
+## Documentation authority
 
-## Documentation
+Read current product documents in this order:
 
-Start with:
+1. `docs/PRD.md` — product requirements and product laws;
+2. `docs/product/architecture.md` — ownership and rendering architecture;
+3. `docs/product/print-browser-contract.md` — browser/print completeness rules;
+4. `docs/product/mvp-v0.1.md` — first shipping scope and acceptance gates;
+5. `docs/product/roadmap.md` — implementation order and stop conditions.
 
-- `docs/product/realtime-execution-model.md` — hot-path execution contract;
-- `docs/product/architecture.md` — current product/core/platform architecture;
-- `docs/product/performance-invariants.md` — testable work/scheduling invariants;
-- `docs/product/roadmap.md` — implementation order and phase gates;
-- `docs/product/mvp-v0.1.md` — first shippable product scope;
-- `docs/PRD.md` — product/research requirements and historical adversarial audit;
-- `docs/adr/ADR-008-direct-gpui-product-substrate.md` — product substrate decision;
-- `docs/research/README.md` — how to read the historical A0–A4 evidence.
+`README.md` is an entry point, not an independent source of truth.
 
-Do not turn unverified implementation choices into ADRs. The high-level
-execution laws are product design constraints; exact worker topology,
-numeric budgets, batching algorithms, buffer structures, and cache
-policies remain evidence-driven.
+Pre-reset research/benchmark/ADR/product documents remain useful evidence, but if they conflict with the authority above they are historical until explicitly re-adopted.
 
-## License
+## V0.1 target
 
-Apache License 2.0. See [LICENSE](LICENSE).
+V0.1 is complete when a Windows user can:
+
+- open `.md` directly or through Open With;
+- open a workspace and search it;
+- edit reliably in Source Mode;
+- edit the same source in Live Mode;
+- switch modes without source mutation or divergent undo/revision state;
+- use Source + Preview split view;
+- render Mermaid and LaTeX-style math;
+- open a complete browser representation;
+- Print/Save PDF without viewport/lazy-render omissions;
+- keep working locally when offline;
+- do all of this without freezing private implementation details into future plugin contracts.
+
+## Not the goal for V0.1
+
+Markit is not trying to become VS Code, Notion, a cloud collaboration suite, or a PDF layout engine.
+
+The first product does not require:
+
+- cloud sync/accounts;
+- AI assistant;
+- Git GUI;
+- terminal/debugger/LSP IDE;
+- plugin marketplace;
+- arbitrary TeX execution;
+- DOCX export;
+- an independent PDF engine.
+
+The product should earn additional complexity from real workflows rather than from framework ambition.
