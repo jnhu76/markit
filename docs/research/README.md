@@ -1,44 +1,39 @@
-# docs/research/ — Historical research record
+# Markit research
 
-This directory holds the research evidence that produced the current
-Markit architecture.
+This directory contains **active post-reset research**.
 
-## What lives here
+Historical A0-A4 / GPUI / PocketJS material is preserved at the pre-reset archive revision:
 
-The A0–A4 phase reports and their benchmark artifacts are **historical
-research records**:
+```text
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+```
 
-- `docs/phase-a0-windows-feasibility.md`
-- `docs/phase-a1-pocketjs-windows.md`
-- `docs/phase-a1-pocketjs-mvp-status.md`
-- `docs/phase-a2-causal-decomposition.md`
-- `docs/phase-a3-intervention-validation.md`
-- `docs/phase-a4-final-research-closeout.md`
-- `docs/Markit — GPUI 与 PocketJS Benchmark /mechanism-comparison.md`
-- `docs/Markit_Phase0_GPUI_PocketJS_实验设计_v0.1.docx`
-- `results/` raw and summary benchmark data
-- `bench/run-a2.py`, `run-a3.py`, `run-a4.py`, `parse-*.py` (the A2–A4
-  experiment drivers; historical tooling for the PocketJS-era battery)
+It is no longer duplicated in the active documentation tree.
 
-## Reading rules
+## Active research
 
-- A0–A4 record the experiments that led to the current architecture.
-- Their measurements remain valid **within their original setup**
-  (same machine, same workload contract, same instrumentation semantics).
-- Their **product-foundation recommendations may be superseded**.
-- Do not edit historical numbers. Evidence remains evidence.
+```text
+markdown-parser/
+```
 
-## Product-foundation status
+The current campaign is Issue #19:
 
-The A1–A4 experiments compared PocketJS and GPUI. A4 selected PocketJS as
-the product foundation at that time (ADR-001).
+> Incremental Markdown parsing: locality, convergence, and invalidation.
 
-On 2026-08-18 Markit pivoted: **Rust + direct GPUI is now the product
-foundation** (see [ADR-008](../adr/ADR-008-direct-gpui-product-substrate.md)).
-PocketJS is historical research context, not a Markit dependency.
+See `markdown-parser/README.md` for the provisional research question, comparison map, cost model, and exit conditions.
 
-The design principles the experiments established — incremental line
-index, block-granular Markdown invalidation, viewport-bounded rendering,
-explicit changed-range propagation, command/shortcut and IME composition
-models — remain part of the architecture and are carried into the Rust
-core (see `pocketjs-mvp-knowledge-transfer.md` and `docs/adr/`).
+## Rule
+
+Research documents may propose mechanisms, but they do not become architecture authority automatically.
+
+The lifecycle is:
+
+```text
+question
+  -> experiment
+  -> evidence
+  -> verdict
+  -> reviewed architectural decision
+```
+
+Old experiments remain useful evidence within their original setup, but old recommendations are not inherited into the new Markit architecture by default.
