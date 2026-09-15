@@ -1,139 +1,299 @@
-# Markit — MVP v0.1 Scope
+# Markit — v0.1 Product Scope
 
-The first shippable product milestone: a single-document, L1-styled
-Markdown editor on Windows, built in **Rust + direct GPUI** (ADR-008).
-Windows is the first product platform; Linux and macOS follow in later
-phases, each gated by the same acceptance on real hardware.
+Status: **post-reset first shippable product**  
+Authority: `docs/PRD.md` and `docs/product/architecture.md`
 
-Delivery is staged (roadmap, issue #12 R10): **P1-A** delivers the dogfood
-editor — enough to edit Markit's own Markdown docs — and **P1-B** owns the
-full acceptance gates below plus hardening. Dogfooding does not weaken any
-gate; it produces the real workload the gates are measured against.
+Markit v0.1 is no longer defined as a single-document GPUI experiment. It is the first usable product that satisfies the original Markit workflow plus the later-added Live Mode, Mermaid, LaTeX-style math, streaming/incremental rendering, and browser-print correctness requirements.
 
-The functional MVP scope below is carried over from the A4-era product
-definition; only the substrate changed (from the PocketJS foundation to
-direct GPUI). The execution model is defined by
-`docs/product/realtime-execution-model.md`: incremental, viewport-bounded,
-revision-safe, demand-driven, and non-blocking for deferrable work.
-The GPUI substrate is the G0-frozen revision
-(`docs/product/g0-gpui-baseline.md`).
+Windows is the first shipping target. Existing pre-reset code is an experimental/reference implementation and must not weaken these gates merely because a feature already exists in some form.
 
-The MVP does **not** ship a general plugin runtime, but its boundaries must
-remain compatible with the future extension model in
-`docs/product/plugin-compatibility-contract.md`. Built-in export/print or
-other extension-like features should not force plugins to depend on
-`markit-core` internals, GPUI entities, concrete Markdown IR memory layout,
-or private scheduler/cache structures.
+## 1. V0.1 product promise
 
-## In scope
+A user can:
 
 ```text
-Platform:            Windows (first); Linux/macOS later, same core
-Editing:             single document, UTF-8 (BOM detection if needed)
-Files:               open / save / save-as, dirty state, atomic save
-Markdown:            L1 styled editing (heading, paragraph, bold, emphasis,
-                     inline code, link, blockquote, ul/ol list, fenced
-                     code) with syntax visible
-Editing primitives:  caret, selection, scroll, undo/redo (transactions,
-                     typing/delete coalescing, IME-commit grouping)
-Text:                Latin + CJK + emoji fallback (system font discovery)
-IME:                 Chinese IME (composition model, candidate docking);
-                     JA/KO architecture present, Chinese validated
-Clipboard:           text copy/cut/paste
-Shortcuts:           Copy/Paste/Undo/Redo/SelectAll/Save/Open/Find
-                     (Ctrl on Win/Linux, Cmd on macOS via ShortcutPolicy)
-Window:              resize, HiDPI, window-state restore (basic)
-Execution:           explicit changed range + revision identity,
-                     viewport-bounded materialization, demand rendering,
-                     bounded/cooperative deferrable work, stale-result
-                     rejection, coherent publication
-Extension seam:      explicit commands/transactions, stable document/block
-                     identity where exposed, coherent snapshot/revision
-                     semantics; no public dependency on internal Rust/GPUI
-                     representation
-Stability:           large documents (1M+ measured flat), crash recovery
-                     (minimal: periodic recovery snapshot + clean-shutdown
-                     marker + startup recovery)
+Open a .md file or workspace
+  -> edit the real Markdown source
+  -> optionally edit in Live Mode
+  -> search the workspace
+  -> view Source + Preview side by side
+  -> render Mermaid and LaTeX-style math
+  -> open a complete browser representation
+  -> Print / Save as PDF
 ```
 
-## Not in scope (v0.1)
+The two product laws remain:
+
+> **Markdown Source is the single source of truth.**
+
+> **Parse incrementally; publish progressively; print completely.**
+
+## 2. In scope
+
+### Editing
+
+- Source Mode with direct Markdown source editing.
+- Live Mode with source-aware rendered editing over the same Document.
+- caret, selection, navigation, scroll;
+- copy/cut/paste;
+- undo/redo with transaction grouping;
+- find within the current file;
+- open/save/save-as;
+- dirty-state handling;
+- UTF-8 source;
+- Chinese/CJK input and rendering;
+- emoji fallback;
+- Chinese IME commit/cancel/composition correctness on Windows.
+
+### Files and workspace
+
+- open a single `.md` file;
+- open a folder as a workspace;
+- workspace file tree sufficient to navigate Markdown/text files;
+- workspace full-text search;
+- search result file/line/match/context;
+- click search result -> open/jump;
+- paths containing spaces/Unicode/CJK;
+- atomic/reliable save behavior appropriate for the platform.
+
+### OS integration
+
+- Windows `.md` Open With / file association path;
+- launch Markit with a Markdown path from the shell;
+- already-running-instance handling sufficient to open the requested document;
+- system default browser launch for Browser Preview/Print.
+
+### Markdown semantics
+
+- CommonMark-compatible baseline sufficient for ordinary Markdown documents;
+- headings, paragraphs, emphasis/strong, inline code, fenced code, links, blockquotes, ordered/unordered lists as baseline constructs;
+- extension semantics are explicit rather than accidental;
+- Mermaid fenced blocks are mandatory;
+- LaTeX-style inline `$...$` and display `$$...$$` math are mandatory;
+- parser/semantic diagnostics do not destroy source text.
+
+### Preview
+
+- Source Mode can be shown beside a read-only Preview in a left/right split;
+- Preview consumes the same document revision and semantic authority;
+- local edits update Preview incrementally where semantics allow;
+- Preview may prioritize visible content and progressively publish derived work;
+- rich projection failure is visible without breaking Source Mode.
+
+### Live Mode
+
+- same Document/revision/undo/dirty state as Source Mode;
+- source-aware rendered editing, not an independent rich-text document;
+- switching modes does not mutate source;
+- source/semantic/visual coordinate mapping is explicit;
+- common formatting/editing gestures produce Markdown-aware edit transactions;
+- ambiguous or unsupported syntax remains safely source-editable rather than normalized destructively.
+
+### Mermaid
+
+- visible in Preview;
+- visible in Live Mode where applicable;
+- visible in Browser Preview and Print/PDF;
+- expensive render work is deferred/coalesced and stale-safe;
+- invalid diagrams produce visible diagnostics/fallbacks;
+- mandatory renderer assets are local/offline-capable.
+
+### LaTeX-style math
+
+- inline and display math;
+- Preview, Live, Browser Preview, and Print/PDF support;
+- invalid formula -> visible fallback/diagnostic;
+- CJK + math mixed layout correctness;
+- renderer work is revision-aware and does not make normal source typing wait on unnecessary computation.
+
+### Browser Preview / Print
+
+- open current document in the system browser;
+- Browser/Print uses a coherent document snapshot;
+- full-document materialization independent of editor viewport/scroll history;
+- wait for Mermaid, math, local images, fonts, and other required print resources before `PrintReady`;
+- failed required resources become visible `FailedVisible` content;
+- product-owned print stylesheet;
+- browser handles Print / Save as PDF;
+- acceptance follows `docs/product/print-browser-contract.md`.
+
+### Incremental / streaming rendering
+
+- document edits produce explicit change/revision information;
+- Markdown semantics update incrementally for ordinary local edits;
+- projections consume semantic deltas/patches rather than requiring full-document rebuilds by default;
+- visible interaction outranks distant rendering work;
+- stale async/deferred results cannot publish over a newer revision;
+- broad structural changes may propagate honestly and may be chunked/yielded;
+- no permanent fixed-rate render loop is required.
+
+### Extension boundary
+
+V0.1 does not need a marketplace or general third-party plugin runtime, but must preserve a future plugin/provider boundary:
+
+- semantic snapshots/queries rather than mutable internals;
+- commands/transactions for mutation;
+- revisioned provider results;
+- no GPUI/private Markdown IR/cache identity as public contract;
+- built-in Mermaid/math/browser-output implementation does not make later provider extraction impossible.
+
+## 3. Explicitly not required for v0.1
 
 ```text
-tabs / workspace / file tree   general plugin runtime / marketplace
-images / tables / math / Mermaid
-cloud sync / collaboration / Git integration
-PDF export marketplace / extension store
-rich HTML clipboard / images / custom MIME
-transparent windows
-legacy encodings (UTF-8 only)
-full Typora-style syntax hiding (L2 is a later phase)
-generic ECS / archetype / game-engine framework
-permanent fixed-rate render/update loop
-final worker-pool topology or hard-coded scheduler tuning copied from references
-plugin transport choice (Rust dylib / Wasm / subprocess IPC / wire encoding)
+cloud sync / accounts / collaboration
+AI assistant
+Git GUI
+terminal / debugger / LSP IDE
+plugin marketplace
+arbitrary third-party plugin runtime
+DOCX export
+independent PDF engine
+Notion-style block database
+arbitrary TeX execution
+full compatibility with every Obsidian/Typora extension
+macOS/Linux shipping certification
 ```
 
-## Acceptance gates (Windows first, in order)
+macOS/Linux architecture must remain possible, but Windows is the real-host acceptance target for v0.1.
 
-1. Launch, render, resize, HiDPI — PASS on real hardware (no WSLg-only
-   certification for Linux later).
-2. Open/save/save-as round-trip byte-identical for UTF-8 (incl. BOM),
-   atomic save (no torn file on kill -9 / TerminateProcess).
-3. L1 editing: type, backspace, enter, arrows, home/end, selection,
-   scroll, undo/redo — smoke-verified byte-identical state sequences.
-4. CJK: Chinese text renders (system font discovery + fallback), Chinese
-   IME composes, commits and cancels correctly; composition never enters
-   the undo stack as keystrokes.
-5. Clipboard: copy/cut/paste round-trip with the OS.
-6. Performance invariants: `docs/product/performance-invariants.md`
-   battery passes (work-amplification + scheduling/revision checks;
-   calibrated real-host timing, not arbitrary CI wall-clock SLAs).
-7. 1M-document stability (P1-B, Buffer/Index Decision Gate): the
-   algorithmic counters (full scans == 0, local-edit reparse == smallest
-   valid region, presentation work viewport-bound, idle: no draw/present
-   work) pass at 10K/100K/1M, AND the Buffer/Index Decision Gate has run on
-   real product workloads — positions begin/q1/middle/q3/end; content
-   ASCII/CJK/emoji/long-lines/mixed-Markdown/fences; observing bytes
-   scanned, bytes moved/copied where measurable, line entries shifted,
-   blocks reparsed, visible materialization, and real input→visible-frame
-   tails / long frames (issue #12 R8). "1M local edit is flat" may not be
-   certified from `bytes_scanned == Δ ∧ full_rebuilds == 0` alone: those
-   counters exclude String suffix movement and LineIndex suffix shifting
-   (known, deliberate P0-01 costs). If suffix movement dominates the
-   user-visible term, reopen the ADR-003 implementation decision; if not,
-   keep the simple representation.
-8. Realtime scheduling: deferrable work can yield/resume without blocking
-   caret/input/visible-text progress; current interaction and visible
-   viewport outrank distant/background completion.
-9. Revision safety: deliberately delayed/out-of-order background or
-   deferred results cannot overwrite a newer document/presentation state.
-10. Publication coherence: a visible frame cannot silently combine
-    incompatible document/parse/layout/highlight revisions unless reused
-    artifacts prove compatibility.
-11. Observability: real-host performance runs expose p50/p95/p99 where
-    statistically meaningful, max/long-frame counts, changed-region and
-    viewport work, frame-work/yield counters, and stale/cancel/reject
-    counts needed to diagnose scheduling failures.
-12. Extension-boundary preservation: no MVP feature requires a future
-    plugin to borrow mutable editor internals or link against GPUI/private
-    `markit-core` representation; extension-like operations can be expressed
-    through explicit snapshot/query + command/result seams compatible with
-    the plugin compatibility contract.
+## 4. Acceptance gates
 
-## Exit criteria
+V0.1 ships only when the following gates pass on the product implementation.
 
-- P1-A (dogfood): the functional scope above is usable daily on Windows
-  (window, L1 Markdown, caret/selection/scroll, open/save, undo/redo,
-  clipboard, Chinese IME, CJK/emoji, basic find) on the G0-frozen baseline.
-  No scheduler/plugin/rich-block requirement.
-- P1-B (v0.1): gates 1–12 on Windows with evidence, installer-free
-  portable exe, atomic save + crash-recovery smoke, real-host performance
-  matrix, and the Buffer/Index Decision Gate recorded.
-- The exact numeric frame budget, batch size, worker count, overscan, and
-  cache sizes are recorded as measured implementation parameters, not as
-  architectural constants.
-- Plugin runtime/transport remains a later evidence-driven decision; MVP
-  freezes only the semantic boundary discipline, not an ABI.
-- Later platforms: the same semantic gates on a real Linux desktop and on
-  macOS, each in its own phase (roadmap P5), with platform-appropriate
-  timing/presentation evidence.
+### G1 — Source truth
+
+- [ ] Source Mode edits the actual Markdown source.
+- [ ] opening + saving without edits does not normalize unrelated syntax.
+- [ ] source remains recoverable/editable when rich rendering fails.
+- [ ] one authoritative Document/revision exists per open editing session.
+
+### G2 — Source editing
+
+- [ ] type/delete/newline/navigation/selection work.
+- [ ] copy/cut/paste work with the OS.
+- [ ] undo/redo grouping is sane for typing, deletion, paste, and IME commit.
+- [ ] Chinese IME commit/cancel/composition is correct on Windows.
+- [ ] CJK/emoji display works with system fallback.
+
+### G3 — File and path correctness
+
+- [ ] open/save/save-as work for UTF-8 Markdown.
+- [ ] paths with spaces/CJK/Unicode work.
+- [ ] save is crash-safe enough not to silently replace a good file with a torn write.
+- [ ] URL/path conversion is explicit at platform/browser boundaries.
+
+### G4 — Workspace
+
+- [ ] open-folder workspace flow works.
+- [ ] file tree opens documents.
+- [ ] workspace text search reports file, line, match, and context.
+- [ ] clicking a result opens/jumps to it.
+- [ ] search does not require a persistent index database merely to pass the gate.
+
+### G5 — OS Open With
+
+- [ ] `.md` can be opened via Windows Open With/file association integration.
+- [ ] shell path invocation works with spaces/CJK.
+- [ ] invoking an already-running Markit instance opens the requested file without corrupting session state.
+
+### G6 — Split Preview
+
+- [ ] Source + Preview left/right mode works.
+- [ ] Preview represents the same source revision/Markdown semantics.
+- [ ] local edits do not require a full-document semantic/render rebuild by default.
+- [ ] Preview scroll/viewport state does not mutate source.
+
+### G7 — Live Mode single-truth conformance
+
+- [ ] Source -> Live switch does not change file bytes.
+- [ ] Live -> Source switch does not change file bytes.
+- [ ] both modes share revision, dirty state, and undo history.
+- [ ] representative formatting edits in Live Mode create correct Markdown source edits.
+- [ ] caret/selection mappings do not rely on ambiguous mixed coordinate spaces.
+- [ ] unsupported/ambiguous constructs degrade safely to source-visible handling.
+
+### G8 — Mermaid
+
+- [ ] valid Mermaid renders in Preview.
+- [ ] valid Mermaid renders in Browser/Print.
+- [ ] Live Mode handles Mermaid without creating a second source authority.
+- [ ] invalid Mermaid is visibly diagnosed.
+- [ ] stale Mermaid completion cannot overwrite newer source.
+- [ ] typing outside/inside Mermaid is not synchronously blocked by unnecessary full renderer execution.
+
+### G9 — LaTeX-style math
+
+- [ ] `$...$` inline math renders.
+- [ ] `$$...$$` display math renders.
+- [ ] Browser/Print math matches the same semantic source.
+- [ ] invalid formulas are visible rather than omitted.
+- [ ] CJK surrounding math remains correct.
+- [ ] stale formula output cannot publish over newer source.
+
+### G10 — Incremental / streaming interaction
+
+For representative small/medium/large documents:
+
+- [ ] ordinary local edits reuse unaffected semantic/projection state where semantics permit;
+- [ ] interactive work is demand-driven;
+- [ ] visible/current work outranks distant presentation work;
+- [ ] long/broad work can yield or progressively publish without lying about Markdown semantics;
+- [ ] stale/out-of-order work is rejected;
+- [ ] idle editor does not continuously redraw merely because a scheduler exists.
+
+Do not certify this gate solely from synthetic counters; include real-host interaction evidence.
+
+### G11 — Browser/Print completeness
+
+The full regression corpus in `print-browser-contract.md` must pass, including:
+
+- [ ] print immediately after open without scrolling;
+- [ ] print content set unchanged by scrolling through the document first;
+- [ ] offscreen Mermaid included;
+- [ ] offscreen math included;
+- [ ] CJK printable;
+- [ ] local images/resources with Unicode paths resolve;
+- [ ] slow resource keeps state at Preparing, not incomplete Ready;
+- [ ] failed rich block is visibly represented;
+- [ ] edit during preparation resolves to one coherent revision;
+- [ ] page-break stress content remains visible.
+
+### G12 — Local-first
+
+- [ ] Source editing works offline.
+- [ ] workspace search works offline.
+- [ ] Preview works offline for core syntax.
+- [ ] mandatory Mermaid/math rendering works offline.
+- [ ] Browser/Print preparation does not require uploading Markdown to a remote service.
+
+### G13 — Extension-boundary preservation
+
+- [ ] no plugin/provider would need mutable Document internals to implement an extension;
+- [ ] no GPUI entity/private IR/cache layout is required by the semantic provider boundary;
+- [ ] rich results include revision/identity needed for stale rejection;
+- [ ] Markit owns aggregate publication/PrintReady authority;
+- [ ] no speculative third-party runtime is required just to satisfy this gate.
+
+## 5. Performance and memory policy
+
+V0.1 does not freeze arbitrary millisecond budgets, worker counts, cache sizes, or a specific text-buffer data structure before measurement.
+
+It does freeze these qualitative requirements:
+
+```text
+ordinary local edit work should track changed semantics + visible presentation,
+not total document size, where Markdown semantics permit;
+
+unaffected source is not copied through every projection layer;
+
+heavy providers do not run synchronously merely because their source exists;
+
+print may intentionally materialize the whole document because completeness,
+not interaction latency, is its authority.
+```
+
+Real-host p50/p95/p99/long-frame data should be collected where statistically meaningful, but correctness gates cannot be traded away to improve a benchmark.
+
+## 6. Exit statement
+
+Markit v0.1 is ready when it is a useful Markdown workspace editor rather than a rendering experiment: the user can choose source editing or source-aware Live editing, search a workspace, preview beside source, use Mermaid and LaTeX math, and reliably hand a complete document to the browser for Print/PDF — all while one Markdown source remains authoritative and future plugins are not forced to depend on private implementation details.
