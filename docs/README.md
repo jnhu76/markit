@@ -1,84 +1,99 @@
-# Documentation
+# Markit documentation
 
-Markit's documentation is split into three layers so current product
-architecture does not drift into historical research notes.
+Markit is currently in a **Markdown parser research phase**.
+
+The previous research/architecture/ADR set is historical evidence. It must not be read as the current implementation plan.
+
+## Active documents
 
 ```text
 docs/
-├── PRD.md
-├── adr/                  # mature evidence-backed architectural decisions
-├── product/              # current product sources of truth
-│   ├── architecture.md
-│   ├── realtime-execution-model.md
-│   ├── plugin-compatibility-contract.md
-│   ├── performance-invariants.md
-│   ├── roadmap.md
-│   ├── mvp-v0.1.md
-│   ├── platform-capability-matrix.md
-│   ├── issue-backlog.md
-│   └── p0-01-implementation-note.md   # P0-01 implementation status
-└── research/             # historical A0–A4 evidence / experiments
+├── PRD.md                              # product requirements
+├── README.md                           # this authority map
+├── product/
+│   ├── architecture.md                 # HOLD: invariants only; architecture not frozen
+│   ├── mvp-v0.1.md                     # intended product scope
+│   ├── print-browser-contract.md       # print/browser completeness contract
+│   └── roadmap.md                      # current sequencing/status
+├── research/
+│   └── markdown-parser/README.md       # current parser research north star
+└── archive/
+    └── product-reset-2026-09-16/README.md
 ```
 
-## Current product reading order
+The active external research campaign is:
 
-1. `product/realtime-execution-model.md` — how Markit keeps interaction
-   incremental, viewport-bounded, non-blocking, revision-safe, and
-   demand-driven.
-2. `product/architecture.md` — core/platform structure and how the
-   execution model fits the Markdown pipeline.
-3. `product/plugin-compatibility-contract.md` — stable extension boundary:
-   plugins use a versioned semantic contract, capability negotiation,
-   stable identity, snapshots/commands, and compatibility tests rather
-   than depending on Markit internals.
-4. `product/performance-invariants.md` — testable work-amplification,
-   scheduling, cache, revision, and publication invariants.
-5. `product/roadmap.md` — phase order and acceptance gates; every hot-path
-   phase must preserve the execution laws.
-6. `product/mvp-v0.1.md` — first shippable Windows scope.
-7. `adr/ADR-008-direct-gpui-product-substrate.md` — why the product uses
-   direct GPUI.
+- Issue #19 — `Incremental Markdown parsing: locality, convergence, and invalidation`.
 
-`PRD.md` contains the product direction header plus the historical
-adversarial research audit. `research/` and `phase-a*` documents remain
-valuable evidence but do not override current product documents.
-
-## Documentation drift rule
-
-When a cross-cutting hot-path execution rule changes, update the affected
-sources of truth together:
+## Current authority order
 
 ```text
-realtime-execution-model.md
-architecture.md
-performance-invariants.md
-roadmap.md
-AGENTS.md (when contributor rules change)
-mvp/feature acceptance docs (when gates change)
+docs/PRD.md
+    = what product we are trying to build
+
+Issue #19 + generated experimental evidence
+    = current Markdown parsing research authority
+
+docs/product/architecture.md
+    = HOLD / non-negotiable invariants only
+
+docs/product/print-browser-contract.md
+    = output completeness contract
+
+docs/product/mvp-v0.1.md
+    = intended V0.1 scope
+
+docs/product/roadmap.md
+    = work ordering
 ```
 
-When the plugin/extension compatibility boundary changes, update the
-affected sources together:
+`architecture.md` is intentionally not a complete architecture. A real implementation architecture must wait for the Issue #19 parser verdict.
+
+## Historical material
+
+The complete pre-reset state is preserved at Git revision:
 
 ```text
-plugin-compatibility-contract.md
-architecture.md / roadmap.md when phase or boundary semantics change
-AGENTS.md when contributor rules change
-plugin compatibility fixtures/tests once the API exists
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
 ```
 
-Do not let roadmap, architecture, invariants, compatibility contracts, and
-agent instructions silently describe different systems.
+That revision is the archive for:
 
-Only create an ADR after the underlying decision is mature enough to be
-treated as an architectural commitment. Exact worker topology, numeric
-frame budgets, buffer structures, cache sizes, batching policies, plugin
-transport/runtime, and wire encoding stay evidence-driven until measured.
+- old ADRs;
+- GPUI/PocketJS substrate decisions;
+- A0-A4 experiments;
+- previous performance/realtime execution model;
+- old plugin compatibility design;
+- old Markdown L1 semantic contract;
+- P0-01/P0-02 implementation notes;
+- previous issue backlog/platform matrix;
+- old product architecture and roadmap;
+- the pre-reset implementation itself.
 
-Performance documents should clearly distinguish:
+Historical documents may be cited as evidence, but they do not regain authority unless a new evidence-backed decision explicitly re-adopts them.
 
-- observation;
-- measurement;
-- inference;
-- causal evidence;
-- design decision.
+## Current technical question
+
+The provisional research north star is:
+
+> **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
+
+Issue #19 must also decide whether that question should be `KEEP`, `REFINE`, or `REPLACE` after experimentation.
+
+## Rule for new documents
+
+During the parser campaign, avoid writing speculative architecture documents for UI, rendering, storage, CST/AST layout, scheduler topology, or plugin runtime.
+
+Create a durable architectural document only when its decision has evidence and a clear authority boundary.
+
+Until then, prefer:
+
+```text
+question -> experiment -> evidence -> verdict -> architecture
+```
+
+not:
+
+```text
+architecture -> implementation -> benchmark justification
+```
