@@ -1,531 +1,463 @@
-# Markit — Product Roadmap
+# Markit Product Roadmap
 
-Phase A* research naming ends with A4 (research phase closed). The
-product phases below replace it. Each phase lists goal / scope /
-acceptance / non-goals.
+Status: **post-reset execution roadmap**  
+Authority: `docs/PRD.md` -> `docs/product/architecture.md` -> `docs/product/mvp-v0.1.md`
 
-The cross-cutting execution model is now defined in
-`docs/product/realtime-execution-model.md`:
+This roadmap starts from product requirements, not from the shape of the pre-reset experiments.
 
-```text
-stable work is reused
-invisible work is deferred
-budget-exhausting work yields
-stale work is cancelled/rejected
-only coherent revision-compatible state is published
-idle means no permanent update loop
-```
+Existing work from revision `d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e` is retained as experimental evidence. Reuse is allowed, but no old phase/ADR/implementation is automatically a prerequisite or product authority after `MARKIT-PRODUCT-RESET-0`.
 
-The cross-cutting extension compatibility model is defined in
-`docs/product/plugin-compatibility-contract.md`:
+The product laws are:
 
 ```text
-plugins depend on a versioned semantic contract, not internals
-capabilities are negotiated explicitly
-stable opaque identity crosses the boundary
-plugins consume snapshots/queries and submit commands/results
-supported old plugins are exercised by compatibility fixtures
-plugin latency/failure cannot poison the input hot path
+Markdown Source is the single source of truth.
+Parse incrementally; publish progressively; print completely.
 ```
 
-These are product constraints, not separate optimization/framework phases.
-Every phase that touches the hot path or future extension boundary must
-preserve them.
+## Roadmap graph
 
 ```text
-P0-01  Document core + change/revision model            ✅ DONE (PR #11)
-              │
-              ├──────────────────────────────────┐
-              ▼                                  ▼
-G0  GPUI baseline freeze               P0-02  Markdown BlockIndex + IR
-    (Windows evidence,                        (GPUI-independent: grammar
-     dependency pin)                           contract, golden fixtures,
-              │                                differential oracle)
-              │                                  │
-              └──────────────┬───────────────────┘
-                             ▼
-                   P0-03  First product vertical slice
-                          keystroke → Document → Markdown IR → pixels
-                             │
-                             ▼
-                   P1-A  Dogfood editor
-                          (edit Markit's own docs with Markit)
-                             │
-                             ▼
-                   P1-B  v0.1 hardening
-                          (real-host matrix, buffer/index gate,
-                           reliability, release artifact) → v0.1
-                             │
-                             ▼
-P2  Incremental/Scheduling Hardening
-        ↓
-P3  Typora-style L2
-        ↓
-P4  Rich Blocks / Heavy Projection Jobs
-        ↓
-PX  Plugin Runtime (evidence-triggered, not calendar-triggered)
-        ↓
-P5  Cross-platform / Shipping Hardening
+R0  Product Truth Reset                         ← this documentation reset
+ │
+ ├──────────────┐
+ ▼              ▼
+R1 Source Core  R2 Workspace + OS Open
+ │              │
+ └──────┬───────┘
+        ▼
+R3 Markdown Semantics + Split Preview
+        │
+        ├───────────────┐
+        ▼               ▼
+R4 Rich Projection    R5 Browser / Print
+Mermaid + Math        completeness contract
+        │               │
+        └───────┬───────┘
+                ▼
+          R6 Live Mode
+       source-aware editing
+                │
+                ▼
+       R7 Extension Boundary
+       conformance / providers
+                │
+                ▼
+          R8 v0.1 Hardening
+                │
+                ▼
+              v0.1
+                │
+                ▼
+        R9 Cross-platform / later plugins
 ```
 
-This is a **dependency graph with evidence-triggered gates, not a waterfall**
-(issue #12). G0 and P0-02 depend only on P0-01 and may proceed independently
-and in parallel. Both are prerequisites for P0-03, the first real
-`keystroke → Markdown semantics → pixels` product path. P1-A dogfooding gets
-a real workload early without weakening the final v0.1 gates, which P1-B
-owns. Phases may proceed when their dependencies are ready; do not create
-artificial serialization, and do not start a phase whose prerequisites are
-missing.
+This is a dependency graph, not a forced waterfall. Independent nodes may run in parallel when their prerequisites are satisfied.
 
-`PX` is intentionally conditional: the semantic extension boundary is
-preserved from P0 onward, but a general plugin runtime is built only when
-real extension workloads justify a concrete transport/runtime choice.
+## R0 — Product Truth Reset
 
-## Cross-cutting gate — Real-time execution laws
+### Goal
 
-Before a product phase is considered complete, relevant hot-path changes
-must answer:
+Replace the research-first product narrative with a requirement-first one while preserving old work as evidence.
+
+### Scope
+
+- rewrite `docs/PRD.md`;
+- rewrite `docs/product/architecture.md`;
+- rewrite `docs/product/mvp-v0.1.md`;
+- rewrite this roadmap;
+- rewrite repository `README.md`;
+- add `docs/product/print-browser-contract.md`;
+- record the pre-reset authority boundary under `docs/archive/`;
+- declare the current implementation experimental/reference until conformance is re-earned.
+
+### Acceptance
+
+- documents agree on Source Mode + Live Mode;
+- Workspace Search, split Preview, Browser/Print, Mermaid, LaTeX math, and OS Open With are V0.1 product requirements;
+- one source truth is explicit;
+- interactive incremental/streaming rendering is separated from exhaustive print;
+- plugin extensibility is preserved without requiring a plugin marketplace/runtime now;
+- old product/research documents cannot silently override the reset authority.
+
+### Non-goal
+
+No production-code rewrite in R0.
+
+## R1 — Source Core
+
+### Goal
+
+Produce the smallest trustworthy product path for editing the real Markdown source.
 
 ```text
-What changed?
-What became dirty?
-What is visible now?
-What may be deferred?
-What revision does this work belong to?
-What makes stale work safe to cancel/reject?
-What is the publication boundary?
-What work is cached/reused?
-What is the measured frame/interaction cost?
+open file
+  -> Document source
+  -> Source Mode
+  -> EditTransaction
+  -> revision / undo / dirty
+  -> save
 ```
 
-The acceptance laws are the invariants in
-`performance-invariants.md`, especially INV-08 through INV-14.
+### Reuse audit
 
-Do not add a permanent frame/timer loop simply because the scheduler uses
-game-engine-inspired techniques. Markit remains demand-driven.
+Before writing replacements, audit the experimental implementation for candidates such as:
 
-## Cross-cutting gate — Extension compatibility laws
+- document storage;
+- revision/change model;
+- transactions;
+- selection;
+- line index;
+- GPUI text/input integration;
+- IME evidence;
+- save path.
 
-Before exposing a new extension-facing surface or changing an existing one,
-answer:
+For each candidate classify:
 
 ```text
-Is this public semantic API or an internal detail?
-Is the change additive or breaking?
-Which plugin API major/minor owns it?
-Can an old supported plugin ignore the addition safely?
-Which capability exposes it?
-What stable identity/revision crosses the boundary?
-Does the plugin receive a coherent snapshot/query rather than mutable internals?
-Does mutation return through an explicit command/transaction?
-What is the deprecation/migration path?
-Which old-plugin compatibility fixture proves the claim?
-Can plugin latency/crash block ordinary typing?
+ADOPT
+ADAPT
+DELETE / REPLACE
 ```
 
-Do not expose `markit-core` Rust layout, GPUI entities, scheduler/cache
-internals, or concrete Markdown IR memory representation as accidental plugin
-ABI. Transport/runtime remains evidence-driven.
+Do not preserve old types merely to minimize diff size.
 
-## G0 — GPUI Baseline Selection (✅ DONE 2026-08-22)
+### Required scope
 
-- Outcome: the product GPUI baseline is **frozen** —
-  `zed-industries/zed` rev `eb8e1c8b5502b7007465fbbc465f4a736fa39210`
-  (Zed v1.16.1), pinned in the workspace root `Cargo.toml` and consumed only
-  by GPUI-facing crates. The full capability audit, Windows runtime evidence,
-  idle-scheduling verdict, provenance, and update policy live in
-  `docs/product/g0-gpui-baseline.md`.
-- Key facts established (details + evidence in that document):
-  - the pinned revision provides demand-driven draw/present, view-granular
-    invalidation, real Windows background priorities, threadpool timers, and
-    drop-cancels-future task semantics — all behaviorally confirmed on the
-    real Windows host (`results/summary/g0/` + `results/evidence/g0/`:
-    0 draws / 0 presents / 0 delivered `on_next_frame` callbacks at rest,
-    ~0–1 % idle CPU, 36–38 MB WS, threadpool priority order H-first,
-    50 ms timers → ~59–64 ms actual);
-  - **Windows has no metered idle scheduling**: `spawn_when_idle` falls back
-    to low-priority main-thread work and `idle_time_remaining()` is `None`
-    (source audit, confirmed behaviorally: 100 idle tasks all ran after a
-    200 ms main-thread busy window, none during); any future Markit idle
-    budget must be self-metered;
-  - a vsync thread wakes every window each refresh; clean windows skip
-    draw/present, so idle evidence is stated as "no draw/present work", not
-    "no wakeups" (with an always-armed `on_next_frame`, callback delivery
-    was observed at ~60/s — every vsync — with the review-fixed probe, and
-    ~12.5/s in the superseded first run; painting stays ~0 either way, and
-    delivery rate is not a platform contract);
-  - foreground executor priority is ignored — Markit priority semantics must
-    not assume foreground priority works;
-  - **IME pipeline validated with real Microsoft Pinyin** (2026-08-23):
-    composition start/update with the marked range covering the whole
-    composition, SPACE commit replacing the marked span (GCS_RESULTSTR),
-    ESC cancel, and candidate `bounds_for_range` docking —
-    `results/evidence/g0/pinyin-ime.log`; product-level IME UX is P1-A;
-  - **HiDPI validated at 125 %** (scale_factor=1.25, DPI-aware physical
-    screenshot; restored to 100 % after the run) on top of the 100 % runs;
-  - release builds for Windows must be produced **natively on a Windows
-    host** (gpui_windows compiles HLSL shaders with fxc only when the build
-    host is Windows); release cross-builds from WSL are unsupported under
-    the current Linux-host cross path — cross-builds cover
-    `cargo check`/clippy only.
-- Original scope (for history): evaluate the `mvp/gpui` prototype baseline
-  (crates.io gpui 0.2.2) and a current Zed revision on build, release build,
-  window, native text, CJK, IME, clipboard, resize, HiDPI, startup, RSS,
-  basic latency, frame request/redraw semantics, instrumentation hooks, and
-  deferred/cancellable work — recording evidence per item, never choosing
-  merely because newer is newer.
-- The pinned GPUI revision is a dependency of the GPUI-facing crates only
-  — never of `markit-core` (P0 acceptance: core has no GPUI dependency).
-- Non-goals (preserved): editor features, worker-topology tuning,
-  Linux/macOS hosts, plugin runtime/transport decisions.
+- authoritative Document;
+- explicit revision/change result;
+- Source Mode plain-text editing;
+- caret/selection/navigation;
+- copy/cut/paste;
+- undo/redo;
+- open/save/save-as;
+- UTF-8/CJK/emoji;
+- Windows Chinese IME;
+- source editing remains usable without Markdown rich rendering.
 
-## P0 — Markit Rust Core + Change/Revision Model
+### Acceptance
 
-P0 is three nodes with different dependency profiles (issue #12 R1/R2).
+- one source truth;
+- round-trip does not rewrite unrelated syntax;
+- common editing operations work on real Windows host;
+- path/encoding tests include CJK;
+- no Live/Preview shadow document is introduced;
+- idle UI remains demand-driven.
 
-### P0-01 — Product workspace + document/change/revision core ✅ DONE
+## R2 — Workspace + OS Open
 
-Implemented (PR #11, 2026-08): the product Rust workspace
-(`crates/markit-core` + `apps/markit` skeleton), the incremental document core
-(private storage, revision/change model, incremental LineIndex per ADR-003,
-selection / edit-transaction / snapshot seams, stable `DocumentId`), and the
-differential test battery including work-amplification counters. See
-`docs/product/p0-01-implementation-note.md`.
+May proceed in parallel with later R1 work once Document open semantics are stable.
 
-Known retained costs (deliberate P0-01 choices, revisited only through the
-P1-B buffer/index decision gate):
+### Goal
+
+Make Markit useful as a local Markdown workspace tool.
+
+### Scope
 
 ```text
-String splice               = O(document suffix bytes) movement
-LineIndex suffix adjustment = O(lines after edit)
+Workspace root
+├─ file tree
+├─ file open
+└─ text search
 ```
 
-### P0-02 — Markdown BlockIndex + internal IR ✅ DONE
+and Windows host integration:
 
-Status note (2026-08): **P0-02 is implemented** — the Markdown L1 layer
-in `crates/markit-core`: normative dialect contract
-(`markdown-l1-semantic-contract.md`), tiling block index in a plain
-`Vec` with spliced incremental resynchronization driven by P0-01's
-canonical per-edit regions, internal block identity with deterministic
-pairing, source-referenced inline IR, CRLF-aware classification with
-byte-identical source, adversarially bounded inline parsing, read-only
-`BlockView` query surface, structural work counters that report parse
-work and state-maintenance work separately, and the golden +
-randomized differential + large-document + adversarial batteries. See
-`docs/product/p0-02-implementation-note.md`. The remaining P0 scope
-below (commands, view model) is open.
+```text
+.md -> Open With Markit
+shell path -> Markit open
+existing process -> open requested document
+```
 
-GPUI-independent; does not wait for G0.
+### Search policy
 
-- Goal: framework-independent core built as a Rust library whose update
-  semantics are explicit enough for incremental, cancellable, coherent
-  presentation and future stable extension snapshots/commands.
-- Scope:
+Start with the smallest direct scanner/search engine that satisfies the product. Do not create an index database until evidence shows it is necessary.
 
-  ```text
-  supported L1 grammar contract (explicit, incl. recorded deviations)
-  BlockIndex (ADR-004)
-  block/inline internal IR
-  incremental resynchronization (stable-boundary rescan)
-  internal block identity stable enough for incremental reuse
-  changed-region consumption from P0-01 EditResults
-  full-parse oracle + randomized differential
-  minimal semantic golden suite for every supported L1 construct
-    (paragraph, heading, blockquote, ul/ol list, fenced code,
-     emphasis, strong, inline code, link)
-  work-amplification counters (bytes/blocks rescanned, blocks reparsed)
-  ```
+### Acceptance
 
-- **P0-02 must not self-certify Markdown correctness** (issue #12 R5): the
-  differential oracle proves `incremental == full scan of the same parser`
-  only. The minimal golden suite uses CommonMark-derived cases where the
-  supported subset intends CommonMark semantics and explicitly records
-  deviations. P2 may expand conformance breadth; P0-02 cannot ship only a
-  differential oracle.
-- **"Local edit = exactly one block" is evidence, not law** (issue #12 R6):
-  the invariant is *a change invalidates the smallest semantically valid
-  region and stops when parser state safely converges*. Allowed claim:
-  ordinary non-structural local edits remain one-block in the measured L1
-  workload. A one-character edit may legitimately change block structure.
-- **Fence recovery must not change Markdown semantics to manufacture a
-  bound** (issue #12 R7): broad honest propagation is allowed; what must be
-  bounded/chunkable/yieldable is synchronous user-blocking work. Checkpoints
-  and restart states may reduce repeated work but cannot lie about
-  semantics; any dialect rule change (e.g. what counts as a fence opener)
-  must be an explicit documented dialect decision, not a performance fix.
-- **Internal block identity is not plugin identity** (issue #12 R9): the
-  internal `BlockId` may be implementation-owned and evolve; public plugin
-  semantic identity is defined later through the versioned adapter contract.
-- Acceptance: golden fixtures green; differential oracle green; local-edit
-  invalidation is the smallest semantically valid region with counters
-  proving unrelated blocks are untouched; no GPUI dependency; no rendering,
-  scheduler, files, IME, plugin runtime, rich blocks, or syntax hiding.
-- Non-goals: everything GPUI (that is P0-03), view model, commands beyond
-  what P0-01 already owns.
+- workspace search returns file/line/match/context;
+- click result opens/jumps;
+- path spaces/CJK/Unicode pass;
+- `.md` Open With passes;
+- no URL/path confusion;
+- Workspace owns discovery, not a duplicate editor buffer.
 
-### P0-03 — First product vertical slice
+## R3 — Markdown Semantics + Split Preview
 
-Begins only after **both** G0 and P0-02 are ready.
+### Goal
 
-- Goal: prove the first real product path:
+Build the first shared semantic rendering path for arbitrary edits.
 
-  ```text
-  keystroke
-    → EditTransaction
-    → DocumentVersion / change regions
-    → BlockIndex / Markdown IR
-    → visible projection
-    → GPUI layout / shaping / paint (pinned G0 baseline)
-    → presented frame
-  ```
+```text
+Document revision/change
+  -> Markdown Semantics
+  -> SemanticDelta
+  -> Preview RenderPatch
+  -> read-only Preview
+```
 
-- Scope: the smallest window + input + projection path on the frozen GPUI
-  baseline that makes one keystroke visible as styled Markdown. Success is
-  the slice, not feature completeness.
-- Must preserve (from the execution laws): demand-driven redraw,
-  viewport-bounded visible work, revision identity, stale-result-safe
-  publication boundary, instrumentation seams. Must **not** pre-build a
-  generic scheduler (issue #12 R3): use GPUI primitives directly and keep the
-  policy seam thin until a real product job needs priority/deadline machinery
-  (trigger: a real job that can exceed the interaction budget synchronously,
-  may finish out of order and need cancellation, or competes with visible
-  work under sustained typing/scroll).
-- Acceptance: keystroke→styled-pixels works on Windows on the pinned
-  baseline; no permanent frame loop; the P0-01/P0-02 counters are observable
-  end-to-end; no editor feature work beyond the slice.
-- Non-goals: files, undo history beyond the existing transaction seam,
-  IME (P1-A), plugins, rich blocks.
+### Scope
 
-## P1-A — Dogfood Editor
+- explicit Markdown dialect baseline;
+- source spans and semantic identity;
+- incremental update for ordinary local edits;
+- honest propagation for structural edits;
+- Source + Preview left/right layout;
+- revision-safe progressive publication;
+- instrumentation for changed semantic region and projection work.
 
-- Goal: enough Markit to edit Markit's own Markdown docs daily.
+### Streaming rule
 
-  ```text
-  window + visible Markdown L1
-  caret / selection / navigation / scroll
-  open / save / save-as
-  undo / redo
-  clipboard
-  Chinese IME (composition model, candidate docking)
-  CJK + emoji fallback
-  basic find
-  ```
+Borrow streaming Markdown ideas only at the publication/scheduling level. An editor must support arbitrary insertion/deletion/replacement, not only append-tail streams.
 
-- Runs on the frozen G0 baseline with the execution laws preserved
-  (demand-driven frames, viewport-bounded work, revision-safe deferred
-  results where they exist).
-- Dogfooding does **not** weaken final v0.1 acceptance (issue #12 R10): it
-  gets a real workload earlier so P1-B hardens against evidence, not
-  speculation.
-- Non-goals: generalized scheduler framework, plugin runtime, rich blocks,
-  tables/images/math.
+### Acceptance
 
-## P1-B — v0.1 Hardening
+- Source + Preview share one semantic authority;
+- normal local edits reuse unaffected semantic/projection state where valid;
+- large/broad work can yield/progressively publish;
+- stale work cannot overwrite newer presentation;
+- no permanent update loop;
+- parser correctness is not weakened to manufacture a small invalidation radius.
 
-- Goal: close the `docs/product/mvp-v0.1.md` acceptance gates on Windows and
-  ship v0.1.
+## R4 — Rich Projection: Mermaid + LaTeX Math
 
-  ```text
-  atomic save correctness (write→tmp→fsync→rename)
-  minimal crash recovery (snapshot + clean-shutdown marker + startup recovery)
-  real-host performance matrix (p50/p95/p99/max + long frames)
-  Buffer / Index Decision Gate (see below)
-  scheduler extraction only where real workloads require it (issue #12 R3)
-  queue/cancellation/coherent-publication tests where async work exists
-  portable release artifact
-  ```
+### Goal
 
-- **Buffer / Index Decision Gate (issue #12 R8):** before v0.1 performance
-  certification, measure real product workloads at positions
-  `begin / q1 / middle / q3 / end`, content mixes (ASCII / CJK / emoji /
-  long lines / mixed Markdown / fences), and sizes (small / medium / large +
-  the synthetic 1M-line case), observing at least: bytes scanned, bytes
-  moved/copied where measurable, line entries shifted, blocks reparsed,
-  visible materialization, and real input→visible-frame tails / long frames.
-  v0.1 certification may not claim "1M local edit is flat" from
-  `bytes_scanned == Δ ∧ full_rebuilds == 0` alone — those counters exclude
-  String suffix movement and LineIndex suffix shifting. If String/flat
-  LineIndex suffix movement becomes the dominant user-visible term, reopen
-  the ADR-003 implementation decision and evaluate Rope/PieceTree/tree
-  variants; if not, keep the simple representation. The synthetic 1M-line
-  test is an algorithmic regression guard, not by itself a product
-  performance certification.
-- Scheduler extraction remains evidence-triggered (issue #12 R3): build
-  priority/deadline/cancellation machinery only when at least one real
-  product job can exceed the interaction/frame budget synchronously, may
-  finish out of order and need stale rejection, or competes with visible
-  work under sustained typing/scroll.
-- Acceptance: all `mvp-v0.1.md` gates PASS on Windows with evidence;
-  invariants battery green; normal local edits remain Δ + viewport
-  proportional rather than document proportional under the full gate
-  measurement (not just the counters); idle editor does no draw/present
-  work; deferrable work can yield without blocking caret/input/visible
-  text; synthetic out-of-order jobs cannot publish stale state; no GPUI
-  code leaked into `markit-core`.
-- Non-goals: tabs, images/tables/math, installer/MSIX, Linux/macOS,
-  generalized ECS/job framework, plugin runtime/marketplace.
+Add the two mandatory rich rendering workloads through clean provider-shaped boundaries.
 
-## P2 — Incremental / Scheduling Hardening
+### Mermaid scope
 
-- Goal: harden the L1 pipeline and real-time execution model to
-  product-grade conformance, bounded recovery, and stable scheduling.
-- Scope:
-  - L1 conformance breadth (expanding the P0-02 minimal golden suite:
-    adversarial cases, structural recovery, CommonMark-derived where
-    applicable);
-  - bounded fence recovery via semantics-preserving means (parser
-    checkpoints, resumable propagation — do not hide honest structural
-    propagation and do not change Markdown interpretation to cap the
-    radius);
-  - incremental-parser robustness across large structural edits;
-  - priority inversion / queue growth tests;
-  - cancellation vs stale-result-rejection policy measurement;
-  - cache-key/invalidation correctness tests;
-  - Document LOD height estimation/correction and scroll-drift tests;
-  - adaptive work chunking only if evidence shows a fixed policy causes
-    long frames or under-utilization.
-- Acceptance:
-  - ordinary non-structural local edits remain one-block invalidation at any
-    document size in the measured workload (evidence-based claim, not a
-    correctness law — structural edits may legitimately propagate further,
-    issue #12 R6);
-  - structural-edit propagation radius is honest, measured, and documented;
-    any bounding strategy (checkpoints/resumable propagation) preserves
-    Markdown semantics (issue #12 R7 — never alter interpretation to cap
-    invalidation);
-  - differential oracle green;
-  - conformance fixtures green;
-  - stale/out-of-order jobs cannot corrupt presentation;
-  - queue depth remains bounded under sustained typing/scroll workloads;
-  - no unacceptable scroll jumps from LOD/height correction;
-  - frame/interaction tail metrics and work-amplification counters show
-    that background completion does not dominate visible interaction.
-- Non-goals: syntax hiding (P3), copying Markstream's numeric defaults,
-  building a generic game engine.
+- fenced `mermaid` block semantics;
+- asynchronous/deferred/coalesced rendering;
+- Preview output;
+- Live-compatible projection input for R6;
+- browser/print representation;
+- visible failure fallback;
+- offline/local mandatory assets.
 
-## P3 — Typora-style L2
+### Math scope
 
-- Goal: source-aware presentation (syntax hidden outside the active
-  line, revealed on caret entry) without regressing the real-time
-  execution laws.
-- Scope: per-line syntax visibility, run-level virtualization, richer
-  inline styling (weights/sizes), precise Style/Layout/Paint dirty
-  propagation.
-- Acceptance:
-  - L2 editing measured against the full invariant battery;
-  - local-edit radius still 1 block where semantics permit;
-  - caret-line reveal is critical visible work;
-  - offscreen syntax visibility changes do not force full-document layout
-    or paint;
-  - cached shaping/layout is reused when dependencies remain stable.
-- Non-goals: rich blocks (P4).
+- inline `$...$`;
+- display `$$...$$`;
+- Preview output;
+- Live-compatible projection input for R6;
+- browser/print output;
+- CJK + math fixtures;
+- visible invalid-expression fallback;
+- offline/local mandatory assets.
 
-## P4 — Rich Markdown Blocks / Heavy Projection Jobs
+### Acceptance
 
-- Goal: images, tables, math, code highlighting (and later diagrams) as
-  viewport-aware projections that cannot poison the typing hot path.
-- Scope:
-  - block-kind registry extension;
-  - lazy per-visible/near-block projection;
-  - versioned/cancellable or stale-result-safe heavy jobs;
-  - cache + explicit invalidation;
-  - lightweight fallback/placeholder presentation where appropriate;
-  - memory bounds / eviction;
-  - layout-stability measurement when a heavy result becomes ready;
-  - built-in exporter/print/provider seams shaped so they can later map to
-    versioned plugin capabilities without exposing render internals.
-- Acceptance:
-  - each block kind has a measured invalidation radius;
-  - expensive projection does not synchronously run for distant blocks
-    during normal typing;
-  - stale heavy-job results cannot commit;
-  - cache dependency/invalidation rules are documented and tested;
-  - placeholder→final transitions stay within accepted scroll/layout
-    stability bounds;
-  - rich blocks stay out of the critical interaction path unless the
-    current visible interaction genuinely requires them;
-  - extension-like providers consume documented semantic inputs instead of
-    GPUI element/layout internals.
-- Non-goals: unrestricted plugin runtime / marketplace.
+- typing is not synchronously blocked by unnecessary heavy renderer execution;
+- provider results carry semantic identity/revision;
+- old completions cannot publish over new source;
+- renderer failure does not make Source Mode unavailable;
+- built-in implementation does not leak a renderer-specific object as public semantic identity.
 
-## PX — Plugin Runtime (evidence-triggered)
+## R5 — Browser Preview + Print Completeness
 
-- Trigger: at least two materially different extension workloads need a
-  distributable third-party boundary (for example Print/PDF plus an
-  independent lint/export/provider class), and built-in-only seams no longer
-  provide enough evidence.
-- Goal: implement the smallest runtime that satisfies the already-defined
-  semantic compatibility contract.
-- Required evaluation before choosing runtime/transport:
+Can begin once R3 semantic output exists; complete Mermaid/math tests after R4.
 
-  ```text
-  failure isolation
-  hot-path latency
-  startup cost
-  memory overhead
-  cross-platform support
-  dependency isolation
-  security/capability enforcement
-  upgrade compatibility
-  debugging/developer experience
-  packaging/signing implications
-  ```
+### Goal
 
-- Candidate transports may include in-process adapters, Wasm/component
-  models, subprocess/IPC, or hybrids. None is preselected.
-- Scope:
-  - manifest + plugin identity/version;
-  - API major/minor negotiation;
-  - required/optional capability negotiation;
-  - snapshot/query + command/result boundary;
-  - stale-result/revision validation;
-  - crash/hang/incompatibility handling;
-  - compatibility fixtures with older supported plugins;
-  - deprecation/migration machinery;
-  - dependency isolation appropriate to the chosen runtime.
-- Acceptance:
-  - a host update that changes private Markit implementation details does
-    not break representative supported old plugins;
-  - incompatible plugins are disabled with an explicit reason, not crash;
-  - missing optional capability degrades cleanly;
-  - stale plugin results cannot overwrite newer state;
-  - slow/crashed plugin cannot block ordinary typing indefinitely;
-  - at least one compatibility test runs an old-plugin fixture against the
-    new host in CI.
-- Non-goals: marketplace economics, broad permission UX, arbitrary plugin
-  capabilities not justified by real workloads.
+Make Browser Preview and browser Print/PDF a reliable first-class output workflow.
 
-## P5 — Cross-platform / Shipping Hardening
+### Scope
 
-- Goal: shipping quality on Windows, then Linux/macOS while preserving
-  the same semantic execution and extension compatibility contracts.
-- Scope: Windows hardening first (packaging, crash reporting, recovery
-  maturity, performance regression CI, accessibility basics, i18n); then
-  Linux (Wayland/X11, fontconfig, IBus/Fcitx) and macOS (CoreText, IME,
-  clipboard, Cmd, .app bundle) — each gated by the same MVP acceptance on
-  real hardware.
-- Each platform may use platform-specific scheduling/presentation fast
-  paths if the common semantics remain intact. Do not force lowest-common-
-  denominator timing mechanisms.
-- Acceptance: release-ready on each platform it claims; each real host
-  validates input/presentation semantics, idle demand rendering,
-  cancellation/revision safety, viewport-bounded work, and the platform's
-  calibrated frame/interaction budgets. If the plugin runtime has shipped,
-  supported plugin compatibility must also hold across host platform updates.
-- Non-goals: store submission specifics until a platform is release-ready.
+Implement `docs/product/print-browser-contract.md`:
 
-## Working rule (the anti-foundation rule, from A4 §59)
+- coherent `DocumentSnapshot(revision=N)`;
+- whole-document browser/print materialization;
+- `PrintReady` barrier;
+- `Ready | FailedVisible` terminal resources;
+- product print CSS;
+- local image/resource resolution;
+- CJK/browser font validation;
+- browser launch;
+- local/offline mandatory assets;
+- secure local transport if loopback HTTP is used.
 
-> Once a foundation is sufficient for the next product feature, stop
-> improving the foundation and build the product feature.
+### Critical adversarial gate
 
-The real-time execution model and plugin compatibility contract do **not**
-authorize an endless scheduler/engine/plugin-framework rewrite. Build the
-smallest mechanism required by the next product phase, instrument it, measure
-it, and keep it only if the product workload justifies it.
+Printing must be invariant to interactive scroll history:
 
-Real product workload is the only judge that can reopen research (e.g.
-an A5-style investigation) or trigger PX — a synthetic benchmark or desire for
-a generic ecosystem alone cannot. Do not let platform, scheduling, or plugin
-framework work prevent building the editor once the Windows foundation is
-adequate.
+```text
+print immediately after open
+== semantic content ==
+scroll through whole document, then print
+```
+
+Offscreen Mermaid and offscreen math are required regression fixtures.
+
+### Acceptance
+
+All tests in `print-browser-contract.md` pass on Windows reference browser configuration, and browser printing never depends on which editor blocks were previously materialized.
+
+## R6 — Live Mode
+
+### Goal
+
+Add source-aware WYSIWYG editing without creating a second document truth.
+
+### Required model
+
+```text
+Document source
+  -> Markdown Semantics
+  -> Live Projection
+  -> gesture/command
+  -> source-aware EditTransaction
+  -> same Document
+```
+
+### Initial scope
+
+- switch Source <-> Live;
+- heading/paragraph presentation;
+- emphasis/strong;
+- inline/fenced code presentation;
+- links/lists/blockquote sufficient for the baseline dialect;
+- Mermaid/math rendered as rich blocks while their source remains authoritative;
+- formatting commands produce Markdown source edits;
+- source reveal/fallback for ambiguous/unsupported syntax;
+- explicit source/semantic/visual coordinate mapping;
+- selection/caret behavior;
+- IME correctness in Live editing paths where text insertion occurs.
+
+### Acceptance
+
+- mode switch alone is byte-identical;
+- revision/dirty/undo are shared, not synchronized copies;
+- representative Live edits produce expected Markdown source;
+- unsupported constructs cannot be silently normalized/dropped;
+- deleting all Live projection state loses no document semantics;
+- Source Mode remains the escape hatch for every document.
+
+## R7 — Extension Boundary Conformance
+
+### Goal
+
+Prove the architecture remains plugin/provider-extensible before private implementation leaks harden into public contracts.
+
+This phase does **not** automatically build a general plugin runtime.
+
+### Scope
+
+Exercise built-in workloads as if they were provider candidates:
+
+- Mermaid projection;
+- math projection;
+- browser/export projection;
+- at least one read-only semantic query;
+- at least one controlled command/edit boundary.
+
+For each verify:
+
+- semantic version/capability shape;
+- snapshot/query input rather than mutable internals;
+- command/result output;
+- revision/identity validation;
+- no GPUI/private IR/cache/scheduler identity in the contract;
+- provider failure does not poison Source Mode.
+
+### Decision gate
+
+Only after at least two materially different external extension workloads exist should Markit choose a concrete third-party runtime/transport such as in-process, Wasm, subprocess/IPC, or another mechanism.
+
+Valid outcomes before that are:
+
+```text
+KEEP SEMANTIC SEAM ONLY
+SPIKE RUNTIME
+DEFER
+```
+
+## R8 — v0.1 Hardening
+
+### Goal
+
+Close every gate in `mvp-v0.1.md` on a real Windows host and ship the first useful product.
+
+### Scope
+
+- reliability/save/crash recovery appropriate for v0.1;
+- installer/portable packaging decision sufficient for OS registration;
+- real-host performance evidence;
+- workspace/search stress;
+- large-document interaction behavior;
+- Mermaid/math failure/stale cases;
+- full print adversarial corpus;
+- CJK/IME/path regression matrix;
+- memory/cache bounds;
+- accessibility basics needed for shipping;
+- product docs/help sufficient to explain Source vs Live vs Preview.
+
+### Performance decision gates
+
+Do not preselect Rope/PieceTree, worker counts, cache sizes, or a custom scheduler.
+
+Measure:
+
+- source mutation cost by edit position/size;
+- bytes moved/copied where measurable;
+- semantic work amplification;
+- projection/layout/shaping work;
+- rich provider latency/cancellation;
+- input -> visible frame tails;
+- workspace search latency;
+- Browser/Print preparation latency and failures;
+- idle CPU/memory.
+
+If an experimental component is not the bottleneck, do not rewrite it for fashion.
+
+## R9 — Cross-platform and later plugin runtime
+
+After Windows v0.1:
+
+### Cross-platform
+
+Bring up macOS/Linux host mechanisms while preserving:
+
+- Document semantics;
+- Markdown semantics;
+- Source/Live command behavior;
+- Preview/Print contracts;
+- provider capability semantics.
+
+Platform-specific differences stay at host edges: IME, fonts, shortcuts, dialogs, packaging, browser launch, file association, scheduling primitives.
+
+### Plugin runtime
+
+Build a concrete plugin runtime only when actual external extension workloads justify it. Runtime selection must evaluate:
+
+```text
+failure isolation
+latency / hot-path contamination
+startup and memory
+security/capabilities
+cross-platform packaging
+version compatibility
+debugging/developer experience
+```
+
+The semantic boundary comes first; transport is replaceable.
+
+## Cross-cutting stop conditions
+
+Stop and open a focused architecture review if any change requires:
+
+1. a Source Document and Live Document with synchronization between them;
+2. mode switching that rewrites source merely to change presentation;
+3. a renderer/provider object becoming durable document identity;
+4. Preview or Browser reparsing a separate undocumented Markdown dialect;
+5. print completeness depending on viewport/scroll/lazy cache state;
+6. synchronous Mermaid/math work on every ordinary keystroke without evidence;
+7. a permanent search index before direct search proves insufficient;
+8. a plugin/provider mutating Document internals directly;
+9. GPUI/private IR/cache/scheduler types entering public semantic contracts;
+10. changing Markdown semantics to make a performance benchmark look bounded;
+11. network/cloud dependence for core local editing/rendering/printing;
+12. a major data copy/serialization boundary that cannot name the product value it buys.
+
+## Working rule
+
+> Build the smallest boundary that preserves the product truth, measure the real user path, and delete experimental machinery that no longer earns its place.
