@@ -33,7 +33,7 @@ use markit_core::markdown::{BlockDetail, BlockKind, MarkdownState};
 use markit_core::Document;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-enum Norm {
+pub(crate) enum Norm {
     P,
     H(u8),
     BQ,
@@ -63,7 +63,7 @@ fn seq_name(seq: &[Norm]) -> String {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-enum Verdict {
+pub(crate) enum Verdict {
     Pass,
     FlatContainer,
     Fail,
@@ -71,7 +71,7 @@ enum Verdict {
 }
 
 impl Verdict {
-    fn name(&self) -> &'static str {
+    pub(crate) fn name(&self) -> &'static str {
         match self {
             Verdict::Pass => "PASS",
             Verdict::FlatContainer => "FLAT_CONTAINER",
@@ -81,14 +81,14 @@ impl Verdict {
     }
 }
 
-struct Row {
-    example: u64,
-    section: String,
-    start_line: u64,
-    verdict: Verdict,
-    observed: String,
-    expected: String,
-    note: String,
+pub(crate) struct Row {
+    pub(crate) example: u64,
+    pub(crate) section: String,
+    pub(crate) start_line: u64,
+    pub(crate) verdict: Verdict,
+    pub(crate) observed: String,
+    pub(crate) expected: String,
+    pub(crate) note: String,
 }
 
 /// Observed normalized sequence from the measured implementation.
@@ -224,10 +224,23 @@ fn flatten(tagged: &[(Norm, usize)]) -> Vec<Norm> {
 
 fn judge(markdown: &str, html: &str) -> (Verdict, String, String, String) {
     let observed = observe(markdown);
+    judge_observed(&observed, markdown, html, false)
+}
+
+/// Judgement against a precomputed observed sequence. `indented_code`:
+/// whether the measured implementation claims indented code blocks (it
+/// controls the indented-code UNSUPPORTED conversion — MD4C claims
+/// them, markit L1 does not).
+pub(crate) fn judge_observed(
+    observed: &[Norm],
+    markdown: &str,
+    html: &str,
+    indented_code: bool,
+) -> (Verdict, String, String, String) {
     match expected_tags(html) {
         Err(tag) => (
             Verdict::Unsupported,
-            seq_name(&observed),
+            seq_name(observed),
             String::new(),
             format!("vocabulary: {tag}"),
         ),
@@ -235,7 +248,7 @@ fn judge(markdown: &str, html: &str) -> (Verdict, String, String, String) {
             // Indented code blocks: expected `<pre><code>` whose source
             // does not START with a fence opener means indented code —
             // a construct outside the measured vocabulary (plan §6:
-            // unsupported, not failed).
+            // unsupported, not failed) unless the implementation claims it.
             let fenced = markdown
                 .lines()
                 .find(|l| !l.trim().is_empty())
@@ -244,7 +257,7 @@ fn judge(markdown: &str, html: &str) -> (Verdict, String, String, String) {
                     t.starts_with("```") || t.starts_with("~~~")
                 })
                 .unwrap_or(false);
-            if !fenced && tagged.iter().any(|(n, _)| *n == Norm::CODE) {
+            if !indented_code && !fenced && tagged.iter().any(|(n, _)| *n == Norm::CODE) {
                 return (
                     Verdict::Unsupported,
                     seq_name(&observed),
@@ -265,7 +278,7 @@ fn judge(markdown: &str, html: &str) -> (Verdict, String, String, String) {
             }
             let full: Vec<Norm> = tagged.iter().map(|(n, _)| *n).collect();
             let flat = flatten(&tagged);
-            let obs = seq_name(&observed);
+            let obs = seq_name(observed);
             let exp = seq_name(&full);
             if observed == full {
                 (Verdict::Pass, obs, exp, String::new())
@@ -336,7 +349,7 @@ pub fn run(spec_path: &Path, out: &Path) -> Result<String, String> {
     Ok(summary)
 }
 
-fn summarize(rows: &[Row]) -> String {
+pub(crate) fn summarize(rows: &[Row]) -> String {
     let mut s = String::new();
     s.push_str("# ORACLE-B (DIALECT SEMANTICS) — CommonMark 0.31.2\n\n");
     s.push_str("spec: CommonMark 0.31.2, sha256 d431b29d97b6f73e69d547109cf5081578fac931e72afe95639ebe766c1b2a20, retrieved 2026-09-16\n");

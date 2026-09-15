@@ -13,10 +13,12 @@
 //! Research-only: not product code.
 
 mod alloc;
+mod baseline;
 mod cmoracle;
 mod corpus;
 mod emit;
 mod influence;
+mod md4c;
 mod measure;
 mod mutate;
 mod text;
@@ -33,6 +35,7 @@ struct Args {
     warm: usize,
     out: PathBuf,
     commonmark: Option<PathBuf>,
+    md4c: bool,
 }
 
 fn parse_size(s: &str) -> Option<usize> {
@@ -52,6 +55,7 @@ fn parse_args() -> Args {
         iters: None,
         warm: 2,
         commonmark: None,
+        md4c: false,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
             SystemTime::now()
@@ -81,6 +85,7 @@ fn parse_args() -> Args {
             "--commonmark" => {
                 args.commonmark = it.next().map(PathBuf::from);
             }
+            "--md4c" => args.md4c = true,
             other => {
                 eprintln!("unknown arg {other}");
                 std::process::exit(2);
@@ -119,6 +124,22 @@ fn first_successful_run(
 
 fn main() {
     let args = parse_args();
+
+    // M0-B mode: MD4C full-parse baseline (sizes sweep + CommonMark
+    // cross-check).
+    if args.md4c {
+        let spec = args
+            .commonmark
+            .clone()
+            .unwrap_or_else(|| PathBuf::from("crates/parser-survey/data/commonmark-0.31.2-spec.json"));
+        let summary = baseline::run(&spec, &args.out.join("md4c")).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            std::process::exit(1);
+        });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("md4c").display());
+        return;
+    }
 
     // ORACLE-B mode: CommonMark dialect-semantics battery over a pinned
     // spec.json (no mutation battery).
