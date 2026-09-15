@@ -1,463 +1,324 @@
-# Markit Product Roadmap
+# Markit Roadmap
 
-Status: **post-reset execution roadmap**  
-Authority: `docs/PRD.md` -> `docs/product/architecture.md` -> `docs/product/mvp-v0.1.md`
+Status: **parser-research first**
 
-This roadmap starts from product requirements, not from the shape of the pre-reset experiments.
+Markit has completed a product reset. The product requirements are retained, but implementation architecture is intentionally **not frozen** until the Markdown parsing experiment in Issue #19 is complete.
 
-Existing work from revision `d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e` is retained as experimental evidence. Reuse is allowed, but no old phase/ADR/implementation is automatically a prerequisite or product authority after `MARKIT-PRODUCT-RESET-0`.
-
-The product laws are:
+## Current order of work
 
 ```text
-Markdown Source is the single source of truth.
-Parse incrementally; publish progressively; print completely.
+R0  Product truth reset / archive old authority
+        |
+        v
+R1  Markdown parser research (#19)               <- NOW
+        |
+        v
+R2  Research-question revision + parser verdict
+        |
+        v
+R3  Evidence-backed architecture
+        |
+        v
+R4  Minimal source editor / document path
+        |
+        v
+R5  Preview + rendering pipeline
+        |
+        +--> Mermaid / math
+        +--> Browser / Print
+        |
+        v
+R6  Live Mode
+        |
+        v
+R7  Workspace / OS integration / extension seams
+        |
+        v
+R8  v0.1 hardening
 ```
 
-## Roadmap graph
+The order is deliberate: Markit should first understand how arbitrary Markdown edits propagate through parsing and semantic state. UI/render architecture must consume that result rather than dictate it.
 
-```text
-R0  Product Truth Reset                         ← this documentation reset
- │
- ├──────────────┐
- ▼              ▼
-R1 Source Core  R2 Workspace + OS Open
- │              │
- └──────┬───────┘
-        ▼
-R3 Markdown Semantics + Split Preview
-        │
-        ├───────────────┐
-        ▼               ▼
-R4 Rich Projection    R5 Browser / Print
-Mermaid + Math        completeness contract
-        │               │
-        └───────┬───────┘
-                ▼
-          R6 Live Mode
-       source-aware editing
-                │
-                ▼
-       R7 Extension Boundary
-       conformance / providers
-                │
-                ▼
-          R8 v0.1 Hardening
-                │
-                ▼
-              v0.1
-                │
-                ▼
-        R9 Cross-platform / later plugins
-```
+---
 
-This is a dependency graph, not a forced waterfall. Independent nodes may run in parallel when their prerequisites are satisfied.
-
-## R0 — Product Truth Reset
+## R0 — Product reset and archive
 
 ### Goal
 
-Replace the research-first product narrative with a requirement-first one while preserving old work as evidence.
+Separate product truth from the previous experimental implementation and documents.
 
-### Scope
+### Current product authority
 
-- rewrite `docs/PRD.md`;
-- rewrite `docs/product/architecture.md`;
-- rewrite `docs/product/mvp-v0.1.md`;
-- rewrite this roadmap;
-- rewrite repository `README.md`;
-- add `docs/product/print-browser-contract.md`;
-- record the pre-reset authority boundary under `docs/archive/`;
-- declare the current implementation experimental/reference until conformance is re-earned.
+- `docs/PRD.md` — product requirements;
+- `docs/product/mvp-v0.1.md` — intended V0.1 product scope;
+- `docs/product/print-browser-contract.md` — print/browser completeness contract;
+- `docs/product/architecture.md` — **HOLD document only**, not a frozen implementation architecture;
+- this roadmap — sequencing/status.
 
-### Acceptance
+### Archive authority
 
-- documents agree on Source Mode + Live Mode;
-- Workspace Search, split Preview, Browser/Print, Mermaid, LaTeX math, and OS Open With are V0.1 product requirements;
-- one source truth is explicit;
-- interactive incremental/streaming rendering is separated from exhaustive print;
-- plugin extensibility is preserved without requiring a plugin marketplace/runtime now;
-- old product/research documents cannot silently override the reset authority.
-
-### Non-goal
-
-No production-code rewrite in R0.
-
-## R1 — Source Core
-
-### Goal
-
-Produce the smallest trustworthy product path for editing the real Markdown source.
+The pre-reset repository is preserved at:
 
 ```text
-open file
-  -> Document source
-  -> Source Mode
-  -> EditTransaction
-  -> revision / undo / dirty
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+```
+
+Old ADRs, research-first product documents, GPUI/PocketJS experiments, the old Markdown implementation, benchmarks, and implementation notes are historical/reference evidence.
+
+They must not silently become requirements for the new architecture.
+
+---
+
+## R1 — Incremental Markdown parser research (#19)
+
+This is the active technical phase.
+
+### Root research question — provisional
+
+> **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
+
+This wording is provisional. The experiment must revise the question if the evidence shows that important cost/authority dimensions are missing.
+
+### Research map
+
+```text
+Theory
+  Wagner & Graham
+  incremental parsing / reuse
+
+Systems
+  Tree-sitter
+  Lezer
+  Roslyn
+  rust-analyzer / rowan
+
+Markdown-specific
+  @lezer/markdown
+  tree-sitter-markdown
+  mizchi/markdown
+  MD4C
+```
+
+### Candidate Markit hypothesis
+
+```text
+arbitrary edit
+    |
+    v
+small affected source region
+    |
+    v
+block / inline parsing with boundary state
+    |
+    v
+earliest safe convergence
+    |
+    v
+reuse unaffected syntax
+    |
+    v
+separate semantic dependency invalidation
+```
+
+The hypothesis is not architecture. It must survive the mutation corpus and correctness oracle.
+
+### Measurements
+
+Do not optimize only wall-clock parse time. At minimum inspect:
+
+- bytes / lines rescanned;
+- propagation radius;
+- syntax regions or blocks reparsed;
+- nodes rebuilt / reused;
+- allocations / allocated bytes where measurable;
+- memory movement / copy amplification where measurable;
+- offset/index maintenance work;
+- semantic dependency fan-out;
+- equality with a clean parse.
+
+### Important distinction
+
+```text
+syntax invalidation
+!=
+semantic dependency invalidation
+!=
+render/presentation invalidation
+```
+
+### Stop gate
+
+No production parser replacement in R1.
+
+Issue #19 must end with evidence and one parser-direction verdict before implementation architecture is written.
+
+---
+
+## R2 — Revise the research question and choose parser direction
+
+The Issue #19 report must explicitly review the root research question itself.
+
+Allowed question verdicts:
+
+```text
+KEEP
+REFINE
+REPLACE
+```
+
+The parser direction must then be one of:
+
+```text
+ADOPT_EXISTING
+ADAPT_EXISTING
+BUILD_MARKIT_SPECIFIC
+INSUFFICIENT_EVIDENCE
+```
+
+If the question is refined, the new formulation becomes the research north star for later rendering/layout work.
+
+---
+
+## R3 — Evidence-backed architecture
+
+Only after R1/R2 passes human review should `architecture.md` be replaced with a real implementation architecture.
+
+It should decide, from evidence:
+
+```text
+Document/source storage
+        |
+        v
+incremental parsing contract
+        |
+        v
+lossless syntax / semantic representation
+        |
+        v
+dependency / invalidation model
+        |
+        v
+projection contract
+        |
+        v
+render/layout scheduling
+        |
+        v
+UI backend(s)
+```
+
+Questions such as Rope vs Piece Table, CST vs another representation, parser library choice, block checkpoints, semantic indexes, and render-delta shape belong here **after** the experiment.
+
+Plugin/provider seams should be designed so future extensions consume stable semantic/query/command contracts rather than private parser/UI internals.
+
+---
+
+## R4 — Minimal source editor
+
+After parser/storage architecture is selected, build the smallest trustworthy user path:
+
+```text
+open Markdown
+  -> authoritative source
+  -> Source Mode edit
+  -> revision/change
+  -> parse/semantic update
   -> save
 ```
 
-### Reuse audit
+Requirements include:
 
-Before writing replacements, audit the experimental implementation for candidates such as:
-
-- document storage;
-- revision/change model;
-- transactions;
-- selection;
-- line index;
-- GPUI text/input integration;
-- IME evidence;
-- save path.
-
-For each candidate classify:
-
-```text
-ADOPT
-ADAPT
-DELETE / REPLACE
-```
-
-Do not preserve old types merely to minimize diff size.
-
-### Required scope
-
-- authoritative Document;
-- explicit revision/change result;
-- Source Mode plain-text editing;
-- caret/selection/navigation;
-- copy/cut/paste;
+- lossless Markdown source editing;
 - undo/redo;
-- open/save/save-as;
 - UTF-8/CJK/emoji;
-- Windows Chinese IME;
-- source editing remains usable without Markdown rich rendering.
+- Windows IME;
+- open/save/save-as;
+- mode-independent document authority.
 
-### Acceptance
+Existing `markit-core` code is a candidate reference only. Audit each component as `ADOPT`, `ADAPT`, `REPLACE`, or `DELETE`.
 
-- one source truth;
-- round-trip does not rewrite unrelated syntax;
-- common editing operations work on real Windows host;
-- path/encoding tests include CJK;
-- no Live/Preview shadow document is introduced;
-- idle UI remains demand-driven.
+---
 
-## R2 — Workspace + OS Open
+## R5 — Preview and rendering
 
-May proceed in parallel with later R1 work once Document open semantics are stable.
+UI/rendering work begins only after the parser/semantic contract is credible.
 
-### Goal
-
-Make Markit useful as a local Markdown workspace tool.
-
-### Scope
+Study the second half of the end-to-end cost chain:
 
 ```text
-Workspace root
-├─ file tree
-├─ file open
-└─ text search
+SemanticDelta
+     -> projection invalidation
+     -> layout invalidation
+     -> shaping
+     -> paint
+     -> pixels
 ```
 
-and Windows host integration:
+The key future question is not merely GPU speed, but how parser-local changes propagate into the minimum correct amount of downstream work.
 
-```text
-.md -> Open With Markit
-shell path -> Markit open
-existing process -> open requested document
-```
+This phase includes:
 
-### Search policy
+- split Source + Preview;
+- progressive publication where appropriate;
+- Mermaid;
+- LaTeX-style math;
+- Browser Preview;
+- browser Print/PDF according to `print-browser-contract.md`.
 
-Start with the smallest direct scanner/search engine that satisfies the product. Do not create an index database until evidence shows it is necessary.
+Heavy Mermaid/math rendering must remain outside the Markdown parser critical path.
 
-### Acceptance
-
-- workspace search returns file/line/match/context;
-- click result opens/jumps;
-- path spaces/CJK/Unicode pass;
-- `.md` Open With passes;
-- no URL/path confusion;
-- Workspace owns discovery, not a duplicate editor buffer.
-
-## R3 — Markdown Semantics + Split Preview
-
-### Goal
-
-Build the first shared semantic rendering path for arbitrary edits.
-
-```text
-Document revision/change
-  -> Markdown Semantics
-  -> SemanticDelta
-  -> Preview RenderPatch
-  -> read-only Preview
-```
-
-### Scope
-
-- explicit Markdown dialect baseline;
-- source spans and semantic identity;
-- incremental update for ordinary local edits;
-- honest propagation for structural edits;
-- Source + Preview left/right layout;
-- revision-safe progressive publication;
-- instrumentation for changed semantic region and projection work.
-
-### Streaming rule
-
-Borrow streaming Markdown ideas only at the publication/scheduling level. An editor must support arbitrary insertion/deletion/replacement, not only append-tail streams.
-
-### Acceptance
-
-- Source + Preview share one semantic authority;
-- normal local edits reuse unaffected semantic/projection state where valid;
-- large/broad work can yield/progressively publish;
-- stale work cannot overwrite newer presentation;
-- no permanent update loop;
-- parser correctness is not weakened to manufacture a small invalidation radius.
-
-## R4 — Rich Projection: Mermaid + LaTeX Math
-
-### Goal
-
-Add the two mandatory rich rendering workloads through clean provider-shaped boundaries.
-
-### Mermaid scope
-
-- fenced `mermaid` block semantics;
-- asynchronous/deferred/coalesced rendering;
-- Preview output;
-- Live-compatible projection input for R6;
-- browser/print representation;
-- visible failure fallback;
-- offline/local mandatory assets.
-
-### Math scope
-
-- inline `$...$`;
-- display `$$...$$`;
-- Preview output;
-- Live-compatible projection input for R6;
-- browser/print output;
-- CJK + math fixtures;
-- visible invalid-expression fallback;
-- offline/local mandatory assets.
-
-### Acceptance
-
-- typing is not synchronously blocked by unnecessary heavy renderer execution;
-- provider results carry semantic identity/revision;
-- old completions cannot publish over new source;
-- renderer failure does not make Source Mode unavailable;
-- built-in implementation does not leak a renderer-specific object as public semantic identity.
-
-## R5 — Browser Preview + Print Completeness
-
-Can begin once R3 semantic output exists; complete Mermaid/math tests after R4.
-
-### Goal
-
-Make Browser Preview and browser Print/PDF a reliable first-class output workflow.
-
-### Scope
-
-Implement `docs/product/print-browser-contract.md`:
-
-- coherent `DocumentSnapshot(revision=N)`;
-- whole-document browser/print materialization;
-- `PrintReady` barrier;
-- `Ready | FailedVisible` terminal resources;
-- product print CSS;
-- local image/resource resolution;
-- CJK/browser font validation;
-- browser launch;
-- local/offline mandatory assets;
-- secure local transport if loopback HTTP is used.
-
-### Critical adversarial gate
-
-Printing must be invariant to interactive scroll history:
-
-```text
-print immediately after open
-== semantic content ==
-scroll through whole document, then print
-```
-
-Offscreen Mermaid and offscreen math are required regression fixtures.
-
-### Acceptance
-
-All tests in `print-browser-contract.md` pass on Windows reference browser configuration, and browser printing never depends on which editor blocks were previously materialized.
+---
 
 ## R6 — Live Mode
 
-### Goal
+Add source-aware WYSIWYG editing only after source/syntax/semantic/visual mappings are understood.
 
-Add source-aware WYSIWYG editing without creating a second document truth.
-
-### Required model
+Hard invariant:
 
 ```text
-Document source
-  -> Markdown Semantics
-  -> Live Projection
-  -> gesture/command
-  -> source-aware EditTransaction
-  -> same Document
+Live Mode is a projection/editing surface over the same Markdown source.
+It is not a second rich-text document synchronized back to Markdown.
 ```
 
-### Initial scope
+Mode switching alone must be source-byte neutral.
 
-- switch Source <-> Live;
-- heading/paragraph presentation;
-- emphasis/strong;
-- inline/fenced code presentation;
-- links/lists/blockquote sufficient for the baseline dialect;
-- Mermaid/math rendered as rich blocks while their source remains authoritative;
-- formatting commands produce Markdown source edits;
-- source reveal/fallback for ambiguous/unsupported syntax;
-- explicit source/semantic/visual coordinate mapping;
-- selection/caret behavior;
-- IME correctness in Live editing paths where text insertion occurs.
+---
 
-### Acceptance
+## R7 — Workspace, OS integration, extension seams
 
-- mode switch alone is byte-identical;
-- revision/dirty/undo are shared, not synchronized copies;
-- representative Live edits produce expected Markdown source;
-- unsupported constructs cannot be silently normalized/dropped;
-- deleting all Live projection state loses no document semantics;
-- Source Mode remains the escape hatch for every document.
+Product requirements include:
 
-## R7 — Extension Boundary Conformance
+- workspace file tree;
+- workspace text search;
+- Windows `.md` Open With/file association;
+- browser launch;
+- future plugin/provider extensibility.
 
-### Goal
+These features must not force parser or UI internals into public extension contracts.
 
-Prove the architecture remains plugin/provider-extensible before private implementation leaks harden into public contracts.
+A general plugin runtime is not required for V0.1; clean semantic seams are.
 
-This phase does **not** automatically build a general plugin runtime.
+---
 
-### Scope
+## R8 — V0.1 hardening
 
-Exercise built-in workloads as if they were provider candidates:
+Validate the complete product on the real Windows host:
 
-- Mermaid projection;
-- math projection;
-- browser/export projection;
-- at least one read-only semantic query;
-- at least one controlled command/edit boundary.
+- correctness under arbitrary edits;
+- large-document behavior;
+- CJK/IME/path handling;
+- workspace search;
+- Mermaid/math failure and stale-result cases;
+- print completeness independent of scroll history;
+- memory and work-amplification bounds;
+- packaging/file association.
 
-For each verify:
+---
 
-- semantic version/capability shape;
-- snapshot/query input rather than mutable internals;
-- command/result output;
-- revision/identity validation;
-- no GPUI/private IR/cache/scheduler identity in the contract;
-- provider failure does not poison Source Mode.
+## Current rule
 
-### Decision gate
+Until Issue #19 is complete:
 
-Only after at least two materially different external extension workloads exist should Markit choose a concrete third-party runtime/transport such as in-process, Wasm, subprocess/IPC, or another mechanism.
+> **Do not optimize the UI around a parser architecture we have not earned yet.**
 
-Valid outcomes before that are:
-
-```text
-KEEP SEMANTIC SEAM ONLY
-SPIKE RUNTIME
-DEFER
-```
-
-## R8 — v0.1 Hardening
-
-### Goal
-
-Close every gate in `mvp-v0.1.md` on a real Windows host and ship the first useful product.
-
-### Scope
-
-- reliability/save/crash recovery appropriate for v0.1;
-- installer/portable packaging decision sufficient for OS registration;
-- real-host performance evidence;
-- workspace/search stress;
-- large-document interaction behavior;
-- Mermaid/math failure/stale cases;
-- full print adversarial corpus;
-- CJK/IME/path regression matrix;
-- memory/cache bounds;
-- accessibility basics needed for shipping;
-- product docs/help sufficient to explain Source vs Live vs Preview.
-
-### Performance decision gates
-
-Do not preselect Rope/PieceTree, worker counts, cache sizes, or a custom scheduler.
-
-Measure:
-
-- source mutation cost by edit position/size;
-- bytes moved/copied where measurable;
-- semantic work amplification;
-- projection/layout/shaping work;
-- rich provider latency/cancellation;
-- input -> visible frame tails;
-- workspace search latency;
-- Browser/Print preparation latency and failures;
-- idle CPU/memory.
-
-If an experimental component is not the bottleneck, do not rewrite it for fashion.
-
-## R9 — Cross-platform and later plugin runtime
-
-After Windows v0.1:
-
-### Cross-platform
-
-Bring up macOS/Linux host mechanisms while preserving:
-
-- Document semantics;
-- Markdown semantics;
-- Source/Live command behavior;
-- Preview/Print contracts;
-- provider capability semantics.
-
-Platform-specific differences stay at host edges: IME, fonts, shortcuts, dialogs, packaging, browser launch, file association, scheduling primitives.
-
-### Plugin runtime
-
-Build a concrete plugin runtime only when actual external extension workloads justify it. Runtime selection must evaluate:
-
-```text
-failure isolation
-latency / hot-path contamination
-startup and memory
-security/capabilities
-cross-platform packaging
-version compatibility
-debugging/developer experience
-```
-
-The semantic boundary comes first; transport is replaceable.
-
-## Cross-cutting stop conditions
-
-Stop and open a focused architecture review if any change requires:
-
-1. a Source Document and Live Document with synchronization between them;
-2. mode switching that rewrites source merely to change presentation;
-3. a renderer/provider object becoming durable document identity;
-4. Preview or Browser reparsing a separate undocumented Markdown dialect;
-5. print completeness depending on viewport/scroll/lazy cache state;
-6. synchronous Mermaid/math work on every ordinary keystroke without evidence;
-7. a permanent search index before direct search proves insufficient;
-8. a plugin/provider mutating Document internals directly;
-9. GPUI/private IR/cache/scheduler types entering public semantic contracts;
-10. changing Markdown semantics to make a performance benchmark look bounded;
-11. network/cloud dependence for core local editing/rendering/printing;
-12. a major data copy/serialization boundary that cannot name the product value it buys.
-
-## Working rule
-
-> Build the smallest boundary that preserves the product truth, measure the real user path, and delete experimental machinery that no longer earns its place.
+The current task is to understand what a Markdown edit truly invalidates, how quickly the parser can safely reconverge, and what representation minimizes total work rather than one isolated benchmark number.
