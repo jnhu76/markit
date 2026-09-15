@@ -1,510 +1,485 @@
-# Markit — Product Architecture
+# Markit Product Architecture
 
-Status: **product foundation / GPUI architecture phase** (ADR-008).
+Status: **post-reset product architecture**  
+Authority: subordinate to `docs/PRD.md`  
+Reset: **MARKIT-PRODUCT-RESET-0 — 2026-09-16**
 
-Markit is a Rust-native Markdown editor built **directly on GPUI**.
-Windows is the first product platform.
+The pre-reset implementation is an experimental/reference implementation. This document defines the architecture required by the product; existing code is reused only where it conforms.
+
+Markit is built around one rule:
+
+> **Markdown Source is the single source of truth.**
+
+And one rendering rule:
+
+> **Parse incrementally; publish progressively; print completely.**
+
+## 1. Architecture overview
 
 ```text
-                         Markit
+                              Markit
 
-                 ┌───────────────────┐
-                 │   markit-core     │
-                 │                   │
-                 │ document          │
-                 │ edit model        │
-                 │ selection         │
-                 │ undo / redo       │
-                 │ markdown          │
-                 │ block index       │
-                 │ view model        │
-                 │ dirty/version     │
-                 │ priority metadata │
-                 │ (framework-free)  │
-                 └─────────┬─────────┘
-                           │
-                  private projections
-                           │
-          ┌────────────────┴────────────────┐
-          │                                 │
-          ▼                                 ▼
-┌──────────────────────┐          ┌──────────────────────┐
-│   markit-gpui/app     │          │ Plugin API Boundary  │
-│                      │          │                      │
-│ window / rendering   │          │ snapshots / queries  │
-│ native text / IME    │          │ commands / results   │
-│ input / clipboard    │          │ stable ids/revisions │
-│ file dialogs         │          │ capabilities/version │
-│ execution timing:    │          └──────────┬───────────┘
-│  executors, frame    │                     │
-│  deadlines, request- │                     ▼
-│  frame, idle/yield,  │          future plugin runtime
-│  presentation timing │          (transport not chosen)
-└──────────┬───────────┘
-           │
-           ▼
-         GPUI (G0-frozen rev eb8e1c8)
-           │
-  ┌────────┼────────┐
-  ▼        ▼        ▼
-Windows  Linux    macOS
+                     ┌──────────────────┐
+                     │    Workspace     │
+                     │ files / search   │
+                     └────────┬─────────┘
+                              │ open
+                              ▼
+                     ┌──────────────────┐
+                     │     Document     │
+                     │ SOURCE AUTHORITY │
+                     │ revision / edits │
+                     │ selection / undo │
+                     └────────┬─────────┘
+                              │ ChangeSet
+                              ▼
+                 ┌──────────────────────────┐
+                 │   Markdown Semantics     │
+                 │ blocks / inline / spans  │
+                 │ semantic identity        │
+                 └───────────┬──────────────┘
+                             │ SemanticDelta
+                ┌────────────┼───────────────┐
+                │            │               │
+                ▼            ▼               ▼
+         Source Projection  Live Projection  Preview Projection
+                │            │               │
+                └────────────┼───────────────┘
+                             │ interactive presentation
+                             ▼
+                           GPUI
+
+                 Markdown Semantics / snapshot
+                             │
+                             ▼
+                  Browser / Print Projection
+                             │
+                             ▼
+                          HTML/CSS
+                             │
+                             ▼
+                       System Browser
+                             │
+                             ▼
+                        Print / PDF
+
+        Rich Projection Services: Mermaid / LaTeX math / future blocks
+        Desktop Host: OS open / file association / IME / clipboard / browser launch
+        Plugin Boundary: versioned semantic capabilities beside, never inside, authority
 ```
 
-The Plugin API Boundary is semantic, not a frozen Rust ABI. Internal
-representation may change without becoming a plugin-breaking event.
+The boxes are responsibility domains. They do not require a framework class or crate for every box.
 
-## 1. Why direct GPUI?
+## 2. Authority map
 
-The A1–A4 research compared PocketJS and GPUI as candidate substrates.
-A4 selected PocketJS at the time (ADR-001). The pivot to direct GPUI
-(ADR-008) rests on new information from the PocketJS desktop audit:
+### 2.1 Workspace owns discovery, not documents
 
-- the modern PocketJS desktop path itself uses GPUI for window,
-  rendering, native text, keyboard, pointer, IME and clipboard
-  integration;
-- Markit does not need PocketJS's QuickJS / DrawList / companion /
-  capability runtime layers to build a native Markdown editor;
-- those intermediate abstractions increase architecture surface and
-  attribution complexity;
+Workspace owns:
 
-Markit's product principle is:
+- workspace root(s) and path discovery;
+- file enumeration/tree presentation;
+- text search across files;
+- search result coordinates and open/jump requests.
+
+Workspace does **not** own an editor buffer and does not mutate a `Document` behind the editor’s back.
 
 ```text
-Nothing gets between your input and the next frame.
+Workspace result(path, line, match)
+        -> OpenDocument(path)
+        -> Document authority
 ```
 
-An intermediate runtime between Markit and the platform works against
-that principle when the platform path it abstracts is itself GPUI.
+V1 should avoid a permanent search index unless measured workloads justify one. A direct scanner/ripgrep-like mechanism is preferable to inventing a second content database.
 
-This is an architecture decision, not a claim that GPUI wins every
-benchmark. The A1–A4 measurements remain valid within their original
-setup (see `docs/research/`).
+### 2.2 Document owns source truth
 
-## 2. Core vs platform boundary
+Document owns:
 
-`markit-core` is a framework-independent Rust library. It owns editor
-policy and state; it never branches on the platform and never depends on
-GPUI.
+- Markdown source text/bytes;
+- document identity;
+- revision identity;
+- edit transactions;
+- selection/caret logical state where framework-independent;
+- undo/redo transaction history;
+- dirty/save state;
+- coherent immutable/query snapshots.
 
-The ownership split (issue #12 R4) is:
+There is exactly one authoritative source for a file in an editing session.
+
+No projection is allowed to become a second document authority.
+
+### 2.3 Markdown Semantics owns interpretation
+
+Markdown Semantics consumes a Document snapshot/change and owns the framework-independent interpretation required by product projections:
+
+- block structure;
+- inline semantics;
+- source spans;
+- stable-enough semantic identities for incremental reuse;
+- recognized extension blocks such as Mermaid;
+- recognized math spans/blocks;
+- explicit parse diagnostics.
+
+The concrete IR layout is private. No GPUI entity, DOM node, JavaScript object, plugin object, or renderer handle is semantic identity.
+
+The exact Markdown dialect must be explicit and testable. V1 targets a CommonMark-compatible baseline plus product-defined extensions such as Mermaid and LaTeX-style math; compatibility extensions are added deliberately rather than by accident.
+
+## 3. Two editing modes, one document
+
+### 3.1 Source Mode
+
+Source Mode is the direct text projection of Document source.
 
 ```text
-markit-core
-  = WHAT changed, WHAT is required, WHAT version is valid:
-    document semantics, semantic dirty/change information, revisions,
-    Markdown semantics, framework-independent dependency/priority
-    metadata, viewport/query semantics.
-
-markit-gpui / app layer
-  = WHEN work executes and HOW it reaches the screen:
-    which GPUI executor runs a job, frame deadlines, request-frame,
-    platform idle scheduling / yielding, presentation timing,
-    Windows-specific scheduling choices.
+Document source
+   -> Source Projection
+   -> text layout / syntax decoration
+   -> user text edit
+   -> EditTransaction
+   -> Document
 ```
 
-`markit-core` must not own GPUI executors, thread pools, frame timing, or
-platform scheduling mechanics; the GPUI/app layer must not re-derive
-document semantics. Framework-independent real-time semantics (change
-reasons, invalidation radii, revision identity, priority *metadata*) stay
-in core even though their *execution* lives at the GPUI edge.
+Source Mode must remain operational even when Markdown parsing or a rich projection is temporarily unavailable. Syntax highlighting/styling is derived decoration, never required to preserve the source.
+
+### 3.2 Live Mode
+
+Live Mode is an editable semantic projection of the same source.
 
 ```text
-core (markit-core)               gpui layer (markit-gpui/app)
-─────────────────────────────    ────────────────────────────
-document                         window
-edit model / EditTransaction     rendering / presentation
-selection                        native text (shaping)
-undo / redo                      keyboard
-markdown / block index           pointer
-incremental invalidation         IME
-viewport / LOD model             clipboard
-revision / dirty model           file dialogs
-commands                         frame request / present edge
-change/priority metadata         executor choice / frame deadlines
-                                 idle scheduling / yielding
+Document source
+   -> Markdown Semantics
+   -> Live Projection
+   -> visual editing gesture
+   -> semantic/source-aware command
+   -> EditTransaction
+   -> Document source
 ```
 
-GPUI itself already abstracts a large amount of OS behavior. Do not
-create duplicate wrapper abstractions unless Markit semantics need them
-(ADR-002). Platform integration belongs at the GPUI edge.
-
-The capability concepts from the A1–A4 era (`ClipboardProvider`,
-`ImeProvider`, `FontProvider`, `FileDialogProvider`, `ShortcutPolicy`,
-`PlatformPaths`) remain useful as **semantic boundaries** where GPUI does
-not already provide the needed semantics — they must not exist merely
-because a PocketJS svc adapter needed them. Prefer the smallest meaningful
-abstraction.
-
-A separate extension boundary exists beside the GPUI boundary. Plugins do
-not become another way to reach internal core/platform objects; they consume
-stable semantic snapshots/queries and return documented commands/results.
-
-## 3. Where does the document live?
-
-In `markit-core`'s `Document`, owned by the model layer — never inside
-the GPUI element tree. GPUI entities are a **projection** of the model,
-never the canonical Markdown document model.
-
-The document is a plain string plus the incremental `LineIndex`
-(one full scan at load, local updates per edit — ADR-003). Future buffer
-structures (piece table, rope, tree-based) are a decision for the real
-product workload, not a pre-emptive choice.
-
-Implemented as P0-01 in `crates/markit-core::document` (storage private;
-reads go through byte/line queries; every mutation returns an explicit
-changed-range `EditResult` at mutation time).
-
-**Coordinate semantics** (AGENTS.md §8): keep bytes / Unicode scalars /
-grapheme boundaries / logical positions / display positions / platform
-UTF-16 coordinates explicit as Unicode levels rise (U1+ CJK). Avoid
-ambiguous `charOffset`-style APIs.
-
-Document storage representation is private. A future plugin cannot depend on
-`String`, Rope, Piece Table, tree node, or raw pointer identity being stable.
-
-## 4. How does Markdown parsing become incremental?
-
-The A4-R2 pipeline (proven on the PocketJS-era seed, see
-`docs/research/pocketjs-mvp-knowledge-transfer.md`) is the blueprint for
-the Rust core:
+Live Mode MUST NOT follow this architecture:
 
 ```text
-Document → Block Index → Incremental Parse → Affected Blocks
-         → Styled Runs → Visible Layout → GPUI presentation
+Markdown -> independent RichTextDocument -> serialize back to Markdown
 ```
 
-- The **Block Index** maps lines to L1 blocks (heading, paragraph, quote,
-  ulist/olist, fenced, blank). `applyEdit(startLine, endLine, ...)`
-  rescans from the first affected block forward and stops at the first
-  stable boundary (kind + alignment match beyond the edited lines),
-  carrying fence state. The consumed range is the structural
-  invalidation radius (measured: 1 block for local edits at any size;
-  the full fence cascade for fence-boundary edits — a known product cost
-  to bound, see §10).
-- **Styled runs** are computed per affected block (inline parse, cached
-  by block start line, invalidated for exactly the replaced blocks) and
-  sliced per visible line.
-- The full-document scan is the load-time and test-oracle path only.
+That model creates two truths, round-trip normalization, ambiguous identity, and divergent undo/selection semantics.
 
-Incrementality is necessary but not sufficient. A fast incremental parser
-can still cause bad frames if every changed result synchronously fans out
-into layout, highlighting, rich-block work, and presentation. The next
-section defines the execution model that constrains that fan-out.
-
-The internal Markdown IR is allowed to evolve for performance/correctness.
-Future plugins that need Markdown semantics receive a versioned public
-semantic view/snapshot; the concrete internal IR Rust layout is not the plugin
-contract.
-
-## 5. Real-time execution model: incremental + non-blocking
-
-Markit treats editing as a **continuous real-time workload**, not as a
-single "update everything" function call.
-
-The detailed design lives in
-`docs/product/realtime-execution-model.md`. The architectural contract is:
+Instead a Live Mode action such as bolding text conceptually becomes:
 
 ```text
-OS / GPUI input
-      ↓
-EditTransaction + revision
-      ↓
-explicit changed range
-      ↓
-precise dirty propagation
-      ↓
-BlockIndex / Markdown IR
-      ↓
-priority + cancellable derived work
-      ↓
-Viewport / Document LOD
-      ↓
-visible layout / shaping
-      ↓
-coherent committed presentation
-      ↓
-frame-budgeted GPUI work
+ToggleStrong(source_range)
+   -> Markdown-aware source edit
+   -> EditTransaction
 ```
 
-The design laws are:
+Mode switching:
 
-1. **Stable work is not repeated.** A local edit invalidates the smallest
-   semantically valid region; unrelated parse/layout/render artifacts are
-   reused.
-2. **Invisible work is deferred.** Current interaction and visible
-   viewport outrank near-viewport work; distant work is background.
-3. **Deferrable work yields.** The UI path is not allowed to monopolize a
-   frame merely to empty a queue. Exact numeric budgets are calibrated by
-   measurement, not copied from another system.
-4. **Stale work is disposable.** Derived jobs are revision-aware;
-   obsolete work is cancelled when profitable or rejected at commit.
-5. **Only coherent state is published.** Presentation must not silently
-   mix incompatible document/parse/layout/highlight revisions.
-6. **Demand-driven idle.** No permanent game-style tick exists; when
-   nothing changes, Markit should do almost nothing.
+- reprojects the same Document revision;
+- does not itself mutate source;
+- preserves dirty state and undo history;
+- maps caret/selection through explicit source/semantic/visual coordinates;
+- degrades ambiguous constructs to source-visible editing rather than guessing destructively.
 
-The useful game-engine ideas are dirty flags, frame budgets, job priority,
-visibility culling, LOD, coherent publication, and caches. Markit does
-**not** adopt ECS, archetype storage, a scene graph as the canonical
-document model, or a fixed-rate update loop by default.
+## 4. Coordinate model
 
-Plugin work inherits the same law: a slow extension cannot make normal typing
-wait on unbounded work. Extension results carry revision/identity information
-and stale results are rejected before mutation/publication.
-
-## 6. How does the UI consume only visible state?
-
-The view model (markit-core) computes exactly the visible line range
-(viewport formula + overscan), and the GPUI layer renders only those
-lines. Frame work is viewport-bounded whenever semantics permit
-(ADR-005):
-
-- materialized GPUI elements / shaped text / paint work scale with the
-  **visible presentation**, not the total document size;
-- the idle editor must not continuously request frames;
-- the document may be huge; the frame must not be.
-
-The viewport rule extends into **Document LOD**:
+Markit must distinguish at least:
 
 ```text
-far       → source range + block metadata + estimated extent
-near      → parsed/lightweight derived state
-visible   → exact layout + shaped text
-presented → render primitives / GPU-facing state
+Source coordinates
+  bytes / Unicode boundaries / logical source positions
+
+Semantic coordinates
+  block identity / inline identity / source span
+
+Visual coordinates
+  line / run / glyph / x,y / platform text coordinates
 ```
 
-These are semantic levels, not mandatory concrete structs. The point is
-that derived-state materialization is proportional to user observability.
-Height estimation/correction must preserve logical scroll extent and be
-measured for scroll drift.
+Conversions are explicit. APIs must not use an ambiguous generic `offset` when the coordinate space matters.
 
-The A4-R1 stateless-projection discipline transfers as a principle:
-per-line presentation derives statelessly from the model's visible
-range, and identity for any stateful line widget must be a stable
-block/content ID, not the absolute line number.
+IME and platform UTF-16 coordinates terminate at the platform/text boundary and are converted into Markit’s source coordinate model before becoming source edits.
 
-Stable block/content IDs are also the natural extension identity. Plugins must
-not treat a current Vec index, line number, or GPUI Entity ID as durable
-content identity.
+## 5. Preview is not Live Mode
 
-## 7. How is asynchronous work kept correct?
+Preview is read-only. Live Mode is editable.
 
-Background or deferred work (parser follow-ups, highlighting, indexing,
-image decode, math/diagram projection, or later layout work) must be tied
-to an explicit document/semantic revision.
-
-Conceptually:
+They may share semantic inputs, style tokens, rich-block providers, and reusable rendering artifacts, but they do not share mutable editor state.
 
 ```text
-Committed presentation v101  ← safe to show
-Working derived state v102   ← jobs in flight
-New edit creates v103        ← v102 work must prove reuse or become stale
+Markdown Semantics
+  ├─ Live Projection: caret + selection + editing commands
+  └─ Preview Projection: read-only observation
 ```
 
-A stale job never earns the right to commit merely because it already
-consumed CPU. Markit either cancels it or rejects the stale result at the
-commit boundary.
+This separation avoids turning a read-only renderer into a second editor engine.
 
-"Snapshot" means a coherent version boundary for derived presentation;
-it does **not** require copying the full document. Caches may reuse older
-artifacts only when their dependencies prove compatibility with the
-current revision.
+## 6. Incremental semantic pipeline
 
-The same model applies to plugins:
+Interactive editing is an arbitrary-mutation workload, not an append-only stream.
+
+The intended logical pipeline is:
 
 ```text
-plugin receives snapshot revision 412
+EditTransaction
+     ↓
+Document revision N -> N+1
+     ↓
+ChangeSet
+     ↓
+Incremental Markdown update
+     ↓
+SemanticDelta
+     ↓
+RenderPatch stream
+```
+
+`ChangeSet`, `SemanticDelta`, and `RenderPatch` are semantic concepts here, not frozen Rust ABIs.
+
+### 6.1 Incremental parse law
+
+For a local edit, Markit should recompute the smallest semantically valid affected region and reuse unrelated semantic state.
+
+A structural edit may honestly propagate far. The parser must not change Markdown meaning merely to manufacture a small invalidation radius.
+
+### 6.2 Progressive publication law
+
+Rendering does not need to wait for every derived region in a large document before visible interaction can progress.
+
+Priority is:
+
+```text
+current input / caret
+  > currently visible affected content
+  > near-visible content
+  > distant/background presentation
+```
+
+Long work may yield/chunk. Stale derived results carry revision/dependency identity and are cancelled or rejected at publication.
+
+No permanent 60/120 Hz application loop is required; rendering remains demand-driven.
+
+### 6.3 Coherence law
+
+Progressive does not mean incoherent.
+
+A projection may reuse prior artifacts only when dependencies prove compatibility. A block/result from revision N cannot silently overwrite or masquerade as revision N+1.
+
+When a broad update is incomplete, the UI may show a prior-good representation or explicit pending state where safe; it must not publish a fabricated mixture as fully current.
+
+## 7. Rich Projection Services
+
+Mermaid and LaTeX-style math are mandatory built-in rich projections, but they are not Markdown/document authorities.
+
+The generic shape is:
+
+```text
+Semantic rich block/span
+        + source/revision identity
         ↓
-plugin computes
+Rich Projection Provider
         ↓
-document reaches revision 415
+Ready(renderable) | Failed(visible diagnostic)
         ↓
-plugin result(base_revision=412)
+projection validates revision/identity
         ↓
-Markit validates → reuse/rebase if explicitly supported, otherwise reject
+publish
 ```
 
-## 8. IME / clipboard / fonts / file dialogs at the GPUI edge
+### 7.1 Mermaid
 
-- **IME** is a Tier-0 editor-model concept (ADR-007): composition
-  start/update/commit/cancel have distinct semantics, composition never
-  enters the undo stack as keystrokes, commit is one undo transaction,
-  candidates dock at the caret rect. The model side lives in markit-core;
-  the platform path is GPUI's IME integration (IMM32/TSF on Windows).
-  Chinese IME is validated first (P1), JA/KO architecture present.
-- **Clipboard** is a Tier-0 capability: text-only copy/cut/paste first;
-  rich HTML/images/custom MIME deferred. Validate GPUI's Windows
-  clipboard in Markit; require runtime evidence.
-- **Fonts**: validate GPUI/DirectWrite CJK + emoji fallback for Markit
-  (system font discovery + fallback chain). Do not assume GPUI already
-  satisfies acceptance.
-- **File dialogs**: native dialogs via the GPUI/platform edge; the MVP
-  may start with a minimal path input until native dialogs land.
+Mermaid blocks originate from Markdown fence semantics. Rendering may use Mermaid.js or another compatible implementation.
 
-These platform services do not get to bypass the real-time execution
-contract. For example, IME commit is critical visible work; spellcheck or
-rich clipboard post-processing is not.
+Rules:
 
-A future plugin that needs filesystem/network/clipboard authority receives an
-explicit capability rather than direct access merely because Markit itself has
-that platform service.
+- do not execute the full Mermaid renderer synchronously on every keystroke;
+- coalesce/cancel/reject stale requests;
+- a result belongs to a semantic block identity + source revision/configuration;
+- Preview, Live, Browser, and Print consume the same semantic Mermaid source even if backend rendering mechanisms differ;
+- failure is visible and source remains editable.
 
-## 9. How does the view model stay bounded and testable?
+### 7.2 LaTeX-style math
 
-- A deterministic/headless host (or core unit tests) validates
-  correctness, algorithmic scaling, dirty propagation, revision
-  compatibility, queue policy, and controlled interventions — it is
-  **not** evidence of real desktop interaction latency (AGENTS.md §12).
-- Real OS hosts are required for claims about input delivery, IME, fonts,
-  scheduling, compositor behavior, GPU/presentation, and actual frame
-  budget calibration.
-- Instrumentation must make work amplification visible: changed bytes /
-  lines / blocks, blocks rescanned/reparsed, layout lines, visible/near/far
-  materialization, frame work, yielded work, stale jobs, cache hit/miss,
-  and long frames.
+Math spans/blocks are semantic projections over source ranges.
 
-When a stable plugin API exists, compatibility testing adds a second form of
-bounded testability: representative old-plugin fixtures must execute against
-new hosts, not merely compile against the newest SDK.
+Rules mirror Mermaid:
 
-## 10. How do future rich Markdown blocks join without breaking the hot path?
+- inline `$...$` and display `$$...$$` are mandatory V1 syntax;
+- provider results are revisioned;
+- invalid syntax yields an explicit fallback/diagnostic;
+- provider implementation may be KaTeX-compatible or otherwise replaceable;
+- arbitrary TeX execution is outside the math renderer authority.
 
-1. **Explicit change-range propagation**: every edit carries its changed
-   range; every layer consumes the range, never the whole document.
-2. **Block-granular invalidation**: a new block kind registers its
-   classifier + inline parser + style mapper; the incremental rescan
-   treats it like any other kind. The block index stays line-based so
-   the stable-boundary logic keeps working.
-3. **Viewport-bounded presentation**: rich blocks render only in the
-   visible range; heavy projections (images, syntax highlight, math,
-   diagrams) are computed lazily, assigned observable priority, cached,
-   and made cancellable or stale-result-safe.
-4. **Structural-edit cost is owned**: block kinds whose edits can
-   invalidate broadly (fences today; tables with row-span semantics
-   later) must document their invalidation radius and provide a bounded
-   recovery strategy. The fence cascade (30K lines at 1M, measured) is
-   the first such case. A semantics change (treating ``` as an opener
-   only when a close exists ahead) is ruled out — it renders differently
-   than CommonMark (issue #12 R7); L1 keeps spec-faithful fences and the
-   honest propagation is reported through structural counters. Any bound
-   must be semantics-preserving (e.g. presentation-level deferral) and
-   re-measured against real editor latency.
-5. **No synchronous rich-block tax on typing**: expensive projections
-   cannot become mandatory critical-path work merely because a block is
-   present elsewhere in the document.
-6. **Regression gates**: the work-amplification and scheduling invariants
-   (`docs/product/performance-invariants.md`) are checked by the
-   regression battery, not only by wall-clock thresholds.
+## 8. Browser and print architecture
 
-Rich-block/provider APIs that later become extensible expose stable semantic
-inputs/outputs, not GPUI render nodes or internal Markdown IR ownership.
-
-## 11. How do plugins survive Markit updates?
-
-The detailed contract lives in
-`docs/product/plugin-compatibility-contract.md`. The architecture law is:
+Interactive projection and print projection optimize for different truths.
 
 ```text
-private Markit implementation
-        ↓ adapter
-versioned semantic Plugin API Boundary
-        ↓ negotiated capability
-plugin
+                  Markdown Semantic Snapshot
+                         /             \
+                        /               \
+      Interactive Projection         Print Projection
+      viewport-first                 full-document
+      latency-first                  completeness-first
+      progressive                    completion barrier
+      cancellable                    pinned revision
+```
+
+The full contract is `docs/product/print-browser-contract.md`.
+
+The critical boundary is:
+
+> **editor viewport state must never define print completeness.**
+
+Browser/Print consumes one coherent Document snapshot, materializes the full document, waits for required rich resources to become Ready or visibly Failed, then publishes `PrintReady`.
+
+V1 delegates pagination/PDF generation to the system browser. Markit owns semantic HTML/output structure, resource readiness, and print CSS; the browser owns its print engine.
+
+## 9. Browser transport
+
+How Markit hands a page to the browser is a replaceable host mechanism.
+
+A loopback HTTP server is a reasonable V1 candidate because it handles local resources and browser refresh cleanly, but the architecture does not make `localhost` URLs part of document semantics.
+
+Any implementation must:
+
+- remain local by default;
+- not upload document contents;
+- restrict file/resource access to explicitly resolved document/workspace assets;
+- bundle mandatory renderer assets locally for offline use;
+- make the printed revision identifiable;
+- avoid treating filesystem paths as URLs or vice versa.
+
+## 10. Desktop Host boundary
+
+Desktop Host owns mechanisms such as:
+
+- window lifecycle;
+- GPUI/native rendering integration;
+- OS keyboard/pointer/IME delivery;
+- clipboard;
+- native file dialogs where used;
+- `.md` file association / Open With integration;
+- startup arguments and already-running-instance handoff;
+- launching the system browser;
+- platform-specific paths/packaging.
+
+These mechanisms do not redefine Document or Markdown semantics.
+
+Windows is the first product target; other platforms may provide different host mechanisms behind the same semantic behavior.
+
+## 11. Plugin / provider boundary
+
+Markit is designed to remain plugin-extensible without prematurely building a universal plugin framework.
+
+The extension architecture is:
+
+```text
+private implementation
+      ↓ adapter
+versioned semantic capability
+      ↓
+provider/plugin
+      ↓
+result / command
+      ↓ validation
+Markit authority
 ```
 
 Never:
 
 ```text
-plugin → markit-core private structs
-plugin → GPUI Entity tree
-plugin → scheduler/cache implementation
-plugin → Rust memory layout of Markdown IR
+plugin -> mutable Document internals
+plugin -> GPUI Entity tree as semantic state
+plugin -> private Markdown IR memory layout
+plugin -> scheduler/cache internals
+plugin object identity -> document/block identity
 ```
 
-### 11.1 Semantic API before runtime ABI
+### 11.1 Candidate semantic capabilities
 
-Markit freezes the concepts and compatibility semantics before choosing a
-transport. The same public operation should remain meaningful whether the
-runtime eventually uses an in-process adapter, Wasm, subprocess/IPC, or a
-hybrid.
+The following seams should remain feasible:
 
-This lets Markit change buffer storage, parser data structures, GPUI versions,
-scheduler internals, or caches without converting every internal refactor into
-a plugin ecosystem migration.
+- rich block/span projection provider;
+- Markdown extension parser/semantic provider where safely specifiable;
+- command provider;
+- read-only document/workspace query;
+- controlled document-edit command;
+- preview/browser stylesheet contribution;
+- exporter/output provider;
+- sidebar/panel UI provider later.
 
-### 11.2 Version + capability negotiation
+Not all need a V1 public API.
 
-Plugin loading begins with an explicit API major/minor and capability
-negotiation. Additive features are optional by default. Required missing
-capabilities fail closed with an explanation. Breaking semantic changes require
-a compatibility boundary/API major change rather than silent reinterpretation.
+### 11.2 Built-ins as boundary tests
 
-### 11.3 Snapshot/query + command/result
+Mermaid, math, and Browser/Print are useful built-in workloads for testing whether the semantic seams are clean. They should not be forced through a third-party runtime in V1, but their implementation must not require private representation leakage that would make later provider extraction impossible.
 
-Plugins read coherent snapshots or explicit queries. Mutations return as
-commands/transactions so Markit remains the authority for undo, dirty
-propagation, revision checking, IME/input invariants, and scheduling.
+### 11.3 Failure isolation
 
-Print/PDF is the model case:
+Extension/provider work that is not required for direct source editing must not indefinitely block Source Mode input. Stale, failed, or crashed providers fail visibly at their projection boundary.
+
+## 12. Data movement rules
+
+Markit should minimize avoidable memory movement without freezing a complicated storage structure before measurement.
+
+Rules:
+
+- source text is not copied wholesale between Source, Live, Preview, and Print just to cross module boundaries;
+- semantic nodes prefer source spans/references over duplicated strings where safe;
+- projection layers consume snapshots/views and copy only what their backend lifetime requires;
+- rich providers receive the smallest stable semantic/source payload required for their work;
+- no JSON/IPC serialization is inserted into the local hot path merely to imitate a future plugin boundary;
+- a future Rope/PieceTree/other buffer is adopted only when measured source mutation costs justify it.
+
+Semantic ownership is more important than premature zero-copy tricks: lifetimes must remain explicit and safe.
+
+## 13. Caches and derived state
+
+All caches and backend projection objects are disposable derived state.
+
+For every cache, the implementation must be able to answer:
 
 ```text
-DocumentSnapshot + Public Markdown Semantic View
-        ↓
-Print provider
-        ↓
-Print/Export result
+What is the key?
+What source/semantic revision/dependencies produced it?
+What invalidates it?
+Can it be reused across a local edit?
+How is stale publication prevented?
+What bounds memory growth?
 ```
 
-It does not require the provider to inspect the live GPUI render tree.
+Deleting all caches/projection objects must not destroy the authoritative Markdown source.
 
-### 11.4 Compatibility is a CI property
+## 14. Existing experimental code
 
-Once the stable plugin API exists, Markit retains old-plugin fixtures and runs
-them against new hosts. Version declarations alone do not prove compatibility.
-A host update is not extension-compatible until representative supported old
-plugins still perform their documented operations or are rejected through a
-documented compatibility boundary.
+The pre-reset code contains useful candidates: Document/revision/change work, incremental Markdown experiments, GPUI integration, viewport work, IME validation, and performance instrumentation.
 
-### 11.5 MVP restraint
+They are not automatically discarded and not automatically canonical.
 
-P0/P1 preserve the seam but do not build a general plugin framework. A plugin
-runtime is triggered by real extension workloads, not by architecture
-enthusiasm. See roadmap PX.
+For each reused component, a post-reset implementation task should record:
 
-## 12. Reference systems are lessons, not dependencies
+1. which current product responsibility it satisfies;
+2. which old assumptions were removed;
+3. whether its public types leak old experimental architecture;
+4. correctness tests against the new contract;
+5. whether reuse avoids or creates extra copying/translation;
+6. measured user-visible value where performance is the reason for reuse.
 
-Markstream (`Simon-He95/markstream-vue`) is now an explicit reference for
-streaming Markdown scheduling. Its current renderer demonstrates useful
-ideas such as incremental batches, adaptive work based on measured render
-cost, idle/frame-boundary scheduling, append-vs-replacement semantics,
-and document virtualization.
+## 15. Architecture invariants
 
-Markit borrows those **execution principles**, not Vue, DOM, VDOM, or its
-numeric defaults. Direct GPUI lets Markit make dirty ranges, revisions,
-viewport priority, and publication boundaries explicit in the editor
-model.
+A product change must not violate these without a new architecture decision:
 
-The same rule applies to Zed, game engines, and plugin ecosystems: reference
-implementations are hypotheses and design vocabulary, not proof. Do not copy a
-plugin loading model merely because another product uses it.
-
-## 13. Reference documents
-
-- G0 GPUI baseline (frozen rev, capability audit, Windows evidence, update
-  policy): `docs/product/g0-gpui-baseline.md`.
-- Real-time execution model:
-  `docs/product/realtime-execution-model.md`.
-- Plugin compatibility contract:
-  `docs/product/plugin-compatibility-contract.md`.
-- Substrate decision: `docs/adr/ADR-008-direct-gpui-product-substrate.md`
-  (supersedes ADR-001).
-- Core/platform boundary: `docs/adr/ADR-002-core-platform-boundary.md`.
-- Editor principles: ADR-003 (document + line index), ADR-004
-  (incremental Markdown invalidation), ADR-005 (viewport-bounded
-  rendering), ADR-006 (command/shortcut abstraction), ADR-007 (IME
-  composition model).
-- Invariants: `docs/product/performance-invariants.md`.
-- Capability matrix: `docs/product/platform-capability-matrix.md`.
-- MVP scope: `docs/product/mvp-v0.1.md`.
-- Roadmap: `docs/product/roadmap.md`.
-- Historical evidence: `docs/research/README.md`.
+- **A1** — Markdown source is the only document truth.
+- **A2** — Source Mode and Live Mode mutate the same Document through transactions.
+- **A3** — mode switching alone does not mutate source.
+- **A4** — Workspace does not own a shadow editor buffer.
+- **A5** — Markdown semantics are backend-independent.
+- **A6** — interactive local changes reuse unaffected work where semantics permit.
+- **A7** — stale derived work cannot publish over newer state.
+- **A8** — Source Mode remains usable when optional/rich projections fail.
+- **A9** — Mermaid/math results are revision/identity checked.
+- **A10** — print completeness is independent of editor viewport/scroll history.
+- **A11** — `PrintReady` means all required print resources reached Ready or visible Failed terminal state for one pinned revision.
+- **A12** — plugins/providers cross a semantic capability boundary, not private implementation identity.
+- **A13** — core product workflows do not require cloud/network access.
+- **A14** — platform path/URL conversions are explicit at the host boundary.
+- **A15** — performance optimization may change representation, not silently change Markdown/product semantics.
