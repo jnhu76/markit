@@ -211,14 +211,19 @@ FLAT_CONTAINER measures E3 on the spec corpus. RUN-4's ReferenceIndex
 must extract definitions from paragraph inline runs — that is how L1
 actually represents them.
 
-## Next steps
+## Campaign close (runs 1.1 → 4)
 
-1. External baselines: MD4C full parse, tree-sitter-markdown,
-   Lezer Markdown (persistent node worker; native time separated from
-   IPC), same corpus + oracle where applicable.
-2. M1 green-tree representation prototype (G1 naive Vec / G2 balanced
-   persistent sequence) to test H4 against the measured O(N) terms.
-3. ReferenceIndex sketch to measure semantic fanout separately from
-   syntax radius (H3) and fill the D-axis.
-4. §30 matrix expansion with depth-seeded construct anchors (removes
-   the header-anchor geometry bias noted in run 1.1).
+Final report: `results/summary/parser-survey-final.md` (hypothesis
+scoreboard, research-question REFINE verdict, HYBRID mechanism
+verdict, limitations, unresolved questions). Per-run evidence:
+run-1.1 corrective, ORACLE-B (CommonMark 0.31.2), RUN-2a/b/c (MD4C,
+tree-sitter, Lezer), RUN-3 (green tree G1/G2), RUN-4
+(ReferenceIndex). Zero markit-core changes across the campaign.
+
+Headline verdicts: H1/H3 SUPPORTED, H2/H4/H5 SUPPORTED_WITH_SCOPE,
+H6 crossover SUPPORTED with predictor INSUFFICIENT_EVIDENCE. Research
+question REFINED to four independent cost axes with per-axis
+mechanisms. Parser mechanism verdict: **HYBRID** (Markdown-specific
+convergence + position-free green representation + semantic dependency
+indexes + unvalidated-predictor full-parse fallback). Campaign stopped
+at READY_FOR_MARKIT_MARKDOWN_ARCHITECTURE_REVIEW.
