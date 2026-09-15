@@ -1,0 +1,14 @@
+# Research harness for issue #19
+# (MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1).
+#
+# Research-only: not product code, not published, and must never be
+# depended on by markit-core or apps/markit. Everything here measures the
+# public markit-core surface; no parser internals are reached into.
+[package]
+name = "parser-survey"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+markit-core = { path = "../markit-core" }
