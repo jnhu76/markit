@@ -3,30 +3,38 @@
 Status: **post-reset product authority**  
 Reset: **MARKIT-PRODUCT-RESET-0 — 2026-09-16**
 
-Markit is a local-first Markdown workspace editor. It exists to make ordinary Markdown work simple and reliable: open a file or workspace, edit the real Markdown source, search across the workspace, preview the document, render Mermaid and LaTeX math, and hand a complete browser document to the system browser for printing/PDF.
+Markit is a local-first Markdown editor/workspace. It exists to make ordinary Markdown work simple, fast, and reliable: open a file or workspace, edit the real Markdown source, search across the workspace, preview the document, render Mermaid and LaTeX-style math, and hand a complete browser document to the system browser for printing/PDF.
 
-The pre-reset implementation and research documents are preserved as experimental evidence at repository revision `d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e`. They do not define the product after this reset.
+The pre-reset implementation and research material is preserved at repository revision:
+
+```text
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+```
+
+It is historical/experimental evidence, not current product or architecture authority.
 
 ## 1. Product statement
 
 Markit has two first-class editing modes over **one authoritative Markdown source**:
 
-1. **Source Mode** — direct plain-text Markdown editing. Syntax is visible and the file contents are edited directly.
-2. **Live Mode** — source-aware rendered editing. Markdown presentation is editable, but all edits resolve back to the same Markdown source through explicit edit transactions. Live Mode is not a second rich-text document.
+1. **Source Mode** — direct plain-text Markdown editing. Syntax is visible and the real source is edited directly.
+2. **Live Mode** — source-aware rendered editing. User actions still modify the same Markdown source; Live Mode is not an independent rich-text document later serialized back to Markdown.
 
-A separate read-only Preview can be shown beside Source Mode. Browser Preview and Print/PDF are output surfaces, not alternate document authorities.
+A read-only Preview can be shown beside Source Mode. Browser Preview and Print/PDF are output surfaces, not alternate document authorities.
 
-The core product rule is:
+The core product law is:
 
 > **Markdown Source is the single source of truth.**
 
-The rendering rule is:
+The performance/output law is intentionally mechanism-neutral:
 
-> **Parse incrementally; publish progressively; print completely.**
+> **Avoid unnecessary work on interactive edits; publish visible results responsively; print the complete document.**
 
-## 2. Original core requirements
+Exactly how Markdown parsing, reuse, storage, syntax representation, and invalidation achieve this is **not** specified by the PRD. That is the subject of Issue #19 and the architecture that follows it.
 
-The original Markit requirements remain mandatory and are the base of this reset.
+---
+
+## 2. Core requirements
 
 ### R1 — Plain-text Markdown editing
 
@@ -34,67 +42,81 @@ Markit MUST provide a complete Source Mode in which the user edits Markdown as p
 
 Acceptance intent:
 
-- opening a `.md` file exposes its real source bytes/text, not a regenerated approximation;
+- opening a `.md` file exposes its real source rather than a regenerated approximation;
 - save does not rewrite unrelated syntax merely because a document was opened or previewed;
-- Source Mode remains usable even if rich rendering, Mermaid, LaTeX, or a plugin fails;
+- Source Mode remains usable if rich rendering, Mermaid, math, or a plugin/provider fails;
 - normal editor operations exist: caret, selection, navigation, copy/cut/paste, undo/redo, find, open/save/save-as;
 - UTF-8, CJK, emoji, and IME input are first-class correctness requirements.
 
-### R2 — Operating-system open integration
+### R2 — Live Mode
 
-On Windows, installation/registration MUST support opening Markdown files through the operating system, including an **“Open with Markit”** path for `.md` files.
+Markit MUST provide a source-aware Live Mode in addition to Source Mode.
 
-At minimum validate:
+Live Mode requirements:
 
-- `.md` file association / Open With registration;
-- shell invocation with one or more file paths where supported;
+- the same Markdown source remains authoritative;
+- switching Source Mode ↔ Live Mode alone does not mutate the file;
+- the two modes do not maintain independently authoritative documents that require synchronization;
+- formatting/editing actions produce source changes with predictable undo/dirty behavior;
+- unsupported or ambiguous syntax degrades visibly and remains recoverable in Source Mode;
+- source fidelity is preferred over destructive normalization.
+
+The exact source/syntax/visual mapping architecture is deferred until parser research is complete.
+
+### R3 — Operating-system open integration
+
+On Windows, installation/registration MUST support opening Markdown files through the operating system, including **Open with Markit** for `.md` files.
+
+Validate at minimum:
+
+- `.md` file association / Open With;
+- shell invocation with file paths;
 - paths containing spaces, Unicode, and CJK characters;
 - invocation when Markit is already running;
-- no path reinterpretation caused by treating URLs as filesystem paths.
+- filesystem paths are not incorrectly treated as URLs.
 
-Other platforms may use their native equivalents later without changing document semantics.
+### R4 — Workspace search
 
-### R3 — Workspace search
+Markit MUST be able to open a folder as a workspace and search text across it in a workflow comparable to basic VS Code text search.
 
-Markit MUST be able to open a folder as a workspace and search text across that workspace in a workflow comparable to VS Code’s basic text search.
-
-V1 search results MUST identify at least:
+V0.1 search results MUST provide at least:
 
 - file path;
 - line number;
 - matching span;
-- a short context/snippet;
+- short context/snippet;
 - click-to-open/jump behavior.
 
-A permanent index database is **not** required by default. The first implementation should prefer the smallest correct scanner/search mechanism and add indexing only when measured workloads justify it.
+A permanent search-index database is not required by the product specification. Use one only if later evidence justifies it.
 
-### R4 — Split preview
+### R5 — Split Preview
 
 Source Mode MUST support a left/right split with a read-only Markdown Preview.
 
-The preview:
+Preview must:
 
-- consumes the same document revision and Markdown semantics as other projections;
-- must not parse an independent dialect of the document;
-- may update incrementally and prioritize visible content;
-- may fail a rich block visibly without making Source Mode unusable.
+- represent the same source revision as the editor;
+- use the same Markdown interpretation as other Markit projections;
+- update responsively after edits;
+- allow rich-block failure to be visible without making Source Mode unusable.
 
-### R5 — Open in browser for print/PDF
+The PRD does not prescribe the incremental parser or rendering mechanism used to meet that requirement.
 
-Markit MUST be able to open the current document in the user’s system browser so the browser’s print function can produce paper output or PDF.
+### R6 — Browser Preview and Print/PDF
 
-Markit does **not** need an independent PDF engine for V1.
+Markit MUST be able to open a complete representation of the current document in the system browser so the browser can Print or Save as PDF.
 
-Browser output must obey `docs/product/print-browser-contract.md`, especially:
+Markit does **not** require its own PDF engine for V0.1.
+
+Browser output must obey `docs/product/print-browser-contract.md`, including:
 
 - complete-document materialization for printing;
 - output independent of editor scroll/viewport history;
-- a coherent pinned document revision;
-- Mermaid, LaTeX math, local images, fonts, and other required resources reach a terminal state before `PrintReady`;
-- failed rich content is shown as an explicit fallback/error rather than silently disappearing;
-- print CSS is a product-owned contract, not an accidental browser default.
+- one coherent document revision;
+- required Mermaid, math, images, fonts, and other resources reach an explicit terminal state before `PrintReady`;
+- failed rich content is represented visibly rather than silently omitted.
 
-### R6 — Mermaid
+### R7 — Mermaid
 
 Mermaid is a mandatory built-in Markdown capability.
 
@@ -107,181 +129,116 @@ graph TD
 ```
 ````
 
-must render in Live Mode where applicable, Preview, Browser Preview, and Print/PDF.
+must render in Preview, Browser Preview, Print/PDF, and Live Mode where applicable.
 
-Mermaid rendering is a heavy/rich projection. It MUST NOT become synchronous per-keystroke work that blocks ordinary typing. Results are tied to block identity + document revision and stale results cannot overwrite newer content.
+Mermaid rendering MUST NOT be required synchronous work for every ordinary text keystroke.
 
-The initial provider may use Mermaid.js, but Mermaid.js itself is not the document authority or plugin ABI.
-
-## 3. Added product requirements
-
-### R7 — Live Mode
-
-Markit MUST provide a source-aware Live Mode in addition to Source Mode.
-
-Live Mode requirements:
-
-- the Markdown source remains authoritative;
-- switching Source Mode ↔ Live Mode does not serialize one document model into another;
-- mode switching alone must not mutate the file;
-- both modes share document revision, dirty state, undo history, and command semantics;
-- visual selections/caret positions map explicitly through semantic/source coordinates;
-- formatting actions produce Markdown-aware edit commands/transactions;
-- syntax may be visually hidden when safe, but the user must always have a path to the underlying source;
-- unsupported/ambiguous constructs degrade to source-visible editing rather than destructive normalization.
-
-This is **source-aware WYSIWYG**, not a generic rich-text editor that later guesses Markdown.
+The implementation may use Mermaid.js or another compatible renderer, but that renderer is not document authority and must remain replaceable.
 
 ### R8 — LaTeX-style mathematics
 
-LaTeX-style math is a mandatory built-in rich projection.
+V0.1 MUST support mathematical markup including at least:
 
-V1 MUST support at least:
-
-- inline math using `$...$`;
-- display math using `$$...$$`;
-- rendering in Live Mode where applicable, Preview, Browser Preview, and Print/PDF;
+- inline `$...$`;
+- display `$$...$$`;
+- rendering in Preview;
+- rendering in Browser Preview / Print;
+- Live Mode presentation where applicable;
 - explicit visible fallback on invalid expressions;
-- CJK text surrounding math without corrupting layout or source offsets.
+- CJK text around math without corrupting source behavior.
 
-This requirement is for mathematical TeX/LaTeX syntax, not arbitrary TeX document execution.
+This is mathematical TeX/LaTeX-style syntax, not arbitrary TeX document execution.
 
-A built-in provider may use KaTeX or another suitable renderer, but the renderer implementation is replaceable behind a semantic projection boundary.
+---
 
-### R9 — Incremental / streaming rendering
+## 3. Performance requirements
 
-Interactive rendering MUST be designed for arbitrary editor mutations, not only append-only streams.
+### R9 — Responsive arbitrary editing
 
-The intended flow is conceptual, not a frozen ABI:
+Markit MUST remain responsive under arbitrary insertion, deletion, replacement, and paste—not merely append-only streams.
 
-```text
-EditTransaction
-  -> Document revision + ChangeSet
-  -> incremental Markdown semantics
-  -> SemanticDelta
-  -> RenderPatch stream
-  -> Source / Live / Preview projections
-```
+For ordinary local edits, work unrelated to the changed semantics should not be repeated merely because the document is large.
 
-For ordinary local edits, unchanged document regions must not be reparsed/rebuilt merely because the document is large.
+For edits whose Markdown meaning genuinely propagates farther, Markit may perform broader work. Correctness is more important than manufacturing an artificially small invalidation radius.
 
-For expensive or broad changes:
+The implementation is intentionally undecided pending Issue #19.
 
-- work may be chunked and progressively published;
-- current interaction and visible content outrank distant presentation work;
-- stale results are cancelled or rejected;
-- broad structural Markdown effects must be represented honestly rather than hidden behind a false local invalidation rule;
-- no permanent fixed-rate render loop is required.
+Possible mechanisms under research include existing incremental parsers, reusable syntax fragments/trees, small-region parsing, state checkpoints/convergence, full-parse baselines, and Markit-specific approaches. None is a product requirement.
 
-Streaming Markdown projects are references for incremental publication discipline, not proof that an append-tail parser is sufficient for an editor.
+The product-level success condition is observable:
 
-### R10 — Plugin-extensible product boundaries
+- normal typing remains responsive on supported workloads;
+- large-document size does not cause unnecessary work amplification for genuinely local edits;
+- arbitrary structural edits converge to correct Markdown interpretation;
+- no performance optimization silently changes document semantics.
 
-Markit MUST remain extensible without making plugins part of the document authority.
+### R10 — Correctness before benchmark wins
 
-V1 does not require a marketplace or a fully general third-party runtime. It DOES require that product boundaries do not prevent later plugin implementations.
+A faster incremental result that differs from the authoritative clean interpretation of the supported Markdown dialect is a failure.
 
-Extension-facing rules:
+A mechanism that appears local but performs hidden linear metadata/copy work is not proven scalable merely because parser time is low.
 
-- plugins/providers consume versioned semantic snapshots or explicit queries;
-- mutations return as commands/transactions, never direct mutable document access;
-- plugin identity must not become document/block/source identity;
-- plugins do not depend on GPUI entity identity, private parser memory layout, scheduler internals, or cache layout;
-- slow/crashed extension work cannot indefinitely block ordinary text editing;
-- results carry enough revision/identity information to reject stale output;
-- capabilities are explicit and can be versioned.
+The research/architecture phase must therefore consider total work, not only parser wall time.
 
-Built-in Mermaid, math, browser/export, and future rich-block facilities SHOULD be shaped so they could later be implemented/replaced through these same semantic provider seams without forcing V1 to build the full plugin runtime first.
+---
 
-## 4. Product domains
+## 4. Extension requirement
 
-Markit has six responsibility domains. These are ownership boundaries, not a requirement to create six frameworks.
+### R11 — Plugin/provider extensibility
 
-```text
-Workspace
-  files / roots / search / path discovery
+Markit MUST remain extensible, but V0.1 does not require a plugin marketplace or a fully general third-party runtime.
 
-Document
-  source / revision / transactions / selection / undo / dirty state
+Future extension design must be able to avoid making private parser/UI implementation details into public authority.
 
-Markdown Semantics
-  blocks / inline semantics / source spans / semantic identity
+At a product level, future extensions should be able to:
 
-Projection
-  Source / Live / Preview / Browser-Print representations
+- read appropriate document/semantic information through explicit capabilities;
+- request controlled edits/actions;
+- return results that can be rejected if stale;
+- fail without destroying basic source editing.
 
-Rich Projection Services
-  Mermaid / LaTeX math / later heavy blocks
+The concrete plugin API, ABI, transport, runtime, snapshot type, semantic node identity, and process model are deferred until the core Markdown architecture is known.
 
-Desktop Host
-  window / OS open / file association / clipboard / IME / browser launch
-```
+Mermaid and math are useful built-in workloads for testing whether future boundaries remain replaceable.
 
-A future Plugin Boundary sits beside these domains and receives explicit semantic capabilities. It is not a back door into their internals.
+---
 
-## 5. Key user flows
+## 5. Local-first requirement
 
-### File editing
+Core editing, workspace search, Markdown interpretation, required Mermaid/math rendering, Browser Preview preparation, and Print/PDF preparation MUST work without a cloud account and without uploading document contents to a remote service.
+
+Network-backed extensions may exist later only through explicit product policy/capabilities.
+
+---
+
+## 6. Product truth vs architecture
+
+This PRD defines **what Markit must do**, not the internal mechanism used to do it.
+
+The following are deliberately **not frozen here**:
 
 ```text
-OS / Markit Open
-  -> Document Source
-  -> Source Mode or Live Mode
-  -> EditTransaction
-  -> Save
+Rope vs Piece Table vs another source store
+AST vs CST vs event/hybrid representation
+Tree-sitter vs Lezer-like vs MD4C-like vs custom parsing
+block-local vs subtree/fragment reuse
+parser checkpoint/state format
+absolute vs relative position/index structures
+SemanticDelta / RenderPatch concrete types
+scheduler / worker topology
+GPUI vs another future UI mechanism
+plugin runtime / ABI / transport
 ```
 
-### Workspace editing
+These choices must be earned through research and the architecture phase.
 
-```text
-Open Folder
-  -> Workspace tree/search
-  -> select result/file
-  -> Document
-  -> Source or Live editing
-```
+Current architecture status is documented in `docs/product/architecture.md` and is intentionally `HOLD` until Issue #19 completes.
 
-### Source + Preview
+---
 
-```text
-Source Mode | Preview
-     same Document revision
-     same Markdown semantics
-```
+## 7. V0.1 non-goals
 
-### Browser / PDF
-
-```text
-DocumentSnapshot(revision N)
-  -> whole-document Browser/Print representation
-  -> await required rich resources
-  -> PrintReady(revision N)
-  -> system browser
-  -> browser Print / Save as PDF
-```
-
-## 6. Rendering correctness laws
-
-The following are product laws:
-
-1. **One source truth** — no Source document vs Live document synchronization protocol.
-2. **No silent normalization** — projections do not rewrite source simply by observing it.
-3. **Revisioned derived work** — every expensive derived result proves which source state produced it.
-4. **Interactive work is incremental** — stable unaffected work is reused where semantics allow.
-5. **Publication is progressive but coherent** — partial readiness must not publish internally incompatible state as if complete.
-6. **Print is exhaustive** — print correctness is not bounded by the interactive viewport.
-7. **Rich failure is visible** — Mermaid/math/image failure becomes an error/fallback block, not missing content.
-8. **Source Mode survives projection failure** — editing the file is more fundamental than rendering it.
-
-## 7. Local-first behavior
-
-Core editing, workspace search, Markdown rendering, Mermaid/math rendering required for normal use, Browser Preview generation, and printing MUST work without a cloud account and without sending document contents to a remote service.
-
-Network-backed plugins may exist later only through explicit capabilities and user-visible policy.
-
-## 8. V1 non-goals
-
-The following are not required for the first product release unless separately justified:
+The first release does not require:
 
 - cloud sync or collaboration;
 - account system;
@@ -289,36 +246,30 @@ The following are not required for the first product release unless separately j
 - Git GUI;
 - terminal/debugger/LSP IDE features;
 - plugin marketplace;
-- a general plugin runtime before real provider workloads require it;
-- an independent PDF layout/serialization engine;
+- a general plugin runtime before real workloads justify one;
+- an independent PDF engine;
 - DOCX export;
-- Notion-style database/block workspace semantics;
+- Notion-style database/workspace semantics;
 - arbitrary TeX execution;
-- silently importing every Obsidian/Typora/GFM extension.
+- every Markdown extension used by every other editor.
 
-## 9. Product authority and experimental reuse
+---
 
-The current implementation predates this reset and is an experimental/reference implementation. Existing Document, revision, parser, GPUI, viewport, IME, benchmark, and scheduling work may be valuable, but each component must be evaluated against this PRD and the post-reset architecture before becoming product authority.
+## 8. V0.1 definition
 
-Do not preserve an old abstraction merely because code already exists.
-
-Do not discard a proven component merely because it came from an experiment.
-
-Reuse must be earned by semantic fit, correctness evidence, and measured product value.
-
-## 10. V1 definition
-
-Markit V1 is complete only when a user can, on the primary Windows target:
+Markit V0.1 is complete only when a user on the primary Windows target can:
 
 - open a Markdown file directly or through OS Open With;
 - open a workspace and search across it;
 - edit reliably in Source Mode;
-- edit the same source in Live Mode;
-- switch modes without source mutation or state divergence;
-- use split Source + Preview;
+- edit the same source through Live Mode;
+- switch modes without source mutation or divergent document authority;
+- use Source + Preview split view;
 - render Mermaid and LaTeX-style math;
 - open a complete browser representation;
-- print/save PDF without viewport/lazy-render omissions;
+- Print/Save PDF without viewport/lazy-materialization omissions;
 - recover visibly from rich-render failures;
 - perform all core workflows locally;
-- do all of the above without product APIs that make future semantic plugins depend on private implementation details.
+- retain a credible path to future extension mechanisms without exposing private implementation details as permanent API.
+
+The implementation path to this product is deliberately postponed until Markit has experimental evidence about the Markdown parsing problem.
