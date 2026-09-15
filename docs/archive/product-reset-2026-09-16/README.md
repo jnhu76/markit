@@ -1,39 +1,90 @@
 # Markit pre-product-reset archive
 
-This directory marks the authority boundary for **MARKIT-PRODUCT-RESET-0**.
+This directory marks the historical authority boundary for the Markit product reset.
 
-The pre-reset repository state is preserved by Git at:
+## Canonical archive revision
+
+The exact pre-reset repository is preserved by Git at:
 
 ```text
 d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
 ```
 
-That revision contains the previous product/research documents, GPUI experiments, benchmark work, and the then-current implementation. Nothing from that revision is deleted as evidence. It is retained as **historical/experimental input**, not as current product authority.
+That immutable revision is the canonical archive. Historical files do not need to be duplicated into the active documentation tree merely to preserve them.
 
-In particular, the pre-reset versions of these documents are historical records:
+Use that revision when exact historical wording, benchmark code, ADRs, implementation notes, or old source behavior is needed.
 
-- `README.md`
-- `docs/PRD.md`
-- `docs/product/architecture.md`
-- `docs/product/mvp-v0.1.md`
-- `docs/product/roadmap.md`
-- the A0-A4 research documents, benchmark results, and GPUI/PocketJS comparison material
+## Material archived by that revision
 
-The existing implementation at the archive revision is also treated as an **experimental/reference implementation**. Components may be reused only after they are checked against the post-reset product contracts; prior existence is not sufficient justification for inclusion.
+It contains, among other things:
 
-## Post-reset authority
+- the previous `README.md`;
+- the previous `docs/PRD.md`;
+- the previous product architecture, roadmap, and MVP documents;
+- ADR-001 through ADR-008;
+- the GPUI/PocketJS substrate and feasibility work;
+- A0-A4 research and intervention reports;
+- the previous realtime execution model;
+- performance invariants;
+- plugin compatibility design;
+- platform capability matrix;
+- issue backlog;
+- P0-01 / P0-02 implementation notes;
+- the previous Markdown semantic contract;
+- benchmark/results material;
+- the pre-reset source implementation.
 
-After this reset, product intent is defined in this order:
+These are retained as **historical/experimental evidence**, not current product or architecture authority.
+
+## Code status
+
+The current branch still carries the old implementation in its existing paths so that:
+
+- experiments remain reproducible;
+- Issue #19 can use the current Markdown implementation as a comparison baseline;
+- useful components can be audited rather than discarded blindly.
+
+That does **not** make the current code architecture authoritative.
+
+Every component that might survive the parser research must later be classified explicitly as:
+
+```text
+ADOPT
+ADAPT
+REPLACE
+DELETE
+```
+
+Moving or rewriting source directories before the parser experiment would add noise and could destroy the comparison baseline, so code cleanup is intentionally semantic-first rather than directory-churn-first.
+
+## Active post-reset authority
+
+During the parser-research phase:
 
 ```text
 docs/PRD.md
-  -> docs/product/architecture.md
-  -> docs/product/print-browser-contract.md
-  -> docs/product/mvp-v0.1.md
-  -> docs/product/roadmap.md
-  -> implementation issues / code
+    = product requirements
+
+Issue #19 + docs/research/markdown-parser/README.md
+    = current parser research authority
+
+docs/product/architecture.md
+    = architecture HOLD / invariant boundary only
+
+docs/product/print-browser-contract.md
+    = print/browser output contract
+
+docs/product/mvp-v0.1.md
+    = intended product scope
+
+docs/product/roadmap.md
+    = sequencing
 ```
 
-`README.md` is an entry point, not an independent source of product truth.
+A full implementation architecture is intentionally absent until Issue #19 completes and its verdict is reviewed.
 
-Any older document that conflicts with the post-reset authority above is historical until it is explicitly re-adopted.
+## Re-adoption rule
+
+Historical material does not become current merely because it existed before the reset.
+
+A historical decision may be re-adopted only when new evidence explicitly earns it back.
