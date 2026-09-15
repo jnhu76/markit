@@ -1,1070 +1,324 @@
-# Markit PRD v3 — Adversarial Audit
-
-> ## Current product direction (2026-08-18)
->
-> **Chosen product substrate: direct GPUI** (ADR-008 — Rust editor core
-> + direct GPUI desktop UI/platform integration; Windows first).
->
-> This is an architecture decision, not a claim that GPUI wins every
-> benchmark. The editor core (`markit-core`) must remain separable enough
-> that GPUI-specific code does not become the document architecture.
->
-> The v3 audit body below is a **historical methodology record** from the
-> research phase. Its findings (measurement semantics, workload
-> equivalence, profiler overhead, scaling corpora) remain the project's
-> methodology rules and are encoded in AGENTS.md. Its future steps that
-> name PocketJS as the optimization target (e.g. the "Optimize PocketJS"
-> step in the Revised Research Spine) are superseded by ADR-008.
-
-## Executive Verdict
-
-**结论：CONDITIONALLY SOUND**
-
-v3 的研究顺序已经明显优于此前方案：
+# Markit Product Requirements
 
-```text
-控制变量
-→ 测量
-→ attribution
-→ scaling
-→ intervention
-→ mechanism
-→ implementation
-```
-
-但目前仍存在几个足以让整个研究得到“漂亮但错误结论”的方法学风险。
-
-其中最严重的不是技术实现。
-
-而是：
-
-1. **把可测量的东西误当成真正的用户延迟；**
-2. **不同编辑器的 workload 实际并不等价；**
-3. **profiler 本身改变系统行为；**
-4. **cross-platform experiment 极容易被平台差异污染；**
-5. **项目仍然存在为 PocketJS 寻找证明的 confirmation bias；**
-6. **ASCII baseline 有被错误推广为 editor architecture 结论的风险。**
-
-这些问题需要在 R0 阶段解决。
-
----
-
-# Critical Finding 1
-
-## F-01 — `input → present` 的定义仍然可能是假的
-
-**Severity: Critical**
-
-PRD 把 Interaction-to-Present 作为第一指标，这是正确方向。
-
-但“present”有多个完全不同含义：
-
-```text
-CPU submitted frame
-GPU completed frame
-swap called
-compositor accepted surface
-vsync selected frame
-photon actually changed
-```
-
-如果 System A 测：
-
-```text
-GPU submit
-```
-
-System B 测：
-
-```text
-actual compositor presentation
-```
-
-两者不能比较。
-
-甚至同一个 OS 的 API：
-
-> “present completed”
-
-也不一定意味着用户已经看到像素。
-
-### Attack scenario
-
-GPUI：
-
-```text
-input → GPU submit = 5 ms
-```
-
-Electron：
-
-```text
-input → compositor present = 11 ms
-```
-
-报告得出：
-
-> GPUI latency 是 Electron 一半。
-
-实际上：
-
-```text
-GPUI compositor queue = +8 ms
-```
-
-真实 visibility：
-
-```text
-13 ms
-vs
-11 ms
-```
-
-结论完全反转。
-
-### Required Fix
-
-R0 必须定义至少三个独立 timestamp：
-
-```text
-Tinput
-Tsubmit
-Tpresent-observable
-```
-
-并明确每个平台：
-
-```text
-Windows
-macOS
-Linux
-```
-
-能够提供哪个层级。
-
-跨系统报告只比较：
-
-> 同语义 timestamp。
-
-无法获得真正 display visibility 时必须标记：
-
-```text
-presentation proxy
-```
-
-不得伪装为真实 input-to-photon。
-
----
-
-# Critical Finding 2
-
-## F-02 — 相同“按键脚本”不代表相同 workload
-
-**Severity: Critical**
-
-不同 Markdown editor：
-
-```text
-输入 #
-```
-
-可能触发完全不同产品语义。
-
-例如：
-
-System A：
-
-```text
-plain source editor
-```
-
-System B：
-
-```text
-live Markdown projection
-```
-
-System C：
-
-```text
-syntax highlight + preview update
-```
-
-System D：
-
-```text
-outline + spellcheck + history + extension events
-```
-
-如果直接比较：
-
-```text
-keystroke latency
-```
-
-实际上测的是不同产品。
-
-### Attack scenario
-
-Markit profile 比某 Electron editor 快 4×。
-
-原因不是架构更好。
-
-而是 Electron baseline 同时执行：
-
-```text
-syntax
-outline
-spellcheck
-plugin notification
-preview
-```
-
-Markit 全部关闭。
-
-### Required Fix
-
-建立：
-
-# Semantic Workload Levels
-
-例如：
-
-```text
-L0 Plain text edit
-L1 Markdown parse
-L2 Syntax/projection update
-L3 User-visible Markdown editing
-L4 Normal product configuration
-```
-
-只有同 level 才能横向比较。
-
-同时保留：
-
-> realistic default configuration
-
-作为独立实验。
-
----
-
-# High Finding 3
-
-## F-03 — Flame graph 可能因为 profiler overhead 改变瓶颈
-
-**Severity: High**
-
-Profiling text rendering、allocation、JS runtime 时，sampling 与 instrumentation 可能：
-
-* 改变 timing；
-* 改变 cache；
-* 改变 scheduler；
-* 改变 JIT；
-* 增加 syscalls；
-* 阻止某些优化。
-
-### Attack scenario
-
-没有 profiler：
-
-```text
-p99 = 9 ms
-```
-
-开启 trace：
-
-```text
-p99 = 24 ms
-```
-
-然后 flame graph 显示：
-
-```text
-allocator
-logging
-trace serialization
-```
-
-研究者误认为这是产品瓶颈。
-
-### Required Fix
-
-每个 profiler 必须记录：
-
-```text
-baseline latency
-profiled latency
-overhead ratio
-```
-
-正式性能数字和 profiling 数字分开采集。
-
-Profile 用于 attribution。
-
-Uninstrumented run 用于最终 latency。
-
----
-
-# High Finding 4
-
-## F-04 — Scaling experiment 容易把 corpus structure 当作 N
-
-**Severity: High**
-
-如果：
-
-```text
-10 KB
-100 KB
-1 MB
-10 MB
-```
-
-由不同真实 Markdown 文件组成，那么增加的不只是 size。
-
-还同时改变：
-
-```text
-block count
-line length
-code fences
-links
-Unicode
-heading count
-```
-
-最终得到：
-
-```text
-T(N)
-```
-
-其实完全不是 document-size complexity。
-
-### Required Fix
-
-建立 synthetic scaling families。
-
-例如：
-
-## Family A
-
-重复相同 paragraph：
-
-```text
-N × paragraph
-```
-
-仅改变 block count。
-
-## Family B
-
-一个 paragraph 不断增长。
-
-仅改变 line length/text length。
-
-## Family C
-
-固定 block count，增加 block size。
-
-## Family D
-
-固定 size，增加 Markdown structural density。
-
-必须把：
-
-```text
-N
-B
-L
-V
-Δ
-```
-
-拆开。
-
----
-
-# High Finding 5
-
-## F-05 — ASCII baseline 可能产生错误安全感
-
-**Severity: High**
-
-U0 非常适合作为实验 baseline。
-
-但是 editor text architecture 的很多真实成本只在：
-
-```text
-CJK
-fallback
-graphemes
-IME
-bidi
-complex shaping
-```
+Status: **post-reset product authority**  
+Reset: **MARKIT-PRODUCT-RESET-0 — 2026-09-16**
 
-中出现。
+Markit is a local-first Markdown workspace editor. It exists to make ordinary Markdown work simple and reliable: open a file or workspace, edit the real Markdown source, search across the workspace, preview the document, render Mermaid and LaTeX math, and hand a complete browser document to the system browser for printing/PDF.
 
-如果 U0 阶段冻结 architecture，再到 U3/U4 才发现：
+The pre-reset implementation and research documents are preserved as experimental evidence at repository revision `d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e`. They do not define the product after this reset.
 
-```text
-coordinate model错误
-shape cache key错误
-run model错误
-```
-
-返工非常大。
-
-### Required Fix
-
-区分：
-
-```text
-performance scope
-```
-
-和：
-
-```text
-architectural correctness constraints
-```
-
-R1 性能可以只测 U0。
-
-但 architecture prototype 从一开始至少必须保持：
-
-```text
-UTF-8 safe offsets
-grapheme-capable API
-platform text abstraction
-IME-compatible transaction model
-```
-
-也就是说：
-
-> 暂时不 benchmark ≠ 架构允许假设 ASCII。
-
----
-
-# High Finding 6
-
-## F-06 — Cross-platform 抽象可能把真正的瓶颈隐藏掉
-
-**Severity: High**
-
-KMP 式：
-
-```text
-TextShaper trait
-```
-
-很漂亮。
-
-但过早抽象可能强迫：
-
-```text
-DirectWrite
-CoreText
-HarfBuzz
-```
-
-适配一个最低公分母 API。
-
-结果：
-
-* 平台优化能力丢失；
-* extra allocation；
-* data conversion；
-* hidden copies；
-* 无法利用 native layout cache。
-
-最后我们测到的可能是：
-
-> abstraction tax。
-
-而不是平台本身。
-
-### Required Fix
-
-Platform contract 必须允许：
-
-```text
-common semantic interface
-+
-platform-specific fast path
-```
-
-并要求 profile：
-
-```text
-adapter conversion cost
-native call cost
-copy cost
-```
-
-不要追求 API 形式完全统一。
-
----
-
-# High Finding 7
-
-## F-07 — ReferenceHost 很容易成为“虚假的确定性世界”
-
-**Severity: High**
-
-Headless deterministic host 很适合 correctness。
-
-但不能证明：
-
-* scheduler；
-* compositor；
-* real fonts；
-* IME；
-* GPU；
-* OS input；
-* frame pacing。
-
-### Required Fix
-
-明确：
-
-```text
-ReferenceHost
-= core correctness + algorithmic scaling tool
-
-Real Host
-= user latency evidence
-```
-
-ReferenceHost 结果永远不能作为：
-
-```text
-desktop latency claim
-```
-
----
-
-# High Finding 8
-
-## F-08 — PocketJS 仍然是研究中的既定答案
-
-**Severity: High**
-
-虽然 v3 增加 Architecture Review Escape Hatch，但项目标题与目标仍然是：
-
-> 优化 PocketJS 来做。
-
-团队非常容易产生：
-
-```text
-“我们需要证明 PocketJS 只差一个 EditorSurface。”
-```
-
-的心理预设。
-
-### Attack scenario
-
-实验发现：
-
-```text
-PocketJS host abstraction
-+
-render contract
-+
-text architecture
-```
-
-需要重写 60%。
-
-团队仍然称之为：
-
-> PocketJS optimization。
-
-实际已经是另一个 runtime。
-
-### Required Fix
-
-R9 必须加入定量 architecture review：
-
-至少比较：
-
-```text
-code reused
-subsystems bypassed
-platform code duplicated
-FFI layers added
-maintenance surface
-performance delta
-```
-
-如果 Markit 绕过 PocketJS 大部分核心：
-
-> 必须承认架构已经变化。
-
----
-
-# Medium Finding 9
-
-## F-09 — “关闭 subsystem”可能产生不真实 causal experiment
+## 1. Product statement
 
-**Severity: Medium**
+Markit has two first-class editing modes over **one authoritative Markdown source**:
 
-例如：
+1. **Source Mode** — direct plain-text Markdown editing. Syntax is visible and the file contents are edited directly.
+2. **Live Mode** — source-aware rendered editing. Markdown presentation is editable, but all edits resolve back to the same Markdown source through explicit edit transactions. Live Mode is not a second rich-text document.
 
-```text
-disable parser
-```
-
-会同时减少：
-
-* CPU；
-* allocations；
-* downstream invalidation；
-* render changes。
-
-所以：
-
-```text
-latency下降
-```
-
-只能证明：
-
-> parser pipeline 总体相关。
-
-不一定证明 parser 自身 CPU 是原因。
-
-### Required Fix
-
-Intervention 分层：
-
-```text
-parser real compute → fake equivalent output
-parser output → frozen cached output
-downstream notification → disabled
-```
-
-尽量保持其他路径不变。
-
-原则：
-
-> intervention 应改变一个 causal variable，而不是删除半条 pipeline。
-
----
-
-# Medium Finding 10
-
-## F-10 — Cache warm/cold 状态没有单独建模
-
-**Severity: Medium**
-
-GUI latency 高度依赖：
+A separate read-only Preview can be shown beside Source Mode. Browser Preview and Print/PDF are output surfaces, not alternate document authorities.
 
-```text
-font cache
-glyph cache
-parser cache
-layout cache
-filesystem cache
-GPU pipeline cache
-```
-
-如果只 warm-up：
-
-可能隐藏真实首次操作卡顿。
-
-如果完全 cold：
-
-又不像长期编辑。
-
-### Required Fix
-
-正式定义：
-
-```text
-Cold
-Warm
-Steady-state
-Post-idle
-After-large-navigation
-```
-
-不同 cache state。
+The core product rule is:
 
----
+> **Markdown Source is the single source of truth.**
 
-# Medium Finding 11
+The rendering rule is:
 
-## F-11 — Thermal / power state 可以轻易制造虚假回归
+> **Parse incrementally; publish progressively; print completely.**
 
-**Severity: Medium**
+## 2. Original core requirements
 
-尤其 laptop：
+The original Markit requirements remain mandatory and are the base of this reset.
 
-```text
-Turbo
-thermal throttling
-battery mode
-background antivirus
-OS indexing
-```
-
-都会影响 p99。
-
-### Required Fix
-
-记录：
-
-```text
-power plan
-battery/AC
-CPU frequency behavior
-thermal state
-```
-
-正式 benchmark 应：
+### R1 — Plain-text Markdown editing
 
-* 随机化版本执行顺序；
-* 或 A/B/A/B interleave；
-
-避免：
-
-```text
-old version先跑
-new version热降频后跑
-```
+Markit MUST provide a complete Source Mode in which the user edits Markdown as plain text.
 
-造成假回归。
+Acceptance intent:
 
----
+- opening a `.md` file exposes its real source bytes/text, not a regenerated approximation;
+- save does not rewrite unrelated syntax merely because a document was opened or previewed;
+- Source Mode remains usable even if rich rendering, Mermaid, LaTeX, or a plugin fails;
+- normal editor operations exist: caret, selection, navigation, copy/cut/paste, undo/redo, find, open/save/save-as;
+- UTF-8, CJK, emoji, and IME input are first-class correctness requirements.
 
-# Medium Finding 12
+### R2 — Operating-system open integration
 
-## F-12 — p99 在样本太少时没有意义
+On Windows, installation/registration MUST support opening Markdown files through the operating system, including an **“Open with Markit”** path for `.md` files.
 
-**Severity: Medium**
+At minimum validate:
 
-100 次输入：
+- `.md` file association / Open With registration;
+- shell invocation with one or more file paths where supported;
+- paths containing spaces, Unicode, and CJK characters;
+- invocation when Markit is already running;
+- no path reinterpretation caused by treating URLs as filesystem paths.
 
-```text
-p99
-```
+Other platforms may use their native equivalents later without changing document semantics.
 
-基本就是第二慢事件。
+### R3 — Workspace search
 
-如果 workload 不够长，tail latency 会非常不稳定。
+Markit MUST be able to open a folder as a workspace and search text across that workspace in a workflow comparable to VS Code’s basic text search.
 
-### Required Fix
+V1 search results MUST identify at least:
 
-PRD 必须给出 minimum event count。
+- file path;
+- line number;
+- matching span;
+- a short context/snippet;
+- click-to-open/jump behavior.
 
-例如：
+A permanent index database is **not** required by default. The first implementation should prefer the smallest correct scanner/search mechanism and add indexing only when measured workloads justify it.
 
-```text
-typing interaction >= thousands
-scroll frames >= thousands
-```
+### R4 — Split preview
 
-正式 threshold 根据 R0 方差确定。
+Source Mode MUST support a left/right split with a read-only Markdown Preview.
 
-同时报告：
+The preview:
 
-```text
-long-frame count
-max
-histogram
-```
+- consumes the same document revision and Markdown semantics as other projections;
+- must not parse an independent dialect of the document;
+- may update incrementally and prioritize visible content;
+- may fail a rich block visibly without making Source Mode unusable.
 
-而不迷信单独 p99。
+### R5 — Open in browser for print/PDF
 
----
+Markit MUST be able to open the current document in the user’s system browser so the browser’s print function can produce paper output or PDF.
 
-# Medium Finding 13
+Markit does **not** need an independent PDF engine for V1.
 
-## F-13 — 用户输入自动化可能绕过真实 OS path
+Browser output must obey `docs/product/print-browser-contract.md`, especially:
 
-**Severity: Medium**
+- complete-document materialization for printing;
+- output independent of editor scroll/viewport history;
+- a coherent pinned document revision;
+- Mermaid, LaTeX math, local images, fonts, and other required resources reach a terminal state before `PrintReady`;
+- failed rich content is shown as an explicit fallback/error rather than silently disappearing;
+- print CSS is a product-owned contract, not an accidental browser default.
 
-直接调用：
+### R6 — Mermaid
 
-```text
-editor.applyEdit()
-```
+Mermaid is a mandatory built-in Markdown capability.
 
-测不到：
+A fenced block such as:
 
-```text
-window event queue
-keyboard dispatch
-IME
-OS scheduler
+````markdown
+```mermaid
+graph TD
+  A --> B
 ```
+````
 
-但使用真实 OS key injection：
+must render in Live Mode where applicable, Preview, Browser Preview, and Print/PDF.
 
-又增加 nondeterminism。
+Mermaid rendering is a heavy/rich projection. It MUST NOT become synchronous per-keystroke work that blocks ordinary typing. Results are tied to block identity + document revision and stale results cannot overwrite newer content.
 
-### Required Fix
+The initial provider may use Mermaid.js, but Mermaid.js itself is not the document authority or plugin ABI.
 
-建立两层 workload：
-
-```text
-Engine workload
-→ deterministic internal command
-
-End-to-end workload
-→ OS/platform input
-```
+## 3. Added product requirements
 
-两者回答不同问题。
+### R7 — Live Mode
 
-禁止混用结果。
+Markit MUST provide a source-aware Live Mode in addition to Source Mode.
 
----
+Live Mode requirements:
 
-# Medium Finding 14
+- the Markdown source remains authoritative;
+- switching Source Mode ↔ Live Mode does not serialize one document model into another;
+- mode switching alone must not mutate the file;
+- both modes share document revision, dirty state, undo history, and command semantics;
+- visual selections/caret positions map explicitly through semantic/source coordinates;
+- formatting actions produce Markdown-aware edit commands/transactions;
+- syntax may be visually hidden when safe, but the user must always have a path to the underlying source;
+- unsupported/ambiguous constructs degrade to source-visible editing rather than destructive normalization.
 
-## F-14 — Markdown parser 的“增量性”不能只看 parse 时间
+This is **source-aware WYSIWYG**, not a generic rich-text editor that later guesses Markdown.
 
-**Severity: Medium**
+### R8 — LaTeX-style mathematics
 
-一个 incremental parser 可能：
+LaTeX-style math is a mandatory built-in rich projection.
 
-```text
-parse = 0.4 ms
-```
+V1 MUST support at least:
 
-但生成的大量 changed nodes 导致：
+- inline math using `$...$`;
+- display math using `$$...$$`;
+- rendering in Live Mode where applicable, Preview, Browser Preview, and Print/PDF;
+- explicit visible fallback on invalid expressions;
+- CJK text surrounding math without corrupting layout or source offsets.
 
-```text
-projection/layout = 15 ms
-```
+This requirement is for mathematical TeX/LaTeX syntax, not arbitrary TeX document execution.
 
-### Required Fix
+A built-in provider may use KaTeX or another suitable renderer, but the renderer implementation is replaceable behind a semantic projection boundary.
 
-changed-region 必须贯穿：
+### R9 — Incremental / streaming rendering
 
-```text
-buffer
-parse
-projection
-wrap
-layout
-render
-```
+Interactive rendering MUST be designed for arbitrary editor mutations, not only append-only streams.
 
-记录每层：
+The intended flow is conceptual, not a frozen ABI:
 
 ```text
-input delta size
-invalidated logical range
-invalidated display range
-materialized visible range
+EditTransaction
+  -> Document revision + ChangeSet
+  -> incremental Markdown semantics
+  -> SemanticDelta
+  -> RenderPatch stream
+  -> Source / Live / Preview projections
 ```
-
-这样才能发现：
-
-> 小 edit 被哪一层重新放大成 global invalidation。
 
----
+For ordinary local edits, unchanged document regions must not be reparsed/rebuilt merely because the document is large.
 
-# Medium Finding 15
+For expensive or broad changes:
 
-## F-15 — “visible only”也可能不是正确复杂度模型
+- work may be chunked and progressively published;
+- current interaction and visible content outrank distant presentation work;
+- stale results are cancelled or rejected;
+- broad structural Markdown effects must be represented honestly rather than hidden behind a false local invalidation rule;
+- no permanent fixed-rate render loop is required.
 
-**Severity: Medium**
+Streaming Markdown projects are references for incremental publication discipline, not proof that an append-tail parser is sufficient for an editor.
 
-Markdown layout 存在：
+### R10 — Plugin-extensible product boundaries
 
-```text
-offscreen height estimates
-scrollbar mapping
-fold state
-block dependency
-```
+Markit MUST remain extensible without making plugins part of the document authority.
 
-因此目标不应机械规定：
+V1 does not require a marketplace or a fully general third-party runtime. It DOES require that product boundaries do not prevent later plugin implementations.
 
-```text
-O(visible)
-```
+Extension-facing rules:
 
-### Required Fix
+- plugins/providers consume versioned semantic snapshots or explicit queries;
+- mutations return as commands/transactions, never direct mutable document access;
+- plugin identity must not become document/block/source identity;
+- plugins do not depend on GPUI entity identity, private parser memory layout, scheduler internals, or cache layout;
+- slow/crashed extension work cannot indefinitely block ordinary text editing;
+- results carry enough revision/identity information to reject stale output;
+- capabilities are explicit and can be versioned.
 
-更准确的原则：
+Built-in Mermaid, math, browser/export, and future rich-block facilities SHOULD be shaped so they could later be implemented/replaced through these same semantic provider seams without forcing V1 to build the full plugin runtime first.
 
-> **Per-interaction work must be bounded and proportional to information genuinely affected by the interaction.**
+## 4. Product domains
 
-它可能是：
+Markit has six responsibility domains. These are ownership boundaries, not a requirement to create six frameworks.
 
 ```text
-O(V)
-O(Δ)
-O(log N)
-O(changed block chain)
-```
-
-而不是永远 O(V)。
+Workspace
+  files / roots / search / path discovery
 
----
+Document
+  source / revision / transactions / selection / undo / dirty state
 
-# Medium Finding 16
+Markdown Semantics
+  blocks / inline semantics / source spans / semantic identity
 
-## F-16 — 多平台测试矩阵后期仍可能爆炸
+Projection
+  Source / Live / Preview / Browser-Print representations
 
-**Severity: Medium**
+Rich Projection Services
+  Mermaid / LaTeX math / later heavy blocks
 
-未来矩阵：
-
-```text
-3 OS
-× several editors
-× Unicode levels
-× document sizes
-× workloads
-× cache states
-× hardware
+Desktop Host
+  window / OS open / file association / clipboard / IME / browser launch
 ```
-
-不可持续。
 
-### Required Fix
+A future Plugin Boundary sits beside these domains and receives explicit semantic capabilities. It is not a back door into their internals.
 
-建立三层测试集：
+## 5. Key user flows
 
-## Tier A — Commit
+### File editing
 
-很小：
-
 ```text
-one platform
-core regression
+OS / Markit Open
+  -> Document Source
+  -> Source Mode or Live Mode
+  -> EditTransaction
+  -> Save
 ```
 
-## Tier B — Nightly
+### Workspace editing
 
-代表性：
-
 ```text
-3 OS
-selected workloads
+Open Folder
+  -> Workspace tree/search
+  -> select result/file
+  -> Document
+  -> Source or Live editing
 ```
-
-## Tier C — Research / Release
-
-完整矩阵。
-
-不要把 research benchmark 变成普通 CI。
-
----
 
-# Required PRD Amendments
+### Source + Preview
 
-在正式接受 v3 前，我建议至少增加以下 10 条硬性规则：
-
-1. **Presentation timestamp 必须按语义分类，禁止混比。**
-2. **Benchmark workload 必须定义 semantic equivalence level。**
-3. **Profiling run 与 latency run 分离，并量化 profiler overhead。**
-4. **Scaling corpus 必须控制 N/B/L/V/Δ。**
-5. **ASCII 只简化 benchmark，不允许 core architecture 假设 ASCII。**
-6. **Platform abstraction 必须允许 native fast path。**
-7. **ReferenceHost 不得作为真实桌面 latency 证据。**
-8. **PocketJS 必须保留真正的 stop/review gate。**
-9. **Causal intervention 尽可能保持 pipeline 输出等价。**
-10. **必须区分 engine-level benchmark 与 OS end-to-end benchmark。**
-
----
-
-# Revised Research Spine
-
-经过红队后，更稳妥的流程应当是：
-
 ```text
-Define semantic workload
-        ↓
-Control variables
-        ↓
-Validate measurement
-        ↓
-Measure real latency
-        ↓
-CPU / off-CPU / GPU attribution
-        ↓
-Scaling experiment
-        ↓
-Form root-cause hypothesis
-        ↓
-Controlled intervention
-        ↓
-Reproduce on another workload
-        ↓
-Reproduce on another platform/system
-        ↓
-Extract mechanism
-        ↓
-Optimize PocketJS
-        ↓
-Re-run original end-to-end experiment
+Source Mode | Preview
+     same Document revision
+     same Markdown semantics
 ```
 
-最后多出两个非常重要的步骤：
+### Browser / PDF
 
 ```text
-another workload
-another platform/system
+DocumentSnapshot(revision N)
+  -> whole-document Browser/Print representation
+  -> await required rich resources
+  -> PrintReady(revision N)
+  -> system browser
+  -> browser Print / Save as PDF
 ```
-
-因为只在一个 benchmark 上成立：
 
-> 还不能称为设计原则。
+## 6. Rendering correctness laws
 
----
+The following are product laws:
 
-# Final Audit Verdict
+1. **One source truth** — no Source document vs Live document synchronization protocol.
+2. **No silent normalization** — projections do not rewrite source simply by observing it.
+3. **Revisioned derived work** — every expensive derived result proves which source state produced it.
+4. **Interactive work is incremental** — stable unaffected work is reused where semantics allow.
+5. **Publication is progressive but coherent** — partial readiness must not publish internally incompatible state as if complete.
+6. **Print is exhaustive** — print correctness is not bounded by the interactive viewport.
+7. **Rich failure is visible** — Mermaid/math/image failure becomes an error/fallback block, not missing content.
+8. **Source Mode survives projection failure** — editing the file is more fundamental than rendering it.
 
-## What v3 Gets Right
+## 7. Local-first behavior
 
-它已经避开三个最危险的错误：
+Core editing, workspace search, Markdown rendering, Mermaid/math rendering required for normal use, Browser Preview generation, and printing MUST work without a cloud account and without sending document contents to a remote service.
 
-* 一开始就选择实现方案；
-* 把 flame graph 当作 causality；
-* 一开始同时研究所有 Unicode / OS / framework 变量。
+Network-backed plugins may exist later only through explicit capabilities and user-visible policy.
 
-## What Must Change Before Implementation
+## 8. V1 non-goals
 
-R0 必须先把：
+The following are not required for the first product release unless separately justified:
 
-```text
-measurement semantics
-workload equivalence
-profiler overhead
-scaling corpus
-experiment tiers
-```
-
-定义清楚。
+- cloud sync or collaboration;
+- account system;
+- AI assistant;
+- Git GUI;
+- terminal/debugger/LSP IDE features;
+- plugin marketplace;
+- a general plugin runtime before real provider workloads require it;
+- an independent PDF layout/serialization engine;
+- DOCX export;
+- Notion-style database/block workspace semantics;
+- arbitrary TeX execution;
+- silently importing every Obsidian/Typora/GFM extension.
 
-否则后面的 profiler 数据越丰富：
+## 9. Product authority and experimental reuse
 
-> **越可能让错误结论看起来很科学。**
+The current implementation predates this reset and is an experimental/reference implementation. Existing Document, revision, parser, GPUI, viewport, IME, benchmark, and scheduling work may be valuable, but each component must be evaluated against this PRD and the post-reset architecture before becoming product authority.
 
-## Gate
+Do not preserve an old abstraction merely because code already exists.
 
-**PRD v3 可以作为研究方向基线，但建议先吸收 F-01～F-08，再冻结为 v3.1。**
+Do not discard a proven component merely because it came from an experiment.
 
-真正开始 PocketJS editor implementation 前，至少应该经过：
-
-```text
-R0 Methodology
-R1 Controlled baseline
-R2 Scaling
-R3 Attribution
-R4 Causal validation
-```
+Reuse must be earned by semantic fit, correctness evidence, and measured product value.
 
-四个证据 gate。
+## 10. V1 definition
 
-在那之前：
+Markit V1 is complete only when a user can, on the primary Windows target:
 
-> **不允许因为“某个设计看起来像 Zed/Typora/GPUI”而进入大规模实现。**
+- open a Markdown file directly or through OS Open With;
+- open a workspace and search across it;
+- edit reliably in Source Mode;
+- edit the same source in Live Mode;
+- switch modes without source mutation or state divergence;
+- use split Source + Preview;
+- render Mermaid and LaTeX-style math;
+- open a complete browser representation;
+- print/save PDF without viewport/lazy-render omissions;
+- recover visibly from rich-render failures;
+- perform all core workflows locally;
+- do all of the above without product APIs that make future semantic plugins depend on private implementation details.
