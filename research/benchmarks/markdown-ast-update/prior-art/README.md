@@ -1,6 +1,7 @@
 # prior-art/ — R2 Prior-art Mechanism Extraction
 
-Status: **R2 EXTRACTION RECORDS COMPLETE (pre-review)**
+Status: **R2 RECORDS COMPLETE — CORRECTIVE PASS APPLIED;
+READY_FOR_ADVERSARIAL_R2_REVIEW**
 Authority: GitHub Issue #22 + `protocol/R0-METHODOLOGY.md` §2–§3 (prior-art
 role and frozen horses) + `ROADMAP.md` (R2 stage gate).
 
@@ -80,3 +81,46 @@ Resolved before PASS:
    record §15 blocks.
 5. MINOR — manifest header reworded: it carries the load-bearing
    mechanism-relevant paths; record §15 lists remain the exhaustive ones.
+
+## R2 corrective pass (2026-09-17, MARKIT-R2-PRIOR-ART-CORRECTIVE-1)
+
+Human adversarial review of PR #27 required fidelity corrections. All pins,
+tags, SHAs, and extraction provenance are unchanged; the corrections touch
+claim wording only:
+
+1. MAJOR-1 — mizchi reuse semantics corrected: prefix blocks pass through
+   unchanged; suffix blocks are RECONSTRUCTED as new values
+   (`shift_block_span`) with shifted spans. `reused_*` counters mean
+   "not reparsed" (parser-work reuse), NOT object/representation reuse;
+   no MoonBit pointer-identity claims are made. (mizchi-markdown.md §4/§8/
+   §14/§15, MECHANISM-SOURCE-MAP.md H1, MECHANISM-MATRIX.md M2,
+   R2-HYPOTHESES.md R2-H11, manifest.)
+2. MAJOR-2 — universal/minimal-state claims removed: the
+   tree-sitter-markdown serialized state is KNOWN-SUFFICIENT for that
+   implementation's reuse gate (CANDIDATE dimensions for H1/H3/H4;
+   MINIMALITY UNKNOWN; field schema enumerable, value size
+   depth-dependent per #243; retention vs recomputation
+   mechanism-dependent). No document now defines or prescribes the
+   eventual H1/H4 checkpoint representation. (tree-sitter-markdown.md
+   §14/Q12, MECHANISM-SOURCE-MAP.md H1/H4, R2-H07, manifest.)
+3. MAJOR-3 — tree-sitter GLR reuse suppression corrected: reuse is
+   suppressed WHILE multiple stack versions exist (`allow_node_reuse`
+   recomputed per outer parse-loop iteration after condense); a later
+   condense back to one version re-enables it. Not a remainder-of-parse
+   shutdown, not a full-parse fallback. (R2-H06, tree-sitter.md §12/Q11/
+   §14, MECHANISM-SOURCE-MAP.md H3, MECHANISM-MATRIX.md note, manifest.)
+4. IMPORTANT-1 — M6 matrix row repaired: the missing memory-tradeoff cell
+   restored (external-scanner state retained with the old tree;
+   depth-dependent serialized size); "per-token snapshot" replaced with
+   the exact carrier (byte-serialized external-scanner state on
+   external-token subtrees); all 15 columns aligned.
+5. IMPORTANT-2 — observed mizchi state (old Document / top-level block
+   sequence with spans + API inputs) separated from MODEL-DEFINED
+   CANDIDATE state (dedicated block index/table, definition-presence
+   flag, entry-context cache); no dedicated index carries
+   MECHANISM_INTRINSIC status.
+6. MINOR — unsupported "common in real Markdown" frequency wording
+   removed (real-corpus frequency stays UNKNOWN in the record).
+
+Status after corrections and self-review: `READY_FOR_ADVERSARIAL_R2_REVIEW`
+(final human PASS is not self-declared).
