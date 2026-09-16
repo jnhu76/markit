@@ -20,6 +20,7 @@ pub mod case_order;
 pub mod jsonl;
 pub mod orchestrate;
 pub mod result;
+pub mod supervisor;
 
 pub use build_identity::{current_build_identity, BuildIdentityV1};
 pub use case_order::{order_cases, SplitMix64V1, SHUFFLE_ALGORITHM_ID};
@@ -29,6 +30,7 @@ pub use orchestrate::{
     run_update_attributed, run_update_memory, run_update_timed, RunReport,
 };
 pub use result::{
-    assemble_row, edit_meta, CaseFacts, EditMetaV1, MeasurementV1, PayloadMetaV1, ResultRowV1,
-    TimingMetricsV1, PROTOCOL_VERSION, RESULT_SCHEMA_VERSION_V1,
+    assemble_row, edit_meta, CaseFacts, EditMetaError, EditMetaV1, MeasurementV1, PayloadMetaV1,
+    ResultRowV1, TimingMetricsV1, PROTOCOL_VERSION, RESULT_SCHEMA_VERSION_V1,
 };
+pub use supervisor::{failure_row, run_supervised, synthesized_failure_row, WorkerTermination};

@@ -31,6 +31,23 @@ step "null mechanism end-to-end through the real runner (R1_SMOKE_ONLY / NON_RES
 SMOKE_OUT="$(mktemp -t mdbench-r1-smoke.XXXXXX.jsonl)"
 cargo run -q -p markit-mdbench-runner --bin r1-smoke -- "$SMOKE_OUT"
 
+step "supervised worker end-to-end (R1-CORRECTIVE-1 failure isolation, NON_RESEARCH_RESULT)"
+WORKER_OUT="$(mktemp -t mdbench-r1-worker.XXXXXX.jsonl)"
+WORKER_JOB="$(mktemp -t mdbench-r1-worker.XXXXXX.json)"
+printf '{"mode":"null_smoke_update"}' > "$WORKER_JOB"
+cargo run -q -p markit-mdbench-runner --bin mdbench-worker -- "$WORKER_JOB" "$WORKER_OUT"
+printf '%s' "$(cat "$WORKER_OUT")" | python3 -c '
+import json, sys
+row = json.loads(sys.stdin.read())
+assert row["provenance_ref"] == "R1_SMOKE_ONLY/NON_RESEARCH_RESULT", row
+assert row["execution_status"] == "pass", row
+assert row["correctness_status"] == "pass", row
+assert row["measurement"]["lane"] == "timing", row
+m = row["measurement"]["metrics"]
+assert m["total_ns"] == m["prepare_ns"] + m["native_ns"], row
+'
+rm -f "$WORKER_JOB" "$WORKER_OUT"
+
 step "smoke rows are schema-valid JSONL"
 ROW_COUNT=0
 while IFS= read -r line; do
