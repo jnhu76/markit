@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/markit-core", "apps/markit"]
+members = ["crates/markit-core", "apps/markit", "crates/parser-survey"]
 
 # mvp/gpui is the Phase A0 feasibility prototype. It keeps its own lockfile
 # and its prototype-pinned GPUI version; it is not part of the product
