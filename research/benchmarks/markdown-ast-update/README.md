@@ -39,7 +39,7 @@ Tree-sitter Markdown
 mizchi/markdown
 ```
 
-这些项目用于：源码/设计审计、机制抽取、优势/劣势假设、必要的 sanity probe 和 fidelity 检查。
+这些项目用于源码/设计审计、机制抽取、优势/劣势假设、必要的 sanity probe 和 fidelity 检查。
 
 它们的原生跨语言绝对时间可以作为 `REFERENCE_ONLY` 数据，但不进入统一 Rust 机制赛马的 headline ranking。
 
@@ -47,16 +47,9 @@ mizchi/markdown
 
 ```text
 H0 FULL_REBUILD
-  clean full parse + rebuild state
-
 H1 BLOCK_LOCAL
-  locate affected block region + local reparse + sequence/index repair
-
 H2 FRAGMENT_REUSE
-  retained fragment/subtree reuse + damaged gaps reparse
-
 H3 OLD_TREE_REUSE_CONVERGENCE
-  restart + changed-region parse + convergence + reusable suffix
 ```
 
 这些是 mechanism models，不得冒充“Rust 版 Tree-sitter/Lezer/mizchi”。如果只能复现思想而不能证明 faithful reproduction，必须使用 `*-inspired` 描述。
@@ -95,28 +88,21 @@ H0 clean full parse(post-edit source)
 research/benchmarks/markdown-ast-update/
 ├── README.md
 ├── ROADMAP.md
-├── protocol/                 # grammar/result/timer/metric schema
-├── manifest/                 # toolchain/corpus/environment/prior-art provenance
-├── runner/                   # Rust case enumeration + orchestration
-├── mechanisms/               # H0-H3；只放被测机制
+├── protocol/
+├── manifest/
+├── runner/
+├── common/
+├── mechanisms/
 │   ├── full-rebuild/
 │   ├── block-local/
 │   ├── fragment-reuse/
 │   └── old-tree-convergence/
-├── common/                   # 所有 horses 共享且不属于研究变量的代码
 ├── corpus/
-│   ├── generators/
-│   ├── mutations/
-│   ├── real-world/
-│   └── materialized/
-├── oracle/                   # H0/full-parse equivalence + schema checks
-├── instrumentation/          # work/memory/allocation counters
-├── prior-art/                # upstream notes/probes/fidelity records，不放 headline 实现
+├── oracle/
+├── instrumentation/
+├── prior-art/
 ├── scripts/
 ├── results/
-│   ├── raw/
-│   ├── normalized/
-│   └── summary/
 └── report/
 ```
 
@@ -220,7 +206,7 @@ Weakness Map 人工 review 前，不允许设计或实现 Markit-specific produc
 
 ## 当前 Gate
 
-当前仍是 **R0 final review**。
+当前阶段：**R0 final review**。
 
 R0 通过后才进入：
 
