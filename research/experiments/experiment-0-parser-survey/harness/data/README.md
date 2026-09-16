@@ -11,8 +11,9 @@ ORACLE-B (DIALECT SEMANTICS) corpus for issue #19 (plan §7).
 - contents: 652 examples, 26 sections, keys
   `markdown / html / example / start_line / end_line / section`
 
-Usage: `cargo run --release -p parser-survey -- --commonmark \
-crates/parser-survey/data/commonmark-0.31.2-spec.json`
+Usage: `cargo run --release --manifest-path \
+research/experiments/experiment-0-parser-survey/harness/Cargo.toml -- \
+--commonmark` (the spec file is also the built-in default).
 
 The oracle compares only semantics every implementation can honestly map
 (normalized block-kind sequence, heading levels); constructs outside the

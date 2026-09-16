@@ -1,6 +1,7 @@
 # Markdown Parser Research
 
-Status: **ACTIVE**
+Status: **ARCHIVED — Experiment 0 (#19) campaign anchor, historical evidence only.**  
+Active research: issue #22 (`research/benchmarks/markdown-ast-update/`). Architecture remains HOLD.
 
 Primary campaign: [Issue #19 — Incremental Markdown parsing: locality, convergence, and invalidation](https://github.com/jnhu76/markit/issues/19)
 

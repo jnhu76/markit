@@ -290,6 +290,7 @@ pub fn summarize(rows: &[Row], skipped: usize) -> String {
           work, NOT zero metadata work); S5/S6 split by restart position on ≥half-doc\n\
           scans; M4 needs survivor shifts ≥ half the suffix-proportional expectation.\n\
           Semantic is D_UNKNOWN for every row: no semantic dependency layer exists in\n\
-          this run. See crates/parser-survey/src/influence.rs for the full rules.\n");
+          this run. See harness src/influence.rs (research/experiments/\n\
+          experiment-0-parser-survey) for the full rules.\n");
     s
 }

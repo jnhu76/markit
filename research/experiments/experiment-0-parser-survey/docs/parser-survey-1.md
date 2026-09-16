@@ -1,5 +1,9 @@
 # parser-survey-1 — run 1: influence taxonomy + hidden-O(N) gate on the P0-02 block index
 
+> **ARCHIVED (Experiment 0, historical evidence only).** Paths below refer to
+> the pre-archive layout (`crates/parser-survey`, `results/*`); the assets now
+> live in this archive. Active research authority: issue #22.
+
 Issue: #19 (MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1)
 Branch: `exp/19-parser-survey-1`
 Harness: `crates/parser-survey` (research-only, zero deps beyond markit-core)

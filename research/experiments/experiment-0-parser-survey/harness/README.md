@@ -1,10 +1,12 @@
-# parser-survey
+# parser-survey (ARCHIVED Experiment 0 harness)
 
 Research harness for issue #19 (MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1).
 
-**Research-only.** Not product code; must never be depended on by
-`markit-core` or `apps/markit`. It measures the public markit-core surface
-only (`MarkdownState::build` / `update` + `MarkdownWork` + `BlockView`).
+**ARCHIVED — historical evidence only.** Not product code; not part of any
+product/default workspace; this directory and its `markit-core` measurement
+subject snapshot live only inside the Experiment 0 archive. The active
+Markdown research authority is issue #22
+(`research/benchmarks/markdown-ast-update/`).
 
 ## What it measures
 
@@ -28,8 +30,11 @@ For every (corpus document, mutation) scenario:
 
 ## Usage
 
+From the archive root (or with `--manifest-path` from anywhere):
+
 ```sh
-cargo run --release -p parser-survey -- \
+cargo run --release --manifest-path \
+  research/experiments/experiment-0-parser-survey/harness/Cargo.toml -- \
   [--sizes 1k,10k,100k,1m] [--iters N] [--warm N] [--out DIR]
 ```
 

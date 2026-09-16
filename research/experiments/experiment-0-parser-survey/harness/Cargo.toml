@@ -1,9 +1,10 @@
-# Research harness for issue #19
-# (MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1).
+# Research harness for ARCHIVED Experiment 0
+# (MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1, issue #19 / PR #20).
 #
-# Research-only: not product code, not published, and must never be
-# depended on by markit-core or apps/markit. Everything here measures the
-# public markit-core surface; no parser internals are reached into.
+# Research-only archive: not product code, not published, not a workspace
+# member of any product build. Everything here measures the public
+# markit-core snapshot surface; no parser internals are reached into.
+# Historical evidence only; the active research authority is issue #22.
 [package]
 name = "parser-survey"
 version = "0.1.0"
@@ -11,7 +12,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-markit-core = { path = "../markit-core" }
+markit-core = { path = "../baseline/markit-core" }
 # research-only: spec.json parsing for the ORACLE-B CommonMark battery
 serde_json = "1"
 # research-only: tree-sitter markdown baseline (RUN-2b). The grammar

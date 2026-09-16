@@ -1,6 +1,9 @@
 # Existing code baseline
 
-Status: **EXPERIMENTAL / REFERENCE**
+Status: **ARCHIVED — Experiment 0 (#19) era policy, historical evidence only.**  
+The old source tree this document describes has been removed from the active
+tree (see `docs/research/repo-reset-inventory.md`); Git history preserves it.
+Active research: issue #22.
 
 This document records how to treat the current source tree during the Markit parser-research phase.
 

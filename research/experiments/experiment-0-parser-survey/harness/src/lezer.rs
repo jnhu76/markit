@@ -78,7 +78,7 @@ fn find_node() -> Result<PathBuf, String> {
 impl Worker {
     fn spawn() -> Result<Worker, String> {
         let node = find_node()?;
-        let script = Path::new("crates/parser-survey/scripts/lezer-worker.js");
+        let script = Path::new(env!("CARGO_MANIFEST_DIR")).join("scripts/lezer-worker.js");
         let mut child = Command::new(&node)
             .arg("--expose-gc")
             .arg(script)

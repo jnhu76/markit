@@ -219,7 +219,9 @@ fn main() {
         let spec = args
             .commonmark
             .clone()
-            .unwrap_or_else(|| PathBuf::from("crates/parser-survey/data/commonmark-0.31.2-spec.json"));
+            .unwrap_or_else(|| {
+                PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("data/commonmark-0.31.2-spec.json")
+            });
         let summary = baseline::run(&spec, &args.out.join("md4c")).unwrap_or_else(|e| {
             eprintln!("{e}");
             std::process::exit(1);

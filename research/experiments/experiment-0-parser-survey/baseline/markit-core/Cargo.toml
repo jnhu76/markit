@@ -1,8 +1,8 @@
 [package]
 name = "markit-core"
-description = "Framework-independent incremental editor core for Markit"
-version.workspace = true
-edition.workspace = true
+description = "Experiment 0 measurement subject: pre-reset markit-core snapshot (no product role)"
+version = "0.1.0"
+edition = "2021"
 publish = false
 
 [dependencies]
