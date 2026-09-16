@@ -312,6 +312,402 @@ fn fence_cascade(doc: &str) -> Result<(f64, usize, f64, u64), String> {
     Ok((g_us, c.ancestors_copied, 0.0, 0))
 }
 
+// --- CORRECTIVE-1: G2-HISTORY-STABILITY gate (adversarial review
+// MAJOR-2) ---------------------------------------------------------------
+//
+// The run-3 T-G1..T-G4 rows measured ONE path-copy edit each, always
+// starting from the originally balanced root. They prove single-edit
+// locality, not long-lived balance. This gate applies a mixed structural
+// edit history (char insert/delete, block split/merge at a hotspot,
+// uniform positions, BOF) and observes height / memory / query cost over
+// time, in three arms:
+// - REPLACE_ONLY: 1→1 leaf edits only (no structure change) — control.
+// - NAIVE: mixed ops, path-copy only, no rebalance — the degradation
+//   probe (review's prediction: hotspot splits grow height unboundedly).
+// - REBUILD_ON_HEIGHT: same mix + rebuild the whole sequence balanced
+//   whenever height exceeds 2·log2(B)+4 — the cheapest possible
+//   balance-maintenance policy, measured for its amortized cost. This
+//   does NOT freeze the strategy (WB tree / B-tree / finger tree stay
+//   open); it only proves a trivial bound exists and what it costs.
+//
+// Arms run on a big-stack thread: NAIVE's height is the thing being
+// measured and recursive walks (audit/drop) must survive it.
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+enum HistArm {
+    ReplaceOnly,
+    Naive,
+    RebuildOnHeight,
+}
+
+impl HistArm {
+    fn label(&self) -> &'static str {
+        match self {
+            HistArm::ReplaceOnly => "replace-only",
+            HistArm::Naive => "naive-path-copy",
+            HistArm::RebuildOnHeight => "rebuild-on-height",
+        }
+    }
+}
+
+struct HistPoint {
+    edit: usize,
+    blocks: usize,
+    doc_len: usize,
+    height: usize,
+    avg_depth: f64,
+    repr_kib: f64,
+    query_ns: f64,
+    copies_per_edit: f64,
+    rebuilds: usize,
+    rebuild_leaf_work: u64,
+    rebuild_us: f64,
+    rebuild_worst_us: f64,
+}
+
+fn height_budget(count: usize) -> usize {
+    let lg = (usize::BITS - count.max(2).leading_zeros()) as usize;
+    2 * lg + 4
+}
+
+fn history_gate(doc: &str, edits: usize, arm: HistArm) -> Result<Vec<HistPoint>, String> {
+    let doc = doc.to_string();
+    std::thread::Builder::new()
+        .stack_size(256 * 1024 * 1024)
+        .spawn(move || history_gate_inner(doc, edits, arm))
+        .map_err(|e| format!("spawn: {e}"))?
+        .join()
+        .map_err(|_| "history thread panicked".to_string())?
+}
+
+fn history_gate_inner(
+    doc: String,
+    edits: usize,
+    arm: HistArm,
+) -> Result<Vec<HistPoint>, String> {
+    let d = Document::new(doc);
+    let state = MarkdownState::build(&d.snapshot());
+    let blocks = block_list(&state);
+    let mut root = green::g2_build(&blocks);
+    let mut rng = Rng(0xC0FFEE19_70A1_2026);
+    let (mut copies, mut rebuilds, mut rebuild_work) = (0usize, 0usize, 0u64);
+    let (mut rebuild_us, mut rebuild_worst_us) = (0.0f64, 0.0f64);
+    let mut points = Vec::new();
+    let mut query_rng = Rng(0xABCDEF01_23456789);
+
+    let checkpoint = |root: &Green, e: usize, copies: usize, rebuilds: usize,
+                          rebuild_work: u64, rebuild_us: f64, rebuild_worst_us: f64,
+                          points: &mut Vec<HistPoint>, query_rng: &mut Rng|
+          -> Result<(), String> {
+        green::g2_audit(root).map_err(|e| format!("audit @{e}: {e}"))?;
+        let count = root.count();
+        let mut acc = 0u8;
+        let t0 = Instant::now();
+        let span = root.len().max(1);
+        for _ in 0..500 {
+            if let Some((k, _)) = green::red_query(root, (query_rng.next() as usize) % span) {
+                acc = acc.wrapping_add(k);
+            }
+        }
+        std::hint::black_box(acc);
+        let query_ns = t0.elapsed().as_secs_f64() * 1e9 / 500.0;
+        points.push(HistPoint {
+            edit: e,
+            blocks: count,
+            doc_len: root.len(),
+            height: green::g2_height(root),
+            avg_depth: green::g2_total_leaf_depth(root) as f64 / count.max(1) as f64,
+            repr_kib: green::g2_repr_bytes(root) as f64 / 1024.0,
+            query_ns,
+            copies_per_edit: if e == 0 { 0.0 } else { copies as f64 / e as f64 },
+            rebuilds,
+            rebuild_leaf_work: rebuild_work,
+            rebuild_us,
+            rebuild_worst_us,
+        });
+        Ok(())
+    };
+
+    checkpoint(&root, 0, copies, rebuilds, rebuild_work, rebuild_us, rebuild_worst_us,
+               &mut points, &mut query_rng)?;
+
+    for e in 1..=edits {
+        let count = root.count();
+        if count < 8 {
+            return Err(format!(
+                "doc collapsed at edit {e} (arm {arm:?}): {count} blocks"
+            ));
+        }
+        // Position: 40% a 16-leaf hotspot band at 40% of the doc, 40%
+        // uniform, 20% near BOF.
+        let band = count * 2 / 5;
+        let idx = {
+            let bucket = rng.next() % 100;
+            if bucket < 40 {
+                band + (rng.next() as usize) % 16
+            } else if bucket < 80 {
+                (rng.next() as usize) % count
+            } else {
+                (rng.next() as usize) % (count / 20).max(1)
+            }
+        };
+        let idx = idx.min(count - 1);
+        let roll = (rng.next() % 100) as u32;
+        let before_len = root.len();
+        let leaf = green::leaf_at(&root, idx).ok_or("leaf missing")?;
+        let kind = leaf.kind;
+        let len = leaf.len;
+
+        #[derive(Debug)]
+        enum Op {
+            Char(i8),
+            Split,
+            Merge(usize),
+        }
+        // Mix (of ALL ops): 30% char insert / 20% char delete / 25%
+        // split / 20% merge / 5% append — net block drift +0.05/edit so
+        // a long history grows instead of burning the document down.
+        let op = if arm == HistArm::ReplaceOnly || roll < 30 {
+            Op::Char(1)
+        } else if roll < 50 {
+            Op::Char(if len > 2 { -1 } else { 1 })
+        } else if roll < 75 {
+            if len >= 4 { Op::Split } else { Op::Char(1) }
+        } else if roll < 95 && idx + 1 < count {
+            let other = green::leaf_at(&root, idx + 1).ok_or("merge leaf missing")?;
+            Op::Merge(other.len)
+        } else {
+            Op::Char(1)
+        };
+        if e % 5000 == 0 {
+            eprintln!("hist[{arm:?}] e={e} blocks={count} len={}", root.len());
+        }
+
+        let mut expect_len = root.len() as isize;
+        let mut expect_count = count as isize;
+        match op {
+            Op::Char(d) => {
+                let nl = (len as isize + d as isize).max(1) as usize;
+                let (nr, c) = green::g2_replace_at(
+                    &root,
+                    idx,
+                    Green::Leaf(Arc::new(GreenLeaf { kind, len: nl })),
+                );
+                copies += c.ancestors_copied;
+                expect_len += d as isize;
+                root = nr;
+            }
+            Op::Split => {
+                let repl = green::g2_build(&[(kind, len / 2), (kind, len - len / 2)]);
+                let (nr, c) = green::g2_replace_range(&root, idx, 1, &repl);
+                copies += c.ancestors_copied;
+                expect_count += 1;
+                root = nr;
+            }
+            Op::Merge(other_len) => {
+                let repl = Green::Leaf(Arc::new(GreenLeaf {
+                    kind,
+                    len: len + other_len,
+                }));
+                let (nr, c) = green::g2_replace_range(&root, idx, 2, &repl);
+                copies += c.ancestors_copied;
+                expect_count -= 1;
+                root = nr;
+            }
+        }
+        if let Err(err) = green::check(&root, expect_len as usize, expect_count as usize) {
+            return Err(format!(
+                "invariant at edit {e} (arm {arm:?}): {err}; op={op:?} idx={idx} \
+                 leaf_len={len} before_len={before_len} after_len={} \
+                 expect_len={expect_len} expect_count={expect_count}",
+                root.len()
+            ));
+        }
+        let after_count = root.count() as isize;
+        if (after_count - count as isize).abs() > 1 {
+            return Err(format!(
+                "count jump at edit {e} (arm {arm:?}): {count} -> {after_count}; \
+                 op={op:?} idx={idx}"
+            ));
+        }
+
+        if arm == HistArm::RebuildOnHeight && green::g2_height(&root) > height_budget(root.count())
+        {
+            let t0 = Instant::now();
+            let mut leaves = Vec::with_capacity(root.count());
+            green::g2_collect_leaves(&root, &mut leaves);
+            rebuild_work += leaves.len() as u64;
+            rebuilds += 1;
+            root = green::g2_build(&leaves);
+            rebuild_us += t0.elapsed().as_secs_f64() * 1e6;
+            rebuild_worst_us = rebuild_worst_us.max(t0.elapsed().as_secs_f64() * 1e6);
+            green::g2_audit(&root).map_err(|e| format!("post-rebuild: {e}"))?;
+        }
+
+        if e % 1000 == 0 || e == edits {
+            checkpoint(&root, e, copies, rebuilds, rebuild_work, rebuild_us,
+                       rebuild_worst_us, &mut points, &mut query_rng)?;
+        }
+    }
+    Ok(points)
+}
+
+/// Front-collapse probe (review MAJOR-2's exact `Node{left, Empty}`
+/// concern): repeated g2_truncate on one root — the suffix-absorption
+/// shape — and the height it reaches without rebalance.
+fn truncate_spine(blocks_n: usize, rounds: usize) -> Result<Vec<(usize, usize, usize)>, String> {
+    let blocks: Vec<(u8, usize)> = (0..blocks_n).map(|i| (0u8, 40 + (i % 7) * 3)).collect();
+    let mut root = green::g2_build(&blocks);
+    let mut out = Vec::new();
+    out.push((0, root.count(), green::g2_height(&root)));
+    for r in 1..=rounds {
+        let count = root.count();
+        if count < 16 {
+            break;
+        }
+        let keep = count - count / 8;
+        let (nr, _c) = green::g2_truncate(&root, keep);
+        root = nr;
+        if r % (rounds / 8).max(1) == 0 || r == rounds {
+            green::g2_audit(&root).map_err(|e| format!("spine audit r{r}: {e}"))?;
+            out.push((r, root.count(), green::g2_height(&root)));
+        }
+    }
+    Ok(out)
+}
+
+fn history_summary(rows: &[(HistArm, Vec<HistPoint>)]) -> String {
+    let mut s = String::new();
+    s.push_str(
+        "| arm | edits | blocks | height | avg_depth | repr_KiB | q_ns | copies/edit \
+         | rebuilds | rebuild_ms | worst_ms |\n\
+         |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n",
+    );
+    for (arm, pts) in rows {
+        // first, middle, last checkpoint
+        let picks = [0usize, pts.len() / 2, pts.len() - 1];
+        for (j, &i) in picks.iter().enumerate() {
+            let p = &pts[i];
+            let arm_cell = if j == 0 { arm.label() } else { "" };
+            s.push_str(&format!(
+                "| {arm_cell} | {} | {} | {} | {:.1} | {:.0} | {:.0} | {:.1} | {} | {:.2} | {:.2} |\n",
+                p.edit,
+                p.blocks,
+                p.height,
+                p.avg_depth,
+                p.repr_kib,
+                p.query_ns,
+                p.copies_per_edit,
+                p.rebuilds,
+                p.rebuild_us / 1000.0,
+                p.rebuild_worst_us / 1000.0,
+            ));
+        }
+    }
+    s
+}
+
+pub fn history_run(out: &Path) -> Result<String, String> {
+    let mut s = String::new();
+    s.push_str("# CORRECTIVE-1 B — G2 edit-history stability gate (review MAJOR-2)\n\n");
+    s.push_str("Run-3 measured single edits from a balanced root; this gate applies a \
+        MIXED STRUCTURAL history (30% char insert / 20% char delete / 25% block \
+        split / 20% block merge / 5% append — net block drift +0.05 per edit; \
+        positions: 40% a 16-leaf hotspot band, 40% uniform, 20% near-BOF) \
+        and tracks height, average leaf depth, live green allocation (Arc header + \
+        payload — NOT total editor state), red-view query cost, and path-copy work. \
+        `rebuild-on-height` = rebuild the whole sequence balanced when height exceeds \
+        2·log2(B)+4 — the cheapest possible balance policy, measured to prove a bound \
+        exists, NOT a frozen strategy.\n\n");
+
+    for &(doc_bytes, edits) in &[(1024 * 1024usize, 10_000usize), (100 * 1024, 100_000)] {
+        let doc = synthetic(SynthOptions {
+            target_bytes: doc_bytes,
+            cjk: false,
+            crlf: false,
+        });
+        s.push_str(&format!(
+            "## T-G6 — synth-{}, {edits} edits\n\n",
+            human_size(doc_bytes)
+        ));
+        let mut rows = Vec::new();
+        for arm in [
+            HistArm::ReplaceOnly,
+            HistArm::Naive,
+            HistArm::RebuildOnHeight,
+        ] {
+            let pts = history_gate(&doc, edits, arm)?;
+            rows.push((arm, pts));
+        }
+        s.push_str(&history_summary(&rows));
+        s.push('\n');
+
+        // degradation ratios
+        for (arm, pts) in &rows {
+            let first = &pts[0];
+            let last = &pts[pts.len() - 1];
+            match arm {
+                HistArm::ReplaceOnly => {
+                    s.push_str(&format!(
+                        "replace-only control: height {} → {} (structure never changes; \
+                         doc {} → {} B, blocks constant at {})\n\n",
+                        first.height, last.height, first.doc_len, last.doc_len, last.blocks,
+                    ));
+                }
+                HistArm::Naive => {
+                    let balanced = (last.blocks as f64).log2().ceil().max(1.0);
+                    s.push_str(&format!(
+                        "naive arm: height {} → {} after {edits} edits (B = {}; balanced \
+                         height would be ≈ {balanced:.0}; ratio {:.1}×; copies/edit \
+                         {:.1} vs balanced ≈ {:.0})\n\n",
+                        first.height,
+                        last.height,
+                        last.blocks,
+                        last.height as f64 / balanced,
+                        last.copies_per_edit,
+                        balanced,
+                    ));
+                }
+                HistArm::RebuildOnHeight => {
+                    s.push_str(&format!(
+                        "rebuild-on-height: height bounded at ≤ {} (budget 2·log2(B)+4 = \
+                         {} at final B); {} rebuilds, {} leaves walked total, {:.1} ms \
+                         total, worst single {:.2} ms, amortized {:.0} ns/edit over \
+                         {edits} edits\n\n",
+                        last.height,
+                        height_budget(last.blocks),
+                        last.rebuilds,
+                        last.rebuild_leaf_work,
+                        last.rebuild_us / 1000.0,
+                        last.rebuild_worst_us / 1000.0,
+                        last.rebuild_us * 1000.0 / edits as f64,
+                    ));
+                }
+            }
+        }
+    }
+
+    s.push_str("## T-G7 — repeated front-collapse (g2_truncate spine probe)\n\n\
+        The review flagged g2_truncate's `Node{left, Empty}` shape. One-shot use \
+        (T-G4) is fine; this probe applies it repeatedly on one root.\n\n\
+        | round | blocks | height |\n|---:|---:|---:|\n");
+    for (r, b, h) in truncate_spine(4096, 32)? {
+        s.push_str(&format!("| {r} | {b} | {h} |\n"));
+    }
+
+    s.push_str("\nReading guide: the review's prediction is confirmed if `naive-\
+        path-copy` height grows far beyond ≈ log2(B) while `replace-only` stays at \
+        the build height and `rebuild-on-height` stays under its 2·log2(B)+4 budget. \
+        That would support the corrected claim: *position-free persistent sequence \
+        with single-edit locality is proven; BALANCE MAINTENANCE IS A REQUIRED \
+        MECHANISM for structural churn, and a trivial policy bounds it — concrete \
+        balancing strategy remains unearned/open.*\n");
+
+    std::fs::create_dir_all(out).map_err(|e| format!("mkdir: {e}"))?;
+    std::fs::write(out.join("summary.md"), &s).map_err(|e| format!("write: {e}"))?;
+    Ok(s)
+}
+
 pub fn run(out: &Path) -> Result<String, String> {
     let mut s = String::new();
     s.push_str("# RUN-3 — green-tree representation prototype (plan §13–22)\n\n");

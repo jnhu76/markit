@@ -46,6 +46,7 @@ struct Args {
     ts_deep200: bool,
     lezer: bool,
     green: bool,
+    green_history: bool,
     refs: bool,
 }
 
@@ -71,6 +72,7 @@ fn parse_args() -> Args {
         ts_deep200: false,
         lezer: false,
         green: false,
+        green_history: false,
         refs: false,
         out: PathBuf::from(format!(
             "results/raw/parser-survey/run-{}",
@@ -106,6 +108,7 @@ fn parse_args() -> Args {
             "--ts-deep200" => args.ts_deep200 = true,
             "--lezer" => args.lezer = true,
             "--green" => args.green = true,
+            "--green-history" => args.green_history = true,
             "--refs" => args.refs = true,
             other => {
                 eprintln!("unknown arg {other}");
@@ -154,6 +157,18 @@ fn main() {
         });
         println!("{summary}");
         eprintln!("results in {}", args.out.join("refs").display());
+        return;
+    }
+
+    // CORRECTIVE-1 mode: G2 edit-history stability gate (review MAJOR-2).
+    if args.green_history {
+        let summary =
+            greenbench::history_run(&args.out.join("green-history")).unwrap_or_else(|e| {
+                eprintln!("{e}");
+                std::process::exit(1);
+            });
+        println!("{summary}");
+        eprintln!("results in {}", args.out.join("green-history").display());
         return;
     }
 

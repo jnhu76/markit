@@ -238,6 +238,166 @@ pub fn g2_truncate(root: &Green, index: usize) -> (Green, G2Counters) {
     (rec(root, index, &mut c), c)
 }
 
+// --- CORRECTIVE-1: edit-history gate primitives (G2-HISTORY-STABILITY) ----
+//
+// The run-3 G2 rows measured ONE path-copy edit each, always starting
+// from the originally balanced root. They prove nothing about a
+// LONG-LIVED sequence. These primitives let the history gate apply a
+// mixed structural edit history (split / merge / absorb / char edits)
+// and observe height, memory, and query cost over time. No production
+// claim: the gate measures whether naive path-copy persistence degrades,
+// and what a trivial height-triggered rebuild policy costs to bound it.
+
+fn node2(left: Green, right: Green) -> Green {
+    Green::Node(Arc::new(GreenNode {
+        total_len: left.len() + right.len(),
+        count: left.count() + right.count(),
+        left,
+        right,
+    }))
+}
+
+/// Replace leaf range `[start, start+count)` with `repl` (any leaf
+/// count, possibly 0 or ≠ count): path-copy, O(log B). When the range
+/// straddles an internal boundary, the whole `repl` is placed at the
+/// LEFT seam and the range's right head is replaced by `Empty` — the
+/// leaf SEQUENCE `[.. start) ++ repl ++ [start+count ..)` is the only
+/// observable contract; shapes produced are not balanced (exactly what
+/// the history gate measures). Verified by
+/// `tests::replace_range_matches_vec_model` against a Vec model over
+/// all (n, start, count, repl_n) ≤ 33×3.
+pub fn g2_replace_range(
+    root: &Green,
+    start: usize,
+    count: usize,
+    repl: &Green,
+) -> (Green, G2Counters) {
+    debug_assert!(count >= 1 && start + count <= root.count());
+    let mut c = G2Counters {
+        ancestors_copied: 0,
+        leaves_reused: root.count() - count,
+        leaves_new: repl.count(),
+        bytes_new: 0,
+        coord_rewrites: 0,
+    };
+    let out = rec_range(root, start, start + count, repl, &mut c);
+    (out, c)
+}
+
+fn rec_range(node: &Green, lo: usize, hi: usize, repl: &Green, c: &mut G2Counters) -> Green {
+    debug_assert!(lo < hi);
+    match node {
+        Green::Leaf(_) => {
+            debug_assert_eq!((lo, hi), (0, 1), "leaf must be reached with a 1-leaf range");
+            repl.clone()
+        }
+        Green::Node(n) => {
+            let total = n.count;
+            if lo == 0 && hi == total {
+                return repl.clone();
+            }
+            let li = n.left.count();
+            if hi <= li {
+                c.ancestors_copied += 1;
+                let left = rec_range(&n.left, lo, hi, repl, c);
+                node2(left, n.right.clone())
+            } else if lo >= li {
+                c.ancestors_copied += 1;
+                let right = rec_range(&n.right, lo - li, hi - li, repl, c);
+                node2(n.left.clone(), right)
+            } else {
+                // Straddle: splice the whole repl at the left seam
+                // (replacing the range's tail there) and delete the
+                // range's head on the right side. Splitting repl by the
+                // OLD boundary would be wrong whenever repl's own leaf
+                // count differs from the range's (e.g. merge 2→1).
+                let left = rec_range(&n.left, lo, li, repl, c);
+                let right = rec_range(&n.right, 0, hi - li, &Green::Empty, c);
+                c.ancestors_copied += 1;
+                node2(left, right)
+            }
+        }
+        Green::Empty => Green::Empty,
+    }
+}
+
+/// Max root-to-leaf depth (leaf = 0).
+pub fn g2_height(root: &Green) -> usize {
+    match root {
+        Green::Leaf(_) | Green::Empty => 0,
+        Green::Node(n) => 1 + n.left.height().max(n.right.height()),
+    }
+}
+
+trait GreenHeight {
+    fn height(&self) -> usize;
+}
+impl GreenHeight for Green {
+    fn height(&self) -> usize {
+        g2_height(self)
+    }
+}
+
+/// Sum of all leaf depths (divide by count for the average).
+pub fn g2_total_leaf_depth(root: &Green) -> u64 {
+    fn rec(node: &Green, d: u64) -> u64 {
+        match node {
+            Green::Leaf(_) => d,
+            Green::Empty => 0,
+            Green::Node(n) => rec(&n.left, d + 1) + rec(&n.right, d + 1),
+        }
+    }
+    rec(root, 0)
+}
+
+/// Live green allocation bytes: Arc header (strong+weak counters, 16 B
+/// on x86-64) + payload, summed over all nodes/leaves. Deliberately NOT
+/// total editor state: source storage, inline data, and semantic indexes
+/// are separate; allocator slack is not counted.
+pub fn g2_repr_bytes(root: &Green) -> usize {
+    match root {
+        Green::Empty => 0,
+        Green::Leaf(_) => 16 + std::mem::size_of::<GreenLeaf>(),
+        Green::Node(n) => {
+            16 + std::mem::size_of::<GreenNode>()
+                + g2_repr_bytes(&n.left)
+                + g2_repr_bytes(&n.right)
+        }
+    }
+}
+
+/// Full recursive audit: stored len/count must equal the children's.
+/// Returns (len, count). O(B) — checkpoint only.
+pub fn g2_audit(root: &Green) -> Result<(usize, usize), String> {
+    match root {
+        Green::Empty => Ok((0, 0)),
+        Green::Leaf(l) => Ok((l.len, 1)),
+        Green::Node(n) => {
+            let (ll, lc) = g2_audit(&n.left)?;
+            let (rl, rc) = g2_audit(&n.right)?;
+            if n.total_len != ll + rl {
+                return Err(format!("audit len: {} != {ll}+{rl}", n.total_len));
+            }
+            if n.count != lc + rc {
+                return Err(format!("audit count: {} != {lc}+{rc}", n.count));
+            }
+            Ok((n.total_len, n.count))
+        }
+    }
+}
+
+/// Collect (kind, len) for every leaf, in order. O(B).
+pub fn g2_collect_leaves(root: &Green, out: &mut Vec<(u8, usize)>) {
+    match root {
+        Green::Empty => {}
+        Green::Leaf(l) => out.push((l.kind, l.len)),
+        Green::Node(n) => {
+            g2_collect_leaves(&n.left, out);
+            g2_collect_leaves(&n.right, out);
+        }
+    }
+}
+
 /// G1 naive green Vec: same edit, but the root sequence is a Vec that
 /// must be cloned (O(B) pointer copies) to stay persistent.
 pub struct G1Doc {
@@ -355,7 +515,7 @@ pub fn chunked_replace_len(
     Ok((new_root, c))
 }
 
-fn leaf_at(root: &Green, index: usize) -> Option<Arc<GreenLeaf>> {
+pub(crate) fn leaf_at(root: &Green, index: usize) -> Option<Arc<GreenLeaf>> {
     match root {
         Green::Leaf(l) => Some(l.clone()),
         Green::Node(n) => {
@@ -425,4 +585,46 @@ pub fn nested_replace_inner(
     let out = rec(root, &mut c);
     check(&out, root.len() + delta as usize, root.count())?;
     Ok((out, c))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn leaves_of(root: &Green) -> Vec<(u8, usize)> {
+        let mut v = Vec::new();
+        g2_collect_leaves(root, &mut v);
+        v
+    }
+
+    #[test]
+    fn replace_range_matches_vec_model() {
+        for n in 1..=33usize {
+            let blocks: Vec<(u8, usize)> =
+                (0..n).map(|i| (0u8, 10 + (i % 5) * 3)).collect();
+            let base = g2_build(&blocks);
+            for start in 0..n {
+                for count in 1..=(n - start) {
+                    for repl_n in 1..=3usize {
+                        let repl_blocks: Vec<(u8, usize)> = (0..repl_n)
+                            .map(|i| (7u8, 100 + (i % 3) * 7))
+                            .collect();
+                        let repl = g2_build(&repl_blocks);
+                        let (out, _c) =
+                            g2_replace_range(&base, start, count, &repl);
+                        let mut model = blocks.clone();
+                        model.splice(start..start + count, repl_blocks.clone());
+                        let got = leaves_of(&out);
+                        assert_eq!(
+                            got,
+                            model,
+                            "n={n} start={start} count={count} repl_n={repl_n}"
+                        );
+                        check(&out, model.iter().map(|l| l.1).sum(), model.len())
+                            .expect("invariant");
+                    }
+                }
+            }
+        }
+    }
 }
