@@ -1,6 +1,6 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **ACTIVE / R0 FINAL REVIEW**  
+Status: **R0 PASS / READY FOR R1**  
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
 Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
 R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)
@@ -9,24 +9,24 @@ R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)
 
 ## 研究目标
 
-第一阶段主实验不是比较六个 upstream parser 的工程实现，而是在**同一个 Rust 实验基底**中比较 Markdown AST/CST 更新机制：
+第一阶段主实验是在**同一个 Rust 实验基底**中比较 Markdown AST/CST 更新机制：
 
 ```text
-SAME Rust toolchain
+SAME Rust toolchain / build profile
 SAME source representation
 SAME BENCH-GRAMMAR-v1
 SAME normalized result contract
-SAME payload
-SAME edit
-SAME timer / instrumentation
+SAME payload / edit
+SAME runner / timer / instrumentation
         │
         ├── H0 FULL_REBUILD
-        ├── H1 BLOCK_LOCAL
+        ├── H1 BLOCK_LOCAL_REPARSE
         ├── H2 FRAGMENT_REUSE
-        └── H3 OLD_TREE_REUSE_CONVERGENCE
+        ├── H3 OLD_TREE_SUBTREE_REUSE
+        └── H4 RESTART_CONVERGENCE
 ```
 
-目标是形成每种机制的 strength/weakness profile，并解释差异来自哪里，而不是只产生一个速度排名。
+目标不是选一个“冠军 parser”，而是得到每种机制在不同输入结构下的 strength/weakness profile，并解释这些差异。
 
 ## Prior-art / source subjects
 
@@ -37,28 +37,29 @@ Comrak
 Tree-sitter Markdown
 @lezer/markdown
 mizchi/markdown
+Wagner & Graham incremental parsing
+Swift incremental syntax parsing
 ```
 
-这些项目用于源码/设计审计、机制抽取、优势/劣势假设、必要的 sanity probe 和 fidelity 检查。
-
-它们的原生跨语言绝对时间可以作为 `REFERENCE_ONLY` 数据，但不进入统一 Rust 机制赛马的 headline ranking。
+它们用于源码/设计审计、机制抽取、provenance、sanity probe 和 fidelity 检查。原生绝对时间只作为 `REFERENCE_ONLY`，不进入统一 Rust 机制赛马的 headline ranking。
 
 ## 第一轮 horses
 
 ```text
 H0 FULL_REBUILD
-H1 BLOCK_LOCAL
+H1 BLOCK_LOCAL_REPARSE
 H2 FRAGMENT_REUSE
-H3 OLD_TREE_REUSE_CONVERGENCE
+H3 OLD_TREE_SUBTREE_REUSE
+H4 RESTART_CONVERGENCE
 ```
 
-这些是 mechanism models，不得冒充“Rust 版 Tree-sitter/Lezer/mizchi”。如果只能复现思想而不能证明 faithful reproduction，必须使用 `*-inspired` 描述。
+这些是 mechanism models，不得冒充“Rust 版 Tree-sitter/Lezer/mizchi”。如果只能复现思想而不能证明 faithful reproduction，必须使用 `*-inspired` 描述并记录 fidelity boundary。
 
-## 公平性
+## BENCH-GRAMMAR-v1
 
-所有 horses 必须解决同一个受控 parsing problem：`BENCH-GRAMMAR-v1`，并输出相同 normalized semantic/syntax contract。
+所有 horses 解决同一个受控 Markdown problem。
 
-第一轮 grammar 最低覆盖：
+最低覆盖：
 
 ```text
 paragraph / text
@@ -67,20 +68,50 @@ ATX heading
 basic list / blockquote
 fenced code
 emphasis delimiter
-code span delimiter
+code-span delimiter
 inline/reference link basics
 reference definition
 ```
 
+第一轮不宣称完整 CommonMark conformance。
+
 正确性：
 
 ```text
-H1/H2/H3 update result
+normalize(H1/H2/H3/H4 update result)
 ==
-H0 clean full parse(post-edit source)
+normalize(H0 clean full parse(post-edit source))
 ```
 
-不要求第一轮实现完整 CommonMark；扩大 standards scope 必须另做 protocol amendment。
+normalized correctness 只比较 semantic kind / tree topology / ordered children / UTF-8 spans / reference facts，不比较 pointer identity、NodeId、fragment ID 或 allocation identity。
+
+## IMPLEMENTATION_PARITY_CONTRACT
+
+为了避免实验变成“Flash 编程水平赛马”，R0 已冻结以下规则：
+
+```text
+one Rust workspace
+one rustc/toolchain + Cargo.lock
+one build profile / LTO / codegen-units / RUSTFLAGS policy
+one allocator policy
+shared Source/Edit/grammar/scanner/Node/result/runner/counters where semantics permit
+horse-specific state only when mechanism requires it
+```
+
+第一轮禁止 horse-specific：
+
+```text
+custom allocator
+unsafe unchecked fast path
+SIMD/manual prefetch
+parallelism
+specialized hash/string representation
+one-horse-only inline/cold tuning
+```
+
+机制不可分割的优化必须标 `MECHANISM_INTRINSIC`。
+
+输入与结果统一使用 `black_box`/runner protection，关键 Weakness Map 候选还要做一次第二 compiler profile 的 optimization-sensitivity check。
 
 ## 目录权责
 
@@ -96,7 +127,8 @@ research/benchmarks/markdown-ast-update/
 │   ├── full-rebuild/
 │   ├── block-local/
 │   ├── fragment-reuse/
-│   └── old-tree-convergence/
+│   ├── old-tree-subtree-reuse/
+│   └── restart-convergence/
 ├── corpus/
 ├── oracle/
 ├── instrumentation/
@@ -106,7 +138,7 @@ research/benchmarks/markdown-ast-update/
 └── report/
 ```
 
-`common/` 只能放非研究变量；如果共享某段代码会抹平机制差异，该代码必须留在对应 mechanism 内。
+`common/` 只放非研究变量。若共享代码会抹掉机制成本，该代码必须留在对应 mechanism 内。
 
 ## Timer
 
@@ -114,11 +146,11 @@ research/benchmarks/markdown-ast-update/
 
 ```text
 T_prepare = mechanism-specific edit metadata preparation
-T_native  = damage/restart/reuse/reparse/reconstruction/index maintenance
+T_native  = mechanism-required state maintenance + damage/restart/reuse/reparse/reconstruction/index work
 T_total   = T_prepare + T_native
 ```
 
-Host text-buffer apply-edit 在 timer 外；mechanism 自己必须做的工作不得提前隐藏。
+Host text-buffer apply-edit 在 timer 外；机制自己必须做的工作不得提前隐藏。
 
 ## 第一轮 measurements
 
@@ -173,9 +205,10 @@ no outlier deletion
 
 ## 结论
 
-最终不是“冠军 parser”，而是每种 mechanism 的：
+每种 mechanism 最终必须有：
 
 ```text
+PRIOR_ART_ANCHOR
 BEST REGIME
 WORST REGIME
 SCALING SIGNATURE
@@ -184,6 +217,7 @@ MEMORY / ALLOCATION COST
 FAILURE / FALLBACK REGIME
 KEY STRENGTH
 KEY WEAKNESS
+OPTIMIZATION_SENSITIVITY
 EVIDENCE
 CONFIDENCE
 ```
@@ -206,12 +240,9 @@ Weakness Map 人工 review 前，不允许设计或实现 Markit-specific produc
 
 ## 当前 Gate
 
-当前阶段：**R0 final review**。
-
-R0 通过后才进入：
-
 ```text
-R1 — Controlled Rust harness / directory substrate
+R0 = PASS
+NEXT = R1 Controlled Rust Harness / Directory Substrate
 ```
 
-在此之前禁止跑正式结果或写 H0-H3 实现。
+R1 只搭实验平台和 schema，不得开始 horse performance tuning 或 Markit production algorithm。
