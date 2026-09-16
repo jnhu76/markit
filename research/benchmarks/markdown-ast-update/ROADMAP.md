@@ -1,6 +1,6 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_ADVERSARIAL_R2_REVIEW**
+Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW**
 
 Authority: GitHub Issue #22  
 Branch: `research/22-markdown-benchmark-1` (R0/R1) / `research/22-prior-art-mechanism-extraction-1` (R2)  
@@ -135,11 +135,14 @@ Next: `R2 PRIOR-ART MECHANISM EXTRACTION`
 
 ## R2 — Prior-art Mechanism Extraction
 
-Status: **READY_FOR_ADVERSARIAL_R2_REVIEW（2026-09-17 人工评审要求的 corrective
+Status: **READY_FOR_FINAL_R2_REVIEW（2026-09-17 人工评审要求的 corrective
 pass MARKIT-R2-PRIOR-ART-CORRECTIVE-1 已完成：MAJOR-1 mizchi 复用语义修正
 （parser-work reuse ≠ representation reuse）、MAJOR-2 状态最小性/普适性声明移除、
 MAJOR-3 GLR reuse suppression 语义修正、IMPORTANT-1/2、MINOR 清理；
-pins 不变。之前的 PRIOR_ART_EXTRACTION_PASS 自评已被该状态取代；
+随后 MARKIT-R2-FINAL-CLEANUP-1 完成 MECHANISM_INTRINSIC_STATE 四分类
+（mechanism state / common input / common instrumentation / model-defined
+candidate state）、R2-H11 去过度概括、mizchi §7 措辞修复；
+pins 不变。之前的 PRIOR_ART_EXTRACTION_PASS 自评已被人工对抗评审取代；
 最终 PASS 由人工评审给出。）**
 
 对 MD4C / pulldown-cmark / Comrak / Tree-sitter Markdown / Lezer / mizchi / Wagner & Graham / Swift incremental syntax 记录：
@@ -198,8 +201,8 @@ NON_GOALS
 MECHANISM_INTRINSIC_STATE
 ```
 
-Stop：`READY_FOR_ADVERSARIAL_R2_REVIEW`（corrective pass 已推送至 PR #27）→
-Next: R3，等待 PR 人工评审合并。
+Stop：`READY_FOR_FINAL_R2_REVIEW`（corrective pass + final cleanup 已推送至
+PR #27）→ Next: R3，等待 PR 人工评审合并。
 
 ---
 

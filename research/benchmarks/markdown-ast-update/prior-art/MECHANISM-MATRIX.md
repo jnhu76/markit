@@ -1,6 +1,6 @@
 # R2 MECHANISM-MATRIX — cross-mechanism comparison
 
-Status: **READY_FOR_ADVERSARIAL_R2_REVIEW** (post corrective pass
+Status: **READY_FOR_FINAL_R2_REVIEW** (post corrective pass
 MARKIT-R2-PRIOR-ART-CORRECTIVE-1, 2026-09-17)
 Rows are extracted **mechanisms**, not products. Confidence classes:
 `HIGH` = direct paper/code evidence; `MEDIUM` = evidence + limited

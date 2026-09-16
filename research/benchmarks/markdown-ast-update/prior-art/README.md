@@ -1,7 +1,7 @@
 # prior-art/ — R2 Prior-art Mechanism Extraction
 
 Status: **R2 RECORDS COMPLETE — CORRECTIVE PASS APPLIED;
-READY_FOR_ADVERSARIAL_R2_REVIEW**
+READY_FOR_FINAL_R2_REVIEW**
 Authority: GitHub Issue #22 + `protocol/R0-METHODOLOGY.md` §2–§3 (prior-art
 role and frozen horses) + `ROADMAP.md` (R2 stage gate).
 
@@ -122,5 +122,41 @@ claim wording only:
 6. MINOR — unsupported "common in real Markdown" frequency wording
    removed (real-corpus frequency stays UNKNOWN in the record).
 
-Status after corrections and self-review: `READY_FOR_ADVERSARIAL_R2_REVIEW`
-(final human PASS is not self-declared).
+## R2 final cleanup (2026-09-17, MARKIT-R2-FINAL-CLEANUP-1)
+
+Minimal cleanup after the human adversarial review's corrective pass;
+no pins, sources, R0/R1, or horse implementations touched:
+
+1. MECHANISM_INTRINSIC_STATE classification repaired
+   (MECHANISM-SOURCE-MAP.md): four-way distinction made explicit —
+   MECHANISM STATE (only kind carrying MECHANISM_INTRINSIC) vs COMMON
+   INPUT (R0 substrate-owned Source pre/post-edit + Edit descriptor;
+   mizchi's EditInfo is an instance of the shared input, not retained
+   state) vs COMMON INSTRUMENTATION (R0 §10 counters, incl.
+   restart/convergence distance bookkeeping — removed from H4 intrinsic
+   state) vs MODEL-DEFINED CANDIDATE STATE (non-intrinsic until parity
+   review). H1 observed mechanism state = the retained old Document /
+   top-level syntax structure with spans.
+2. R2-H11 de-overgeneralized: OBSERVED basis rewritten
+   mechanism-by-mechanism (mizchi suffix reconstruction; Lezer shared
+   subtrees + fresh wrappers; tree-sitter shared subtrees + edit-path
+   coordinate repair + fresh parents/root where required; Swift shared
+   RawSyntax + fresh parents). The cross-mechanism claim
+   (reconstruction/coordinate maintenance offsetting parser-work reuse
+   is mechanism- and shape-dependent) is now explicitly HYPOTHESIS; no
+   cost proportionality is claimed. The separate-counters requirement
+   (parser bytes inspected / nodes reused / nodes rebuilt /
+   metadata-ranges touched) is preserved.
+3. mizchi-markdown.md §7: "suffix blocks are reused unconditionally"
+   replaced by the explicit split — suffix syntax parsing is skipped
+   without a semantic boundary-validity check, while suffix block values
+   are re-coordinated/reconstructed through `shift_block_span`. No
+   object-identity claims reintroduced.
+
+Review history: the earlier extraction self-review
+(`PRIOR_ART_REVIEW_IMPORTANT_ONLY — zero MAJOR`) was SUPERSEDED by the
+human adversarial review that required R2-CORRECTIVE-1; this cleanup
+polishes its outcome.
+
+Gate status: `READY_FOR_FINAL_R2_REVIEW` (final human PASS is not
+self-declared).

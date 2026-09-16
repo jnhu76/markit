@@ -1,6 +1,6 @@
 # R2 MECHANISM-SOURCE-MAP — prior-art anchors for H0–H4
 
-Status: **READY_FOR_ADVERSARIAL_R2_REVIEW** (post corrective pass
+Status: **READY_FOR_FINAL_R2_REVIEW** (post corrective pass
 MARKIT-R2-PRIOR-ART-CORRECTIVE-1, 2026-09-17)
 Authority: GitHub Issue #22 + `protocol/R0-METHODOLOGY.md` §2–§3.
 
@@ -12,6 +12,26 @@ project.
 
 The mapping below is classification work (hypothesis-level), not new
 extraction: all OBSERVED evidence lives in the per-record files.
+
+State classification used in the MECHANISM_INTRINSIC_STATE fields below:
+
+```text
+MECHANISM STATE
+    retained by the horse because the mechanism itself requires it
+    across updates; the only kind that may carry MECHANISM_INTRINSIC
+    status
+COMMON INPUT
+    owned by the R0 shared substrate: Source (pre-edit and post-edit)
+    and the Edit descriptor. Horses consume them; they do not own or
+    retain them as mechanism state.
+COMMON INSTRUMENTATION
+    R0 §10 counters (restart/convergence distance, fallback counts,
+    work counters) measured by the shared runner; never mechanism state
+MODEL-DEFINED CANDIDATE STATE
+    structures a benchmark horse might add (indexes, caches, summaries);
+    explicitly NON-intrinsic until a later implementation-parity review
+    admits them
+```
 
 ---
 
@@ -114,21 +134,25 @@ NON_GOALS:
   damage mapping (mizchi's shipped design validates nothing — see
   R2-HYPOTHESES R2-H02/R2-H03 for the predicted consequences).
 
-MECHANISM_INTRINSIC_STATE:
-  OBSERVED PRIOR-ART STATE: the old Document itself — the top-level block
-  sequence with document-global spans (BlankLines included), nested
-  structure inside block values — plus the API inputs (EditInfo, old/new
-  source); the definitions array doubles as the fallback trigger (mizchi
-  inspects the array, it does not keep a flag).
-  MODEL-DEFINED CANDIDATE STATE (not observed upstream; whether the Rust
-  benchmark horse carries any of these is an R3+ implementation-parity
-  decision, and none may gain MECHANISM_INTRINSIC status merely because
-  it would make H1 faster): a dedicated block index/table (spans/kinds/
-  boundaries); a definition-presence flag instead of array inspection; an
-  entry-context cache. Candidate H1 entry-context dimensions are the
-  tree-sitter-markdown enumeration — KNOWN-SUFFICIENT for that
-  implementation, MINIMALITY UNKNOWN; R2 does not define the eventual H1
-  context/checkpoint representation.
+MECHANISM_INTRINSIC_STATE (MECHANISM STATE only — see classification
+  above):
+  OBSERVED PRIOR-ART MECHANISM STATE: the retained old Document — the
+  top-level syntax structure with document-global spans (BlankLines
+  included; nested structure lives inside block values). The definitions
+  array doubles as the fallback trigger (mizchi inspects the array; it
+  does not keep a flag).
+  COMMON INPUT (owned by the R0 shared substrate, not horse-owned state):
+  the pre-edit Source, the post-edit Source, and the Edit descriptor —
+  mizchi's EditInfo is that upstream mechanism's instance of the shared
+  edit input, not retained state.
+  MODEL-DEFINED CANDIDATE STATE (NON-intrinsic until later parity
+  review; not observed upstream; none may gain MECHANISM_INTRINSIC status
+  merely because it would make H1 faster): a dedicated block index/table
+  (spans/kinds/boundaries); a definition summary/flag instead of array
+  inspection; an entry-context cache. Candidate H1 entry-context
+  dimensions are the tree-sitter-markdown enumeration — KNOWN-SUFFICIENT
+  for that implementation, MINIMALITY UNKNOWN; R2 does not define the
+  eventual H1 context/checkpoint representation.
 
 ---
 
@@ -292,9 +316,14 @@ NON_GOALS:
   Markdown, whose block-boundary state — container depth, fence state —
   is NOT byte-local).
 
-MECHANISM_INTRINSIC_STATE:
-  Restart/checkpoint state, convergence-validation state, and
-  restart/convergence distance bookkeeping (R0 §10 counters).
+MECHANISM_INTRINSIC_STATE (MECHANISM STATE only — see classification
+  above):
+  The actual mechanism representation required for restart/checkpoint and
+  convergence validation: checkpoint state per candidate restart point
+  and convergence-validation state.
+  COMMON INSTRUMENTATION, not mechanism state: restart/convergence
+  distance bookkeeping and the other R0 §10 counters are measured by the
+  shared runner (R0 common instrumentation), not retained by the horse.
   CANDIDATE H4 CONTEXT DIMENSIONS (not an R2 representation decision):
   the tree-sitter-markdown serialized-state enumeration (container stack,
   fence state, phase flags, partial-line indentation, tab column) is

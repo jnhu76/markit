@@ -1,6 +1,6 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_ADVERSARIAL_R2_REVIEW (PR #27 open, awaiting human review)**
+Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW (PR #27 open, awaiting human review)**
 
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
 Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  

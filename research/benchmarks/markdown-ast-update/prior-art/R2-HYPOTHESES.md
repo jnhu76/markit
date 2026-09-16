@@ -1,6 +1,6 @@
 # R2 HYPOTHESES — questions R3+ must test
 
-Status: **READY_FOR_ADVERSARIAL_R2_REVIEW** (post corrective pass
+Status: **READY_FOR_FINAL_R2_REVIEW** (post corrective pass
 MARKIT-R2-PRIOR-ART-CORRECTIVE-1, 2026-09-17)
 
 This file contains only hypotheses produced by prior-art extraction. No
@@ -234,34 +234,47 @@ TESTS IT:
 
 ```text
 HYPOTHESIS-ID:          R2-H11
-SOURCE:                 mizchi-markdown.md §4/§8 (parser-work vs
+SOURCE:                 mizchi-markdown.md §4/§7/§8 (parser-work vs
                         representation reuse); lezer.md §8 (buildTree
-                        spine); tree-sitter.md §8
+                        spine); tree-sitter.md §8;
+                        swift-incremental-syntax.md §8
 MECHANISM:              reconstruction after reuse (all incremental families)
-OBSERVED BASIS:         OBSERVED — every extracted mechanism still rebuilds
-                        or re-coordinates a result whose size can be
-                        proportional to the reused region, not to the edit.
-                        mizchi is the sharp case: prefix blocks pass
-                        through unchanged, but EVERY suffix block value is
-                        reconstructed (`shift_block_span`) with shifted
-                        spans — suffix syntax parsing is skipped while the
-                        suffix representation is rebuilt (its `reused_after`
-                        counts "not reparsed", not shared structure). Lezer
-                        builds new wrapper spines; tree-sitter gives reused
-                        subtrees new parents.
+OBSERVED BASIS:         OBSERVED, mechanism-by-mechanism (no cross-
+                        mechanism cost claim) —
+                        mizchi: suffix syntax parsing is skipped, but the
+                        suffix block representation is reconstructed/
+                        re-coordinated because its spans are document-
+                        global (`shift_block_span`); its `reused_after`
+                        counts "not reparsed", not shared structure.
+                        Lezer: old subtrees can be shared; fresh wrapper/
+                        container structure is built around reused
+                        records (buildTree spine).
+                        tree-sitter: reused subtrees are shared; old-tree
+                        coordinate repair is edit-path based
+                        (`ts_subtree_edit` patches the edited path), and
+                        fresh parent/root reconstruction occurs where
+                        required.
+                        Swift: reused RawSyntax can be shared while the
+                        surrounding collection/parent structure is
+                        produced by the fresh parse.
 PREDICTED STRENGTH:     PARSER-WORK reuse (bytes not re-inspected, syntax
-                        not re-run) is genuinely saved. Representation
-                        reuse is a separate, weaker fact and differs by
-                        mechanism (prefix passthrough only in mizchi;
-                        shared subtrees in Lezer/tree-sitter).
-PREDICTED WEAKNESS:     "reuse" without qualification overstates savings:
-                        reconstruction + re-coordination can approach the
-                        cost of rebuilding; nodes_reused, nodes_rebuilt,
-                        metadata/ranges touched, and parser bytes inspected
-                        are DISTINCT facts, and a reused_after-style
+                        not re-run) is genuinely saved in all four
+                        families; representation sharing differs by
+                        mechanism (see observed basis — from mizchi's
+                        prefix-only passthrough to tree-sitter's shared
+                        subtrees).
+PREDICTED WEAKNESS:     CROSS-MECHANISM HYPOTHESIS (not observed): the
+                        point at which reconstruction / coordinate
+                        maintenance offsets parser-work reuse is
+                        mechanism- and shape-dependent; cost proportionality
+                        is NOT claimed without measurement. "reuse"
+                        without qualification therefore overstates savings
+                        where representation must be rebuilt;
+                        nodes_reused, nodes_rebuilt, metadata/ranges
+                        touched, and parser bytes inspected must remain
+                        SEPARATE counters/facts, and a reused_after-style
                         "not reparsed" counter must never be counted as
-                        representation reuse; only separated counters
-                        expose the true trade.
+                        representation reuse.
 MINIMAL COUNTEREXAMPLE  tiny edit early in a large document under each
 SHAPE:                  mechanism; compare parse-avoidance vs reconstruction
                         counters.

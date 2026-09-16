@@ -159,10 +159,13 @@ mechanism handles by fallback (§10), not by restart.
 ## 7. Convergence rule
 
 NOT_APPLICABLE (verify result: confirmed). No convergence detection exists:
-after the region re-parse, the suffix blocks are reused unconditionally, with
-no check that the region's last block is semantically independent of the
-following reused block (no fence-still-open check, no setext/lazy-continuation
-check, no tightness re-derivation across the boundary). Semantics that could
+after the region re-parse, suffix syntax parsing is skipped without a
+semantic boundary-validity check — there is no check that the region's
+last block is semantically independent of the following block (no
+fence-still-open check, no setext/lazy-continuation check, no tightness
+re-derivation across the boundary) — while suffix block values are
+re-coordinated/reconstructed through `shift_block_span` (§4/§8).
+Semantics that could
 propagate forward are handled either by the region boundary construction
 (prev block end -> next block start, incremental.mbt:62-78) or — for link
 reference definitions only — by falling back to a full parse (§10). Everything
