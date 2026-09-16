@@ -1,9 +1,10 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R0 PASS / READY FOR R1**  
+Status: **R1 PASS / READY FOR R2**  
 Authority: GitHub Issue #22  
 Branch: `research/22-markdown-benchmark-1`  
-R0 methodology: `protocol/R0-METHODOLOGY.md`
+R0 methodology: `protocol/R0-METHODOLOGY.md`  
+R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 
 本文件只规定执行顺序、阶段交付物与 Gate。实验方法学以 Issue #22 + `protocol/R0-METHODOLOGY.md` 为权威。
 
@@ -128,7 +129,26 @@ Markit production algorithm work
 
 Gate R1：dummy/null mechanism 跑通 schema/timer/case/seed/lane，不产生性能结论。
 
-Stop：`HARNESS_SUBSTRATE_PASS`
+Verdict: `PASS`
+
+R1 交付（`protocol/R1-HARNESS-CONTRACT.md` 为权威记录）：
+
+```text
+Cargo workspace（common / instrumentation / oracle / runner / mechanisms/null-r1）
+pinned rustc 1.97.1 + frozen release-primary-v1 profile
+Mechanism trait（full_parse / prepare_update / update / complete）
+runner-owned timer：T_total = T_prepare + T_native（算术恒等，无第三区间）
+complete() + black_box 在 T_native 内（集成测试证明）
+T / M / A 三 lane 结构性分离
+Observed<T> = Known / UNKNOWN / NOT_APPLICABLE
+CaseId = SHA256(canonical_encode(CaseKeyV1))，无机制/lane/运行时身份
+order = CaseId 字节排序 + splitmix64-v1+fisher-yates-mulshift-v1
+ResultRowV1 schema（Rust 类型为源，protocol/result-schema-v1.json 漂移防护）
+null mechanism __r1_null__ + R1_SMOKE_ONLY fixture 端到端通过
+scripts/verify-r1.sh 验收门
+```
+
+Next: `R2 PRIOR-ART MECHANISM EXTRACTION`
 
 ---
 

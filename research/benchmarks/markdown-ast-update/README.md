@@ -1,9 +1,10 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R0 PASS / READY FOR R1**  
+Status: **R1 PASS / READY FOR R2**  
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
 Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
-R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)
+R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)  
+R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)
 
 本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 
@@ -47,7 +48,10 @@ Host text-buffer apply-edit 在 timer 外；机制自己的 state/index/reuse/re
 
 ```text
 R0 = PASS
-NEXT = R1 Controlled Rust Harness / Directory Substrate
+R1 = PASS（controlled Rust harness substrate；null mechanism 端到端通过 runner，
+      schema/timer/case/seed/lane 全部由集成测试与 verify-r1.sh 强制）
+NEXT = R2 Prior-art Mechanism Extraction
 ```
 
-R1 只搭实验平台/schema，不得开始 horse tuning 或 Markit production algorithm。
+R1 只搭实验平台/schema；R2 只做 prior-art 机制提取。不得开始 horse tuning、
+benchmark claim 或 Markit production algorithm。
