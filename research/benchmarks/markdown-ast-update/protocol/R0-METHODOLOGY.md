@@ -1,20 +1,18 @@
 # R0 Methodology — MARKIT-MARKDOWN-BENCHMARK-1
 
-Status: **R0 CORRECTIVE-2 / CONTROLLED RUST MECHANISM RACE / AUTHORITATIVE**
+Status: **R0 FROZEN / PASS / READY FOR R1**
 
-Authority: GitHub Issue #22 plus the latest R0 corrective comment. Where older #22 body text still describes native cross-runtime baseline ranking or a dual-lane primary design, **this file supersedes that older methodology**.
+Authority: GitHub Issue #22 + this file. This file is the authoritative R0 methodology for the first experiment. Older #22 text describing native cross-runtime parser ranking, a dual-lane primary design, or four horses is superseded.
 
 ## 0. Research question
 
-#22 第一阶段不再以“六个 upstream parser 谁更快”为主问题。
+The first experiment asks:
 
-主问题改为：
+> **Under one Rust experimental substrate, one Markdown semantic core, the same payload, the same edit, and the same normalized result contract, what do different AST/CST update mechanisms cost, where do they degrade, and why?**
 
-> **在同一 Rust 实验基底、同一 Markdown 语义核心、同一 payload、同一 edit、同一输出契约下，不同 AST/CST 更新机制分别付出什么成本、在什么结构上失效、为什么失效？**
+The primary object is the **update mechanism**, not the source language/runtime or a product implementation.
 
-目标是研究 mechanism，而不是语言/runtime/工程优化差异。
-
-研究链：
+Research chain:
 
 ```text
 prior-art/source reconnaissance
@@ -22,59 +20,62 @@ prior-art/source reconnaissance
 -> common Rust experimental substrate
 -> SAME parser semantics / SAME payload / SAME edit / SAME result contract
 -> mechanism race
--> scaling + work counters
--> attribution
+-> timing + scaling + work counters
+-> controlled attribution
 -> replication
 -> strength / weakness profile
 -> Weakness Map
 ```
 
-证据不足必须停在 `INCONCLUSIVE`。
+Evidence that cannot advance this chain remains `INCONCLUSIVE`.
 
 ---
 
 ## 1. Primary experiment: one Rust substrate
 
-第一阶段 headline benchmark 只比较统一 Rust 实验实现。
+Headline results compare controlled Rust mechanism models only.
 
-共享并冻结的非研究变量：
+Shared and frozen non-research variables:
 
 ```text
-Rust toolchain / build profile
+Rust toolchain / Cargo.lock / build profile
 source representation
 canonical edit descriptor
-benchmark grammar / semantic contract
-normalized syntax output contract
+BENCH-GRAMMAR-v1 semantic contract
+normalized syntax result contract
 node semantic vocabulary
 corpus + mutations
-timer implementation
-allocator/instrumentation policy
+runner / timer implementation
+allocator policy
+instrumentation semantics
 result schema
 machine/environment
 ```
 
-允许不同的研究变量：
+Allowed research variables:
 
 ```text
 damage detection
 restart strategy
-reuse strategy
+reuse unit / reuse lookup
 convergence strategy
-retained state
+retained state required by the mechanism
 reconstruction strategy
-position/range maintenance strategy
+position/range maintenance required by the mechanism
 fallback policy
 ```
 
-原则：**能共享的非研究代码尽量共享；会改变机制语义的部分不得为了“统一”而共享。**
+Rule:
 
-统一 substrate 的目的，是尽可能把 implementation choices 从“算法机制比较”中消掉；与此同时，所有 mechanism reproduction 必须显式记录 fidelity boundary，避免把 Flash 自己的重实现误称为 upstream 原算法。
+> Share non-research code whenever doing so preserves the semantics of every mechanism. Do not share code when sharing would erase a mechanism-specific cost or state requirement.
+
+The purpose of the common substrate is to reduce implementation variance. It does not permit claiming that a mechanism model is a byte-for-byte Rust port of an upstream parser.
 
 ---
 
-## 2. Prior art role
+## 2. Prior-art role
 
-以下项目仍然是 #22 的主要 prior-art/source subjects：
+Primary source/prior-art subjects:
 
 ```text
 MD4C
@@ -83,34 +84,30 @@ Comrak
 Tree-sitter Markdown
 @lezer/markdown
 mizchi/markdown
+Wagner & Graham incremental parsing
+Swift incremental syntax parsing
 ```
 
-它们的作用：
+Their roles are:
 
-1. 读取源码/设计文档，抽取 parsing/update mechanism；
-2. 记录各自的 restart/reuse/tree/position/semantic strategy；
-3. 必要时在少量相同 payload 上运行 upstream，实现 sanity probe；
-4. 帮助验证 Rust mechanism model 是否抓住了原设计的关键行为；
-5. 提供优势/劣势假设，不直接提供 #22 的最终 algorithm ranking。
+1. inspect source/design documents;
+2. extract restart/reuse/tree/position/semantic mechanisms;
+3. provide provenance for each horse;
+4. run small upstream sanity probes when useful;
+5. check whether a Rust mechanism model exhibits obviously impossible behavior relative to its inspiration;
+6. supply hypotheses about strengths/weaknesses.
 
-Upstream timing 可以记录为 `REFERENCE_ONLY`，但不进入统一 Rust race 的 headline table。
-
-禁止：
-
-```text
-upstream C/Rust/JS absolute timing
--> 直接推断 algorithm superiority
-```
+Upstream absolute timing is `REFERENCE_ONLY`. It does not enter the controlled Rust headline ranking.
 
 ---
 
-## 3. First-round horses
+## 3. First-round horses — FROZEN
 
-第一次实验可以少做，但必须形成完整闭环。第一阶段先固定 4 个 mechanism models。
+The first round contains **five** mechanism models.
 
 ### H0 — FULL_REBUILD
 
-Control。
+Control.
 
 ```text
 post-edit source
@@ -118,11 +115,11 @@ post-edit source
 -> rebuild normalized syntax state
 ```
 
-用途：建立“什么都不复用”的成本对照。
+Purpose: cost floor for zero reuse.
 
-Prior-art inspiration：clean full-parse routes such as MD4C / pulldown-cmark / Comrak。
+Prior-art anchors: clean full-parse routes such as MD4C / pulldown-cmark / Comrak.
 
-### H1 — BLOCK_LOCAL
+### H1 — BLOCK_LOCAL_REPARSE
 
 ```text
 identify affected Markdown block region
@@ -131,104 +128,264 @@ identify affected Markdown block region
 -> repair document sequence/index
 ```
 
-重点变量：block count `B`、largest/affected block length `L`、block boundary mutation。
+Primary variables:
 
-Prior-art inspiration：block-oriented incremental Markdown approaches，包括 mizchi/markdown 所代表的设计点。
+```text
+B = block count
+L = affected/largest block length
+block-boundary mutations
+```
+
+Prior-art anchor: block-oriented incremental Markdown designs such as mizchi/markdown.
 
 ### H2 — FRAGMENT_REUSE
 
 ```text
 retain reusable syntax fragments/subtrees
 -> map edit through retained fragments
+-> invalidate damaged fragments
 -> parse gaps/damaged regions
 -> compose new syntax state
 ```
 
-重点变量：fragment granularity、edit position、fragment invalidation、large leaf/block。
-
-Prior-art inspiration：Lezer-style reusable fragments/tree reuse。
-
-### H3 — OLD_TREE_REUSE_CONVERGENCE
+Primary variables:
 
 ```text
-old syntax state + edit
--> restart from valid context
--> incrementally parse changed region
--> detect convergence / reusable suffix
--> reuse old tree/state beyond convergence
+fragment granularity
+fragment invalidation
+edit position
+large leaf/block
+fragment metadata maintenance
 ```
 
-重点变量：restart distance、forward-state propagation、container depth、convergence point。
+Prior-art anchor: Lezer-style reusable fragments/tree fragments.
 
-Prior-art inspiration：incremental parsing literature、Tree-sitter old-tree reuse concepts、Swift incremental syntax ideas，以及 Markdown-specific convergence observations。
+### H3 — OLD_TREE_SUBTREE_REUSE
+
+```text
+retain old syntax tree
+-> apply edit mapping to old-tree coordinates/state
+-> parse post-edit source while consulting old tree
+-> reuse unchanged compatible subtrees
+-> rebuild only unreused structure required for the new result
+```
+
+Primary variables:
+
+```text
+subtree match/reuse granularity
+old-tree navigation
+changed-region shape
+nested structure
+position/range maintenance
+```
+
+Prior-art anchor: Tree-sitter-style old-tree reuse concepts.
+
+### H4 — RESTART_CONVERGENCE
+
+```text
+retain restart/checkpoint state
+-> choose a valid restart before the damage
+-> parse forward from restart
+-> detect semantic/parser-state convergence
+-> reuse stable suffix after convergence
+```
+
+Primary variables:
+
+```text
+restart distance
+container/state propagation
+forward-state propagation
+convergence distance
+checkpoint density
+```
+
+Prior-art anchors: classical incremental parsing, Swift incremental syntax concepts, and Markdown-specific restart/convergence observations.
 
 ### Fidelity naming rule
 
-这些名字描述 **mechanism models**，不是宣称“我们已经重写了 Tree-sitter/Lezer/mizchi”。
+Horse names describe **mechanism models**, not reimplementations of products.
 
-如果模型与某 upstream 算法不能达到足够 fidelity：
-
-```text
-<project>-inspired
-```
-
-而不是直接使用项目名作为 horse 名称。
+If provenance supports only inspiration rather than faithful reproduction, documentation must use `<project>-inspired` wording and state the fidelity boundary.
 
 ---
 
-## 4. Shared parser semantic core
+## 4. IMPLEMENTATION_PARITY_CONTRACT — FROZEN
 
-机制赛马最重要的公平性规则：每匹马必须解决同一个 parsing problem。
+This contract prevents the experiment from becoming a contest in Flash coding quality or horse-specific Rust micro-optimization.
 
-第一阶段必须先定义 `BENCH-GRAMMAR-v1`：一个有明确语义、足以覆盖更新机制风险的 Markdown 子集/核心。
+### 4.1 One workspace / one compiler regime
 
-最低覆盖：
+All horses live in one Rust workspace and are measured by the same runner.
+
+Freeze and record:
+
+```text
+rustc version
+Cargo.lock
+opt-level
+LTO policy
+codegen-units
+panic strategy
+target / target-cpu policy
+RUSTFLAGS
+allocator policy
+```
+
+A horse may not use a different compiler/profile/allocator merely to improve its result.
+
+### 4.2 Shared substrate
+
+The following should be implemented once and shared unless sharing would erase a mechanism-specific cost:
+
+```text
+Source / Edit descriptor
+BENCH-GRAMMAR-v1 definitions
+scanner/token primitives where semantics are identical
+semantic actions
+normalized Node / result vocabulary
+common source/span utilities
+corpus/mutation generation
+runner/timer
+result schema
+common counters
+oracle normalization
+```
+
+### 4.3 Horse-owned code
+
+A horse owns only state/work that is intrinsic to its mechanism, for example:
+
+```text
+H1 block damage/index state
+H2 fragment table / edit mapping
+H3 old-tree cursor / subtree reuse state
+H4 restart checkpoints / convergence state
+```
+
+A horse must not silently replace shared scanning/grammar/output code with a faster private implementation.
+
+### 4.4 First-round optimization ban
+
+Unless a feature is mechanism-intrinsic and explicitly declared, first-round horse code may not introduce horse-specific:
+
+```text
+custom allocator
+unsafe unchecked indexing
+SIMD / vector intrinsics
+manual prefetch
+parallelism
+specialized hash function
+horse-specific source/string representation
+#[inline(always)] / #[cold] policy used only for one horse
+hand-written assembly
+```
+
+If an optimization is mechanism-intrinsic, mark it `MECHANISM_INTRINSIC`, explain why removing it changes the mechanism, and make it eligible for later ablation where feasible.
+
+### 4.5 black_box / dead-work protection
+
+Runner inputs and produced states/results must be protected from trivial optimizer elimination using `std::hint::black_box` or an equivalent common runner mechanism.
+
+Minimum shape:
+
+```text
+source/edit -> black_box
+horse operation
+result/state -> black_box
+```
+
+`black_box` is necessary but not treated as a formal optimizer barrier; deterministic checksums/state validation outside the timed region must additionally prove that full work was completed.
+
+### 4.6 Optimization-sensitivity check
+
+A result may enter the final Weakness Map only after at least one **key representative case** for that conclusion is rerun under a second frozen compiler profile, e.g. primary profile vs LTO-off.
+
+Interpretation:
+
+```text
+absolute time changes, mechanism ordering/scaling remains
+-> stronger mechanism evidence
+
+ordering or claimed weakness flips materially
+-> OPTIMIZATION_SENSITIVE
+-> conclusion is bounded/downgraded, not promoted as strong algorithmic evidence
+```
+
+This check is for final candidate conclusions, not the full Cartesian matrix.
+
+---
+
+## 5. Shared parser semantic core
+
+Every horse must solve the same parsing problem.
+
+### BENCH-GRAMMAR-v1
+
+First-round minimum:
 
 ```text
 plain paragraph / text
 blank-line block boundary
 ATX heading
-list / blockquote container basics
+basic list / blockquote container
 fenced code block
 emphasis delimiter
-code span delimiter
+code-span delimiter
 inline/reference link basics
 reference definition
 ```
 
-第一阶段目标不是声明完整 CommonMark conformance，而是构造**同一个受控 Markdown problem**。
+The first round does **not** claim full CommonMark conformance.
 
-每匹 horse 必须输出同一个 normalized semantic/syntax contract，例如：
+Expansion to full CommonMark/GFM requires a protocol amendment after the first experiment.
+
+### Normalized result contract
+
+Every horse must normalize to the same semantic result shape:
 
 ```text
 node kind
-parent/child semantic relation
-source span or source-slice identity required by protocol
+ordered parent/child topology
+UTF-8 source byte spans/source-slice relation
 ordered block/inline structure
-reference-definition facts where included
+reference-definition facts included by BENCH-GRAMMAR-v1
 ```
 
-内部 representation 可以不同；最终 normalized result 必须可比较。
+Correctness compares semantics/topology/spans, **not reuse identity**.
 
-Correctness oracle：
+The following must never be part of correctness equivalence:
 
 ```text
-horse incremental/update result
-==
-H0 clean full parse of post-edit source
+pointer identity
+allocation address
+NodeId persistence
+fragment ID
+Arc/Rc identity
+reuse count
 ```
 
-因此 `expected` 不需要人工逐 case 编写。
+Those are work/reuse diagnostics only.
 
-如果未来扩大到完整 CommonMark/GFM，则另开 protocol amendment；第一轮不要把 standards implementation 本身变成实验主体。
+Correctness oracle:
+
+```text
+normalize(H1/H2/H3/H4 update result)
+==
+normalize(H0 clean full parse(post-edit source))
+```
+
+Therefore arbitrary benchmark cases do not require hand-authored expected ASTs.
 
 ---
 
-## 5. Canonical operation contract
+## 6. Canonical operation contract
 
-Source authority：UTF-8 bytes。
+Source authority: UTF-8 bytes.
 
-Edit：
+Canonical edit:
 
 ```text
 [start,end) byte range
@@ -236,9 +393,9 @@ Edit：
 inserted UTF-8 bytes
 ```
 
-Host source mutation 在 parser timer 外，因为第一轮研究 syntax update，不研究 rope/piece-tree/text-buffer。
+Host text mutation is outside parser timing because the first experiment studies syntax update, not Rope/PieceTree/text-buffer design.
 
-所有 horses 接收相同：
+All horses receive the same logical inputs:
 
 ```text
 old source
@@ -247,86 +404,94 @@ post-edit source
 canonical edit
 ```
 
-不得各自生成私有 workload。
+No horse may generate private workloads.
 
 ---
 
-## 6. Timer contract
+## 7. Timer contract — FROZEN
 
-所有 Rust horses 由同一个 Rust runner 在同一进程模型下计时。
+All horses are measured by the same Rust runner and timing API.
 
-### FULL_PARSE / H0
+### 7.1 H0 / FULL_PARSE
 
-Outside timer：
+Outside timer:
 
 ```text
 file IO
 corpus generation
 post-edit source construction
 case enumeration
-logging / serialization / oracle comparison
+logging / serialization
+oracle comparison
 ```
 
-`T_native`：
+`T_native`:
 
 ```text
 START
-horse parses already-in-memory UTF-8 source
-all horse-required parsing/representation construction completes
+horse receives already-in-memory UTF-8 source
+all horse-required parsing and representation construction completes
 black_box(result/state)
 STOP
 ```
 
-### UPDATE / H1-H3
+### 7.2 H1-H4 / UPDATE
 
-Outside timer：
+Outside timer:
 
 ```text
-old source already materialized
-old horse state already constructed for the case
-canonical edit selected
+old source materialized
+old horse state constructed before the edit case
+canonical edit chosen
 host applies edit / post-edit source materialized
 ```
 
-`T_prepare`：
+`T_prepare`:
 
 ```text
-only horse-specific edit-coordinate / metadata preparation required by that mechanism
+only mechanism-specific edit-coordinate / edit-metadata preparation
+required after receiving the canonical edit
 ```
 
-`T_native`：
+`T_native`:
 
 ```text
 START
 mechanism-specific old-state maintenance
-damage/restart/reuse/convergence logic
+damage / restart / fragment / subtree / convergence logic
 reparse work
-representation reconstruction/index maintenance
-all work required to produce new valid horse state
+representation reconstruction
+index/range maintenance required by the mechanism
+all work required to produce a valid new horse state
+black_box(new_state)
 STOP
 ```
 
-Headline：
+Headline:
 
 ```text
 T_total = T_prepare + T_native
 ```
 
-必须保存 `T_prepare / T_native / T_total`。
+Always retain:
 
-禁止把某 horse 必须做的 work 提前放到 timer 外。
+```text
+T_prepare
+T_native
+T_total
+```
 
-### Timing fairness hard rule
+### 7.3 Timer fairness hard rule
 
-如果一个 helper 对所有 horses 相同，原则上放在共同 boundary 的同一侧。
+If a helper is identical and required by all horses, keep it on the same side of the timer boundary for all horses.
 
-如果 helper 只因为某机制需要，则属于该 mechanism cost。
+If work exists only because a mechanism requires it, it is part of that mechanism's cost.
+
+No horse-required coordinate/state/index/input work may be moved outside timing merely to improve its number.
 
 ---
 
-## 7. First-round operations
-
-第一次只冻结足以构成逻辑闭环的 micro-operations：
+## 8. First-round operations
 
 ```text
 FULL_PARSE
@@ -339,9 +504,7 @@ STRUCTURAL_EDIT
 QUERY
 ```
 
-### Structural minimum
-
-必须至少覆盖六种传播机制：
+Structural minimum must cover six propagation families:
 
 ```text
 local text
@@ -352,7 +515,7 @@ inline delimiter state
 semantic dependency
 ```
 
-代表 edits：
+Representative edits:
 
 ```text
 paragraph split/merge
@@ -363,13 +526,13 @@ link/reference delimiter edit
 reference definition change
 ```
 
-第一轮不求穷尽 Markdown syntax。
+The first round does not attempt exhaustive Markdown syntax coverage.
 
 ---
 
-## 8. Payload
+## 9. Payload
 
-Synthetic payload 继续以 shape 为主，而非只有 file size：
+Synthetic shapes:
 
 ```text
 PLAIN
@@ -382,7 +545,7 @@ REFERENCE_FANOUT
 MIXED
 ```
 
-第一轮 size 可以缩减为：
+First-round sizes:
 
 ```text
 64 KiB
@@ -390,15 +553,15 @@ MIXED
 16 MiB
 ```
 
-只有在观察到 crossover / cliff 时再补 256 KiB / 4 MiB 或其它点。
+Add intermediate points such as 256 KiB / 4 MiB only after a crossover/cliff is observed and record the addition as an analysis follow-up, not a rewrite of earlier results.
 
-真实 Markdown（CppCoreGuidelines 等）第一阶段主要作为 realism/sanity corpus；只有 BENCH-GRAMMAR-v1 能定义其相关 slice/cases 时才进入严格 horse comparison。禁止把 unsupported syntax 静默算进 headline result。
+Real Markdown such as `CppCoreGuidelines.md` is a realism/sanity corpus. Strict horse comparison uses only cases/slices whose semantics are defined by BENCH-GRAMMAR-v1.
 
 ---
 
-## 9. Measurements
+## 10. Measurements
 
-Headline：
+Headline:
 
 ```text
 latency p50 / p95
@@ -408,20 +571,20 @@ peak / retained memory
 allocation count / bytes
 ```
 
-Algorithmic work counters（优先于微架构 profiling）：
+Algorithmic work counters:
 
 ```text
-bytes / source intervals re-inspected
+unique source intervals/bytes re-inspected
 blocks reparsed
 nodes rebuilt
 nodes reused
-metadata / range records touched
+metadata/range records touched
 restart distance
 convergence distance
 fallback-to-full count
 ```
 
-按 mechanism 可观察性记录；不可观察则 `UNKNOWN`。
+Mechanism-specific counters may be added if their semantics are documented before use in a conclusion.
 
 ### Parse Amplification
 
@@ -429,15 +592,11 @@ fallback-to-full count
 PA = unique source-byte coverage re-inspected / logical edited bytes
 ```
 
-只能由显式 instrumentation 得到，不得由 latency/changed_ranges/node count 反推。
+PA is derived only from explicit instrumentation. Do not infer it from latency, changed ranges, or node counts.
 
 ---
 
-## 10. Attribution ladder
-
-看到时间差后，不立刻下“算法更好”的结论。
-
-固定顺序：
+## 11. Attribution ladder
 
 ```text
 1. timing difference
@@ -445,14 +604,13 @@ PA = unique source-byte coverage re-inspected / logical edited bytes
 3. algorithmic work counters
 4. allocation / bytes moved / representation maintenance
 5. controlled mutation / ablation / counterexample
-6. only if still unexplained: microarchitectural profiling
+6. optimization-sensitivity check for key conclusions
+7. only if residual remains unexplained: microarchitectural profiling
 ```
 
-### PMU / memory hierarchy
+First-round PMU/cache analysis is optional and only used when algorithmic work is similar but wall-clock remains materially different.
 
-第一次实验**不要求**分析访存延迟、cache miss、branch miss。
-
-只有当两个 mechanisms 的 algorithmic work 接近但 wall-clock 仍存在稳定显著差异时，才进入可选 attribution：
+Possible residual probes:
 
 ```text
 cycles
@@ -462,16 +620,17 @@ cache references / misses
 L1/LLC misses if available
 ```
 
-PMU 是解释残差的工具，不是第一轮 headline requirement。
+Empirical scaling signatures are not promoted to asymptotic proofs.
 
 ---
 
-## 11. Strength / Weakness profile
+## 12. Strength / Weakness profile
 
-最终不是只给排名，而是每匹 horse 形成 profile：
+Each horse ultimately receives:
 
 ```text
 MECHANISM
+PRIOR_ART_ANCHOR
 BEST REGIME
 WORST REGIME
 SCALING SIGNATURE
@@ -481,20 +640,19 @@ FAILURE / FALLBACK REGIME
 KEY STRENGTH
 KEY WEAKNESS
 EVIDENCE
+OPTIMIZATION_SENSITIVITY
 CONFIDENCE
 ```
 
-目标是回答：
+The purpose is to identify regimes in which each mechanism helps or fails, so the next independent campaign can investigate combinations or new designs.
 
-> 哪个机制在哪些输入上擅长？为什么？在哪些输入上退化？为什么？这些机制能否在下一阶段扬长避短地组合或重新设计？
-
-“组合”只能在 Weakness Map 之后发生；不能在第一轮看到一个好点子就直接写 Markit algorithm。
+No Markit production algorithm may be designed or implemented before the Weakness Map human review.
 
 ---
 
-## 12. Sampling / repeatability
+## 13. Sampling / repeatability
 
-第一轮保持简单：
+First round:
 
 ```text
 3 independent sessions
@@ -506,9 +664,22 @@ no p99
 no outlier deletion
 ```
 
-统一 Rust substrate 后 JIT/GC 不再是主变量，但仍记录 OS/kernel/CPU/affinity/turbo/toolchain/build profile/runner commit/corpus manifest/seed。
+Record at minimum:
 
-失败不得静默删除：
+```text
+OS/kernel
+CPU model
+affinity
+turbo/frequency policy
+rustc/toolchain
+Cargo.lock / runner commit
+build profile / RUSTFLAGS
+allocator policy
+corpus manifest
+case-order seed
+```
+
+Failures are never silently dropped:
 
 ```text
 PASS
@@ -519,11 +690,12 @@ OOM
 STACK_OVERFLOW
 CRASH
 INSTRUMENTATION_UNAVAILABLE
+OPTIMIZATION_SENSITIVE
 ```
 
 ---
 
-## 13. Conclusion ladder
+## 14. Conclusion ladder
 
 ```text
 OBSERVATION
@@ -537,64 +709,71 @@ INCONCLUSIVE
 REFUTED
 ```
 
-规则：
+Promotion rules:
 
-- 单点 timing 只能建立 `OBSERVATION`；
-- 重跑稳定才能 `REPRODUCED_OBSERVATION`；
-- scaling + work counters + controlled probe 才能 `ATTRIBUTED_*`；
-- 多个独立 mechanisms 出现同类证据才能 `CROSS_MECHANISM_PATTERN`；
-- `PARETO_GAP` 表示没有 horse 同时满足预先声明的目标约束；
-- `DESIGN_OPPORTUNITY` 必须建立在真实编辑相关的 weakness/pattern/Pareto gap 上。
+- single timing fact -> `OBSERVATION`;
+- stable independent sessions -> `REPRODUCED_OBSERVATION`;
+- scaling + work counters + controlled probe -> `ATTRIBUTED_*`;
+- similar evidence across independent mechanism models -> `CROSS_MECHANISM_PATTERN`;
+- no horse satisfies the preregistered target constraints -> `PARETO_GAP`;
+- only real editing-relevant weakness/pattern/gap may become `DESIGN_OPPORTUNITY`.
 
----
-
-## 14. Methodology references
-
-1. Wagner & Graham, **Efficient and Flexible Incremental Parsing**, ACM TOPLAS 1998 — incremental work / reuse / scaling。
-2. Swift incremental syntax parsing proposal — incremental vs clean parse / reuse / source-size scaling。
-3. Catherine McGeoch, **A Guide to Experimental Algorithmics**, 2012 — 通过受控计算实验获得对 algorithm/program 的机制洞察，而非只收集 runtime 数字。
-4. Mendling et al., **Methodology of Algorithm Engineering**, ACM Computing Surveys 2025, DOI 10.1145/3769071 — algorithm design、implementation 与 execution environment 是不同研究层次；implementation decisions 可能造成巨大性能差异。
-5. Angriman et al., **Guidelines for Experimental Algorithmics: A Case Study in Network Analysis**, Algorithms 2019 — reimplementation bias、repeatability/replicability、实验程序/输入/参数应可复现。
-6. Georges et al., **Statistically Rigorous Java Performance Evaluation**, OOPSLA 2007 — repeated measurement / statistical discipline。
-7. Mytkowicz et al., **Producing Wrong Data Without Doing Anything Obviously Wrong**, ASPLOS 2009 — setup bias / randomization。
-8. YCSB, SoCC 2010 — shared workload contract。
-9. RocksDB `db_bench` — operation-oriented microbenchmark。
-10. Kalibera & Jones, **Rigorous Benchmarking in Reasonable Time**, ISMM 2013 — independent repetition / uncertainty under finite experimental budget。
-
-这些文献支撑研究方法，不支撑未来 Markit algorithm 的 novelty claim。
+A conclusion that materially flips under the optimization-sensitivity check cannot be promoted as a strong algorithmic weakness/strength without explicit `OPTIMIZATION_SENSITIVE` qualification.
 
 ---
 
-## 15. R0 first-round gate
+## 15. Methodology references and what #22 borrows
 
-进入 R1 前，只要求以下基础完整：
+1. Tim A. Wagner, Susan L. Graham. **Efficient and Flexible Incremental Parsing**. ACM TOPLAS 20(5), 1998. DOI: https://doi.org/10.1145/293677.293678
+   - incremental work, reuse, retained structure, scaling.
+
+2. Alex Hoppen. **Swift incremental syntax parsing** proposal/discussion, 2018. https://forums.swift.org/t/incremental-syntax-parsing/12368
+   - incremental vs clean parse, reuse/work amount, source-size scaling.
+
+3. Catherine McGeoch. **A Guide to Experimental Algorithmics**, 2012.
+   - controlled computational experiments for mechanism insight, not runtime-only scoreboards.
+
+4. Stefan Marr, Benoit Daloze, Hanspeter Mössenböck. **Cross-Language Compiler Benchmarking: Are We Fast Yet?** DLS 2016. DOI: https://doi.org/10.1145/2989225.2989232
+   - common problem/abstraction and careful interpretation of implementation results.
+
+5. Andy Georges, Dries Buytaert, Lieven Eeckhout. **Statistically Rigorous Java Performance Evaluation**. OOPSLA 2007. DOI: https://doi.org/10.1145/1297027.1297033
+   - repeated runs and disciplined performance measurement.
+
+6. Edd Barrett et al. **Virtual Machine Warmup Blows Hot and Cold**. OOPSLA 2017. DOI: https://doi.org/10.1145/3133876
+   - do not assume warmup automatically yields a stable state.
+
+7. Todd Mytkowicz et al. **Producing Wrong Data Without Doing Anything Obviously Wrong**. ASPLOS 2009.
+   - measurement bias and execution-order/setup sensitivity.
+
+8. Brian F. Cooper et al. **Benchmarking Cloud Serving Systems with YCSB**. SoCC 2010. DOI: https://doi.org/10.1145/1807128.1807152
+   - common operation/workload contracts; mixed workload deferred to Phase 2.
+
+9. RocksDB `db_bench`.
+   - operation-oriented microbenchmarks, adapted here to parse/update/query operations.
+
+10. Experimental algorithmics / algorithm engineering methodology work referenced in #22 review.
+   - implementation choices are a validity threat; preregistration, controlled implementations, and reproducibility matter.
+
+These sources justify methodology. They do not establish novelty for any future Markit algorithm.
+
+---
+
+## 16. R0 final verdict
 
 ```text
-PRIMARY_SUBJECT = controlled Rust mechanism race
-UPSTREAM_ROLE = prior-art / source reconnaissance / sanity only
-BENCH_GRAMMAR_V1 defined before measurement
-NORMALIZED_RESULT_CONTRACT defined
-H0-H3 mechanism boundaries documented
-SAME payload / SAME edit / SAME semantic task
-T_prepare / T_native / T_total frozen
-correctness = horse result == H0 clean parse
-structural minimum covers six propagation families
-headline metrics frozen
-work counters schema frozen
-sampling/repeatability frozen
-conclusion ladder frozen
+BENCH_GRAMMAR_V1:             PASS
+NORMALIZED_RESULT_CONTRACT:   PASS
+HORSE_SET_H0_H4:              PASS
+IMPLEMENTATION_PARITY:        PASS
+TIMER_CONTRACT:               PASS
+PAYLOAD_MODEL:                PASS
+WORK_COUNTERS:                PASS
+ATTRIBUTION_LADDER:           PASS
+SAMPLING_POLICY:              PASS
+METHODOLOGY_BASIS:            PASS
+
+R0 VERDICT: PASS
+NEXT: R1 CONTROLLED RUST HARNESS / DIRECTORY SUBSTRATE
 ```
 
-第一次不要求：
-
-```text
-full CommonMark implementation
-six full upstream ports
-PMU/cache analysis
-YCSB mixed workloads
-all payload sizes
-production architecture
-Markit-specific algorithm
-```
-
-Verdict target：`READY_FOR_R1_CONTROLLED_RUST_HARNESS`。
+R1 may build infrastructure only. It may not tune horses using benchmark results or start Markit-specific production algorithm design.
