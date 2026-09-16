@@ -66,41 +66,6 @@ Next: `R1 CONTROLLED RUST HARNESS / DIRECTORY SUBSTRATE`
 
 目标：只搭统一实验平台，不实现 H0-H4 算法，不产生性能结论。
 
-目标目录：
-
-```text
-research/benchmarks/markdown-ast-update/
-├── README.md
-├── ROADMAP.md
-├── protocol/
-│   ├── R0-METHODOLOGY.md
-│   ├── grammar.md
-│   ├── result-contract.md
-│   ├── operations.md
-│   ├── metrics.md
-│   ├── implementation-parity.md
-│   └── result-schema.md
-├── manifest/
-│   ├── environment.*
-│   ├── prior-art.*
-│   └── corpus.*
-├── runner/
-├── common/
-├── mechanisms/
-│   ├── full-rebuild/
-│   ├── block-local/
-│   ├── fragment-reuse/
-│   ├── old-tree-subtree-reuse/
-│   └── restart-convergence/
-├── corpus/
-├── oracle/
-├── instrumentation/
-├── prior-art/
-├── scripts/
-├── results/
-└── report/
-```
-
 R1 必须建立：
 
 ```text
@@ -129,15 +94,9 @@ Markit production algorithm work
 
 Gate R1：dummy/null mechanism 跑通 schema/timer/case/seed/lane，不产生性能结论。
 
-Verdict: `PASS`
+R1-CORRECTIVE-1 (2026-09-16)：PR #26 对抗性 review 的 4 MAJOR + 3 IMPORTANT 已修复：prepare attribution、common PA authority、M-LANE per-case window、supervisor failure isolation、edit_meta operation contract、completion claim downgrade + EAGER gate、golden vectors、shuffle v2 rejection。
 
-R1-CORRECTIVE-1 (2026-09-16)：PR #26 对抗性 review 的 4 MAJOR + 3 IMPORTANT
-发现已修复（attribution 覆盖 prepare、M-LANE per-case 窗口、supervisor
-失败隔离、edit_meta 操作契约、lazy-work 措辞降级 + EAGER gate、golden
-vectors、shuffle v2 rejection）。权威记录：
-`protocol/R1-HARNESS-CONTRACT.md` §14。
-
-Fresh adversarial re-review：`PASS`。R1 技术主体无新的 measurement-authority blocker。
+Fresh adversarial re-review：`PASS`。
 
 R1 交付（`protocol/R1-HARNESS-CONTRACT.md` 为权威记录）：
 
@@ -268,10 +227,7 @@ Hard gate before formal horse measurement (R1-CORRECTIVE-1, IMPORTANT-1):
 EAGER_COMPLETION_VALIDATION_PASS
 ```
 
-`complete()` + `black_box` 是 completion authority boundary，不是 lazy work
-不可能性的机械证明。R4/R5 必须额外证明真实 horses 的 normalized
-result/state 是 eager materialization（iterator/closure/OnceCell/lazy
-index 后面隐藏的 deferred work 已被强制消费），才能进入正式 measurement。
+`complete()` + `black_box` 是 completion authority boundary，不是 lazy work 不可能性的机械证明。R4/R5 必须额外证明真实 horses 的 normalized result/state 是 eager materialization，才能进入正式 measurement。
 
 Stop：`HORSE_CORRECTNESS_AND_PARITY_PASS`（且 `EAGER_COMPLETION_VALIDATION_PASS`）
 
