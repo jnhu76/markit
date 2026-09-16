@@ -69,6 +69,38 @@ pub struct EditMetaV1 {
     pub inserted_sha256: Option<String>,
 }
 
+/// Why an operation/edit combination was rejected: raw rows must never
+/// serialize facts that contradict the operation contract shared with
+/// `CaseKeyV1` (R1-CORRECTIVE-1, MAJOR-4).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EditMetaError {
+    /// Operation carries no edit but an edit was supplied.
+    UnexpectedEdit,
+    /// Operation carries an edit but none was supplied.
+    MissingEdit,
+    /// Operation carries no inserted text but the edit does
+    /// (e.g. a DELETE with a non-empty inserted string).
+    UnexpectedInsertedText,
+}
+
+impl core::fmt::Display for EditMetaError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            EditMetaError::UnexpectedEdit => {
+                f.write_str("operation carries no edit, but an edit was supplied")
+            }
+            EditMetaError::MissingEdit => {
+                f.write_str("operation carries an edit, but no edit was supplied")
+            }
+            EditMetaError::UnexpectedInsertedText => {
+                f.write_str("operation carries no inserted text, but the edit has inserted text")
+            }
+        }
+    }
+}
+
+impl std::error::Error for EditMetaError {}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct TimingMetricsV1 {
@@ -92,7 +124,13 @@ impl From<TimingRecord> for TimingMetricsV1 {
 pub struct MemoryMetricsV1 {
     pub allocated_bytes: Observed<u64>,
     pub allocation_count: Observed<u64>,
-    pub peak_retained_bytes: Observed<u64>,
+    /// Maximum live bytes observed during the case window. Distinct from
+    /// `retained_bytes` — the two are never conflated
+    /// (R1-CORRECTIVE-1, MAJOR-2).
+    pub peak_bytes: Observed<u64>,
+    /// Bytes still held when the case window closed (cost of the new
+    /// retained state).
+    pub retained_bytes: Observed<u64>,
 }
 
 impl From<MemoryRecord> for MemoryMetricsV1 {
@@ -100,7 +138,8 @@ impl From<MemoryRecord> for MemoryMetricsV1 {
         Self {
             allocated_bytes: r.allocated_bytes,
             allocation_count: r.allocation_count,
-            peak_retained_bytes: r.peak_retained_bytes,
+            peak_bytes: r.peak_bytes,
+            retained_bytes: r.retained_bytes,
         }
     }
 }
@@ -198,24 +237,52 @@ pub fn assemble_row(
     }
 }
 
-/// `EditMetaV1` from an optional canonical edit (FULL_PARSE -> all None).
-pub fn edit_meta(edit: Option<&markit_mdbench_common::CanonicalEdit>) -> EditMetaV1 {
-    match edit {
-        None => EditMetaV1 {
+/// `EditMetaV1` from the operation + its optional canonical edit, using
+/// the SAME operation contract as `CaseKeyV1` — raw-result metadata and
+/// case identity can never disagree (R1-CORRECTIVE-1, MAJOR-4).
+///
+/// Invariants (inconsistent combinations are rejected, not serialized):
+///
+/// ```text
+/// FULL_PARSE / QUERY:            no range, inserted_sha256 = null
+/// DELETE:                        range present, inserted_sha256 = null
+/// INSERT / REPLACE_EQ / REPLACE_GROW / REPLACE_SHRINK / STRUCTURAL_EDIT:
+///                                range present, inserted_sha256 present
+///                                (empty insertions hash the empty string,
+///                                exactly like CaseKeyV1)
+/// ```
+pub fn edit_meta(
+    operation: OperationKind,
+    edit: Option<&markit_mdbench_common::CanonicalEdit>,
+) -> Result<EditMetaV1, EditMetaError> {
+    match (operation.has_edit(), edit) {
+        (false, None) => Ok(EditMetaV1 {
             start_byte: None,
             end_byte: None,
             inserted_sha256: None,
-        },
-        Some(e) => {
-            use sha2::{Digest, Sha256};
-            let mut hasher = Sha256::new();
-            hasher.update(e.inserted_text().as_bytes());
-            let digest: [u8; 32] = hasher.finalize().into();
-            EditMetaV1 {
+        }),
+        (false, Some(_)) => Err(EditMetaError::UnexpectedEdit),
+        (true, None) => Err(EditMetaError::MissingEdit),
+        (true, Some(e)) => {
+            let inserted_sha256 = if operation.has_inserted_text() {
+                use sha2::{Digest, Sha256};
+                let mut hasher = Sha256::new();
+                hasher.update(e.inserted_text().as_bytes());
+                let digest: [u8; 32] = hasher.finalize().into();
+                Some(markit_mdbench_common::to_lower_hex(&digest))
+            } else {
+                // DELETE (or any future non-inserting edit): the canonical
+                // form carries no inserted bytes.
+                if !e.inserted_text().is_empty() {
+                    return Err(EditMetaError::UnexpectedInsertedText);
+                }
+                None
+            };
+            Ok(EditMetaV1 {
                 start_byte: Some(e.start_byte()),
                 end_byte: Some(e.end_byte()),
-                inserted_sha256: Some(markit_mdbench_common::to_lower_hex(&digest)),
-            }
+                inserted_sha256,
+            })
         }
     }
 }

@@ -160,7 +160,8 @@ fn main() -> ExitCode {
         mechanism_id: mechanism.id(),
         operation: OperationKind::FullParse,
         payload: payload_meta.clone(),
-        edit: edit_meta(None),
+        edit: edit_meta(OperationKind::FullParse, None)
+            .expect("FULL_PARSE edit meta is trivially valid"),
     };
     let facts_update = CaseFacts {
         case_id: case_id_update,
@@ -168,7 +169,8 @@ fn main() -> ExitCode {
         mechanism_id: mechanism.id(),
         operation: SMOKE_EDIT_OPERATION,
         payload: payload_meta,
-        edit: edit_meta(Some(&edit)),
+        edit: edit_meta(SMOKE_EDIT_OPERATION, Some(&edit))
+            .expect("smoke edit satisfies the operation contract"),
     };
 
     let rows = [

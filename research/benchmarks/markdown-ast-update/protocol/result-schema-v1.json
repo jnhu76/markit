@@ -220,7 +220,12 @@
         "allocation_count": {
           "$ref": "#/$defs/observed_uint64"
         },
-        "peak_retained_bytes": {
+        "peak_bytes": {
+          "description": "Maximum live bytes observed during the case window. Distinct from\n`retained_bytes` — the two are never conflated\n(R1-CORRECTIVE-1, MAJOR-2).",
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "retained_bytes": {
+          "description": "Bytes still held when the case window closed (cost of the new\nretained state).",
           "$ref": "#/$defs/observed_uint64"
         }
       },
@@ -228,7 +233,8 @@
       "required": [
         "allocated_bytes",
         "allocation_count",
-        "peak_retained_bytes"
+        "peak_bytes",
+        "retained_bytes"
       ]
     },
     "OperationKind": {
@@ -302,7 +308,7 @@
       ]
     },
     "WorkCounters": {
-      "description": "The R0 first-round work-counter slots, in frozen order.\n\nNo `Default`: absent instrumentation must be spelled\n[`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]\nexplicitly, never implicit.",
+      "description": "The R0 first-round work-counter slots, in frozen order.\n\n`unique_source_intervals_inspected` / `unique_source_bytes_inspected`\nare DERIVED slots: mechanisms never write them; they are computed by\n[`CounterSink::finalize_derived`] from `record_source_inspection`\nevents. They stay `Unknown` for runs that did not complete (or did not\nrun attribution).\n\nNo `Default`: absent instrumentation must be spelled\n[`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]\nexplicitly, never implicit.",
       "type": "object",
       "properties": {
         "blocks_reparsed": {

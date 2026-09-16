@@ -6,13 +6,29 @@
 //!   exactly twice (start/stop);
 //! - `prepare_update` runs only inside `T_prepare`;
 //! - `update` + `complete` + `black_box(completed)` run only inside
-//!   `T_native` — lazy/unconsumed work cannot escape through
-//!   `complete()`;
+//!   `T_native` — `complete()` is the explicit completion AUTHORITY
+//!   boundary (see `markit_mdbench_common::Mechanism` for its precise,
+//!   non-overclaimed meaning);
 //! - the oracle hook runs strictly after every timer has stopped;
 //! - `T_total` is always the arithmetic sum from [`TimingRecord`], never
 //!   an enclosing wall-clock measurement;
 //! - panics inside a mechanism phase are caught and recorded as
-//!   `ExecutionStatus::Crash` — failures are never silently dropped.
+//!   `ExecutionStatus::Crash`. In-process catching covers UNWIND panics
+//!   only; OOM / stack overflow / abort / fatal signals / hangs kill the
+//!   process, so R1-CORRECTIVE-1 adds a process-level supervisor
+//!   (`crate::supervisor`) whose worker boundary classifies those deaths
+//!   and keeps the failure row alive.
+//!
+//! Lane rules (R1-CORRECTIVE-1):
+//!
+//! - T-LANE passes [`NoopWorkSink`] to EVERY phase — zero attribution
+//!   cost, zero timing cost;
+//! - A-LANE passes one [`CounterSink`] to prepare AND update, so
+//!   mechanism-owned preparation work cannot appear in `T_prepare` and
+//!   then vanish from attribution; the derived `unique_source_*` slots
+//!   come from the common union collector only;
+//! - M-LANE wraps exactly one begin_case/end_case window around the
+//!   mechanism phases.
 
 use std::hint::black_box;
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -121,15 +137,17 @@ fn finish_untimed<S>(
 }
 
 /// Construct the retained old-state for an update case. Per R0 §7.2 this
-/// happens BEFORE the edit case, outside every timer.
+/// happens BEFORE the edit case, outside every timer. Panics in either
+/// phase are caught here too, so initial-state construction can never
+/// take the case down with an unwind.
 pub fn build_initial_state<M: Mechanism>(
     mechanism: &M,
     source: &Source,
 ) -> Result<M::State, FailureStatus> {
     let mut sink = NoopWorkSink;
     let mut cx = MechanismContext::new(&mut sink);
-    let pending = mechanism.full_parse::<NoopWorkSink>(source, &mut cx)?;
-    let completed = mechanism.complete(pending)?;
+    let pending = catch_phase(|| mechanism.full_parse::<NoopWorkSink>(source, &mut cx))?;
+    let completed = catch_phase(|| mechanism.complete(pending))?;
     Ok(completed.state)
 }
 
@@ -137,7 +155,8 @@ pub fn build_initial_state<M: Mechanism>(
 // UPDATE
 // ---------------------------------------------------------------------------
 
-/// UPDATE case, T-LANE: real timer, `NoopWorkSink`, no memory collector.
+/// UPDATE case, T-LANE: real timer, `NoopWorkSink` in every phase, no
+/// memory collector.
 pub fn run_update_timed<M, C>(
     mechanism: &M,
     old_source: &Source,
@@ -160,7 +179,7 @@ where
     let mut cx = MechanismContext::new(&mut sink);
 
     let prepare_guard = PhaseGuard::start(clock);
-    let prepared = catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state));
+    let prepared = catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state, &mut cx));
     let prepare_ns = prepare_guard.stop();
 
     let prep = match prepared {
@@ -184,8 +203,12 @@ where
     }
 }
 
-/// UPDATE case, A-LANE: work counters collected, no headline
-/// `TimingRecord`, no timing at all.
+/// UPDATE case, A-LANE: work counters collected from prepare AND update,
+/// no headline `TimingRecord`, no timing at all.
+///
+/// On a completed run the common collector derives the
+/// `unique_source_*` slots from the recorded inspection events; a failed
+/// run skips the derivation, so the derived slots stay `Unknown`.
 pub fn run_update_attributed<M>(
     mechanism: &M,
     old_source: &Source,
@@ -203,18 +226,28 @@ where
         black_box(post_source),
         black_box(edit),
     );
-    let mut sink = CounterSink::new(counters);
-    let mut cx = MechanismContext::new(&mut sink);
-
-    let outcome =
-        catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state)).and_then(|prep| {
-            catch_phase(|| {
-                let pending = mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
-                let done = mechanism.complete(pending)?;
-                black_box(&done);
-                Ok(done)
-            })
-        });
+    let outcome = {
+        let mut sink = CounterSink::new(counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let outcome =
+            catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state, &mut cx))
+                .and_then(|prep| {
+                    catch_phase(|| {
+                        let pending =
+                            mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
+                        let done = mechanism.complete(pending)?;
+                        black_box(&done);
+                        Ok(done)
+                    })
+                });
+        // The union/derivation is common-layer arithmetic over the event
+        // stream — never mechanism-authored — and only finalizes when the
+        // work actually completed.
+        if outcome.is_ok() {
+            sink.finalize_derived();
+        }
+        outcome
+    };
     finish_untimed(
         outcome,
         LaneMeasurement::Attribution(counters.clone()),
@@ -222,7 +255,8 @@ where
     )
 }
 
-/// UPDATE case, M-LANE: memory interface only, no headline
+/// UPDATE case, M-LANE: exactly one begin_case/end_case window around the
+/// mechanism phases; the window closes even on failure. No headline
 /// `TimingRecord`.
 pub fn run_update_memory<M, R>(
     mechanism: &M,
@@ -242,21 +276,21 @@ where
         black_box(post_source),
         black_box(edit),
     );
-    let mut sink = NoopWorkSink;
-    let mut cx = MechanismContext::new(&mut sink);
-
-    let outcome =
-        catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state)).and_then(|prep| {
-            catch_phase(|| {
+    let probe = reporter.begin_case();
+    let outcome = catch_phase(|| {
+        let mut sink = NoopWorkSink;
+        let mut cx = MechanismContext::new(&mut sink);
+        mechanism
+            .prepare_update(old, post, edit, &old_state, &mut cx)
+            .and_then(|prep| {
                 let pending = mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
                 let done = mechanism.complete(pending)?;
                 black_box(&done);
                 Ok(done)
             })
-        });
-    // Report after the mechanism finished; peak/retained semantics are
-    // finalized by the later allocator work.
-    finish_untimed(outcome, LaneMeasurement::Memory(reporter.report()), hook)
+    });
+    let record = reporter.end_case(probe);
+    finish_untimed(outcome, LaneMeasurement::Memory(record), hook)
 }
 
 // ---------------------------------------------------------------------------
@@ -302,15 +336,20 @@ where
     M: Mechanism,
 {
     let source = black_box(source);
-    let mut sink = CounterSink::new(counters);
-    let mut cx = MechanismContext::new(&mut sink);
-
-    let outcome = catch_phase(|| {
-        let pending = mechanism.full_parse::<CounterSink>(source, &mut cx)?;
-        let done = mechanism.complete(pending)?;
-        black_box(&done);
-        Ok(done)
-    });
+    let outcome = {
+        let mut sink = CounterSink::new(counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let outcome = catch_phase(|| {
+            let pending = mechanism.full_parse::<CounterSink>(source, &mut cx)?;
+            let done = mechanism.complete(pending)?;
+            black_box(&done);
+            Ok(done)
+        });
+        if outcome.is_ok() {
+            sink.finalize_derived();
+        }
+        outcome
+    };
     finish_untimed(
         outcome,
         LaneMeasurement::Attribution(counters.clone()),
@@ -318,7 +357,7 @@ where
     )
 }
 
-/// FULL_PARSE case, M-LANE.
+/// FULL_PARSE case, M-LANE: one per-case window around the phases.
 pub fn run_full_parse_memory<M, R>(
     mechanism: &M,
     source: &Source,
@@ -330,14 +369,15 @@ where
     R: MemoryReporter,
 {
     let source = black_box(source);
-    let mut sink = NoopWorkSink;
-    let mut cx = MechanismContext::new(&mut sink);
-
+    let probe = reporter.begin_case();
     let outcome = catch_phase(|| {
+        let mut sink = NoopWorkSink;
+        let mut cx = MechanismContext::new(&mut sink);
         let pending = mechanism.full_parse::<NoopWorkSink>(source, &mut cx)?;
         let done = mechanism.complete(pending)?;
         black_box(&done);
         Ok(done)
     });
-    finish_untimed(outcome, LaneMeasurement::Memory(reporter.report()), hook)
+    let record = reporter.end_case(probe);
+    finish_untimed(outcome, LaneMeasurement::Memory(record), hook)
 }
