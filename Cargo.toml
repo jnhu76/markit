@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/markit-core", "apps/markit"]
+members = ["crates/markit-core", "apps/markit", "crates/parser-survey"]
 
 # PRODUCT-RESET NOTE
 # ------------------
