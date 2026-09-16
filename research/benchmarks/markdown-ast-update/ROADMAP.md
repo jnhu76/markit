@@ -35,15 +35,13 @@ protocol
 
 目标：冻结“我们到底在比较什么”。
 
-### Primary subject
+Primary subject：
 
 ```text
 Controlled Rust mechanism race
 ```
 
-Upstream projects只作为 prior-art/source provenance、机制抽取和 sanity/fidelity probes。
-
-### Frozen horses
+Frozen horses：
 
 ```text
 H0 FULL_REBUILD
@@ -53,7 +51,7 @@ H3 OLD_TREE_SUBTREE_REUSE
 H4 RESTART_CONVERGENCE
 ```
 
-### Frozen fairness rules
+Frozen fairness rules：
 
 ```text
 BENCH-GRAMMAR-v1
@@ -69,7 +67,7 @@ black_box + full-work validation
 key-conclusion optimization-sensitivity check
 ```
 
-### Gate R0
+Gate：
 
 ```text
 PRIMARY_SUBJECT = CONTROLLED_RUST_MECHANISM_RACE
@@ -363,7 +361,7 @@ source -> BENCH-GRAMMAR-v1 normalized syntax state
 - FULL_PARSE timer boundary verified；
 - uses same common scanner/grammar/result substrate intended for all horses where semantics permit。
 
-H0 correctness authority：
+Correctness authority：
 
 ```text
 normalize(H1/H2/H3/H4.update(post-edit))
