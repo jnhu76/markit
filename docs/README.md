@@ -1,14 +1,14 @@
 # Markit documentation
 
-Markit is currently in a **Markdown parser research phase**.
-
-The previous research/architecture/ADR set is historical evidence. It must not be read as the current implementation plan.
+Markit is in a **benchmark-first Markdown parser research phase**. There is no
+production implementation in this repository and no frozen Markdown
+architecture.
 
 ## Active documents
 
 ```text
 docs/
-├── PRD.md                              # product requirements
+├── PRD.md                              # product requirements (top product authority)
 ├── README.md                           # this authority map
 ├── product/
 │   ├── architecture.md                 # HOLD: invariants only; architecture not frozen
@@ -16,23 +16,33 @@ docs/
 │   ├── print-browser-contract.md       # print/browser completeness contract
 │   └── roadmap.md                      # current sequencing/status
 ├── research/
-│   └── markdown-parser/README.md       # current parser research north star
+│   ├── README.md                       # research campaign status map
+│   └── repo-reset-inventory.md         # record of the experiment-first repo reset
 └── archive/
     └── product-reset-2026-09-16/README.md
 ```
 
-The active external research campaign is:
+Research artifacts live outside `docs/`:
 
-- Issue #19 — `Incremental Markdown parsing: locality, convergence, and invalidation`.
+```text
+research/experiments/experiment-0-parser-survey/   archived Experiment 0 (#19/#20)
+research/benchmarks/markdown-ast-update/           active #22 benchmark area
+```
 
 ## Current authority order
 
 ```text
-docs/PRD.md
-    = what product we are trying to build
+docs/PRD.md + docs/product/**
+    = what product we are trying to build (no implementation authority)
 
-Issue #19 + generated experimental evidence
-    = current Markdown parsing research authority
+Issue #22 — MARKIT-MARKDOWN-BENCHMARK-1
+    = the ONLY active Markdown parser research authority
+
+research/experiments/experiment-0-parser-survey/
+    = ARCHIVED Experiment 0 (#19 / PR #20) — historical evidence only
+
+Issue #21 — MARKIT-MARKDOWN-ARCHITECTURE-1
+    = SUPERSEDED / CLOSED — not a gate for anything
 
 docs/product/architecture.md
     = HOLD / non-negotiable invariants only
@@ -47,7 +57,27 @@ docs/product/roadmap.md
     = work ordering
 ```
 
-`architecture.md` is intentionally not a complete architecture. A real implementation architecture must wait for the Issue #19 parser verdict.
+## Current research state
+
+```text
+Product requirements       = docs/product/**
+Experiment 0 (#19/#20)     = archived historical evidence
+Active research            = #22 standardized Markdown AST/CST update benchmark
+Markit parser algorithm    = NOT YET DEFINED
+Formal model               = NOT YET DEFINED
+Architecture               = HOLD
+Production implementation  = BLOCKED
+```
+
+`architecture.md` intentionally does not define the implementation
+architecture. Its HOLD lifts only after the #22 chain completes:
+
+```text
+#22 benchmark → Weakness Map review
+             → Markit algorithm campaign
+             → formal/correctness review (as applicable)
+             → architecture synthesis
+```
 
 ## Historical material
 
@@ -57,36 +87,22 @@ The complete pre-reset state is preserved at Git revision:
 d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
 ```
 
-That revision is the archive for:
+The post-reset implementation trees (apps, crates, mvp, bench, tools,
+workloads, profiles, old results) were removed from the active tree by
+MARKIT-EXPERIMENT-FIRST-REPO-RESET-1; Git history before that reset is their
+archive. See `docs/research/repo-reset-inventory.md` for the full disposition
+record.
 
-- old ADRs;
-- GPUI/PocketJS substrate decisions;
-- A0-A4 experiments;
-- previous performance/realtime execution model;
-- old plugin compatibility design;
-- old Markdown L1 semantic contract;
-- P0-01/P0-02 implementation notes;
-- previous issue backlog/platform matrix;
-- old product architecture and roadmap;
-- the pre-reset implementation itself.
-
-Historical documents may be cited as evidence, but they do not regain authority unless a new evidence-backed decision explicitly re-adopts them.
-
-## Current technical question
-
-The provisional research north star is:
-
-> **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
-
-Issue #19 must also decide whether that question should be `KEEP`, `REFINE`, or `REPLACE` after experimentation.
+Historical documents and code may be cited as evidence, but they do not regain
+authority unless a new evidence-backed decision explicitly re-adopts them.
 
 ## Rule for new documents
 
-During the parser campaign, avoid writing speculative architecture documents for UI, rendering, storage, CST/AST layout, scheduler topology, or plugin runtime.
+Avoid writing speculative architecture documents for UI, rendering, storage,
+CST/AST layout, scheduler topology, or plugin runtime.
 
-Create a durable architectural document only when its decision has evidence and a clear authority boundary.
-
-Until then, prefer:
+Create a durable architectural document only when its decision has evidence
+and a clear authority boundary. Until then:
 
 ```text
 question -> experiment -> evidence -> verdict -> architecture

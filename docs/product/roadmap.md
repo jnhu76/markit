@@ -1,189 +1,185 @@
 # Markit Roadmap
 
-Status: **architecture synthesis next**
+Status: **benchmark-first research (#22) is the active phase**
 
-Markit has completed a product reset. The product requirements are retained and implementation architecture remains intentionally **not frozen**. The parser research experiment (#19) is **CLOSED** — evidence merged via PR #20, external review verdict **CORRECTIVE_PASS** — and the next phase is architecture synthesis (MARKIT-MARKDOWN-ARCHITECTURE-1).
+Markit has completed a product reset and an experiment-first repository reset.
+Product requirements are retained; implementation architecture remains
+intentionally **not frozen**. Experiment 0 (#19, merged via PR #20) is closed
+and archived as historical evidence. The attempted direct jump to architecture
+synthesis (#21) is **CLOSED / SUPERSEDED**. The active phase is the
+standardized Markdown AST/CST update benchmark — **#22
+MARKIT-MARKDOWN-BENCHMARK-1**.
 
 ## Current order of work
 
 ```text
-R0  Product truth reset / archive old authority
+R0  Product truth reset / archive old authority           <- DONE
         |
         v
-R1  Markdown parser research (#19)               <- CLOSED (PR #20; direction: HYBRID)
+R1  Experiment 0: parser mechanism survey (#19/PR #20)    <- DONE, ARCHIVED
+        |                                                    (evidence only)
+        v
+R2  Architecture synthesis attempt (#21)                  <- SUPERSEDED / CLOSED
         |
         v
-R2  Research-question revision + parser verdict  <- DONE (question REFINED)
+R2' Experiment-first repo reset (#23)                     <- DONE
         |
         v
-R3  Evidence-backed architecture                 <- NOW (MARKIT-MARKDOWN-ARCHITECTURE-1)
+R3  Standardized Markdown AST/CST update benchmark (#22)  <- NOW
         |
         v
-R4  Minimal source editor / document path
+R4  Weakness Map review
         |
         v
-R5  Preview + rendering pipeline
+R5  Markit-specific algorithm campaign (future issue)
         |
+        v
+R6  Formal/correctness work (as applicable)
+        |
+        v
+R7  Evidence-backed architecture synthesis
+        |
+        v
+R8  Minimal source editor / document path
+        |
+        v
+R9  Preview + rendering pipeline
         +--> Mermaid / math
         +--> Browser / Print
         |
         v
-R6  Live Mode
+R10 Live Mode
         |
         v
-R7  Workspace / OS integration / extension seams
+R11 Workspace / OS integration / extension seams
         |
         v
-R8  v0.1 hardening
+R12 v0.1 hardening
 ```
 
-The order is deliberate: Markit should first understand how arbitrary Markdown edits propagate through parsing and semantic state. UI/render architecture must consume that result rather than dictate it.
+The order is deliberate: Markit first measures how existing Markdown
+parsers/update designs behave under identical payloads, edits, and gates,
+explains the weaknesses, and only then designs a Markit-specific algorithm and
+architecture. UI/render architecture must consume that result rather than
+dictate it.
 
 ---
 
-## R0 — Product reset and archive
+## R0 — Product reset and archive — DONE
 
-### Goal
+Product truth separated from the pre-reset implementation. Canonical pre-reset
+archive revision:
 
-Separate product truth from the previous experimental implementation and documents.
+```text
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+```
 
 ### Current product authority
 
 - `docs/PRD.md` — product requirements;
 - `docs/product/mvp-v0.1.md` — intended V0.1 product scope;
 - `docs/product/print-browser-contract.md` — print/browser completeness contract;
-- `docs/product/architecture.md` — **HOLD document only**, not a frozen implementation architecture;
+- `docs/product/architecture.md` — **HOLD document only**;
 - this roadmap — sequencing/status.
 
-### Archive authority
+---
 
-The pre-reset repository is preserved at:
+## R1 — Experiment 0: parser mechanism survey (#19) — DONE, ARCHIVED
 
-```text
-d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
-```
+Merged via PR #20 (`55f6326f360f77d2caf46bb60571c8f15a88de53`); external human
+review verdict CORRECTIVE_PASS. Reclassified afterwards as **Experiment 0 /
+mechanism reconnaissance — historical evidence only**.
 
-Old ADRs, research-first product documents, GPUI/PocketJS experiments, the old Markdown implementation, benchmarks, and implementation notes are historical/reference evidence.
+Physical archive: `research/experiments/experiment-0-parser-survey/`.
+Evidence: `results/summary/` inside that archive. Explicit non-identity
+statements hold: `HYBRID != current architecture`, `P0-02 != current parser
+candidate`, green-tree prototype != production representation, ReferenceIndex
+!= production semantic index.
 
-They must not silently become requirements for the new architecture.
+Its observations (locality, structural propagation, hidden O(N) metadata
+work, full/incremental crossover, syntax vs semantic invalidation separation)
+motivate the normalized benchmark, but do not decide anything by themselves.
 
 ---
 
-## R1 — Incremental Markdown parser research (#19) — CLOSED
+## R2 — Architecture synthesis attempt (#21) — SUPERSEDED / CLOSED
 
-Completed and merged via PR #20; external human review verdict **CORRECTIVE_PASS** (MARKIT-19-CORRECTIVE-1: all four MAJOR findings fixed and re-measured). Parser direction: **HYBRID** = Markdown-aware restart → reparse → earliest-safe convergence + position-free history-stable persistent syntax + separate semantic dependency indexes + coherent full-rebuild escape hatch (predictor unvalidated). FROZEN / NOT-FROZEN lists: `results/summary/parser-survey-final.md`; research log: `docs/research/parser-survey-1.md`.
-
-### Root research question — provisional
-
-> **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
-
-This wording was provisional at kickoff. Outcome: the final report **REFINED** it into four independent cost axes with one mechanism per axis; see `results/summary/parser-survey-final.md`.
-
-### Research map
-
-```text
-Theory
-  Wagner & Graham
-  incremental parsing / reuse
-
-Systems
-  Tree-sitter
-  Lezer
-  Roslyn
-  rust-analyzer / rowan
-
-Markdown-specific
-  @lezer/markdown
-  tree-sitter-markdown
-  mizchi/markdown
-  MD4C
-```
-
-### Candidate Markit hypothesis
-
-```text
-arbitrary edit
-    |
-    v
-small affected source region
-    |
-    v
-block / inline parsing with boundary state
-    |
-    v
-earliest safe convergence
-    |
-    v
-reuse unaffected syntax
-    |
-    v
-separate semantic dependency invalidation
-```
-
-The hypothesis is not architecture. It must survive the mutation corpus and correctness oracle.
-
-### Measurements
-
-Do not optimize only wall-clock parse time. At minimum inspect:
-
-- bytes / lines rescanned;
-- propagation radius;
-- syntax regions or blocks reparsed;
-- nodes rebuilt / reused;
-- allocations / allocated bytes where measurable;
-- memory movement / copy amplification where measurable;
-- offset/index maintenance work;
-- semantic dependency fan-out;
-- equality with a clean parse.
-
-### Important distinction
-
-```text
-syntax invalidation
-!=
-semantic dependency invalidation
-!=
-render/presentation invalidation
-```
-
-### Stop gate
-
-No production parser replacement in R1.
-
-Satisfied: #19 ended with evidence and a parser-direction verdict (HYBRID), then passed human review (CORRECTIVE_PASS). Implementation architecture is written next, in R3.
+#21 treated Experiment 0 as sufficient architecture input. That sequencing was
+rejected: hypotheses produced before a normalized cross-parser benchmark are
+not an architecture basis. Do not resume #21 or cite it as a gate.
 
 ---
 
-## R2 — Revise the research question and choose parser direction — DONE
+## R2' — Experiment-first repository reset (#23) — DONE
 
-Completed inside #19. Question verdict: **REFINED**. Parser direction verdict: **HYBRID** with explicitly unfrozen details. The refined formulation in `results/summary/parser-survey-final.md` is the research north star for later rendering/layout work.
+MARKIT-EXPERIMENT-FIRST-REPO-RESET-1 restructured the active tree around the
+benchmark-first pipeline:
 
-Allowed question verdicts:
-
-```text
-KEEP
-REFINE
-REPLACE
-```
-
-The parser direction must then be one of:
-
-```text
-ADOPT_EXISTING
-ADAPT_EXISTING
-BUILD_MARKIT_SPECIFIC
-INSUFFICIENT_EVIDENCE
-```
-
-If the question is refined, the new formulation becomes the research north star for later rendering/layout work.
+- obsolete pre-reset implementation deleted from the active tree (Git history
+  is the archive; see `docs/research/repo-reset-inventory.md`);
+- Experiment 0 physically archived under `research/experiments/` and detached
+  from any default workspace;
+- root Cargo workspace dissolved (no active production Rust crate exists);
+- authority documents frozen on #22 as the only active research campaign.
 
 ---
 
-## R3 — Evidence-backed architecture
+## R3 — Standardized Markdown AST/CST update benchmark (#22) — NOW
 
-Only after R1/R2 passes human review should `architecture.md` be replaced with a real implementation architecture.
+Area: `research/benchmarks/markdown-ast-update/`.
 
-It should decide, from evidence:
+Fixed first-round baselines, grouped by capability (full-rebuild controls vs
+incremental update subjects): MD4C, pulldown-cmark, Comrak or cmark-gfm (one),
+tree-sitter-markdown, @lezer/markdown, mizchi/markdown. Full-rebuild controls
+participate in structural-edit scenarios as clean-rebuild controls — that is a
+control arm, not an N/A.
+
+Method requirements (from #22):
+
+- Swift-style incremental-vs-clean comparison per edit;
+- hard correctness gates: self-equivalence, dialect-semantics oracle,
+  losslessness where reconstructable;
+- work-amplification metrics beyond wall-clock: bytes rescanned, nodes
+  rebuilt/reused, allocations, position/index maintenance, propagation;
+- recorded provenance per run: versions, commits, runtime, toolchain,
+  hardware/OS, corpus version, benchmark mode.
+
+Output: a performance surface plus a **Weakness Map** — which weaknesses are
+common across designs, and which are worth a Markit-specific algorithm.
+
+This phase does NOT select a "winning parser", does NOT write the Markit
+algorithm, and does NOT unfreeze architecture.
+
+---
+
+## R4 — Weakness Map review
+
+Human review of the #22 evidence: which measured weaknesses are real, common,
+and consequential; which are artifacts; what a Markdown-specific algorithm
+should attempt. The review decides whether a Markit algorithm campaign is
+justified and scoped.
+
+---
+
+## R5 — Markit-specific algorithm campaign (future issue)
+
+Only weaknesses earned by R4 enter here. The campaign produces a candidate
+algorithm with measured evidence against the #22 baseline surface.
+
+---
+
+## R6 — Formal/correctness work (as applicable)
+
+Formalize/verify the candidate algorithm's correctness properties to the depth
+its risk warrants. This phase must exist before architecture freeze; its depth
+is decided by the algorithm campaign's evidence.
+
+---
+
+## R7 — Evidence-backed architecture
+
+Only after R3–R6 pass human review should `architecture.md` be replaced with a
+real implementation architecture, deciding from evidence:
 
 ```text
 Document/source storage
@@ -207,118 +203,24 @@ render/layout scheduling
 UI backend(s)
 ```
 
-Questions such as Rope vs Piece Table, CST vs another representation, parser library choice, block checkpoints, semantic indexes, and render-delta shape belong here **after** the experiment.
-
-Plugin/provider seams should be designed so future extensions consume stable semantic/query/command contracts rather than private parser/UI internals.
-
----
-
-## R4 — Minimal source editor
-
-After parser/storage architecture is selected, build the smallest trustworthy user path:
-
-```text
-open Markdown
-  -> authoritative source
-  -> Source Mode edit
-  -> revision/change
-  -> parse/semantic update
-  -> save
-```
-
-Requirements include:
-
-- lossless Markdown source editing;
-- undo/redo;
-- UTF-8/CJK/emoji;
-- Windows IME;
-- open/save/save-as;
-- mode-independent document authority.
-
-Existing `markit-core` code is a candidate reference only. Audit each component as `ADOPT`, `ADAPT`, `REPLACE`, or `DELETE`.
+Plugin/provider seams are designed here so future extensions consume stable
+semantic/query/command contracts rather than private parser/UI internals.
 
 ---
 
-## R5 — Preview and rendering
+## R8–R12 — Product build-out
 
-UI/rendering work begins only after the parser/semantic contract is credible.
-
-Study the second half of the end-to-end cost chain:
-
-```text
-SemanticDelta
-     -> projection invalidation
-     -> layout invalidation
-     -> shaping
-     -> paint
-     -> pixels
-```
-
-The key future question is not merely GPU speed, but how parser-local changes propagate into the minimum correct amount of downstream work.
-
-This phase includes:
-
-- split Source + Preview;
-- progressive publication where appropriate;
-- Mermaid;
-- LaTeX-style math;
-- Browser Preview;
-- browser Print/PDF according to `print-browser-contract.md`.
-
-Heavy Mermaid/math rendering must remain outside the Markdown parser critical path.
-
----
-
-## R6 — Live Mode
-
-Add source-aware WYSIWYG editing only after source/syntax/semantic/visual mappings are understood.
-
-Hard invariant:
-
-```text
-Live Mode is a projection/editing surface over the same Markdown source.
-It is not a second rich-text document synchronized back to Markdown.
-```
-
-Mode switching alone must be source-byte neutral.
-
----
-
-## R7 — Workspace, OS integration, extension seams
-
-Product requirements include:
-
-- workspace file tree;
-- workspace text search;
-- Windows `.md` Open With/file association;
-- browser launch;
-- future plugin/provider extensibility.
-
-These features must not force parser or UI internals into public extension contracts.
-
-A general plugin runtime is not required for V0.1; clean semantic seams are.
-
----
-
-## R8 — V0.1 hardening
-
-Validate the complete product on the real Windows host:
-
-- correctness under arbitrary edits;
-- large-document behavior;
-- CJK/IME/path handling;
-- workspace search;
-- Mermaid/math failure and stale-result cases;
-- print completeness independent of scroll history;
-- memory and work-amplification bounds;
-- packaging/file association.
+R8 minimal source editor, R9 preview/rendering (Mermaid, math, browser
+print/PDF per `print-browser-contract.md`), R10 Live Mode, R11 workspace/OS
+integration/extension seams, R12 v0.1 hardening. Scope definitions live in
+`docs/PRD.md` and `docs/product/mvp-v0.1.md`.
 
 ---
 
 ## Current rule
 
-Issue #19 is complete and human-reviewed. The rule becomes:
-
-> **Do not implement a parser before the MARKIT-MARKDOWN-ARCHITECTURE-1 contract passes architecture review.**
-
-The current task is architecture synthesis: turn the earned constraints (FROZEN / NOT-FROZEN lists in `results/summary/parser-survey-final.md`) into module responsibilities, data flow, entry/exit points, and coherence boundaries for the Markdown core. No further parser experiments.
+```text
+#22 is the only active Markdown research campaign.
+No production parser. No Markit algorithm claims. No architecture.
+Everything waits for the measured Weakness Map.
+```

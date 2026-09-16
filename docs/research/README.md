@@ -1,39 +1,54 @@
-# Markit research
+# Markit research status
 
-This directory contains **active post-reset research**.
-
-Historical A0-A4 / GPUI / PocketJS material is preserved at the pre-reset archive revision:
+This page is the campaign status map for Markit parser research.
 
 ```text
-d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+ACTIVE:
+    #22 MARKIT-MARKDOWN-BENCHMARK-1
+    Standardized Markdown AST/CST update benchmark:
+    operations, payloads, work amplification, performance attribution.
+    Area: research/benchmarks/markdown-ast-update/
+
+ARCHIVED:
+    Experiment 0 — MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1 (#19, PR #20)
+    Historical evidence only. Physical archive:
+    research/experiments/experiment-0-parser-survey/
+
+SUPERSEDED:
+    #21 MARKIT-MARKDOWN-ARCHITECTURE-1 (CLOSED)
+    Treated Experiment 0 as architecture input; that sequencing is replaced
+    by benchmark-first research. Do not resume it.
 ```
 
-It is no longer duplicated in the active documentation tree.
-
-## Active research
+## The only research path currently authorized
 
 ```text
-markdown-parser/
+existing Markdown parser / AST-CST update algorithms
+        ↓ #22 standardized benchmark          <- ACTIVE
+        ↓ Weakness Map
+        ↓ Markit-specific algorithm (future issue)
+        ↓ formal/correctness work (as applicable)
+        ↓ architecture synthesis
+        ↓ production implementation (BLOCKED)
 ```
 
-The most recent campaign was Issue #19 — **CLOSED** (external review verdict CORRECTIVE_PASS; evidence merged via PR #20):
+Experiment 0 produced useful reconnaissance (locality, structural
+propagation, absolute-offset metadata cost, full/incremental crossover,
+syntax-vs-semantic invalidation separation), but it compared mechanisms on a
+non-normalized footing. Its `HYBRID` direction verdict and FROZEN / NOT-FROZEN
+lists are hypotheses, not decisions: `green-tree prototype != production
+representation`, `ReferenceIndex != production semantic index`, `HYBRID !=
+current architecture`, `P0-02 != current parser candidate`.
 
-> Incremental Markdown parsing: locality, convergence, and invalidation.
+## Rules
 
-See `markdown-parser/README.md` for the provisional research question, comparison map, cost model, and exit conditions; see `results/summary/parser-survey-final.md` for the final verdicts and the FROZEN / NOT-FROZEN lists.
-
-## Rule
-
-Research documents may propose mechanisms, but they do not become architecture authority automatically.
-
-The lifecycle is:
-
-```text
-question
-  -> experiment
-  -> evidence
-  -> verdict
-  -> reviewed architectural decision
-```
-
-Old experiments remain useful evidence within their original setup, but old recommendations are not inherited into the new Markit architecture by default.
+- Research documents may propose mechanisms; they do not become architecture
+  authority automatically.
+- The lifecycle is `question -> experiment -> evidence -> verdict -> reviewed
+  architectural decision`.
+- Old experiments remain evidence within their original setup; old
+  recommendations are not inherited into the new Markit architecture by
+  default.
+- New benchmark evidence belongs under
+  `research/benchmarks/markdown-ast-update/results/` (raw local, curated
+  committed) once #22 defines the protocol.

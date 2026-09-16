@@ -1,28 +1,56 @@
-# Markit Architecture — HOLD pending architecture synthesis
+# Markit Architecture — HOLD pending benchmark-first research chain
 
 Status: **INTENTIONALLY UNFROZEN**
 
-Authority gate: [Issue #19 — Incremental Markdown parsing: locality, convergence, and invalidation](https://github.com/jnhu76/markit/issues/19) — **CLOSED** (final report human-reviewed, verdict **CORRECTIVE_PASS**; evidence merged via PR #20). Successor: MARKIT-MARKDOWN-ARCHITECTURE-1 (architecture synthesis, pending).
+Authority gate: **#22 MARKIT-MARKDOWN-BENCHMARK-1** — the standardized
+Markdown AST/CST update benchmark (the only active Markdown research
+campaign). Architecture synthesis may not start before that chain completes
+(see "Architecture gate" below).
 
-This file deliberately does **not** define the implementation architecture yet.
+This file deliberately does **not** define the implementation architecture.
 
-Markit is currently in a parser-research phase. The pre-reset implementation and architecture are retained as historical/experimental evidence, but they are not architectural authority for the new product.
+Markit has **no production implementation in the active tree**. The old
+implementation and Experiment 0 are historical evidence (Experiment 0 is
+archived at `research/experiments/experiment-0-parser-survey/`), not
+architectural authority for the new product.
 
-The next architecture revision MUST be written from evidence produced by Issue #19, not by preserving the current implementation by default.
+The next architecture revision MUST be written from evidence produced by the
+benchmark-first chain, not by preserving any removed implementation by
+default.
 
 ## Why architecture is on hold
 
 The central unresolved mechanism is the Markdown editing engine:
 
-> For lossless Markdown editing under arbitrary edits, how should Markit minimize reparse radius, tree reconstruction, memory movement, and downstream invalidation while preserving correctness?
+> How should Markit update Markdown syntax/semantic state under arbitrary
+> edits with minimal unnecessary reparse, tree reconstruction, memory
+> movement, and downstream invalidation — at verified correctness?
 
-Issue #19 is explicitly allowed to refine or replace that question when evidence shows that the current formulation is incomplete.
+The sequencing to answer it was corrected after Experiment 0:
+
+```text
+#19 / PR #20  Experiment 0 (archived evidence)
+        ↓
+#22           standardized benchmark over existing parsers/update designs
+        ↓
+              Weakness Map (what is slow, and why — attributed)
+        ↓
+              Markit-specific algorithm campaign (only for earned weaknesses)
+        ↓
+              formal/correctness work (as applicable)
+        ↓
+              architecture synthesis
+```
+
+Issue #21 (MARKIT-MARKDOWN-ARCHITECTURE-1), which tried to skip from
+Experiment 0 to architecture synthesis, is **CLOSED / SUPERSEDED** and must
+not be used as a gate.
 
 Markit does not yet freeze choices such as:
 
 - whole-document tree vs block-local representation;
 - AST vs lossless CST vs hybrid/event representation;
-- Tree-sitter, Lezer-like fragments, MD4C-like full parsing, or Markit-specific parsing;
+- Tree-sitter, Lezer-like, MD4C-like, pulldown/Comrak-like, or Markit-specific parsing;
 - parser checkpoint/state-summary format;
 - reusable-region and convergence rules;
 - source storage structure (rope, piece table, other);
@@ -32,13 +60,14 @@ Markit does not yet freeze choices such as:
 - parser-to-render invalidation contract;
 - rendering scheduler or UI backend architecture.
 
-Any document or code that currently implies one of those choices is evidence, not authority.
+Any document or archived code that currently implies one of those choices is
+evidence, not authority.
 
 ---
 
 ## Frozen product-level constraints
 
-These constraints do not depend on the parser experiment and remain authoritative.
+These constraints do not depend on parser research and remain authoritative.
 
 ### A1 — Markdown source is the document truth
 
@@ -46,24 +75,30 @@ These constraints do not depend on the parser experiment and remain authoritativ
 Markdown Source = authoritative document content
 ```
 
-Source Mode, Live Mode, Preview, Browser output, Print, Mermaid, math, search results, caches, syntax trees, and render artifacts are derived from that source.
+Source Mode, Live Mode, Preview, Browser output, Print, Mermaid, math, search
+results, caches, syntax trees, and render artifacts are derived from that
+source.
 
-No rendered or rich-text representation may become a second independent document authority.
+No rendered or rich-text representation may become a second independent
+document authority.
 
 ### A2 — Two first-class editing modes
 
 Markit must support:
 
 - **Source Mode** — direct lossless Markdown source editing;
-- **Live Mode** — source-aware rendered editing that writes through to the same Markdown source.
+- **Live Mode** — source-aware rendered editing that writes through to the
+  same Markdown source.
 
 Switching modes must not itself rewrite the document.
 
-The mechanism for Live Mode is intentionally deferred until the Markdown representation is understood.
+The mechanism for Live Mode is intentionally deferred until the Markdown
+representation is understood.
 
 ### A3 — One Markdown semantic authority
 
-Different projections may exist, but they must not independently reinterpret Markdown with incompatible semantics.
+Different projections may exist, but they must not independently reinterpret
+Markdown with incompatible semantics.
 
 Conceptually:
 
@@ -80,15 +115,20 @@ The exact representation behind the semantic authority is NOT frozen.
 
 ### A4 — Parser critical path excludes heavy rendering
 
-Mermaid rendering, LaTeX/math rendering, syntax highlighting engines, browser generation, layout, shaping, and GPU/UI rendering are not part of the Markdown parse critical path.
+Mermaid rendering, LaTeX/math rendering, syntax highlighting engines, browser
+generation, layout, shaping, and GPU/UI rendering are not part of the Markdown
+parse critical path.
 
-The parser may identify their syntax and dependencies; it must not synchronously perform their heavy visual work.
+The parser may identify their syntax and dependencies; it must not
+synchronously perform their heavy visual work.
 
 ### A5 — Interactive work and print completeness are different workloads
 
-Interactive presentation may be viewport-aware, incremental, cancellable, or progressive.
+Interactive presentation may be viewport-aware, incremental, cancellable, or
+progressive.
 
-Printing is full-document and completeness-first. See `print-browser-contract.md`.
+Printing is full-document and completeness-first. See
+`print-browser-contract.md`.
 
 ```text
 interactive: latency-first / partial publication allowed
@@ -97,38 +137,43 @@ print:       completeness-first / completion barrier required
 
 ### A6 — Workspace does not own document truth
 
-Workspace functionality may discover files, enumerate them, and search them. An open document/buffer owns unsaved in-memory edits for that document.
+Workspace functionality may discover files, enumerate them, and search them.
+An open document/buffer owns unsaved in-memory edits for that document.
 
-Workspace search and filesystem state must not silently overwrite an active document authority.
+Workspace search and filesystem state must not silently overwrite an active
+document authority.
 
 ### A7 — Extension boundaries must remain possible
 
-Markit should remain extensible through stable semantic/query/command/provider boundaries rather than requiring plugins to mutate private parser or UI internals.
+Markit should remain extensible through stable semantic/query/command/provider
+boundaries rather than requiring plugins to mutate private parser or UI
+internals.
 
 No general plugin runtime is selected yet.
 
-Mermaid and math are useful built-in workloads for testing whether future extension seams are clean, but their current implementation must not dictate the parser architecture.
+Mermaid and math are useful built-in workloads for testing whether future
+extension seams are clean, but their current implementation must not dictate
+the parser architecture.
 
-### A8 — Existing code must re-earn reuse
+### A8 — Removed code has no residual authority
 
-The current repository contains useful experiments, including document/change handling, line indexing, incremental Markdown work, GPUI probes, and benchmarks.
+The pre-reset implementation and the Experiment 0 harness were removed from
+the active tree / archived (see `docs/research/repo-reset-inventory.md`).
 
 They are classified only as:
 
 ```text
-EXPERIMENTAL / REFERENCE
+HISTORICAL EVIDENCE / GIT HISTORY
 ```
 
-With the #19 evidence now merged and reviewed, each relevant component must receive one of:
+Nothing deleted from the active tree regains authority by having existed.
+Any future reuse must be re-earned explicitly as:
 
 ```text
-ADOPT
-ADAPT
-REPLACE
-DELETE
+ADOPT / ADAPT / REPLACE / BUILD_NEW
 ```
 
-Prior implementation is not evidence of architectural necessity.
+in the architecture phase, from #22-chain evidence.
 
 ---
 
@@ -137,27 +182,31 @@ Prior implementation is not evidence of architectural necessity.
 The active technical problem is intentionally narrower than the full editor:
 
 ```text
-arbitrary source edit
+same payload + same edit
         |
         v
-Markdown parsing / reuse / convergence
+normalized benchmark across existing Markdown update designs
         |
         v
-correct incremental syntax + semantic change information
+correct results + measured work amplification
+        |
+        v
+Weakness Map (common vs Markit-specific opportunities)
 ```
 
-UI is not the research target yet.
+UI is not the research target.
 
-The parser experiment should measure more than wall-clock latency, including where practical:
+The #22 benchmark must record more than wall-clock latency, including where
+practical:
 
 - bytes/lines rescanned;
-- blocks or syntax regions reparsed;
-- syntax nodes rebuilt/reused;
+- nodes rebuilt / reused;
+- changed source coverage;
 - allocations and allocated bytes;
 - offset/index maintenance work;
 - propagation distance;
 - semantic dependency fan-out;
-- equality with a clean authoritative parse.
+- equality with a clean authoritative parse (hard gate).
 
 The research must also distinguish:
 
@@ -173,19 +222,27 @@ downstream presentation invalidation
 
 ## Architecture gate
 
-The #19 evidence gate is satisfied (mechanism survey merged via PR #20, human-reviewed verdict CORRECTIVE_PASS). A new architecture document may be frozen only after the #19-derived architecture synthesis — MARKIT-MARKDOWN-ARCHITECTURE-1 — passes human review.
+This HOLD ends only through the benchmark-first chain:
 
-Minimum required evidence before architecture freeze:
+```text
+1. #22 benchmark runs on the fixed baseline set with the correctness oracle
+        |
+        v
+2. Weakness Map reviewed by humans
+        |
+        v
+3. Markit algorithm campaign (only for weaknesses worth solving)
+        |
+        v
+4. formal / correctness review of the proposed algorithm (as applicable)
+        |
+        v
+5. architecture synthesis (replaces this document)
+```
 
-1. a mechanism survey covering the major comparison families;
-2. a reproducible mutation corpus;
-3. correctness comparison against clean parsing where applicable;
-4. locality / propagation measurements;
-5. representation and memory-movement evidence;
-6. a verdict on the current research question itself (`KEEP`, `REFINE`, or `REPLACE`);
-7. a parser-direction verdict.
+Skipping steps 1–4 is how #21 went superseded; do not repeat it.
 
-Only then should architecture decide:
+Only the architecture phase should decide:
 
 ```text
 Document storage
@@ -197,7 +254,8 @@ Document storage
       -> UI backend integration
 ```
 
-The order matters. Rendering and UI should consume the parser/semantic contract; they should not dictate it prematurely.
+The order matters. Rendering and UI should consume the parser/semantic
+contract; they should not dictate it prematurely.
 
 ---
 
@@ -206,14 +264,17 @@ The order matters. Rendering and UI should consume the parser/semantic contract;
 During this research phase:
 
 ```text
-docs/PRD.md
+docs/PRD.md + docs/product/**
     = product requirements
 
-Issue #19 evidence (CLOSED, merged via PR #20)
-    = Markdown parser research authority
+Issue #22 (MARKIT-MARKDOWN-BENCHMARK-1)
+    = the ONLY active Markdown parser research authority
 
-MARKIT-MARKDOWN-ARCHITECTURE-1
-    = Markdown architecture synthesis (pending)
+research/experiments/experiment-0-parser-survey/ (#19 / PR #20)
+    = archived Experiment 0 — historical evidence only
+
+Issue #21 (MARKIT-MARKDOWN-ARCHITECTURE-1)
+    = SUPERSEDED / CLOSED — not a gate
 
 docs/product/print-browser-contract.md
     = print/browser completeness contract
@@ -227,12 +288,15 @@ docs/product/roadmap.md
 this file
     = architecture HOLD / invariant boundary only
 
-pre-reset docs + current implementation
-    = archive/reference evidence
+Git history
+    = archive of all removed implementations and documents
 ```
 
 ## Exit condition
 
-The Issue #19 final report has been human-reviewed (verdict **CORRECTIVE_PASS**). This HOLD now ends only when the successor architecture contract — MARKIT-MARKDOWN-ARCHITECTURE-1 — passes the same human review.
+This HOLD lifts when the #22 chain (benchmark → Weakness Map review → Markit
+algorithm campaign → formal/correctness review) completes and the resulting
+architecture synthesis passes human review.
 
-At that point, replace this document with an evidence-backed architecture rather than incrementally layering assumptions onto this placeholder.
+At that point, replace this document with an evidence-backed architecture
+rather than incrementally layering assumptions onto this placeholder.

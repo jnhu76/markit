@@ -30,7 +30,7 @@ The performance/output law is intentionally mechanism-neutral:
 
 > **Avoid unnecessary work on interactive edits; publish visible results responsively; print the complete document.**
 
-Exactly how Markdown parsing, reuse, storage, syntax representation, and invalidation achieve this is **not** specified by the PRD. That is the subject of Issue #19 and the architecture that follows it.
+Exactly how Markdown parsing, reuse, storage, syntax representation, and invalidation achieve this is **not** specified by the PRD. That is the subject of the benchmark-first research chain (issue #22 and what follows it).
 
 ---
 
@@ -161,7 +161,7 @@ For ordinary local edits, work unrelated to the changed semantics should not be 
 
 For edits whose Markdown meaning genuinely propagates farther, Markit may perform broader work. Correctness is more important than manufacturing an artificially small invalidation radius.
 
-The implementation is intentionally undecided pending Issue #19.
+The implementation is intentionally undecided pending the #22 benchmark chain.
 
 Possible mechanisms under research include existing incremental parsers, reusable syntax fragments/trees, small-region parsing, state checkpoints/convergence, full-parse baselines, and Markit-specific approaches. None is a product requirement.
 
@@ -230,9 +230,9 @@ GPUI vs another future UI mechanism
 plugin runtime / ABI / transport
 ```
 
-These choices must be earned through research and the architecture phase.
+These choices must be earned through the benchmark-first research chain and the architecture phase.
 
-Current architecture status is documented in `docs/product/architecture.md` and is intentionally `HOLD` until Issue #19 completes.
+Current architecture status is documented in `docs/product/architecture.md` and is intentionally `HOLD` until the #22 benchmark chain (benchmark -> Weakness Map review -> Markit algorithm campaign -> formal/correctness review) completes.
 
 ---
 

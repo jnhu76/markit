@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+members = ["harness", "baseline/markit-core"]
+
+# ARCHIVED EXPERIMENT 0 WORKSPACE (issue #19 / PR #20)
+# ---------------------------------------------------
+# Self-contained research workspace for MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1.
+# This is a research archive, NOT the Markit product workspace and NOT part of
+# any default/product build. There is no root Cargo workspace at the repository
+# root on this branch.
+#
+# Reproduce independently:
+#
+#   cargo test --manifest-path \
+#     research/experiments/experiment-0-parser-survey/Cargo.toml --release
+#
+#   cargo run --release --manifest-path \
+#     research/experiments/experiment-0-parser-survey/harness/Cargo.toml -- \
+#     [--sizes 1k,10k,100k,1m] [--iters N] [--warm N] [--out DIR]
