@@ -1,6 +1,6 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R1-CORRECTIVE-1 MATERIALIZED / AWAITING ADVERSARIAL R1 REVIEW**  
+Status: **R1 FINAL REVIEW PASS / READY FOR R2 PRIOR-ART EXTRACTION**  
 Authority: GitHub Issue #22  
 Branch: `research/22-markdown-benchmark-1`  
 R0 methodology: `protocol/R0-METHODOLOGY.md`  
@@ -108,11 +108,11 @@ one Rust workspace
 pinned rust-toolchain / Cargo.lock
 frozen release profile / LTO / codegen-units / panic / RUSTFLAGS
 shared allocator policy
-common Source/Edit types
-common normalized Node/result types
+common Source/Edit/status/work/result-hook substrate types
+(no Markdown Node/AST/CST/tree representation frozen in R1)
 runner-owned timer API
 black_box input/output protection
-result checksum/full-work validation
+result checksum/full-work validation boundary
 T-LANE / M-LANE / A-LANE separation
 stable case ID / seed handling
 result-schema round trip
@@ -137,21 +137,36 @@ R1-CORRECTIVE-1 (2026-09-16)：PR #26 对抗性 review 的 4 MAJOR + 3 IMPORTANT
 vectors、shuffle v2 rejection）。权威记录：
 `protocol/R1-HARNESS-CONTRACT.md` §14。
 
+Fresh adversarial re-review：`PASS`。R1 技术主体无新的 measurement-authority blocker。
+
 R1 交付（`protocol/R1-HARNESS-CONTRACT.md` 为权威记录）：
 
 ```text
 Cargo workspace（common / instrumentation / oracle / runner / mechanisms/null-r1）
 pinned rustc 1.97.1 + frozen release-primary-v1 profile
-Mechanism trait（full_parse / prepare_update / update / complete）
+Mechanism trait（full_parse / prepare_update / update / complete；prepare 也接受 MechanismContext）
 runner-owned timer：T_total = T_prepare + T_native（算术恒等，无第三区间）
-complete() + black_box 在 T_native 内（集成测试证明）
-T / M / A 三 lane 结构性分离
+complete() + black_box 在 T_native 内，作为 completion authority boundary；
+  real horses 在正式 measurement 前仍必须通过 EAGER_COMPLETION_VALIDATION_PASS
+T / M / A 三 lane 结构性分离；M-LANE 使用 per-case begin/end window
 Observed<T> = Known / UNKNOWN / NOT_APPLICABLE
+source inspection 由 common collector 对 raw interval events 做 union/derive，horse 不拥有 PA 最终值
 CaseId = SHA256(canonical_encode(CaseKeyV1))，无机制/lane/运行时身份
-order = CaseId 字节排序 + splitmix64-v1+fisher-yates-mulshift-v1
+order = CaseId 字节排序 + splitmix64-v1+fisher-yates-lemire-rejection-v2
+CaseId / SplitMix64 / final permutation 有 golden vectors 防止 silent drift
 ResultRowV1 schema（Rust 类型为源，protocol/result-schema-v1.json 漂移防护）
+worker/supervisor process boundary 保留 timeout/fatal-exit case；fatal signals 统一诚实归类 Crash
 null mechanism __r1_null__ + R1_SMOKE_ONLY fixture 端到端通过
 scripts/verify-r1.sh 验收门
+```
+
+Final R1 verdict:
+
+```text
+R1_FINAL_REVIEW_PASS
+HARNESS_SUBSTRATE_PASS
+PR_26_READY_FOR_MERGE
+READY_FOR_R2_PRIOR_ART_EXTRACTION
 ```
 
 Next: `R2 PRIOR-ART MECHANISM EXTRACTION`
@@ -234,7 +249,7 @@ Stop：`GRAMMAR_CORPUS_MUTATION_FREEZE_PASS`
 ```text
 normalize(H1/H2/H3/H4.update(post-edit))
 ==
-normalize(H0.clean_parse(post-edit))
+normalize(H0.clean_parse(post-edit source))
 ```
 
 Stop：`H0_REFERENCE_PASS`
