@@ -1,0 +1,227 @@
+# manifest/prior-art.toml — R2 reproducibility manifest
+#
+# Machine-readable pin set for R2. The per-record manifest entries in
+# research/benchmarks/markdown-ast-update/prior-art/*.md remain the
+# authoritative narratives; this file carries the load-bearing
+# mechanism-relevant paths (each record's §15 list is the exhaustive one).
+# All entries retrieved 2026-09-16. No external repository is vendored;
+# upstream clones used for extraction lived outside this repository.
+# 2026-09-17 corrective pass (MARKIT-R2-PRIOR-ART-CORRECTIVE-1): notes
+# updated for reuse-semantics and state-minimality fidelity; all
+# pins/tags/SHAs unchanged.
+
+schema = "prior-art-v1"
+retrieved_date = "2026-09-16"
+extraction_stage = "R2 PRIOR-ART MECHANISM EXTRACTION"
+records_dir = "../prior-art"
+
+[[source]]
+id = "md4c"
+name = "MD4C (Markdown for C)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/mity/md4c"
+tag = "release-0.5.3"
+commit_sha = "472c417005c2c71b8617de4f7b8d6b30411d78f4"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "src/md4c.h",
+  "src/md4c.c",
+  "src/md4c-html.c",
+  "src/md4c-html.h",
+]
+notes = "Clean whole-buffer push-model parse; zero retained state; negative evidence: no incremental/update/edit/reparse/resume API (grep-verified at release-0.5.3). H0 anchor; cross-line/retroactive state catalog informs H1/H4 modeling."
+
+[[source]]
+id = "pulldown-cmark"
+name = "pulldown-cmark"
+source_type = "upstream_repository"
+repo_url = "https://github.com/raphlinus/pulldown-cmark"
+tag = "v0.13.4"
+commit_sha = "38e4d08f14ec4bd9783270e9623db7681ebed968"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "pulldown-cmark/src/lib.rs",
+  "pulldown-cmark/src/parse.rs",
+  "pulldown-cmark/src/firstpass.rs",
+  "pulldown-cmark/src/tree.rs",
+  "pulldown-cmark/src/scanners.rs",
+]
+notes = "Two-pass event-stream parser; eager first pass in constructor, lazy inline/event resolution; zero state across parses; negative evidence: no incremental API at v0.13.4. H0 anchor; issue tracker not retrieved (web quota) — source evidence primary and sufficient."
+
+[[source]]
+id = "comrak"
+name = "Comrak"
+source_type = "upstream_repository"
+repo_url = "https://github.com/kivikakk/comrak"
+tag = "v0.55.0"
+commit_sha = "6fbe87fafde3953a9f3bc582804318593d703805"
+retrieved_date = "2026-09-16"
+license = "BSD-2-Clause"
+relevant_paths = [
+  "src/lib.rs",
+  "src/parser/mod.rs",
+  "src/parser/inlines.rs",
+  "src/nodes.rs",
+  "src/arena_tree.rs",
+]
+notes = "One-shot two-phase full parse into caller-owned typed-arena AST; refmap built in block phase (first-wins, size-capped), consumed by inline phase; negative evidence: no incremental/update API at v0.55.0. H0 anchor."
+
+[[source]]
+id = "tree-sitter-core-incremental"
+name = "Tree-sitter core incremental parsing engine"
+source_type = "upstream_repository"
+repo_url = "https://github.com/tree-sitter/tree-sitter"
+tag = "v0.27.0"
+commit_sha = "6070dbfefd326bd735e5683eb128cc1b57dad0c0"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "lib/include/tree_sitter/api.h",
+  "lib/src/parser.c",
+  "lib/src/reusable_node.h",
+  "lib/src/subtree.c",
+  "lib/src/subtree.h",
+  "lib/src/tree.c",
+  "lib/src/get_changed_ranges.c",
+  "lib/src/lexer.c",
+  "crates/cli/src/fuzz.rs",
+]
+notes = "Old-tree subtree reuse: ts_tree_edit flag propagation; reuse predicate = position alignment + external-scanner entry-state equality + !changed/error/missing/fragile + first-leaf lex-mode/action compatibility; splice state = current grammar transition; backdown on invalid lookahead; reuse suppressed while GLR version_count > 1 (allow_node_reuse recomputed at each outer parse-loop iteration after ts_parser__condense_stack, so suppression is interval-shaped, not sticky); content-blind (trusts caller's edit mapping). Secondary: Context7 /tree-sitter/tree-sitter docs. H3 anchor; H4-flavored convergence gating (hybrid)."
+
+[[source]]
+id = "tree-sitter-markdown-grammar"
+name = "tree-sitter-markdown block+inline grammars"
+source_type = "upstream_repository"
+repo_url = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+tag = "v0.5.3"
+commit_sha = "f969cd3ae3f9fbd4e43205431d0ae286014c05b5"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "tree-sitter-markdown/grammar.js",
+  "tree-sitter-markdown/src/scanner.c",
+  "tree-sitter-markdown-inline/grammar.js",
+  "tree-sitter-markdown-inline/src/scanner.c",
+  "tree-sitter-markdown/queries/injections.scm",
+]
+notes = "Block scanner serializes 5 scalars + open-blocks stack (18 kinds; list content-indent 2..15); inline scanner 4 bytes; per-state valid-token sets gate external tokens. Issue-backed limits: #243 (open, unbounded open_blocks memcpy vs 1024-B buffer — serialized-state VALUE size is depth-dependent), #92 (closed via PR #134: emphasis lost on incremental reparse). This enumeration is KNOWN-SUFFICIENT entry-context evidence for that implementation's reuse gate and CANDIDATE context dimensions for H1/H3/H4 models; minimality unknown, and necessity of this exact representation for every mechanism not established (retention vs recomputation is mechanism-dependent)."
+
+[[source]]
+id = "lezer-common"
+name = "@lezer/common (TreeFragment incremental parsing)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/lezer-parser/common"
+tag = "1.5.2"
+commit_sha = "de5f96276a2954c249de1475e8b03f79c20d9ce4"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = ["src/parse.ts", "src/tree.ts", "src/index.ts", "src/mix.ts"]
+notes = "TreeFragment applyChanges (minGap=128, offset deltas, open edges); per-node contextHash/lookAhead props. Secondary: Context7 /lezer-parser/common. H2 anchor (fragment table lifecycle)."
+
+[[source]]
+id = "lezer-lr"
+name = "@lezer/lr (LR engine; lezer-parser/lezer is a forwarding stub)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/lezer-parser/lr"
+tag = "1.4.8"
+commit_sha = "f81d6a25c3482aa7fc12434e9adea9d75c56ad08"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = ["src/parse.ts", "src/stack.ts", "src/constants.ts", "src/token.ts"]
+notes = "Fragment-gated parse; node absorption predicate: position within safe window (cutAt, Lookahead.Margin=25), lookAhead does not reach fragment end, goto accepts type at live state, contextHash equality. No stored parse-state stacks. Secondary: Context7 /lezer-parser/lr."
+
+[[source]]
+id = "lezer-markdown"
+name = "@lezer/markdown (incremental Markdown parser)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/lezer-parser/markdown"
+tag = "1.6.3"
+commit_sha = "9942d7ce41d734d743cbdb48177dddc1975fdc5c"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "src/markdown.ts",
+  "src/extension.ts",
+  "src/nest.ts",
+  "test/test-incremental.ts",
+]
+notes = "Own consumer (not the LR runtime): per-line fragment cursor + composite-block rolling-hash vouching + takeNodes of block subtrees; NotLast/block-boundary/trailing-line convergence guards. Negative finding: no 'markdownSkip'/'skipAfter' NodeProp exists at 1.6.3. Markdown convergence-condition evidence for H2/H4."
+
+[[source]]
+id = "mizchi-markdown"
+name = "mizchi/markdown (@mizchi/markdown, repo markdown.mbt, MoonBit)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/mizchi/markdown.mbt"
+commit_sha = "ffe7dc00e60e6778e6407fb0c9bbfe9f202fea94"
+tag = "master at retrieval (includes Release 0.8.3 / b574e7f); newest tag v0.8.1 = a9679fadfc8f4b4a688554da12425cb0707aee81"
+retrieved_date = "2026-09-16"
+license = "MIT"
+relevant_paths = [
+  "src/incremental.mbt",
+  "src/incremental_test.mbt",
+  "src/block_parser.mbt",
+  "src/types.mbt",
+  "src/api/exports.mbt",
+  "js/api.d.ts",
+]
+notes = "Naming correction: 'mizchi/markdown' resolves to markdown.mbt; core is MoonBit, not Rust. Top-level block span map + region clean reparse + splice = prefix blocks passed through unchanged + suffix blocks reconstructed as new values with shifted spans (PARSER-WORK reuse: reused_* counters mean not-reparsed, NOT object-identity/representation reuse); no hashes/validation; TOTAL full-parse fallback whenever link reference definitions exist. H1 anchor; docs/markdown.md ReferenceIndex/nodeId content is aspirational, not shipped."
+
+[[source]]
+id = "wagner-graham-1998-toplas"
+name = "Wagner & Graham — Efficient and Flexible Incremental Parsing (TOPLAS 20(5):980-1013)"
+source_type = "paper"
+paper_url = "https://dl.acm.org/doi/10.1145/293677.293678"
+doi = "10.1145/293677.293678"
+retrieved_date = "2026-09-16"
+relevant_sections = ["read via dissertation Ch. 6 reprint (ACM copy not retrievable, HTTP 403)"]
+notes = "Mechanism authority = dissertation CSD-97-946 Ch. 6 (reprint mapping labeled INFERRED from preface/bibliography [99]); bibliographic metadata verified via Crossref DOI negotiation."
+
+[[source]]
+id = "wagner-1998-thesis-csd-97-946"
+name = "Tim A. Wagner — Practical Algorithms for Incremental Software Development Environments (PhD diss., UC Berkeley CSD-97-946)"
+source_type = "paper"
+paper_url = "https://www2.eecs.berkeley.edu/Pubs/TechRpts/1997/Archive/CSD-97-946.pdf"
+doi = ""
+retrieved_date = "2026-09-16"
+relevant_sections = ["Ch.4 editing/versions", "Ch.5 incremental lexing", "Ch.6 = TOPLAS reprint (PRIMARY mechanism authority)", "Ch.7 incremental GLR"]
+notes = "Full text read. Convergence = equivalence with batch parser on same tables at theorem matchpoints (Thm 6.4.1.1); exact nonterminal shift test; suffix-as-input; bounded backtracking O(kV). Abstract page: https://www2.eecs.berkeley.edu/Pubs/TechRpts/1997/5885.html"
+
+[[source]]
+id = "wagner-graham-1997-pldi"
+name = "Wagner & Graham — Incremental Analysis of Real Programming Languages (PLDI 1997, pp. 31-43)"
+source_type = "paper"
+paper_url = "https://dl.acm.org/doi/10.1145/258915.258920"
+doi = "10.1145/258915.258920"
+retrieved_date = "2026-09-16"
+relevant_sections = ["(metadata only; not read — year correction: 1997, commonly mislabeled 1996)"]
+notes = "Corresponds to dissertation Ch. 7 (incremental GLR, state matching, parse dags)."
+
+[[source]]
+id = "swift-incremental-syntax"
+name = "swiftlang/swift-syntax (SwiftParser incremental parsing)"
+source_type = "upstream_repository"
+repo_url = "https://github.com/swiftlang/swift-syntax"
+tag = "604.0.0"
+commit_sha = "050f1a346fbbac0ca2cfb15a95274f7bd1cf0ccf"
+retrieved_date = "2026-09-16"
+license = "Apache-2.0"
+relevant_paths = [
+  "Sources/SwiftParser/IncrementalParseTransition.swift",
+  "Sources/SwiftParser/Parser.swift",
+  "Sources/SwiftParser/Lexer/LexemeSequence.swift",
+  "Sources/SwiftSyntax/AbsoluteSyntaxInfo.swift",
+  "Sources/SwiftSyntax/SourceEdit.swift",
+  "Sources/_SwiftSyntaxTestSupport/IncrementalParseTestUtils.swift",
+]
+notes = "Per-checkpoint reuse (CodeBlockItem/MemberBlockItem): pre-edit position translation + expected-kind equality + no edit intersectsOrTouches lookahead range; byte-local, no parser-state equality; offsets derived lazily (zero patching); oracle assertIncrementalParse vs clean parse. H4 anchor; straddles H3."
+
+[[source]]
+id = "swift-incremental-syntax-thread"
+name = "Alex Hoppen — 'Incremental syntax parsing' (Swift Forums, 2018)"
+source_type = "official_maintainer_design_thread"
+thread_url = "https://forums.swift.org/t/incremental-syntax-parsing/12368"
+retrieved_date = "2026-09-16"
+relevant_sections = ["opening post + mechanism-bearing replies"]
+notes = "Design intent for the C++ compiler integration (WIP apple/swift PR #16340). DIVERGES from pinned 604.0.0 code (re-lex-from-change / lexer-state settling not present); thread = design intent, pinned code = mechanism truth."

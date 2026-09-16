@@ -1,10 +1,12 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R1-CORRECTIVE-1 MATERIALIZED / AWAITING ADVERSARIAL R1 REVIEW**  
+Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW (PR #27 open, awaiting human review)**
+
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
 Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
 R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)  
-R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)
+R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)  
+R2 prior-art records: [`prior-art/`](./prior-art/README.md)
 
 本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 

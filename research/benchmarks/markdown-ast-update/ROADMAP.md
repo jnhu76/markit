@@ -1,8 +1,9 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R1 FINAL REVIEW PASS / READY FOR R2 PRIOR-ART EXTRACTION**  
+Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW**
+
 Authority: GitHub Issue #22  
-Branch: `research/22-markdown-benchmark-1`  
+Branch: `research/22-markdown-benchmark-1` (R0/R1) / `research/22-prior-art-mechanism-extraction-1` (R2)  
 R0 methodology: `protocol/R0-METHODOLOGY.md`  
 R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 
@@ -134,6 +135,16 @@ Next: `R2 PRIOR-ART MECHANISM EXTRACTION`
 
 ## R2 — Prior-art Mechanism Extraction
 
+Status: **READY_FOR_FINAL_R2_REVIEW（2026-09-17 人工评审要求的 corrective
+pass MARKIT-R2-PRIOR-ART-CORRECTIVE-1 已完成：MAJOR-1 mizchi 复用语义修正
+（parser-work reuse ≠ representation reuse）、MAJOR-2 状态最小性/普适性声明移除、
+MAJOR-3 GLR reuse suppression 语义修正、IMPORTANT-1/2、MINOR 清理；
+随后 MARKIT-R2-FINAL-CLEANUP-1 完成 MECHANISM_INTRINSIC_STATE 四分类
+（mechanism state / common input / common instrumentation / model-defined
+candidate state）、R2-H11 去过度概括、mizchi §7 措辞修复；
+pins 不变。之前的 PRIOR_ART_EXTRACTION_PASS 自评已被人工对抗评审取代；
+最终 PASS 由人工评审给出。）**
+
 对 MD4C / pulldown-cmark / Comrak / Tree-sitter Markdown / Lezer / mizchi / Wagner & Graham / Swift incremental syntax 记录：
 
 ```text
@@ -149,6 +160,37 @@ relevance to H0-H4
 not reproduced
 ```
 
+R2 交付（`prior-art/` 为权威记录，2026-09-16）：
+
+```text
+9 个先验艺术提取记录（全部 15 节结构，OBSERVED/INFERRED/UNKNOWN 纪律，
+  pinned tag/SHA + retrieval date，负证据一等公民）
+SOURCE-MAP.md（来源清单 + 命名纠正 + 未增补来源的边界决定）
+MECHANISM-SOURCE-MAP.md（每匹马 MECHANISM_SOURCE_MAP / PRIOR_ART_ANCHOR /
+  FIDELITY_BOUNDARY / NON_GOALS / MECHANISM_INTRINSIC_STATE）
+MECHANISM-MATRIX.md（行=机制 M1-M8 的对比矩阵 + confidence）
+R2-HYPOTHESES.md（12 条假设，无数字、无排名）
+manifest/prior-art.toml（14 个来源的机器可读 pin 集）
+fresh adversarial review：A-L 失败模式 + scope/manifest/consistency，
+  12/12 引用抽查 VERIFIED；verdict PRIOR_ART_REVIEW_IMPORTANT_ONLY，
+  1 IMPORTANT + 4 MINOR 已全部修复，零 MAJOR
+```
+
+关键发现（reported, not resolved；详见
+`prior-art/MECHANISM-SOURCE-MAP.md` HORSE_BOUNDARY_AMBIGUITIES）：
+
+```text
+H2/H3 边界 = 查找/担保策略而非复用粒度（Lezer 在 fragment gap 内做
+  状态锚定的节点/块复用）
+tree-sitter 是 H3+H4 混合体（复用受状态一致性门控；skip-based 而非
+  checkpoint-based）
+W&G 同时支撑 H3 与 H4；Swift 横跨两者
+三个锚点族的 convergence authority 各不相同（batch-parser 定理匹配点 /
+  字节局部检查点谓词 / 状态一致性门控）；没有任何先验实现
+  "reparse 后比较新旧树" 的字面形状
+mizchi 的 definition-fallback 使 H1 在含引用文档上按设计退化为 H0
+```
+
 H1-H4 各自必须有：
 
 ```text
@@ -159,7 +201,8 @@ NON_GOALS
 MECHANISM_INTRINSIC_STATE
 ```
 
-Stop：`PRIOR_ART_EXTRACTION_PASS`
+Stop：`READY_FOR_FINAL_R2_REVIEW`（corrective pass + final cleanup 已推送至
+PR #27）→ Next: R3，等待 PR 人工评审合并。
 
 ---
 
