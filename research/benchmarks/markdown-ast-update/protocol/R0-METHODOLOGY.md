@@ -1,258 +1,308 @@
 # R0 Methodology — MARKIT-MARKDOWN-BENCHMARK-1
 
-Status: **R0 ADVERSARIAL CORRECTIVE / PROTOCOL ONLY / NO BENCHMARK EXECUTION**
+Status: **R0 CORRECTIVE-2 / CONTROLLED RUST MECHANISM RACE / NO BENCHMARK EXECUTION**
 
 Authority: GitHub Issue #22 and its R0 review comments.
 
-本文件是 #22 第一轮实验的方法学冻结点。目标不是一次做完所有性能研究，而是保证第一轮已经形成一个可以复现、可以解释、不会从单点 timing 跳到算法结论的最小实验闭环。
+## 0. Research question
 
-核心研究链：
+#22 第一阶段不再以“六个 upstream parser 谁更快”为主问题。
+
+主问题改为：
+
+> **在同一 Rust 实验基底、同一 Markdown 语义核心、同一 payload、同一 edit、同一输出契约下，不同 AST/CST 更新机制分别付出什么成本、在什么结构上失效、为什么失效？**
+
+目标是研究 mechanism，而不是语言/runtime/工程优化差异。
+
+研究链：
 
 ```text
-Research Question
--> SAME payload / SAME operation
--> capability parity
--> correctness gate
--> native implementation measurement
--> scaling/work observation
--> controlled attribution
--> optional Rust mechanism reproduction
+prior-art/source reconnaissance
+-> extract mechanism
+-> common Rust experimental substrate
+-> SAME parser semantics / SAME payload / SAME edit / SAME result contract
+-> mechanism race
+-> scaling + work counters
+-> attribution
 -> replication
--> bounded conclusion
+-> strength / weakness profile
+-> Weakness Map
 ```
 
-任何一步证据不足都必须停在 `INCONCLUSIVE`。
+证据不足必须停在 `INCONCLUSIVE`。
 
 ---
 
-## 1. Two comparison lanes
+## 1. Primary experiment: one Rust substrate
 
-### Lane A — Native Implementation Performance
+第一阶段 headline benchmark 只比较统一 Rust 实验实现。
 
-在各 upstream 官方支持的 runtime/toolchain 中运行原实现，对同一 canonical payload 和 operation contract 测量实际工程实现。
-
-Subjects:
-
-- B0 MD4C
-- B1 pulldown-cmark
-- B2 Comrak
-- B3 tree-sitter-markdown
-- B4 @lezer/markdown
-- B5 mizchi/markdown
-
-Measures:
-
-- latency
-- throughput
-- CPU
-- memory
-- allocation（仅在可观测且定义可比时）
-
-允许结论：
-
-> 在冻结环境、版本、payload、operation、capability 条件下，某个**实现**的实际成本是多少。
-
-禁止结论：
-
-> 仅凭跨 runtime wall-clock，宣称某个 parsing algorithm 天生优于另一个 algorithm。
-
-Lane A 比较的是 implementations，不是 languages，也不是未经控制的 abstract algorithms。
-
-### Lane B — Rust Algorithm / Mechanism Reproduction
-
-Rust 是后续 controlled attribution 的统一复现语言。
-
-选择 Rust 的原因：
-
-- 无 GC，减少额外 runtime confounder；
-- allocation/layout/ownership 可显式控制；
-- 可直接接 C FFI；
-- 与 Rust baselines 自然集成；
-- 适合 retained-tree / incremental parser mechanism 的局部复现和 ablation。
-
-但 Rust reproduction **不是 upstream baseline，也不是翻译比赛**。
-
-默认规则：
+共享并冻结的非研究变量：
 
 ```text
-先在 Lane A 观察稳定差异
--> scaling/work evidence 形成 mechanism hypothesis
--> 只有需要验证该 hypothesis 时才做最小 Rust reproduction
+Rust toolchain / build profile
+source representation
+canonical edit descriptor
+benchmark grammar / semantic contract
+normalized syntax output contract
+node semantic vocabulary
+corpus + mutations
+timer implementation
+allocator/instrumentation policy
+result schema
+machine/environment
 ```
 
-禁止为了形式对称把六个 parser 全量翻译成 Rust。
-
-每个 reproduction 必须记录：
-
-- upstream project + exact version/commit；
-- 被复现的算法/数据结构边界；
-- omitted features；
-- representation differences；
-- port-specific decisions；
-- differential/conformance tests against upstream；
-- reproduction-specific allocation/layout assumptions。
-
-验证失败：
+允许不同的研究变量：
 
 ```text
-REPRODUCTION_INVALID
+damage detection
+restart strategy
+reuse strategy
+convergence strategy
+retained state
+reconstruction strategy
+position/range maintenance strategy
+fallback policy
 ```
 
-不得产生算法结论。
+原则：**能共享的非研究代码尽量共享；会改变机制语义的部分不得为了“统一”而共享。**
 
-### Cross-lane hard rule
-
-```text
-Native upstream absolute time
-!=
-Rust reproduction absolute time
-```
-
-两者禁止直接放进同一绝对性能排名。
-
-Rust lane 只允许做：
-
-- 同语言 controlled comparison；
-- mechanism ablation；
-- scaling shape validation；
-- causal probe / counterexample。
+最近 Algorithm Engineering 方法学强调：即便受控条件下，implementation choices 也可能导致数量级性能差异。因此统一 substrate 的目的，是尽可能把这些选择从“算法机制比较”中消掉；与此同时，所有 mechanism reproduction 必须显式记录 fidelity boundary，避免把 Flash 自己的重实现误称为 upstream 原算法。
 
 ---
 
-## 2. Comparable-work gate
+## 2. Prior art role
 
-“相同字节”不自动等于“做了相同语义工作”。
-
-因此第一轮结果分为两类 case。
-
-### CORE-COMPARABLE
-
-只有当参与比较的 implementations 对该 case：
+以下项目仍然是 #22 的主要 prior-art/source subjects：
 
 ```text
-capability supported
-AND
-correctness gate PASS
-AND
-operation semantics equivalent
+MD4C
+pulldown-cmark
+Comrak
+Tree-sitter Markdown
+@lezer/markdown
+mizchi/markdown
 ```
 
-才允许进入跨 implementation headline comparison。
+它们的作用：
 
-### CAPABILITY-SPECIFIC
+1. 读取源码/设计文档，抽取 parsing/update mechanism；
+2. 记录各自的 restart/reuse/tree/position/semantic strategy；
+3. 必要时在少量相同 payload 上运行 upstream，实现 sanity probe；
+4. 帮助验证 Rust mechanism model 是否抓住了原设计的关键行为；
+5. 提供优势/劣势假设，不直接提供 #22 的最终 algorithm ranking。
 
-如果某 implementation 对特性不支持、降级为普通文本、采用不同 dialect，或实际完成的语义工作明显不同：
+Upstream timing 可以记录为 `REFERENCE_ONLY`，但不进入统一 Rust race 的 headline table。
+
+禁止：
 
 ```text
-CAPABILITY_DIFFERENCE
+upstream C/Rust/JS absolute timing
+-> 直接推断 algorithm superiority
 ```
-
-该 case 可以保留实现级 timing，但不得和 CORE-COMPARABLE case 混成“谁更快”的算法结论。
-
-Capability Matrix 的作用就是定义哪些 cases 有资格进入 shared comparison surface。
 
 ---
 
-## 3. Canonical operation contract
+## 3. First-round horses
 
-Canonical source authority：UTF-8 source bytes。
+第一次实验可以少做，但必须形成完整闭环。第一阶段先固定 4 个 mechanism models。
 
-Canonical edit descriptor：
+### H0 — FULL_REBUILD
+
+Control。
 
 ```text
-UTF-8 byte range [start,end)
+post-edit source
+-> clean full parse
+-> rebuild normalized syntax state
+```
+
+用途：建立“什么都不复用”的成本下界/对照。
+
+Prior-art inspiration：MD4C / pulldown-cmark / Comrak 的 clean parse 路线。
+
+### H1 — BLOCK_LOCAL
+
+```text
+identify affected Markdown block region
+-> reparse affected block(s)
+-> preserve unaffected block states
+-> repair document sequence/index
+```
+
+重点变量：block count `B`、largest/affected block length `L`、block boundary mutation。
+
+Prior-art inspiration：block-oriented incremental Markdown approaches，包括 mizchi/markdown 所代表的设计点。
+
+### H2 — FRAGMENT_REUSE
+
+```text
+retain reusable syntax fragments/subtrees
+-> map edit through retained fragments
+-> parse gaps/damaged regions
+-> compose new syntax state
+```
+
+重点变量：fragment granularity、edit position、fragment invalidation、large leaf/block。
+
+Prior-art inspiration：Lezer-style reusable fragments/tree reuse。
+
+### H3 — OLD_TREE_REUSE_CONVERGENCE
+
+```text
+old syntax state + edit
+-> restart from valid context
+-> incrementally parse changed region
+-> detect convergence / reusable suffix
+-> reuse old tree/state beyond convergence
+```
+
+重点变量：restart distance、forward-state propagation、container depth、convergence point。
+
+Prior-art inspiration：incremental parsing literature、Tree-sitter old-tree reuse concepts、Swift incremental syntax ideas，以及 Markdown-specific convergence observations。
+
+### Fidelity naming rule
+
+这些名字描述 **mechanism models**，不是宣称“我们已经重写了 Tree-sitter/Lezer/mizchi”。
+
+如果模型与某 upstream 算法不能达到足够 fidelity：
+
+```text
+<project>-inspired
+```
+
+而不是直接使用项目名作为 horse 名称。
+
+---
+
+## 4. Shared parser semantic core
+
+机制赛马最重要的公平性规则：每匹马必须解决同一个 parsing problem。
+
+第一阶段必须先定义 `BENCH-GRAMMAR-v1`：一个有明确语义、足以覆盖更新机制风险的 Markdown 子集/核心。
+
+最低覆盖：
+
+```text
+plain paragraph / text
+blank-line block boundary
+ATX heading
+list / blockquote container basics
+fenced code block
+emphasis delimiter
+code span delimiter
+inline/reference link basics
+reference definition
+```
+
+第一阶段目标不是声明完整 CommonMark conformance，而是构造**同一个受控 Markdown problem**。
+
+每匹 horse 必须输出同一个 normalized semantic/syntax contract，例如：
+
+```text
+node kind
+parent/child semantic relation
+source span or source-slice identity required by protocol
+ordered block/inline structure
+reference-definition facts where included
+```
+
+内部 representation 可以不同；最终 normalized result 必须可比较。
+
+Correctness oracle：
+
+```text
+horse incremental/update result
+==
+H0 clean full parse of post-edit source
+```
+
+因此 `expected` 不需要人工逐 case 编写。
+
+如果未来扩大到完整 CommonMark/GFM，则另开 protocol amendment；第一轮不要把 standards implementation 本身变成实验主体。
+
+---
+
+## 5. Canonical operation contract
+
+Source authority：UTF-8 bytes。
+
+Edit：
+
+```text
+[start,end) byte range
 +
-inserted bytes
+inserted UTF-8 bytes
 ```
 
-所有 payload、mutation、case ID 都基于这个 descriptor。
+Host source mutation 在 parser timer 外，因为第一轮研究 syntax update，不研究 rope/piece-tree/text-buffer。
 
-Adapter 可以转换成 native API 坐标，但不得改变 logical edit。
+所有 horses 接收相同：
 
-### Host text mutation boundary
+```text
+old source
+old mechanism state
+post-edit source
+canonical edit
+```
 
-本 benchmark 第一轮研究 parser / syntax update，而不是 text-buffer data structure。
-
-因此以下统一在 parser timer 外：
-
-- canonical source fixture 生成；
-- host/source buffer 应用 edit；
-- post-edit source materialization。
-
-但 parser 为其 incremental API 必须执行的坐标转换、旧状态维护、私有输入复制/规范化不能借此逃出 timer；具体规则见下一节。
+不得各自生成私有 workload。
 
 ---
 
-## 4. Timer contract
+## 6. Timer contract
 
-Flash / adapter implementation **不得自行解释 timer 范围**。以下为权威边界。
+所有 Rust horses 由同一个 Rust runner 在同一进程模型下计时。
 
-### 4.1 FULL_PARSE
+### FULL_PARSE / H0
 
 Outside timer：
 
-- file IO；
-- fixture/corpus materialization；
-- process/runtime startup；
-- one-time parser/runtime initialization；
-- correctness oracle；
-- logging / result serialization。
-
-#### Native source representation
-
-在计时前，source 可以被 materialize 为该 runtime 的正常 host text representation，例如 Rust `&str` / JS string。
-
-这意味着第一轮 `FULL_PARSE` 测的是 **parser-core from already-in-memory native text**，不是 UTF-8 file loading/decoding benchmark。
-
-但是：
-
-> 如果 parser API 在收到正常 host text 后仍必须复制、转码、normalize 或构造 parser-private input buffer，这属于 parser-required work，必须计入 `T_native`。
+```text
+file IO
+corpus generation
+post-edit source construction
+case enumeration
+logging / serialization / oracle comparison
+```
 
 `T_native`：
 
 ```text
 START
-parser receives the already-in-memory native text
-parser performs all parser-required input preparation
-parser consumes the complete source
-force native result to completion
-  event/pull parser: consume ALL events
-  tree parser: complete tree/result construction
+horse parses already-in-memory UTF-8 source
+all horse-required parsing/representation construction completes
+black_box(result/state)
 STOP
 ```
 
-Lazy parser 不能只构造 iterator/object 就停表。
-
-### 4.2 UPDATE / STRUCTURAL_EDIT
+### UPDATE / H1-H3
 
 Outside timer：
 
-- old source materialized；
-- old parse state 已在 case setup 阶段构造；
-- canonical edit selected；
-- host text mutation applied；
-- post-edit source materialized。
+```text
+old source already materialized
+old horse state already constructed for the case
+canonical edit selected
+host applies edit / post-edit source materialized
+```
 
 `T_prepare`：
 
 ```text
-canonical UTF-8 edit
--> parser-native coordinates / change descriptor
+only horse-specific edit-coordinate / metadata preparation required by that mechanism
 ```
-
-包括 parser API 要求的：
-
-- byte -> row/column conversion；
-- byte -> UTF-16/code-unit conversion；
-- parser-specific edit metadata construction。
 
 `T_native`：
 
 ```text
 START
-parser-required old-state maintenance
-parser-required private input preparation/copy/normalization
-incremental parse/update to completion
+mechanism-specific old-state maintenance
+damage/restart/reuse/convergence logic
+reparse work
+representation reconstruction/index maintenance
+all work required to produce new valid horse state
 STOP
 ```
 
@@ -262,153 +312,36 @@ Headline：
 T_total = T_prepare + T_native
 ```
 
-必须保存：
+必须保存 `T_prepare / T_native / T_total`。
 
-```text
-T_prepare
-T_native
-T_total
-```
+禁止把某 horse 必须做的 work 提前放到 timer 外。
 
-任何 parser-required coordinate/state/input work 都不得为了让数据好看被偷偷移到 timer 外。
+### Timing fairness hard rule
 
-### 4.3 Full-rebuild controls under UPDATE
+如果一个 helper 对所有 horses 相同，原则上放在共同 boundary 的同一侧。
 
-B0–B2 的 edit/update control：
-
-```text
-host applies canonical edit outside timer
-post-edit native text is ready
-T_native = clean full rebuild to completion
-```
-
-其 `T_prepare = 0`，除非该 parser API 自身还要求 parser-specific preparation。
-
-### 4.4 Node/VM adapters
-
-如果 Rust runner 通过 IPC 调用 Node/JS：
-
-- `T_native` 必须在 Node/JS runtime 内部计时；
-- IPC / pipe / serialization / scheduler delay 不进入 `T_native`；
-- 可以单独报告 `T_adapter_roundtrip`；
-- process model / warmup / GC policy 必须固定。
-
-`T_adapter_roundtrip` 只能作为 integration diagnostic，不能冒充 parser-core latency。
-
-### 4.5 QUERY
-
-Outside timer：
-
-- query case/offset 已预生成；
-
-`T_prepare`：
-
-- canonical byte offset -> native query coordinate；
-
-`T_native`：
-
-- actual query / traversal。
-
-第一轮只要求：
-
-```text
-Q1 offset -> enclosing block/syntax region
-Q2 full sequential syntax traversal
-```
-
-不在第一轮强求 deepest-CST-node 等更细 API。
+如果 helper 只因为某机制需要，则属于该 mechanism cost。
 
 ---
 
-## 5. Correctness contract
+## 7. First-round operations
 
-第一轮不人工维护每个 arbitrary payload 的完整 expected AST。
-
-### C1 — Capability Matrix
-
-用官方 CommonMark/GFM examples 和 upstream documented capabilities 建立：
+第一次只冻结足以构成逻辑闭环的 micro-operations：
 
 ```text
-supported
-divergent
-unsupported
-unknown
+FULL_PARSE
+INSERT
+DELETE
+REPLACE_EQ
+REPLACE_GROW
+REPLACE_SHRINK
+STRUCTURAL_EDIT
+QUERY
 ```
 
-Capability Matrix 是跨 implementation comparison 的上下文和资格表，不在每次 timing loop 内执行。
+### Structural minimum
 
-### C2 — Incremental Self-Equivalence
-
-对 incremental subjects：
-
-```text
-normalize(incremental(post-edit))
-==
-normalize(same-parser clean full parse(post-edit))
-```
-
-这是 timing case 的 primary correctness gate。
-
-如果 self-equivalence 失败：
-
-```text
-WRONG_RESULT
-```
-
-该 case 不能进入 headline performance conclusion。
-
-### C3 — Cross-implementation semantic parity
-
-跨 implementation 比较前必须检查该 case 是否属于 `CORE-COMPARABLE`。
-
-如果 outputs / capability 表明 implementations 实际执行不同语义工作：
-
-```text
-CAPABILITY_DIFFERENCE
-```
-
-允许保留数据，但结论必须限定为实现观察，不能偷换成 algorithm superiority。
-
----
-
-## 6. Structural Edit minimum set
-
-第一轮可以小，但必须覆盖不同传播机制。
-
-### Block/boundary
-
-- paragraph split / merge；
-- blank-line insert/delete；
-- ATX or Setext heading conversion。
-
-### Container/state
-
-- list indent +/-1；
-- blockquote depth change；
-- lazy continuation boundary change。
-
-### Forward-state
-
-- fence opener/closer insert/delete；
-- closed <-> unclosed fence。
-
-### Inline structural
-
-至少：
-
-- emphasis delimiter insert/delete；
-- code-span delimiter insert/delete；
-- link/reference bracket or destination delimiter edit。
-
-这是为了覆盖 HUGE_BLOCK 中 inline delimiter propagation，不能只测 block-level structure。
-
-### Semantic-global
-
-- reference definition target change；
-- add/delete/rename definition；
-- duplicate definition / winner change。
-
-第一轮不要求覆盖所有 Markdown 语法；但必须至少覆盖：
+必须至少覆盖六种传播机制：
 
 ```text
 local text
@@ -419,274 +352,249 @@ inline delimiter state
 semantic dependency
 ```
 
----
-
-## 7. Measurement lanes
-
-为避免 instrumentation 改变 headline latency：
+代表 edits：
 
 ```text
-T-LANE  timing + CPU
-M-LANE  memory
-A-LANE  allocation + parser/work instrumentation
+paragraph split/merge
+list or blockquote depth change
+fence open/close
+emphasis/code-span delimiter edit
+link/reference delimiter edit
+reference definition change
 ```
 
-禁止在 A-LANE 的 instrumented build 上报告 headline latency。
-
-### First-round sampling policy
-
-第一轮故意保持简单：
-
-```text
-independent sessions: 3
-warmup iterations/session: 10
-measured iterations/session: 30
-case order: shuffled with recorded fixed seed
-headline latency: p50 + p95
-p99: NOT REPORTED in first round
-outlier deletion: NONE
-```
-
-Node/JIT runtime：
-
-- 使用 persistent process per session；
-- warmup policy 与 native 保持可记录、可复现；
-- 不宣称 10 次 warmup 必然达到 steady state；
-- 保存 iteration-order raw timing，若存在明显 warmup/non-stationarity 则结论降级并进入 attribution/replication。
-
-第一轮的目标是得到稳定方向和 scaling surface，不是生产级 tail-latency SLO。
-
-### Environment record
-
-每次正式 run 至少记录：
-
-```text
-OS / kernel
-CPU model
-CPU affinity
-SMT state if known
-frequency/turbo policy (record; not necessarily disabled)
-runtime/compiler/toolchain
-build profile
-baseline commit/version/features
-runner commit
-corpus manifest version
-operation manifest version
-sampling policy version
-case-order seed
-```
+第一轮不求穷尽 Markdown syntax。
 
 ---
 
-## 8. Parse Amplification
+## 8. Payload
 
-第一版：
+Synthetic payload 继续以 shape 为主，而非只有 file size：
+
+```text
+PLAIN
+MANY_BLOCKS
+HUGE_BLOCK
+DEEP_CONTAINER
+INLINE_DENSE
+FENCE_HEAVY
+REFERENCE_FANOUT
+MIXED
+```
+
+第一轮 size 可以缩减为：
+
+```text
+64 KiB
+1 MiB
+16 MiB
+```
+
+只有在观察到 crossover / cliff 时再补 256 KiB / 4 MiB 或其它点。
+
+真实 Markdown（CppCoreGuidelines 等）第一阶段主要作为 realism/sanity corpus；只有 BENCH-GRAMMAR-v1 能定义其相关 slice/cases 时才进入严格 horse comparison。禁止把 unsupported syntax 静默算进 headline result。
+
+---
+
+## 9. Measurements
+
+Headline：
+
+```text
+latency p50 / p95
+throughput for full parse
+CPU time
+peak / retained memory
+allocation count / bytes
+```
+
+Algorithmic work counters（优先于微架构 profiling）：
+
+```text
+bytes / source intervals re-inspected
+blocks reparsed
+nodes rebuilt
+nodes reused
+metadata / range records touched
+restart distance
+convergence distance
+fallback-to-full count
+```
+
+按 mechanism 可观察性记录；不可观察则 `UNKNOWN`。
+
+### Parse Amplification
 
 ```text
 PA = unique source-byte coverage re-inspected / logical edited bytes
 ```
 
-`unique source-byte coverage` 的操作定义：
-
-> edit 后 parser/tokenizer/scanner 实际重新进入的 source byte intervals 的并集大小。
-
-它不是：
-
-- changed AST node range；
-- Tree-sitter changed_ranges；
-- wall-clock 的反推；
-- node count 的反推。
-
-PA 只能在 A-LANE / attribution instrumentation 下取得。
-
-如果 parser 没有可靠 instrumentation：
-
-```text
-PA = UNKNOWN
-```
-
-不同 parser 的 PA 只有在 instrumentation 语义等价时才能横向比较；否则只用于同 implementation 内 scaling/ablation。
-
-Repeated reads 不在 PA 中重复计数；如可观察，可另记 `total_byte_read_work`。
-
-Structural edit 还应记录：
-
-```text
-observed affected syntax span
-first stable/reusable suffix
-```
-
-如果不可观察则 `UNKNOWN`。
+只能由显式 instrumentation 得到，不得由 latency/changed_ranges/node count 反推。
 
 ---
 
-## 9. Failure taxonomy
+## 10. Attribution ladder
 
-任何 case 都不能因为失败而静默删除。
+看到时间差后，不立刻下“算法更好”的结论。
 
-第一轮至少分类：
+固定顺序：
+
+```text
+1. timing difference
+2. scaling signature across N/B/L/D/K/F
+3. algorithmic work counters
+4. allocation / bytes moved / representation maintenance
+5. controlled mutation / ablation / counterexample
+6. only if still unexplained: microarchitectural profiling
+```
+
+### PMU / memory hierarchy
+
+第一次实验**不要求**分析访存延迟、cache miss、branch miss。
+
+只有当两个 mechanisms 的 algorithmic work 接近但 wall-clock 仍存在稳定显著差异时，才进入可选 attribution：
+
+```text
+cycles
+instructions
+branches / branch-misses
+cache references / misses
+L1/LLC misses if available
+```
+
+PMU 是解释残差的工具，不是第一轮 headline requirement。
+
+---
+
+## 11. Strength / Weakness profile
+
+最终不是只给排名，而是每匹 horse 形成 profile：
+
+```text
+MECHANISM
+BEST REGIME
+WORST REGIME
+SCALING SIGNATURE
+WORK AMPLIFICATION
+MEMORY / ALLOCATION COST
+FAILURE / FALLBACK REGIME
+KEY STRENGTH
+KEY WEAKNESS
+EVIDENCE
+CONFIDENCE
+```
+
+目标是回答：
+
+> 哪个机制在哪些输入上擅长？为什么？在哪些输入上退化？为什么？这些机制能否在下一阶段扬长避短地组合或重新设计？
+
+“组合”只能在 Weakness Map 之后发生；不能在第一轮看到一个好点子就直接写 Markit algorithm。
+
+---
+
+## 12. Sampling / repeatability
+
+第一轮保持简单：
+
+```text
+3 independent sessions
+10 warmup iterations/session
+30 measured iterations/session
+case order shuffled with recorded fixed seed
+report p50 + p95
+no p99
+no outlier deletion
+```
+
+统一 Rust substrate 后 JIT/GC 不再是主变量，但仍记录 OS/kernel/CPU/affinity/turbo/toolchain/build profile/runner commit/corpus manifest/seed。
+
+失败不得静默删除：
 
 ```text
 PASS
 WRONG_RESULT
-CAPABILITY_DIFFERENCE
 UNSUPPORTED
 TIMEOUT
 OOM
 STACK_OVERFLOW
 CRASH
-ADAPTER_FAILURE
 INSTRUMENTATION_UNAVAILABLE
 ```
 
-默认单 case timeout：30 s；如后续 protocol amendment 修改，必须重新标版本。
-
 ---
 
-## 10. Conclusion levels
+## 13. Conclusion ladder
 
 ```text
 OBSERVATION
 REPRODUCED_OBSERVATION
+ATTRIBUTED_STRENGTH
 ATTRIBUTED_WEAKNESS
-CROSS_IMPLEMENTATION_WEAKNESS
-COMMON_WEAKNESS
+CROSS_MECHANISM_PATTERN
 PARETO_GAP
 DESIGN_OPPORTUNITY
 INCONCLUSIVE
 REFUTED
 ```
 
-### Promotion rules
+规则：
 
-`OBSERVATION`
-- 单次实验面上的事实，例如 implementation A 在 case X 的 median latency 高于 B。
-
-`REPRODUCED_OBSERVATION`
-- 至少跨独立 measurement session 保持方向和量级。
-
-`ATTRIBUTED_WEAKNESS`
-- scaling evidence + work/reuse evidence + controlled probe/counterexample 支持一个机制根因。
-
-`CROSS_IMPLEMENTATION_WEAKNESS`
-- 至少两个独立 implementations 出现同类 scaling/mechanism evidence。
-
-`COMMON_WEAKNESS`
-- 必须显式声明 target class，例如 `B3+B4+B5`，且该 class 全部满足证据条件。
-
-`PARETO_GAP`
-- 已测实现中没有对象同时满足预先声明的目标约束；不要求所有实现拥有同一个机制缺陷。
-
-`DESIGN_OPPORTUNITY`
-- 只能从具备真实编辑相关性的 `COMMON_WEAKNESS` 或 `PARETO_GAP` 升级，并仍然不是 Markit algorithm 设计本身。
-
-Raw native timing 永远最多直接建立 implementation observation。
-
-Rust reproduction 只为 attribution 提供 controlled evidence；不能单独创造 `COMMON_WEAKNESS`。
+- 单点 timing 只能建立 `OBSERVATION`；
+- 重跑稳定才能 `REPRODUCED_OBSERVATION`；
+- scaling + work counters + controlled probe 才能 `ATTRIBUTED_*`；
+- 多个独立 mechanisms 出现同类证据才能 `CROSS_MECHANISM_PATTERN`；
+- `PARETO_GAP` 表示没有 horse 同时满足预先声明的目标约束；
+- `DESIGN_OPPORTUNITY` 必须建立在真实编辑相关的 weakness/pattern/Pareto gap 上。
 
 ---
 
-## 11. R0 preregistration checklist
+## 14. Methodology references
 
-进入 R1 前必须已有：
+1. Wagner & Graham, **Efficient and Flexible Incremental Parsing**, ACM TOPLAS 1998 — incremental work / reuse / scaling。
+2. Swift incremental syntax parsing proposal — incremental vs clean parse / reuse / source-size scaling。
+3. Catherine McGeoch, **A Guide to Experimental Algorithmics**, 2012 — 通过受控计算实验获得对 algorithm/program 的机制洞察，而非只收集 runtime 数字。
+4. Mendling et al., **Methodology of Algorithm Engineering**, ACM Computing Surveys 2025, DOI 10.1145/3769071 — algorithm design、implementation 与 execution environment 是不同研究层次；implementation decisions 可能造成巨大性能差异。
+5. Angriman et al., **Guidelines for Experimental Algorithmics: A Case Study in Network Analysis**, Algorithms 2019 — reimplementation bias、repeatability/replicability、实验程序/输入/参数应可复现。
+6. Georges et al., **Statistically Rigorous Java Performance Evaluation**, OOPSLA 2007 — repeated measurement / statistical discipline。
+7. Mytkowicz et al., **Producing Wrong Data Without Doing Anything Obviously Wrong**, ASPLOS 2009 — setup bias / randomization。
+8. YCSB, SoCC 2010 — shared workload contract。
+9. RocksDB `db_bench` — operation-oriented microbenchmark。
+10. Kalibera & Jones, **Rigorous Benchmarking in Reasonable Time**, ISMM 2013 — independent repetition / uncertainty under finite experimental budget。
 
-- exact baseline versions/commits/features/build profiles 的登记槽位；
-- B2 = Comrak；
-- Lane A native implementation / Lane B Rust reproduction boundary；
-- CORE-COMPARABLE / CAPABILITY-SPECIFIC rule；
-- canonical UTF-8 operation/edit contract；
-- source-representation/copy/encoding timer rule；
-- `T_prepare/T_native/T_total` contract；
-- VM/Node process model；
-- first-round sampling policy；
-- case randomization seed rule；
-- no-outlier-deletion rule；
-- memory lane / allocation lane 与 timing lane 分离；
-- failure taxonomy；
-- capability matrix / self-equivalence policy；
-- minimal Structural Edit six-mechanism coverage；
-- PA operational definition + UNKNOWN rule；
-- conclusion promotion ladder。
-
-具体 baseline SHA、toolchain version、CPU 等值在 R1/R2 materialization 时填入 manifest，但**字段和语义不能在看到性能结果后才发明**。
+这些文献支撑研究方法，不支撑未来 Markit algorithm 的 novelty claim。
 
 ---
 
-## 12. Methodology references and what we borrow
+## 15. R0 first-round gate
 
-1. Tim A. Wagner, Susan L. Graham. **Efficient and Flexible Incremental Parsing**. ACM TOPLAS 20(5), 1998. DOI: https://doi.org/10.1145/293677.293678
-   - incremental work、reuse、retained structure、scaling。
-
-2. Alex Hoppen. **Swift incremental syntax parsing** proposal/discussion, 2018. https://forums.swift.org/t/incremental-syntax-parsing/12368
-   - incremental vs clean parse、reuse/work amount、source-size scaling。
-
-3. Stefan Marr, Benoit Daloze, Hanspeter Mössenböck. **Cross-Language Compiler Benchmarking: Are We Fast Yet?** DLS 2016. DOI: https://doi.org/10.1145/2989225.2989232
-   - heterogeneous implementations 上使用 common abstraction/workload；比较 implementations，避免把语言/运行时差异偷换成算法结论。
-
-4. Andy Georges, Dries Buytaert, Lieven Eeckhout. **Statistically Rigorous Java Performance Evaluation**. OOPSLA 2007. DOI: https://doi.org/10.1145/1297027.1297033
-   - repeated runs、runtime variation、统计纪律。
-
-5. Edd Barrett et al. **Virtual Machine Warmup Blows Hot and Cold**. OOPSLA 2017. DOI: https://doi.org/10.1145/3133876
-   - JIT/VM warmup 不能想当然地视为稳定 steady state。
-
-6. Todd Mytkowicz et al. **Producing Wrong Data Without Doing Anything Obviously Wrong**. ASPLOS 2009. https://research.ibm.com/publications/producing-wrong-data-without-doing-anything-obviously-wrong
-   - measurement bias、setup randomization、避免偶然布局/执行顺序影响结论。
-
-7. Brian F. Cooper et al. **Benchmarking Cloud Serving Systems with YCSB**. SoCC 2010. DOI: https://doi.org/10.1145/1807128.1807152
-   - heterogeneous systems 共享 operation/workload contract；mixed workload 留到 Phase 2。
-
-8. RocksDB `db_bench`. https://github.com/facebook/rocksdb/wiki/Benchmarking-tools
-   - operation-oriented microbenchmark；这里映射为 full parse / insert / delete / replace / query / structural edit。
-
-9. Catherine C. McGeoch. **A Guide to Experimental Algorithmics**. Cambridge University Press, 2012.
-   - experimental algorithmics 强调用受控实验理解 algorithms/programs，而不是只看单一 runtime 数字；实验数据和 test environment 本身是研究资产。
-
-10. Tomas Kalibera, Richard E. Jones. **Rigorous Benchmarking in Reasonable Time**. ISMM 2013. DOI: https://doi.org/10.1145/2464157.2464160
-    - 系统存在多层不确定性；独立重复、effect-size/uncertainty 和合理的实验预算比一次大量循环更可信。
-
-11. Catherine McGeoch et al. **Using Finite Experiments to Study Asymptotic Performance**. Experimental Algorithmics, 2002. DOI: https://doi.org/10.1007/3-540-36383-1_5
-    - 有限输入实验可以支持 scaling hypothesis，但不能把经验 scaling 曲线自动升级为数学复杂度证明。
-
-这些来源支撑实验方法，不支撑未来 Markit algorithm 的 novelty claim。
-
----
-
-## 13. R0 adversarial-review verdict
-
-第一次实验允许缩减 scope，但基础链必须完整。
-
-本 corrective 后，R0 的最低逻辑闭环为：
+进入 R1 前，只要求以下基础完整：
 
 ```text
-same logical problem
--> comparable capability
--> fixed timer contract
--> correctness/self-equivalence
--> implementation measurements
--> scaling/work evidence
--> controlled attribution if needed
--> independent rerun
--> bounded conclusion
+PRIMARY_SUBJECT = controlled Rust mechanism race
+UPSTREAM_ROLE = prior-art / source reconnaissance / sanity only
+BENCH_GRAMMAR_V1 defined before measurement
+NORMALIZED_RESULT_CONTRACT defined
+H0-H3 mechanism boundaries documented
+SAME payload / SAME edit / SAME semantic task
+T_prepare / T_native / T_total frozen
+correctness = horse result == H0 clean parse
+structural minimum covers six propagation families
+headline metrics frozen
+work counters schema frozen
+sampling/repeatability frozen
+conclusion ladder frozen
 ```
 
-R0 不要求：
-
-- 完整实现所有 Markdown dialect；
-- 所有 parser 都有 PA；
-- 第一轮报告 p99；
-- 第一轮就做 YCSB mixed workload；
-- 第一轮把六个 parser 全部重写成 Rust；
-- 第一轮直接设计 Markit parser。
-
-R0 要求：
+第一次不要求：
 
 ```text
-NO HIDDEN TIMER WORK
-NO CAPABILITY MISMATCH IN HEADLINE COMPARISON
-NO SELF-EQUIVALENCE FAILURE IN PERFORMANCE CLAIM
-NO CROSS-LANE ABSOLUTE RANKING
-NO SINGLE-POINT -> ALGORITHM CAUSALITY
-NO SILENT FAILURE DROPPING
+full CommonMark implementation
+six full upstream ports
+PMU/cache analysis
+YCSB mixed workloads
+all payload sizes
+production architecture
+Markit-specific algorithm
 ```
 
-Verdict after corrective: **READY_FOR_R0_FINAL_REVIEW**.
+Verdict target：`READY_FOR_R1_CONTROLLED_RUST_HARNESS`。
