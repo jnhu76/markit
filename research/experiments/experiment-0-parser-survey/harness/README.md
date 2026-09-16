@@ -38,5 +38,27 @@ cargo run --release --manifest-path \
   [--sizes 1k,10k,100k,1m] [--iters N] [--warm N] [--out DIR]
 ```
 
+### Lezer baseline prerequisite (`--lezer`)
+
+The Lezer baseline runs inside a persistent Node worker. Pinned subjects
+(matching RUN-2c provenance):
+
+```text
+@lezer/markdown 1.7.2
+@lezer/common   1.5.2
+Node            v24.15.0
+```
+
+Install exactly the locked versions before running:
+
+```sh
+cd research/experiments/experiment-0-parser-survey/harness/scripts
+npm ci
+```
+
+(`package-lock.json` is committed; `npm ci` reproduces the pinned tree.
+`lezer.rs` locates a Node binary via `LEZER_NODE` or well-known install
+paths.)
+
 Outputs `cases.csv` (one row per scenario), `summary.md`, `meta.txt`
 (toolchain, git SHA, args) under `--out`.

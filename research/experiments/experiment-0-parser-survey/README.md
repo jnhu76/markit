@@ -88,6 +88,19 @@ cargo run --release --manifest-path \
   [--md4c | --ts | --lezer | --green | --green-history | --refs | --commonmark [PATH]]
 ```
 
+The Lezer baseline additionally requires the pinned Node toolchain —
+`@lezer/markdown 1.7.2`, `@lezer/common 1.5.2`, Node v24.15.0 — restored
+exactly from the committed lockfile:
+
+```sh
+cd research/experiments/experiment-0-parser-survey/harness/scripts
+npm ci
+
+cargo run --release --manifest-path \
+  research/experiments/experiment-0-parser-survey/harness/Cargo.toml -- \
+  --lezer --sizes 1k --iters 1 --out DIR
+```
+
 Relocation notes (path fixes only, no semantic change):
 
 - the harness locates `scripts/lezer-worker.js` and the default
