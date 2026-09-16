@@ -26,7 +26,7 @@ SAME runner / timer / instrumentation
         └── H4 RESTART_CONVERGENCE
 ```
 
-目标不是选一个“冠军 parser”，而是得到每种机制在不同输入结构下的 strength/weakness profile，并解释这些差异。
+目标不是选一个“冠军 parser”，而是得到每种机制在不同输入结构下的 strength/weakness profile，并解释差异。
 
 ## Prior-art / source subjects
 
@@ -41,7 +41,7 @@ Wagner & Graham incremental parsing
 Swift incremental syntax parsing
 ```
 
-它们用于源码/设计审计、机制抽取、provenance、sanity probe 和 fidelity 检查。原生绝对时间只作为 `REFERENCE_ONLY`，不进入统一 Rust 机制赛马的 headline ranking。
+这些来源用于源码/设计审计、机制抽取、provenance、sanity probe 和 fidelity 检查。原生绝对时间只作为 `REFERENCE_ONLY`，不进入统一 Rust 机制赛马的 headline ranking。
 
 ## 第一轮 horses
 
@@ -87,7 +87,7 @@ normalized correctness 只比较 semantic kind / tree topology / ordered childre
 
 ## IMPLEMENTATION_PARITY_CONTRACT
 
-为了避免实验变成“Flash 编程水平赛马”，R0 已冻结以下规则：
+为了避免实验变成“Flash 编程水平赛马”，R0 已冻结：
 
 ```text
 one Rust workspace
@@ -98,20 +98,11 @@ shared Source/Edit/grammar/scanner/Node/result/runner/counters where semantics p
 horse-specific state only when mechanism requires it
 ```
 
-第一轮禁止 horse-specific：
+第一轮禁止 horse-specific custom allocator、unsafe fast path、SIMD、manual prefetch、parallelism、specialized hash/string representation 和单匹 horse 专属 inline/cold tuning。机制不可分割的优化必须标 `MECHANISM_INTRINSIC`。
 
-```text
-custom allocator
-unsafe unchecked fast path
-SIMD/manual prefetch
-parallelism
-specialized hash/string representation
-one-horse-only inline/cold tuning
-```
+输入与结果统一使用 `black_box`/runner protection，并用 timed-region 外的 deterministic validation/checksum 确认完整工作确实发生。
 
-机制不可分割的优化必须标 `MECHANISM_INTRINSIC`。
-
-输入与结果统一使用 `black_box`/runner protection，关键 Weakness Map 候选还要做一次第二 compiler profile 的 optimization-sensitivity check。
+所有拟进入 Weakness Map 的关键结论，至少挑一个代表 case 做第二 frozen compiler profile 的 optimization-sensitivity check。
 
 ## 目录权责
 
@@ -178,19 +169,6 @@ fallback-to-full count
 
 第一次不强制 PMU/cache profiling。只有 algorithmic work 已接近、wall-clock 仍有稳定残差时，才进入 cycles/instructions/cache/branch attribution。
 
-## Structural minimum
-
-至少覆盖：
-
-```text
-local text
-block boundary
-container state
-forward state
-inline delimiter state
-semantic dependency
-```
-
 ## Sampling
 
 ```text
@@ -205,7 +183,7 @@ no outlier deletion
 
 ## 结论
 
-每种 mechanism 最终必须有：
+最终输出每匹 horse 的：
 
 ```text
 PRIOR_ART_ANCHOR
@@ -220,20 +198,6 @@ KEY WEAKNESS
 OPTIMIZATION_SENSITIVITY
 EVIDENCE
 CONFIDENCE
-```
-
-结论等级：
-
-```text
-OBSERVATION
-REPRODUCED_OBSERVATION
-ATTRIBUTED_STRENGTH
-ATTRIBUTED_WEAKNESS
-CROSS_MECHANISM_PATTERN
-PARETO_GAP
-DESIGN_OPPORTUNITY
-INCONCLUSIVE
-REFUTED
 ```
 
 Weakness Map 人工 review 前，不允许设计或实现 Markit-specific production parser。
