@@ -1,39 +1,16 @@
 [workspace]
 resolver = "2"
-members = ["crates/markit-core", "apps/markit", "crates/parser-survey"]
+members = ["crates/markit-core", "crates/parser-survey"]
 
-# PRODUCT-RESET NOTE
-# ------------------
-# The current workspace is retained as an experimental/reference baseline.
-# Its shape is NOT the post-reset Markit architecture.
-#
-# In particular:
-# - crates/markit-core contains useful document + Markdown experiments and is
-#   a comparison baseline for Issue #19;
-# - apps/markit and the GPUI dependencies below are retained so the previous
-#   experiment remains reproducible;
-# - retaining these members/dependencies does not re-adopt GPUI, the current
-#   Markdown representation, or the current crate boundary as product
-#   architecture.
-#
-# After Issue #19 and the evidence-backed architecture pass, each component
-# must be classified ADOPT / ADAPT / REPLACE / DELETE.
-#
-# mvp/gpui is an older feasibility prototype with its own lockfile and remains
-# outside this workspace.
-exclude = ["mvp/gpui"]
+# EXPERIMENT-FIRST-RESET NOTE (#23 / MARKIT-EXPERIMENT-FIRST-REPO-RESET-1)
+# ------------------------------------------------------------------------
+# The only remaining members are the Experiment 0 parser-survey harness and
+# the markit-core snapshot it measures. Both are historical research assets
+# (issue #19 / PR #20), NOT product crates. They are moved out of this
+# default workspace into research/experiments/experiment-0-parser-survey/
+# by the next commit of that reset; this root workspace then dissolves.
+# There is no active production Rust workspace on this branch.
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-
-[workspace.dependencies]
-markit-core = { path = "crates/markit-core" }
-
-# Historical experimental GPUI pin.
-# This exact revision is retained only to keep the pre-reset desktop experiment
-# reproducible while architecture is on HOLD. It is not a current product
-# substrate decision and must not be used as evidence that the future UI is
-# required to use GPUI.
-gpui = { git = "https://github.com/zed-industries/zed", rev = "eb8e1c8b5502b7007465fbbc465f4a736fa39210", default-features = false }
-gpui_platform = { git = "https://github.com/zed-industries/zed", rev = "eb8e1c8b5502b7007465fbbc465f4a736fa39210", default-features = false }
