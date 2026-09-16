@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ResultRowV1",
+  "description": "One raw result row: all facts of one case run in one lane.",
+  "type": "object",
+  "properties": {
+    "build_identity": {
+      "$ref": "#/$defs/BuildIdentitySlot"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "correctness_status": {
+      "$ref": "#/$defs/CorrectnessStatus"
+    },
+    "edit": {
+      "$ref": "#/$defs/EditMetaV1"
+    },
+    "environment_ref": {
+      "description": "Reference to the environment record, e.g.\n`manifest/environment.toml#<environment_id>`.",
+      "type": "string"
+    },
+    "execution_status": {
+      "$ref": "#/$defs/ExecutionStatus"
+    },
+    "measurement": {
+      "$ref": "#/$defs/MeasurementV1"
+    },
+    "mechanism_id": {
+      "type": "string"
+    },
+    "operation": {
+      "$ref": "#/$defs/OperationKind"
+    },
+    "payload": {
+      "$ref": "#/$defs/PayloadMetaV1"
+    },
+    "protocol_version": {
+      "type": "string"
+    },
+    "provenance_ref": {
+      "description": "Provenance tag; smoke/validation rows MUST carry\n`R1_SMOKE_ONLY/NON_RESEARCH_RESULT`.",
+      "type": "string"
+    },
+    "result_checksum": {
+      "description": "Hex checksum of the completed result (`null` when the run did not\ncomplete). A correctness fact, never a performance claim.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "schema_version": {
+      "type": "integer",
+      "format": "uint16",
+      "maximum": 65535,
+      "minimum": 0
+    },
+    "seed": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol_version",
+    "build_identity",
+    "case_id",
+    "seed",
+    "mechanism_id",
+    "operation",
+    "payload",
+    "edit",
+    "execution_status",
+    "correctness_status",
+    "environment_ref",
+    "provenance_ref",
+    "measurement"
+  ],
+  "$defs": {
+    "BuildIdentitySlot": {
+      "type": "object",
+      "properties": {
+        "build_profile_id": {
+          "type": "string"
+        },
+        "cargo_lock_sha256": {
+          "type": "string"
+        },
+        "runner_git_commit": {
+          "type": "string"
+        },
+        "rustc": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "runner_git_commit",
+        "rustc",
+        "target",
+        "build_profile_id",
+        "cargo_lock_sha256"
+      ]
+    },
+    "CorrectnessStatus": {
+      "description": "Correctness-hook outcome. Kept orthogonal to [`ExecutionStatus`].",
+      "type": "string",
+      "enum": [
+        "not_checked",
+        "pass",
+        "wrong_result"
+      ]
+    },
+    "EditMetaV1": {
+      "type": "object",
+      "properties": {
+        "end_byte": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0
+        },
+        "inserted_sha256": {
+          "description": "SHA256 of the exact inserted UTF-8 bytes (`null` when the\noperation carries no insertion, e.g. FULL_PARSE / DELETE).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "start_byte": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "ExecutionStatus": {
+      "description": "Outcome of running one case through the harness.",
+      "type": "string",
+      "enum": [
+        "pass",
+        "unsupported",
+        "timeout",
+        "oom",
+        "stack_overflow",
+        "crash",
+        "instrumentation_unavailable"
+      ]
+    },
+    "MeasurementV1": {
+      "description": "Tagged lane payload:\n\n```json\n{ \"lane\": \"timing\", \"metrics\": { \"prepare_ns\": 11, \"native_ns\": 23, \"total_ns\": 34 } }\n```\n\nExactly one lane per row. Metrics shapes are structurally exclusive\n(`deny_unknown_fields`), so a timing row carrying attribution keys is\ninvalid and rejected on deserialize.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "lane": {
+              "type": "string",
+              "const": "timing"
+            },
+            "metrics": {
+              "$ref": "#/$defs/TimingMetricsV1"
+            }
+          },
+          "required": [
+            "lane",
+            "metrics"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lane": {
+              "type": "string",
+              "const": "memory"
+            },
+            "metrics": {
+              "$ref": "#/$defs/MemoryMetricsV1"
+            }
+          },
+          "required": [
+            "lane",
+            "metrics"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lane": {
+              "type": "string",
+              "const": "attribution"
+            },
+            "metrics": {
+              "$ref": "#/$defs/WorkCounters"
+            }
+          },
+          "required": [
+            "lane",
+            "metrics"
+          ]
+        }
+      ]
+    },
+    "MemoryMetricsV1": {
+      "type": "object",
+      "properties": {
+        "allocated_bytes": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "allocation_count": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "peak_retained_bytes": {
+          "$ref": "#/$defs/observed_uint64"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "allocated_bytes",
+        "allocation_count",
+        "peak_retained_bytes"
+      ]
+    },
+    "OperationKind": {
+      "description": "The R0 first-round operation set (`protocol/R0-METHODOLOGY.md` §8).\n\nSerialized as lowercase snake_case; the same spelling is used in the\ncanonical [`crate::case::CaseKeyV1`] encoding, so renaming is a\ncase-identity break and must never happen silently.",
+      "type": "string",
+      "enum": [
+        "full_parse",
+        "insert",
+        "delete",
+        "replace_eq",
+        "replace_grow",
+        "replace_shrink",
+        "structural_edit",
+        "query"
+      ]
+    },
+    "PayloadMetaV1": {
+      "type": "object",
+      "properties": {
+        "payload_id": {
+          "type": "string"
+        },
+        "shape": {
+          "$ref": "#/$defs/PayloadShape"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "payload_id",
+        "shape",
+        "size_bytes"
+      ]
+    },
+    "PayloadShape": {
+      "description": "R0 §9 synthetic shape set. Serialized with the canonical spelling used\nin CaseKey encoding.",
+      "type": "string",
+      "enum": [
+        "plain",
+        "many_blocks",
+        "huge_block",
+        "deep_container",
+        "inline_dense",
+        "fence_heavy",
+        "reference_fanout",
+        "mixed"
+      ]
+    },
+    "TimingMetricsV1": {
+      "type": "object",
+      "properties": {
+        "native_ns": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "prepare_ns": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "total_ns": {
+          "$ref": "#/$defs/observed_uint64"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "prepare_ns",
+        "native_ns",
+        "total_ns"
+      ]
+    },
+    "WorkCounters": {
+      "description": "The R0 first-round work-counter slots, in frozen order.\n\nNo `Default`: absent instrumentation must be spelled\n[`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]\nexplicitly, never implicit.",
+      "type": "object",
+      "properties": {
+        "blocks_reparsed": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "convergence_distance": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "fallback_to_full_count": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "metadata_records_touched": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "nodes_rebuilt": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "nodes_reused": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "restart_distance": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_source_bytes_inspected": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_source_intervals_inspected": {
+          "$ref": "#/$defs/observed_uint64"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "unique_source_intervals_inspected",
+        "unique_source_bytes_inspected",
+        "blocks_reparsed",
+        "nodes_rebuilt",
+        "nodes_reused",
+        "metadata_records_touched",
+        "restart_distance",
+        "convergence_distance",
+        "fallback_to_full_count"
+      ]
+    },
+    "observed_uint64": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        {
+          "const": "UNKNOWN"
+        },
+        {
+          "const": "NOT_APPLICABLE"
+        }
+      ]
+    }
+  }
+}

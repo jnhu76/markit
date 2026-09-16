@@ -1,0 +1,44 @@
+# manifest/environment.toml — R1 environment / build policy record
+# (R0 §4.1, §13; R1 task §2). Values recorded at R1 execution time on the
+# machine that materialized the harness.
+
+schema = "environment-v1"
+environment_id = "env-v1-wsl2-linux-x86_64-rustc-1.97.1"
+recorded_date = "2026-09-16"
+
+[toolchain]
+channel = "1.97.1"
+rustc = "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+rustc_commit = "8bab26f4f68e0e26f0bb7960be334d5b520ea452"
+rustc_date = "2026-07-14"
+host_triple = "x86_64-unknown-linux-gnu"
+llvm = "22.1.6"
+cargo = "cargo 1.97.1 (c980f4866 2026-06-30)"
+pin_mechanism = "rust-toolchain.toml (benchmark-local)"
+
+[build_profile]
+profile_id = "release-primary-v1"
+opt_level = 3
+lto = "thin"
+codegen_units = 1
+incremental = false
+panic = "unwind"
+target_cpu = "default"
+rustflags = ""
+overflow_checks = false
+second_profile = "RESERVED (optimization-sensitivity check only; must be recorded here before use)"
+
+[allocator]
+policy = "rust-system-default"
+custom_allocator = false
+
+[host]
+os_kernel = "Linux 6.18.33.2-microsoft-standard-WSL2 (x86_64)"
+notes = "R1 ran no benchmarks; full host capture (CPU model, affinity, frequency policy) is recorded at measurement stages per R0 §13."
+
+[result_refs]
+schema_version = 1
+schema_doc = "protocol/result-schema.md"
+schema_json = "protocol/result-schema-v1.json"
+case_id_algorithm = "sha256-of-casekey-v1"
+shuffle_algorithm = "splitmix64-v1+fisher-yates-mulshift-v1"
