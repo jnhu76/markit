@@ -16,11 +16,11 @@ It is no longer duplicated in the active documentation tree.
 markdown-parser/
 ```
 
-The current campaign is Issue #19:
+The most recent campaign was Issue #19 — **CLOSED** (external review verdict CORRECTIVE_PASS; evidence merged via PR #20):
 
 > Incremental Markdown parsing: locality, convergence, and invalidation.
 
-See `markdown-parser/README.md` for the provisional research question, comparison map, cost model, and exit conditions.
+See `markdown-parser/README.md` for the provisional research question, comparison map, cost model, and exit conditions; see `results/summary/parser-survey-final.md` for the final verdicts and the FROZEN / NOT-FROZEN lists.
 
 ## Rule
 

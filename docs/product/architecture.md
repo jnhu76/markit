@@ -1,8 +1,8 @@
-# Markit Architecture — HOLD pending parser research
+# Markit Architecture — HOLD pending architecture synthesis
 
 Status: **INTENTIONALLY UNFROZEN**
 
-Authority gate: [Issue #19 — Incremental Markdown parsing: locality, convergence, and invalidation](https://github.com/jnhu76/markit/issues/19)
+Authority gate: [Issue #19 — Incremental Markdown parsing: locality, convergence, and invalidation](https://github.com/jnhu76/markit/issues/19) — **CLOSED** (final report human-reviewed, verdict **CORRECTIVE_PASS**; evidence merged via PR #20). Successor: MARKIT-MARKDOWN-ARCHITECTURE-1 (architecture synthesis, pending).
 
 This file deliberately does **not** define the implementation architecture yet.
 
@@ -18,7 +18,7 @@ The central unresolved mechanism is the Markdown editing engine:
 
 Issue #19 is explicitly allowed to refine or replace that question when evidence shows that the current formulation is incomplete.
 
-Until that experiment closes, Markit does not yet know enough to freeze choices such as:
+Markit does not yet freeze choices such as:
 
 - whole-document tree vs block-local representation;
 - AST vs lossless CST vs hybrid/event representation;
@@ -119,7 +119,7 @@ They are classified only as:
 EXPERIMENTAL / REFERENCE
 ```
 
-After Issue #19, each relevant component must receive one of:
+With the #19 evidence now merged and reviewed, each relevant component must receive one of:
 
 ```text
 ADOPT
@@ -173,7 +173,7 @@ downstream presentation invalidation
 
 ## Architecture gate
 
-A new architecture document may be frozen only after Issue #19 produces a reviewed verdict.
+The #19 evidence gate is satisfied (mechanism survey merged via PR #20, human-reviewed verdict CORRECTIVE_PASS). A new architecture document may be frozen only after the #19-derived architecture synthesis — MARKIT-MARKDOWN-ARCHITECTURE-1 — passes human review.
 
 Minimum required evidence before architecture freeze:
 
@@ -209,8 +209,11 @@ During this research phase:
 docs/PRD.md
     = product requirements
 
-Issue #19 + its generated evidence
+Issue #19 evidence (CLOSED, merged via PR #20)
     = Markdown parser research authority
+
+MARKIT-MARKDOWN-ARCHITECTURE-1
+    = Markdown architecture synthesis (pending)
 
 docs/product/print-browser-contract.md
     = print/browser completeness contract
@@ -230,6 +233,6 @@ pre-reset docs + current implementation
 
 ## Exit condition
 
-This HOLD ends only after human review of the Issue #19 final report.
+The Issue #19 final report has been human-reviewed (verdict **CORRECTIVE_PASS**). This HOLD now ends only when the successor architecture contract — MARKIT-MARKDOWN-ARCHITECTURE-1 — passes the same human review.
 
 At that point, replace this document with an evidence-backed architecture rather than incrementally layering assumptions onto this placeholder.

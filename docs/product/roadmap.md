@@ -1,8 +1,8 @@
 # Markit Roadmap
 
-Status: **parser-research first**
+Status: **architecture synthesis next**
 
-Markit has completed a product reset. The product requirements are retained, but implementation architecture is intentionally **not frozen** until the Markdown parsing experiment in Issue #19 is complete.
+Markit has completed a product reset. The product requirements are retained and implementation architecture remains intentionally **not frozen**. The parser research experiment (#19) is **CLOSED** — evidence merged via PR #20, external review verdict **CORRECTIVE_PASS** — and the next phase is architecture synthesis (MARKIT-MARKDOWN-ARCHITECTURE-1).
 
 ## Current order of work
 
@@ -10,13 +10,13 @@ Markit has completed a product reset. The product requirements are retained, but
 R0  Product truth reset / archive old authority
         |
         v
-R1  Markdown parser research (#19)               <- NOW
+R1  Markdown parser research (#19)               <- CLOSED (PR #20; direction: HYBRID)
         |
         v
-R2  Research-question revision + parser verdict
+R2  Research-question revision + parser verdict  <- DONE (question REFINED)
         |
         v
-R3  Evidence-backed architecture
+R3  Evidence-backed architecture                 <- NOW (MARKIT-MARKDOWN-ARCHITECTURE-1)
         |
         v
 R4  Minimal source editor / document path
@@ -69,15 +69,15 @@ They must not silently become requirements for the new architecture.
 
 ---
 
-## R1 — Incremental Markdown parser research (#19)
+## R1 — Incremental Markdown parser research (#19) — CLOSED
 
-This is the active technical phase.
+Completed and merged via PR #20; external human review verdict **CORRECTIVE_PASS** (MARKIT-19-CORRECTIVE-1: all four MAJOR findings fixed and re-measured). Parser direction: **HYBRID** = Markdown-aware restart → reparse → earliest-safe convergence + position-free history-stable persistent syntax + separate semantic dependency indexes + coherent full-rebuild escape hatch (predictor unvalidated). FROZEN / NOT-FROZEN lists: `results/summary/parser-survey-final.md`; research log: `docs/research/parser-survey-1.md`.
 
 ### Root research question — provisional
 
 > **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
 
-This wording is provisional. The experiment must revise the question if the evidence shows that important cost/authority dimensions are missing.
+This wording was provisional at kickoff. Outcome: the final report **REFINED** it into four independent cost axes with one mechanism per axis; see `results/summary/parser-survey-final.md`.
 
 ### Research map
 
@@ -150,13 +150,13 @@ render/presentation invalidation
 
 No production parser replacement in R1.
 
-Issue #19 must end with evidence and one parser-direction verdict before implementation architecture is written.
+Satisfied: #19 ended with evidence and a parser-direction verdict (HYBRID), then passed human review (CORRECTIVE_PASS). Implementation architecture is written next, in R3.
 
 ---
 
-## R2 — Revise the research question and choose parser direction
+## R2 — Revise the research question and choose parser direction — DONE
 
-The Issue #19 report must explicitly review the root research question itself.
+Completed inside #19. Question verdict: **REFINED**. Parser direction verdict: **HYBRID** with explicitly unfrozen details. The refined formulation in `results/summary/parser-survey-final.md` is the research north star for later rendering/layout work.
 
 Allowed question verdicts:
 
@@ -317,8 +317,8 @@ Validate the complete product on the real Windows host:
 
 ## Current rule
 
-Until Issue #19 is complete:
+Issue #19 is complete and human-reviewed. The rule becomes:
 
-> **Do not optimize the UI around a parser architecture we have not earned yet.**
+> **Do not implement a parser before the MARKIT-MARKDOWN-ARCHITECTURE-1 contract passes architecture review.**
 
-The current task is to understand what a Markdown edit truly invalidates, how quickly the parser can safely reconverge, and what representation minimizes total work rather than one isolated benchmark number.
+The current task is architecture synthesis: turn the earned constraints (FROZEN / NOT-FROZEN lists in `results/summary/parser-survey-final.md`) into module responsibilities, data flow, entry/exit points, and coherence boundaries for the Markdown core. No further parser experiments.
