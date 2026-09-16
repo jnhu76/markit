@@ -9,7 +9,10 @@ pub mod lanes;
 pub mod timer;
 
 pub use clock::{Clock, InstantClock, ManualClock};
-pub use lanes::{Lane, LaneMeasurement, MemoryRecord, MemoryReporter, NoMemoryReporter};
+pub use lanes::{
+    CaseMemoryProbe, Lane, LaneMeasurement, ManualMemoryReporter, MemoryRecord, MemoryReporter,
+    NoMemoryReporter,
+};
 pub use timer::{PhaseGuard, TimingError, TimingRecord};
 
 /// Serialized names of the three lanes (used in result rows).
