@@ -4,6 +4,7 @@
 //! benchmark measurement and no performance claim.
 
 use std::cell::Cell;
+use std::cell::RefCell;
 use std::fs;
 use std::path::PathBuf;
 use std::rc::Rc;
@@ -25,9 +26,13 @@ use markit_mdbench_common::Seed;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkCounters;
 use markit_mdbench_common::WorkSink;
+use markit_mdbench_instrumentation::CaseMemoryProbe;
 use markit_mdbench_instrumentation::Clock;
 use markit_mdbench_instrumentation::LaneMeasurement;
 use markit_mdbench_instrumentation::ManualClock;
+use markit_mdbench_instrumentation::ManualMemoryReporter;
+use markit_mdbench_instrumentation::MemoryRecord;
+use markit_mdbench_instrumentation::MemoryReporter;
 use markit_mdbench_instrumentation::NoMemoryReporter;
 use markit_mdbench_null_r1::fixture::{
     smoke_fixture, smoke_payload_id, smoke_payload_shape, smoke_payload_size_bytes,
@@ -97,7 +102,7 @@ fn facts_for(case_id: CaseId, operation: OperationKind, edit: Option<&CanonicalE
         mechanism_id: MechanismId(NULL_R1_MECHANISM_ID.to_string()),
         operation,
         payload: payload_meta(),
-        edit: edit_meta(edit),
+        edit: edit_meta(operation, edit).expect("test facts must satisfy the operation contract"),
     }
 }
 
@@ -184,12 +189,13 @@ impl Mechanism for ClockProbe {
         Ok(source.len_bytes() as u64)
     }
 
-    fn prepare_update(
+    fn prepare_update<W: WorkSink>(
         &self,
         _old: &Source,
         _post: &Source,
         _edit: &CanonicalEdit,
         old_state: &Self::State,
+        _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Prepared, FailureStatus> {
         self.clock.advance_nanos(self.advance_prepare);
         self.prepare_read.set(self.clock.now_nanos());
@@ -239,12 +245,13 @@ impl Mechanism for PanicsInUpdateMechanism {
         Ok(source.len_bytes() as u64)
     }
 
-    fn prepare_update(
+    fn prepare_update<W: WorkSink>(
         &self,
         _old: &Source,
         _post: &Source,
         _edit: &CanonicalEdit,
         old_state: &Self::State,
+        _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Prepared, FailureStatus> {
         Ok(*old_state)
     }
@@ -846,6 +853,471 @@ fn invalid_lane_combinations_are_rejected() {
         serde_json::from_value::<ResultRowV1>(unknown_lane).is_err(),
         "unknown lanes must be rejected; no composite headline lane may appear"
     );
+}
+
+// ---------------------------------------------------------------------------
+// MAJOR-1: attribution covers prepare, events union via the common collector
+// ---------------------------------------------------------------------------
+
+/// Test mechanism that reports source-inspection events from BOTH the
+/// prepare and the update phase, with overlapping/duplicate ranges.
+struct InspectionProbe {
+    fail_update: bool,
+}
+
+impl Mechanism for InspectionProbe {
+    type State = u64;
+    type Prepared = u64;
+    type Pending = u64;
+
+    fn id(&self) -> MechanismId {
+        MechanismId("__r1_inspection_probe_test_only__".to_string())
+    }
+
+    fn full_parse<W: WorkSink>(
+        &self,
+        source: &Source,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        Ok(source.len_bytes() as u64)
+    }
+
+    fn prepare_update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: &Self::State,
+        cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Prepared, FailureStatus> {
+        // Prepare-phase work MUST be attributable (R1-CORRECTIVE-1).
+        cx.sink.record_source_inspection(0, 10);
+        cx.sink.record_source_inspection(100, 200);
+        Ok(*old_state)
+    }
+
+    fn update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: Self::State,
+        _prepared: Self::Prepared,
+        cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        cx.sink.record_source_inspection(5, 20); // overlaps prepare [0,10)
+        cx.sink.record_source_inspection(0, 10); // duplicate of prepare
+        if self.fail_update {
+            Err(FailureStatus::Unsupported)
+        } else {
+            Ok(old_state + 1)
+        }
+    }
+
+    fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
+        Ok(Completed {
+            state: pending,
+            result_checksum: pending,
+        })
+    }
+}
+
+#[test]
+fn attribution_covers_prepare_and_unions_overlapping_inspections() {
+    let (_key, edit, old, post) = smoke_case_key_and_edit();
+
+    // A-LANE: both phases' events reach the counters; the union is common
+    // arithmetic, so overlaps/duplicates never double-count.
+    let mut counters = WorkCounters::all_unknown();
+    let report = run_update_attributed(
+        &InspectionProbe { fail_update: false },
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &mut counters,
+        &ScalarChecksumHook::new(1),
+    );
+    assert_eq!(report.execution_status, ExecutionStatus::Pass);
+    assert_eq!(
+        counters.unique_source_intervals_inspected,
+        Observed::Known(2),
+        "union of [0,20) and [100,200), not the four raw events"
+    );
+    assert_eq!(counters.unique_source_bytes_inspected, Observed::Known(120));
+
+    // The same mechanism runs in the T-LANE with the no-op sink: the
+    // inspection events cost nothing and the run still passes.
+    let timed = run_update_timed(
+        &InspectionProbe { fail_update: false },
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &ManualClock::new(),
+        &ScalarChecksumHook::new(1),
+    );
+    assert_eq!(timed.execution_status, ExecutionStatus::Pass);
+    assert!(matches!(timed.measurement, LaneMeasurement::Timing(_)));
+
+    // A run that did not complete never finalizes: the derived slots stay
+    // Unknown (a crash must not masquerade as a measured zero).
+    let mut counters = WorkCounters::all_unknown();
+    let failed = run_update_attributed(
+        &InspectionProbe { fail_update: true },
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &mut counters,
+        &ScalarChecksumHook::new(0),
+    );
+    assert_eq!(failed.execution_status, ExecutionStatus::Unsupported);
+    assert_eq!(
+        counters.unique_source_bytes_inspected,
+        Observed::Unknown,
+        "underived slots must stay Unknown on failed runs"
+    );
+}
+
+// ---------------------------------------------------------------------------
+// MAJOR-2: M-LANE per-case windows
+// ---------------------------------------------------------------------------
+
+/// Test reporter that records the begin/run/end sequence.
+struct RecordingReporter {
+    events: RefCell<Vec<&'static str>>,
+}
+
+impl MemoryReporter for RecordingReporter {
+    fn begin_case(&self) -> CaseMemoryProbe {
+        self.events.borrow_mut().push("begin_case");
+        CaseMemoryProbe::new(1)
+    }
+
+    fn end_case(&self, _probe: CaseMemoryProbe) -> MemoryRecord {
+        self.events.borrow_mut().push("end_case");
+        MemoryRecord::unavailable()
+    }
+}
+
+/// Test mechanism that records its own phase into the shared event log.
+struct OrderProbe<'a> {
+    events: &'a RefCell<Vec<&'static str>>,
+}
+
+impl Mechanism for OrderProbe<'_> {
+    type State = u64;
+    type Prepared = u64;
+    type Pending = u64;
+
+    fn id(&self) -> MechanismId {
+        MechanismId("__r1_order_probe_test_only__".to_string())
+    }
+
+    fn full_parse<W: WorkSink>(
+        &self,
+        source: &Source,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        Ok(source.len_bytes() as u64)
+    }
+
+    fn prepare_update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: &Self::State,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Prepared, FailureStatus> {
+        Ok(*old_state)
+    }
+
+    fn update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: Self::State,
+        _prepared: Self::Prepared,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        self.events.borrow_mut().push("mechanism");
+        Ok(old_state + 1)
+    }
+
+    fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
+        Ok(Completed {
+            state: pending,
+            result_checksum: pending,
+        })
+    }
+}
+
+#[test]
+fn memory_lane_opens_and_closes_one_window_around_the_mechanism() {
+    let (_key, edit, old, post) = smoke_case_key_and_edit();
+    let reporter = RecordingReporter {
+        events: RefCell::new(Vec::new()),
+    };
+    let probe = OrderProbe {
+        events: &reporter.events,
+    };
+    let report = run_update_memory(
+        &probe,
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &reporter,
+        &ScalarChecksumHook::new(1),
+    );
+    assert_eq!(report.execution_status, ExecutionStatus::Pass);
+    assert_eq!(
+        *reporter.events.borrow(),
+        ["begin_case", "mechanism", "end_case"],
+        "the M-LANE window must span exactly the mechanism phases"
+    );
+}
+
+/// Test mechanism that observes allocations through a shared
+/// [`ManualMemoryReporter`] while the runner holds the window open.
+struct MemoryObservingProbe<'a> {
+    reporter: &'a ManualMemoryReporter,
+    bytes: u64,
+}
+
+impl Mechanism for MemoryObservingProbe<'_> {
+    type State = u64;
+    type Prepared = u64;
+    type Pending = u64;
+
+    fn id(&self) -> MechanismId {
+        MechanismId("__r1_memory_probe_test_only__".to_string())
+    }
+
+    fn full_parse<W: WorkSink>(
+        &self,
+        source: &Source,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        Ok(source.len_bytes() as u64)
+    }
+
+    fn prepare_update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: &Self::State,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Prepared, FailureStatus> {
+        Ok(*old_state)
+    }
+
+    fn update<W: WorkSink>(
+        &self,
+        _old: &Source,
+        _post: &Source,
+        _edit: &CanonicalEdit,
+        old_state: Self::State,
+        _prepared: Self::Prepared,
+        _cx: &mut MechanismContext<'_, W>,
+    ) -> Result<Self::Pending, FailureStatus> {
+        self.reporter.observe_allocation(self.bytes);
+        self.reporter.observe_peak(self.bytes);
+        self.reporter.observe_retained(self.bytes);
+        Ok(old_state + 1)
+    }
+
+    fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
+        Ok(Completed {
+            state: pending,
+            result_checksum: pending,
+        })
+    }
+}
+
+#[test]
+fn memory_lane_values_are_per_case_and_never_leak_across_cases() {
+    let (_key, edit, old, post) = smoke_case_key_and_edit();
+    let reporter = ManualMemoryReporter::new();
+
+    let first = run_update_memory(
+        &MemoryObservingProbe {
+            reporter: &reporter,
+            bytes: 60,
+        },
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &reporter,
+        &ScalarChecksumHook::new(1),
+    );
+    let second = run_update_memory(
+        &MemoryObservingProbe {
+            reporter: &reporter,
+            bytes: 7,
+        },
+        &old,
+        &post,
+        &edit,
+        0u64,
+        &reporter,
+        &ScalarChecksumHook::new(1),
+    );
+
+    let record = |report: &markit_mdbench_runner::RunReport| match &report.measurement {
+        LaneMeasurement::Memory(m) => *m,
+        other => panic!("M-LANE run produced {other:?}"),
+    };
+    let first = record(&first);
+    let second = record(&second);
+
+    // Case 2 is a fresh window: nothing from case 1 may leak into it.
+    assert_eq!(first.allocated_bytes, Observed::Known(60));
+    assert_eq!(first.peak_bytes, Observed::Known(60));
+    assert_eq!(first.retained_bytes, Observed::Known(60));
+    assert_eq!(second.allocated_bytes, Observed::Known(7));
+    assert_eq!(second.allocation_count, Observed::Known(1));
+    assert_eq!(second.retained_bytes, Observed::Known(7));
+    assert_ne!(first, second);
+
+    // Peak and retained are separate slots in the record schema.
+    let json = serde_json::to_value(second).unwrap();
+    assert!(json.get("peak_bytes").is_some());
+    assert!(json.get("retained_bytes").is_some());
+    assert!(json.to_string().find("peak_retained_bytes").is_none());
+}
+
+// ---------------------------------------------------------------------------
+// MAJOR-4: edit metadata uses the operation contract, not raw hashing
+// ---------------------------------------------------------------------------
+
+#[test]
+fn edit_meta_matches_operation_contract_for_every_operation() {
+    let empty_insert = CanonicalEdit::new(3, 3, "").unwrap();
+    let text_insert = CanonicalEdit::new(3, 3, "abc").unwrap();
+    let delete = CanonicalEdit::new(3, 7, "").unwrap();
+    let sha256 = |text: &str| {
+        use sha2::{Digest, Sha256};
+        let mut hasher = Sha256::new();
+        hasher.update(text.as_bytes());
+        let digest: [u8; 32] = hasher.finalize().into();
+        markit_mdbench_common::to_lower_hex(&digest)
+    };
+
+    // (operation, edit, expected range, expected inserted digest)
+    let cases = [
+        (OperationKind::FullParse, None, None, None),
+        (OperationKind::Query, None, None, None),
+        (OperationKind::Delete, Some(delete), Some((3, 7)), None),
+        (
+            OperationKind::Insert,
+            Some(text_insert.clone()),
+            Some((3, 3)),
+            Some(sha256("abc")),
+        ),
+        // REPLACE_EQ 0->0 carries an EMPTY insertion: the digest of the
+        // empty string is present, exactly like CaseKeyV1.
+        (
+            OperationKind::ReplaceEq,
+            Some(empty_insert),
+            Some((3, 3)),
+            Some(sha256("")),
+        ),
+        (
+            OperationKind::ReplaceGrow,
+            Some(text_insert.clone()),
+            Some((3, 3)),
+            Some(sha256("abc")),
+        ),
+        (
+            OperationKind::ReplaceShrink,
+            Some(text_insert.clone()),
+            Some((3, 3)),
+            Some(sha256("abc")),
+        ),
+        (
+            OperationKind::StructuralEdit,
+            Some(text_insert),
+            Some((3, 3)),
+            Some(sha256("abc")),
+        ),
+    ];
+    for (operation, edit, expected_range, expected_digest) in cases {
+        let meta = edit_meta(operation, edit.as_ref()).unwrap_or_else(|err| {
+            panic!(
+                "{} must accept its canonical edit: {err:?}",
+                operation.canonical_name()
+            )
+        });
+        assert_eq!(
+            meta.inserted_sha256,
+            expected_digest,
+            "{} inserted digest facts",
+            operation.canonical_name()
+        );
+        match expected_range {
+            None => {
+                assert!(
+                    meta.start_byte.is_none() && meta.end_byte.is_none(),
+                    "{} must carry no range",
+                    operation.canonical_name()
+                );
+            }
+            Some((start, end)) => {
+                assert_eq!(meta.start_byte, Some(start));
+                assert_eq!(meta.end_byte, Some(end));
+            }
+        }
+    }
+
+    // DELETE declares no insertion: the digest is null even though a
+    // CanonicalEdit always carries a (possibly empty) string. DELETE
+    // result facts agree with DELETE case-key facts.
+    let delete = CanonicalEdit::new(3, 7, "").unwrap();
+    assert_eq!(
+        edit_meta(OperationKind::Delete, Some(&delete))
+            .unwrap()
+            .inserted_sha256,
+        None
+    );
+}
+
+#[test]
+fn edit_meta_rejects_contradictory_combinations() {
+    let (_, edit, _) = smoke_fixture();
+    let empty = CanonicalEdit::new(0, 0, "").unwrap();
+
+    // Edit-bearing operation without an edit.
+    assert_eq!(
+        edit_meta(OperationKind::Insert, None),
+        Err(markit_mdbench_runner::EditMetaError::MissingEdit)
+    );
+    assert_eq!(
+        edit_meta(OperationKind::StructuralEdit, None),
+        Err(markit_mdbench_runner::EditMetaError::MissingEdit)
+    );
+    // No-edit operation with an edit.
+    assert_eq!(
+        edit_meta(OperationKind::FullParse, Some(&edit)),
+        Err(markit_mdbench_runner::EditMetaError::UnexpectedEdit)
+    );
+    assert_eq!(
+        edit_meta(OperationKind::Query, Some(&edit)),
+        Err(markit_mdbench_runner::EditMetaError::UnexpectedEdit)
+    );
+    // DELETE carrying inserted text would contradict the case-key facts.
+    assert_eq!(
+        edit_meta(OperationKind::Delete, Some(&edit)),
+        Err(markit_mdbench_runner::EditMetaError::UnexpectedInsertedText)
+    );
+    // An EMPTY insertion is NOT "carrying inserted text": a canonical
+    // DELETE is accepted.
+    assert!(edit_meta(OperationKind::Delete, Some(&empty)).is_ok());
 }
 
 // ---------------------------------------------------------------------------

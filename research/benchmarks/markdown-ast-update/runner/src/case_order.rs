@@ -12,7 +12,18 @@ use markit_mdbench_common::CaseId;
 use markit_mdbench_common::Seed;
 
 /// Identifier of the recorded ordering algorithm (PRNG + shuffle).
-pub const SHUFFLE_ALGORITHM_ID: &str = "splitmix64-v1+fisher-yates-mulshift-v1";
+///
+/// History (identifiers are never reused or silently changed):
+///
+/// - `splitmix64-v1+fisher-yates-mulshift-v1`: single widening
+///   multiply-high index draws — documented as "unbiased", which was an
+///   overclaim (without rejection the mapping is not strictly uniform for
+///   arbitrary bounds). Superseded by v2 in R1-CORRECTIVE-1.
+/// - `splitmix64-v1+fisher-yates-lemire-rejection-v2` (current): same
+///   SplitMix64-v1 stream and Fisher–Yates frame, but bounded draws use
+///   Lemire multiply-shift WITH rejection of the biased zone, which is
+///   exactly uniform over `0..n`.
+pub const SHUFFLE_ALGORITHM_ID: &str = "splitmix64-v1+fisher-yates-lemire-rejection-v2";
 
 /// Explicitly versioned SplitMix64 (Steele et al. variant used by
 /// splitmix64.c), fixed constants; stream of u64 words.
@@ -33,11 +44,28 @@ impl SplitMix64V1 {
         z ^ (z >> 31)
     }
 
-    /// Unbiased draw in `0..=n-1` via 64-bit widening multiplication
-    /// (Lemire's "fastrange"). Deterministic for a fixed stream.
+    /// Uniform draw in `0..n` via 64-bit widening multiplication with
+    /// REJECTION of the biased zone (Lemire's bounded sampling). The
+    /// rejection loop re-draws whenever the raw draw falls inside the
+    /// final partial interval, so every index has probability exactly
+    /// `1/n`; at most one rejection is expected on average
+    /// (`2^64 mod n < n` bounds the biased zone).
+    ///
+    /// Deterministic for a fixed PRNG stream; changing this method
+    /// changes [`SHUFFLE_ALGORITHM_ID`] — golden vectors pin its behavior.
     fn below(&mut self, n: usize) -> usize {
         debug_assert!(n > 0);
-        (((self.next_u64() as u128) * (n as u128)) >> 64) as usize
+        let n64 = n as u64;
+        // The biased zone is the final `2^64 mod n` values of the u64
+        // range; `(0 - n) % n` computes `2^64 mod n` without 128-bit math.
+        let threshold = 0u64.wrapping_sub(n64) % n64;
+        loop {
+            let wide = (self.next_u64() as u128) * (n as u128);
+            let low = wide as u64;
+            if low >= threshold {
+                return (wide >> 64) as usize;
+            }
+        }
     }
 }
 
@@ -153,5 +181,100 @@ mod tests {
         let mut one = build_set(&[0]);
         order_cases(&mut one, Seed(3), |e| e.id);
         assert_eq!(one.len(), 1);
+    }
+
+    // -- golden reproducibility vectors (R1-CORRECTIVE-1, IMPORTANT-2) --
+    //
+    // These pin the SplitMix64-v1 stream and the v2 (rejection-based)
+    // permutation. If any of them change, that is an ordering break:
+    // `SHUFFLE_ALGORITHM_ID` must change explicitly in the same commit.
+    // Never silently regenerate these values. Computed at
+    // R1-CORRECTIVE-1 (rustc 1.97.1, 2026-09-16).
+
+    const GOLDEN_SPLITMIX8_SEED: u64 = 0x5EED_0000_0000_0001;
+    const GOLDEN_SPLITMIX8: [u64; 8] = [
+        0x988c_ed4d_9e13_3daa,
+        0x659e_27c2_a1c5_ffa8,
+        0xd0f1_527c_73b2_efbc,
+        0x46fc_33ff_15be_f56a,
+        0x00dd_4aab_4072_c7e9,
+        0xec50_5698_f15d_1984,
+        0x3395_96c5_ac4f_1fb0,
+        0x3a48_6ceb_cefa_48b7,
+    ];
+
+    #[test]
+    fn splitmix64_stream_matches_golden_vectors() {
+        let mut rng = SplitMix64V1::new(GOLDEN_SPLITMIX8_SEED);
+        for expected in GOLDEN_SPLITMIX8 {
+            assert_eq!(rng.next_u64(), expected, "SplitMix64-v1 stream drifted");
+        }
+    }
+
+    fn golden_case_id(i: u64) -> CaseId {
+        let key = CaseKeyV1 {
+            payload_id: format!("case-{i:04}"),
+            payload_shape: PayloadShape::Plain,
+            payload_size_bytes: 64 * 1024,
+            old_source_sha256: [i as u8; 32],
+            operation: OperationKind::FullParse,
+            edit_start_byte: None,
+            edit_end_byte: None,
+            inserted_text_sha256: None,
+            generator_id: Some("r1-golden-test".to_string()),
+            generator_seed: Some(i),
+        }
+        .validated()
+        .expect("golden key");
+        CaseId::from_key(&key)
+    }
+
+    /// GOLDEN: the fixed six-case set (tags 0..=5) under seed
+    /// `0x5EED_0000_0000_0002` must land in exactly this tag order,
+    /// regardless of the input enumeration order.
+    const GOLDEN_PERMUTATION_SEED: u64 = 0x5EED_0000_0000_0002;
+    const GOLDEN_PERMUTATION: [u64; 6] = [3, 1, 5, 2, 0, 4];
+
+    #[test]
+    fn order_cases_matches_golden_permutation() {
+        // Scrambled input order: the sort must make this irrelevant.
+        let input_order = [5usize, 2, 4, 0, 3, 1];
+        let mut entries: Vec<Entry> = input_order
+            .iter()
+            .map(|&i| Entry {
+                tag: i as u64,
+                id: golden_case_id(i as u64),
+            })
+            .collect();
+        order_cases(&mut entries, Seed(GOLDEN_PERMUTATION_SEED), |e| e.id);
+        let tags: Vec<u64> = entries.iter().map(|e| e.tag).collect();
+        assert_eq!(
+            tags,
+            GOLDEN_PERMUTATION.to_vec(),
+            "case-order permutation drifted: SHUFFLE_ALGORITHM_ID must \
+             change explicitly with it"
+        );
+    }
+
+    #[test]
+    fn bounded_draws_are_in_range_and_balanced() {
+        // Rejection-sampler sanity for v2: every draw inside 0..n, and a
+        // rough balance check that would catch a grossly biased mapping.
+        for n in 2usize..=97 {
+            let mut rng = SplitMix64V1::new(GOLDEN_SPLITMIX8_SEED);
+            let draws = n * 256;
+            let mut buckets = vec![0u32; n];
+            for _ in 0..draws {
+                let draw = rng.below(n);
+                buckets[draw] += 1;
+            }
+            let expected = (draws / n) as i64;
+            for (index, &count) in buckets.iter().enumerate() {
+                assert!(
+                    (count as i64 - expected).abs() <= expected / 4 + 16,
+                    "bound {n}: bucket {index} count {count} vs expected ~{expected}"
+                );
+            }
+        }
     }
 }
