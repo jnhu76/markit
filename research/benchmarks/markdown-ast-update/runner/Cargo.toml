@@ -1,0 +1,21 @@
+[package]
+name = "markit-mdbench-runner"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-instrumentation = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-null-r1 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+schemars = { workspace = true }
+sha2 = { workspace = true }
+
+[build-dependencies]
+sha2 = { workspace = true }
+
+[dev-dependencies]
+jsonschema = "0.49"

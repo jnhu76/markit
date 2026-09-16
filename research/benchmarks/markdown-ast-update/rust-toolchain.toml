@@ -1,0 +1,6 @@
+# MARKIT-MARKDOWN-BENCHMARK-1 / R1
+# Frozen per R0 IMPLEMENTATION_PARITY_CONTRACT §4.1: one rustc/toolchain for
+# the whole workspace. Pinned to the exact toolchain recorded in
+# manifest/environment.toml at R1 time.
+[toolchain]
+channel = "1.97.1"

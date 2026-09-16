@@ -1,42 +1,57 @@
-# #22 — Standardized Markdown AST/CST update benchmark (RESERVED)
+# #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **RESERVED AREA — the benchmark itself is implemented under issue #22
-(MARKIT-MARKDOWN-BENCHMARK-1), not by the repository reset (#23).**
+Status: **R1-CORRECTIVE-1 MATERIALIZED / AWAITING ADVERSARIAL R1 REVIEW**  
+Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
+Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
+R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)  
+R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)
 
-This directory is the future home of the standardized benchmark that runs
-existing Markdown parsers / AST-CST update designs on the same payloads, the
-same edits, the same correctness gates, and the same measurement model:
+本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 
-```text
-MD4C                       full-rebuild control (SAX/callback)
-pulldown-cmark             full-rebuild control (Rust events)
-Comrak or cmark-gfm        full-rebuild control (retained AST; one of them)
-tree-sitter-markdown       incremental CST subject
-@lezer/markdown            incremental tree-fragment subject
-mizchi/markdown            lossless/incremental CST subject
-```
-
-Planned layout (created by #22 as needed — nothing here is implemented yet):
+第一阶段只比较统一 Rust 基底下的五种 update mechanism：
 
 ```text
-corpus/       pinned payloads + mutation definitions
-manifest/     baseline versions, commits, runtimes, capability matrix
-results/      raw/ (gitignored, local) + summary/ (curated evidence)
+H0 FULL_REBUILD
+H1 BLOCK_LOCAL_REPARSE
+H2 FRAGMENT_REUSE
+H3 OLD_TREE_SUBTREE_REUSE
+H4 RESTART_CONVERGENCE
 ```
 
-Rules (see `AGENTS.md`):
+所有 horses 共享 BENCH-GRAMMAR-v1、normalized result contract、payload/edit、runner/timer、Rust toolchain/build profile 和 allocator policy。Prior-art projects（MD4C、pulldown-cmark、Comrak、Tree-sitter Markdown、Lezer、mizchi/markdown）只用于机制来源、provenance、sanity/fidelity probes；其原生绝对时间不进入 headline ranking。
 
-- a fast wrong parser fails: `incremental result == clean authoritative parse`
-  is a hard gate wherever the comparison is defined;
-- wall-clock alone is insufficient — record work amplification
-  (bytes rescanned, nodes rebuilt/reused, allocations, position/index
-  maintenance, propagation distance);
-- every performance claim records toolchain, commit SHA, hardware/OS, corpus
-  version, and benchmark mode;
-- this benchmark does NOT pick a "winning parser"; its output is a
-  performance surface and a Weakness Map that future Markit algorithm work
-  must earn from evidence.
+R0 已冻结 `IMPLEMENTATION_PARITY_CONTRACT`：共享非研究代码；horse 只拥有机制固有状态；第一轮禁止 undeclared horse-specific allocator/unsafe/SIMD/prefetch/parallelism/string/hash/inline tuning；输入/输出用统一 `black_box`/full-work validation；最终 Weakness Map 候选要做 optimization-sensitivity check。
 
-Historical predecessor: Experiment 0
-(`research/experiments/experiment-0-parser-survey/`) — reconnaissance only,
-not a normalized measurement and not architecture authority.
+正确性：
+
+```text
+normalize(H1/H2/H3/H4 update result)
+==
+normalize(H0 clean full parse(post-edit source))
+```
+
+Correctness 不比较 pointer/NodeId/fragment/allocation identity。
+
+Timer：
+
+```text
+T_prepare = mechanism-specific edit metadata preparation
+T_native  = mechanism-required update work to valid new state
+T_total   = T_prepare + T_native
+```
+
+Host text-buffer apply-edit 在 timer 外；机制自己的 state/index/reuse/restart/reconstruction 工作不得隐藏。
+
+实验目录固定为 `protocol/ manifest/ runner/ common/ mechanisms/ corpus/ oracle/ instrumentation/ prior-art/ scripts/ results/ report/`，其中 `mechanisms/` 下为五匹 horse。
+
+当前 Gate：
+
+```text
+R0 = PASS
+R1 = PASS（controlled Rust harness substrate；null mechanism 端到端通过 runner，
+      schema/timer/case/seed/lane 全部由集成测试与 verify-r1.sh 强制）
+NEXT = R2 Prior-art Mechanism Extraction
+```
+
+R1 只搭实验平台/schema；R2 只做 prior-art 机制提取。不得开始 horse tuning、
+benchmark claim 或 Markit production algorithm。
