@@ -103,9 +103,14 @@ fn measure(
         // be visible in the row.
     }
 
-    // Apply the edit.
+    // Apply the edit. The edited clone `t` (old tree adjusted to the NEW
+    // document's coordinates via edit()) must be kept: the
+    // changed_ranges contract compares the EDITED old tree to the new
+    // tree. CORRECTIVE-1: run-2b originally compared the UNEDITED
+    // old_tree here, which measured coordinate offset, not syntax change
+    // (retracted; see results/summary/parser-survey-2-baselines-treesitter.md).
     let new_source = apply_edit(doc, &edit);
-    let (new_tree_parsed, inc_us, alloc_inc) = timed(|| {
+    let (parsed, inc_us, alloc_inc) = timed(|| {
         let mut t = old_tree.clone();
         t.edit(&InputEdit {
             start_byte: edit.range.start.as_usize(),
@@ -118,23 +123,22 @@ fn measure(
                 edit.range.start.as_usize() + edit.new_text.len(),
             ),
         });
-        parser.parse(new_source.as_bytes(), Some(&t))
+        let new = parser.parse(new_source.as_bytes(), Some(&t));
+        (new, t)
     });
+    let (new_tree_parsed, edited_old) = parsed;
     let new_tree = new_tree_parsed.ok_or("incremental parse failed")?;
 
     // Reuse proxy: changed ranges between the edited old tree and the
-    // new tree.
+    // new tree (both in new-document coordinates).
     let (ranges_n, cov) = {
-        let (_out, _us, _al) = timed(|| {
-            let mut n = 0u64;
-            let mut bytes = 0u64;
-            for r in old_tree.changed_ranges(&new_tree) {
-                n += 1;
-                bytes += (r.end_byte - r.start_byte) as u64;
-            }
-            (n, bytes)
-        });
-        _out
+        let mut n = 0u64;
+        let mut bytes = 0u64;
+        for r in edited_old.changed_ranges(&new_tree) {
+            n += 1;
+            bytes += (r.end_byte - r.start_byte) as u64;
+        }
+        (n, bytes)
     };
 
     let ts_full_us = {
