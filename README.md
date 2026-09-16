@@ -1,269 +1,183 @@
 # Markit
 
-**Markit** is a low-latency, Markdown-native desktop editor built in Rust
-directly on GPUI.
+**Markit** is a local-first Markdown editor/workspace built around one authoritative Markdown source.
 
-> Product principle: **Nothing gets between your input and the next frame.**  
-> Execution principle: **Never do work the user cannot observe.**  
-> Research principle: **Control → Measure → Attribute → Scale → Intervene → Generalize → Optimize.**
+The intended product has two first-class editing modes:
 
-The execution principle means:
+- **Source Mode** — direct lossless Markdown source editing;
+- **Live Mode** — source-aware rendered editing that writes through to the same Markdown source.
 
-```text
-if it did not change -> do not recompute it
-if it is not visible -> defer it
-if the interaction/frame budget is exhausted -> yield
-if work is stale -> cancel or reject it
-if derived state is incompatible -> do not publish it
-```
+The product also targets workspace search, split preview, Mermaid, LaTeX-style math, browser preview, reliable browser Print/PDF, and Windows file association/Open With.
 
-## Project Status
+> **Markdown Source is the single source of truth.**
 
-Markit is in the **product foundation / GPUI architecture phase**.
+## Current status
 
-The chosen product substrate is **Rust + direct GPUI** (architecture
-decision ADR-008):
+Markit is **not currently implementing the UI architecture**.
 
-```text
-Markit
-  =
-Rust editor core (markit-core)
-  +
-direct GPUI desktop UI/platform integration
-```
+The active phase is:
 
-Windows is the first product platform.
+> **Incremental Markdown parser research — Issue #19**
 
-The project began as an evidence-driven comparison of editor
-architectures, including PocketJS and GPUI (A0–A4). That research remains
-in the repository as historical evidence (`docs/research/`, `docs/phase-a*`,
-`results/`), but **PocketJS is no longer a Markit dependency or product
-foundation**.
+The immediate question is how an arbitrary source edit should propagate through Markdown parsing while minimizing unnecessary work and preserving exact correctness.
 
-The research-established design principles — incremental line indexing,
-block-granular Markdown invalidation, viewport-bounded rendering, and
-explicit changed-range propagation — are now combined with a real-time
-editor execution model:
+The provisional research north star is:
+
+> **For lossless Markdown editing under arbitrary edits, how can Markit minimize reparse radius, tree reconstruction, memory movement, and downstream render invalidation while preserving correctness?**
+
+That wording itself is subject to experiment. Issue #19 must ultimately decide whether to `KEEP`, `REFINE`, or `REPLACE` it.
+
+## Why parser research comes first
+
+The old repository already contains experiments in document editing, incremental Markdown, GPUI, viewport rendering, and performance measurement. They are useful evidence, but they no longer define the new architecture.
+
+Before designing rendering and UI around those assumptions, Markit will first determine:
 
 ```text
-change
-  -> precise dirty propagation
-  -> revision-aware derived work
-  -> user-observable priority
-  -> viewport / Document LOD
-  -> coherent publication
-  -> frame-budgeted, demand-driven presentation
+arbitrary edit
+    |
+    v
+what syntax is actually invalid?
+    |
+    v
+how far must parsing propagate?
+    |
+    v
+where can old syntax safely be reused?
+    |
+    v
+what semantic dependencies really changed?
 ```
 
-The target scaling law for normal local edits is:
+Only after that evidence exists should Markit define the parser/semantic contract consumed by rendering.
+
+## Research comparison map
+
+Issue #19 compares ideas and mechanisms from:
 
 ```text
-work ~= changed semantic region + visible presentation + bounded overhead
+Theory
+  Wagner & Graham
+  incremental parsing / optimal reuse
+
+Systems
+  Tree-sitter
+  Lezer
+  Roslyn
+  rust-analyzer / rowan
+
+Markdown-specific
+  @lezer/markdown
+  tree-sitter-markdown
+  mizchi/markdown
+  MD4C
 ```
 
-rather than work proportional to the total document.
+Candidate ideas such as small-region parsing, block/inline separation, boundary-state checkpoints, earliest safe convergence, lossless CSTs, green-tree-like reuse, and separate semantic dependency indexes are hypotheses to test—not architecture commitments.
 
-## Current Goals
+## Architecture status
 
-The roadmap is a dependency graph (see `docs/product/roadmap.md`), not a
-waterfall. Status as of 2026-08-22:
+`docs/product/architecture.md` is intentionally a **HOLD document**.
 
-1. ✅ P0-01 — framework-independent document core (`markit-core`):
-   Document, incremental LineIndex, Selection, EditTransaction, explicit
-   change/revision semantics (PR #11).
-2. ✅ G0 — GPUI baseline frozen: `zed` rev `eb8e1c8` (Zed v1.16.1),
-   capability-audited and Windows-validated
-   (`docs/product/g0-gpui-baseline.md`).
-3. P0-02 — Markdown BlockIndex + internal IR with golden fixtures and a
-   differential oracle (GPUI-independent; may proceed independently of
-   G0).
-4. P0-03 — first product vertical slice on the frozen baseline:
-   keystroke → document → Markdown IR → visible GPUI pixels (needs both
-   G0 and P0-02).
-5. P1-A dogfood editor → P1-B v0.1 hardening (real-host performance
-   matrix, buffer/index decision gate, atomic save + crash recovery,
-   portable release artifact).
-6. Instrument work amplification, frame work, yields, queue/stale-result
-   behavior, cache invalidation, and interaction tails so the real-time
-   model is testable rather than aspirational.
-7. Keep the evidence-before-architecture discipline: measure before tuning
-   exact budgets/data structures/worker topology, and never trade
-   correctness for a benchmark.
+It currently freezes only product-independent invariants such as:
 
-## Real-time execution model
+- one Markdown source authority;
+- Source and Live Mode cannot become two synchronized documents;
+- heavy Mermaid/math rendering is outside the Markdown parser critical path;
+- interactive presentation and full-document printing are different workloads;
+- future plugins/providers must not depend directly on private parser/UI internals.
 
-Markit borrows real-time techniques commonly seen in game engines and
-streaming renderers, without becoming a game engine:
+It intentionally does **not** freeze:
 
-- dirty flags / precise dependency invalidation;
-- bounded per-frame/cooperative work;
-- user-observable priority;
-- cancellable or stale-result-safe jobs;
-- viewport culling / Document LOD;
-- coherent versioned publication;
-- explicit cache keys and invalidation;
-- demand rendering — no permanent idle tick.
+- AST vs CST;
+- Tree-sitter vs Lezer-like vs custom parser;
+- Rope vs Piece Table;
+- block checkpoint format;
+- semantic dependency representation;
+- RenderPatch shape;
+- GPUI or another UI backend architecture.
 
-Markstream (`Simon-He95/markstream-vue`) is an explicit reference for the
-**discipline** of incremental/adaptive streaming Markdown rendering. Markit
-does not adopt Vue/DOM or copy Markstream's numeric frame budgets.
+Those decisions wait for Issue #19.
 
-See [docs/product/realtime-execution-model.md](docs/product/realtime-execution-model.md).
+## Product scope
 
-## Non-Goals — For Now
+The intended V0.1 still includes:
 
-- building a full Typora clone immediately;
-- proving GPUI is the fastest UI runtime;
-- implementing Linux/macOS product support before the Windows foundation
-  is adequate;
-- introducing a new large framework abstraction;
-- building an ECS/archetype/game-engine framework;
-- adding a permanent 60 Hz update loop to a demand-driven editor;
-- adding plugins, AI features, or a marketplace;
-- tuning worker counts, frame budgets, cache sizes, or buffer structures
-  before the product workload measures the need.
+- Source Mode;
+- Live Mode;
+- file open/save;
+- workspace file navigation and text search;
+- split Source + Preview;
+- Mermaid;
+- LaTeX-style math;
+- complete browser preview;
+- browser Print / Save as PDF;
+- Windows `.md` file association / Open With;
+- local-first operation;
+- extension-friendly semantic boundaries.
 
-## Repository Layout
+See `docs/PRD.md` and `docs/product/mvp-v0.1.md`.
+
+## Print rule
+
+Browser printing is a product requirement, but it does not decide the interactive parser/UI architecture.
+
+The output invariant is:
 
 ```text
-.
-├── AGENTS.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── bench/            # benchmark harness + experiment drivers (A2–A4 historical battery)
-├── docs/
-│   ├── PRD.md
-│   ├── adr/          # evidence-backed architectural decisions
-│   ├── product/      # current architecture, execution model, roadmap, MVP, invariants
-│   └── research/     # historical research record (A0–A4, PocketJS-era)
-├── mvp/
-│   └── gpui/         # GPUI Windows feasibility prototype (gpui 0.2.2, not the product baseline)
-├── workloads/        # shared benchmark corpora
-├── profiles/
-└── results/          # benchmark results (raw + summaries)
+print immediately after opening
+== semantic content ==
+scroll through the entire document, then print
 ```
 
-The PRD lives at [docs/PRD.md](docs/PRD.md).
+Offscreen text, Mermaid, math, images, and other required resources must not disappear merely because interactive UI never materialized them.
 
-The product architecture lives at
-[docs/product/architecture.md](docs/product/architecture.md), with the
-real-time execution model at
-[docs/product/realtime-execution-model.md](docs/product/realtime-execution-model.md).
+See `docs/product/print-browser-contract.md`.
 
-The current substrate decision is
-[ADR-008](docs/adr/ADR-008-direct-gpui-product-substrate.md).
+## Existing code
 
-The GPUI feasibility prototype lives under [mvp/gpui](mvp/gpui/README.md).
+Current code remains in the repository so experiments are reproducible and useful components can be evaluated.
 
-## Research Workflow
-
-Every performance investigation should follow this order:
+For the new architecture, it is classified as:
 
 ```text
-Question
-  ↓
-Controlled workload
-  ↓
-Measurement validation
-  ↓
-Latency measurement
-  ↓
-Attribution
-  ↓
-Scaling experiment
-  ↓
-Root-cause hypothesis
-  ↓
-Controlled intervention
-  ↓
-Cross-workload / cross-platform validation
-  ↓
-Design principle
-  ↓
-Implementation
-  ↓
-Re-measurement
+EXPERIMENTAL / REFERENCE
 ```
 
-A flame graph is evidence for **where CPU time is spent**. It is not, by itself, proof of causality.
-
-## Performance Metrics
-
-Primary metric:
+After the parser research, relevant components should explicitly receive one of:
 
 ```text
-interaction-to-present latency
+ADOPT
+ADAPT
+REPLACE
+DELETE
 ```
 
-Report distributions, not only averages:
+Do not preserve an old mechanism merely because it already exists.
 
-- p50
-- p95
-- p99 (when sample size supports it)
-- max
-- long-frame counts
+## Historical archive
 
-For real-time execution also record, where relevant:
+The complete pre-reset repository is preserved at:
 
-- changed bytes / lines / blocks;
-- blocks rescanned / reparsed;
-- visible / near / far materialization;
-- layout / shaping work;
-- frame-work duration and yields/budget overruns;
-- queue depth and priority inversion;
-- cancelled/stale-result counts;
-- cache hit/miss and memory bounds;
-- scroll drift / layout jumps.
+```text
+d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
+```
 
-Where supported, also collect:
+That revision is the historical archive for old ADRs, GPUI/PocketJS research, previous architecture, the old Markdown implementation, benchmark material, and previous implementation notes.
 
-- CPU profiles;
-- off-CPU/blocking traces;
-- allocations and RSS;
-- GPU/presentation timing;
-- cycles / instructions / IPC;
-- cache and branch behavior;
-- page faults and context switches.
+See `docs/archive/product-reset-2026-09-16/README.md`.
 
-## Evidence Rules
+## Current documentation
 
-Performance claims should include enough metadata to reproduce the result:
+Read in this order:
 
-- commit SHA;
-- OS and version;
-- hardware;
-- compiler/toolchain;
-- build configuration;
-- display configuration;
-- corpus hash/version;
-- workload version;
-- profiler configuration.
+1. `docs/PRD.md` — product requirements;
+2. Issue #19 + `docs/research/markdown-parser/README.md` — current parser research;
+3. `docs/product/architecture.md` — architecture HOLD/invariants;
+4. `docs/product/print-browser-contract.md` — browser/print completeness;
+5. `docs/product/mvp-v0.1.md` — intended first shipping scope;
+6. `docs/product/roadmap.md` — current sequencing.
 
-Negative results are valid results.
+The current working rule is:
 
-Reference systems (Zed, Markstream, game engines, other editors) provide
-hypotheses and vocabulary, not proof of Markit's bottleneck or tuning
-parameters.
-
-## Documentation
-
-Start with:
-
-- `docs/product/realtime-execution-model.md` — hot-path execution contract;
-- `docs/product/architecture.md` — current product/core/platform architecture;
-- `docs/product/performance-invariants.md` — testable work/scheduling invariants;
-- `docs/product/roadmap.md` — implementation order and phase gates;
-- `docs/product/mvp-v0.1.md` — first shippable product scope;
-- `docs/PRD.md` — product/research requirements and historical adversarial audit;
-- `docs/adr/ADR-008-direct-gpui-product-substrate.md` — product substrate decision;
-- `docs/research/README.md` — how to read the historical A0–A4 evidence.
-
-Do not turn unverified implementation choices into ADRs. The high-level
-execution laws are product design constraints; exact worker topology,
-numeric budgets, batching algorithms, buffer structures, and cache
-policies remain evidence-driven.
-
-## License
-
-Apache License 2.0. See [LICENSE](LICENSE).
+> **Question -> experiment -> evidence -> verdict -> architecture -> implementation.**
