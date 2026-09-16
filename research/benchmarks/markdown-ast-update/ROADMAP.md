@@ -1,6 +1,6 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R1 PASS / READY FOR R2**  
+Status: **R1-CORRECTIVE-1 MATERIALIZED / AWAITING ADVERSARIAL R1 REVIEW**  
 Authority: GitHub Issue #22  
 Branch: `research/22-markdown-benchmark-1`  
 R0 methodology: `protocol/R0-METHODOLOGY.md`  
@@ -131,6 +131,12 @@ Gate R1：dummy/null mechanism 跑通 schema/timer/case/seed/lane，不产生性
 
 Verdict: `PASS`
 
+R1-CORRECTIVE-1 (2026-09-16)：PR #26 对抗性 review 的 4 MAJOR + 3 IMPORTANT
+发现已修复（attribution 覆盖 prepare、M-LANE per-case 窗口、supervisor
+失败隔离、edit_meta 操作契约、lazy-work 措辞降级 + EAGER gate、golden
+vectors、shuffle v2 rejection）。权威记录：
+`protocol/R1-HARNESS-CONTRACT.md` §14。
+
 R1 交付（`protocol/R1-HARNESS-CONTRACT.md` 为权威记录）：
 
 ```text
@@ -241,7 +247,18 @@ Stop：`H0_REFERENCE_PASS`
 
 每匹 horse 在正式 measurement 前必须通过：grammar fixtures、arbitrary/structural differential correctness、counter semantics、fallback、implementation parity、no timer-informed tuning、no undeclared horse-specific optimization。
 
-Stop：`HORSE_CORRECTNESS_AND_PARITY_PASS`
+Hard gate before formal horse measurement (R1-CORRECTIVE-1, IMPORTANT-1):
+
+```text
+EAGER_COMPLETION_VALIDATION_PASS
+```
+
+`complete()` + `black_box` 是 completion authority boundary，不是 lazy work
+不可能性的机械证明。R4/R5 必须额外证明真实 horses 的 normalized
+result/state 是 eager materialization（iterator/closure/OnceCell/lazy
+index 后面隐藏的 deferred work 已被强制消费），才能进入正式 measurement。
+
+Stop：`HORSE_CORRECTNESS_AND_PARITY_PASS`（且 `EAGER_COMPLETION_VALIDATION_PASS`）
 
 ---
 

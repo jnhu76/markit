@@ -1,6 +1,6 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R1 PASS / READY FOR R2**  
+Status: **R1-CORRECTIVE-1 MATERIALIZED / AWAITING ADVERSARIAL R1 REVIEW**  
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
 Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
 R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)  

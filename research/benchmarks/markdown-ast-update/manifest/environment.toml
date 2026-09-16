@@ -41,4 +41,7 @@ schema_version = 1
 schema_doc = "protocol/result-schema.md"
 schema_json = "protocol/result-schema-v1.json"
 case_id_algorithm = "sha256-of-casekey-v1"
-shuffle_algorithm = "splitmix64-v1+fisher-yates-mulshift-v1"
+# v2 = Lemire multiply-shift WITH rejection (R1-CORRECTIVE-1); v1
+# ("splitmix64-v1+fisher-yates-mulshift-v1") is retired: its bounded
+# draws were not strictly uniform.
+shuffle_algorithm = "splitmix64-v1+fisher-yates-lemire-rejection-v2"

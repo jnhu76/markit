@@ -32,8 +32,17 @@ development/test builds, which are never research measurements),
 
 - `payload`: `payload_id`, `shape` (R0 §9 snake_case names), `size_bytes`.
 - `edit`: `start_byte`, `end_byte`, `inserted_sha256` (hex SHA256 of the
-  exact inserted UTF-8 bytes). All `null` for operations without an edit
-  (`FULL_PARSE`, `QUERY`) or without insertion (`DELETE`).
+  exact inserted UTF-8 bytes). Built by the validated
+  `edit_meta(operation, edit)` constructor, which uses the SAME operation
+  contract as `CaseKeyV1` and rejects contradictory combinations:
+
+```text
+FULL_PARSE / QUERY:  all null
+DELETE:              range present, inserted_sha256 = null
+INSERT / REPLACE_EQ / REPLACE_GROW / REPLACE_SHRINK / STRUCTURAL_EDIT:
+                     range present, inserted_sha256 present
+                     (empty insertions hash the empty string)
+```
 
 ## Statuses (kept orthogonal)
 
@@ -51,7 +60,8 @@ development/test builds, which are never research measurements),
 
 ```json
 { "lane": "timing", "metrics": { "prepare_ns": 11, "native_ns": 23, "total_ns": 34 } }
-{ "lane": "memory", "metrics": { "allocated_bytes": ..., "allocation_count": ..., "peak_retained_bytes": ... } }
+{ "lane": "memory", "metrics": { "allocated_bytes": ..., "allocation_count": ...,
+                                 "peak_bytes": ..., "retained_bytes": ... } }
 { "lane": "attribution", "metrics": { <WorkCounters slots> } }
 ```
 
@@ -63,10 +73,20 @@ development/test builds, which are never research measurements),
   (`prepare + native`, or `native` when prepare is `NOT_APPLICABLE`) —
   never an independently measured enclosing interval. Failed runs and
   timing-arithmetic overflow record `"UNKNOWN"` values.
+- `memory`: per-case window facts (one `begin_case`/`end_case` window per
+  run). `peak_bytes` (maximum live bytes IN the window) and
+  `retained_bytes` (bytes still held at window close) are DISTINCT
+  metrics and are never conflated into a `peak_retained_bytes` field.
 - `attribution` slots (R0 §10) are three-valued: `Known(v)` serializes as
   the number, absent instrumentation as `"UNKNOWN"`, structurally
   inapplicable as `"NOT_APPLICABLE"`. `Known(0)` is therefore always
   distinguishable from unknown/inapplicable.
+  `unique_source_intervals_inspected` / `unique_source_bytes_inspected`
+  are DERIVED by the common collector from `record_source_inspection`
+  events (prepare + update unioned, overlaps never double-counted); they
+  stay `"UNKNOWN"` for runs that did not complete. Parse Amplification,
+  when activated later, is computed by the common layer from the derived
+  byte counter — never by horses.
 
 ## Provenance
 
