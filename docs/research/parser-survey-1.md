@@ -227,3 +227,43 @@ mechanisms. Parser mechanism verdict: **HYBRID** (Markdown-specific
 convergence + position-free green representation + semantic dependency
 indexes + unvalidated-predictor full-parse fallback). Campaign stopped
 at READY_FOR_MARKIT_MARKDOWN_ARCHITECTURE_REVIEW.
+
+## MARKIT-19-CORRECTIVE-1 (adversarial review round, done)
+
+The campaign's first close drew an adversarial review: 4 MAJOR / 3
+MINOR findings, verdict PASS_WITH_CORRECTIVES, "NOT YET READY TO FREEZE
+ARCHITECTURE". All resolved on this branch; zero markit-core changes.
+
+- **A (MAJOR-1, tsitter)**: `changed_ranges` was called on the UNEDITED
+  old tree — the coverage column of RUN-2b was a coordinate-offset
+  artifact (BOF 99.3 % / mid 49.5 % / EOF 0 %). Fixed to the
+  edit()-adjusted clone per the tree-sitter contract; rerun shows
+  ordinary-edit coverage 0.00–0.15 % at every position, fence cascade
+  99.63 % and deep-quote chain 50.6 % unchanged, timing reproduced.
+  Retracted: "ts coverage = suffix fraction" and the generalized
+  "suffix-cost is a property of position-carrying representations".
+- **B (MAJOR-2, green)**: G2 was renamed honestly — run-3 proved
+  single-edit locality from a balanced root, not long-lived balance.
+  New G2-HISTORY-STABILITY gate: naive path-copy degrades under
+  structural churn (height 11→128 after 100 k hotspot-heavy edits,
+  10.7× balanced; reads/memory degrade with it); height-triggered
+  rebuild bounds it (amortized 35 ns/edit, worst pause 0.22 ms);
+  repeated truncation alone does not degrade. Balance maintenance is a
+  REQUIRED mechanism; the concrete strategy stays open.
+- **C (MAJOR-3, refindex)**: stable identity and document order were
+  conflated (`(id, id, url)` + min-by-id). Reworked to `(BlockId,
+  url)` + a `DocOrder` provider from the syntax layer. Six
+  winner-mutation gates pass (insert-before-winner with a larger id,
+  move-with-unchanged-id, delete-winner, split, merge). H3 unchanged.
+- **D (MAJOR-4 + MINORs, wording)**: H5 narrowed to "the measured
+  Markit/Lezer locality strategies outperform the pinned
+  tree-sitter-markdown pairing on the tested workloads" (no
+  generic-vs-specific causal claim); Q7 demoted to a provisional,
+  extensible propagation-mechanism inventory; Q6 freezes
+  "huge blocks admit sub-block locality / containers admit nesting",
+  not a chunk size; memory numbers labeled green-representation-only;
+  HYBRID verdict now carries an explicit FROZEN / NOT-FROZEN list.
+
+Post-corrective verdict: READY_FOR_MARKIT_MARKDOWN_ARCHITECTURE_REVIEW
+(corrected scope). Per the review's gate, evidence work for #19 is
+complete.
