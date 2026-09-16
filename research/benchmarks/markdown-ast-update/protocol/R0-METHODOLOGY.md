@@ -1,8 +1,8 @@
 # R0 Methodology — MARKIT-MARKDOWN-BENCHMARK-1
 
-Status: **R0 CORRECTIVE-2 / CONTROLLED RUST MECHANISM RACE / NO BENCHMARK EXECUTION**
+Status: **R0 CORRECTIVE-2 / CONTROLLED RUST MECHANISM RACE / AUTHORITATIVE**
 
-Authority: GitHub Issue #22 and its R0 review comments.
+Authority: GitHub Issue #22 plus the latest R0 corrective comment. Where older #22 body text still describes native cross-runtime baseline ranking or a dual-lane primary design, **this file supersedes that older methodology**.
 
 ## 0. Research question
 
@@ -68,7 +68,7 @@ fallback policy
 
 原则：**能共享的非研究代码尽量共享；会改变机制语义的部分不得为了“统一”而共享。**
 
-最近 Algorithm Engineering 方法学强调：即便受控条件下，implementation choices 也可能导致数量级性能差异。因此统一 substrate 的目的，是尽可能把这些选择从“算法机制比较”中消掉；与此同时，所有 mechanism reproduction 必须显式记录 fidelity boundary，避免把 Flash 自己的重实现误称为 upstream 原算法。
+统一 substrate 的目的，是尽可能把 implementation choices 从“算法机制比较”中消掉；与此同时，所有 mechanism reproduction 必须显式记录 fidelity boundary，避免把 Flash 自己的重实现误称为 upstream 原算法。
 
 ---
 
@@ -118,9 +118,9 @@ post-edit source
 -> rebuild normalized syntax state
 ```
 
-用途：建立“什么都不复用”的成本下界/对照。
+用途：建立“什么都不复用”的成本对照。
 
-Prior-art inspiration：MD4C / pulldown-cmark / Comrak 的 clean parse 路线。
+Prior-art inspiration：clean full-parse routes such as MD4C / pulldown-cmark / Comrak。
 
 ### H1 — BLOCK_LOCAL
 
