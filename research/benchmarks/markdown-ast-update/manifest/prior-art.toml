@@ -6,6 +6,9 @@
 # mechanism-relevant paths (each record's §15 list is the exhaustive one).
 # All entries retrieved 2026-09-16. No external repository is vendored;
 # upstream clones used for extraction lived outside this repository.
+# 2026-09-17 corrective pass (MARKIT-R2-PRIOR-ART-CORRECTIVE-1): notes
+# updated for reuse-semantics and state-minimality fidelity; all
+# pins/tags/SHAs unchanged.
 
 schema = "prior-art-v1"
 retrieved_date = "2026-09-16"
@@ -85,7 +88,7 @@ relevant_paths = [
   "lib/src/lexer.c",
   "crates/cli/src/fuzz.rs",
 ]
-notes = "Old-tree subtree reuse: ts_tree_edit flag propagation; reuse predicate = position alignment + external-scanner entry-state equality + !changed/error/missing/fragile + first-leaf lex-mode/action compatibility; splice state = current grammar transition; backdown on invalid lookahead; reuse shutdown while GLR version_count > 1; content-blind (trusts caller's edit mapping). Secondary: Context7 /tree-sitter/tree-sitter docs. H3 anchor; H4-flavored convergence gating (hybrid)."
+notes = "Old-tree subtree reuse: ts_tree_edit flag propagation; reuse predicate = position alignment + external-scanner entry-state equality + !changed/error/missing/fragile + first-leaf lex-mode/action compatibility; splice state = current grammar transition; backdown on invalid lookahead; reuse suppressed while GLR version_count > 1 (allow_node_reuse recomputed at each outer parse-loop iteration after ts_parser__condense_stack, so suppression is interval-shaped, not sticky); content-blind (trusts caller's edit mapping). Secondary: Context7 /tree-sitter/tree-sitter docs. H3 anchor; H4-flavored convergence gating (hybrid)."
 
 [[source]]
 id = "tree-sitter-markdown-grammar"
@@ -103,7 +106,7 @@ relevant_paths = [
   "tree-sitter-markdown-inline/src/scanner.c",
   "tree-sitter-markdown/queries/injections.scm",
 ]
-notes = "Block scanner serializes 5 scalars + open-blocks stack (18 kinds; list content-indent 2..15); inline scanner 4 bytes; per-state valid-token sets gate external tokens. Issue-backed limits: #243 (open, unbounded open_blocks memcpy vs 1024-B buffer), #92 (closed via PR #134: emphasis lost on incremental reparse). Evidence for Markdown hidden entry-context required by H1/H3/H4 models."
+notes = "Block scanner serializes 5 scalars + open-blocks stack (18 kinds; list content-indent 2..15); inline scanner 4 bytes; per-state valid-token sets gate external tokens. Issue-backed limits: #243 (open, unbounded open_blocks memcpy vs 1024-B buffer — serialized-state VALUE size is depth-dependent), #92 (closed via PR #134: emphasis lost on incremental reparse). This enumeration is KNOWN-SUFFICIENT entry-context evidence for that implementation's reuse gate and CANDIDATE context dimensions for H1/H3/H4 models; minimality unknown, and necessity of this exact representation for every mechanism not established (retention vs recomputation is mechanism-dependent)."
 
 [[source]]
 id = "lezer-common"
@@ -163,7 +166,7 @@ relevant_paths = [
   "src/api/exports.mbt",
   "js/api.d.ts",
 ]
-notes = "Naming correction: 'mizchi/markdown' resolves to markdown.mbt; core is MoonBit, not Rust. Top-level block span map + region clean reparse + splice + recursive suffix span shift; no hashes/validation; TOTAL full-parse fallback whenever link reference definitions exist. H1 anchor; docs/markdown.md ReferenceIndex/nodeId content is aspirational, not shipped."
+notes = "Naming correction: 'mizchi/markdown' resolves to markdown.mbt; core is MoonBit, not Rust. Top-level block span map + region clean reparse + splice = prefix blocks passed through unchanged + suffix blocks reconstructed as new values with shifted spans (PARSER-WORK reuse: reused_* counters mean not-reparsed, NOT object-identity/representation reuse); no hashes/validation; TOTAL full-parse fallback whenever link reference definitions exist. H1 anchor; docs/markdown.md ReferenceIndex/nodeId content is aspirational, not shipped."
 
 [[source]]
 id = "wagner-graham-1998-toplas"

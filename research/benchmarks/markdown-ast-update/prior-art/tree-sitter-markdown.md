@@ -349,11 +349,12 @@ breaks engine parse_state agreement forward.
 
 All HYPOTHESIS unless marked OBSERVED. (Q1-Q12 per R2 brief.)
 
-- Q1 (old info surviving): the entire per-token scanner snapshots (§3)
-  survive in the tree; `matched`/`column`/fence length are old facts a new
-  parse must reproduce exactly to reuse anything. #92 is a realized case
-  of stale-state interaction. OBSERVED carriers; wrongness instances as
-  cited.
+- Q1 (old info surviving): the byte-serialized external-scanner states
+  carried on external-token subtrees (§3) survive in the tree;
+  `matched`/`column`/fence length are old facts a new parse must reproduce
+  exactly (under THIS engine's equality gate) to reuse anything. #92 is a
+  realized case of stale-state interaction. OBSERVED carriers; wrongness
+  instances as cited.
 - Q2 (who vouches): no content hash anywhere; the voucher is the
   determinism assumption "equal serialized state ⇒ equal future tokens"
   plus engine LR-state agreement (§11). OBSERVED absence of content checks.
@@ -394,38 +395,59 @@ All HYPOTHESIS unless marked OBSERVED. (Q1-Q12 per R2 brief.)
   single-version phases (`tree-sitter.md` §10) — whether splits suppress
   reuse often in prose workloads is HYPOTHESIS, testable under the #22
   protocol.
-- Q12 (mechanism-intrinsic vs implementation-specific): intrinsic — a
-  container-context stack with indentation arithmetic, open-fence length,
-  line-synchronous matching, and serialized-state-gated reuse; the *need*
-  for these is Markdown's, not tree-sitter's. Implementation-specific —
-  the 5-byte packing, 18-value Block enum encoding, `matched` counter,
-  GLR ERROR branch-kill tactic, `section` re-nesting, two-grammar split
-  mechanics, compile-time extension flags.
+- Q12 (mechanism-intrinsic vs implementation-specific): Markdown the
+  language requires enough context to resolve context-sensitive
+  block/container/fence semantics; this scanner is ONE KNOWN IMPLEMENTATION
+  of that requirement. Tree-sitter's exact carrier — a container-context
+  stack with indentation arithmetic, open-fence length, line-synchronous
+  matching, and serialized-state-gated reuse — is KNOWN-SUFFICIENT for
+  this implementation's reuse gate; MINIMALITY UNKNOWN, and the necessity
+  of this exact representation for every mechanism is NOT ESTABLISHED.
+  Implementation-specific — the 5-byte packing, 18-value Block enum
+  encoding, `matched` counter, GLR ERROR branch-kill tactic, `section`
+  re-nesting, two-grammar split mechanics, compile-time extension flags.
 
 ## 14. Relevance assessment for the benchmark
 
-This grammar is the strongest prior-art demonstration that **Markdown
-incremental mechanisms must retain hidden cross-line state outside the
-visible tree**, and that the retained set is small, enumerable, and
-line-synchronous. Transferable evidence, per horse:
+This grammar is the strongest prior-art demonstration that a Markdown
+incremental mechanism CAN retain hidden cross-line state outside the
+visible tree, and that one implementation's retained-state field schema is
+enumerable and line-synchronous (5 scalar fields + the open_blocks stack).
+The state VALUE size is depth-dependent (issue #243: open_blocks growth
+against the fixed 1024-B serialization buffer). What OTHER mechanisms
+require — retention vs recomputation from source, restarts farther
+backward, equivalent context encoded in parser states, hashes or
+fingerprints, a different representation, conservative invalidation, or
+no retained cross-edit scanner state at all — IS NOT ESTABLISHED by this
+evidence. Transferable evidence, per horse:
 
-- **H1 (BLOCK_LOCAL_REPARSE)**: to reparse an arbitrary block locally, one
-  must first reconstruct the block's entry context. The `Scanner` struct
-  (§3) is a maintainer-authored enumeration of what that context is:
-  container stack with per-container content indentation (13 list
-  variants), phase flags, partial-line indentation, tab-split column, and
-  open-fence length. Any H1 "preserve unaffected block states" step must
-  reproduce at least this set (fidelity: our model, not the C scanner).
+- **H1 (BLOCK_LOCAL_REPARSE)**: reparsing an arbitrary block locally needs
+  enough context to resolve Markdown's context-sensitive
+  block/container/fence semantics — re-established somehow; whether by
+  retention, recomputation, or a farther-back restart is
+  mechanism-dependent. The `Scanner` struct (§3) is a maintainer-authored
+  enumeration of one KNOWN-SUFFICIENT dimension set for one
+  implementation's reuse gate: container stack with per-container content
+  indentation (13 list variants), phase flags, partial-line indentation,
+  tab-split column, and open-fence length. These are CANDIDATE H1
+  entry-context dimensions (fidelity: our model, not the C scanner);
+  MINIMALITY UNKNOWN, and the necessity of retaining this exact
+  representation is NOT ESTABLISHED.
 - **H3 (OLD_TREE_SUBTREE_REUSE)**: the engine's scanner-state equality
-  gate shows subtree reuse in Markdown is conditional on hidden-state
-  compatibility, not byte ranges; container/fence edits are the natural
-  maximally-invalidating mutation family for the benchmark's STRUCTURAL_EDIT
-  set (Q3/Q4/Q5 above give concrete mutation targets).
-- **H4 (RESTART_CONVERGENCE)**: convergence cannot be byte-alignment only;
-  it must include equality of the serialized context (§7). The state
-  contents define the checkpoint payload per line start, and container
-  edits define worst-case convergence distance — directly relevant to the
-  protocol's restart-distance / convergence-distance counters.
+  gate shows that, in this grammar+engine, subtree reuse is conditional
+  on hidden-state compatibility, not byte ranges; container/fence edits
+  are the natural maximally-invalidating mutation family for the
+  benchmark's STRUCTURAL_EDIT set (Q3/Q4/Q5 above give concrete mutation
+  targets).
+- **H4 (RESTART_CONVERGENCE)**: for THIS implementation, suffix reuse is
+  gated on equality of the serialized context (§7), not byte-alignment
+  alone — evidence that a convergence check may need context equality,
+  not proof that every H4 must. The enumeration provides CANDIDATE H4
+  checkpoint context dimensions per line start (the actual benchmark
+  checkpoint representation is an R3+ parity decision, not defined in
+  R2), and container edits define a worst-case convergence-distance
+  family — directly relevant to the protocol's restart-distance /
+  convergence-distance counters.
 - **Split grammar**: evidence that "block damage" and "inline damage" are
   separable damage classes with different state carriers (block: container
   stack; inline: delimiter-run state) — relevant to the protocol's
@@ -434,9 +456,10 @@ line-synchronous. Transferable evidence, per horse:
 Fidelity boundary: we would NOT reproduce the tree-sitter grammar tables,
 the GLR branch machinery, the C scanners, the section-node design, or the
 injection-based two-grammar composition. Any horse borrowing these ideas is
-`tree-sitter-markdown-inspired` under the R0 fidelity naming rule; the
-retained-state *requirements* (not the encodings) are the transferable
-claim.
+`tree-sitter-markdown-inspired` under the R0 fidelity naming rule; what
+transfers is the candidate context DIMENSIONS (not the encodings, and not
+any necessity claim — whether a given mechanism must retain them is
+unestablished).
 
 ## 15. Manifest entry
 

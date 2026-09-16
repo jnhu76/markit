@@ -1,6 +1,7 @@
 # R2 HYPOTHESES — questions R3+ must test
 
-Status: **R2 DRAFT FOR ADVERSARIAL REVIEW**
+Status: **READY_FOR_ADVERSARIAL_R2_REVIEW** (post corrective pass
+MARKIT-R2-PRIOR-ART-CORRECTIVE-1, 2026-09-17)
 
 This file contains only hypotheses produced by prior-art extraction. No
 performance numbers, no rankings, no winners. Each hypothesis is a question
@@ -109,21 +110,31 @@ TESTS IT:
 
 ```text
 HYPOTHESIS-ID:          R2-H06
-SOURCE:                 tree-sitter.md §10 (reuse shutdown), §13 Q11
+SOURCE:                 tree-sitter.md §10 (reuse suppression), §13 Q11
 MECHANISM:              H3 old-tree subtree reuse (M5)
-OBSERVED BASIS:         OBSERVED — allow_node_reuse = (version_count == 1):
-                        any GLR ambiguity/error split disables reuse
-                        wholesale for the remainder of the parse.
+OBSERVED BASIS:         OBSERVED — allow_node_reuse = (version_count == 1)
+                        is a LOCAL recomputed at each outer iteration of
+                        the parse loop (parser.c:2171-2179), after
+                        ts_parser__condense_stack runs (:2207): reuse is
+                        suppressed WHILE multiple GLR stack versions
+                        exist; a later condense back to one version
+                        re-enables it. There is no mid-file full-parse
+                        fallback (tree-sitter.md §10).
 PREDICTED STRENGTH:     strong on well-formed, unambiguous sources.
-PREDICTED WEAKNESS:     on error-dense or ambiguous sources, the mechanism
-                        silently degrades toward full-parse work while still
-                        paying old-tree retention and edit mapping; fallback
-                        frequency, not edit locality, dominates behavior.
+PREDICTED WEAKNESS:     ambiguity/error regions may create a
+                        source-distance interval during which reuse is
+                        suppressed; interval duration, coverage, and
+                        post-condense reuse recovery are empirical
+                        questions. On error-dense or ambiguous sources,
+                        work inside suppression intervals approaches
+                        clean-parse work for those regions while old-tree
+                        retention and edit mapping are still paid.
 MINIMAL COUNTEREXAMPLE  same local edit in two documents: one clean, one
 SHAPE:                  containing an earlier unresolved construct that
                         triggers a version split.
-WHICH LATER STAGE       R7/R8 + fallback-to-full / reuse counters.
-TESTS IT:
+WHICH LATER STAGE       R7/R8 + reuse-suppression-interval / reuse
+TESTS IT:               counters (there is no full-parse fallback to
+                        count — suppression is the cost carrier).
 ```
 
 ```text
@@ -136,7 +147,11 @@ OBSERVED BASIS:         OBSERVED — reuse eligibility requires byte-equality
                         length, phase flags, partial-line indentation,
                         tab-stop column.
 PREDICTED STRENGTH:     byte-identical subtrees in matching context reuse
-                        safely; the state set is small and enumerable.
+                        safely under that implementation's gate; the
+                        state FIELD SCHEMA is enumerable (5 scalars +
+                        open-blocks stack), but serialized state VALUE
+                        size is depth-dependent (issue #243), and the
+                        minimality of this dimension set is unknown.
 PREDICTED WEAKNESS:     a tiny container/fence edit at document start can
                         propagate invalidation forward until the serialized
                         state re-converges (or EOF) — convergence distance
@@ -219,25 +234,39 @@ TESTS IT:
 
 ```text
 HYPOTHESIS-ID:          R2-H11
-SOURCE:                 mizchi-markdown.md §8 (recursive suffix shift);
-                        lezer.md §8 (buildTree spine); tree-sitter.md §8
+SOURCE:                 mizchi-markdown.md §4/§8 (parser-work vs
+                        representation reuse); lezer.md §8 (buildTree
+                        spine); tree-sitter.md §8
 MECHANISM:              reconstruction after reuse (all incremental families)
 OBSERVED BASIS:         OBSERVED — every extracted mechanism still rebuilds
                         or re-coordinates a result whose size can be
-                        proportional to the reused region, not to the edit
-                        (suffix span shifts, new wrapper spines, new parents
-                        around reused subtrees).
-PREDICTED STRENGTH:     parse work genuinely saved; result representation
-                        partially shared.
+                        proportional to the reused region, not to the edit.
+                        mizchi is the sharp case: prefix blocks pass
+                        through unchanged, but EVERY suffix block value is
+                        reconstructed (`shift_block_span`) with shifted
+                        spans — suffix syntax parsing is skipped while the
+                        suffix representation is rebuilt (its `reused_after`
+                        counts "not reparsed", not shared structure). Lezer
+                        builds new wrapper spines; tree-sitter gives reused
+                        subtrees new parents.
+PREDICTED STRENGTH:     PARSER-WORK reuse (bytes not re-inspected, syntax
+                        not re-run) is genuinely saved. Representation
+                        reuse is a separate, weaker fact and differs by
+                        mechanism (prefix passthrough only in mizchi;
+                        shared subtrees in Lezer/tree-sitter).
 PREDICTED WEAKNESS:     "reuse" without qualification overstates savings:
                         reconstruction + re-coordination can approach the
-                        cost of rebuilding; only nodes-reused vs
-                        nodes-rebuilt counters expose the true trade.
+                        cost of rebuilding; nodes_reused, nodes_rebuilt,
+                        metadata/ranges touched, and parser bytes inspected
+                        are DISTINCT facts, and a reused_after-style
+                        "not reparsed" counter must never be counted as
+                        representation reuse; only separated counters
+                        expose the true trade.
 MINIMAL COUNTEREXAMPLE  tiny edit early in a large document under each
 SHAPE:                  mechanism; compare parse-avoidance vs reconstruction
                         counters.
-WHICH LATER STAGE       R7 (nodes rebuilt/reused) + PA + R11 attribution.
-TESTS IT:
+WHICH LATER STAGE       R7 (nodes rebuilt/reused, metadata touched) + PA +
+TESTS IT:               R11 attribution.
 ```
 
 ```text

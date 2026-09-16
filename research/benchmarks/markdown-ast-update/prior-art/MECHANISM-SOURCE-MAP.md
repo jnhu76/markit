@@ -1,6 +1,7 @@
 # R2 MECHANISM-SOURCE-MAP — prior-art anchors for H0–H4
 
-Status: **R2 DRAFT FOR ADVERSARIAL REVIEW**
+Status: **READY_FOR_ADVERSARIAL_R2_REVIEW** (post corrective pass
+MARKIT-R2-PRIOR-ART-CORRECTIVE-1, 2026-09-17)
 Authority: GitHub Issue #22 + `protocol/R0-METHODOLOGY.md` §2–§3.
 
 This file is written **after** the individual extraction records, not
@@ -64,14 +65,22 @@ MECHANISM_SOURCE_MAP:
   mizchi/markdown.mbt (master ffe7dc00) — the only extracted project with a
       shipped block-local incremental Markdown mechanism: top-level block
       span map → overlap damage mapping → clean reparse of region
-      [prev_block_end, next_block_start+delta) → splice → recursive suffix
-      span shift; TOTAL full-parse fallback whenever link reference
-      definitions exist in old or new document.
+      [prev_block_end, next_block_start+delta) → splice (prefix blocks pass
+      through; suffix values reconstructed with shifted spans) → TOTAL
+      full-parse fallback whenever link reference definitions exist in old
+      or new document. Its `reused_*` counters mean "not reparsed"
+      (parser-work reuse), NOT object/representation reuse.
   tree-sitter-markdown (v0.5.3) — maintainer-authored enumeration (the
-      serialized external-scanner state) of the hidden entry context any
-      block-local design must reconstruct: container stack with per-item
-      content indent, phase flags, partial-line indentation, tab-stop
-      column, open-fence length.
+      serialized external-scanner state) of KNOWN-SUFFICIENT entry-context
+      dimensions for one implementation's reuse gate: container stack with
+      per-item content indent, phase flags, partial-line indentation,
+      tab-stop column, open-fence length. Sufficiency is shown for that
+      grammar+engine only; MINIMALITY UNKNOWN and necessity of this exact
+      representation NOT ESTABLISHED — other mechanisms may recompute
+      context from source, restart farther backward, encode equivalent
+      context in parser states, use hashes/fingerprints, retain a
+      different representation, invalidate conservatively, or avoid
+      retaining cross-edit scanner state altogether.
   md4c / pulldown-cmark — Q9 catalogs of cross-line and retroactively-bound
       state (list loosening, fence/HTML continuation, Setext/table
       rewrites, ref-def consumption) that bound what "block-local" can mean.
@@ -85,9 +94,13 @@ PRIOR_ART_ANCHOR:
 
 FIDELITY_BOUNDARY:
   An H1 model is `mizchi-markdown-inspired`, not a port. NOT reproduced:
-  UTF-16 code-unit coordinates (R0 §6 mandates UTF-8 bytes), object-identity
-  block sharing (R0 §5 forbids identity in correctness), the JS handle /
-  source-retention layer, vendor SIMD tuning of the full parser.
+  UTF-16 code-unit coordinates (R0 §6 mandates UTF-8 bytes); treating
+  upstream `reused_*` counters as representation reuse — they count
+  parser-work reuse ("not reparsed") only, and a faithful H1 model must
+  keep nodes_reused / nodes_rebuilt / metadata-touched /
+  parser-bytes-inspected as distinct facts (R0 §5 forbids identity in
+  correctness); the JS handle / source-retention layer; vendor SIMD tuning
+  of the full parser.
   Modeling decisions R3+ must make explicit (recorded, not resolved here):
   whether to reproduce the definition-presence total fallback as part of a
   faithful H1 (predicting collapse-to-H0 on REFERENCE_FANOUT), or to model
@@ -102,11 +115,20 @@ NON_GOALS:
   R2-HYPOTHESES R2-H02/R2-H03 for the predicted consequences).
 
 MECHANISM_INTRINSIC_STATE:
-  Block table (spans/kinds/boundaries in document coordinates) + damage
-  mapping state + suffix-span shift bookkeeping. Hypothesis-level additions
-  if faithfulness requires them: definition-presence flag (fallback
-  trigger); block-entry-context reconstruction state (the
-  tree-sitter-markdown enumeration is the evidence for its minimal shape).
+  OBSERVED PRIOR-ART STATE: the old Document itself — the top-level block
+  sequence with document-global spans (BlankLines included), nested
+  structure inside block values — plus the API inputs (EditInfo, old/new
+  source); the definitions array doubles as the fallback trigger (mizchi
+  inspects the array, it does not keep a flag).
+  MODEL-DEFINED CANDIDATE STATE (not observed upstream; whether the Rust
+  benchmark horse carries any of these is an R3+ implementation-parity
+  decision, and none may gain MECHANISM_INTRINSIC status merely because
+  it would make H1 faster): a dedicated block index/table (spans/kinds/
+  boundaries); a definition-presence flag instead of array inspection; an
+  entry-context cache. Candidate H1 entry-context dimensions are the
+  tree-sitter-markdown enumeration — KNOWN-SUFFICIENT for that
+  implementation, MINIMALITY UNKNOWN; R2 does not define the eventual H1
+  context/checkpoint representation.
 
 ---
 
@@ -167,7 +189,9 @@ MECHANISM_SOURCE_MAP:
       + rejection of changed/error/missing/fragile subtrees + first-leaf
       lex-mode/action-table compatibility; splice state = current grammar
       transition (never copied from old tree); backdown on later
-      invalid lookahead; wholesale reuse shutdown while GLR version_count > 1;
+      invalid lookahead; reuse suppressed while GLR version_count > 1
+      (allow_node_reuse recomputed per outer parse-loop iteration after
+      condense, so suppression is interval-shaped, not sticky);
       ts_tree_get_changed_ranges diff for consumers.
   wagner-graham (dissertation Ch. 6) — concept ancestor: unchanged-subtree
       reuse via the exact nonterminal shift test; bottom-up reuse at
@@ -269,12 +293,16 @@ NON_GOALS:
   is NOT byte-local).
 
 MECHANISM_INTRINSIC_STATE:
-  Restart/checkpoint state — for Markdown, the checkpoint payload per
-  candidate restart point is at minimum the container stack, fence state,
-  and phase flags (the tree-sitter-markdown serialized-state enumeration is
-  the best extracted evidence for the minimal payload) — plus
-  convergence-validation state and restart/convergence distance
-  bookkeeping (R0 §10 counters). Lookahead-range records (Swift) are
+  Restart/checkpoint state, convergence-validation state, and
+  restart/convergence distance bookkeeping (R0 §10 counters).
+  CANDIDATE H4 CONTEXT DIMENSIONS (not an R2 representation decision):
+  the tree-sitter-markdown serialized-state enumeration (container stack,
+  fence state, phase flags, partial-line indentation, tab column) is
+  KNOWN-SUFFICIENT for that implementation's reuse gate — evidence that
+  these dimensions matter for one design, NOT that they are the minimal
+  or necessary payload for every mechanism (minimality unknown; retention
+  vs recomputation mechanism-dependent; R2 does not define the eventual
+  H4 checkpoint representation). Lookahead-range records (Swift) are
   mechanism-intrinsic if the model adopts checkpoint lookahead.
 
 ---
@@ -295,7 +323,7 @@ during R2.
    strict subset of what Lezer does and will under-measure the anchor.
 2. **H3 vs H4 — tree-sitter is a hybrid.** Old-tree reuse in tree-sitter
    is gated by convergence-style state agreement, has a degradation ladder
-   (descend → lex region → GLR recovery → reuse shutdown), and its
+   (descend → lex region → GLR recovery → reuse suppression), and its
    "restart" is always position 0 with an opportunistic forward cursor —
    skip-based, not checkpoint-based. Citing tree-sitter as a pure H3
    anchor silently imports convergence gating; citing it for H4 would
@@ -310,12 +338,13 @@ during R2.
 5. **H1's boundary is bounded by other horses' machinery.** The
    tree-sitter-markdown scanner-state enumeration and the md4c/pulldown
    cross-line-state catalogs show that "reparse the affected block" is not
-   self-sufficient: entry-context reconstruction is required, and where a
-   faithful H1 ends and a converging H4 begins (unclosed fence, setext
-   underline, container nesting) is exactly the boundary the structural
-   edit campaign (R8) must probe. mizchi's shipped design resolves this by
-   NOT checking (silent divergence classes) and by falling back to H0 for
-   definitions only.
+   self-sufficient: some entry context must be re-established (by
+   retention, recomputation, or a farther-back restart — mechanism-
+   dependent), and where a faithful H1 ends and a converging H4 begins
+   (unclosed fence, setext underline, container nesting) is exactly the
+   boundary the structural edit campaign (R8) must probe. mizchi's shipped
+   design resolves this by NOT checking (silent divergence classes) and by
+   falling back to H0 for definitions only.
 6. **H1 partially collapses to H0 by design** (mizchi's
    definition-presence total fallback). A faithful H1 model must either
    reproduce this (and be predicted to degenerate on REFERENCE_FANOUT) or

@@ -96,14 +96,36 @@ OBSERVED:
 
 ## 4. Reuse unit
 
-OBSERVED: the top-level `Block` (including `BlankLines`). Reuse is by object
-identity — blocks before and after the edit are pushed into the new document's
-child array by reference (incremental.mbt:111-126), so reused blocks are the
-same values as in the old tree. Nested blocks and inline nodes are never
-reused independently of their enclosing top-level block; inline parsing always
-re-runs inside the re-parsed region (region is parsed by the full `parse()`,
-incremental.mbt:87). Work counters `reused_before / reparsed / reused_after`
-are returned to the caller (incremental.mbt:40-45, 114, 120, 123-138).
+OBSERVED: the top-level `Block` (including `BlankLines`). Reuse is
+**PARSER-WORK reuse, not representation/object reuse**:
+- Prefix blocks pass through unchanged: `final_blocks.push(old_blocks[i])`
+  (incremental.mbt:112) — the old block values flow into the new children
+  array as-is.
+- Suffix blocks do NOT pass through: `final_blocks.push(
+  shift_block_span(old_blocks[i], delta))` (incremental.mbt:125).
+  `shift_block_span` (incremental.mbt:217-420) constructs a NEW `Block`
+  value for every variant with a shifted document-global span, recursively
+  reconstructing container children (`adjust_spans`, :190),
+  list items (`shift_list_item_spans`, :200), and attributed blocks.
+  Suffix syntax parsing is avoided, but every suffix block value is
+  structurally re-coordinated/reconstructed.
+- Accordingly `reused_before / reused_after` mean "blocks not re-parsed"
+  (`reused_after_count = old_blocks.length() - after_idx`,
+  incremental.mbt:123,137) — they do NOT mean the result representation
+  shares old structure. This record makes no claim about MoonBit pointer
+  identity beneath the language's value semantics (not proven here).
+- Inside reconstructed suffix blocks, leaf content fields pass through
+  unshifted — e.g. `Block::Paragraph(children~, ...)` keeps its inline
+  children untouched (incremental.mbt:251-256); only block-level and
+  nested-block/list-item spans are shifted. INFERRED consequence: inline
+  spans inside reused suffix blocks are stale by `delta` when
+  `delta != 0`; the upstream deep-span test asserts block/list-item spans
+  only (incremental_test.mbt:205-252), so upstream tests do not cover it.
+- Nested blocks and inline nodes are never reused independently of their
+  enclosing top-level block; inline parsing always re-runs inside the
+  re-parsed region (region is parsed by the full `parse()`,
+  incremental.mbt:87). Counters are returned to the caller
+  (incremental.mbt:40-45, 114, 120, 123-138).
 
 ## 5. Damage detection / invalidation
 
@@ -160,12 +182,14 @@ OBSERVED (incremental.mbt:81-139):
    is rebuilt from scratch.
 3. Fallback check: if `old_doc.definitions` or region definitions are
    non-empty, return a full clean parse of the whole document (§10).
-4. Splice: reused prefix blocks (by reference) + region blocks (spans shifted
-   by `reparse_start`, incremental.mbt:105,190-196) + suffix blocks reused by
-   reference with ALL spans shifted by `delta` (incremental.mbt:124-126;
-   `shift_block_span` incrementally rebuilds each suffix block value and
-   recursively shifts nested blockquote/directive/alert children and list-item
-   subtrees, incremental.mbt:200-422).
+4. Splice: prefix blocks passed through unchanged (incremental.mbt:112) +
+   region blocks (spans shifted by `reparse_start`, incremental.mbt:105,
+   190-196) + suffix blocks pushed as NEW values reconstructed by
+   `shift_block_span` with block/nested-block/list-item spans shifted by
+   `delta` (incremental.mbt:121-126, 217-420). The splice therefore
+   separates parser-work reuse (suffix syntax parsing skipped) from
+   representation reuse (only the prefix is passed through; every suffix
+   value is rebuilt).
 5. New `Document` reuses old `frontmatter` and old `definitions`,
    `span = (0, new_source.length())` (incremental.mbt:127-132).
 
@@ -182,7 +206,7 @@ OBSERVED:
   suffix blocks get a constant `delta` added recursively (§8.4).
 - Maintenance is eager and proportional to the suffix: every block after the
   edit is structurally rebuilt (`shift_block_span` constructs new block
-  values/arrays), incremental.mbt:217-422. No lazy offset propagation, no
+  values/arrays), incremental.mbt:217-420. No lazy offset propagation, no
   interval tree, no per-block local coordinates.
 
 ## 10. Fallback
@@ -259,7 +283,7 @@ Evidence-backed:
   reuse had to be explicitly implemented ("Shift nested ordered/unordered
   list-item and child-block spans during incremental reuse", Completed or
   removed) — i.e., suffix-shift completeness was a discovered, fixed gap, and
-  `shift_block_span` (incremental.mbt:217-422) enumerates every block kind by
+  `shift_block_span` (incremental.mbt:217-420) enumerates every block kind by
   hand, so new block kinds must remember to extend it. INFERRED: this is a
   maintenance hazard class, not a current defect.
 - README/docs claim editor-grade incremental editing; OBSERVED that the
@@ -290,7 +314,7 @@ All HYPOTHESIS unless marked otherwise (not executed; code-derived):
   definition -> full parse (OBSERVED, incremental.mbt:89-101).
 - Q4 tiny edit -> O(N): Yes: `find_affected_range` is O(B)
   (incremental.mbt:150), suffix span-shifting structurally rebuilds every
-  suffix block (incremental.mbt:124-126,217-422), and definitions present
+  suffix block (incremental.mbt:124-126,217-420), and definitions present
   make it a full parse (incremental.mbt:93-94).
 - Q5 far-forward propagation: INFERRED broken for unclosed fences crossing
   the region right edge (§10); setext underline insertion is covered only
@@ -313,8 +337,9 @@ All HYPOTHESIS unless marked otherwise (not executed; code-derived):
   cases (paragraph merge, fence swallow, attribute attachment) would be
   silent wrong trees.
 - Q11 fallback frequency: OBSERVED that the only guarded fallback fires for
-  any document containing definitions — common in real Markdown; expected
-  H0-degeneration on definition-bearing payloads. Other divergence classes
+  any document containing definitions (real-corpus frequency UNKNOWN,
+  §12); expected H0-degeneration on definition-bearing payloads. Other
+  divergence classes
   have NO fallback (they fail silently instead) — this asymmetry
   (fallback where guarded, divergence where not) is itself a finding.
 - Q12 mechanism-intrinsic vs implementation-specific: Intrinsic: block-splice
@@ -329,21 +354,24 @@ All HYPOTHESIS unless marked otherwise (not executed; code-derived):
 This project IS the H1 BLOCK_LOCAL_REPARSE anchor named in R0 §3
 (protocol line 139) and the anchor claim is substantively fair:
 - OBSERVED H1 shape: identify affected top-level block(s) from old spans,
-  reparse only the affected region (block + blank-gap context), preserve
-  unaffected block states by reference, repair the document sequence and
-  shift suffix spans (§4-§9). The reuse unit is exactly "block", with B and L
-  as the dominant variables — matching H1's stated variables.
+  reparse only the affected region (block + blank-gap context), pass
+  unaffected prefix blocks through, repair the document sequence and
+  reconstruct suffix values with shifted spans (§4-§9). The reuse unit is
+  exactly "block", with B and L as the dominant variables — matching H1's
+  stated variables.
 - The mechanism is small enough to model faithfully: the entire incremental
   logic is incremental.mbt (458 lines): overlap-based damage mapping, region
   = [prev_block_end, next_block_start) with delta-adjusted right edge,
   region clean-reparse, splice, recursive suffix span shift, definition
   fallback.
 - Fidelity boundary — what a #22 H1 model would NOT reproduce:
-  UTF-16 code-unit coordinates (R0 §6 mandates UTF-8 byte source); object
-  identity sharing of reused blocks (R0 §5 forbids identity in the
-  correctness contract; reuse counts remain diagnostics); the JS
-  handle/source-retention layer (§3); vendor tuning of the full parser
-  (SIMD scanning etc. — R0 §2 REFERENCE_ONLY, §4 parity rules).
+  UTF-16 code-unit coordinates (R0 §6 mandates UTF-8 bytes); counting
+  upstream `reused_*` as representation reuse — they count parser-work
+  reuse ("not reparsed") only, and a faithful H1 model must keep
+  nodes_reused / nodes_rebuilt / metadata-touched / parser-bytes-inspected
+  as DISTINCT facts (R0 §5 forbids identity in the correctness contract);
+  the JS handle/source-retention layer (§3); vendor tuning of the full
+  parser (SIMD scanning etc. — R0 §2 REFERENCE_ONLY, §4 parity rules).
 - Modeling decisions #22 must make explicit (hypothesis-level):
   1. Whether to reproduce the definition full-fallback as part of H1-mizchi
      (faithful) or to allow a reference-resolution pass instead (a
@@ -381,5 +409,5 @@ relevant_paths = [
   "src/bench_incremental.mbt",
   "docs/markdown.md",
 ]
-notes = "H1 BLOCK_LOCAL_REPARSE anchor (R0 protocol line 139); MoonBit core with JS/TS bindings (tasking correction: not Rust). Mechanism: EditInfo offset arithmetic over old top-level block spans (incl. BlankLines blocks); region = [prev block end, next block start + delta); clean reparse of region; splice with object-identity reuse; recursive delta shift of all suffix spans; TOTAL full-parse fallback whenever link reference definitions exist (old or new). No hashes, no restart/convergence machinery, no EditInfo validation. Inferred silent-divergence classes: paragraph merge via blank-line deletion, unclosed-fence forward propagation, block-attribute attachment across the region boundary. docs/markdown.md ReferenceIndex/nodeId content is aspirational, not shipped. README benchmark numbers are vendor claims only."
+notes = "H1 BLOCK_LOCAL_REPARSE anchor (R0 protocol line 139); MoonBit core with JS/TS bindings (tasking correction: not Rust). Mechanism: EditInfo offset arithmetic over old top-level block spans (incl. BlankLines blocks); region = [prev block end, next block start + delta); clean reparse of region; splice = prefix blocks passed through unchanged + suffix blocks reconstructed as new values with shifted spans (PARSER-WORK reuse; reused_* counters mean not-reparsed, NOT object-identity reuse); TOTAL full-parse fallback whenever link reference definitions exist (old or new). No hashes, no restart/convergence machinery, no EditInfo validation. Inferred silent-divergence classes: paragraph merge via blank-line deletion, unclosed-fence forward propagation, block-attribute attachment across the region boundary; inline spans inside reconstructed suffix blocks are not shifted (test-coverage gap). docs/markdown.md ReferenceIndex/nodeId content is aspirational, not shipped. README benchmark numbers are vendor claims only."
 ```

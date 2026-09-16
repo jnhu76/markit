@@ -354,7 +354,10 @@ Evidence-backed from source:
 - The root is never reused; the top-level node is always rebuilt
   (`reusable_node.h:89-94`, `parser.c:1077-1082`).
 - Reuse is disabled whenever more than one GLR stack version exists
-  (`parser.c:2179`) — ambiguous or error-split regions run without reuse.
+  (`parser.c:2179`; the flag is recomputed at each outer parse-loop
+  iteration after condense, so suppression is interval-shaped, not
+  sticky) — ambiguous or error-split regions run without reuse while
+  their versions remain live.
 - Error/missing/fragile subtrees are never reused, and fragility
   propagates to parents of error children and ambiguous reductions
   (`parser.c:792-797`, `subtree.c:446-449`, `parser.c:1023-1025`).
@@ -424,9 +427,12 @@ All items HYPOTHESIS unless marked OBSERVED. (Q1-Q12 per R2 brief.)
   admits a shift — nothing re-checks content downstream (§7). Mechanism
   OBSERVED; realized false convergence HYPOTHESIS.
 - Q11 (fallback frequency dominating): in error-heavy or highly ambiguous
-  regions, reuse turns off wholesale (`version_count > 1`) and
-  error/fragile exclusion forces local reparse; near-full reparse under
-  such workloads is HYPOTHESIS, gated on the OBSERVED version-count rule.
+  regions, reuse is suppressed WHILE multiple GLR stack versions exist
+  (`version_count > 1`; recomputed at each outer parse-loop iteration, so a
+  later condense back to one version re-enables it) and error/fragile
+  exclusion forces local reparse; how much of such workloads is covered by
+  suppression intervals vs post-condense reuse recovery is HYPOTHESIS,
+  gated on the OBSERVED version-count rule.
 - Q12 (mechanism-intrinsic vs implementation-specific): intrinsic —
   retained old tree with per-subtree parse state + edit flags, in-order
   reuse cursor, state-agreement splice, scanner-state equality gate.
@@ -449,8 +455,8 @@ H3-style modeling:
   comparisons with oracles);
 - convergence conditions for suffix reuse (state equality + entry-state
   equality + position equality) — H4-relevant;
-- the wholesale reuse shutdown under ambiguity/error versions — a
-  fallback-policy data point.
+- reuse suppression while multiple GLR stack versions exist (with
+  condense-dependent recovery) — a fallback-policy data point.
 
 We would NOT reproduce (non-goals for any horse): the generated LR parse
 tables and GLR error-recovery policy; the C runtime, inline-subtree
