@@ -72,4 +72,4 @@ Especially defer:
 - IDE features;
 - broad UI polish.
 
-The immediate goal is to understand and reduce interaction latency without destroying correctness.
+The immediate goal is measured, reproducible benchmark evidence (issue #22) without destroying correctness.

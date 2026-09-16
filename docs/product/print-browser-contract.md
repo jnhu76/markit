@@ -19,7 +19,7 @@ A browser-hosted representation of a Markdown document revision. It may update w
 
 ### Print Document
 
-A whole-document representation built from one coherent `DocumentSnapshot` and its Markdown semantics. It is not the GPUI viewport, not a screenshot of Preview, and not a traversal of only materialized editor nodes.
+A whole-document representation built from one coherent `DocumentSnapshot` and its Markdown semantics. It is not a screenshot of the interactive viewport or Preview, and not a traversal of only materialized editor regions.
 
 ### Print Resource
 
@@ -189,7 +189,7 @@ The print path must validate text with:
 - mixed CJK + Latin + math;
 - code blocks containing CJK.
 
-A font used by the interactive GPUI renderer is not automatically evidence that the browser print path has a correct fallback chain.
+A font used by the interactive renderer is not automatically evidence that the browser print path has a correct fallback chain.
 
 The PrintReady barrier includes required web/system font readiness when asynchronous loading is involved.
 

@@ -1,5 +1,12 @@
 # Markit pre-product-reset archive
 
+> **SUPERSEDED authority note.** This is a point-in-time boundary record for
+> MARKIT-PRODUCT-RESET-0. The "Active post-reset authority" and "Code status"
+> sections below are historical: the authority map now lives in `docs/README.md`
+> (active campaign: #22), and the old implementation trees it describes were
+> later removed from the active tree / archived by
+> MARKIT-EXPERIMENT-FIRST-REPO-RESET-1 (`docs/research/repo-reset-inventory.md`).
+
 This directory marks the historical authority boundary for the Markit product reset.
 
 ## Canonical archive revision

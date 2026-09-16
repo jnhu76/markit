@@ -1,6 +1,6 @@
 # Markit — V0.1 Product Scope
 
-Status: **product scope only; implementation architecture pending Issue #19**
+Status: **product scope only; implementation architecture pending the #22 benchmark chain**
 
 Authority: `docs/PRD.md`
 
@@ -31,7 +31,7 @@ Performance requirement:
 
 > **Ordinary edits should avoid unnecessary work; correctness determines how far work must propagate.**
 
-The mechanism used to satisfy that requirement is intentionally deferred to Issue #19 and the architecture that follows it.
+The mechanism used to satisfy that requirement is intentionally deferred to the #22 benchmark chain and the architecture that follows it.
 
 ---
 
@@ -232,7 +232,7 @@ For representative small/medium/large documents:
 - [ ] large-file position/index bookkeeping does not hide pathological linear work;
 - [ ] no performance optimization changes Markdown semantics.
 
-The exact parser/storage mechanism used to pass this gate is determined after Issue #19.
+The exact parser/storage mechanism used to pass this gate is determined after the #22 benchmark chain (benchmark -> Weakness Map -> Markit algorithm -> architecture).
 
 ### G11 — Browser/Print completeness
 
@@ -285,8 +285,9 @@ plugin runtime
 The order is:
 
 ```text
-Issue #19 experiment
-  -> parser/research verdict
+#22 standardized benchmark
+  -> Weakness Map review
+  -> Markit algorithm campaign
   -> evidence-backed architecture
   -> implementation
   -> V0.1 acceptance
