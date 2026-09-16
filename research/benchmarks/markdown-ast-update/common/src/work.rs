@@ -5,6 +5,28 @@
 //! H1/H2/H3/H4 must not be invented here; a mechanism reports a slot or
 //! leaves it `Unknown`, and slots that cannot apply to the mechanism are
 //! `NotApplicable`.
+//!
+//! Reporting semantics (R1-CORRECTIVE-1, MAJOR-1) — the method name states
+//! the semantics, and the recording sink enforces it:
+//!
+//! ```text
+//! add_*                  cumulative work; multiple calls ACCUMULATE
+//!                        (never overwrite); add(0) is a measured zero
+//! set_*                  single-valued gauges only (restart/convergence
+//!                        distance); the last value wins
+//! record_fallback_to_full / record_source_inspection
+//!                        events; each call is one occurrence
+//! ```
+//!
+//! Source-inspection facts are reported as raw half-open byte-range
+//! EVENTS (`record_source_inspection`), never as final counters. The
+//! common collector ([`CounterSink::finalize_derived`]) unions and
+//! deduplicates them and derives
+//! `unique_source_intervals_inspected` / `unique_source_bytes_inspected`
+//! from one shared definition. Parse Amplification
+//! (unique source bytes re-inspected / logical edited bytes), when it is
+//! activated at a later stage, must be computed by this common layer from
+//! those derived counters — never by a mechanism/horse.
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -12,6 +34,12 @@ use serde::{Deserialize, Serialize};
 use crate::observed::Observed;
 
 /// The R0 first-round work-counter slots, in frozen order.
+///
+/// `unique_source_intervals_inspected` / `unique_source_bytes_inspected`
+/// are DERIVED slots: mechanisms never write them; they are computed by
+/// [`CounterSink::finalize_derived`] from `record_source_inspection`
+/// events. They stay `Unknown` for runs that did not complete (or did not
+/// run attribution).
 ///
 /// No `Default`: absent instrumentation must be spelled
 /// [`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]
@@ -67,6 +95,20 @@ impl WorkCounters {
     }
 }
 
+/// Accumulate `n` into a cumulative slot. The first add replaces
+/// `Unknown`/`NotApplicable` with `Known(n)` (doing the work declares the
+/// slot applicable); further adds accumulate. Overflow marks the slot
+/// `Unknown` instead of lying with a wrapped number.
+fn accumulate(slot: &mut Observed<u64>, n: u64) {
+    *slot = match *slot {
+        Observed::Known(v) => match v.checked_add(n) {
+            Some(sum) => Observed::Known(sum),
+            None => Observed::Unknown,
+        },
+        Observed::Unknown | Observed::NotApplicable => Observed::Known(n),
+    };
+}
+
 /// Receives work-counter observations from a mechanism.
 ///
 /// Every method has a no-op default: mechanisms written against this trait
@@ -74,46 +116,98 @@ impl WorkCounters {
 /// lane) and a discarding sink ([`NoopWorkSink`], timing lane), so the
 /// same mechanism code runs in every lane.
 pub trait WorkSink {
-    fn set_unique_source_intervals_inspected(&mut self, _v: Observed<u64>) {}
-    fn set_unique_source_bytes_inspected(&mut self, _v: Observed<u64>) {}
-    fn set_blocks_reparsed(&mut self, _v: Observed<u64>) {}
-    fn set_nodes_rebuilt(&mut self, _v: Observed<u64>) {}
-    fn set_nodes_reused(&mut self, _v: Observed<u64>) {}
-    fn set_metadata_records_touched(&mut self, _v: Observed<u64>) {}
+    /// Cumulative: blocks re-entered by a local reparse. Multiple calls
+    /// accumulate; they never overwrite.
+    fn add_blocks_reparsed(&mut self, _n: u64) {}
+    /// Cumulative: nodes rebuilt. Multiple calls accumulate.
+    fn add_nodes_rebuilt(&mut self, _n: u64) {}
+    /// Cumulative: nodes reused. Multiple calls accumulate.
+    fn add_nodes_reused(&mut self, _n: u64) {}
+    /// Cumulative: metadata records touched. Multiple calls accumulate.
+    fn add_metadata_records_touched(&mut self, _n: u64) {}
+    /// Cumulative: full-rebuild fallbacks. Prefer
+    /// [`WorkSink::record_fallback_to_full`]; multiple calls accumulate.
+    fn add_fallback_to_full(&mut self, _n: u64) {}
+    /// Event: one full-rebuild fallback occurred.
+    fn record_fallback_to_full(&mut self) {
+        self.add_fallback_to_full(1);
+    }
+    /// Gauge: distance restarted from. Single-valued; the last value
+    /// wins.
     fn set_restart_distance(&mut self, _v: Observed<u64>) {}
+    /// Gauge: distance until convergence. Single-valued; the last value
+    /// wins.
     fn set_convergence_distance(&mut self, _v: Observed<u64>) {}
-    fn set_fallback_to_full_count(&mut self, _v: Observed<u64>) {}
+    /// Event: the mechanism inspected source bytes `[start_byte,
+    /// end_byte)` during the CURRENT phase (`prepare_update` or
+    /// `update`/`full_parse`). Empty ranges (`start >= end`) are ignored.
+    /// Overlapping/duplicate reports are unioned by the common collector —
+    /// they never double-count.
+    fn record_source_inspection(&mut self, _start_byte: u64, _end_byte: u64) {}
 }
 
-/// Attribution-lane sink: writes observations into a [`WorkCounters`].
+/// Attribution-lane sink: writes observations into a [`WorkCounters`] and
+/// collects source-inspection events for the common union derivation.
 pub struct CounterSink<'a> {
     counters: &'a mut WorkCounters,
+    inspections: Vec<(u64, u64)>,
 }
 
 impl<'a> CounterSink<'a> {
     pub fn new(counters: &'a mut WorkCounters) -> Self {
-        Self { counters }
+        Self {
+            counters,
+            inspections: Vec::new(),
+        }
+    }
+
+    /// Derive the `unique_source_*` slots from the recorded inspection
+    /// events (sort + merge overlapping/adjacent ranges, sum the merged
+    /// lengths). The union of disjoint ranges inside `[0, u64::MAX]` can
+    /// never exceed `u64::MAX` bytes, so the derivation cannot overflow.
+    ///
+    /// Call exactly once per case, after the mechanism finished
+    /// successfully and before the counters are read or serialized. A run
+    /// that did not complete must NOT call this: underived slots stay
+    /// `Unknown`, honestly. Zero recorded events derive `Known(0)` — an
+    /// empty event stream IS the measured zero of an event counter.
+    pub fn finalize_derived(&mut self) {
+        self.inspections.sort_unstable();
+        let mut merged: Vec<(u64, u64)> = Vec::with_capacity(self.inspections.len());
+        for &(start, end) in &self.inspections {
+            match merged.last_mut() {
+                // `start <= last.end` merges overlaps AND touching ranges:
+                // the union of the inspected byte SET, never a double count.
+                Some(last) if start <= last.1 => {
+                    last.1 = last.1.max(end);
+                }
+                _ => merged.push((start, end)),
+            }
+        }
+        let mut bytes: u64 = 0;
+        for &(start, end) in &merged {
+            bytes += end - start;
+        }
+        self.counters.unique_source_intervals_inspected = Observed::Known(merged.len() as u64);
+        self.counters.unique_source_bytes_inspected = Observed::Known(bytes);
     }
 }
 
 impl WorkSink for CounterSink<'_> {
-    fn set_unique_source_intervals_inspected(&mut self, v: Observed<u64>) {
-        self.counters.unique_source_intervals_inspected = v;
+    fn add_blocks_reparsed(&mut self, n: u64) {
+        accumulate(&mut self.counters.blocks_reparsed, n);
     }
-    fn set_unique_source_bytes_inspected(&mut self, v: Observed<u64>) {
-        self.counters.unique_source_bytes_inspected = v;
+    fn add_nodes_rebuilt(&mut self, n: u64) {
+        accumulate(&mut self.counters.nodes_rebuilt, n);
     }
-    fn set_blocks_reparsed(&mut self, v: Observed<u64>) {
-        self.counters.blocks_reparsed = v;
+    fn add_nodes_reused(&mut self, n: u64) {
+        accumulate(&mut self.counters.nodes_reused, n);
     }
-    fn set_nodes_rebuilt(&mut self, v: Observed<u64>) {
-        self.counters.nodes_rebuilt = v;
+    fn add_metadata_records_touched(&mut self, n: u64) {
+        accumulate(&mut self.counters.metadata_records_touched, n);
     }
-    fn set_nodes_reused(&mut self, v: Observed<u64>) {
-        self.counters.nodes_reused = v;
-    }
-    fn set_metadata_records_touched(&mut self, v: Observed<u64>) {
-        self.counters.metadata_records_touched = v;
+    fn add_fallback_to_full(&mut self, n: u64) {
+        accumulate(&mut self.counters.fallback_to_full_count, n);
     }
     fn set_restart_distance(&mut self, v: Observed<u64>) {
         self.counters.restart_distance = v;
@@ -121,8 +215,10 @@ impl WorkSink for CounterSink<'_> {
     fn set_convergence_distance(&mut self, v: Observed<u64>) {
         self.counters.convergence_distance = v;
     }
-    fn set_fallback_to_full_count(&mut self, v: Observed<u64>) {
-        self.counters.fallback_to_full_count = v;
+    fn record_source_inspection(&mut self, start_byte: u64, end_byte: u64) {
+        if end_byte > start_byte {
+            self.inspections.push((start_byte, end_byte));
+        }
     }
 }
 
@@ -136,17 +232,128 @@ mod tests {
     use super::*;
 
     #[test]
-    fn counter_sink_records_and_noop_discards() {
+    fn cumulative_adds_accumulate_and_never_overwrite() {
         let mut counters = WorkCounters::all_unknown();
         let mut sink = CounterSink::new(&mut counters);
-        sink.set_blocks_reparsed(Observed::Known(0));
-        sink.set_restart_distance(Observed::NotApplicable);
-        assert_eq!(counters.blocks_reparsed, Observed::Known(0));
-        assert_eq!(counters.restart_distance, Observed::NotApplicable);
-        assert_eq!(counters.unique_source_bytes_inspected, Observed::Unknown);
+        sink.add_blocks_reparsed(2);
+        sink.add_blocks_reparsed(3);
+        sink.add_fallback_to_full(1);
+        sink.record_fallback_to_full(); // event sugar: +1
+        drop(sink);
+        assert_eq!(counters.blocks_reparsed, Observed::Known(5));
+        assert_eq!(counters.fallback_to_full_count, Observed::Known(2));
+        assert_eq!(counters.nodes_rebuilt, Observed::Unknown);
+    }
 
+    #[test]
+    fn add_zero_is_a_measured_zero_not_unknown() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.add_blocks_reparsed(0);
+        drop(sink);
+        assert_eq!(counters.blocks_reparsed, Observed::Known(0));
+        assert_eq!(counters.nodes_rebuilt, Observed::Unknown);
+    }
+
+    #[test]
+    fn gauges_are_last_value_wins() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.set_restart_distance(Observed::Known(10));
+        sink.set_restart_distance(Observed::NotApplicable);
+        sink.set_convergence_distance(Observed::Known(4));
+        drop(sink);
+        assert_eq!(counters.restart_distance, Observed::NotApplicable);
+        assert_eq!(counters.convergence_distance, Observed::Known(4));
+    }
+
+    #[test]
+    fn cumulative_overflow_becomes_unknown_not_wrapped() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.add_nodes_rebuilt(u64::MAX);
+        sink.add_nodes_rebuilt(1);
+        drop(sink);
+        assert_eq!(counters.nodes_rebuilt, Observed::Unknown);
+    }
+
+    #[test]
+    fn overlapping_inspections_are_unioned_not_double_counted() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.record_source_inspection(0, 10);
+        sink.record_source_inspection(5, 15); // overlaps
+        sink.record_source_inspection(5, 15); // duplicate
+        sink.record_source_inspection(20, 25); // disjoint
+        sink.record_source_inspection(30, 30); // empty: ignored
+        sink.record_source_inspection(40, 39); // inverted: ignored
+        sink.finalize_derived();
+        assert_eq!(
+            counters.unique_source_intervals_inspected,
+            Observed::Known(2)
+        );
+        assert_eq!(counters.unique_source_bytes_inspected, Observed::Known(20));
+    }
+
+    #[test]
+    fn touching_inspections_merge_into_one_interval() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.record_source_inspection(0, 5);
+        sink.record_source_inspection(5, 10);
+        sink.record_source_inspection(9, 12);
+        sink.finalize_derived();
+        assert_eq!(
+            counters.unique_source_intervals_inspected,
+            Observed::Known(1)
+        );
+        assert_eq!(counters.unique_source_bytes_inspected, Observed::Known(12));
+    }
+
+    #[test]
+    fn no_inspections_derive_measured_zero_and_unfinalized_stays_unknown() {
+        let mut counters = WorkCounters::all_unknown();
+        {
+            let mut sink = CounterSink::new(&mut counters);
+            sink.add_blocks_reparsed(1);
+        }
+        // Without finalize the derived slots stay Unknown...
+        assert_eq!(counters.unique_source_bytes_inspected, Observed::Unknown);
+        // ...an empty event stream IS the measured zero.
+        {
+            let mut sink = CounterSink::new(&mut counters);
+            sink.finalize_derived();
+        }
+        assert_eq!(counters.unique_source_bytes_inspected, Observed::Known(0));
+        assert_eq!(
+            counters.unique_source_intervals_inspected,
+            Observed::Known(0)
+        );
+    }
+    #[test]
+    fn full_domain_union_is_represented_exactly() {
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.record_source_inspection(0, u64::MAX);
+        sink.record_source_inspection(1 << 40, 1 << 41); // inside: merged away
+        sink.finalize_derived();
+        assert_eq!(
+            counters.unique_source_intervals_inspected,
+            Observed::Known(1)
+        );
+        assert_eq!(
+            counters.unique_source_bytes_inspected,
+            Observed::Known(u64::MAX)
+        );
+    }
+
+    #[test]
+    fn noop_sink_discards_everything() {
         let mut noop = NoopWorkSink;
-        noop.set_blocks_reparsed(Observed::Known(7)); // compiles, discards
+        noop.add_blocks_reparsed(7);
+        noop.record_fallback_to_full();
+        noop.set_restart_distance(Observed::Known(1));
+        noop.record_source_inspection(0, 100);
     }
 
     #[test]

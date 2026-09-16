@@ -149,12 +149,13 @@ impl Mechanism for NullMechanism {
         })
     }
 
-    fn prepare_update(
+    fn prepare_update<W: WorkSink>(
         &self,
         old_source: &Source,
         post_source: &Source,
         edit: &CanonicalEdit,
         old_state: &Self::State,
+        _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Prepared, FailureStatus> {
         self.check()?;
         Ok(NullPrepared {
@@ -183,14 +184,13 @@ impl Mechanism for NullMechanism {
     ) -> Result<Self::Pending, FailureStatus> {
         self.check()?;
         // Honest, trivial attribution facts: the null mechanism inspects
-        // no source bytes, reparses no blocks, never falls back, and has
-        // no restart/convergence concept at all.
-        cx.sink
-            .set_unique_source_bytes_inspected(Observed::Known(0));
-        cx.sink.set_blocks_reparsed(Observed::Known(0));
+        // no source bytes (no inspection events at all — the common
+        // collector derives the measured zero), reparses no blocks, never
+        // falls back, and has no restart/convergence concept at all.
+        cx.sink.add_blocks_reparsed(0);
         cx.sink.set_restart_distance(Observed::NotApplicable);
         cx.sink.set_convergence_distance(Observed::NotApplicable);
-        cx.sink.set_fallback_to_full_count(Observed::Known(0));
+        cx.sink.add_fallback_to_full(0);
         let _ = (prepared, old_source);
         Ok(NullPending {
             old_len_bytes: old_source.len_bytes() as u64,
@@ -265,7 +265,7 @@ mod tests {
         );
 
         let prepared = mech
-            .prepare_update(&old, &post, &edit, &done.state)
+            .prepare_update(&old, &post, &edit, &done.state, &mut cx)
             .expect("prepare");
         let pending = mech
             .update(&old, &post, &edit, done.state, prepared, &mut cx)
@@ -304,7 +304,8 @@ mod tests {
                     &NullState {
                         source_len_bytes: 0,
                         revision: 0
-                    }
+                    },
+                    &mut no_ctx(),
                 ),
                 Err(expected)
             );

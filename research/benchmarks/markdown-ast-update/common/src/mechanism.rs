@@ -1,4 +1,4 @@
-//! The frozen mechanism phase boundary (R1 harness contract §5).
+//! The frozen mechanism phase boundary (R1 harness contract §4).
 //!
 //! Authority boundary (must not drift):
 //!
@@ -6,10 +6,20 @@
 //! prepare_update != update/native != complete
 //! ```
 //!
-//! `complete()` is an explicit full-work boundary: a mechanism cannot
-//! return an unconsumed iterator / lazy parser state and have the runner
-//! force the real work later outside `T_native`, because the runner calls
-//! `complete()` inside `T_native` and `black_box`es the completed state.
+//! `complete()` is the explicit completion AUTHORITY boundary: the runner
+//! requires the mechanism to hand over a fully consumed
+//! [`Completed`] state inside `T_native` and `black_box`es it. This is an
+//! authority requirement, NOT a mechanical proof that lazily deferred
+//! work (iterators, closures, `OnceCell`s, interior mutability, lazy
+//! indexes/trees) has been forced — `black_box` cannot look through such
+//! structures. Before formal horse measurement, R4/R5 must additionally
+//! prove eager normalized-result/state materialization for real horses
+//! (gate: `EAGER_COMPLETION_VALIDATION_PASS`).
+//!
+//! Every mechanism phase that can do mechanism-owned work — including
+//! `prepare_update` — receives a [`MechanismContext`], so attribution
+//! can never miss preparation work that is timed in `T_prepare`
+//! (R1-CORRECTIVE-1, MAJOR-1).
 //!
 //! `MechanismContext` exposes work-counter hooks only. It must never
 //! expose a timer or clock — timer placement belongs to
@@ -86,16 +96,18 @@ pub trait Mechanism {
     /// Mechanism-specific edit-coordinate / edit-metadata preparation.
     /// Runs inside `T_prepare` and only there.
     ///
-    /// Deliberately has no `MechanismContext`: the R1 interface freezes
-    /// counter reporting on `full_parse`/`update` only. If a later horse
-    /// needs prepare-phase attribution, that is a protocol question for
-    /// its stage — not something to add silently here.
-    fn prepare_update(
+    /// Receives a [`MechanismContext`] like every other working phase:
+    /// work performed here is timed in `T_prepare`, so it must be
+    /// attributable in the A-LANE too (R1-CORRECTIVE-1, MAJOR-1) — a
+    /// mechanism can never report work in one lane that vanishes in the
+    /// other.
+    fn prepare_update<W: WorkSink>(
         &self,
         old_source: &Source,
         post_source: &Source,
         edit: &CanonicalEdit,
         old_state: &Self::State,
+        cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Prepared, FailureStatus>;
 
     /// Mechanism-required state maintenance / damage detection / restart
