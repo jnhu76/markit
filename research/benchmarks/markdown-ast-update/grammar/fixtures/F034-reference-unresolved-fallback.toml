@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F034"
+name = "reference-unresolved-fallback"
+covers = ["reference-link", "deviation"]
+source = '''
+[a][nope]
+'''
+source_sha256 = "41524dc359cfe08f32a2a42943722c684b86e2f32d74298878c8022482f12ec9"
+expected_tree = '''
+(Document 0 10
+  (Paragraph 0 9
+    (Text 0 9)))
+'''

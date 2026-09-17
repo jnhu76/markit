@@ -1,0 +1,15 @@
+schema = "r3-fixture-v1"
+id = "F024"
+name = "emphasis-stray-closer"
+covers = ["emphasis", "deviation"]
+source = '''
+*a**
+'''
+source_sha256 = "e5c0e8bd1820715695982b31148871b565a1bf01dfa2c0e504bbbe6e07cf8253"
+expected_tree = '''
+(Document 0 5
+  (Paragraph 0 4
+    (Emphasis 0 3
+      (Text 1 2))
+    (Text 3 4)))
+'''

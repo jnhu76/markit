@@ -1,0 +1,21 @@
+schema = "r3-fixture-v1"
+id = "F037"
+name = "reference-fanout-small"
+covers = ["reference-fanout", "reference-link", "reference-definition"]
+source = '''
+[a][r]
+[b][r]
+
+[r]: /x
+'''
+source_sha256 = "6b84c3c60073a751e5562aaaf0b850c5831d2f16738a82fcfd9c2abcdb7e20ab"
+expected_tree = '''
+(Document 0 23
+  (Paragraph 0 13
+      (ReferenceLink 0 6 label="r" destination="/x"
+      (Text 1 2))
+      (Text 6 7)
+      (ReferenceLink 7 13 label="r" destination="/x"
+      (Text 8 9)))
+  (ReferenceDefinition 15 22 label="r" destination="/x"))
+'''

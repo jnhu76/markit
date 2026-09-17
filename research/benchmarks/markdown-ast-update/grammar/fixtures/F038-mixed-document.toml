@@ -1,0 +1,45 @@
+schema = "r3-fixture-v1"
+id = "F038"
+name = "mixed-document"
+covers = ["mixed", "heading", "paragraph", "text", "emphasis", "code-span", "list", "listitem", "blockquote", "fenced-code", "reference-link", "reference-definition", "utf8", "cjk"]
+source = '''
+# 標題
+
+文本 *em* `c`
+
+- 項
+
+> 引
+
+```js
+x
+```
+
+[d][r]
+
+[r]: /p
+'''
+source_sha256 = "8d5d8074b6cb1321934065aaf859d48cb8883182a1d6e92f0016c5c282a5a71d"
+expected_tree = '''
+(Document 0 70
+  (Heading 0 8 level=1
+    (Text 2 8))
+  (Paragraph 10 25
+      (Text 10 17)
+      (Emphasis 17 21
+        (Text 18 20))
+      (Text 21 22)
+      (CodeSpan 22 25 content=23:24))
+  (List 27 32
+      (ListItem 27 32 marker="-"
+        (Paragraph 29 32
+        (Text 29 32))))
+  (BlockQuote 34 39
+      (Paragraph 36 39
+      (Text 36 39)))
+  (FencedCode 41 52 info="js" content=47:49)
+  (Paragraph 54 60
+    (ReferenceLink 54 60 label="r" destination="/p"
+      (Text 55 56)))
+  (ReferenceDefinition 62 69 label="r" destination="/p"))
+'''

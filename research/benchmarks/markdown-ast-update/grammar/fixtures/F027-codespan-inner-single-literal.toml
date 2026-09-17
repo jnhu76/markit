@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F027"
+name = "codespan-inner-single-literal"
+covers = ["code-span"]
+source = '''
+`` a `b` ``
+'''
+source_sha256 = "7f6ba9d251dc94c64e387a942d07709dc9d57a9b9685b19f5c5b22c237f8ba2f"
+expected_tree = '''
+(Document 0 12
+  (Paragraph 0 11
+    (CodeSpan 0 11 content=2:9)))
+'''

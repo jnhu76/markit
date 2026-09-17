@@ -1,0 +1,15 @@
+schema = "r3-fixture-v1"
+id = "F025"
+name = "emphasis-cjk"
+covers = ["emphasis", "utf8", "cjk"]
+source = '''
+*中文* 文
+'''
+source_sha256 = "17d348d7c87bf0f98af0b8247df16e456b16b5aa3dbd77499ca4d69104fbde51"
+expected_tree = '''
+(Document 0 13
+  (Paragraph 0 12
+    (Emphasis 0 8
+      (Text 1 7))
+    (Text 8 12)))
+'''

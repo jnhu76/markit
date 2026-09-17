@@ -1,11 +1,15 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW**
+Status: **R3 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW (2026-09-17;
+R2 merged via PR #27, master c9bad01)**
 
-Authority: GitHub Issue #22  
-Branch: `research/22-markdown-benchmark-1` (R0/R1) / `research/22-prior-art-mechanism-extraction-1` (R2)  
-R0 methodology: `protocol/R0-METHODOLOGY.md`  
-R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
+Authority: GitHub Issue #22
+
+- Branch: `research/22-markdown-benchmark-1` (R0/R1) /
+  `research/22-prior-art-mechanism-extraction-1` (R2) /
+  `research/22-r3-grammar-corpus-mutation-freeze-1` (R3)
+- R0 methodology: `protocol/R0-METHODOLOGY.md`
+- R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 
 本文件只规定执行顺序、阶段交付物与 Gate。实验方法学以 Issue #22 + `protocol/R0-METHODOLOGY.md` 为权威。
 
@@ -207,6 +211,23 @@ PR #27）→ Next: R3，等待 PR 人工评审合并。
 ---
 
 ## R3 — BENCH-GRAMMAR-v1 + Corpus / Mutation Freeze
+
+Status: **CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW (2026-09-17;
+first-freeze adversarial pass found 4 MAJOR / 4 IMPORTANT, all repaired)**.
+Deliverables: `protocol/R3-GRAMMAR-CORPUS-MUTATION-FREEZE.md` (stage
+record, incl. corrective §8),
+`grammar/BENCH-GRAMMAR-v1.md` + `NORMALIZED-RESULT-v1.md` + 43 golden
+fixtures, `corpus/CORPUS-v1.md` + manifest (24 corpora, exact-byte
+sizing for EVERY unit variant, corpus-gen-v1 determinism contract),
+`mutations/MUTATION-v1.md` + manifest (13 structural recipes across the
+six R0 families; dephased generic anchors raw+7; frozen selection tie
+rule; M-FS-FENCE-CLOSE as one closer-move REPLACE_EQ), QUERY as one
+ordered NODE_PATH_AT batch, `cases/CASE-MATRIX-v1.md` + manifest
+(`expected_unique_cases` = 370, single machine-readable total), and the
+static gate `scripts/verify-r3.sh` with corrective regressions
+(`R3 FREEZE GATE: PASS`). R2 hypotheses are workload coverage only:
+10 covered, 2 deferred, 0 out of scope. No parser/mechanism code, no
+corpus bytes, no timing.
 
 Grammar minimum：paragraph/text, blank-line boundary, ATX heading, basic list/blockquote, fenced code, emphasis, code span, link/reference basics, reference definition。
 

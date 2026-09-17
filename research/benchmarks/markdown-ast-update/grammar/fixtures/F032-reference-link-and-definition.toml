@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F032"
+name = "reference-link-and-definition"
+covers = ["reference-link", "reference-definition"]
+source = '''
+[a][r]
+
+[r]: /x
+'''
+source_sha256 = "4f9b5d3ad9d130f170565f2e1085842c7684c0c651ffee14805d52b57b4e8b6f"
+expected_tree = '''
+(Document 0 16
+  (Paragraph 0 6
+    (ReferenceLink 0 6 label="r" destination="/x"
+      (Text 1 2)))
+  (ReferenceDefinition 8 15 label="r" destination="/x"))
+'''

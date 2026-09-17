@@ -1,0 +1,15 @@
+schema = "r3-fixture-v1"
+id = "F030"
+name = "link-emphasis-text"
+covers = ["inline-link", "emphasis"]
+source = '''
+[*a*](/x)
+'''
+source_sha256 = "ca012e3a070a5d4f854eadd981c011e5a2c3c862bc008f7312f3397628b837cf"
+expected_tree = '''
+(Document 0 10
+  (Paragraph 0 9
+    (Link 0 9 destination="/x"
+      (Emphasis 1 4
+        (Text 2 3)))))
+'''

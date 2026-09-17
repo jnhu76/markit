@@ -1,0 +1,20 @@
+schema = "r3-fixture-v1"
+id = "F033"
+name = "refdef-first-wins"
+covers = ["reference-definition", "reference-link", "deviation"]
+source = '''
+[r]: /1
+
+[r]: /2
+
+[a][r]
+'''
+source_sha256 = "0c4a10e63ad5af45dbc80b5cb372d52acaf49016487216d6a41485a5dbe4f526"
+expected_tree = '''
+(Document 0 25
+  (ReferenceDefinition 0 7 label="r" destination="/1")
+  (ReferenceDefinition 9 16 label="r" destination="/2")
+  (Paragraph 18 24
+    (ReferenceLink 18 24 label="r" destination="/1"
+      (Text 19 20))))
+'''

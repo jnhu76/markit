@@ -1,0 +1,14 @@
+schema = "r3-fixture-v1"
+id = "F003"
+name = "paragraph-softbreak"
+covers = ["paragraph", "text"]
+source = '''
+aa
+bb
+'''
+source_sha256 = "329d670e59ead1543a2d36865895972560bc434204c5f4a0c8219005dd312719"
+expected_tree = '''
+(Document 0 6
+  (Paragraph 0 5
+    (Text 0 5)))
+'''

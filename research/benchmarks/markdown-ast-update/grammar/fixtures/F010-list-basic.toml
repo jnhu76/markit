@@ -1,0 +1,19 @@
+schema = "r3-fixture-v1"
+id = "F010"
+name = "list-basic"
+covers = ["list", "listitem", "paragraph"]
+source = '''
+- a
+- b
+'''
+source_sha256 = "25f2bb669e33041967c7ff7343c260b3e288bef9147ef86237d32a7bd7fd8ade"
+expected_tree = '''
+(Document 0 8
+  (List 0 7
+    (ListItem 0 3 marker="-"
+    (Paragraph 2 3
+      (Text 2 3)))
+    (ListItem 4 7 marker="-"
+    (Paragraph 6 7
+      (Text 6 7)))))
+'''

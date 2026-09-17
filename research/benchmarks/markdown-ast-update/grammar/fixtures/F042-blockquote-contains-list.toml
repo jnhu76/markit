@@ -1,0 +1,16 @@
+schema = "r3-fixture-v1"
+id = "F042"
+name = "blockquote-contains-list"
+covers = ["blockquote", "list", "listitem"]
+source = '''
+> - a
+'''
+source_sha256 = "34f5f96db0601575d48198f88af526321f6a3cea9160be3a69f9f16f6459bc58"
+expected_tree = '''
+(Document 0 6
+  (BlockQuote 0 5
+    (List 2 5
+      (ListItem 2 5 marker="-"
+        (Paragraph 4 5
+        (Text 4 5))))))
+'''

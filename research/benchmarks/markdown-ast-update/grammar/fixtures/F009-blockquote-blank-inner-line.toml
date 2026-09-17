@@ -1,0 +1,18 @@
+schema = "r3-fixture-v1"
+id = "F009"
+name = "blockquote-blank-inner-line"
+covers = ["blockquote", "paragraph"]
+source = '''
+> a
+>
+> b
+'''
+source_sha256 = "597ee87bd07f7f28c3a1517723a8845f5c4c3a4a1ef56eae79c2272300c2ce65"
+expected_tree = '''
+(Document 0 10
+  (BlockQuote 0 9
+    (Paragraph 2 3
+      (Text 2 3))
+    (Paragraph 8 9
+      (Text 8 9))))
+'''

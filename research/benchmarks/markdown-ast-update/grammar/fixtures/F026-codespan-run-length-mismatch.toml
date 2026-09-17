@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F026"
+name = "codespan-run-length-mismatch"
+covers = ["code-span", "deviation"]
+source = '''
+`a``
+'''
+source_sha256 = "a166b1f413cefb423bd6d59206cdb31b2e4a50f6cb389f1da0170095b4ac03cb"
+expected_tree = '''
+(Document 0 5
+  (Paragraph 0 4
+    (Text 0 4)))
+'''

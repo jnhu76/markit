@@ -1,0 +1,130 @@
+# CASE-MATRIX-v1 machine-readable manifest (R3 freeze, corrective-1)
+#
+# Authority: cases/CASE-MATRIX-v1.md + mutations/MUTATION-v1.md (the .md
+# files win on narrative). `expected_unique_cases` is the SINGLE
+# machine-readable total; scripts/verify_r3.py expands the blocks below
+# and must match it.
+#
+# Precision: the expansion counts RECIPE SLOTS. CaseKey content identity
+# (edit_start, edit_end, inserted_sha256) does not exist until corpora
+# are instantiated (R4+); offset-level dedup and collision checking
+# happen at instantiation per MUTATION-v1 §7 — an unexpected semantic
+# collision there is CASE_IDENTITY_COLLISION and stops the stage.
+
+schema                = "case-manifest-v1"
+case_matrix_doc       = "cases/CASE-MATRIX-v1.md"
+mutation_manifest     = "mutations/manifest.toml"
+corpus_manifest       = "corpus/manifest.toml"
+generator_id          = "CORPUS-v1"
+generator_seed        = 0x4D41524B49542D33
+payload_id_prefix     = "CORPUS-v1/"
+expected_unique_cases = 370
+
+all_shapes = [
+  "plain", "many_blocks", "huge_block", "deep_container",
+  "inline_dense", "fence_heavy", "reference_fanout", "mixed",
+]
+all_sizes = ["64k", "1m", "16m"]
+
+# ---- Block A: mandatory core (24 corpora x 3 cases = 72) ----
+[[block]]
+kind       = "core"
+reason     = "coverage floor: every corpus gets full_parse, query, one update"
+shapes     = "all"
+sizes      = "all"
+cases = [
+  { op = "full_parse" },
+  { op = "query", note = "one case per corpus: ordered batch NODE_PATH_AT at generic EARLY/MIDDLE/LATE (NORMALIZED-RESULT-v1 §4)" },
+  { op = "insert", edit_size = "tiny", position = "middle" },
+]
+
+# ---- Block B: generic edit grid (3 shapes x 45 = 135) ----
+[[block]]
+kind       = "generic_grid"
+reason     = "operation x edit-size x position semantics; R2-H05 locality probe"
+size       = "1m"
+shapes     = ["mixed", "plain", "fence_heavy"]
+operations = ["insert", "delete", "replace_eq", "replace_grow", "replace_shrink"]
+edit_sizes = ["tiny", "small", "medium"]
+positions  = ["early", "middle", "late"]
+
+# ---- Block C: scaling slice (2 shapes x 2 sizes x 3 = 12) ----
+[[block]]
+kind       = "scaling_slice"
+reason     = "tiny-edit-early locality vs document size; R2-H11 probe"
+shapes     = ["many_blocks", "huge_block"]
+sizes      = ["64k", "16m"]
+cases = [
+  { op = "insert", edit_size = "tiny", position = "early" },
+  { op = "insert", edit_size = "tiny", position = "middle" },
+  { op = "replace_eq", edit_size = "medium", position = "middle" },
+]
+
+# ---- Block D: structural targeted matrix (158 cases; 159 slots minus
+# the huge_block-64k M-BB-PARA-MERGE exception) ----
+# Each row expands over applicable_shapes x all_sizes x anchors.
+[[structural]]
+mutation_id       = "M-LOC-TEXT"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "huge_block", "deep_container", "mixed"]
+
+[[structural]]
+mutation_id       = "M-LOC-UTF8-SWAP"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "inline_dense", "fence_heavy", "reference_fanout"]
+
+[[structural]]
+mutation_id       = "M-BB-PARA-SPLIT"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "mixed"]
+
+[[structural]]
+mutation_id       = "M-BB-PARA-MERGE"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "inline_dense", "reference_fanout", "mixed"]
+exceptions        = [{ shape = "huge_block", sizes = ["64k"], applicability = "NOT_APPLICABLE" }]
+
+[[structural]]
+mutation_id       = "M-CS-ITEM-INDENT"
+anchors           = ["middle"]
+applicable_shapes = ["deep_container", "mixed"]
+
+[[structural]]
+mutation_id       = "M-CS-BQ-NEST-LINE"
+anchors           = ["middle"]
+applicable_shapes = ["deep_container", "mixed"]
+
+[[structural]]
+mutation_id       = "M-FS-FENCE-OPEN"
+anchors           = ["early", "middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "inline_dense", "reference_fanout", "mixed"]
+
+[[structural]]
+mutation_id       = "M-FS-FENCE-CLOSE"
+anchors           = ["middle"]
+applicable_shapes = ["fence_heavy", "mixed"]
+
+[[structural]]
+mutation_id       = "M-IDS-EMPH-INSERT"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "mixed"]
+
+[[structural]]
+mutation_id       = "M-IDS-CODE-DELIM"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "mixed"]
+
+[[structural]]
+mutation_id       = "M-IDS-LINK-DELIM"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "reference_fanout", "mixed"]
+
+[[structural]]
+mutation_id       = "M-SD-DEF-REPLACE"
+anchors           = ["early"]
+applicable_shapes = ["reference_fanout", "mixed"]
+
+[[structural]]
+mutation_id       = "M-SD-DEF-DELETE"
+anchors           = ["early"]
+applicable_shapes = ["reference_fanout", "mixed"]

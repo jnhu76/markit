@@ -1,0 +1,18 @@
+schema = "r3-fixture-v1"
+id = "F013"
+name = "list-no-lazy-continuation"
+covers = ["list", "listitem", "deviation"]
+source = '''
+- a
+b
+'''
+source_sha256 = "269634dd5915ec3cfff8023eb73ebcaa15024655f64029d53172bfaa4a518f84"
+expected_tree = '''
+(Document 0 6
+  (List 0 3
+    (ListItem 0 3 marker="-"
+    (Paragraph 2 3
+      (Text 2 3))))
+  (Paragraph 4 5
+    (Text 4 5)))
+'''

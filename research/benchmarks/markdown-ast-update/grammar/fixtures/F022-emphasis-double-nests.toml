@@ -1,0 +1,15 @@
+schema = "r3-fixture-v1"
+id = "F022"
+name = "emphasis-double-nests"
+covers = ["emphasis"]
+source = '''
+**a**
+'''
+source_sha256 = "6642e70b75ae105d373ee77d096bb09e88e83c7cb7be732de52305689bf75bc5"
+expected_tree = '''
+(Document 0 6
+  (Paragraph 0 5
+    (Emphasis 0 5
+      (Emphasis 1 4
+        (Text 2 3)))))
+'''
