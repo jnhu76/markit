@@ -31,6 +31,10 @@ cargo run -q -p markit-mdbench-corpusgen --bin gen-receipts -- --check
 step "cargo test --workspace (43/43 fixtures + differential + invariants)"
 cargo test --workspace
 
+step "frozen 158-slot matrix reproduction (release profile; ignored in debug)"
+cargo test --release -q -p markit-mdbench-full-rebuild --test corpus_differential \
+    structural_recipe_slots_reproduce_the_frozen_matrix_counts -- --ignored
+
 step "R1 regression: harness substrate gate"
 bash scripts/verify-r1.sh
 

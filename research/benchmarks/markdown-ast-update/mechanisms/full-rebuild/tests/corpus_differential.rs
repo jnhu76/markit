@@ -730,6 +730,64 @@ fn attribution_is_honest_on_update() {
 // Metamorphic invariants over post-edit states
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Frozen matrix reproduction (CASE-MATRIX-v1 §5 / case-manifest-v1.toml)
+// ---------------------------------------------------------------------------
+
+#[test]
+#[ignore = "full 24-corpus x 13-recipe expansion; ~25 min in the debug profile — verify-r4.sh runs it with --release"]
+fn structural_recipe_slots_reproduce_the_frozen_matrix_counts() {
+    // The R4 instantiation must reproduce the frozen Block-D recipe-slot
+    // expansion EXACTLY: every declared (shape, size, anchor) slot builds
+    // an edit, and nothing outside the declared slots does. A scan that
+    // finds no target where the matrix declares APPLICABLE, or an edit
+    // where it declares NOT_APPLICABLE, fails here — and the 158-slot
+    // total is checked against the manifest.
+    use std::collections::BTreeMap;
+    let mut counts: BTreeMap<&'static str, usize> = BTreeMap::new();
+    for recipe in gen::mutations::ALL_RECIPES {
+        counts.insert(recipe.id(), 0);
+    }
+    for size in [SIZE_64K, SIZE_1M, SIZE_16M] {
+        for shape in ALL_SHAPES {
+            let src = gen::generate(shape, size).expect("generate");
+            for recipe in gen::mutations::ALL_RECIPES {
+                let anchors: &[AnchorClass] = if recipe == Recipe::FsFenceOpen {
+                    &[AnchorClass::Early, AnchorClass::Middle]
+                } else {
+                    &[recipe.selection_anchor()]
+                };
+                for &class in anchors {
+                    if structural_edit_for(&src, recipe, class, shape, size).is_ok() {
+                        *counts.get_mut(recipe.id()).expect("pre-inserted") += 1;
+                    }
+                }
+            }
+        }
+    }
+    const FROZEN: [(&str, usize); 13] = [
+        ("M-LOC-TEXT", 12),
+        ("M-LOC-UTF8-SWAP", 21),
+        ("M-BB-PARA-SPLIT", 15),
+        ("M-BB-PARA-MERGE", 17),
+        ("M-CS-ITEM-INDENT", 6),
+        ("M-CS-BQ-NEST-LINE", 6),
+        ("M-FS-FENCE-OPEN", 42),
+        ("M-FS-FENCE-CLOSE", 6),
+        ("M-IDS-EMPH-INSERT", 6),
+        ("M-IDS-CODE-DELIM", 6),
+        ("M-IDS-LINK-DELIM", 9),
+        ("M-SD-DEF-REPLACE", 6),
+        ("M-SD-DEF-DELETE", 6),
+    ];
+    let mut total = 0;
+    for (id, n) in FROZEN {
+        assert_eq!(counts[id], n, "{id} slot count diverges from the freeze");
+        total += n;
+    }
+    assert_eq!(total, 158, "frozen structural total");
+}
+
 #[test]
 fn post_edit_states_satisfy_all_tree_invariants() {
     // Every structural edit applied to a 64k corpus must leave the H0
