@@ -1,9 +1,10 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R4 IMPLEMENTED — READY_FOR_ADVERSARIAL_R4_REVIEW (2026-09-17;
-H0 reference + differential gate + negative gate complete; adversarial
-review pending). Prior: R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human
-final review passed; PR #28 merged into master as
+Status: **R4 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R4_REVIEW (2026-09-17;
+H0 reference + differential gate + negative gate complete; the adversarial
+review's targeted corrective is applied). Prior: R3
+GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
+merged into master as
 `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
 Authority: GitHub Issue #22
@@ -271,19 +272,26 @@ Stop：`GRAMMAR_CORPUS_MUTATION_FREEZE_PASS`
 
 ## R4 — H0 Reference Full Rebuild
 
-Status: **READY_FOR_ADVERSARIAL_R4_REVIEW (2026-09-17)**. Deliverables:
+Status: **READY_FOR_FINAL_R4_REVIEW (2026-09-17, after
+CORRECTIVE-1)**. Deliverables:
 `protocol/R4-H0-REFERENCE-FULL-REBUILD.md` (stage record, incl.
-adversarial pass), `oracle/` (NORMALIZED-RESULT-v1 vocabulary + SHA-256
-checksum + node_path_at), `corpusgen/` (reference CORPUS-v1 generator +
-24 committed receipts + mutation instantiation; frozen 158-slot matrix
-reproduced exactly), `mechanisms/full-rebuild/` (H0 = FULL_REBUILD:
-eager, total, deterministic, byte-coordinate correct; 43/43 fixtures;
-differential/invariant/QUERY/eager/attribution suites), and
-`scripts/verify-r4.sh` (correctness-only gate incl. R1/R3 regression
+adversarial pass) + `protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`
+(the human review's corrective), `oracle/` (NORMALIZED-RESULT-v1
+vocabulary + SHA-256 checksum + node_path_at + the shared
+`validate` conformance gate), `corpusgen/` (reference CORPUS-v1
+generator + 24 committed receipts + mutation instantiation; frozen
+158-slot matrix reproduced exactly), `mechanisms/full-rebuild/` (H0 =
+FULL_REBUILD: eager, total, deterministic, byte-coordinate correct;
+43/43 fixtures; differential/invariant/QUERY/eager/attribution suites),
+and `scripts/verify-r4.sh` (correctness-only gate incl. R1/R3 regression
 and a 5/5 negative mutation check; prints
 "R4 H0 REFERENCE GATE: PASS"). No H1–H4 work, no measurement, no
-tuning. One MAJOR defect (container depth-decrease cascade) was found
-by the gate and fixed against frozen §6/§7.
+tuning. Defects found and fixed against the freeze: container
+depth-decrease cascade (MAJOR, stage review); CodeSpan `content=`
+field-authority contradiction in F027/F028/F038 (MAJOR, human review) —
+fixture conformance repaired, R3 semantics NOT expanded; shared
+field-legality gate + zero-length contract added; `nodes_reused` is
+Known(0).
 
 建立 H0 clean parser 和 normalized correctness oracle。
 

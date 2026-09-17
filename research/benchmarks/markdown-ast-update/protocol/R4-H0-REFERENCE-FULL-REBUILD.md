@@ -1,6 +1,9 @@
 # R4 — H0 Reference Full Rebuild
 
-Status: **READY_FOR_ADVERSARIAL_R4_REVIEW** (2026-09-17)
+Status: **READY_FOR_FINAL_R4_REVIEW** (2026-09-17; after
+[`R4-H0-REFERENCE-CORRECTIVE-1`](./R4-H0-REFERENCE-CORRECTIVE-1.md — the
+human adversarial review's targeted corrective; the sections below record
+the stage as reviewed at head `3f0a6f0`)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r4-h0-reference-full-rebuild-1`
 Base: `master` @ `17f6040b21f59f452fa57d67b512d0f4858f431f` (R3 freeze,
@@ -29,9 +32,13 @@ Issue #22 -> R0 -> R1 -> R2 -> R3 freeze -> R4 (this stage)
 R4 consumed the frozen R3 artifacts literally and amended nothing:
 
 - `grammar/BENCH-GRAMMAR-v1.md` — implemented as the sole parser semantics
-  (13 deviations D1–D13; NOT CommonMark). 43/43 golden fixtures pass; no
-  fixture file changed (verified: `git diff 17f6040..HEAD -- grammar/` is
-  empty).
+  (13 deviations D1–D13; NOT CommonMark). 43/43 golden fixtures pass; at
+  review head `3f0a6f0` no fixture file had changed. CORRECTIVE-1 later
+  repaired the `expected_tree` FIELD LISTS of F027/F028/F038 (they carried
+  a `CodeSpan content=` field that NORMALIZED-RESULT-v1 §1 does not
+  define): source bytes, source SHA-256, spans, and grammar semantics are
+  unchanged — fixture artifact conformance repaired, semantic authority
+  unchanged (see `protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`).
 - `grammar/NORMALIZED-RESULT-v1.md` — implemented in the new `oracle` crate
   (13 node kinds, UTF-8 byte half-open spans, zero-length spans only for
   `FencedCode.content`, `Document == [0, len)`, deterministic SHA-256
@@ -235,10 +242,14 @@ Q7  H0 contract: no reuse / eager / total?
        adversarial nesting is out of the frozen workload (MINOR-3). PASS.
 Q8  Attribution honest?
     A: Known(nodes)/Known(blocks) from real counts, inspection union ==
-       complete post source, NotApplicable ≠ fabricated zero for the five
+       complete post source, NotApplicable ≠ fabricated zero for the
        meaningless slots, distinctness asserted, no slot left Unknown,
        measurement overhead separated (inspection events are attribution
-       data, never a timer). PASS.
+       data, never a timer). One misclassification was found by the human
+       review and fixed by CORRECTIVE-1: `nodes_reused` is a MEASURED
+       `Known(0)` for H0 (a full rebuild has the precise fact zero), not
+       `NotApplicable`; the `NotApplicableSlot::NodesReused` variant was
+       removed. PASS (as corrected).
 Q9  Receipts/payloads?
     A: 24 receipts committed, zero payloads, --check byte-identity in the
        gate. PASS.
@@ -247,9 +258,15 @@ Q10 Gate is correctness-only?
        no benchmark, no timing output; final line "R4 H0 REFERENCE GATE:
        PASS". PASS.
 Q11 Frozen R0–R3 untouched?
-    A: grammar/mutations/cases zero-diff; R3 record carries only the
-       task-ordered gate-closure note; corpus/ gains receipts only.
-       PASS.
+    A: Semantics untouched: BENCH-GRAMMAR-v1, NORMALIZED-RESULT-v1,
+       CORPUS-v1, MUTATION-v1, case counts — all zero-diff at review head
+       `3f0a6f0`; the R3 record carries only the task-ordered
+       gate-closure note; corpus/ gains receipts only. One ARTIFACT
+       conformance defect was found by the human review and repaired by
+       CORRECTIVE-1: three fixture expected trees (F027/F028/F038) carried
+       a field the frozen vocabulary does not define — repaired in favor
+       of the single-owner contract, semantics NOT expanded. PASS (as
+       corrected).
 Q12 Scope discipline?
     A: No H1–H4 work (other mechanism crates untouched since R1 — audited
        4bc36d4); no performance measurement or claim anywhere in R4; the
@@ -327,10 +344,17 @@ scripts/verify-r4.sh                     PASS (final run on HEAD, 2026-09-17)
   mutation-check-r4.sh                   5/5 DETECTED
 ```
 
+CORRECTIVE-1 re-ran the full gate on the corrective HEAD (see
+`R4-H0-REFERENCE-CORRECTIVE-1.md` §6): all lines PASS again, plus the new
+field-legality / zero-length / attribution regressions and the R3 static
+gate's self-tests.
+
 ## 8. Self-assessment verdict
 
 ```text
 R4 SELF-ASSESSMENT VERDICT: READY_FOR_ADVERSARIAL_R4_REVIEW
+(superseded 2026-09-17 by CORRECTIVE-1 — current verdict:
+ READY_FOR_FINAL_R4_REVIEW)
 
 H0_REFERENCE_PASS conditions met:
   - 43/43 golden fixtures (no fixture changed)
