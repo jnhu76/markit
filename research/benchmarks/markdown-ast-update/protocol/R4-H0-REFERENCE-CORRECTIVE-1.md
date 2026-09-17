@@ -1,6 +1,9 @@
 # R4-CORRECTIVE-1 — H0 Reference: field authority, zero-length, attribution
 
-Status: **READY_FOR_FINAL_R4_REVIEW** (2026-09-17)
+Status: **H0_REFERENCE_PASS** (2026-09-17; human final review passed after
+this corrective; PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`. The FINAL VERDICT below is the
+historical self-assessment at the corrective head.)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r4-h0-reference-full-rebuild-1` (PR #29, not merged)
 Base reviewed head: `3f0a6f02ea8a4174e237a8a07dd56a3efa79ef6b`

@@ -1,10 +1,9 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R4 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R4_REVIEW (2026-09-17;
-H0 reference + differential gate + negative gate complete; the adversarial
-review's targeted corrective is applied). Prior: R3
-GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
-merged into master as
+Status: **R4 H0_REFERENCE_PASS (2026-09-17; human final review passed;
+PR #29 merged into master as `21d7d832fec84fceedb7600cccb4296745395fc1`).
+Prior: R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed;
+PR #28 merged into master as
 `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
 Authority: GitHub Issue #22
@@ -272,8 +271,9 @@ Stop：`GRAMMAR_CORPUS_MUTATION_FREEZE_PASS`
 
 ## R4 — H0 Reference Full Rebuild
 
-Status: **READY_FOR_FINAL_R4_REVIEW (2026-09-17, after
-CORRECTIVE-1)**. Deliverables:
+Status: **H0_REFERENCE_PASS (2026-09-17; human final review passed after
+CORRECTIVE-1; PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`)**. Deliverables:
 `protocol/R4-H0-REFERENCE-FULL-REBUILD.md` (stage record, incl.
 adversarial pass) + `protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`
 (the human review's corrective), `oracle/` (NORMALIZED-RESULT-v1

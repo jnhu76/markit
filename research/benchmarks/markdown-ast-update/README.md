@@ -1,9 +1,8 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R4 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R4_REVIEW (2026-09-17).
-H0 reference full rebuild + correctness gate complete; the human adversarial
-review's targeted corrective (CodeSpan field authority, shared field-legality
-gate, zero-length contract, `nodes_reused` = Known(0)) is applied. Prior:
+Status: **R4 H0_REFERENCE_PASS (2026-09-17). Human final review passed;
+PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`. Prior:
 R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
 merged into master as `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
@@ -71,7 +70,7 @@ R2 = PASS（prior-art mechanism extraction；PR #27 已合并）
 R3 = GRAMMAR_CORPUS_MUTATION_FREEZE_PASS（BENCH-GRAMMAR-v1 + corpus/mutation
       freeze；人工最终评审通过；PR #28 已合并为 17f6040；
       verify-r3.sh 静态门 + corrective regressions 强制）
-R4 = READY_FOR_FINAL_R4_REVIEW（H0 reference full rebuild：
+R4 = H0_REFERENCE_PASS（H0 reference full rebuild：
       oracle/ + corpusgen/ + mechanisms/full-rebuild/；
       43/43 fixtures；differential/QUERY/eager/attribution 套件；
       verify-r4.sh 正确性门（含 R1/R3 回归 + 5/5 负向 mutation 检查）；
@@ -79,9 +78,10 @@ R4 = READY_FOR_FINAL_R4_REVIEW（H0 reference full rebuild：
       CORRECTIVE-1 已应用：CodeSpan 字段权威矛盾修复（F027/F028/F038），
       共享 field-legality 门（Rust validate.rs + verify_r3.py FIELD_TABLE），
       零长度契约 start<end 对所有节点，nodes_reused = Known(0)；
-      R3 语义未扩展——仅修复 fixture 工件一致性）
-NEXT = R4 human final review，通过后进入 R5 H1/H2/H3/H4 Mechanism
-       Implementation
+      R3 语义未扩展——仅修复 fixture 工件一致性；
+      人工最终评审通过，PR #29 已合并为 21d7d83）
+NEXT = R5 H1/H2/H3/H4 Mechanism Implementation（correctness + identity +
+       parity only；no measurement）
 ```
 
 R4 只实现 H0 参考与正确性门，不做任何 measurement、不计时、不开始
