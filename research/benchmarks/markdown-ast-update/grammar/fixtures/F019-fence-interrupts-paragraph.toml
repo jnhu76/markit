@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F019"
+name = "fence-interrupts-paragraph"
+covers = ["fenced-code", "paragraph"]
+source = '''
+ab
+```
+x
+```
+'''
+source_sha256 = "94fe197b913d86d99183ddb80547fe93789edca748ddb4318423ac196c7fb028"
+expected_tree = '''
+(Document 0 13
+  (Paragraph 0 2
+    (Text 0 2))
+  (FencedCode 3 12 info="" content=7:9))
+'''

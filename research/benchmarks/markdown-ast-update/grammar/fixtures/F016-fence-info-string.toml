@@ -1,0 +1,14 @@
+schema = "r3-fixture-v1"
+id = "F016"
+name = "fence-info-string"
+covers = ["fenced-code"]
+source = '''
+```rust
+x
+```
+'''
+source_sha256 = "0b88aff41c779871f31d649ad69bcfd956a1da96e97e34e5f431ff141b4d4598"
+expected_tree = '''
+(Document 0 14
+  (FencedCode 0 13 info="rust" content=8:10))
+'''

@@ -1,0 +1,21 @@
+schema = "r3-fixture-v1"
+id = "F012"
+name = "list-blank-ends-list"
+covers = ["list", "listitem", "deviation"]
+source = '''
+- a
+
+- b
+'''
+source_sha256 = "b4d1fb499b26924cafb2166f864bf098213709530a3412f3844a080f8eefb406"
+expected_tree = '''
+(Document 0 9
+  (List 0 3
+    (ListItem 0 3 marker="-"
+    (Paragraph 2 3
+      (Text 2 3))))
+  (List 5 8
+    (ListItem 5 8 marker="-"
+    (Paragraph 7 8
+      (Text 7 8)))))
+'''

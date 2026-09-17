@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F018"
+name = "fence-longer-closer"
+covers = ["fenced-code", "paragraph"]
+source = '''
+```
+ab
+````
+cd
+'''
+source_sha256 = "0f80a51c4c619be3e27cc1eaf7e4c8371abb27c0f730cce49d8d861da7f618c1"
+expected_tree = '''
+(Document 0 15
+  (FencedCode 0 11 info="" content=4:7)
+  (Paragraph 12 14
+    (Text 12 14)))
+'''

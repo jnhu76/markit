@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F031"
+name = "not-link-space-in-dest"
+covers = ["inline-link", "deviation"]
+source = '''
+[a]( /x)
+'''
+source_sha256 = "6eb627b61c6ad4d4b775553b626630db36da4417550d4cc62a7cd7bfb1fbfded"
+expected_tree = '''
+(Document 0 9
+  (Paragraph 0 8
+    (Text 0 8)))
+'''

@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F005"
+name = "heading-hash-no-space"
+covers = ["heading", "deviation"]
+source = '''
+#foo
+'''
+source_sha256 = "d96d0d5cfad0b8b2b946b3dfc6c51d28fe4a1e2ed18b7651727688c9c1755df3"
+expected_tree = '''
+(Document 0 5
+  (Paragraph 0 4
+    (Text 0 4)))
+'''

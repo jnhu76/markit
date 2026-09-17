@@ -1,0 +1,15 @@
+schema = "r3-fixture-v1"
+id = "F008"
+name = "blockquote-nested"
+covers = ["blockquote", "paragraph"]
+source = '''
+> > a
+'''
+source_sha256 = "07992f34e9d8532ac8650274f04a15e4f56719cad6aa4597a7b83176b5db03ec"
+expected_tree = '''
+(Document 0 6
+  (BlockQuote 0 5
+    (BlockQuote 2 5
+    (Paragraph 4 5
+      (Text 4 5)))))
+'''

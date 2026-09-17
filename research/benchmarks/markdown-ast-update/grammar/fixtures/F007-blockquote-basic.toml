@@ -1,0 +1,16 @@
+schema = "r3-fixture-v1"
+id = "F007"
+name = "blockquote-basic"
+covers = ["blockquote", "paragraph", "text"]
+source = '''
+> a
+> b
+'''
+source_sha256 = "9b35a1fa9b67d591347fc15184def3b54f530c277a76d4723f881aec63e9f064"
+expected_tree = '''
+(Document 0 8
+  (BlockQuote 0 7
+    (Paragraph 2 7
+      (Text 2 3)
+      (Text 6 7))))
+'''

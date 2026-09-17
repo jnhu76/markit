@@ -1,0 +1,16 @@
+schema = "r3-fixture-v1"
+id = "F043"
+name = "fence-inside-list-item"
+covers = ["list", "listitem", "fenced-code"]
+source = '''
+- ```
+  x
+  ```
+'''
+source_sha256 = "1d3958b72342ebe92833aaf5686c6bc19f9e90609f2a11ecace5f3725a2fc46d"
+expected_tree = '''
+(Document 0 16
+  (List 0 15
+      (ListItem 0 15 marker="-"
+        (FencedCode 2 15 info="" content=6:10))))
+'''

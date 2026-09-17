@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F040"
+name = "tab-is-ordinary-character"
+covers = ["deviation", "paragraph"]
+source = '''
+	- a
+'''
+source_sha256 = "5198c6198b5e81b9eb375163fef5621bc702ca3b06c886282a99693089696b21"
+expected_tree = '''
+(Document 0 5
+  (Paragraph 0 4
+    (Text 0 4)))
+'''

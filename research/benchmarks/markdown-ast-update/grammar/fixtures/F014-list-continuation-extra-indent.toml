@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F014"
+name = "list-continuation-extra-indent"
+covers = ["list", "listitem", "deviation"]
+source = '''
+- a
+   b
+'''
+source_sha256 = "41fc761f7bcacd5858549a70c77bbbb47e145ab275b8ccdf195469e0fd5fa2d3"
+expected_tree = '''
+(Document 0 9
+  (List 0 8
+    (ListItem 0 8 marker="-"
+        (Paragraph 2 8
+        (Text 2 3)
+        (Text 6 8)))))
+'''

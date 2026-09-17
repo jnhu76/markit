@@ -1,0 +1,14 @@
+schema = "r3-fixture-v1"
+id = "F021"
+name = "emphasis-simple"
+covers = ["emphasis", "text"]
+source = '''
+*a*
+'''
+source_sha256 = "44e71c1a3d4924db94c241043b5390c9c45abba75fac4493ee4ec57a14ce0259"
+expected_tree = '''
+(Document 0 4
+  (Paragraph 0 3
+    (Emphasis 0 3
+      (Text 1 2))))
+'''

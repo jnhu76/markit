@@ -1,0 +1,16 @@
+schema = "r3-fixture-v1"
+id = "F004"
+name = "heading-levels"
+covers = ["heading", "text"]
+source = '''
+## a
+###### b
+'''
+source_sha256 = "c32809f1e84bf89907d21a28b55470e4382f7ff6025c5760699dd427bc202a4a"
+expected_tree = '''
+(Document 0 14
+  (Heading 0 4 level=2
+    (Text 3 4))
+  (Heading 5 13 level=6
+    (Text 12 13)))
+'''

@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F002"
+name = "two-paragraphs"
+covers = ["paragraph", "text"]
+source = '''
+aa
+
+bb
+'''
+source_sha256 = "01fc8edf72be26c5b986ac58f4698e03ce7b78342ed6b7f5bf954cea7da4b558"
+expected_tree = '''
+(Document 0 7
+  (Paragraph 0 2
+    (Text 0 2))
+  (Paragraph 4 6
+    (Text 4 6)))
+'''

@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F023"
+name = "emphasis-unmatched"
+covers = ["emphasis", "deviation"]
+source = '''
+*a
+'''
+source_sha256 = "ec00da45e047215e1882345a746b1a7ebf6118db225ca7194a0ee53425281389"
+expected_tree = '''
+(Document 0 3
+  (Paragraph 0 2
+    (Text 0 2)))
+'''

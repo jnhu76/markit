@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F036"
+name = "label-ascii-casefold"
+covers = ["reference-link", "reference-definition", "deviation"]
+source = '''
+[a][R]
+
+[r]: /x
+'''
+source_sha256 = "6e922028c55cd3d1a718c6be2ecd6ae881348f8062960cc6d57e62875bfc8724"
+expected_tree = '''
+(Document 0 16
+  (Paragraph 0 6
+    (ReferenceLink 0 6 label="r" destination="/x"
+      (Text 1 2)))
+  (ReferenceDefinition 8 15 label="r" destination="/x"))
+'''

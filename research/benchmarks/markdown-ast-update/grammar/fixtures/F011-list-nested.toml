@@ -1,0 +1,20 @@
+schema = "r3-fixture-v1"
+id = "F011"
+name = "list-nested"
+covers = ["list", "listitem"]
+source = '''
+- a
+  - b
+'''
+source_sha256 = "463c7c3f958945c54c1344ca646ede0581c732e3fd168cdd1ef8387fad1d1cf6"
+expected_tree = '''
+(Document 0 10
+  (List 0 9
+    (ListItem 0 9 marker="-"
+      (Paragraph 2 3
+      (Text 2 3))
+      (List 6 9
+      (ListItem 6 9 marker="-"
+        (Paragraph 8 9
+        (Text 8 9)))))))
+'''

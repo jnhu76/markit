@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F039"
+name = "utf8-emoji-heading"
+covers = ["utf8", "emoji", "heading"]
+source = '''
+# 🐉 x
+'''
+source_sha256 = "9efb74c2ed31fea32a50b399ebd635fb90029e32a2cb1e3c955389c704afa301"
+expected_tree = '''
+(Document 0 9
+  (Heading 0 8 level=1
+    (Text 2 8)))
+'''

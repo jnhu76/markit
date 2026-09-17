@@ -1,0 +1,14 @@
+schema = "r3-fixture-v1"
+id = "F029"
+name = "inline-link-basic"
+covers = ["inline-link"]
+source = '''
+[a](/x)
+'''
+source_sha256 = "691030c1c08d0b053f6836d7d77192761b2c0f1a49ee10261859b468c323138f"
+expected_tree = '''
+(Document 0 8
+  (Paragraph 0 7
+    (Link 0 7 destination="/x"
+      (Text 1 2))))
+'''

@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F006"
+name = "heading-closing-hashes-content"
+covers = ["heading", "deviation"]
+source = '''
+# a #
+'''
+source_sha256 = "ab62bfdb5eb8b586bba29f6f198aedf19eecb8008792295430acc97aee8585a9"
+expected_tree = '''
+(Document 0 6
+  (Heading 0 5 level=1
+    (Text 2 5)))
+'''

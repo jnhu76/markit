@@ -1,0 +1,14 @@
+schema = "r3-fixture-v1"
+id = "F020"
+name = "fence-body-is-raw"
+covers = ["fenced-code", "deviation"]
+source = '''
+```
+*a* `b`
+```
+'''
+source_sha256 = "ce1bb941a960922a627e3a536addfd2f43a5aa79f777dba1851e3f152f9e2d4b"
+expected_tree = '''
+(Document 0 16
+  (FencedCode 0 15 info="" content=4:12))
+'''

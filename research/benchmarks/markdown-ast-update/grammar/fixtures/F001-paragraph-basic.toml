@@ -1,0 +1,13 @@
+schema = "r3-fixture-v1"
+id = "F001"
+name = "paragraph-basic"
+covers = ["paragraph", "text"]
+source = '''
+hello world
+'''
+source_sha256 = "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447"
+expected_tree = '''
+(Document 0 12
+  (Paragraph 0 11
+    (Text 0 11)))
+'''

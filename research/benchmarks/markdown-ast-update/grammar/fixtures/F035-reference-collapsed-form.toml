@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F035"
+name = "reference-collapsed-form"
+covers = ["reference-link", "reference-definition"]
+source = '''
+[a][]
+
+[a]: /x
+'''
+source_sha256 = "5a30aedfc9d61b531bd1f9fb53cb8094e442cb673f00adf532eb7a2164b83e00"
+expected_tree = '''
+(Document 0 15
+  (Paragraph 0 5
+    (ReferenceLink 0 5 label="a" destination="/x"
+      (Text 1 2)))
+  (ReferenceDefinition 7 14 label="a" destination="/x"))
+'''

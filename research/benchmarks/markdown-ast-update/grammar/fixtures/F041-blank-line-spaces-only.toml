@@ -1,0 +1,17 @@
+schema = "r3-fixture-v1"
+id = "F041"
+name = "blank-line-spaces-only"
+covers = ["paragraph", "deviation"]
+source = '''
+a
+   
+b
+'''
+source_sha256 = "13815a1f0f7abf9ff874454799aff7c00e0fd45440f2c1cd753904b852aeea7f"
+expected_tree = '''
+(Document 0 8
+  (Paragraph 0 1
+    (Text 0 1))
+  (Paragraph 6 7
+    (Text 6 7)))
+'''
