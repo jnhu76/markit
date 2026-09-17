@@ -1,12 +1,16 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R2 CORRECTIVE PASS APPLIED — READY_FOR_FINAL_R2_REVIEW (PR #27 open, awaiting human review)**
+Status: **R3 FREEZE READY_FOR_ADVERSARIAL_R3_REVIEW (2026-09-17; R2 merged via PR #27)**
 
-Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**  
-Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)  
-R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)  
-R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)  
-R2 prior-art records: [`prior-art/`](./prior-art/README.md)
+Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
+
+- Execution roadmap: [`ROADMAP.md`](./ROADMAP.md)
+- R0 methodology: [`protocol/R0-METHODOLOGY.md`](./protocol/R0-METHODOLOGY.md)
+- R1 harness contract: [`protocol/R1-HARNESS-CONTRACT.md`](./protocol/R1-HARNESS-CONTRACT.md)
+- R2 prior-art records: [`prior-art/`](./prior-art/README.md)
+- R3 freeze record:
+  [`protocol/R3-GRAMMAR-CORPUS-MUTATION-FREEZE.md`](./protocol/R3-GRAMMAR-CORPUS-MUTATION-FREEZE.md)
+  (grammar/, corpus/, mutations/, cases/)
 
 本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 
@@ -50,10 +54,13 @@ Host text-buffer apply-edit 在 timer 外；机制自己的 state/index/reuse/re
 
 ```text
 R0 = PASS
-R1 = PASS（controlled Rust harness substrate；null mechanism 端到端通过 runner，
-      schema/timer/case/seed/lane 全部由集成测试与 verify-r1.sh 强制）
-NEXT = R2 Prior-art Mechanism Extraction
+R1 = PASS（controlled Rust harness substrate；verify-r1.sh 强制）
+R2 = PASS（prior-art mechanism extraction；PR #27 已合并）
+R3 = READY_FOR_ADVERSARIAL_R3_REVIEW（BENCH-GRAMMAR-v1 + corpus/mutation
+      freeze；verify-r3.sh 静态门强制；grammar/ corpus/ mutations/ cases/）
+NEXT = 人工对抗评审 R3 -> GRAMMAR_CORPUS_MUTATION_FREEZE_PASS -> R4 H0
 ```
 
-R1 只搭实验平台/schema；R2 只做 prior-art 机制提取。不得开始 horse tuning、
-benchmark claim 或 Markit production algorithm。
+R3 只冻结工作负载契约（语法语义/规范化结果/语料/变异/案例矩阵），不实现
+parser、不生成语料、不计时。不得开始 horse tuning、benchmark claim 或
+Markit production algorithm。
