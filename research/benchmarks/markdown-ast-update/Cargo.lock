@@ -858,6 +858,7 @@ name = "markit-mdbench-full-rebuild"
 version = "0.1.0"
 dependencies = [
  "markit-mdbench-common",
+ "markit-mdbench-corpusgen",
  "markit-mdbench-oracle",
 ]
 

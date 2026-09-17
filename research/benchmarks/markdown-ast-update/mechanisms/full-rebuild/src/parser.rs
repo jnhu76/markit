@@ -179,8 +179,11 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
     /// Consume quote/list-item prefixes for one line. Returns the content
     /// column. Lines that can no longer carry an open container's prefix
     /// close that container (and everything inside it) and the line is
-    /// re-dispatched at the outer level (no lazy continuation, D4) — the
-    /// frame BELOW the closed one is re-examined against the same line.
+    /// re-dispatched at the surviving level (no lazy continuation, D4).
+    /// Frames BELOW the closed one already carried their prefixes on this
+    /// line, so prefix consumption stops there; the one exception is the
+    /// closed item's parent List, which still owes the sibling-vs-close
+    /// decision (§7) at the current column.
     fn strip_prefixes(&mut self, line_start: usize, line_lf: usize) -> usize {
         let src = self.src;
         let mut col = line_start;
@@ -210,7 +213,7 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                         idx += 1;
                     } else {
                         self.close_frames_from(idx, Some(line_start));
-                        idx = idx.saturating_sub(1);
+                        break;
                     }
                 }
                 // list item: exactly the item's content-indent bytes are
@@ -229,7 +232,10 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                         idx += 1;
                     } else {
                         self.close_frames_from(idx, Some(line_start));
-                        idx = idx.saturating_sub(1);
+                        match self.frames.last() {
+                            Some(Frame::List { .. }) => idx = idx.saturating_sub(1),
+                            _ => break,
+                        }
                     }
                 }
                 // list: transparent for prefixes. While its own item is
@@ -265,7 +271,7 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                         }
                         None => {
                             self.close_frames_from(idx, Some(line_start));
-                            idx = idx.saturating_sub(1);
+                            break;
                         }
                     }
                 }

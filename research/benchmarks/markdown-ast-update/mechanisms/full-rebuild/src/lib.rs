@@ -88,6 +88,15 @@ pub struct H0Pending {
     document: NormalizedDocument,
 }
 
+impl H0Pending {
+    /// Eager-completion proof surface (R4 §14): the pending result is
+    /// already the COMPLETE normalized document before `complete()` runs;
+    /// reading it performs no parse work.
+    pub fn document(&self) -> &NormalizedDocument {
+        &self.document
+    }
+}
+
 /// The H0 mechanism.
 #[derive(Debug, Clone, Default)]
 pub struct FullRebuildMechanism;

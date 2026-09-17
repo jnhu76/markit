@@ -18,7 +18,7 @@
 pub mod mutations;
 pub mod receipt;
 
-use markit_mdbench_common::PayloadShape;
+pub use markit_mdbench_common::PayloadShape;
 
 /// Frozen generator identity (CORPUS-v1 §3).
 pub const CORPUS_GENERATOR_VERSION: &str = "corpus-gen-v1";
