@@ -1,6 +1,6 @@
 # MUTATION-v1 — frozen operations, edit recipes, structural families (R3)
 
-Status: **R3 FREEZE CANDIDATE — READY_FOR_ADVERSARIAL_R3_REVIEW**
+Status: **R3 FREEZE — CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW**
 Authority: `protocol/R0-METHODOLOGY.md` §6 (canonical edit, FROZEN), §8
 (operation set + six propagation families, FROZEN) + this file (the exact
 recipes R3 freezes). Single owner of operation semantics, edit-size
@@ -34,7 +34,8 @@ STRUCTURAL_EDIT an edit produced by a §5 structural recipe; the operation
              label is DECLARED by the generator (per common::edit, the
              byte pattern alone cannot distinguish structural intent).
              Its byte lengths still satisfy one of the five classes above.
-QUERY        NODE_PATH_AT over the initial state — contract frozen in
+QUERY        one ordered batch of three NODE_PATH_AT subqueries over
+             the initial state — contract frozen in
              `grammar/NORMALIZED-RESULT-v1.md` §4 (single owner).
 ```
 
@@ -43,7 +44,7 @@ edit changes at least one byte.
 
 ## 2. Position classes
 
-Deterministic percentile anchors on the old source (N = its byte length):
+Raw percentile anchors on the old source (N = its byte length):
 
 ```text
 EARLY  = floor(N/4)
@@ -51,15 +52,83 @@ MIDDLE = floor(N/2)
 LATE   = floor(3N/4)
 ```
 
-Both the requested class and the ACTUAL byte offset are recorded with
-every case. Snapping (in order):
+Dephasing (corrective-1): every CORPUS-v1 size and unit size is a power
+of two, so the raw anchors are ≡ 0 (mod u) for EVERY unit / mountain /
+tile size u — they would phase-lock every generic edit onto a generator
+boundary and invalidate cross-shape locality comparisons. The GENERIC
+anchor therefore applies one universal, shape-independent phase
+constant:
 
 ```text
-1. range edits: anchor = min(anchor, N - L)      (fit the range)
-2. snap DOWN to the nearest UTF-8 char boundary
-3. structural recipes may re-anchor deterministically (§5); the
+generic_anchor = raw_anchor + 7      (same constant for every shape,
+                                      size, and anchor class)
+```
+
+Snapping (in order):
+
+```text
+1. generic_anchor = raw_anchor + 7
+2. range edits: anchor = min(anchor, N − L)      (fit the range)
+3. snap DOWN to the nearest UTF-8 char boundary of the generated corpus
+4. structural recipes may re-anchor deterministically (§5); the
    selection rule names the exact scan
 ```
+
+Frozen landing properties (validated by `scripts/verify_r3.py`; raw
+anchors are multiples of 65536, so anchored unit indices are multiples
+of each variant period — CORPUS-v1 §5):
+
+```text
+generic_anchor mod u != 0 for u in {16, 64, 512, 2048, 4096, 65536}
+                    (never on a unit / mountain / tile boundary)
+plain               inside the anchored CJK variant unit's filler bytes
+                    (paragraph content)
+fence_heavy         inside body1 of the anchored ASCII fence unit
+                    (fence body content)
+many_blocks         inside the anchored CJK variant line's filler
+huge_block          inside the giant line's content (64k: the raw anchor
+                    is already interior; +7 keeps it interior)
+deep_container      line 0 (depth 1, CJK variant) of an even = LIST
+                    mountain; inside the line's content region after
+                    down-snap (byte 7 falls inside the second CJK
+                    scalar; the down-snap lands on its first byte)
+inline_dense        inside the anchored CJK variant line, at an inline
+                    delimiter byte — interior of the line, by design for
+                    the delimiter-state shape
+reference_fanout    inside the anchored CJK variant line's link-label
+                    markup — interior of the line; a text probe there
+                    additionally touches reference-adjacent bytes
+                    (documented frozen consequence; the shape's family
+                    attribution uses damage counters, and its SEMANTIC
+                    cases self-anchor per §5)
+mixed               inside the tile heading's text
+```
+
+EARLY/MIDDLE/LATE share the same intra-unit relative offset by
+construction (deliberate): cross-class differences then isolate
+absolute-position effects, not local-structure differences. The three
+classes still represent document position classes (N/4, N/2, 3N/4).
+
+Both the requested class and the ACTUAL byte offset (post-dephasing,
+post-snapping) are recorded with every case.
+
+### 2.1 Selection tie-breaking (frozen default)
+
+Every selection rule of the form "nearest X" / "nearest after X" /
+"nearest definition" / "nearest run" uses this default unless its recipe
+overrides it:
+
+```text
+1. minimum distance wins (distance = |candidate start byte − anchor|)
+2. distance tie -> the lower byte offset wins
+3. remaining tie -> source-order first
+```
+
+Selectors phrased as "first ... at/after" are inherently source-order
+first and use rule 2 only if two candidates share one offset (impossible
+for distinct candidates). Under these rules every §5 selection is a
+total deterministic function: exactly one edit is selected on every
+declared applicable corpus.
 
 Structural placement additionally uses these POSITION SLOTS (found by
 deterministic scan, offsets recorded):
@@ -128,6 +197,8 @@ selection rule, canonical edit, postcondition, expected semantic damage
 shape, applicable / non-applicable shapes. Recipes record workload
 semantics ONLY — which propagation a mutation exercises. They must never
 encode performance expectations or predicted winners (R3 §25 check).
+Under §2.1 every selection rule is total and deterministic: exactly one
+edit is selected on every declared applicable corpus.
 
 ### M-LOC-TEXT — LOCAL_TEXT
 
@@ -150,9 +221,18 @@ non-applicable many_blocks (14-B runs), inline_dense (delimiter-dense
 ```text
 precondition   a CJK variant line/region exists
 selection      the CJK char (3 B) nearest the MIDDLE anchor, boundaries
-               snapped (never splits a code point)
+               snapped (never splits a code point); ties per §2.1
 edit           REPLACE_EQ 3 bytes -> "z"×3
-postcondition  one CJK char becomes three ASCII bytes inside a Text node
+postcondition  shape-dependent, byte-true in both cases:
+               - paragraph shapes (plain, many_blocks, huge_block,
+                 deep_container, inline_dense, reference_fanout): one
+                 CJK char inside a Text node becomes three ASCII bytes
+               - fence_heavy: one 3-byte CJK scalar inside RAW
+                 FencedCode.content becomes three ASCII bytes; the
+                 FencedCode topology and span are UNCHANGED — only the
+                 3 content source bytes change (the fence body is not
+                 a Text node; the probe stays a pure byte-authority
+                 control)
 damage shape   none structural; proves byte-length != char-count handling
 applicable     plain, many_blocks, huge_block, deep_container,
                inline_dense, fence_heavy (CJK fence bodies),
@@ -169,7 +249,11 @@ precondition   a paragraph with >= 4 B of contiguous plain Text run
 selection      that run's midpoint, snapped
 edit           INSERT "\n\n" (2 B)                     (op: structural_edit)
 postcondition  one paragraph becomes two at the insertion point
-damage shape   one block splits; downstream block offsets shift by 2
+damage shape   one block splits; downstream block offsets shift by 2.
+               In deep_container the inserted blank line ALSO closes all
+               open containers at that point (BENCH-GRAMMAR-v1 §1 blank
+               line + §6/§7), so the split co-occurs with container
+               closure there — recorded damage, not a separate family
 applicable     plain, many_blocks, huge_block, deep_container, mixed
 non-applicable fence_heavy, reference_fanout, inline_dense (its
                delimiter-dense lines have no >= 4 B plain Text run)
@@ -246,17 +330,49 @@ non-applicable fence_heavy (no structure outside fences to swallow)
 
 ### M-FS-FENCE-CLOSE — FORWARD_STATE
 
+Redesigned by corrective-1 into ONE executable canonical edit (the prior
+"insert a closer before the last body line" form was inconsistent
+between this file and the manifest, unsatisfiable on 2-body-line
+fences, and left the old closer behind as an accidental new opener).
+
 ```text
-precondition   a fence with >= 2 body lines before and >= 1 body line
-               after the chosen body line
-selection      the fence containing the MIDDLE anchor; its first body
-               line at/after the anchor
-edit           INSERT "\n```\n" (5 B) immediately before that body
-               line's terminating LF                   (op: structural_edit)
-postcondition  the fence terminates at the inserted closer; the remaining
-               body bytes become ordinary document blocks
-damage shape   forward-state release: suffix blocks re-enter structure
-applicable     fence_heavy, mixed
+precondition   a fence (BENCH-GRAMMAR-v1 §8) whose body has >= 2 body
+               lines, i.e. an opener line, >= 2 raw body lines, and a
+               closing fence line, in that order
+selection      the FIRST fence in document order satisfying the
+               precondition; its LAST body line (body2 below) is the
+               chosen body line (ties n/a — document order is total)
+edit           one contiguous REPLACE_EQ that MOVES the existing closer
+               to in front of the chosen body line:
+                 region   [body2_start, old_closer_end)
+                 replace  old_closer_bytes + original_body2_bytes
+               (both body2 and the closer keep their terminating LFs;
+               removed == inserted, so the byte class is replace_eq;
+               op label: structural_edit)
+postcondition  the fence now terminates immediately after body1 (at the
+               moved-up closer); the chosen body line is released from
+               raw fence content into ordinary document structure (a
+               paragraph under the corpus recipes); the old closer
+               position no longer exists (the closer bytes were
+               moved, not copied), so no accidental new opener remains
+damage shape   forward fence state flips at body2: one formerly-raw
+               body line re-enters block structure; re-convergence is
+               local to the fence unit (the unit still ends closed, so
+               no downstream reinterpretation — the probe is the
+               boundary MOVE itself, not an EOF swallow)
+unit arithmetic (FENCE_HEAVY / MIXED fence unit, 512 B):
+               opener "```x\n"        [0, 5)
+               body1 + LF             [5, 256)
+               body2 + LF             [256, 507)
+               old closer "```\n"     [507, 511)
+               blank "\n"             [511, 512)
+               edit region [256, 511): removed 255 B; inserted
+               "```\n" + body2 + "\n" = 4 + 251 = 255 B
+               post unit: opener | body1 | closer | body2 | blank
+applicable     fence_heavy, mixed (both carry the 512 B two-body-line
+               fence unit; the first fence in either corpus satisfies
+               the precondition — validated on recipe units by
+               scripts/verify_r3.py)
 non-applicable shapes without fences
 ```
 
@@ -378,10 +494,18 @@ corpus, operation, or edit bytes) ever produce the same CaseKey, that is
 a `CASE_IDENTITY_COLLISION` and stops the stage — no ad-hoc identifiers.
 
 QUERY identity note: QUERY carries no edit fields (R1 `CaseKeyV1`
-rejects them for `query`), so exactly one QUERY case exists per corpus
-and it answers all three anchors in one case (NORMALIZED-RESULT-v1 §4).
-Post-edit querying cannot be expressed in R1 identity and is deferred
-(later stage), not silently squeezed into STRUCTURAL_EDIT.
+rejects them for `query`), so exactly one QUERY case exists per corpus.
+Its payload is ONE ordered batch of three NODE_PATH_AT subqueries (at
+the generic EARLY, MIDDLE, and LATE anchors, MUTATION-v1 §2), and its
+correctness result is the ordered tuple of the three answers
+(NORMALIZED-RESULT-v1 §4 is the single owner of that contract). The
+three subqueries are part of ONE logical case — no per-anchor CaseIds
+exist, and no query fields are added to `CaseKeyV1`. Any later query
+timing must measure the frozen batch consistently across horses; R9 may
+report derived per-subquery statistics only if it defines that
+derivation explicitly. Post-edit querying cannot be expressed in R1
+identity and is deferred (later stage), not silently squeezed into
+STRUCTURAL_EDIT.
 
 ## 8. No horse knowledge (R3 §25 discipline)
 

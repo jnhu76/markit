@@ -1,6 +1,6 @@
 # NORMALIZED-RESULT-v1 — frozen semantic vocabulary and query contract (R3)
 
-Status: **R3 FREEZE CANDIDATE — READY_FOR_ADVERSARIAL_R3_REVIEW**
+Status: **R3 FREEZE — CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW**
 Authority: `protocol/R0-METHODOLOGY.md` §5 (normalized result contract,
 FROZEN — not restated or amended here) + this file (the concrete
 vocabulary R3 freezes). Single owner of the node vocabulary, span
@@ -135,12 +135,30 @@ correctness  defined over the NORMALIZED tree only. Whether a mechanism
            is defined here.
 ```
 
-First-round QUERY cases (see `cases/CASE-MATRIX-v1.md`): one QUERY case
-per corpus, answered at three frozen anchors of the OLD source:
-EARLY = floor(N/4), MIDDLE = floor(N/2), LATE = floor(3N/4), each snapped
-DOWN to the nearest UTF-8 char boundary. QUERY carries no edit
-(CaseKeyV1 rejects edit fields for `query`), so post-edit querying is
-explicitly DEFERRED (later stage; R9), not defined here.
+First-round QUERY cases (see `cases/CASE-MATRIX-v1.md`): because
+`CaseKeyV1` rejects edit fields for `query` (R1 validation), exactly one
+QUERY case exists per corpus and its payload is ONE ORDERED BATCH of
+three subqueries over the OLD source:
+
+```text
+QUERY case payload  = ordered subqueries
+    1. NODE_PATH_AT(EARLY_generic)
+    2. NODE_PATH_AT(MIDDLE_generic)
+    3. NODE_PATH_AT(LATE_generic)
+correctness result  = the ordered tuple
+    [ path_at_early, path_at_middle, path_at_late ]
+```
+
+The anchor offsets are MUTATION-v1 §2's GENERIC anchors (raw percentile
+anchor + 7, then range clamp for edits — n/a for query — then down-snap
+to the nearest UTF-8 char boundary); each subquery offset satisfies
+`0 <= offset <= len(source)` by construction. The three subqueries are
+part of ONE logical case: one `CaseKeyV1` with `operation = query` and
+no edit fields, one answer per horse. Timing must measure the frozen
+batch consistently across horses; R9 may report derived per-subquery
+statistics only if it defines that derivation explicitly. Post-edit
+querying cannot be expressed in R1 identity and is explicitly DEFERRED
+(later stage; R9), not defined here.
 
 ## 5. Golden semantic fixtures — format and role
 

@@ -96,9 +96,9 @@ applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "in
 mutation_id       = "M-FS-FENCE-CLOSE"
 family            = "forward_state"
 op_label          = "structural_edit"
-byte_class        = "insert"
-edit_summary      = 'INSERT "\n```\n" before the fence LAST body line terminating LF'
-selection         = "fence with >=2 body lines containing MIDDLE anchor; insert before its LAST body line LF"
+byte_class        = "replace_eq"
+edit_summary      = 'REPLACE_EQ moving the fence closer before its LAST body line (releases that line from raw content)'
+selection         = "first fence in document order with >=2 body lines; chosen body line = its last body line"
 anchors           = ["middle"]
 applicable_shapes = ["fence_heavy", "mixed"]
 
