@@ -1,11 +1,13 @@
 # R3 — BENCH-GRAMMAR-v1 + Corpus / Mutation Freeze
 
-Status: **READY_FOR_ADVERSARIAL_R3_REVIEW** (2026-09-17)
+Status: **CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW** (2026-09-17)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r3-grammar-corpus-mutation-freeze-1`
 Base: `master` @ `c9bad01b6668c6921272e7cc989e8af6186f73ab` (PR #27 merged;
 R2 lineage `R2_FINAL_REVIEW_PASS` / `PRIOR_ART_EXTRACTION_PASS` verified via
 merge commit)
+First-freeze head reviewed by the adversarial pass: `e5edd7d`
+Corrective head: see §8 (MARKIT-R3-GRAMMAR-CORPUS-MUTATION-CORRECTIVE-1)
 
 This file records the R3 stage: what was frozen, the authority decisions,
 the adversarial review pass, and the verification results. R3 is a
@@ -234,4 +236,158 @@ After human review the gate may become:
     READY_FOR_R4_H0_REFERENCE_FULL_REBUILD
 
 STOP: R4 is not started. PR opened against master; not merged by the agent.
+```
+
+## 8. Corrective pass — MARKIT-R3-GRAMMAR-CORPUS-MUTATION-CORRECTIVE-1
+
+One targeted corrective against reviewed head `e5edd7d` (PR #28), from
+human adversarial review. Scope discipline held: no R0/R1 change, no R2
+reopening, no grammar broadening (BENCH-GRAMMAR-v1 sections 1–13 are
+byte-identical), no parser/mechanism code, no corpus generation, no R4.
+
+```text
+MAJOR-1  FENCE_HEAVY CJK body arithmetic was false ("中"×41 + filler(4)
+         = 127 B, not 250 B). Fixed: "中"×82 + filler(4) = 250 B, so
+         BOTH fence unit variants are exactly 512 B. New CORPUS-v1 §4.9
+         freezes the closed unit-variant arithmetic for ALL eight
+         shapes ("every declared unit variant has its declared byte
+         size"), and §3.1 pins the every-Nth-unit index rule (0-based,
+         index mod N == 0; deep_container lines counted per mountain).
+         Verified: every variant row asserted by verify_r3.py on
+         in-memory recipe units.
+
+MAJOR-2  DEEP_CONTAINER quote mountain did not encode depth d: the old
+         indent-positioned marker form violates frozen §6 (only up to
+         3 leading spaces before '>'; nesting requires content STARTING
+         with '>') and collapsed to depth <= 2. Fixed: quote line(d) =
+         "> "×d + content(63−2d) + "\n" (still exactly 64 B for
+         d=1..16). Proven: max quote depth 16 by the §6 marker chain
+         and max list depth 16 by the §7 indent arithmetic (with the
+         sibling-continuation rule), simulated per line by
+         verify_r3.py; mountains do not compound (a mountain's first
+         line closes the previous containers per §6 D4 / §7 item-end),
+         so max normalized depth is 16 for BOTH kinds. The stale
+         "containers stay open across the whole corpus" claim is gone.
+
+MAJOR-3  M-FS-FENCE-CLOSE was inconsistent (doc: ">=2 body lines
+         before, >=1 after" — unsatisfiable on the 2-body-line fences;
+         manifest: a different last-body-line rule) and its INSERT form
+         left the old closer behind as an accidental new opener.
+         Redesigned as ONE executable canonical edit, single owner
+         MUTATION-v1 §5, projected identically into the manifest:
+           precondition  fence with >= 2 body lines
+           selection     FIRST such fence in document order; its LAST
+                         body line is chosen
+           edit          REPLACE_EQ [body2_start, old_closer_end) ->
+                         old_closer_bytes + original_body2_bytes
+                         (255 B removed == 255 B inserted)
+           postcondition fence closes after body1; body2 released into
+                         ordinary block structure; the old closer
+                         position ceases to exist (no accidental
+                         opener); re-convergence local to the unit
+         Verified on recipe units: precondition satisfiable on
+         fence_heavy AND mixed (identical 512-B ASCII fence unit in the
+         MIXED tile); post unit = opener|body1|closer|body2|blank; no
+         stray backtick run after the released line.
+
+MAJOR-4  Generic anchors phase-locked onto generator periods: all sizes
+         and units are powers of two, so floor(N/4), floor(N/2),
+         floor(3N/4) are ≡ 0 (mod u) for every unit u — generic
+         same-size edits landed on tile/unit boundaries, invalidating
+         the paragraph-interior vs fence-body-interior comparison.
+         Fixed: frozen dephasing rule generic_anchor = raw_anchor + 7
+         (ONE universal shape-independent constant; every shape, size,
+         anchor class), then range clamp, then down-snap. Frozen
+         landing table (MUTATION-v1 §2): PLAIN inside paragraph
+         content; FENCE_HEAVY inside body1; deep_container line 0
+         content (down-snapped onto a char boundary); inline_dense and
+         reference_fanout interiors documented (delimiter/label bytes —
+         recorded consequences, not surprises); MIXED heading text;
+         never ≡ 0 (mod 16/64/512/2048/4096/65536). EARLY/MIDDLE/LATE
+         deliberately share the intra-unit offset so cross-class deltas
+         isolate absolute-position effects. Structural recipes keep
+         their own deterministic re-anchoring (§2 step 4).
+
+IMPORTANT-1  M-LOC-UTF8-SWAP on fence_heavy claimed the swapped char
+         becomes ASCII "inside a Text node" — false (fence bodies are
+         raw FencedCode.content). Fixed per option A (kept applicable,
+         family stays LOCAL_TEXT): fence_heavy postcondition is now
+         "one 3-byte CJK scalar inside raw content -> three ASCII
+         bytes; FencedCode topology and span UNCHANGED". Case totals
+         unchanged (applicability kept).
+
+IMPORTANT-2  Case-count authority drift (386 vs 370 prose; 386/167
+         manifest comments; 322 stale docstring). Fixed: single
+         machine-readable field expected_unique_cases = 370 in
+         case-manifest-v1.toml; verify_r3.py compares its expansion to
+         that field and cross-checks the total echoed in
+         CASE-MATRIX-v1.md; stale numbers are gated out. The expansion
+         is now precisely labeled a RECIPE-SLOT count: content identity
+         (edit_start, edit_end, inserted_sha256) exists only at
+         instantiation (R4+), where an unexpected semantic collapse is
+         CASE_IDENTITY_COLLISION and stops the stage (MUTATION-v1 §7).
+
+IMPORTANT-3  QUERY semantics made explicit: one QUERY case per corpus =
+         ONE ordered batch of three NODE_PATH_AT subqueries (generic
+         EARLY/MIDDLE/LATE), result = the ordered tuple of paths
+         (NORMALIZED-RESULT-v1 §4 single owner). One CaseId (query has
+         no edit fields — R1 validation), no new CaseKeyV1 fields, no
+         per-anchor CaseIds. Batch must be measured consistently across
+         horses; R9 may derive per-subquery statistics only by explicit
+         definition there.
+
+IMPORTANT-4  Tie-breaking frozen (MUTATION-v1 §2.1): minimum distance
+         wins; distance tie -> lower byte offset; remaining tie ->
+         source-order first ("first at/after" is source-order by
+         nature). Under this default every §5 selection is a total
+         deterministic function selecting exactly one edit per
+         applicable corpus.
+```
+
+Honest supersession note: the FIRST pass's IMPORTANT-4 "fix" (select the
+fence's LAST body line and insert a closer before its LF) was itself
+defective — it introduced the inconsistency MAJOR-3 describes and would
+have re-frozen the orphaned closer as an unclosed new opener. The
+corrective supersedes it entirely.
+
+Regressions added to verify_r3.py (in-memory recipe units ONLY — no
+corpus generation, no receipts, no parser, no timing): unit-variant
+byte sizes for all 16 declared variants (incl. both fence units = 512),
+deep list/quote depth-16 proofs, fence-close executability + release
+simulation, generic-anchor dephasing + landing checks (3 sizes × 3
+classes), doc-number extraction binding CORPUS-v1.md formulas to the
+mirror, totals-agreement and stale-total gates. Mutation-tested: an
+injected 41-count body and an injected +9 anchor constant each fail the
+gate; restored state passes.
+
+Final adversarial self-review on the repaired surfaces only (exact-byte
+math, actual deep depth, fence-close semantics, phase locking,
+applicability, query identity, totals consistency): no further MAJOR or
+IMPORTANT findings. Known-and-documented properties (not defects):
+generic anchors always land on variant units (consequence of raw
+anchors being multiples of 65536 — CORPUS-v1 §5), and they share one
+intra-unit offset across anchor classes (deliberate, §2).
+
+Corrective verification results:
+
+```text
+git diff --check:            clean
+bash scripts/verify-r3.sh:   R3 FREEZE GATE: PASS (43 fixtures; recipe-
+                             slot expansion 370 == expected_unique_cases;
+                             corrective regressions green)
+bash scripts/verify-r1.sh:   R1 ACCEPTANCE GATE: PASS (no benchmark run)
+Scope gates:                 no .rs/.c/.mbt under grammar/ corpus/
+                             mutations/ cases/; horse-outcome grep clean
+```
+
+Corrective verdict:
+
+```text
+R3 SELF-ASSESSMENT VERDICT: READY_FOR_FINAL_R3_REVIEW
+
+After human final review the gate may become:
+    GRAMMAR_CORPUS_MUTATION_FREEZE_PASS
+    READY_FOR_R4_H0_REFERENCE_FULL_REBUILD
+
+STOP: R4 is not started. PR #28 updated; not merged by the agent.
 ```
