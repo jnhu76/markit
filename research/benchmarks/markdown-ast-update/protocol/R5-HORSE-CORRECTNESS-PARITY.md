@@ -259,6 +259,42 @@ IDENTITY WITNESS (task contract §9; tests, not performance)
      fallback_to_full_count == Known(1), result == H0.
 ```
 
+§6 implementation notes (recorded at H1 implementation time, BEFORE H2
+started; refinements of the F-class predicates above, all conservative —
+they may only ADD fallbacks, never remove soundness):
+
+- Separator semantics: the continuation question between an edge block and
+  the next block is decided by the LF count strictly between their spans in
+  POST coordinates. One LF is a bare line terminator (block line ended; the
+  next line decides); >= 2 LFs contain a blank line, which terminates every
+  continuation (§3, D5, §6). This is shift-invariant and state-independent.
+- LEFT/RIGHT pairs: LEFT = prefix-last block vs the region's first block
+  (F2/F3). RIGHT = the region's last block — or, when the region produced
+  no blocks (empty or blank-only region), the carried prefix-last block —
+  vs the suffix's first block (F4/F5). The carried form makes blank-run
+  deletion merges (R2-H02's silent divergence upstream) sound instead.
+- F4 (a), added as part of the right-edge class: the region's last
+  non-empty line must end at or before the region's right edge (its LF
+  terminator lies within the region or exactly at the right edge on
+  unchanged suffix bytes). A line running past the cut was merged with
+  suffix bytes in the clean parse; the region parser, which EOF-closes at
+  the cut, cannot see that.
+- Insertion-gap mapping reading (mizchi §5 `(i, i)` outcome): with no
+  strictly-overlapping entry (exact-boundary insert), the region is the
+  boundary gap itself — [end of the entry before the gap, start of the
+  first entry at/after the edit end) — with the right edge delta-shifted;
+  the inserted bytes are thereby inside the reparsed region. The suffix
+  then starts at the first entry at/after the edit end (mizchi `(i, i+1)`
+  would instead include the following block in the region and MISS the
+  paragraph-merge class shown by the differential probes; `(i, i)` plus the
+  continuation pairs is the sound reading).
+- Edge facts (Para/Quote/List{indent, strip}/Terminated) are derived once
+  at tiling-construction time from the Skel + the parsed source (R5 freeze
+  §6 MECHANISM_INTRINSIC_STATE sentence), never re-derived from the old
+  source during an update, so guard source reads carry only POST-edit
+  coordinates in the inspection-event stream. Indent/strip facts are
+  shift-invariant, so shifted suffix entries keep theirs.
+
 ## 7. H2 — FRAGMENT_REUSE (`mechanisms/fragment-reuse`)
 
 ```text

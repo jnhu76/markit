@@ -836,6 +836,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
 
 [[package]]
+name = "markit-mdbench-block-local"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-common",
+ "markit-mdbench-corpusgen",
+ "markit-mdbench-full-rebuild",
+ "markit-mdbench-oracle",
+ "markit-mdbench-shared-grammar",
+]
+
+[[package]]
 name = "markit-mdbench-common"
 version = "0.1.0"
 dependencies = [

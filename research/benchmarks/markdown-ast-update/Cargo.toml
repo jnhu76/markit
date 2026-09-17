@@ -9,6 +9,7 @@ members = [
     "shared-grammar",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
+    "mechanisms/block-local",
 ]
 
 # R1 PRIMARY BUILD POLICY (frozen; see manifest/environment.toml and
@@ -38,6 +39,7 @@ markit-mdbench-null-r1 = { path = "mechanisms/null-r1" }
 markit-mdbench-corpusgen = { path = "corpusgen" }
 markit-mdbench-shared-grammar = { path = "shared-grammar" }
 markit-mdbench-full-rebuild = { path = "mechanisms/full-rebuild" }
+markit-mdbench-block-local = { path = "mechanisms/block-local" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
