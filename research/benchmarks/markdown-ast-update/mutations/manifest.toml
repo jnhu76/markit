@@ -1,0 +1,153 @@
+# MUTATION-v1 machine-readable manifest (R3 freeze)
+#
+# Authority: mutations/MUTATION-v1.md (the .md wins on disagreement).
+# Families and operation labels are frozen enums (R0 §6/§8 + common::edit).
+# anchors: EARLY / MIDDLE / LATE (NORMALIZED formulas in MUTATION-v1 §2).
+# `applicable_shapes` uses the R0 §9 snake_case shape names; every other
+# shape is NOT_APPLICABLE for that recipe.
+
+schema             = "mutation-manifest-v1"
+mutation_doc       = "mutations/MUTATION-v1.md"
+corpus_manifest    = "corpus/manifest.toml"
+grammar            = "BENCH-GRAMMAR-v1"
+
+families = [
+  "local_text",
+  "block_boundary",
+  "container_state",
+  "forward_state",
+  "inline_delimiter_state",
+  "semantic_dependency",
+]
+
+[[mutation]]
+mutation_id       = "M-LOC-TEXT"
+family            = "local_text"
+op_label          = "structural_edit"
+byte_class        = "replace_eq"
+edit_summary      = 'REPLACE_EQ 32 bytes inside one Text run with "z"*32'
+selection         = "letter-run >= 32B nearest MIDDLE anchor; midpoint start"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "huge_block", "deep_container", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-LOC-UTF8-SWAP"
+family            = "local_text"
+op_label          = "structural_edit"
+byte_class        = "replace_eq"
+edit_summary      = 'REPLACE_EQ one CJK char (3B) with "z"*3, boundary-snapped'
+selection         = "CJK char nearest MIDDLE anchor"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "inline_dense", "fence_heavy", "reference_fanout"]
+size_note         = "mixed is all-ASCII by recipe; excluded (UTF-8 stress carried by the other seven shapes)"
+
+[[mutation]]
+mutation_id       = "M-BB-PARA-SPLIT"
+family            = "block_boundary"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT "\n\n" inside a plain Text run at its midpoint'
+selection         = "paragraph with >= 4B plain run nearest MIDDLE anchor"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-BB-PARA-MERGE"
+family            = "block_boundary"
+op_label          = "structural_edit"
+byte_class        = "delete"
+edit_summary      = "DELETE the 2 bytes of the blank line between two paragraphs"
+selection         = "blank line nearest MIDDLE anchor with paragraph neighbors"
+anchors           = ["middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "inline_dense", "reference_fanout", "mixed"]
+size_note         = "huge_block: 1m/16m only (64k has a single block); excluded via case-manifest exception"
+
+[[mutation]]
+mutation_id       = "M-CS-ITEM-INDENT"
+family            = "container_state"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT "  " before a list item marker (nest under prev sibling)'
+selection         = "first marker line at/after MIDDLE anchor with a preceding same-indent sibling"
+anchors           = ["middle"]
+applicable_shapes = ["deep_container", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-CS-BQ-NEST-LINE"
+family            = "container_state"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT ">" before a "> " line marker (one level deeper)'
+selection         = "first single-level quote line at/after MIDDLE anchor, outside fences"
+anchors           = ["middle"]
+applicable_shapes = ["deep_container", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-FS-FENCE-OPEN"
+family            = "forward_state"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT "```\n" at the start of a non-fence, non-blank line'
+selection         = "first non-fence non-blank line at/after the anchor"
+anchors           = ["early", "middle"]
+applicable_shapes = ["plain", "many_blocks", "huge_block", "deep_container", "inline_dense", "reference_fanout", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-FS-FENCE-CLOSE"
+family            = "forward_state"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT "\n```\n" before the fence LAST body line terminating LF'
+selection         = "fence with >=2 body lines containing MIDDLE anchor; insert before its LAST body line LF"
+anchors           = ["middle"]
+applicable_shapes = ["fence_heavy", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-IDS-EMPH-INSERT"
+family            = "inline_delimiter_state"
+op_label          = "structural_edit"
+byte_class        = "insert"
+edit_summary      = 'INSERT "*" immediately before an emphasis closing delimiter'
+selection         = "emphasis span nearest after MIDDLE anchor"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-IDS-CODE-DELIM"
+family            = "inline_delimiter_state"
+op_label          = "structural_edit"
+byte_class        = "delete"
+edit_summary      = "DELETE the first backtick of a code span opening run"
+selection         = "code span nearest after MIDDLE anchor"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-IDS-LINK-DELIM"
+family            = "inline_delimiter_state"
+op_label          = "structural_edit"
+byte_class        = "delete"
+edit_summary      = 'DELETE the opening "[" of the nearest link construct'
+selection         = "inline/reference link nearest after MIDDLE anchor"
+anchors           = ["middle"]
+applicable_shapes = ["inline_dense", "reference_fanout", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-SD-DEF-REPLACE"
+family            = "semantic_dependency"
+op_label          = "structural_edit"
+byte_class        = "replace_eq"
+edit_summary      = 'REPLACE_EQ a definition destination with "z"*len(destination)'
+selection         = "definition line nearest after EARLY anchor (label used by >=1 link)"
+anchors           = ["early"]
+applicable_shapes = ["reference_fanout", "mixed"]
+
+[[mutation]]
+mutation_id       = "M-SD-DEF-DELETE"
+family            = "semantic_dependency"
+op_label          = "structural_edit"
+byte_class        = "delete"
+edit_summary      = "DELETE the whole definition line incl. LF"
+selection         = "same rule as M-SD-DEF-REPLACE"
+anchors           = ["early"]
+applicable_shapes = ["reference_fanout", "mixed"]

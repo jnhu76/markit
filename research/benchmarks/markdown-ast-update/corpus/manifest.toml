@@ -1,0 +1,159 @@
+# CORPUS-v1 machine-readable manifest (R3 freeze)
+#
+# Authority: corpus/CORPUS-v1.md (where they disagree, the .md wins).
+# R3 freezes the contract only; `actual_bytes` and `source_sha256` are
+# recorded at first generation in corpus/receipt-<corpus_id>.toml and are
+# DELIBERATELY absent here (never hand-written).
+#
+# size labels: 64k = 65536, 1m = 1048576, 16m = 16777216 (UTF-8 bytes,
+# exact, no tolerance).
+
+schema                    = "corpus-manifest-v1"
+generator_version         = "corpus-gen-v1"
+global_seed               = 0x4D41524B49542D33
+grammar                   = "BENCH-GRAMMAR-v1"
+normalized_result         = "NORMALIZED-RESULT-v1"
+
+[[corpus]]
+corpus_id  = "plain-64k"
+shape      = "plain"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "plain-1m"
+shape      = "plain"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "plain-16m"
+shape      = "plain"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "many_blocks-64k"
+shape      = "many_blocks"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "many_blocks-1m"
+shape      = "many_blocks"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "many_blocks-16m"
+shape      = "many_blocks"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "huge_block-64k"
+shape      = "huge_block"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "huge_block-1m"
+shape      = "huge_block"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "huge_block-16m"
+shape      = "huge_block"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "deep_container-64k"
+shape      = "deep_container"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "deep_container-1m"
+shape      = "deep_container"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "deep_container-16m"
+shape      = "deep_container"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "inline_dense-64k"
+shape      = "inline_dense"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "inline_dense-1m"
+shape      = "inline_dense"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "inline_dense-16m"
+shape      = "inline_dense"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "fence_heavy-64k"
+shape      = "fence_heavy"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "fence_heavy-1m"
+shape      = "fence_heavy"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "fence_heavy-16m"
+shape      = "fence_heavy"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "reference_fanout-64k"
+shape      = "reference_fanout"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "reference_fanout-1m"
+shape      = "reference_fanout"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "reference_fanout-16m"
+shape      = "reference_fanout"
+size_label = "16m"
+target_bytes = 16777216
+
+[[corpus]]
+corpus_id  = "mixed-64k"
+shape      = "mixed"
+size_label = "64k"
+target_bytes = 65536
+
+[[corpus]]
+corpus_id  = "mixed-1m"
+shape      = "mixed"
+size_label = "1m"
+target_bytes = 1048576
+
+[[corpus]]
+corpus_id  = "mixed-16m"
+shape      = "mixed"
+size_label = "16m"
+target_bytes = 16777216
