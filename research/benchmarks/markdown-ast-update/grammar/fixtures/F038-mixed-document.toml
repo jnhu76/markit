@@ -29,7 +29,7 @@ expected_tree = '''
       (Emphasis 17 21
         (Text 18 20))
       (Text 21 22)
-      (CodeSpan 22 25 content=23:24))
+      (CodeSpan 22 25))
   (List 27 32
       (ListItem 27 32 marker="-"
         (Paragraph 29 32

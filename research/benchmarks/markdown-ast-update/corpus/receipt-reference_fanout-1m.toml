@@ -1,0 +1,8 @@
+schema = "corpus-receipt-v1"
+corpus_id = "reference_fanout-1m"
+generator_version = "corpus-gen-v1"
+seed = 0x4d41524b49542d33
+target_bytes = 1048576
+actual_bytes = 1048576
+source_sha256 = "b4fc04b07115545c264d7ca636f4ae40a41a684621e701dc802dba6176bff3fb"
+shape_parameters = { header_bytes = 512, definitions = 16, unit_bytes = 64, cjk_period_units = 16, link_ordinal = "unit_index mod 1000" }

@@ -9,5 +9,5 @@ source_sha256 = "88bf15fa0295a5efc923a5078a39036f4fcad5aea9624739adbfe3058a1b59f
 expected_tree = '''
 (Document 0 9
   (Paragraph 0 8
-    (CodeSpan 0 8 content=1:7)))
+    (CodeSpan 0 8)))
 '''

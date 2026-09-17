@@ -1,0 +1,8 @@
+schema = "corpus-receipt-v1"
+corpus_id = "deep_container-16m"
+generator_version = "corpus-gen-v1"
+seed = 0x4d41524b49542d33
+target_bytes = 16777216
+actual_bytes = 16777216
+source_sha256 = "ffabe59ca1b20b20547e32649f2faa5d510f00edcb5b5687488c5333ee4f679a"
+shape_parameters = { mountain_bytes = 2048, lines_per_mountain = 32, max_depth = 16, cjk_line_period = 8, mountain_kinds = "even=list, odd=blockquote" }

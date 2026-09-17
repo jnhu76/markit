@@ -1,7 +1,11 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R3 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW (2026-09-17;
-R2 merged via PR #27)**
+Status: **R4 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R4_REVIEW (2026-09-17).
+H0 reference full rebuild + correctness gate complete; the human adversarial
+review's targeted corrective (CodeSpan field authority, shared field-legality
+gate, zero-length contract, `nodes_reused` = Known(0)) is applied. Prior:
+R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
+merged into master as `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
 
@@ -12,6 +16,13 @@ Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
 - R3 freeze record:
   [`protocol/R3-GRAMMAR-CORPUS-MUTATION-FREEZE.md`](./protocol/R3-GRAMMAR-CORPUS-MUTATION-FREEZE.md)
   (grammar/, corpus/, mutations/, cases/)
+- R4 stage record:
+  [`protocol/R4-H0-REFERENCE-FULL-REBUILD.md`](./protocol/R4-H0-REFERENCE-FULL-REBUILD.md)
+  (oracle/, corpusgen/, mechanisms/full-rebuild/, scripts/verify-r4.sh)
+- R4 corrective record:
+  [`protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`](./protocol/R4-H0-REFERENCE-CORRECTIVE-1.md)
+  (field-legality gate; F027/F028/F038 conformance repair; zero-length
+  contract; `nodes_reused` = Known(0))
 
 本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 
@@ -57,12 +68,21 @@ Host text-buffer apply-edit 在 timer 外；机制自己的 state/index/reuse/re
 R0 = PASS
 R1 = PASS（controlled Rust harness substrate；verify-r1.sh 强制）
 R2 = PASS（prior-art mechanism extraction；PR #27 已合并）
-R3 = READY_FOR_FINAL_R3_REVIEW（BENCH-GRAMMAR-v1 + corpus/mutation freeze;
-      首轮对抗评审 4 MAJOR / 4 IMPORTANT 已由 CORRECTIVE-1 修复；
+R3 = GRAMMAR_CORPUS_MUTATION_FREEZE_PASS（BENCH-GRAMMAR-v1 + corpus/mutation
+      freeze；人工最终评审通过；PR #28 已合并为 17f6040；
       verify-r3.sh 静态门 + corrective regressions 强制）
-NEXT = 人工最终评审 R3 -> GRAMMAR_CORPUS_MUTATION_FREEZE_PASS -> R4 H0
+R4 = READY_FOR_FINAL_R4_REVIEW（H0 reference full rebuild：
+      oracle/ + corpusgen/ + mechanisms/full-rebuild/；
+      43/43 fixtures；differential/QUERY/eager/attribution 套件；
+      verify-r4.sh 正确性门（含 R1/R3 回归 + 5/5 负向 mutation 检查）；
+      冻结 158-slot 结构矩阵逐槽复现；
+      CORRECTIVE-1 已应用：CodeSpan 字段权威矛盾修复（F027/F028/F038），
+      共享 field-legality 门（Rust validate.rs + verify_r3.py FIELD_TABLE），
+      零长度契约 start<end 对所有节点，nodes_reused = Known(0)；
+      R3 语义未扩展——仅修复 fixture 工件一致性）
+NEXT = R4 human final review，通过后进入 R5 H1/H2/H3/H4 Mechanism
+       Implementation
 ```
 
-R3 只冻结工作负载契约（语法语义/规范化结果/语料/变异/案例矩阵），不实现
-parser、不生成语料、不计时。不得开始 horse tuning、benchmark claim 或
-Markit production algorithm。
+R4 只实现 H0 参考与正确性门，不做任何 measurement、不计时、不开始
+horse tuning、不实现 Markit production algorithm。

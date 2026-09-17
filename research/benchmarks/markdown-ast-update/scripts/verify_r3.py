@@ -56,6 +56,28 @@ COVER_TAGS = {
     "reference-fanout", "mixed", "utf8", "cjk", "emoji", "deviation",
 }
 
+# R4-H0-REFERENCE-CORRECTIVE-1: the frozen field-kind legality table
+# (NORMALIZED-RESULT-v1 §1). For every node: the listed fields are the
+# ONLY fields the kind may carry (anything else is FORBIDDEN) and every
+# listed field is REQUIRED. Must stay identical to `allowed_fields` in
+# oracle/src/validate.rs — the Rust twin enforces the same table on
+# runtime results.
+FIELD_TABLE = {
+    "Document": set(),
+    "Paragraph": set(),
+    "Heading": {"level"},
+    "BlockQuote": set(),
+    "List": set(),
+    "ListItem": {"marker"},
+    "FencedCode": {"info", "content"},
+    "Text": set(),
+    "Emphasis": set(),
+    "CodeSpan": set(),
+    "Link": {"destination"},
+    "ReferenceLink": {"label", "destination"},
+    "ReferenceDefinition": {"label", "destination"},
+}
+
 errors: list[str] = []
 
 
@@ -96,6 +118,8 @@ def parse_tree(s: str):
         fields = {}
         for tok in fm.group(1).split():
             k, v = tok.split("=", 1)
+            if k in fields:
+                raise ValueError(f"duplicate field key {k!r}")
             fields[k] = v
         pos += fm.end(1)
         children = []
@@ -122,26 +146,45 @@ def check_fixture_tree(src: bytes, root, fid: str) -> None:
             err(f"{fid}: unknown node kind {kind}")
         if not (lo <= a <= b <= hi):
             err(f"{fid}: {kind} span [{a},{b}) escapes parent [{lo},{hi})")
-        if depth > 0 and kind != "Document" and a == b:
-            err(f"{fid}: zero-length node {kind}")
+        # R4-H0-REFERENCE-CORRECTIVE-1 §3: a normalized node span is
+        # NEVER zero-length (nor inverted) — for EVERY kind, root
+        # included. The only zero-length interval in the vocabulary is
+        # the FencedCode `content` FIELD, validated separately below.
+        if a >= b:
+            err(f"{fid}: zero-length or inverted node span {kind} [{a},{b})")
         if not is_boundary(src, a):
             err(f"{fid}: {kind} start {a} not a UTF-8 char boundary")
         if not is_boundary(src, b):
             err(f"{fid}: {kind} end {b} not a UTF-8 char boundary")
         if kind == "Document" and (a, b) != (0, len(src)):
             err(f"{fid}: Document span {(a, b)} != (0, {len(src)})")
-        if kind == "Heading" and "level" not in fields:
-            err(f"{fid}: Heading missing level")
-        if kind == "ListItem" and "marker" not in fields:
-            err(f"{fid}: ListItem missing marker")
-        if kind == "FencedCode" and ("info" not in fields or "content" not in fields):
-            err(f"{fid}: FencedCode missing info/content")
-        if kind in ("ReferenceLink", "ReferenceDefinition") and (
-            "label" not in fields or "destination" not in fields
-        ):
-            err(f"{fid}: {kind} missing label/destination")
-        if kind == "Link" and "destination" not in fields:
-            err(f"{fid}: Link missing destination")
+        # exact field-kind legality (R4-H0-REFERENCE-CORRECTIVE-1 §2):
+        # required fields exist, forbidden fields are absent
+        allowed = FIELD_TABLE.get(kind, set())
+        missing = allowed - fields.keys()
+        if missing:
+            err(f"{fid}: {kind} missing required field(s) {sorted(missing)}")
+        forbidden = fields.keys() - allowed
+        if forbidden:
+            err(
+                f"{fid}: {kind} carries forbidden field(s) {sorted(forbidden)} "
+                f"(kind allows only {sorted(allowed)})"
+            )
+        # the FencedCode `content` FIELD: containment + order inside the
+        # node span, UTF-8 boundaries; EMPTY (cs == ce) is legal
+        if kind == "FencedCode" and "content" in fields:
+            m = re.fullmatch(r"(\d+):(\d+)", fields["content"])
+            if not m:
+                err(f"{fid}: FencedCode content {fields['content']!r} is not start:end")
+            else:
+                cs, ce = int(m.group(1)), int(m.group(2))
+                if not (a <= cs <= ce <= b):
+                    err(
+                        f"{fid}: FencedCode content [{cs},{ce}) not inside/ordered "
+                        f"vs node span [{a},{b})"
+                    )
+                elif not (is_boundary(src, cs) and is_boundary(src, ce)):
+                    err(f"{fid}: FencedCode content bound not a UTF-8 char boundary")
         prev_end = a
         for c in children:
             if c[1] < prev_end:
@@ -185,6 +228,73 @@ def check_fixtures() -> int:
             continue
         check_fixture_tree(src, tree, fid)
     return len(fixtures)
+
+
+def _gate_errors(tree_text: str, src: bytes) -> list:
+    """Run the fixture gate on one synthetic tree, collecting its errors
+    without touching the global artifact-error list."""
+    global errors
+    tree = parse_tree(tree_text)
+    saved = errors
+    errors = []
+    try:
+        check_fixture_tree(src, tree, "SELFTEST")
+        return list(errors)
+    finally:
+        errors = saved
+
+
+def check_gate_self_test() -> tuple:
+    """R4-H0-REFERENCE-CORRECTIVE-1 §2/§3 regressions, run against the
+    gate itself on synthetic trees (independent of the 43 artifacts):
+    forbidden/missing fields and zero-length node spans must FAIL; the
+    corrected CodeSpan shape and an empty FencedCode content interval
+    must PASS."""
+    src = b"a`b`cde\n"  # 8 bytes
+
+    must_fail = [
+        ("CodeSpan content= (the corrected MAJOR must never return)",
+         "(Document 0 8\n  (Paragraph 0 7\n    (CodeSpan 0 5 content=1:4)))"),
+        ("Text destination=",
+         '(Document 0 8\n  (Paragraph 0 7\n    (Text 0 7 destination="/p")))'),
+        ("Paragraph level=",
+         "(Document 0 8\n  (Paragraph 0 7 level=2\n    (Text 0 7)))"),
+        ("FencedCode missing content",
+         '(Document 0 8\n  (FencedCode 0 8 info="x"))'),
+        ("ReferenceLink missing destination",
+         '(Document 0 8\n  (Paragraph 0 7\n    (ReferenceLink 0 7 label="r")))'),
+        ("zero-length FencedCode NODE",
+         '(Document 0 8\n  (FencedCode 4 4 info="" content=4:4))'),
+        ("zero-length Text",
+         "(Document 0 8\n  (Paragraph 0 7\n    (Text 3 3)))"),
+    ]
+    for why, tree in must_fail:
+        if not _gate_errors(tree, src):
+            err(f"self-test: gate FAILED to reject {why}")
+
+    must_pass = [
+        ("CodeSpan with no fields",
+         "(Document 0 8\n  (Paragraph 0 7\n    (CodeSpan 0 5)))"),
+        ("FencedCode with info + content",
+         '(Document 0 8\n  (FencedCode 0 8 info="x" content=2:6))'),
+        ("non-empty FencedCode node with an EMPTY content interval",
+         '(Document 0 8\n  (FencedCode 0 8 info="" content=4:4))'),
+        ("ReferenceLink with label + destination",
+         '(Document 0 8\n  (Paragraph 0 7\n    (ReferenceLink 0 7 label="r" destination="/p")))'),
+    ]
+    for why, tree in must_pass:
+        problems = _gate_errors(tree, src)
+        if problems:
+            err(f"self-test: gate rejected legal shape ({why}): {problems}")
+
+    # duplicate field keys must not survive the tree reader either
+    try:
+        parse_tree('(Document 0 8\n  (ListItem 0 7 marker="-" marker="-"))')
+        err("self-test: duplicate field key was accepted")
+    except ValueError as e:
+        if "duplicate field key" not in str(e):
+            err(f"self-test: duplicate key rejected for the wrong reason: {e}")
+    return len(must_fail), len(must_pass)
 
 
 def load_toml(rel: str):
@@ -638,6 +748,7 @@ def check_generic_anchors(units: dict) -> int:
 
 def main() -> int:
     n_fix = check_fixtures()
+    n_must_fail, n_must_pass = check_gate_self_test()
     n_cases, expected = check_manifests()
     units = build_units()
     n_units = check_unit_variant_sizes(units)
@@ -645,6 +756,7 @@ def main() -> int:
     check_fence_close(units)
     n_anchors = check_generic_anchors(units)
     print(f"fixtures checked:        {n_fix}")
+    print(f"gate self-tests:         {n_must_fail} must-fail, {n_must_pass} must-pass, duplicate keys rejected")
     print(f"unique cases expanded:   {n_cases} (expected_unique_cases {expected})")
     print(
         f"corrective regressions:  {n_units} unit variants, deep depths, "

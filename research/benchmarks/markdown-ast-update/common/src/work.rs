@@ -109,6 +109,29 @@ fn accumulate(slot: &mut Observed<u64>, n: u64) {
     };
 }
 
+/// Cumulative/event counter slots that can be intrinsically inapplicable
+/// to a mechanism (R1 law: `Known(0)`, `Unknown` and `NotApplicable` are
+/// distinct — a slot with no referent for the mechanism is
+/// `NotApplicable`, never a fabricated zero).
+///
+/// Slots NOT listed here (`blocks_reparsed`, `nodes_rebuilt`,
+/// `nodes_reused`, the derived unique-source slots) are meaningful for
+/// every mechanism that parses and are always reported as measured
+/// values. `nodes_reused` was briefly listed here when R4 introduced the
+/// enum; R4-H0-REFERENCE-CORRECTIVE-1 §4 reclassified it: a full rebuild
+/// has the precise fact `nodes_reused == 0` and must report it as a
+/// measured zero through the ordinary cumulative path, not as
+/// `NotApplicable`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum NotApplicableSlot {
+    /// `metadata_records_touched`: the mechanism maintains no
+    /// metadata/range records.
+    MetadataRecordsTouched,
+    /// `fallback_to_full_count`: the mechanism has no degraded mode from
+    /// which falling back would be an event.
+    FallbackToFullCount,
+}
+
 /// Receives work-counter observations from a mechanism.
 ///
 /// Every method has a no-op default: mechanisms written against this trait
@@ -138,6 +161,10 @@ pub trait WorkSink {
     /// Gauge: distance until convergence. Single-valued; the last value
     /// wins.
     fn set_convergence_distance(&mut self, _v: Observed<u64>) {}
+    /// Declaration (R4, additive): a cumulative/event slot is
+    /// intrinsically inapplicable to this mechanism. This is a statement
+    /// about the mechanism, not a measurement of zero.
+    fn set_slot_not_applicable(&mut self, _slot: NotApplicableSlot) {}
     /// Event: the mechanism inspected source bytes `[start_byte,
     /// end_byte)` during the CURRENT phase (`prepare_update` or
     /// `update`/`full_parse`). Empty ranges (`start >= end`) are ignored.
@@ -215,6 +242,16 @@ impl WorkSink for CounterSink<'_> {
     fn set_convergence_distance(&mut self, v: Observed<u64>) {
         self.counters.convergence_distance = v;
     }
+    fn set_slot_not_applicable(&mut self, slot: NotApplicableSlot) {
+        match slot {
+            NotApplicableSlot::MetadataRecordsTouched => {
+                self.counters.metadata_records_touched = Observed::NotApplicable;
+            }
+            NotApplicableSlot::FallbackToFullCount => {
+                self.counters.fallback_to_full_count = Observed::NotApplicable;
+            }
+        }
+    }
     fn record_source_inspection(&mut self, start_byte: u64, end_byte: u64) {
         if end_byte > start_byte {
             self.inspections.push((start_byte, end_byte));
@@ -253,6 +290,19 @@ mod tests {
         drop(sink);
         assert_eq!(counters.blocks_reparsed, Observed::Known(0));
         assert_eq!(counters.nodes_rebuilt, Observed::Unknown);
+    }
+
+    #[test]
+    fn nodes_reused_zero_is_measured_and_distinct_from_not_applicable() {
+        // R4-H0-REFERENCE-CORRECTIVE-1 §4: a full rebuild has the precise
+        // fact nodes_reused == 0 (it intentionally reuses no old parse
+        // node) and reports it through the ordinary cumulative path.
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.add_nodes_reused(0);
+        drop(sink);
+        assert_eq!(counters.nodes_reused, Observed::Known(0));
+        assert_ne!(counters.nodes_reused, Observed::NotApplicable);
     }
 
     #[test]
