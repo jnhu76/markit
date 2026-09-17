@@ -31,4 +31,4 @@ pub use observed::Observed;
 pub use payload::{PayloadId, PayloadShape, PayloadSize};
 pub use source::{to_lower_hex, Source, SourceId};
 pub use status::{CorrectnessStatus, ExecutionStatus, FailureStatus};
-pub use work::{CounterSink, NoopWorkSink, WorkCounters, WorkSink};
+pub use work::{CounterSink, NoopWorkSink, NotApplicableSlot, WorkCounters, WorkSink};

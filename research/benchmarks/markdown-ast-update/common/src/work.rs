@@ -109,6 +109,26 @@ fn accumulate(slot: &mut Observed<u64>, n: u64) {
     };
 }
 
+/// Cumulative/event counter slots that can be intrinsically inapplicable
+/// to a mechanism (R4, H0 attribution semantics: `Known(0)`, `Unknown`
+/// and `NotApplicable` are distinct — a slot with no referent for the
+/// mechanism is `NotApplicable`, never a fabricated zero).
+///
+/// Slots NOT listed here (`blocks_reparsed`, `nodes_rebuilt`, the
+/// derived unique-source slots) are meaningful for every mechanism that
+/// parses and are always reported as measured values.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum NotApplicableSlot {
+    /// `nodes_reused`: the mechanism has no reuse concept at all.
+    NodesReused,
+    /// `metadata_records_touched`: the mechanism maintains no
+    /// metadata/range records.
+    MetadataRecordsTouched,
+    /// `fallback_to_full_count`: the mechanism has no degraded mode from
+    /// which falling back would be an event.
+    FallbackToFullCount,
+}
+
 /// Receives work-counter observations from a mechanism.
 ///
 /// Every method has a no-op default: mechanisms written against this trait
@@ -138,6 +158,10 @@ pub trait WorkSink {
     /// Gauge: distance until convergence. Single-valued; the last value
     /// wins.
     fn set_convergence_distance(&mut self, _v: Observed<u64>) {}
+    /// Declaration (R4, additive): a cumulative/event slot is
+    /// intrinsically inapplicable to this mechanism. This is a statement
+    /// about the mechanism, not a measurement of zero.
+    fn set_slot_not_applicable(&mut self, _slot: NotApplicableSlot) {}
     /// Event: the mechanism inspected source bytes `[start_byte,
     /// end_byte)` during the CURRENT phase (`prepare_update` or
     /// `update`/`full_parse`). Empty ranges (`start >= end`) are ignored.
@@ -214,6 +238,19 @@ impl WorkSink for CounterSink<'_> {
     }
     fn set_convergence_distance(&mut self, v: Observed<u64>) {
         self.counters.convergence_distance = v;
+    }
+    fn set_slot_not_applicable(&mut self, slot: NotApplicableSlot) {
+        match slot {
+            NotApplicableSlot::NodesReused => {
+                self.counters.nodes_reused = Observed::NotApplicable;
+            }
+            NotApplicableSlot::MetadataRecordsTouched => {
+                self.counters.metadata_records_touched = Observed::NotApplicable;
+            }
+            NotApplicableSlot::FallbackToFullCount => {
+                self.counters.fallback_to_full_count = Observed::NotApplicable;
+            }
+        }
     }
     fn record_source_inspection(&mut self, start_byte: u64, end_byte: u64) {
         if end_byte > start_byte {

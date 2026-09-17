@@ -1,0 +1,8 @@
+schema = "corpus-receipt-v1"
+corpus_id = "fence_heavy-64k"
+generator_version = "corpus-gen-v1"
+seed = 0x4d41524b49542d33
+target_bytes = 65536
+actual_bytes = 65536
+source_sha256 = "9d0dce3ecd6a00151371661ee02a2d7ff36e8b129d848d2b6368e7b7f1849cfa"
+shape_parameters = { unit_bytes = 512, body_bytes = 250, cjk_body_on_odd_units = true }

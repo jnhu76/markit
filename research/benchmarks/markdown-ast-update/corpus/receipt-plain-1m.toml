@@ -1,0 +1,8 @@
+schema = "corpus-receipt-v1"
+corpus_id = "plain-1m"
+generator_version = "corpus-gen-v1"
+seed = 0x4d41524b49542d33
+target_bytes = 1048576
+actual_bytes = 1048576
+source_sha256 = "c99b71c6a3fda6da7e2eab7223eed9b0171800be5ed74884a2a57a73d4aeecf1"
+shape_parameters = { unit_bytes = 64, cjk_period_units = 16 }
