@@ -1,9 +1,17 @@
-# mechanisms/fragment-reuse — RESERVED for H2 FRAGMENT_REUSE
+# mechanisms/fragment-reuse — H2 FRAGMENT_REUSE
 
-Directory reserved by `ROADMAP.md` (R5 — H2 Mechanism Implementation).
+Stage-R5 horse (issue #22). Mechanism identity, fragment lifecycle
+(applyChanges split/drop/shift/open edges, minGap = 128 as the frozen
+@lezer/common default), reuse rule (alignment + ContextKey vouching +
+safe windows + reference clause), counter applicability, and identity
+witnesses are frozen in `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §7
+(lezer-inspired; R2 MECHANISM-SOURCE-MAP H2).
 
-R1 puts NO algorithm code here (only this README). Implementing or tuning
-this horse before its roadmap stage violates `AGENTS.md` §3 and the R1
-task contract. The mechanism interface every horse will implement is
-`markit-mdbench-common`'s `Mechanism` trait; see
-`protocol/R1-HARNESS-CONTRACT.md`.
+Retained state: the old tree as parent-relative `Arc<FNode>` block nodes
+(materialized inline content, entry ContextKey, has_ref/has_def facts)
+plus the fragment table. Update: line-driven parse over the shared
+grammar; at every block-start line a cursor consults the fragment table
+and takes whole vouched old-block runs through the scanner's splice hook;
+everything else parses normally (natural degradation — H2 has no
+fallback). Correctness gate: `H2 update result == H0 clean authoritative
+parse`, proven by this crate's test suite (`tests/h2_gate.rs`).

@@ -406,6 +406,36 @@ IDENTITY WITNESS (task contract §10)
      (nodes_reused for the affected region == 0), result == H0.
 ```
 
+§7 implementation notes (recorded at H2 implementation time, BEFORE H3
+started; refinements of the §7 fields, all conservative):
+
+- Alignment is LINE-aligned: a block nested in containers starts mid-line
+  (after its container prefix), so each FNode records `line_offset`
+  (block start - line start) and the cursor matches the entry whose first
+  LINE starts at the mapped old position. A take starts at the line
+  start; the unchanged prefix bytes between the line start and the first
+  member's span ride inside the placeholder, and the members' new
+  positions derive as `pos + (old_start - line_start)`.
+- Run extension covers the inter-member blank gaps (the placeholder is
+  one contiguous byte range ending at a block boundary). Sibling blocks
+  of one parent share their entry ContextKey in BENCH-GRAMMAR-v1, so
+  vouching the candidate vouches the run.
+- The exclusion window is span-based: LEFT window ends at the span start
+  of the deepest old-tree block containing the last byte before the cut
+  (else the last block ending at/before it); RIGHT window starts at the
+  span end of the deepest block containing the cut start. The
+  minGap=128 drop applies to the split pieces as frozen.
+- Definition-changing flag: damaged old blocks contain a
+  ReferenceDefinition, OR the edited span's post bytes contain the
+  sequence `]: ` (a refdef line carries it at any container depth).
+  Pre-computable and source-derived; while flagged, has_ref candidates
+  are refused. The rebuilt first-wins table is complete without an
+  old-table fallback because every surviving definition appears either
+  in the fresh skeleton or in a taken run's recorded facts.
+- The whole-document fragment is re-registered after every complete
+  parse (the Lezer addTree lifecycle); no multi-fragment accumulation
+  exists across updates.
+
 ## 8. H3 — OLD_TREE_SUBTREE_REUSE (`mechanisms/old-tree-subtree-reuse`)
 
 ```text
