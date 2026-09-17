@@ -320,12 +320,15 @@ size story of the corpus.
 
 ## 5. UTF-8 / multibyte coverage
 
-Every shape except FENCE_HEAVY contains CJK paragraphs/lines by recipe
-(FENCE_HEAVY carries CJK fence bodies). Therefore every position class
-(EARLY/MIDDLE/LATE anchors) can land near or inside multibyte runs, and
-all edit ranges snap to UTF-8 char boundaries (down-snapping). Emoji are
-covered by grammar fixtures (`utf8-emoji-heading`), not by corpora —
-corpus multibyte stays 3-byte CJK to keep unit arithmetic exact.
+PLAIN, MANY_BLOCKS, HUGE_BLOCK, DEEP_CONTAINER, INLINE_DENSE, and
+REFERENCE_FANOUT contain CJK paragraph/line variants; FENCE_HEAVY carries
+CJK fence bodies. MIXED is intentionally all-ASCII by recipe. Thus UTF-8
+byte-boundary stress is provided by the seven non-MIXED shapes, while
+MIXED remains a controlled ASCII composition. For CJK-carrying shapes,
+generic anchors may land near or inside multibyte runs, and all edit
+ranges snap to UTF-8 char boundaries (down-snapping). Emoji are covered
+by grammar fixtures (`utf8-emoji-heading`), not by corpora — corpus
+multibyte stays 3-byte CJK to keep unit arithmetic exact.
 
 Because raw percentile anchors (floor(N/4) etc.) are always multiples of
 65536, the unit index at every raw anchor is a multiple of the variant
