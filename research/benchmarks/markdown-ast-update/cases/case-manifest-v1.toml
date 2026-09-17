@@ -1,17 +1,24 @@
-# CASE-MATRIX-v1 machine-readable manifest (R3 freeze)
+# CASE-MATRIX-v1 machine-readable manifest (R3 freeze, corrective-1)
 #
 # Authority: cases/CASE-MATRIX-v1.md + mutations/MUTATION-v1.md (the .md
-# files win). Blocks expand to 386 cases at instantiation time (R4+);
-# offsets do not exist in R3, so structural rows carry recipe + anchors,
-# and case identity is computed at instantiation per MUTATION-v1 §7.
+# files win on narrative). `expected_unique_cases` is the SINGLE
+# machine-readable total; scripts/verify_r3.py expands the blocks below
+# and must match it.
+#
+# Precision: the expansion counts RECIPE SLOTS. CaseKey content identity
+# (edit_start, edit_end, inserted_sha256) does not exist until corpora
+# are instantiated (R4+); offset-level dedup and collision checking
+# happen at instantiation per MUTATION-v1 §7 — an unexpected semantic
+# collision there is CASE_IDENTITY_COLLISION and stops the stage.
 
-schema              = "case-manifest-v1"
-case_matrix_doc     = "cases/CASE-MATRIX-v1.md"
-mutation_manifest   = "mutations/manifest.toml"
-corpus_manifest     = "corpus/manifest.toml"
-generator_id        = "CORPUS-v1"
-generator_seed      = 0x4D41524B49542D33
-payload_id_prefix   = "CORPUS-v1/"
+schema                = "case-manifest-v1"
+case_matrix_doc       = "cases/CASE-MATRIX-v1.md"
+mutation_manifest     = "mutations/manifest.toml"
+corpus_manifest       = "corpus/manifest.toml"
+generator_id          = "CORPUS-v1"
+generator_seed        = 0x4D41524B49542D33
+payload_id_prefix     = "CORPUS-v1/"
+expected_unique_cases = 370
 
 all_shapes = [
   "plain", "many_blocks", "huge_block", "deep_container",
@@ -27,7 +34,7 @@ shapes     = "all"
 sizes      = "all"
 cases = [
   { op = "full_parse" },
-  { op = "query", note = "one case per corpus; answers EARLY/MIDDLE/LATE" },
+  { op = "query", note = "one case per corpus: ordered batch NODE_PATH_AT at generic EARLY/MIDDLE/LATE (NORMALIZED-RESULT-v1 §4)" },
   { op = "insert", edit_size = "tiny", position = "middle" },
 ]
 
@@ -53,7 +60,8 @@ cases = [
   { op = "replace_eq", edit_size = "medium", position = "middle" },
 ]
 
-# ---- Block D: structural targeted matrix (167 cases) ----
+# ---- Block D: structural targeted matrix (158 cases; 159 slots minus
+# the huge_block-64k M-BB-PARA-MERGE exception) ----
 # Each row expands over applicable_shapes x all_sizes x anchors.
 [[structural]]
 mutation_id       = "M-LOC-TEXT"

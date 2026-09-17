@@ -1,16 +1,19 @@
 # CASE-MATRIX-v1 — frozen first-round case matrix (R3)
 
-Status: **R3 FREEZE CANDIDATE — READY_FOR_ADVERSARIAL_R3_REVIEW**
+Status: **R3 FREEZE — CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW**
 Authority: R0 §8–§9 (operations/shapes/sizes) + this file. Single owner of
 which cases exist, why each exists, and the R2-hypothesis coverage map.
 `cases/case-manifest-v1.toml` is the machine-readable projection; this
-file wins on disagreement.
+file wins on narrative disagreement, and `expected_unique_cases` in that
+manifest is the single machine-readable total.
 
 The full Cartesian product (8 shapes × 3 sizes × ops × edit sizes ×
 positions × recipes) is deliberately NOT instantiated — most of it would
 be meaningless duplication. The matrix is three targeted blocks plus one
-core baseline. Every case has a stated reason. Total: **386 cases**
-(each then multiplied by mechanisms and lanes at measurement time).
+core baseline. Every case has a stated reason. Frozen total:
+**expected_unique_cases = 370** (recipe-slot expansion after the 7
+declared slot overlaps; §6). Cases multiply by mechanisms and lanes at
+measurement time only.
 
 Case identity is R1's `CaseKeyV1` exactly — mapping frozen in
 `mutations/MUTATION-v1.md` §7. No second ID scheme.
@@ -41,8 +44,10 @@ Every corpus (all 24) gets exactly three cases:
 ```text
 A1  FULL_PARSE        zero-edit baseline per corpus (also the R6
                       state-construction cost surface, R2-H08)
-A2  QUERY             NODE_PATH_AT at EARLY/MIDDLE/LATE in ONE case
-                      (identity: query has no edit fields)
+A2  QUERY             ONE ordered batch of three NODE_PATH_AT subqueries
+                      (generic EARLY/MIDDLE/LATE anchors) in ONE case
+                      per corpus (identity: query has no edit fields;
+                      payload/result contract: NORMALIZED-RESULT-v1 §4)
 A3  INSERT-TINY-MIDDLE the minimal mutation, present on every corpus so
                       every shape/size pair has at least one update case
 ```
@@ -110,16 +115,32 @@ M-IDS-LINK-DELIM 9  M-SD-DEF-REPLACE 6   M-SD-DEF-DELETE 6
 
 Count: **158 cases**.
 
-## 6. Totals
+## 6. Totals (single authority: `expected_unique_cases`)
 
 ```text
-raw block expansion:  core 72 + grid 135 + scaling 12 + structural 158
-content overlaps:     7 (the core TINY-INSERT-MIDDLE case also appears
-                      in the grid for mixed/plain/fence_heavy @1m and in
-                      the scaling slice for many_blocks/huge_block @64k/16m
-                      — content-addressed identity collapses them)
-unique case total:    370
+raw block expansion:   core 72 + grid 135 + scaling 12 + structural 158
+                       = 377 recipe slots
+declared slot overlaps: 7 — the core INSERT-TINY-MIDDLE case is the same
+                       recipe slot as the generic-grid case for
+                       mixed/plain/fence_heavy @1m and the scaling-slice
+                       case for many_blocks/huge_block @64k/16m (same
+                       corpus, same operation, same edit bytes by
+                       construction — one case, counted once)
+unique case total:     370  ==  expected_unique_cases in
+                       cases/case-manifest-v1.toml
 ```
+
+Precision (frozen wording): the static expansion counts RECIPE SLOTS.
+Content-level CaseKey identity — `(edit_start, edit_end,
+inserted_sha256)` — does not exist in R3, because corpora are not
+generated until instantiation (R4+); `expected_unique_cases` is
+therefore a recipe-slot count, not a content-addressed count. The two
+notions coincide for the 7 declared overlaps because those slots build
+byte-identical edits by construction; any OTHER collapse is unexpected.
+Frozen instantiation rule: if two semantically distinct frozen cases
+ever produce the same `CaseKeyV1` at instantiation time, that is a
+`CASE_IDENTITY_COLLISION` and stops the stage — no ad-hoc identifiers
+(MUTATION-v1 §7).
 
 Measurement-time expansion (mechanisms × lanes × iterations) is R0/R7/R8
 business and intentionally not frozen here.
@@ -177,7 +198,8 @@ covered 10 · deferred 2 · out_of_scope_first_round 0
 
 ## 8. Determinism and ordering
 
-Anchors, selection rules, and edits are pure functions of
-`(corpus, recipe, anchor-class)` — the same case builds byte-identical
-inputs forever. Case ordering (shuffle, seed) is R1's frozen machinery
-and never influences case CONTENT.
+Anchors (including the +7 dephasing and snapping, MUTATION-v1 §2),
+selection rules (including the §2.1 tie-break default), and edits are
+pure functions of `(corpus, recipe, anchor-class)` — the same case
+builds byte-identical inputs forever. Case ordering (shuffle, seed) is
+R1's frozen machinery and never influences case CONTENT.
