@@ -1,96 +1,178 @@
-//! H0 reference parser — BENCH-GRAMMAR-v1 implemented literally.
+//! Shared BENCH-GRAMMAR-v1 block parser — the R4 H0 block pass
+//! extracted into a resumable, region-capable, splice-capable scanner.
 //!
-//! Authority: `grammar/BENCH-GRAMMAR-v1.md` (frozen R3 semantics) +
-//! `grammar/NORMALIZED-RESULT-v1.md` (result vocabulary). This parser is
-//! the R4 semantic reference (`H0 = FULL_REBUILD`): a clean, eager,
-//! total, deterministic, byte-coordinate-correct full parse. It is NOT
-//! intended to be fast and contains no reuse machinery of any kind.
+//! The parse algorithm is line-for-line the H0 reference (`§13` of
+//! BENCH-GRAMMAR-v1): a line loop with a container stack (quotes / lists
+//! / items), total ordered dispatch (B1..B7), fenced-code raw bodies,
+//! and a reference-definition table built in source order (first wins).
+//! All offsets are UTF-8 byte offsets into the COMPLETE document; a scan
+//! covers `[base, end)` where both bounds are line starts (base) or
+//! EOF/end-of-region (end).
 //!
-//! Structure follows the frozen §13 shape:
+//! R5 additions, all of them non-semantic for a plain full parse:
 //!
-//! ```text
-//! 1. block pass: line loop with a container stack (quotes / lists /
-//!    items), total ordered dispatch (B1..B7), fenced-code raw bodies,
-//!    reference-definition table built in source order (first wins).
-//! 2. inline pass (AFTER the block pass): paragraphs / headings /
-//!    link-text regions are scanned with the completed definition
-//!    table — resolution is document-global and position-independent.
-//! 3. normalized tree (oracle vocabulary).
-//! ```
+//! - [`ContextKey`] — the explicit benchmark context state at a
+//!   block-start line (container stack + fence state). Every emitted
+//!   block records the key at its entry; horses compare keys at reuse
+//!   boundaries. A plain full parse never reads it back.
+//! - [`Skel::Spliced`] — a placeholder the scanner emits when the
+//!   HORSE-supplied splice hook takes over a byte range (the scanner
+//!   never decides reuse; it only executes the take and keeps its own
+//!   state — frames, paragraph, fence, spans — correct across the jump).
+//!   Spliced placeholders must be replaced by the horse before
+//!   materialization; [`inline::materialize`] rejects them.
 //!
-//! All offsets are UTF-8 byte offsets into the complete document. The
-//! source is always valid UTF-8 (the `Source` substrate guarantees it),
-//! so byte slices at LF/space/ASCII-structure boundaries are always char
-//! boundaries; multibyte scalars are only ever crossed by raw content
-//! regions (fence bodies, text runs), never split.
+//! This module owns NO retained mechanism state and no reuse policy: it
+//! is shared grammar semantics, identical for every horse (R5 decision
+//! freeze §1).
 
 use markit_mdbench_common::WorkSink;
-use markit_mdbench_oracle::normalized::{Node, NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::normalized::{NodeKind, NormalizedDocument};
 
 use crate::inline::{materialize, norm_label, RefTable};
 
-/// Intermediate block skeleton (parser-private). Paragraph/heading inline
-/// content is kept as byte segments and scanned in the second pass, once
-/// the reference-definition table is complete (§13 ordering).
-pub(crate) enum Skel {
+/// One container frame of the shared [`ContextKey`] (R5 decision freeze
+/// §2): the state BENCH-GRAMMAR-v1 dispatch consumes at a block-start
+/// line. `Item.strip` is the item's content indent relative to the
+/// enclosing content column; `List.indent` is the marker indent relative
+/// to the list's parent content column.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum FrameKey {
+    Quote,
+    List { indent: usize },
+    Item { marker: u8, strip: usize },
+}
+
+/// The explicit benchmark context state at a block-start line: the open
+/// container stack (outermost first) plus the fence state (the open
+/// fence's opener run length, or `None`). Structural equality by value;
+/// no hashing, no minimality claim (R5 decision freeze §2). Tabs are
+/// ordinary characters (D1), so no tab column exists.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct ContextKey {
+    pub frames: Vec<FrameKey>,
+    /// `Some(run_len)` while a fenced code block is open.
+    pub fence: Option<usize>,
+}
+
+/// Block skeleton (shared-grammar-private intermediate). Paragraph and
+/// heading inline content is kept as byte segments and scanned in the
+/// inline pass, once the reference-definition table is complete (§13
+/// ordering). `ctx` is the entry [`ContextKey`] captured when the block
+/// STARTED (the state before its first line was dispatched, excluding
+/// the block's own frame) — parse metadata for horses, never read back
+/// by a plain parse.
+#[derive(Debug, Clone)]
+pub enum Skel {
     Para {
         start: usize,
         end: usize,
         segments: Vec<(usize, usize)>,
+        ctx: ContextKey,
     },
     Heading {
         start: usize,
         end: usize,
         level: u8,
         content: (usize, usize),
+        ctx: ContextKey,
     },
     Quote {
         start: usize,
         end: usize,
         children: Vec<Skel>,
+        ctx: ContextKey,
     },
     List {
         start: usize,
         end: usize,
         items: Vec<Skel>,
+        ctx: ContextKey,
     },
     Item {
         start: usize,
         end: usize,
         marker: u8,
         children: Vec<Skel>,
+        ctx: ContextKey,
     },
     Fence {
         start: usize,
         end: usize,
         info: String,
         content: (usize, usize),
+        ctx: ContextKey,
     },
     Def {
         start: usize,
         end: usize,
         label: String,
         destination: String,
+        ctx: ContextKey,
     },
+    /// Placeholder for a byte range the HORSE took over through the
+    /// splice hook. `slot` is the scanner-assigned index of the take
+    /// (0-based, in take order); the horse maps slots to its retained
+    /// pieces and replaces placeholders before materialization.
+    Spliced { start: usize, end: usize, slot: u32 },
 }
 
-/// Open container frames (§6 blockquote, §7 list/item).
-///
-/// `Item.strip` is the number of spaces this frame consumes from a
-/// continuation line relative to the ENCLOSING content column (the
-/// absolute content indent minus what outer frames already stripped);
-/// `List.indent` is the marker indent relative to the list's parent
-/// content column.
+impl Skel {
+    pub fn start(&self) -> usize {
+        match self {
+            Skel::Para { start, .. }
+            | Skel::Heading { start, .. }
+            | Skel::Quote { start, .. }
+            | Skel::List { start, .. }
+            | Skel::Item { start, .. }
+            | Skel::Fence { start, .. }
+            | Skel::Def { start, .. }
+            | Skel::Spliced { start, .. } => *start,
+        }
+    }
+
+    pub fn end(&self) -> usize {
+        match self {
+            Skel::Para { end, .. }
+            | Skel::Heading { end, .. }
+            | Skel::Quote { end, .. }
+            | Skel::List { end, .. }
+            | Skel::Item { end, .. }
+            | Skel::Fence { end, .. }
+            | Skel::Def { end, .. }
+            | Skel::Spliced { end, .. } => *end,
+        }
+    }
+
+    pub fn ctx(&self) -> &ContextKey {
+        match self {
+            Skel::Para { ctx, .. }
+            | Skel::Heading { ctx, .. }
+            | Skel::Quote { ctx, .. }
+            | Skel::List { ctx, .. }
+            | Skel::Item { ctx, .. }
+            | Skel::Fence { ctx, .. }
+            | Skel::Def { ctx, .. } => ctx,
+            Skel::Spliced { .. } => panic!("Spliced placeholder has no context"),
+        }
+    }
+}
+
+/// Open container frames (§6 blockquote, §7 list/item). `entry` is the
+/// frame's own [`ContextKey`] captured at push time (excluding the frame
+/// itself); blocks created inside get it as part of their key.
 enum Frame {
     Quote {
         start: usize,
         last_end: usize,
         children: Vec<Skel>,
+        entry: ContextKey,
     },
     List {
         start: usize,
         indent: usize,
         items: Vec<Skel>,
+        entry: ContextKey,
     },
     Item {
         start: usize,
@@ -98,6 +180,7 @@ enum Frame {
         strip: usize,
         last_end: usize,
         children: Vec<Skel>,
+        entry: ContextKey,
     },
 }
 
@@ -105,6 +188,7 @@ struct OpenPara {
     start: usize,
     last_end: usize,
     segments: Vec<(usize, usize)>,
+    ctx: ContextKey,
 }
 
 struct OpenFence {
@@ -114,66 +198,221 @@ struct OpenFence {
     body_start: usize,
     /// End (LF position) of the last consumed body line.
     last_end: usize,
+    ctx: ContextKey,
 }
 
+/// The splice hook a horse may install: called at every line start
+/// BEFORE the line's container prefixes are consumed, with the parse
+/// position and the live entry [`ContextKey`]. Returning `Some(new_pos)`
+/// (with `pos < new_pos <= end`) makes the scanner flush an open
+/// paragraph, emit one [`Skel::Spliced`] placeholder covering
+/// `[pos, new_pos)` into the innermost frame, advance every open frame's
+/// last-consumed-line bookkeeping to `new_pos`, and jump. The scanner
+/// never decides reuse — the hook does.
+pub type SpliceHook<'h> = dyn FnMut(usize, &ContextKey) -> Option<usize> + 'h;
+
 /// The block pass.
-struct BlockParser<'a, W: WorkSink> {
+struct BlockScanner<'a, 'h, W: WorkSink> {
     src: &'a [u8],
+    base: usize,
+    end: usize,
     frames: Vec<Frame>,
     para: Option<OpenPara>,
     fence: Option<OpenFence>,
     defs: RefTable,
     doc: Vec<Skel>,
     /// Attribution events only: per-line source-inspection ranges whose
-    /// union is the complete source. Never a timer.
+    /// union is the inspected source. Never a timer.
     sink: &'a mut W,
+    hook: Option<&'h mut SpliceHook<'h>>,
+    slots: u32,
 }
 
-/// Clean full parse of a complete BENCH-GRAMMAR-v1 document.
-pub fn parse(src: &[u8]) -> NormalizedDocument {
-    let mut noop = markit_mdbench_common::NoopWorkSink;
-    parse_with_inspection(src, &mut noop)
-}
-
-/// Clean full parse, emitting the block-pass source-inspection events
-/// into `sink`. The parser inspects every byte exactly once per pass;
-/// the inline pass re-inspects subsets of already-emitted line ranges
-/// (the common collector unions them, so no double count).
-pub fn parse_with_inspection<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
-    let mut bp = BlockParser {
-        src,
-        frames: Vec::new(),
-        para: None,
-        fence: None,
-        defs: RefTable::new(),
-        doc: Vec::new(),
-        sink,
+/// Clean full parse of a complete BENCH-GRAMMAR-v1 document (no splice
+/// hook): block pass + inline pass with the completed definition table.
+/// The caller owns the NORMALIZED-RESULT-v1 conformance gate.
+pub fn parse_full<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
+    let (blocks, defs) = {
+        let mut scan = BlockScanner::new_region(src, 0, src.len(), sink, None);
+        scan.run();
+        scan.finish();
+        scan.into_result()
     };
-    bp.run();
-    bp.finish()
+    let children = materialize(src, blocks, &defs);
+    let mut root = markit_mdbench_oracle::normalized::Node::new(NodeKind::Document, 0, src.len());
+    root.children = children;
+    NormalizedDocument::new(root)
 }
 
-impl<'a, W: WorkSink> BlockParser<'a, W> {
+/// One region parse result: completed top-level blocks with ABSOLUTE
+/// document-coordinate spans (no substring, no re-shift), the
+/// definition facts created inside the region, and whether a fenced
+/// code block was still open when the region ended (an unclosed fence
+/// runs to the region end).
+pub struct RegionParse {
+    pub blocks: Vec<Skel>,
+    pub defs: RefTable,
+    pub fence_open_at_end: bool,
+}
+
+/// Parse the region `[base, end)` (both line starts or document bounds)
+/// with empty entry context, EOF-closing at `end`. `base == end` yields
+/// an empty result.
+pub fn parse_region<W: WorkSink>(src: &[u8], base: usize, end: usize, sink: &mut W) -> RegionParse {
+    let mut scan = BlockScanner::new_region(src, base, end, sink, None);
+    scan.run();
+    let fence_open_at_end = scan.fence.is_some();
+    scan.finish();
+    let (blocks, defs) = scan.into_result();
+    RegionParse {
+        blocks,
+        defs,
+        fence_open_at_end,
+    }
+}
+
+/// Parse the region `[base, end)` with the horse's splice hook. Same
+/// EOF-close semantics as [`parse_region`]; spliced ranges appear as
+/// [`Skel::Spliced`] placeholders (in take order, `slot` 0..n).
+pub fn parse_region_with_hook<W: WorkSink>(
+    src: &[u8],
+    base: usize,
+    end: usize,
+    sink: &mut W,
+    hook: &mut SpliceHook<'_>,
+) -> (RegionParse, u32) {
+    let mut scan = BlockScanner::new_region(src, base, end, sink, Some(hook));
+    scan.run();
+    let fence_open_at_end = scan.fence.is_some();
+    scan.finish();
+    let slots = scan.slots;
+    let (blocks, defs) = scan.into_result();
+    (
+        RegionParse {
+            blocks,
+            defs,
+            fence_open_at_end,
+        },
+        slots,
+    )
+}
+
+impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
+    fn new_region(
+        src: &'a [u8],
+        base: usize,
+        end: usize,
+        sink: &'a mut W,
+        hook: Option<&'h mut SpliceHook<'h>>,
+    ) -> Self {
+        debug_assert!(base <= end && end <= src.len());
+        Self {
+            src,
+            base,
+            end,
+            frames: Vec::new(),
+            para: None,
+            fence: None,
+            defs: RefTable::new(),
+            doc: Vec::new(),
+            sink,
+            hook,
+            slots: 0,
+        }
+    }
+
     fn run(&mut self) {
-        let mut pos = 0usize;
-        let len = self.src.len();
-        while pos < len {
+        let mut pos = self.base;
+        let end = self.end;
+        while pos < end {
+            // Splice point: the horse may take over the range starting
+            // at this line start. (Never fired while a fence is open —
+            // a fence body has no block boundaries to align with.)
+            if self.fence.is_none() {
+                let key = self.state_key();
+                let take = self.hook.as_deref_mut().and_then(|h| h(pos, &key));
+                if let Some(new_pos) = take {
+                    debug_assert!(pos < new_pos && new_pos <= end);
+                    self.splice_to(pos, new_pos);
+                    pos = new_pos;
+                    continue;
+                }
+            }
             let line_start = pos;
             let line_lf = memchr_lf(self.src, line_start);
             self.sink
-                .record_source_inspection(line_start as u64, (line_lf + 1).min(len) as u64);
+                .record_source_inspection(line_start as u64, (line_lf + 1).min(self.end) as u64);
             // 1. consume container prefixes (§6/§7); may close frames.
             let col = self.strip_prefixes(line_start, line_lf);
             // 2. classify the remainder at the (possibly new) innermost
             //    level; container pushes re-dispatch the same line.
             self.classify(line_start, line_lf, col);
-            pos = if line_lf < len { line_lf + 1 } else { line_lf };
+            pos = if line_lf < end { line_lf + 1 } else { line_lf };
         }
-        // EOF: unclosed fence runs to EOF (§8); paragraph ends; all
-        // containers close.
-        self.flush_fence_eof();
+        // EOF: unclosed fence runs to the region end (§8); paragraph
+        // ends; all containers close. (The caller's finish() does this
+        // so it can observe pre-close state first.)
+    }
+
+    /// Flush an open paragraph, emit one Spliced placeholder covering
+    /// `[pos, new_pos)`, and carry every open frame's last-consumed-line
+    /// bookkeeping to `new_pos`. Under the horse's vouching, every line
+    /// in `[pos, new_pos)` carried the prefixes of every still-open
+    /// frame, so each frame's last consumed line is the line before
+    /// `new_pos`. The placeholder span is bookkeeping only — the horse
+    /// replaces placeholders with its retained pieces before
+    /// materialization.
+    fn splice_to(&mut self, pos: usize, new_pos: usize) {
         self.flush_para();
-        self.close_frames_from(0, None);
+        let slot = self.slots;
+        self.slots += 1;
+        let spliced = Skel::Spliced {
+            start: pos,
+            end: new_pos,
+            slot,
+        };
+        self.push_into_innermost(spliced);
+        let prev = new_pos.saturating_sub(1);
+        let carried = new_pos > 0 && self.src.get(prev) == Some(&b'\n');
+        if carried {
+            for frame in &mut self.frames {
+                match frame {
+                    Frame::Quote { last_end, .. } | Frame::Item { last_end, .. } => {
+                        *last_end = prev;
+                    }
+                    Frame::List { .. } => {}
+                }
+            }
+        }
+    }
+
+    /// The live entry [`ContextKey`]: open container stack + fence
+    /// state. (A splice/entry decision never happens mid-paragraph in a
+    /// way that matters: the key describes the state before the line is
+    /// dispatched, which is exactly the block-entry semantics of §2 of
+    /// the R5 decision freeze.)
+    fn state_key(&self) -> ContextKey {
+        ContextKey {
+            frames: self
+                .frames
+                .iter()
+                .map(|f| match f {
+                    Frame::Quote { .. } => FrameKey::Quote,
+                    Frame::List { indent, .. } => FrameKey::List { indent: *indent },
+                    Frame::Item { marker, strip, .. } => FrameKey::Item {
+                        marker: *marker,
+                        strip: *strip,
+                    },
+                })
+                .collect(),
+            fence: self.fence.as_ref().map(|f| f.fence_len),
+        }
+    }
+
+    /// The key for a block about to START now (state before dispatch,
+    /// excluding the block's own frame-to-be).
+    fn entry_key(&self) -> ContextKey {
+        self.state_key()
     }
 
     /// Consume quote/list-item prefixes for one line. Returns the content
@@ -259,12 +498,14 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                     }
                     match sibling {
                         Some((marker, delta)) => {
+                            let entry = self.entry_key();
                             self.frames.push(Frame::Item {
                                 start: col + s,
                                 marker,
                                 strip: s + delta,
                                 last_end: line_lf,
                                 children: Vec::new(),
+                                entry,
                             });
                             col = col + s + delta;
                             break;
@@ -284,7 +525,7 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
     /// (B4/B5) recurse into the remainder of the SAME line.
     fn classify(&mut self, line_start: usize, line_lf: usize, mut col: usize) {
         loop {
-            let len = self.src.len();
+            let len = self.end;
             // Fenced-code mode: only the closer ends the block (§8); blank
             // lines and structure lines are raw body bytes.
             if self.fence.is_some() {
@@ -326,23 +567,27 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
             // B2: fenced code opener
             if let Some((run_len, info)) = self.fence_opener_at(cls, line_lf) {
                 self.flush_para();
+                let ctx = self.entry_key();
                 self.fence = Some(OpenFence {
                     start: cls,
                     info,
                     fence_len: run_len,
                     body_start: if line_lf < len { line_lf + 1 } else { line_lf },
                     last_end: line_lf,
+                    ctx,
                 });
                 return;
             }
             // B3: ATX heading
             if let Some((level, content_start)) = heading_at(self.src, cls, line_lf) {
                 self.flush_para();
+                let ctx = self.entry_key();
                 let skel = Skel::Heading {
                     start: cls,
                     end: line_lf,
                     level,
                     content: (content_start, line_lf),
+                    ctx,
                 };
                 self.push_into_innermost(skel);
                 return;
@@ -351,10 +596,12 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
             // the rest of the line inside it.
             if cls < line_lf && self.src[cls] == b'>' {
                 self.flush_para();
+                let ctx = self.entry_key();
                 self.frames.push(Frame::Quote {
                     start: cls,
                     last_end: line_lf,
                     children: Vec::new(),
+                    entry: ctx,
                 });
                 col = cls + 1;
                 if col < line_lf && self.src[col] == b' ' {
@@ -369,17 +616,28 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                     // relative indents: list markers sit at `s` spaces
                     // past the current content column; the item strips
                     // `s + delta` columns from continuation lines
+                    let ctx = self.entry_key();
                     self.frames.push(Frame::List {
                         start: cls,
                         indent: cls - col,
                         items: Vec::new(),
+                        entry: ctx.clone(),
                     });
+                    let item_ctx = ContextKey {
+                        frames: {
+                            let mut f = ctx.frames.clone();
+                            f.push(FrameKey::List { indent: cls - col });
+                            f
+                        },
+                        fence: None,
+                    };
                     self.frames.push(Frame::Item {
                         start: cls,
                         marker,
                         strip: (cls - col) + delta,
                         last_end: line_lf,
                         children: Vec::new(),
+                        entry: item_ctx,
                     });
                     col = cls + delta;
                     continue;
@@ -389,12 +647,14 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
             if cls < line_lf && self.src[cls] == b'[' {
                 if let Some((start, end, label, destination)) = refdef_at(self.src, cls, line_lf) {
                     self.flush_para();
+                    let ctx = self.entry_key();
                     self.defs.define(label.clone(), destination.clone());
                     self.push_into_innermost(Skel::Def {
                         start,
                         end,
                         label,
                         destination,
+                        ctx,
                     });
                     return;
                 }
@@ -417,10 +677,12 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
             } else {
                 // first line: leading indentation is never part of any
                 // span (NORMALIZED-RESULT-v1 §2)
+                let ctx = self.entry_key();
                 self.para = Some(OpenPara {
                     start: col + s,
                     last_end: line_lf,
                     segments: vec![(col + s, line_lf)],
+                    ctx,
                 });
             }
             return;
@@ -485,24 +747,29 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
         while n < src.len() && src[n] == b'`' {
             n += 1;
         }
+        let ctx = f.ctx;
         self.push_into_innermost(Skel::Fence {
             start: f.start,
             end: n,
             info: f.info,
             content: (f.body_start, closer_line_start),
+            ctx,
         });
     }
 
-    /// Unclosed fence at EOF: the one span permitted to include a final
-    /// LF — it ends at len(document); content runs to EOF (§8).
+    /// Unclosed fence at the region end: the one span permitted to
+    /// include a final LF — it ends at the region end; content runs to
+    /// the region end (§8).
     fn flush_fence_eof(&mut self) {
         if let Some(f) = self.fence.take() {
-            let len = self.src.len();
+            let len = self.end;
+            let ctx = f.ctx;
             self.push_into_innermost(Skel::Fence {
                 start: f.start,
                 end: len,
                 info: f.info,
                 content: (f.body_start, len),
+                ctx,
             });
         }
     }
@@ -512,11 +779,13 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
     /// content ends where the interrupted line begins.
     fn flush_fence_truncated(&mut self, trunc: usize) {
         if let Some(f) = self.fence.take() {
+            let ctx = f.ctx;
             self.push_into_innermost(Skel::Fence {
                 start: f.start,
                 end: f.last_end,
                 info: f.info,
                 content: (f.body_start, trunc),
+                ctx,
             });
         }
     }
@@ -525,10 +794,12 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
 
     fn flush_para(&mut self) {
         if let Some(p) = self.para.take() {
+            let ctx = p.ctx;
             self.push_into_innermost(Skel::Para {
                 start: p.start,
                 end: p.last_end,
                 segments: p.segments,
+                ctx,
             });
         }
     }
@@ -558,60 +829,142 @@ impl<'a, W: WorkSink> BlockParser<'a, W> {
                     start,
                     last_end,
                     children,
+                    entry,
                 } => Skel::Quote {
                     start,
                     end: last_end,
                     children,
+                    ctx: entry,
                 },
-                Frame::List { start, items, .. } => {
+                Frame::List {
+                    start,
+                    items,
+                    entry,
+                    ..
+                } => {
                     let end = items.last().map(skel_end).unwrap_or(start);
-                    Skel::List { start, end, items }
+                    Skel::List {
+                        start,
+                        end,
+                        items,
+                        ctx: entry,
+                    }
                 }
                 Frame::Item {
                     start,
                     marker,
                     last_end,
                     children,
+                    entry,
                     ..
                 } => Skel::Item {
                     start,
                     end: last_end,
                     marker,
                     children,
+                    ctx: entry,
                 },
             };
             self.push_into_innermost(skel);
         }
     }
 
-    fn finish(mut self) -> NormalizedDocument {
-        let len = self.src.len();
-        let doc_skels = std::mem::take(&mut self.doc);
-        let defs = self.defs;
-        let children = materialize(self.src, doc_skels, &defs);
-        let mut root = Node::new(NodeKind::Document, 0, len);
-        root.children = children;
-        NormalizedDocument::new(root)
+    /// EOF-close at the region end: unclosed fence, open paragraph, all
+    /// frames.
+    fn finish(&mut self) {
+        self.flush_fence_eof();
+        self.flush_para();
+        self.close_frames_from(0, None);
+    }
+
+    fn into_result(self) -> (Vec<Skel>, RefTable) {
+        (self.doc, self.defs)
     }
 }
 
 fn skel_end(s: &Skel) -> usize {
-    match s {
-        Skel::Para { end, .. }
-        | Skel::Heading { end, .. }
-        | Skel::Quote { end, .. }
-        | Skel::List { end, .. }
-        | Skel::Item { end, .. }
-        | Skel::Fence { end, .. }
-        | Skel::Def { end, .. } => *end,
+    s.end()
+}
+
+// ---------------------------------------------------------------------------
+// Lexical line classification (shared, pure) — used by horses for
+// soundness gates on UNPARSED bytes. Same rules as the dispatch in
+// `classify` (B1-B7), evaluated without touching scanner state.
+// ---------------------------------------------------------------------------
+
+/// Lexical class of the line `[line_start, line_lf)` evaluated at the
+/// top level (empty container context, no open fence) with the content
+/// column at `line_start`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum LineClass {
+    /// Spaces only (§1 blank).
+    Blank,
+    /// Fenced code opener: `(run_len, has_info_bytes)`.
+    FenceOpener { run_len: usize },
+    /// ATX heading with level 1..=6.
+    Heading { level: u8 },
+    /// Blockquote marker line ('>' after <= 3 spaces).
+    QuoteMarker,
+    /// List marker: `(marker_byte, first-line content delta)` (§7).
+    ListMarker { marker: u8, delta: usize },
+    /// Reference definition (§9.4).
+    RefDef,
+    /// None of B1-B6: paragraph text (starts or continues a paragraph).
+    ParagraphText,
+}
+
+pub fn classify_top_level_line(src: &[u8], line_start: usize, line_lf: usize) -> LineClass {
+    let s = count_spaces(src, line_start, line_lf);
+    let cls = line_start + s.min(3);
+    if all_spaces(src, cls, line_lf) {
+        return LineClass::Blank;
     }
+    if let Some((run_len, _)) = fence_opener_at(src, cls, line_lf) {
+        return LineClass::FenceOpener { run_len };
+    }
+    if let Some((level, _)) = heading_at(src, cls, line_lf) {
+        return LineClass::Heading { level };
+    }
+    if src[cls] == b'>' {
+        return LineClass::QuoteMarker;
+    }
+    if src[cls] == b'-' || src[cls] == b'*' {
+        if let Some((marker, delta)) = parse_marker(src, cls, line_lf) {
+            return LineClass::ListMarker { marker, delta };
+        }
+    }
+    if src[cls] == b'[' && refdef_at(src, cls, line_lf).is_some() {
+        return LineClass::RefDef;
+    }
+    LineClass::ParagraphText
+}
+
+/// The fence-opener check without scanner state (§8).
+pub fn fence_opener_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, String)> {
+    if cls >= line_lf || src[cls] != b'`' {
+        return None;
+    }
+    let mut n = cls;
+    while n < line_lf && src[n] == b'`' {
+        n += 1;
+    }
+    let run = n - cls;
+    if run < 3 {
+        return None;
+    }
+    let info_bytes = &src[n..line_lf];
+    if info_bytes.contains(&b'`') {
+        return None;
+    }
+    let info = String::from_utf8_lossy(info_bytes).into_owned();
+    Some((run, info))
 }
 
 // ---------------------------------------------------------------------------
 // lexical helpers (all byte-based; source is guaranteed UTF-8)
 // ---------------------------------------------------------------------------
 
-fn memchr_lf(src: &[u8], from: usize) -> usize {
+pub fn memchr_lf(src: &[u8], from: usize) -> usize {
     src[from..]
         .iter()
         .position(|&b| b == b'\n')
@@ -619,7 +972,7 @@ fn memchr_lf(src: &[u8], from: usize) -> usize {
         .unwrap_or(src.len())
 }
 
-fn count_spaces(src: &[u8], from: usize, to: usize) -> usize {
+pub fn count_spaces(src: &[u8], from: usize, to: usize) -> usize {
     let mut n = from;
     while n < to && src[n] == b' ' {
         n += 1;
@@ -627,13 +980,13 @@ fn count_spaces(src: &[u8], from: usize, to: usize) -> usize {
     n - from
 }
 
-fn all_spaces(src: &[u8], from: usize, to: usize) -> bool {
+pub fn all_spaces(src: &[u8], from: usize, to: usize) -> bool {
     src[from..to].iter().all(|&b| b == b' ')
 }
 
 /// ATX heading at `cls` (§5): 1..=6 '#', then EOL or 1+ spaces then
 /// content. Returns `(level, content_start)`.
-fn heading_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(u8, usize)> {
+pub fn heading_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(u8, usize)> {
     if cls >= line_lf || src[cls] != b'#' {
         return None;
     }
@@ -662,7 +1015,7 @@ fn heading_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(u8, usize)> {
 /// `(marker_byte, delta)` where the item's first-line content column is
 /// `p + delta`; `k > 4` caps the delta at 2 (frozen CommonMark rule —
 /// the remaining spaces are content bytes).
-fn parse_marker(src: &[u8], p: usize, line_lf: usize) -> Option<(u8, usize)> {
+pub fn parse_marker(src: &[u8], p: usize, line_lf: usize) -> Option<(u8, usize)> {
     let marker = src[p];
     if marker != b'-' && marker != b'*' {
         return None;
@@ -690,7 +1043,7 @@ fn parse_marker(src: &[u8], p: usize, line_lf: usize) -> Option<(u8, usize)> {
 /// destination (no space) + only optional spaces to EOL. Returns
 /// `(node_start, node_end, normalized_label, destination)`.
 #[allow(clippy::type_complexity)]
-fn refdef_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, usize, String, String)> {
+pub fn refdef_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, usize, String, String)> {
     if cls >= line_lf || src[cls] != b'[' {
         return None;
     }
@@ -729,4 +1082,91 @@ fn refdef_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, usize, St
         d
     };
     Some((cls, end, label, destination))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use markit_mdbench_common::NoopWorkSink;
+    use markit_mdbench_oracle::normalized::NodeKind;
+
+    #[test]
+    fn full_parse_shapes_a_simple_document() {
+        let src = b"# t\n\npara *b* [l](/u)\n";
+        let mut noop = NoopWorkSink;
+        let doc = parse_full(src, &mut noop);
+        assert_eq!(doc.root.kind, NodeKind::Document);
+        assert_eq!(doc.root.children.len(), 2);
+        assert_eq!(doc.root.children[0].kind, NodeKind::Heading);
+        assert_eq!(doc.root.children[1].kind, NodeKind::Paragraph);
+    }
+
+    #[test]
+    fn region_parse_matches_full_parse_on_a_suffix_region() {
+        let src = b"# h\n\ntext one\n\ntext two\n";
+        let mut noop = NoopWorkSink;
+        // byte 15 is the start of the line "text two"
+        let region = parse_region(src, 15, src.len(), &mut noop);
+        assert_eq!(region.blocks.len(), 1);
+        assert!(!region.fence_open_at_end);
+        // absolute spans, no re-shift needed
+        assert_eq!(region.blocks[0].start(), 15);
+    }
+
+    #[test]
+    fn splice_hook_runs_and_produces_placeholders() {
+        let src = b"aaa\n\nbbb\n\nccc\n";
+        let mut noop = NoopWorkSink;
+        let mut taken = 0usize;
+        let mut hook = |pos: usize, key: &ContextKey| -> Option<usize> {
+            assert!(key.fence.is_none());
+            if pos == 5 {
+                taken += 1;
+                Some(9) // take the "bbb" line including its LF
+            } else {
+                None
+            }
+        };
+        let (region, slots) = parse_region_with_hook(src, 0, src.len(), &mut noop, &mut hook);
+        assert_eq!(taken, 1);
+        assert_eq!(slots, 1);
+        let spliced: Vec<_> = region
+            .blocks
+            .iter()
+            .filter(|b| matches!(b, Skel::Spliced { .. }))
+            .collect();
+        assert_eq!(spliced.len(), 1);
+        assert!(matches!(
+            region.blocks.iter().find(|b| b.start() == 5).unwrap(),
+            Skel::Spliced {
+                start: 5,
+                end: 9,
+                slot: 0
+            }
+        ));
+        // the surrounding paragraphs still parsed around the take
+        assert_eq!(region.blocks.len(), 3);
+    }
+
+    #[test]
+    fn context_keys_distinguish_container_state() {
+        let src = b"> q1\n> q2\n\ntop\n";
+        let mut noop = NoopWorkSink;
+        let (blocks, _) = {
+            let mut scan = BlockScanner::new_region(src, 0, src.len(), &mut noop, None);
+            scan.run();
+            scan.finish();
+            scan.into_result()
+        };
+        assert_eq!(blocks.len(), 2);
+        let quote = &blocks[0];
+        assert!(quote.ctx().frames.is_empty());
+        match quote {
+            Skel::Quote { children, .. } => {
+                assert_eq!(children[0].ctx().frames, vec![FrameKey::Quote]);
+            }
+            _ => panic!("expected quote"),
+        }
+        assert!(blocks[1].ctx().frames.is_empty());
+    }
 }

@@ -1,11 +1,10 @@
-//! H0 inline scanning — BENCH-GRAMMAR-v1 §4, §9, §10.
+//! Shared BENCH-GRAMMAR-v1 inline scanning — the R4 H0 inline pass,
+//! shared unchanged (R5 decision freeze §1).
 //!
 //! One scanner per content SEGMENT: a segment is a maximal byte range of
 //! one block's content between container prefixes (NORMALIZED-RESULT-v1
 //! §2: a container prefix and the LF before it are trivia BETWEEN text
-//! runs). Inline constructs are matched within a single segment; this is
-//! the H0 reference reading of "maximal runs within the parent block's
-//! content region" and is documented in the R4 stage record.
+//! runs). Inline constructs are matched within a single segment.
 //!
 //! Frozen rules implemented here:
 //!
@@ -22,7 +21,7 @@
 //!   tie-break and the empty-emphasis adjacency ban (§10.2); emphasis
 //!   content is re-scanned recursively.
 
-use markit_mdbench_oracle::normalized::{Node, NodeKind};
+use markit_mdbench_oracle::normalized::{Node, NodeKind, NormalizedDocument};
 
 use crate::parser::Skel;
 
@@ -51,6 +50,25 @@ impl RefTable {
             .find(|(l, _)| l == label)
             .map(|(_, d)| d.as_str())
     }
+
+    /// Recorded facts in source order (duplicates included).
+    pub fn entries(&self) -> &[(String, String)] {
+        &self.entries
+    }
+
+    /// Number of recorded facts.
+    pub fn len(&self) -> usize {
+        self.entries.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.entries.is_empty()
+    }
+
+    /// Extend from another table's facts, preserving order.
+    pub fn extend_from(&mut self, facts: &[(String, String)]) {
+        self.entries.extend(facts.iter().cloned());
+    }
 }
 
 /// Label normalization (§9.1): collapse space runs to one space, trim,
@@ -74,7 +92,8 @@ pub fn norm_label(bytes: &[u8]) -> String {
 
 /// Convert block skeletons into normalized nodes, running the inline
 /// pass with the completed definition table (§13: blocks -> table ->
-/// inlines).
+/// inlines). [`Skel::Spliced`] placeholders must have been replaced by
+/// the owning horse before this point.
 pub fn materialize(src: &[u8], skels: Vec<Skel>, defs: &RefTable) -> Vec<Node> {
     let mut out = Vec::with_capacity(skels.len());
     for s in skels {
@@ -89,6 +108,7 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             start,
             end,
             segments,
+            ..
         } => {
             let mut n = Node::new(NodeKind::Paragraph, start, end);
             n.children = scan_inlines(src, &segments, true, defs);
@@ -99,6 +119,7 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             level,
             content,
+            ..
         } => {
             let mut n = Node::new(NodeKind::Heading, start, end);
             n.level = Some(level);
@@ -109,12 +130,15 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             start,
             end,
             children,
+            ..
         } => {
             let mut n = Node::new(NodeKind::BlockQuote, start, end);
             n.children = materialize(src, children, defs);
             n
         }
-        Skel::List { start, end, items } => {
+        Skel::List {
+            start, end, items, ..
+        } => {
             let mut n = Node::new(NodeKind::List, start, end);
             n.children = materialize(src, items, defs);
             n
@@ -124,6 +148,7 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             marker,
             children,
+            ..
         } => {
             let mut n = Node::new(NodeKind::ListItem, start, end);
             n.marker = Some(if marker == b'-' { "-" } else { "*" }.to_string());
@@ -135,6 +160,7 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             info,
             content,
+            ..
         } => {
             let mut n = Node::new(NodeKind::FencedCode, start, end);
             n.info = Some(info);
@@ -146,11 +172,15 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             label,
             destination,
+            ..
         } => {
             let mut n = Node::new(NodeKind::ReferenceDefinition, start, end);
             n.label = Some(label);
             n.destination = Some(destination);
             n
+        }
+        Skel::Spliced { .. } => {
+            panic!("Spliced placeholder reached materialization: the owning horse must replace splice slots first")
         }
     }
 }
@@ -179,7 +209,7 @@ enum Elem {
 
 /// Scan one segment region `[ss, se)`. `links` is false inside link
 /// text (nested links are literal; §9.2).
-fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -> Vec<Node> {
+pub fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -> Vec<Node> {
     let mut out: Vec<Elem> = Vec::new();
     // pending maximal text run [text_start, i)
     let mut text_start: Option<usize> = None;
@@ -489,4 +519,12 @@ fn find_text_region_end(src: &[u8], from: usize, to: usize) -> Option<usize> {
         }
     }
     None
+}
+
+/// Convenience: full normalized document from parsed blocks + table.
+pub fn finish_document(src: &[u8], blocks: Vec<Skel>, defs: &RefTable) -> NormalizedDocument {
+    let children = materialize(src, blocks, defs);
+    let mut root = Node::new(NodeKind::Document, 0, src.len());
+    root.children = children;
+    NormalizedDocument::new(root)
 }

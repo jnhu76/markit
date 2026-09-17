@@ -860,6 +860,7 @@ dependencies = [
  "markit-mdbench-common",
  "markit-mdbench-corpusgen",
  "markit-mdbench-oracle",
+ "markit-mdbench-shared-grammar",
 ]
 
 [[package]]
@@ -901,6 +902,14 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+]
+
+[[package]]
+name = "markit-mdbench-shared-grammar"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-common",
+ "markit-mdbench-oracle",
 ]
 
 [[package]]

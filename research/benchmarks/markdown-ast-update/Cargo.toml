@@ -6,6 +6,7 @@ members = [
     "oracle",
     "runner",
     "corpusgen",
+    "shared-grammar",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
 ]
@@ -35,6 +36,7 @@ markit-mdbench-instrumentation = { path = "instrumentation" }
 markit-mdbench-oracle = { path = "oracle" }
 markit-mdbench-null-r1 = { path = "mechanisms/null-r1" }
 markit-mdbench-corpusgen = { path = "corpusgen" }
+markit-mdbench-shared-grammar = { path = "shared-grammar" }
 markit-mdbench-full-rebuild = { path = "mechanisms/full-rebuild" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
