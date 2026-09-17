@@ -11,6 +11,7 @@ members = [
     "mechanisms/full-rebuild",
     "mechanisms/block-local",
     "mechanisms/fragment-reuse",
+    "mechanisms/old-tree-subtree-reuse",
 ]
 
 # R1 PRIMARY BUILD POLICY (frozen; see manifest/environment.toml and
@@ -42,6 +43,7 @@ markit-mdbench-shared-grammar = { path = "shared-grammar" }
 markit-mdbench-full-rebuild = { path = "mechanisms/full-rebuild" }
 markit-mdbench-block-local = { path = "mechanisms/block-local" }
 markit-mdbench-fragment-reuse = { path = "mechanisms/fragment-reuse" }
+markit-mdbench-old-tree-subtree-reuse = { path = "mechanisms/old-tree-subtree-reuse" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"

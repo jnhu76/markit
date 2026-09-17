@@ -527,6 +527,40 @@ IDENTITY WITNESS (task contract §11)
      reparse), result == H0.
 ```
 
+§8 implementation notes (recorded at H3 implementation time, BEFORE H4
+started; refinements of the §8 fields, all conservative):
+
+- LINE-aligned matching as H2 (blocks nested in containers start
+  mid-line); each TNode records `line_offset`; takes start at the line
+  start and the unchanged prefix bytes ride inside the placeholder.
+- The patch is copy-on-write along the edited ancestry: sizes along the
+  path absorb the delta at EVERY chain level (the tree-sitter length
+  update), clamped at zero for nodes smaller than the edit; relative
+  offsets of children after the edit shift; intersecting nodes are
+  marked changed. An edit spanning several top-level entries patches the
+  first hit's ancestry, marks the other hits changed, and lets the first
+  hit absorb the delta (clamped, with the residual moved to the last
+  hit) so the DERIVED positions of untouched entries after the edit stay
+  shifted by exactly delta. A gap edit (no intersecting span) shifts the
+  following entry's gap.
+- CONTINUATION MARGIN (the changed-flag analogue of H2's open-edge
+  exclusion and H1's F2/F3/F4 guards — discovered by the differential
+  gate, not assumed): the entry before the damage can absorb the damaged
+  region's first line by paragraph/list/quote continuation, and the
+  entry after it can merge with the damaged region's last line, whenever
+  NO blank line separates them from the edit. The ContextKey deliberately
+  never encodes paragraph state (§2), so a taken neighbor would splice
+  with its continuation line already closed. The margin marks those two
+  neighbor entries changed unless >= 2 LFs separate them from the edit
+  (a blank line terminates every continuation, §3/D5/§6). Same-shape
+  holes were closed in H1 (fallback classes) and H2 (open-edge
+  exclusion) — the cross-horse parity table lists this as a shared
+  soundness dimension.
+- Take runs additionally check that the covered byte range stays
+  disjoint from the edited span (a boundary insert marks no node, but
+  its bytes sit in the inter-member gap). The refused member may still
+  be taken by its own consultation at its own line start.
+
 ## 9. H4 — RESTART_CONVERGENCE (`mechanisms/restart-convergence`)
 
 ```text
