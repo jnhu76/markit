@@ -1,7 +1,9 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R3 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW (2026-09-17;
-R2 merged via PR #27, master c9bad01)**
+Status: **R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (2026-09-17; human final
+review passed; PR #28 merged into master as
+`17f6040b21f59f452fa57d67b512d0f4858f431f`). NEXT = R4 H0 Reference Full
+Rebuild.**
 
 Authority: GitHub Issue #22
 

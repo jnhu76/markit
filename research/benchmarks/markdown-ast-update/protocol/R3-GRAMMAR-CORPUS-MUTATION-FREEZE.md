@@ -1,6 +1,9 @@
 # R3 — BENCH-GRAMMAR-v1 + Corpus / Mutation Freeze
 
-Status: **CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW** (2026-09-17)
+Status: **GRAMMAR_CORPUS_MUTATION_FREEZE_PASS** (2026-09-17; corrective-1
+applied, then human final review passed; PR #28 merged into master as
+`17f6040b21f59f452fa57d67b512d0f4858f431f`. This closure note records the
+gate result only; sections 1–8 are the frozen record and are unchanged.)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r3-grammar-corpus-mutation-freeze-1`
 Base: `master` @ `c9bad01b6668c6921272e7cc989e8af6186f73ab` (PR #27 merged;
@@ -385,9 +388,11 @@ Corrective verdict:
 ```text
 R3 SELF-ASSESSMENT VERDICT: READY_FOR_FINAL_R3_REVIEW
 
-After human final review the gate may become:
+After human final review the gate became:
     GRAMMAR_CORPUS_MUTATION_FREEZE_PASS
     READY_FOR_R4_H0_REFERENCE_FULL_REBUILD
 
-STOP: R4 is not started. PR #28 updated; not merged by the agent.
+Human final review: PASSED (2026-09-17). PR #28 merged into master as
+17f6040b21f59f452fa57d67b512d0f4858f431f. No frozen artifact changed in
+this closure; only this gate note was added.
 ```
