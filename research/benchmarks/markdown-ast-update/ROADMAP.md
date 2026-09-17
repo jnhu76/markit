@@ -1,15 +1,17 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (2026-09-17; human final
-review passed; PR #28 merged into master as
-`17f6040b21f59f452fa57d67b512d0f4858f431f`). NEXT = R4 H0 Reference Full
-Rebuild.**
+Status: **R4 IMPLEMENTED — READY_FOR_ADVERSARIAL_R4_REVIEW (2026-09-17;
+H0 reference + differential gate + negative gate complete; adversarial
+review pending). Prior: R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human
+final review passed; PR #28 merged into master as
+`17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
 Authority: GitHub Issue #22
 
 - Branch: `research/22-markdown-benchmark-1` (R0/R1) /
   `research/22-prior-art-mechanism-extraction-1` (R2) /
-  `research/22-r3-grammar-corpus-mutation-freeze-1` (R3)
+  `research/22-r3-grammar-corpus-mutation-freeze-1` (R3) /
+  `research/22-r4-h0-reference-full-rebuild-1` (R4)
 - R0 methodology: `protocol/R0-METHODOLOGY.md`
 - R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 
@@ -268,6 +270,20 @@ Stop：`GRAMMAR_CORPUS_MUTATION_FREEZE_PASS`
 ---
 
 ## R4 — H0 Reference Full Rebuild
+
+Status: **READY_FOR_ADVERSARIAL_R4_REVIEW (2026-09-17)**. Deliverables:
+`protocol/R4-H0-REFERENCE-FULL-REBUILD.md` (stage record, incl.
+adversarial pass), `oracle/` (NORMALIZED-RESULT-v1 vocabulary + SHA-256
+checksum + node_path_at), `corpusgen/` (reference CORPUS-v1 generator +
+24 committed receipts + mutation instantiation; frozen 158-slot matrix
+reproduced exactly), `mechanisms/full-rebuild/` (H0 = FULL_REBUILD:
+eager, total, deterministic, byte-coordinate correct; 43/43 fixtures;
+differential/invariant/QUERY/eager/attribution suites), and
+`scripts/verify-r4.sh` (correctness-only gate incl. R1/R3 regression
+and a 5/5 negative mutation check; prints
+"R4 H0 REFERENCE GATE: PASS"). No H1–H4 work, no measurement, no
+tuning. One MAJOR defect (container depth-decrease cascade) was found
+by the gate and fixed against frozen §6/§7.
 
 建立 H0 clean parser 和 normalized correctness oracle。
 
