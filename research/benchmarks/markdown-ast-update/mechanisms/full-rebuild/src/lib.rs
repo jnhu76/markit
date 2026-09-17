@@ -32,6 +32,7 @@ use markit_mdbench_common::Observed;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkSink;
 use markit_mdbench_oracle::normalized::{normalized_checksum, NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::validate_normalized;
 use markit_mdbench_oracle::NormalizeV1;
 
 /// Reserved H0 mechanism id.
@@ -40,8 +41,16 @@ pub const H0_MECHANISM_ID: &str = "h0-full-rebuild";
 /// The H0 reference entry point: clean parse of a complete document into
 /// the frozen normalized vocabulary. Used by the R4 correctness suites;
 /// no other mechanism crate may depend on this crate.
+///
+/// The result is checked against the shared NORMALIZED-RESULT-v1
+/// conformance gate (exact field-kind legality, zero-length rule,
+/// `FencedCode.content` interval) before it is returned — every H0
+/// result is gated, not only the test surfaces (R4-CORRECTIVE-1).
 pub fn parse_document(src: &[u8]) -> NormalizedDocument {
-    parser::parse(src)
+    let document = parser::parse(src);
+    validate_normalized(&document, Some(src))
+        .expect("H0 result violates NORMALIZED-RESULT-v1");
+    document
 }
 
 /// Retained H0 state: the fully materialized normalized document of the
@@ -108,7 +117,7 @@ impl FullRebuildMechanism {
 }
 
 /// Attribution semantics for H0 (task contract §15 — no fabricated
-/// counters):
+/// counters; R4-H0-REFERENCE-CORRECTIVE-1 §4):
 ///
 /// - `unique_source_*`: derived by the common collector from the real
 ///   per-line (block pass) and per-region (inline pass) inspection
@@ -116,17 +125,20 @@ impl FullRebuildMechanism {
 ///   complete source;
 /// - `blocks_reparsed` / `nodes_rebuilt`: measured counts of the block
 ///   nodes and of all nodes the rebuild constructed;
-/// - `nodes_reused`, `metadata_records_touched`,
-///   `fallback_to_full_count`: intrinsically meaningless for a full
-///   rebuild (no reuse concept, no metadata records, no degraded mode)
-///   -> `NotApplicable`, never a fabricated zero;
+/// - `nodes_reused`: H0 intentionally reuses no old parse node — the
+///   precise fact is exactly zero, reported through the ordinary
+///   cumulative counter path so the slot reads `Known(0)` (add(0) = a
+///   MEASURED zero; R1 law: `Known(0)` != `Unknown` !=
+///   `NotApplicable`);
+/// - `metadata_records_touched` / `fallback_to_full_count`: intrinsically
+///   meaningless for a full rebuild (no metadata records, no degraded
+///   mode) -> `NotApplicable`, never a fabricated zero;
 /// - `restart_distance` / `convergence_distance`: no restart/convergence
 ///   concept -> `NotApplicable` gauges.
 fn report_attribution<W: WorkSink>(cx: &mut MechanismContext<'_, W>, blocks: u64, nodes: u64) {
     cx.sink.add_blocks_reparsed(blocks);
     cx.sink.add_nodes_rebuilt(nodes);
-    cx.sink
-        .set_slot_not_applicable(NotApplicableSlot::NodesReused);
+    cx.sink.add_nodes_reused(0);
     cx.sink
         .set_slot_not_applicable(NotApplicableSlot::MetadataRecordsTouched);
     cx.sink
@@ -136,12 +148,15 @@ fn report_attribution<W: WorkSink>(cx: &mut MechanismContext<'_, W>, blocks: u64
 }
 
 /// Parse `src` with attribution events; returns the document plus the
-/// measured block/node counts.
+/// measured block/node counts. The result passes the shared
+/// NORMALIZED-RESULT-v1 conformance gate like every other H0 result.
 fn parse_with_attribution<W: WorkSink>(
     src: &[u8],
     cx: &mut MechanismContext<'_, W>,
 ) -> (NormalizedDocument, u64, u64) {
     let document = parser::parse_with_inspection(src, cx.sink);
+    validate_normalized(&document, Some(src))
+        .expect("H0 result violates NORMALIZED-RESULT-v1");
     let (blocks, nodes) = count_blocks_nodes(&document.root);
     (document, blocks, nodes)
 }

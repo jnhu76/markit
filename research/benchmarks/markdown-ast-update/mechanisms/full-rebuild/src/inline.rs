@@ -205,8 +205,12 @@ fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -
                 match find_run_exact(src, i + run, se, run) {
                     Some(closer) => {
                         flush_text!(i);
-                        let mut n = Node::new(NodeKind::CodeSpan, i, closer + run);
-                        n.content = Some((i + run, closer));
+                        // CodeSpan carries NO fields (NORMALIZED-RESULT-v1
+                        // §1, R4-CORRECTIVE-1): the code-span content is
+                        // the exact source bytes between the delimiters,
+                        // derivable from the source plus the span — it is
+                        // not a normalized value field.
+                        let n = Node::new(NodeKind::CodeSpan, i, closer + run);
                         out.push(Elem::Node(n));
                         i = closer + run;
                     }

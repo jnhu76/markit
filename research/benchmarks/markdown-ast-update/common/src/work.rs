@@ -110,17 +110,20 @@ fn accumulate(slot: &mut Observed<u64>, n: u64) {
 }
 
 /// Cumulative/event counter slots that can be intrinsically inapplicable
-/// to a mechanism (R4, H0 attribution semantics: `Known(0)`, `Unknown`
-/// and `NotApplicable` are distinct — a slot with no referent for the
-/// mechanism is `NotApplicable`, never a fabricated zero).
+/// to a mechanism (R1 law: `Known(0)`, `Unknown` and `NotApplicable` are
+/// distinct — a slot with no referent for the mechanism is
+/// `NotApplicable`, never a fabricated zero).
 ///
-/// Slots NOT listed here (`blocks_reparsed`, `nodes_rebuilt`, the
-/// derived unique-source slots) are meaningful for every mechanism that
-/// parses and are always reported as measured values.
+/// Slots NOT listed here (`blocks_reparsed`, `nodes_rebuilt`,
+/// `nodes_reused`, the derived unique-source slots) are meaningful for
+/// every mechanism that parses and are always reported as measured
+/// values. `nodes_reused` was briefly listed here when R4 introduced the
+/// enum; R4-H0-REFERENCE-CORRECTIVE-1 §4 reclassified it: a full rebuild
+/// has the precise fact `nodes_reused == 0` and must report it as a
+/// measured zero through the ordinary cumulative path, not as
+/// `NotApplicable`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NotApplicableSlot {
-    /// `nodes_reused`: the mechanism has no reuse concept at all.
-    NodesReused,
     /// `metadata_records_touched`: the mechanism maintains no
     /// metadata/range records.
     MetadataRecordsTouched,
@@ -241,9 +244,6 @@ impl WorkSink for CounterSink<'_> {
     }
     fn set_slot_not_applicable(&mut self, slot: NotApplicableSlot) {
         match slot {
-            NotApplicableSlot::NodesReused => {
-                self.counters.nodes_reused = Observed::NotApplicable;
-            }
             NotApplicableSlot::MetadataRecordsTouched => {
                 self.counters.metadata_records_touched = Observed::NotApplicable;
             }
@@ -290,6 +290,19 @@ mod tests {
         drop(sink);
         assert_eq!(counters.blocks_reparsed, Observed::Known(0));
         assert_eq!(counters.nodes_rebuilt, Observed::Unknown);
+    }
+
+    #[test]
+    fn nodes_reused_zero_is_measured_and_distinct_from_not_applicable() {
+        // R4-H0-REFERENCE-CORRECTIVE-1 §4: a full rebuild has the precise
+        // fact nodes_reused == 0 (it intentionally reuses no old parse
+        // node) and reports it through the ordinary cumulative path.
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        sink.add_nodes_reused(0);
+        drop(sink);
+        assert_eq!(counters.nodes_reused, Observed::Known(0));
+        assert_ne!(counters.nodes_reused, Observed::NotApplicable);
     }
 
     #[test]

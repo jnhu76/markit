@@ -30,6 +30,7 @@ use markit_mdbench_full_rebuild::FullRebuildMechanism;
 use markit_mdbench_oracle::normalized::{
     node_path_at, normalized_checksum, Node, NodeKind, NormalizedDocument,
 };
+use markit_mdbench_oracle::validate_root;
 
 use gen::{PayloadShape, ALL_SHAPES, SIZE_16M, SIZE_1M, SIZE_64K};
 
@@ -114,58 +115,15 @@ fn assert_update_differential(
     (new_state, counters)
 }
 
-/// Tree invariants (NORMALIZED-RESULT-v1): parent containment, sibling
-/// order and disjointness, byte spans on char boundaries, zero-length
-/// spans only for FencedCode.content, Document == [0, len).
+/// Tree invariants (NORMALIZED-RESULT-v1): enforced by the ONE shared
+/// conformance gate in the oracle crate (R4-H0-REFERENCE-CORRECTIVE-1) —
+/// exact field-kind legality, `start < end` for every node, the
+/// `FencedCode.content` interval rule (empty legal), parent containment,
+/// sibling order, UTF-8 char boundaries, Document == [0, len).
 fn validate_tree(node: &Node, src: &[u8]) {
-    fn walk(n: &Node, src: &[u8], parent: Option<&Node>) {
-        if let Some(p) = parent {
-            assert!(
-                n.start >= p.start && n.end <= p.end,
-                "node {:?} {:?} escapes parent {:?}",
-                n.kind,
-                n.start..n.end,
-                p.start..p.end
-            );
-        }
-        assert!(
-            is_boundary(src, n.start) && is_boundary(src, n.end),
-            "span {:?} not on char boundaries",
-            n.start..n.end
-        );
-        if n.start == n.end {
-            assert_eq!(
-                n.kind,
-                NodeKind::FencedCode,
-                "zero-length span only legal for FencedCode.content"
-            );
-            assert!(n.content.is_some());
-        }
-        let mut cursor = n.start;
-        for c in &n.children {
-            assert!(
-                c.start >= cursor,
-                "children out of order/overlapping: child {:?} {}..{} starts before cursor {} (parent {:?} {}..{})",
-                c.kind,
-                c.start,
-                c.end,
-                cursor,
-                n.kind,
-                n.start,
-                n.end
-            );
-            cursor = cursor.max(c.end);
-            walk(c, src, Some(n));
-        }
+    if let Err(e) = validate_root(node, Some(src)) {
+        panic!("normalized tree violates NORMALIZED-RESULT-v1: {e}");
     }
-    walk(node, src, None);
-    assert_eq!((node.start, node.end), (0, src.len()));
-}
-
-/// Byte-level UTF-8 char-boundary rule (the byte at `pos` must not be a
-/// continuation byte).
-fn is_boundary(src: &[u8], pos: usize) -> bool {
-    pos == 0 || pos >= src.len() || src[pos] & 0xC0 != 0x80
 }
 
 fn validated_clean(src: &[u8]) -> NormalizedDocument {
@@ -700,15 +658,20 @@ fn attribution_is_honest_on_update() {
     let (blocks, nodes) = count_blocks_nodes(&clean.root);
 
     // Known(n) / Unknown / NotApplicable are DISTINCT. H0 rebuilt every
-    // node (Known(nodes)), reused nothing (NotApplicable — the concept
-    // does not exist for a full rebuild — NOT Known(0)), kept no
-    // metadata records (NotApplicable), never fell back
-    // (NotApplicable), and has no restart/convergence concepts
+    // node (Known(nodes)), and reused NOTHING — the precise fact is
+    // nodes_reused == 0, reported through the ordinary cumulative path
+    // as a MEASURED zero (Known(0), R4-H0-REFERENCE-CORRECTIVE-1 §4),
+    // NOT NotApplicable: the reuse concept exists and its measured value
+    // is zero. H0 keeps no metadata records (NotApplicable), never fell
+    // back (NotApplicable), and has no restart/convergence concepts
     // (NotApplicable gauges).
     assert_eq!(counters.nodes_rebuilt, Observed::Known(nodes));
     assert_eq!(counters.blocks_reparsed, Observed::Known(blocks));
     assert!(nodes > 0 && blocks > 0);
-    assert_eq!(counters.nodes_reused, Observed::NotApplicable);
+    assert_eq!(counters.nodes_reused, Observed::Known(0));
+    // the R1 distinction itself, pinned: a measured zero is not an
+    // inapplicable slot
+    assert_ne!(Observed::Known(0), Observed::<u64>::NotApplicable);
     assert_eq!(counters.metadata_records_touched, Observed::NotApplicable);
     assert_eq!(counters.fallback_to_full_count, Observed::NotApplicable);
     assert_eq!(counters.restart_distance, Observed::NotApplicable);
@@ -717,8 +680,10 @@ fn attribution_is_honest_on_update() {
         counters.unique_source_bytes_inspected,
         Observed::Known(post.len() as u64)
     );
-    // NotApplicable slots stayed NotApplicable through finalize
-    assert_eq!(counters.nodes_reused, Observed::NotApplicable);
+    // the measured nodes_reused zero survives finalize unchanged, and
+    // the NotApplicable slots stayed NotApplicable through finalize
+    assert_eq!(counters.nodes_reused, Observed::Known(0));
+    assert_eq!(counters.metadata_records_touched, Observed::NotApplicable);
     // no slot is left Unknown after a completed, derived case
     assert!(!matches!(
         counters.unique_source_bytes_inspected,

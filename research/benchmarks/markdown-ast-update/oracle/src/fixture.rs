@@ -146,14 +146,40 @@ fn parse_node(b: &[u8], pos: &mut usize, id: &str) -> Result<Node, String> {
                 }
                 *pos += 1;
                 match key.as_str() {
-                    "level" => node.level = Some(parse_usize(b, pos, id)? as u8),
-                    "marker" => node.marker = Some(parse_quoted(b, pos, id, "marker")?),
-                    "info" => node.info = Some(parse_quoted(b, pos, id, "info")?),
-                    "label" => node.label = Some(parse_quoted(b, pos, id, "label")?),
+                    "level" => {
+                        if node.level.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
+                        node.level = Some(parse_usize(b, pos, id)? as u8);
+                    }
+                    "marker" => {
+                        if node.marker.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
+                        node.marker = Some(parse_quoted(b, pos, id, "marker")?);
+                    }
+                    "info" => {
+                        if node.info.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
+                        node.info = Some(parse_quoted(b, pos, id, "info")?);
+                    }
+                    "label" => {
+                        if node.label.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
+                        node.label = Some(parse_quoted(b, pos, id, "label")?);
+                    }
                     "destination" => {
+                        if node.destination.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
                         node.destination = Some(parse_quoted(b, pos, id, "destination")?)
                     }
                     "content" => {
+                        if node.content.is_some() {
+                            return Err(format!("{id}: duplicate field {key:?}"));
+                        }
                         let a = parse_usize(b, pos, id)?;
                         if *pos >= b.len() || b[*pos] != b':' {
                             return Err(format!("{id}: content field must be start:end"));
@@ -267,6 +293,11 @@ pub fn load_fixtures(dir: &Path) -> Result<Vec<Fixture>, FixtureError> {
             .and_then(|v| v.as_str())
             .ok_or_else(|| bad("missing expected_tree".into()))?;
         let expected = parse_expected_tree(tree_text.trim(), &id).map_err(bad)?;
+        // R4-H0-REFERENCE-CORRECTIVE-1: an expected tree is semantic
+        // authority only if it satisfies the frozen NORMALIZED-RESULT-v1
+        // conformance gate — exact field-kind legality, the zero-length
+        // rule, the FencedCode.content interval rule, char boundaries.
+        crate::validate_normalized(&expected, Some(source.as_bytes())).map_err(bad)?;
         out.push(Fixture {
             id,
             name: value
@@ -322,5 +353,20 @@ mod tests {
             .unwrap();
         assert_eq!(doc.root.children.len(), 1);
         assert_eq!(doc.root.children[0].kind, NodeKind::Paragraph);
+    }
+
+    #[test]
+    fn load_gate_rejects_the_corrected_codespan_field() {
+        // R4-CORRECTIVE-1 regression: a tree carrying the removed
+        // CodeSpan `content` field parses as SYNTAX but must fail the
+        // conformance gate at load time.
+        let doc = parse_expected_tree(
+            "(Document 0 5\n  (CodeSpan 0 5 content=1:4))",
+            "T",
+        )
+        .expect("tree syntax still parses");
+        let err = crate::validate_normalized(&doc, Some("a`b`c".as_bytes()))
+            .expect_err("CodeSpan content= must never load again");
+        assert!(err.contains("forbidden field(s) content"), "{err}");
     }
 }
