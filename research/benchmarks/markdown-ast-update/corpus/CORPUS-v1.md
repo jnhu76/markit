@@ -1,6 +1,6 @@
 # CORPUS-v1 — frozen first-round synthetic corpus (R3)
 
-Status: **R3 FREEZE CANDIDATE — READY_FOR_ADVERSARIAL_R3_REVIEW**
+Status: **R3 FREEZE — CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R3_REVIEW**
 Authority: `protocol/R0-METHODOLOGY.md` §9 (shape set + sizes, FROZEN) +
 this file (generation contract R3 freezes). Single owner of corpus shapes,
 sizes, recipes, and determinism. `corpus/manifest.toml` is the
@@ -74,6 +74,9 @@ filler(i)  = ASCII letter 'a' + (i mod 26) for byte index i within the
 CJK        = the two characters 中 (E4 B8 AD) and 文 (E6 96 87), 3 bytes
              each. CJK appears only in the designated CJK variants below.
 No tabs. No trailing spaces except where filler lands there.
+"every Nth unit/line"   0-based index congruent to 0 (mod N): unit j is a
+             variant unit iff j mod N == 0. For §4.4 the line index is
+             counted WITHIN its mountain (0..31).
 ```
 
 ### 3.2 Universal padding rule (reserved; never fires in CORPUS-v1)
@@ -148,14 +151,35 @@ mountain (2048 B)  32 lines × 64 B, one continuous container chain (NO
              container kind: m even -> list mountain, m odd ->
              blockquote mountain.
              lines d = 1..16 then 15..1 then 1 (32 lines):
-               list line(d) = "  "×(d−1) + "- " + content(61−2(d−1)) + "\n"
-               quote line(d) = "  "×(d−1) + "> " + content(61−2(d−1)) + "\n"
-               content(k)   = filler(k)
-               CJK variant  = "中文" + filler(k−6)     (every 8th line)
-             line d and d+1 nest (indent step 2 satisfies the §7/§6
-             nesting rules); after d=16 the ladder descends; the final
-             d=1 line is a sibling. Containers stay open across the
-             whole corpus (no blank line ever closes them).
+               list line(d)  = "  "×(d−1) + "- " + content(61−2(d−1)) + "\n"
+               quote line(d) = "> "×d + content(63−2d) + "\n"
+               content(k)    = filler(k)
+               CJK variant   = "中文" + filler(k−6)   (line index within
+                               the mountain ≡ 0 (mod 8), 0-based)
+             LIST nesting is §7 indent arithmetic: the item opened at
+             line d has content indent 2(d−1)+2 = 2d, and line d+1's
+             marker sits exactly at that column, so each ascending step
+             nests one list level; descending steps close items and
+             continue the outer lists via the §7 sibling rule. QUOTE
+             nesting is the §6 marker chain: the line carries one "> "
+             per open level, so a line's quote depth is its number of
+             leading "> " markers. Both reach EXACTLY depth 16 at the
+             top of the ladder (validated against these rules by
+             scripts/verify_r3.py on the recipe).
+             Corrective-1 note: the earlier quote recipe positioned the
+             marker with leading indentation (2(d−1) spaces, then one
+             "> " marker, then content). That was WRONG under the
+             frozen grammar — §6 allows only up to 3 leading spaces
+             before '>' and nests only when the CONTENT starts with
+             '>', so the inner markers were consumed as leading spaces
+             and the mountain collapsed to depth <= 2. The corrected
+             "> "×d prefix encodes depth d.
+             Mountains do NOT compound: a mountain's first line closes
+             the previous mountain's open containers (a list line
+             carries no '>' prefix, so an open quote closes per §6 D4;
+             a quote line at indent 0 is below the open item's content
+             indent, so the list closes per §7). Maximum normalized
+             depth is therefore 16 for BOTH container kinds.
 repeated     alternating list/quote mountains tiled back to back
 NOT varied   nesting step (2 spaces), line length (64 B), depth (16)
 dominant     D (depth 16) + open-container state at every line start,
@@ -189,8 +213,9 @@ purpose      many/large fenced regions; stresses forward fence state
              (R2-H03, R2-H05, R2-H10).
 unit (512 B) "```x\n" + 2 × (body(250) + "\n") + "```\n" + "\n"
              body(250)  = filler(250)
-             CJK body   = "中"×41 + filler(4)          (alternate units:
-                           unit j uses CJK body iff j is odd)
+             CJK body   = "中"×82 + filler(4)  (82×3 + 4 = 250 B;
+                          alternate units: unit j uses CJK body iff
+                          j is odd)
 repeated     closed 3-line fences with info string "x"
 NOT varied   fence length, info string, body length
 dominant     F (fence share of bytes ≈ 97.7%); long raw regions whose
@@ -199,7 +224,9 @@ families     FORWARD_STATE(fence-close), LOCAL_TEXT (inside bodies),
              BLOCK_BOUNDARY (at fence edges)
 NOT_APPLICABLE  CONTAINER_STATE, INLINE_DELIMITER_STATE,
              SEMANTIC_DEPENDENCY, M-FS-FENCE-OPEN (no structure outside
-             fences to swallow), M-LOC-UTF8-SWAP inside paragraph text
+             fences to swallow), M-LOC-UTF8-SWAP on paragraph text
+             (no paragraph text exists; the swap targets raw fence
+             bodies instead — MUTATION-v1 §5 defines that postcondition)
 ```
 
 ### 4.7 REFERENCE_FANOUT — semantic dependency
@@ -255,6 +282,42 @@ dominant     a controlled mixture; attribution must use the other seven
 families     all six
 ```
 
+### 4.9 Unit-variant byte arithmetic (frozen)
+
+The freeze establishes that EVERY declared unit variant has its declared
+byte size — not merely the ASCII variant. This table is the closed
+arithmetic claim; `scripts/verify_r3.py` mirrors each recipe, asserts
+every row, and fails the gate if this file's numbers drift (key counts
+are extracted from this file by regex where noted).
+
+```text
+shape            unit    base variant                variant rows
+plain            64 B    1 + 62 + 1 = 64             CJK line 6+56 = 62
+                                                     -> unit 64
+many_blocks      16 B    14 + 1 + 1 = 16             CJK line 6+8 = 14
+                                                     -> unit 16
+huge_block       65536   line 65534 + 1 + 1 = 65536  the CJK head IS the
+                         (CJK head on EVERY unit:    base variant here
+                         6 + 65528 = 65534)
+deep_container   64/line list 2(d−1)+2+(61−2(d−1))+1
+                         = 64  (d=1..16)             quote 2d+(63−2d)+1 = 64
+                                                     (d=1..16); CJK content
+                                                     6+(k−6) = k
+inline_dense     64 B    1 + 62 + 1 = 64             CJK line 62
+                         (line 3×19+5 = 62)          -> unit 64
+fence_heavy      512 B   5 + 2×(250+1) + 4 + 1       CJK body 82×3+4 = 250
+                         = 512                       -> unit 512
+reference_fanout 512+64  header 16×32 = 512;         CJK line 6+4×12+8=62
+                         unit 1+62+1 = 64            -> unit 64
+mixed            4096    tile 11+1+128+1+28+1+42+1+512+63+1+504+51 = 1344
+                         (all-ASCII, incl. one ASCII fence unit) + 43×64
+                         = 4096
+```
+
+No variable-length recipe may depend on size or position; every unit is
+a constant byte string given its variant, so these rows are the complete
+size story of the corpus.
+
 ## 5. UTF-8 / multibyte coverage
 
 Every shape except FENCE_HEAVY contains CJK paragraphs/lines by recipe
@@ -263,6 +326,12 @@ Every shape except FENCE_HEAVY contains CJK paragraphs/lines by recipe
 all edit ranges snap to UTF-8 char boundaries (down-snapping). Emoji are
 covered by grammar fixtures (`utf8-emoji-heading`), not by corpora —
 corpus multibyte stays 3-byte CJK to keep unit arithmetic exact.
+
+Because raw percentile anchors (floor(N/4) etc.) are always multiples of
+65536, the unit index at every raw anchor is a multiple of the variant
+period (16 units / 8 lines): generic anchors land ON variant units
+deterministically, never on the ASCII/CJK boundary between them. The
+frozen per-shape anchor landings are tabulated in MUTATION-v1 §2.
 
 ## 6. Corpus validity invariants (checked at generation, recorded in receipts)
 
