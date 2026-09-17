@@ -101,7 +101,10 @@ fn walk(n: &Node, parent: Option<&Node>, source: Option<&[u8]>) -> Result<(), St
         .filter(|f| !field_is_set(n, f))
         .collect();
     if !missing.is_empty() {
-        return Err(format!("{label}: missing required field(s) {}", missing.join(", ")));
+        return Err(format!(
+            "{label}: missing required field(s) {}",
+            missing.join(", ")
+        ));
     }
     // forbidden fields absent
     let forbidden: Vec<&str> = ALL_FIELDS

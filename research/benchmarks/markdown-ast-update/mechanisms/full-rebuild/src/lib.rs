@@ -48,8 +48,7 @@ pub const H0_MECHANISM_ID: &str = "h0-full-rebuild";
 /// result is gated, not only the test surfaces (R4-CORRECTIVE-1).
 pub fn parse_document(src: &[u8]) -> NormalizedDocument {
     let document = parser::parse(src);
-    validate_normalized(&document, Some(src))
-        .expect("H0 result violates NORMALIZED-RESULT-v1");
+    validate_normalized(&document, Some(src)).expect("H0 result violates NORMALIZED-RESULT-v1");
     document
 }
 
@@ -155,8 +154,7 @@ fn parse_with_attribution<W: WorkSink>(
     cx: &mut MechanismContext<'_, W>,
 ) -> (NormalizedDocument, u64, u64) {
     let document = parser::parse_with_inspection(src, cx.sink);
-    validate_normalized(&document, Some(src))
-        .expect("H0 result violates NORMALIZED-RESULT-v1");
+    validate_normalized(&document, Some(src)).expect("H0 result violates NORMALIZED-RESULT-v1");
     let (blocks, nodes) = count_blocks_nodes(&document.root);
     (document, blocks, nodes)
 }

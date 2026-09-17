@@ -360,11 +360,8 @@ mod tests {
         // R4-CORRECTIVE-1 regression: a tree carrying the removed
         // CodeSpan `content` field parses as SYNTAX but must fail the
         // conformance gate at load time.
-        let doc = parse_expected_tree(
-            "(Document 0 5\n  (CodeSpan 0 5 content=1:4))",
-            "T",
-        )
-        .expect("tree syntax still parses");
+        let doc = parse_expected_tree("(Document 0 5\n  (CodeSpan 0 5 content=1:4))", "T")
+            .expect("tree syntax still parses");
         let err = crate::validate_normalized(&doc, Some("a`b`c".as_bytes()))
             .expect_err("CodeSpan content= must never load again");
         assert!(err.contains("forbidden field(s) content"), "{err}");
