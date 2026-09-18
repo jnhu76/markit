@@ -296,7 +296,12 @@ was fixed and re-gated within this stage (findings 2.1, 3.1, 3.2, 4.1,
 - Frozen 370-slot case matrix differential, release profile: PASS for all
   four horses (24 FULL_PARSE + 24 QUERY + 322 update cases each; Block-D
   per-recipe counts match the frozen table; the 7 declared slot overlaps
-  are the only collapses).
+  are the only collapses). Per MARKIT-R5-GATE-OBSERVABILITY-2 the matrix
+  binaries are case-per-test (548 named slot tests + an inventory test
+  carrying the frozen counts; 178 declared NOT_APPLICABLE structural
+  slots pass trivially), so failures are isolated, individually
+  re-runnable, and nextest-compatible; case definitions, counts, and
+  assertions are unchanged.
 - `scripts/verify-r5.sh`: final line
   `R5 HORSE CORRECTNESS + PARITY GATE: PASS`
   (fmt, clippy, workspace tests, four release matrices, R1/R3/R4
@@ -334,10 +339,31 @@ exit):
    soundness on the convergence path. Validated: 4/4 DETECTED.
    Freeze-doc §9 carries the matching amendment — recorded, not silent.
 
-Gate run 2 is the authoritative single-pass run of
-`scripts/verify-r5.sh` over the corrected tree; its PASS line and the
-`R4 MUTATION CHECK: 5/5` / `R5 MUTATION CHECK: 4/4` lines are the
-deliverable evidence for this record.
+Gate run 2 (local, tree at `e986301`) was killed by a host freeze of the
+WSL workstation mid-run and produced no result — recorded as an aborted
+run, not evidence either way.
+
+The AUTHORITATIVE run is a single-pass `scripts/verify-r5.sh` executed
+on a dedicated server host (Fedora Linux, 20 cores, 62 GB RAM) against
+`research/22-r5-horses-correctness-parity-1` at `470934c`, with the
+toolchain pinned by the workspace's `rust-toolchain.toml`
+(1.97.1, rustc 8bab26f4f — same version and commit hash as the
+development host). Every step green in one pass:
+
+- debug workspace step: all suites green (incl. the 549-test
+  case-per-test matrices compile-checked, ignored in debug);
+- release matrices, `--test-threads=8 --nocapture`: 549/549 passed for
+  each of H1 (277 s), H2 (5383 s), H3 (6103 s), H4 (272 s) — per-case
+  `ok` lines and the inventory frozen-count test included;
+- R1/R3/R4 regressions: PASS (R4 re-runs R1+R3 and its own negative
+  gate internally);
+- `R4 MUTATION CHECK: 5/5 DETECTED`, `R4 H0 REFERENCE GATE: PASS`,
+  `R5 MUTATION CHECK: 4/4 DETECTED`;
+- final line: `R5 HORSE CORRECTNESS + PARITY GATE: PASS`, followed by
+  the stage banner "Correctness only: no benchmark campaign was run and
+  no timing was recorded." The wall durations above are operational
+  logs of the gate run, not benchmark data (the R5 stage records no
+  performance measurements).
 
 ## 8. Self-assessment verdict
 
