@@ -733,6 +733,14 @@ differential gate — all conservative refinements):
   gap maps an old paragraph checkpoint onto a position where the live
   paragraph is still open — an unguarded take would split one paragraph
   in two.
+  - AMENDMENT (negative-gate validation, post-freeze, 2026-09-18): the
+    authoritative requiredness evidence for (e) is the ADVERSARIAL
+    504-sequence differential, which fails when (e) is disabled. The
+    in-file probes remain fully differential but exercise (e) only
+    where the generalized restart-boundary backup already covers the
+    join, so they stay green under its removal. The R5 negative gate
+    therefore detects the (e) mutation via `adversarial_r5`
+    (mutation-check-r5.sh), not via the probe suite.
 - RESTART-BOUNDARY CONTINUATION MARGIN (the H1-F2 / H3-margin analogue
   at the restart; first found by the 370-grid case Mixed/Early/Medium/
   Insert, then GENERALIZED from the adversarial small-model generator):

@@ -13,7 +13,10 @@
 #   H1  every terminated block "continues"  (block-local guards)
 #   H2  live-side paragraph margin removed  (fragment-reuse splice)
 #   H3  live-side paragraph margin removed  (old-tree cursor splice)
-#   H4  convergence paragraph margin removed (restart-convergence (e))
+#   H4  convergence paragraph margin removed (restart-convergence (e);
+#       detected by the adversarial differential — the in-file probes
+#       exercise (e) only where the restart-boundary backup already
+#       covers the join, so they stay green under its removal)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -38,15 +41,6 @@ for f in "${TARGETS[@]}"; do
         exit 1
     fi
 done
-
-apply() {
-    local file="$1" sub="$2" verify="$3"
-    perl -0pi -e "$sub" "$file"
-    if ! grep -qF "$verify" "$file"; then
-        echo "MUTATION SCRIPT BUG: substitution did not apply to $file" >&2
-        exit 1
-    fi
-}
 
 # apply <file> <perl-substitution> <new-pattern-to-verify>
 apply() {
@@ -90,11 +84,11 @@ if cargo test -q -p markit-mdbench-old-tree-subtree-reuse --test adversarial_r5 
 fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
-echo "--- H4: convergence without the paragraph margin, predicate (e) (probes must catch) ---"
+echo "--- H4: convergence without the paragraph margin, predicate (e) (adversarial must catch) ---"
 apply "$H4" 's/if !sg::parser::all_spaces\(self\.post, prev_ls, pos - 1\) \{/if false {/' 'if false {'
 cargo build -q -p markit-mdbench-restart-convergence 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
-if cargo test -q -p markit-mdbench-restart-convergence --test h4_gate h4_convergence_pass_predicate_witnesses >/tmp/r5-mutation-detector.log 2>&1; then
-    echo "MUTATION SURVIVED: convergence probes passed on mutated code" >&2
+if cargo test -q -p markit-mdbench-restart-convergence --test adversarial_r5 adversarial_small_model_differential_504_sequences >/tmp/r5-mutation-detector.log 2>&1; then
+    echo "MUTATION SURVIVED: adversarial differential passed on mutated H4 (e) removal" >&2
     tail -20 /tmp/r5-mutation-detector.log >&2 || true
     exit 1
 fi
