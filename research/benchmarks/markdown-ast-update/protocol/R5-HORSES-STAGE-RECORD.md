@@ -175,7 +175,117 @@ only horse with restart/convergence gauges is H4 (its frozen identity
 defines them). Both asymmetries are declared mechanism identity, not
 undeclared optimization.
 
-## 6. Verification results
+## 6. Adversarial self-review (25 questions, one pass; MAJOR fixed once)
+
+Answered against the code as committed on this branch; every MAJOR found
+was fixed and re-gated within this stage (findings 2.1, 3.1, 3.2, 4.1,
+5.1 below are those fixes, already merged into the final tree).
+
+1. Does any horse call H0/`mechanisms/full-rebuild` outside test code?
+   No. `full-rebuild` appears only under `[dev-dependencies]` of the four
+   horse crates; the lib targets cannot reach it (cargo tree checked).
+2. Does any horse produce or consume timing? No `Instant`/`SystemTime`/
+   clock API in the five mechanism crates; the runner remains the only
+   clock caller (R1 contract).
+3. Is the frozen §3 counter applicability matrix honored exactly? Yes —
+   per-horse gate tests pin every slot: measured zeros (`Known(0)`) vs
+   `NotApplicable` are asserted distinctly (H0 `nodes_reused`,
+   H1 fallback `Known(0)`, H4 restart/convergence `Known(0)` at doc-start
+   edits).
+4. Is completion genuinely eager in all four horses? Yes — each Pending
+   struct holds the fully materialized state + result; `complete()`
+   computes the checksum only. The eager gate tests inspect
+   `pending.result()` BEFORE `complete()` (behavioral) and note that
+   `complete()` takes no source and no sink (structural).
+5. Is the QUERY path free of parser work and horse-only indexes? Yes —
+   `node_path_at` over the projected completed tree, asserted equal to
+   H0's answer at frozen anchors on every shape.
+6. Is H1's F1 fallback predicate derived only from source/edit state?
+   Yes — old definitions non-empty OR the region creates one; no
+   case/corpus identity anywhere. The guard probes pin EXACT fallback
+   counts per probe (including zero-fallback cases), which also proves
+   the predicate is not label-derived.
+7. Is H1's fallback counter honest (event, not a vibe)? Yes — measured
+   through `add_fallback_to_full`; the fallback-equality test proves a
+   fallback update equals the full reconstruction including counters.
+8. Is H2's `MIN_GAP = 128` frozen pre-measurement (not tuned)? Yes —
+   declared in the freeze record §7 as a pre-measurement policy constant
+   (`PRIOR_ART_ANCHORED_PRE_MEASUREMENT_CONSTANT`); no measurement
+   existed when it was frozen.
+9. Is H2's rebuilt definition table complete without consulting the old
+   table? Yes — every surviving definition appears in the fresh skeleton
+   or a taken run's recorded facts (first-wins walk). The earlier draft
+   that fell back to the old table was REMOVED as unsound before the H2
+   gate was declared green (recorded in the §7 notes).
+10. Can H3's clamped patches produce WRONG trees (not just less reuse)?
+    No — clamping only degrades alignment; every alignment miss reparses.
+    The stale-position guard refuses (never splices) runs derived from
+    stale positions; the differential holds on all surfaces including
+    the adversarial chains.
+11. Is H3's continuation coverage complete (paragraph AND container
+    continuation)? The edit-adjacent margin alone was NOT (adversarial
+    seed 1011: a take behind a destroyed `>` interruptor) — fixed with
+    the live-side blank-line margin; the negative gate proves the margin
+    is load-bearing (mutation 3 survives neither the adversarial suite
+    nor the probe suite).
+12. Is H4's restart-at-zero a fallback in disguise? No — no fallback slot
+    is declared (NotApplicable), the path runs the same forward
+    machinery over the whole document, and W3 pins the honest gauges
+    (restart distance = edit start; convergence = EOF; generation bump).
+13. Can H4 falsely converge? The predicate needs position, full
+    ContextKey, generation, damage-extent, and a blank-line margin; the
+    mapping `q = p − delta` is exact beyond the damage. The
+    "paragraph join across thinned gap" probe demonstrates the required
+    refusal; no counter-example is known and the differential covers
+    370 matrix slots + ~2000 chained adversarial steps per horse.
+14. Are the margins' thresholds derived rather than tuned? Yes — the 2-LF
+    separation IS the grammar's blank-line semantics (§3/D5/§6), not a
+    tunable; no margin constant exists to tune.
+15. Is source inspection honestly attributed (no undeclared reads)? All
+    reads flow through `record_source_inspection` (scanner lines, def
+    scans, margin checks); the W1 witnesses assert sub-full inspection on
+    safe local edits, and H0-style tests assert exact full coverage.
+16. Do all horses survive multibyte/CJK edits? Yes — multibyte-sensitive
+    grids on every shape plus CJK material in half the adversarial
+    sequences (the harness snaps spans to char boundaries).
+17. Are the negative mutations actually DETECTED (compile-fresh, test
+    failing, tree restored)? `mutation-check-r5.sh` verifies all three
+    properties per mutation and refuses to run on a dirty tree; expected
+    result 4/4 (verified by the script run in §7).
+18. Does the matrix instantiation reproduce CASE-MATRIX-v1 exactly? Yes —
+    each horse's matrix test asserts 24 FULL_PARSE + 24 QUERY + 322
+    updates = 370, the 7 declared overlaps as the only collapses, and all
+    13 Block-D per-recipe counts against the frozen table.
+19. Is the adversarial generator deterministic and dependency-free?
+    Yes — splitmix64 implemented in the test file, seeds derived from
+    fixed constants, no `random_device`, no RNG crate (grep-clean).
+20. Any test-order dependence or cross-test state? No — every test
+    constructs its own states; the determinism tests re-run identical
+    pipelines and compare checksums AND counters.
+21. Does chained-edit state drift (base offsets, generations, fragment
+    tables, change flags)? The chained gate tests and every adversarial
+    sequence carry the state across 3-6 updates asserting == H0 at every
+    step, on docs that accumulate edits across all six families.
+22. Do the freeze-record amendments cover every deviation found during
+    implementation? Yes — §6-§9 implementation notes record the
+    separator-LF doctrine, per-horse margins, generation handling, gauge
+    definitions, and the shared-substrate corrections; the stage record
+    §4 indexes them. No silent drift.
+23. Do the shared-grammar corrections change any previously-valid golden
+    behavior? No — the 43 fixtures and all existing suites were green
+    before and after; both fixes only affect constructs that previously
+    FAILED NORMALIZED-RESULT-v1 validation (the totality hole), which by
+    definition had no golden behavior.
+24. Are fmt/clippy/CI-hygiene gates actually part of the stage gate? Yes
+    — `verify-r5.sh` runs `cargo fmt --all -- --check` and
+    `cargo clippy --workspace --all-targets -- -D warnings` first and
+    aborts on any finding.
+25. Any scope leak (measurement, benchmark data, R6 work, product
+    claims)? None — no timing lane, no result JSONL, no rankings, no
+    performance vocabulary in the five crates or the records; the stage
+    record predicts no performance; R6 remains untouched.
+
+## 7. Verification results
 
 - `cargo fmt --all -- --check`: clean.
 - `cargo clippy --workspace --all-targets -- -D warnings`: clean.
@@ -195,7 +305,7 @@ undeclared optimization.
   mutation per horse; each compiles, each is caught by its targeted
   detector, each restored; nothing mutated is committed).
 
-## 7. Self-assessment verdict
+## 8. Self-assessment verdict
 
 The stage stops at `READY_FOR_ADVERSARIAL_R5_REVIEW`: all frozen H1-H4
 gates pass, the parity table is recorded, the freeze-record amendments

@@ -1,9 +1,11 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R4 H0_REFERENCE_PASS (2026-09-17). Human final review passed;
+Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-17). PR opened
+(`research: implement R5 incremental mechanism horses (#22)`), NOT merged.
+Prior: R4 H0_REFERENCE_PASS (2026-09-17). Human final review passed;
 PR #29 merged into master as
-`21d7d832fec84fceedb7600cccb4296745395fc1`. Prior:
-R3 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
+`21d7d832fec84fceedb7600cccb4296745395fc1`. R3
+GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
 merged into master as `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
 
 Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
@@ -22,6 +24,11 @@ Issue authority: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
   [`protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`](./protocol/R4-H0-REFERENCE-CORRECTIVE-1.md)
   (field-legality gate; F027/F028/F038 conformance repair; zero-length
   contract; `nodes_reused` = Known(0))
+- R5 mechanism freeze + stage record:
+  [`protocol/R5-HORSE-CORRECTNESS-PARITY.md`](./protocol/R5-HORSE-CORRECTNESS-PARITY.md),
+  [`protocol/R5-HORSES-STAGE-RECORD.md`](./protocol/R5-HORSES-STAGE-RECORD.md)
+  (`shared-grammar/`, `mechanisms/{block-local,fragment-reuse,old-tree-subtree-reuse,restart-convergence}/`,
+  `scripts/verify-r5.sh`)
 
 本目录是 #22 的唯一实验代码、实验数据和研究报告工作区。
 
