@@ -684,6 +684,57 @@ IDENTITY WITNESS (task contract §12)
      result == H0.
 ```
 
+§9 implementation notes (recorded at H4 implementation time, from the
+differential gate — all conservative refinements):
+
+- PARAGRAPH MARGIN — convergence predicate (e), added during
+  implementation (the ContextKey deliberately excludes paragraph state,
+  §2, so (a)-(d) alone are NOT sound): convergence additionally requires
+  the line immediately before the live splice position `p` to be blank
+  (all-spaces; source-derived from the post bytes). A blank line
+  terminates every continuation (§3/D5/§6), so no paragraph is open at
+  the splice in the live parse. The old side needs no check: a checkpoint
+  whose preceding gap carries < 2 LFs can only precede a NON-paragraph
+  interruptor (two paragraphs with no blank between them are one block),
+  and interrupting dispatch is paragraph-state-independent; a checkpoint
+  preceding a PARAGRAPH is necessarily blank-separated, matching the
+  live side. Refusing non-blank boundaries is conservative (it declines
+  legal interruptor takes); the REQUIRED refusal is proven by the
+  "paragraph join across thinned gap" probe: deleting one LF of a blank
+  gap maps an old paragraph checkpoint onto a position where the live
+  paragraph is still open — an unguarded take would split one paragraph
+  in two.
+- RESTART-BOUNDARY CONTINUATION MARGIN (the H1-F2 / H3-margin analogue
+  at the restart; discovered by the 370-grid case Mixed/Early/Medium/
+  Insert): the retained prefix's LAST block can paragraph-continue into
+  the reparsed region when no blank line separates it from the restart
+  position. That boundary is safe only while the region's first line
+  still interrupts — true when that line is the boundary block's own
+  first line with its bytes intact (an interrupting dispatch is
+  determined by the unchanged line prefix). When the edit reaches into
+  the boundary block's first line (including an insert exactly AT the
+  boundary), H4 backs the restart up ONE checkpoint so the merge happens
+  inside the reparsed region. Only paragraphs continue, and a blank-
+  separated boundary is always safe, so the backup inspects at most the
+  immediate boundary in practice.
+- Mapping exactness: for any live block start `p` beyond the damage, the
+  mapped old position `q = p - delta` is exact because every edited byte
+  precedes the suffix (all changed bytes lie in [es, ee)); predicate (d)
+  is therefore structural insurance — a checkpoint beyond the damage is
+  1:1 with an undamaged block start, so (d) can never refuse in a valid
+  state. At most ONE convergence take per update (the take ends at EOF).
+- Definition generation: a damaged Def, or any `]: ` occurrence in the
+  edited span's post bytes, bumps the generation and forces the
+  restart-at-zero path (parse everything fresh, no takes — a planned
+  restart, not a fallback). Retained checkpoint records keep their
+  (key, generation) provenance at assembly; positions are recomputed
+  from the paired block slot, so record and slot can never drift.
+- restart_distance is the LIVE parse distance (edit start minus restart
+  position — post bytes reparsed before the damage); convergence_distance
+  is likewise live (convergence position minus restart position, EOF
+  when the predicate never fires). Both gauges are Known on every
+  update; full_parse (the control operation) reports them NotApplicable.
+
 ## 10. Implementation parity (task contract §25 preview)
 
 Common across H0-H4 (must match): BENCH-GRAMMAR-v1 semantics (one shared
