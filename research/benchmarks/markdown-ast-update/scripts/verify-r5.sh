@@ -34,7 +34,7 @@ cargo test --workspace
 
 for h in $HORSES; do
     step "frozen 370-slot case matrix differential: $h (release profile; ignored in debug)"
-    cargo test --release -q -p "markit-mdbench-$h" --test matrix_r5 -- --ignored --nocapture
+    cargo test --release -p "markit-mdbench-$h" --test matrix_r5 -- --ignored --nocapture --test-threads=8
 done
 
 step "R1 regression: harness substrate gate"
