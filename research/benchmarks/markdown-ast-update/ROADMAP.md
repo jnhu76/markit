@@ -1,6 +1,6 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-17; PR opened, not
+Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-19; PR #30 opened, not
 merged). Prior: R4 H0_REFERENCE_PASS (2026-09-17; human final review
 passed; PR #29 merged into master as
 `21d7d832fec84fceedb7600cccb4296745395fc1`). R3

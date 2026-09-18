@@ -1,6 +1,6 @@
 # R5 — H1/H2/H3/H4 Mechanism Implementation (Stage Record)
 
-Status: **READY_FOR_ADVERSARIAL_R5_REVIEW** (2026-09-17)
+Status: **READY_FOR_ADVERSARIAL_R5_REVIEW** (2026-09-19; PR #30, not merged)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r5-horses-correctness-parity-1`
 Base: `master` @ `21d7d832fec84fceedb7600cccb4296745395fc1` (PR #29 merge)

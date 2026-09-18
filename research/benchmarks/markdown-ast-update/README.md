@@ -1,6 +1,6 @@
 # #22 — Controlled Rust Markdown Update Mechanism Benchmark
 
-Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-17). PR opened
+Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-19). PR #30 opened
 (`research: implement R5 incremental mechanism horses (#22)`), NOT merged.
 Prior: R4 H0_REFERENCE_PASS (2026-09-17). Human final review passed;
 PR #29 merged into master as
