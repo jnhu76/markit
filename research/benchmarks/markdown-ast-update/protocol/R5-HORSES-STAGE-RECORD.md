@@ -305,6 +305,40 @@ was fixed and re-gated within this stage (findings 2.1, 3.1, 3.2, 4.1,
   mutation per horse; each compiles, each is caught by its targeted
   detector, each restored; nothing mutated is committed).
 
+### 7.1 Gate run history (recorded honestly)
+
+Gate run 1 reached every positive step green — workspace tests, all four
+release matrices, R1/R3/R4 regressions — and then FAILED (VERIFY_EXIT=1)
+at the R4 negative gate, ~6 h in. Two detector defects, zero mechanism
+defects (no mutation ever reached the tree; both scripts restore on any
+exit):
+
+1. `mutation-check-r4.sh` still targeted
+   `mechanisms/full-rebuild/src/{parser,inline}.rs`, which ceased to
+   exist when the shared-substrate extraction moved H0's parser/inline
+   semantics into `shared-grammar` (full-rebuild is now the H0 wrapper).
+   Fix: targets moved to `shared-grammar/src/{parser,inline}.rs`; the
+   corrupted expressions, mutation classes, and the detector (H0's own
+   suites through the shared crate) are unchanged; M1 now anchors the
+   `OpenPara` site explicitly (first-match would have hit the list-item
+   frame). Validated: 5/5 DETECTED
+   (MARKIT-R5-NEGATIVE-GATE-CORRECTIVE-1).
+2. The H4 negative gate originally detected the predicate-(e) removal
+   via the probe suite, which stays green under that removal: the
+   restart-boundary continuation backup already covers the probes' join
+   cases, so (e) is not the deciding guard there. Experiment (temporary
+   mutation, then restore) showed the adversarial 504-sequence
+   differential DOES fail under (e) removal; the detector was switched
+   to `adversarial_r5` (as H2/H3 already were). The probes remain fully
+   differential and keep their role pinning gauge semantics and
+   soundness on the convergence path. Validated: 4/4 DETECTED.
+   Freeze-doc §9 carries the matching amendment — recorded, not silent.
+
+Gate run 2 is the authoritative single-pass run of
+`scripts/verify-r5.sh` over the corrected tree; its PASS line and the
+`R4 MUTATION CHECK: 5/5` / `R5 MUTATION CHECK: 4/4` lines are the
+deliverable evidence for this record.
+
 ## 8. Self-assessment verdict
 
 The stage stops at `READY_FOR_ADVERSARIAL_R5_REVIEW`: all frozen H1-H4
@@ -312,3 +346,16 @@ gates pass, the parity table is recorded, the freeze-record amendments
 are explicit, and no measurement has been taken. R6 (state-construction
 surface) is NOT started. The PR is opened for adversarial review and is
 NOT merged by the implementing agent.
+
+## 9. Observations carried to the Weakness Map (structural; no measurements)
+
+- H3 (old-tree-subtree-reuse) consults the live parse at every line
+  start, and each consultation rebuilds the full top-level entry list
+  from the tree (one Arc clone + linear scan per entry) before the
+  line-aligned search. The cost therefore grows with the product of
+  consultation count and top-level entry count, and the matrix's
+  1 M/16 M-scale Block-B/C cases dominate the gate's wall time. This is
+  a mechanism characteristic of the horse as frozen — recorded here as
+  a Weakness Map candidate for the measurement stages, NOT tuned away:
+  any lookup-structure change would alter the mechanism identity that
+  R6/R7 are supposed to measure.

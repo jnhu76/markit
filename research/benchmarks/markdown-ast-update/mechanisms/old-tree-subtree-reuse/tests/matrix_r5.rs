@@ -10,6 +10,7 @@
 //! `--release`. No timing, no benchmark data — correctness only.
 
 use std::collections::BTreeMap;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use gen::{PayloadShape, ALL_SHAPES, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_common::source::SourceId;
@@ -61,7 +62,19 @@ fn completed_doc(
     doc
 }
 
+static CASE_NO: AtomicUsize = AtomicUsize::new(0);
+
+/// Per-case progress line (stderr; visible with `--nocapture`): the
+/// matrix is ONE `#[test]`, and without this the gate log is silent for
+/// hours at a time. Operational observability only — no measurement
+/// content, no case semantics.
+fn matrix_progress(context: &str) {
+    let n = CASE_NO.fetch_add(1, Ordering::Relaxed) + 1;
+    eprintln!("[matrix case {n:03}] {context}");
+}
+
 fn run_full_parse_case(bytes: &[u8], context: &str) {
+    matrix_progress(context);
     let doc = completed_doc(bytes, context);
     let clean = parse_document(bytes);
     assert_eq!(&doc, &clean, "{context}: structural mismatch vs H0");
@@ -75,6 +88,7 @@ fn run_full_parse_case(bytes: &[u8], context: &str) {
 }
 
 fn run_query_case(bytes: &[u8], context: &str) {
+    matrix_progress(context);
     let doc = completed_doc(bytes, context);
     let clean = parse_document(bytes);
     let [early, middle, late] = query_anchors(bytes);
@@ -97,6 +111,7 @@ fn run_query_case(bytes: &[u8], context: &str) {
 }
 
 fn run_update_case(old: &[u8], edit: &PlannedEdit, context: &str) {
+    matrix_progress(context);
     let post = apply(old, edit);
     validate(old, edit, &post).expect("frozen mutation invariants");
     let canonical = CanonicalEdit::new(
