@@ -268,23 +268,22 @@ impl Mechanism for RestartConvergenceMechanism {
 
         // RESTART-BOUNDARY CONTINUATION MARGIN (the H1-F2 / H3-margin
         // analogue at the restart): the retained prefix's LAST block can
-        // paragraph-continue into the reparsed region when no blank line
-        // separates it from the restart. That is safe only while the
-        // region's first line still interrupts — true when that line is
-        // the boundary block's OWN first line with its bytes intact (an
+        // continue into the reparsed region when no blank line separates
+        // it from the restart — a paragraph by continuation text, a quote
+        // by a line regaining its `> ` prefix, a list item by gained
+        // indentation. An UNCHANGED boundary line cannot continue any of
+        // them (the old parse proves it: a line carrying the prefix would
+        // have continued the block, so no boundary would exist), and an
         // interrupting dispatch is determined by the unchanged line
-        // prefix). When the edit reaches into the boundary block's first
-        // line (or sits exactly at the boundary), back the restart up one
-        // checkpoint: the merge then happens inside the reparsed region.
+        // prefix. When the edit reaches INTO the boundary line's bytes,
+        // the boundary may have vanished: back the restart up one
+        // checkpoint, so the merge happens inside the reparsed region.
         let mut backed = 0u64;
         if let Some(s) = restart_slot {
             let mut s = s;
             while s > 0 {
                 backed += 1;
                 let prev = &old_state.blocks[s - 1];
-                if !matches!(&*prev.block, Skel::Para { .. }) {
-                    break; // only paragraphs continue
-                }
                 let boundary = old_state.checkpoints[s].position;
                 let sep_lfs = old[prev.abs_end()..boundary]
                     .iter()
@@ -300,7 +299,7 @@ impl Mechanism for RestartConvergenceMechanism {
                     .position(|&b| b == b'\n')
                     .map_or(old.len(), |p| k_start + p);
                 if es >= k_line_end {
-                    break; // the interrupting first line is intact
+                    break; // the boundary line is intact
                 }
                 s -= 1;
             }

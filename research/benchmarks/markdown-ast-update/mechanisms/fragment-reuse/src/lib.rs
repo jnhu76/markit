@@ -335,7 +335,7 @@ impl Mechanism for FragmentReuseMechanism {
 
         // Safe windows (open-edge rule): at an OPEN edge the one adjacent
         // whole block is excluded from reuse.
-        let left_window_end = left_window_end(&old_state.tree, es);
+        let left_window_end = left_window_end(&old_state.tree, old, es);
         let right_window_start = right_window_start(&old_state.tree, ee, old.len());
 
         // Broad conservative reference invalidation (R5 freeze §7): the
@@ -353,6 +353,7 @@ impl Mechanism for FragmentReuseMechanism {
         let mut cursor = Cursor {
             fragments: &fragments,
             tree: &old_state.tree,
+            post,
             ee_new,
             left_window_end,
             right_window_start,
@@ -443,12 +444,35 @@ fn ee_new_len(delta: isize, removed: usize) -> usize {
 /// cut. That is the deepest block containing the last byte before the
 /// cut; when that byte falls in a blank gap, the last block ending at or
 /// before the cut is still excluded (conservative).
-fn left_window_end(tree: &FTree, es: usize) -> usize {
+fn left_window_end(tree: &FTree, old: &[u8], es: usize) -> usize {
     if es == 0 {
         return 0;
     }
-    if let Some(start) = deepest_containing(tree, es - 1) {
-        return start;
+    if let Some((boundary_start, _boundary)) = deepest_node_containing(tree, es - 1) {
+        // LEFT-EDGE PARAGRAPH MARGIN (the H1-F2 / H4-restart-margin
+        // analogue on the left fragment; found by the adversarial
+        // small-model generator): the retained block ending at the
+        // window edge can paragraph-continue into the reparsed region
+        // when no blank line separates it from the boundary block. That
+        // edge is safe only while the boundary block's FIRST LINE still
+        // interrupts — true when its bytes are untouched (an interrupting
+        // dispatch is determined by the unchanged line prefix). When the
+        // edit reaches into that first line, the boundary may have
+        // vanished (e.g. the edit broke a ``` fence opener into paragraph
+        // text): the left fragment is dropped entirely and the merge
+        // happens inside the live parse.
+        if boundary_start >= 2 && node_kind_at(tree, boundary_start - 2) == NodeKind::Paragraph {
+            let prev_ls = line_start_of(old, boundary_start - 1);
+            let blank_before = sg::parser::all_spaces(old, prev_ls, boundary_start - 1);
+            let first_lf = old[boundary_start..]
+                .iter()
+                .position(|&b| b == b'\n')
+                .map_or(old.len(), |p| boundary_start + p);
+            if !blank_before && es < first_lf {
+                return 0;
+            }
+        }
+        return boundary_start;
     }
     let mut best = 0usize;
     let mut cursor = 0usize;
@@ -490,6 +514,8 @@ fn right_window_start(tree: &FTree, ee: usize, old_len: usize) -> usize {
 struct Cursor<'a> {
     fragments: &'a [Fragment],
     tree: &'a FTree,
+    /// The post source, for the live-side paragraph margin at take start.
+    post: &'a [u8],
     ee_new: usize,
     left_window_end: usize,
     right_window_start: usize,
@@ -515,6 +541,21 @@ impl Cursor<'_> {
     /// `None` (the line parses normally — natural degradation).
     fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
         self.consultations += 1;
+        // PARAGRAPH MARGIN at take start (the ContextKey deliberately
+        // excludes paragraph state, R5 freeze section 2): the line
+        // immediately before the splice must be blank (>= the blank-line
+        // separation that terminates every continuation), so no paragraph
+        // is open in the live parse. A blank-separated line start is the
+        // only splice point where a taken fragment's first block is
+        // guaranteed to start a fresh block in the live parse too.
+        // Conservative: takes at interruptor lines (legal but
+        // para-state-dependent) degrade to reparse instead.
+        if pos > 0 {
+            let prev_ls = line_start_of(self.post, pos - 1);
+            if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
+                return None;
+            }
+        }
         // The fragment whose range covers the live position; positions in
         // the edited span belong to no fragment.
         let frag = self
@@ -623,8 +664,17 @@ struct Run {
 }
 
 /// Absolute old-tree span of the deepest block whose span contains `p`.
-fn deepest_containing(tree: &FTree, p: usize) -> Option<usize> {
-    fn walk(entries: &[(usize, Arc<FNode>)], p: usize) -> Option<usize> {
+/// Kind of the deepest block whose span contains `p`.
+fn node_kind_at(tree: &FTree, p: usize) -> NodeKind {
+    deepest_node_containing(tree, p)
+        .map(|(_, n)| n.kind)
+        .unwrap_or(NodeKind::Document)
+}
+
+/// Absolute old-tree START and NODE of the deepest block whose span
+/// contains `p`.
+fn deepest_node_containing(tree: &FTree, p: usize) -> Option<(usize, Arc<FNode>)> {
+    fn walk(entries: &[(usize, Arc<FNode>)], p: usize) -> Option<(usize, Arc<FNode>)> {
         for (start, node) in entries {
             if *start <= p && p < start + node.size {
                 let children: Vec<(usize, Arc<FNode>)> = node
@@ -632,7 +682,7 @@ fn deepest_containing(tree: &FTree, p: usize) -> Option<usize> {
                     .iter()
                     .map(|(rel, c)| (start + rel, c.clone()))
                     .collect();
-                return walk(&children, p).or(Some(*start));
+                return walk(&children, p).or(Some((*start, node.clone())));
             }
         }
         None

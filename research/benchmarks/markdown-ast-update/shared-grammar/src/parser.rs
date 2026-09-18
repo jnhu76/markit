@@ -759,16 +759,31 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
 
     /// Unclosed fence at the region end: the one span permitted to
     /// include a final LF — it ends at the region end; content runs to
-    /// the region end (§8).
+    /// the region end (§8). A fence nested inside open container frames
+    /// ends at the innermost such frame's last consumed line instead: a
+    /// child block may never escape its parent's span (the fence's own
+    /// last-end bookkeeping already equals the innermost frame's — every
+    /// consumed body line carried the frames' prefixes — so the clamp
+    /// only bites at the region boundary).
     fn flush_fence_eof(&mut self) {
         if let Some(f) = self.fence.take() {
-            let len = self.end;
+            let mut end = self.end;
+            for frame in &self.frames {
+                if let Frame::Quote { last_end, .. } | Frame::Item { last_end, .. } = frame {
+                    end = (*last_end).min(end);
+                }
+            }
             let ctx = f.ctx;
+            // The raw-content interval clamps with the span; a fence
+            // truncated at its container's extent has an empty content
+            // interval at the span end (FencedCode is the one node kind
+            // permitted a zero-length content interval).
+            let content = (f.body_start.min(end), end);
             self.push_into_innermost(Skel::Fence {
                 start: f.start,
-                end: len,
+                end,
                 info: f.info,
-                content: (f.body_start, len),
+                content,
                 ctx,
             });
         }
@@ -776,15 +791,18 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
 
     /// Fence truncated by a closing container: the block ends at the last
     /// consumed body line (excluding that line's terminator); the raw
-    /// content ends where the interrupted line begins.
+    /// content ends where the interrupted line begins, clamped into the
+    /// span (the interrupting line starts after the span; a fence with no
+    /// consumed body line has an empty content interval at the span end).
     fn flush_fence_truncated(&mut self, trunc: usize) {
         if let Some(f) = self.fence.take() {
             let ctx = f.ctx;
+            let content = (f.body_start.min(f.last_end), trunc.min(f.last_end));
             self.push_into_innermost(Skel::Fence {
                 start: f.start,
                 end: f.last_end,
                 info: f.info,
-                content: (f.body_start, trunc),
+                content,
                 ctx,
             });
         }
@@ -1111,6 +1129,36 @@ mod tests {
         assert!(!region.fence_open_at_end);
         // absolute spans, no re-shift needed
         assert_eq!(region.blocks[0].start(), 15);
+    }
+
+    /// Regression (R5 adversarial small-model generator, ContainerState
+    /// family): an unclosed fence nested in a container EOF-closes at the
+    /// container's extent — never past its parent's span. Before the fix
+    /// the fence ran to the REGION end and the child escaped the quote,
+    /// tripping the NORMALIZED-RESULT-v1 parent-containment check.
+    #[test]
+    fn eof_fence_inside_a_container_never_escapes_its_parent() {
+        let mut noop = NoopWorkSink;
+        // Quote opens on the marker line and the fence opens inside it;
+        // EOF closes both. The fence must end at the quote's last
+        // consumed line, not at the document end.
+        for src in [
+            &b"> ```\n\nx\n"[..],
+            &b"> ```\n"[..],
+            &b"- > ```\n\nx\n"[..],
+        ] {
+            let region = parse_region(src, 0, src.len(), &mut noop);
+            let doc = crate::inline::finish_document(src, region.blocks, &region.defs);
+            markit_mdbench_oracle::validate_root(&doc.root, Some(src))
+                .expect("child fence escapes its container");
+        }
+        // A TOP-LEVEL unclosed fence still runs to the region end and may
+        // include the final LF (§8's one permitted span).
+        let src = b"para\n\n```\nbody\n";
+        let region = parse_region(src, 0, src.len(), &mut noop);
+        assert!(region.fence_open_at_end);
+        let fence = region.blocks.last().expect("fence block");
+        assert_eq!(fence.end(), src.len(), "top-level fence ends at region end");
     }
 
     #[test]

@@ -319,6 +319,7 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         // Forward pass with the reusable-node cursor.
         let mut cursor = Cursor {
             tree: &prepared.tree,
+            post,
             es,
             ee_new,
             definition_changing,
@@ -458,7 +459,7 @@ fn patch_tree(
         }
     }
     if let Some(ni) = next_idx {
-        let next_line_new = (line_aligned(ni, &tree.entries) as isize + delta) as usize;
+        let next_line_new = (line_aligned(ni, &tree.entries) as isize + delta).max(0) as usize;
         let sep_lfs = lfs(post, ee_new.min(post.len()), next_line_new.min(post.len()));
         if sep_lfs < 2 && !hit_index(first_hit, next_idx) {
             let node = mark_changed(&entries[ni].node, patched);
@@ -582,11 +583,11 @@ fn patch_node(
         let child_abs = abs + *rel;
         let child_end = child_abs + child.size;
         if child_abs >= ee {
-            *rel = (*rel as isize + delta) as usize;
+            *rel = (*rel as isize + delta).max(0) as usize;
         } else if child_end > es {
             let patched_child = patch_node(child, child_abs, es, ee, delta, patched);
             if child_abs >= es {
-                *rel = (*rel as isize + delta) as usize;
+                *rel = (*rel as isize + delta).max(0) as usize;
             }
             *child = patched_child;
         }
@@ -629,6 +630,8 @@ fn damaged_has_def(tree: &TTree) -> bool {
 
 struct Cursor<'a> {
     tree: &'a TTree,
+    /// The post source, for the live-side paragraph margin at take start.
+    post: &'a [u8],
     /// The edited span in POST coordinates: `[es, ee_new)`. A take may
     /// never cover any of these bytes (they have no old-tree origin).
     es: usize,
@@ -656,8 +659,46 @@ impl Cursor<'_> {
     /// degradation).
     fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
         self.consultations += 1;
+        // LIVE-SIDE PARAGRAPH MARGIN at take start (the ContextKey
+        // deliberately excludes paragraph state, R5 freeze section 2;
+        // found by the adversarial small-model generator): the line
+        // immediately before the splice must be blank, so no paragraph is
+        // open in the live parse. The edit-adjacent continuation margin
+        // (patch_tree) covers entries NEXT to the edit; this covers the
+        // take whose run starts BEHIND a damaged interruptor — e.g. an
+        // edit that turns a `>` marker line into paragraph text merges it
+        // with the following block, and a vouched take there would splice
+        // with a live paragraph still open. Conservative: takes at
+        // interruptor lines degrade to reparse.
+        if pos > 0 {
+            let prev_ls = line_start_of(self.post, pos - 1);
+            if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
+                return None;
+            }
+        }
         let run = self.find_run(pos, key)?;
-        let new_end = pos + (run.end - pos);
+        // STALE-POSITION GUARD (found by the adversarial small-model
+        // generator): a patched tree's derived positions can go stale
+        // (clamped sizes, residual shifts). A run whose extent or members
+        // do not tile monotonically inside the post document is refused —
+        // natural degradation, never a correctness risk — so no take with
+        // a stale origin can reach the assembled state.
+        let len = run.end.checked_sub(pos)?;
+        if pos + len > self.post.len() {
+            return None;
+        }
+        let mut expect = pos;
+        for (ms, m) in &run.members {
+            if *ms < expect {
+                return None; // stale: member starts before the covered range
+            }
+            let mend = ms.checked_add(m.size)?;
+            if mend > self.post.len() {
+                return None;
+            }
+            expect = mend;
+        }
+        let new_end = pos + len;
         // The covered range must be disjoint from the edited span.
         if pos < self.ee_new && new_end > self.es {
             return None;
@@ -697,9 +738,12 @@ impl Cursor<'_> {
         key: &ContextKey,
     ) -> Option<Run> {
         // LINE-aligned: the entry whose first line starts at `pos`.
+        // Checked: patched (clamped) sizes can leave a candidate's derived
+        // position stale; a stale position fails to align and the entry
+        // reparses naturally.
         let idx = entries
             .iter()
-            .position(|(start, n)| start - n.line_offset == pos)?;
+            .position(|(start, n)| start.checked_sub(n.line_offset) == Some(pos))?;
         let (start, node) = &entries[idx];
         if node.changed {
             // Damaged ancestry: descend — sibling children NOT on the

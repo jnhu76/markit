@@ -435,6 +435,21 @@ started; refinements of the §7 fields, all conservative):
 - The whole-document fragment is re-registered after every complete
   parse (the Lezer addTree lifecycle); no multi-fragment accumulation
   exists across updates.
+- §7 amendments (recorded at R5 adversarial-differential time; both
+  conservative reuse restrictions): (a) LIVE-SIDE PARAGRAPH MARGIN at
+  take start — the line immediately before the splice must be blank
+  (all-spaces; the ContextKey excludes paragraph state, §2), so no
+  paragraph is open in the live parse; the required refusal is the
+  edit that destroys a `>` marker (prepending text to a quote line merges
+  it with the following paragraph) while the old fragment of that
+  following paragraph is still vouched. (b) LEFT-EDGE CONTINUATION
+  MARGIN — the left fragment must not END at a boundary whose block was
+  interrupted by a line the edit then rewrote: when the retained block
+  ending at the window edge is a paragraph, no blank line separates it
+  from the boundary block, and the edit reaches into the boundary block's
+  first line (e.g. breaking a ``` fence opener into paragraph text), the
+  left fragment is dropped entirely and the merge happens inside the
+  live parse. Both margins cost reuse, never correctness.
 
 ## 8. H3 — OLD_TREE_SUBTREE_REUSE (`mechanisms/old-tree-subtree-reuse`)
 
@@ -560,6 +575,20 @@ started; refinements of the §8 fields, all conservative):
   disjoint from the edited span (a boundary insert marks no node, but
   its bytes sit in the inter-member gap). The refused member may still
   be taken by its own consultation at its own line start.
+- §8 amendments (recorded at R5 adversarial-differential time): (a) the
+  forward cursor gained a LIVE-SIDE PARAGRAPH MARGIN at take start — the
+  line immediately before the splice must be blank (the ContextKey
+  excludes paragraph state, §2; the edit-adjacent margin covers entries
+  NEXT to the edit but not a take starting BEHIND a damaged interruptor,
+  e.g. an edit that turns a `>` marker line into paragraph text merges it
+  with the following block). Conservative: takes at interruptor lines
+  degrade to reparse. (b) Patch arithmetic is clamped: child rel shifts
+  in the edited ancestry and the continuation margin's derived next-line
+  position saturate at zero (a multi-entry deletion otherwise wraps a
+  shifted offset past zero). (c) The line-aligned match and take
+  acceptance use checked arithmetic plus a monotonic-membership guard, so
+  a run derived from stale (clamped) patched positions is refused —
+  natural degradation — instead of poisoning the assembled state.
 
 ## 9. H4 — RESTART_CONVERGENCE (`mechanisms/restart-convergence`)
 
@@ -705,16 +734,20 @@ differential gate — all conservative refinements):
   paragraph is still open — an unguarded take would split one paragraph
   in two.
 - RESTART-BOUNDARY CONTINUATION MARGIN (the H1-F2 / H3-margin analogue
-  at the restart; discovered by the 370-grid case Mixed/Early/Medium/
-  Insert): the retained prefix's LAST block can paragraph-continue into
-  the reparsed region when no blank line separates it from the restart
-  position. That boundary is safe only while the region's first line
-  still interrupts — true when that line is the boundary block's own
-  first line with its bytes intact (an interrupting dispatch is
-  determined by the unchanged line prefix). When the edit reaches into
-  the boundary block's first line (including an insert exactly AT the
-  boundary), H4 backs the restart up ONE checkpoint so the merge happens
-  inside the reparsed region. Only paragraphs continue, and a blank-
+  at the restart; first found by the 370-grid case Mixed/Early/Medium/
+  Insert, then GENERALIZED from the adversarial small-model generator):
+  the retained prefix's LAST block can continue into the reparsed region
+  when no blank line separates it from the restart — a paragraph by
+  continuation text, a QUOTE by a line regaining its `> ` prefix (the
+  adversarial ContainerState case: inserting `> ` on the line after a
+  one-line quote extends that quote), a list item by gained indentation.
+  An UNCHANGED boundary line cannot continue any of them — the old parse
+  proves it (a line carrying the continuation prefix would have continued
+  the block, so no boundary would exist there) — and an interrupting
+  dispatch is determined by the unchanged line prefix. When the edit
+  reaches INTO the boundary line's bytes (`es < first LF at/after the
+  boundary`), the boundary may have vanished: H4 backs the restart up ONE
+  checkpoint so the merge happens inside the reparsed region. A blank-
   separated boundary is always safe, so the backup inspects at most the
   immediate boundary in practice.
 - Mapping exactness: for any live block start `p` beyond the damage, the
@@ -734,6 +767,20 @@ differential gate — all conservative refinements):
   is likewise live (convergence position minus restart position, EOF
   when the predicate never fires). Both gauges are Known on every
   update; full_parse (the control operation) reports them NotApplicable.
+- SHARED-SUBSTRATE CORRECTIONS (found by the R5 adversarial small-model
+  generator; fixes toward the R3-frozen totality + NORMALIZED-RESULT-v1
+  validity, recorded here because no golden behavior existed for the
+  constructs): (1) an unclosed fence nested inside open container frames
+  EOF-closed at the REGION end, so a child fence escaped its parent quote
+  (parent-containment violation; H0 itself panicked) — flush_fence_eof
+  now clamps the span (and the raw-content interval) to the innermost
+  open frame's last consumed line; top-level unclosed fences still end at
+  the region end (§8's one permitted final LF). (2) A fence truncated by
+  a closing container wrote its raw-content interval past its own span
+  end — flush_fence_truncated now clamps the interval into the span (an
+  empty body yields the zero-length content interval at the span end,
+  legal only for FencedCode). Regression test:
+  `shared-grammar::parser::tests::eof_fence_inside_a_container_never_escapes_its_parent`.
 
 ## 10. Implementation parity (task contract §25 preview)
 
