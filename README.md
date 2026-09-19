@@ -5,58 +5,75 @@ single document truth.
 
 ## Current phase
 
-```text
-Markdown parser algorithm research — issue #22
-```
-
-The current active campaign is a **standardized Markdown AST/CST update
-benchmark** across existing parsers and update designs. It is research, not
-product implementation:
+Markit is still in parser-algorithm research. The correctness substrate is now
+complete through R5; the active execution work is the project-driven
+performance campaign in issue **#31**, under the umbrella methodology of
+**#22 MARKIT-MARKDOWN-BENCHMARK-1**.
 
 ```text
-existing Markdown parser / AST-CST update algorithms
-        ↓ standardized benchmark (#22)
+existing Markdown update mechanisms
+        ↓ #22 controlled Rust mechanism benchmark
+        ↓ R0-R5 correctness / parity / attribution substrate   PASS
+        ↓ #31 project-driven performance evaluation            ACTIVE
         ↓ Weakness Map
-        ↓ Markit-specific algorithm (future)
-        ↓ formal/correctness work (future)
-        ↓ architecture (future)
-        ↓ production implementation (future, BLOCKED now)
+        ↓ Markit-specific algorithm                            future
+        ↓ formal/correctness work                              future
+        ↓ architecture synthesis                               future
+        ↓ production implementation                            future
 ```
+
+R5 merged as PR #30. H0-H4 are now correctness-complete mechanism models; no
+formal performance ranking exists until #31 records benchmark measurements.
 
 ## Authority map
 
 ```text
-Product requirements        docs/product/   (docs/PRD.md is the top authority)
-Active research             issue #22 — MARKIT-MARKDOWN-BENCHMARK-1
-                            research/benchmarks/markdown-ast-update/
-Historical experiments      research/experiments/   (evidence only)
-Markdown architecture       NOT YET FROZEN — docs/product/architecture.md is HOLD
-Production parser           NOT YET DEFINED
+Product requirements
+  docs/PRD.md + docs/product/**
+
+Research status / navigation
+  docs/research/README.md
+  research/README.md
+
+Benchmark methodology + frozen history
+  issue #22
+  research/benchmarks/markdown-ast-update/protocol/
+
+Current performance execution
+  issue #31
+  research/benchmarks/markdown-ast-update/{projects,traces,results,analysis,report}/
+
+Historical experiments
+  research/experiments/                  evidence only
+
+Production parser / final architecture
+  NOT YET DEFINED
 ```
 
 ## Repository layout
 
 ```text
-docs/                                   product truth + research records
+docs/
+  product/                    product truth and invariant boundaries
+  research/                   research status and cross-campaign records
+
 research/
-  experiments/experiment-0-parser-survey/   archived #19 survey (evidence only)
-  benchmarks/markdown-ast-update/           active #22 benchmark area (skeleton)
+  README.md                   research navigation
+  experiments/                closed / historical experiments
+  benchmarks/
+    markdown-ast-update/      active controlled benchmark workspace
 ```
 
-There is no root Cargo workspace and no production implementation in this
-repository right now. The pre-reset implementation and all superseded
-material are preserved in Git history:
+The benchmark workspace has its own Rust Cargo workspace; there is deliberately
+no root production Cargo workspace yet.
 
-```text
-pre-reset repository:  d7837fcfa95a58d8cf3a6063bc0f7d6ce5f9e91e
-Experiment 0 code:     present before the MARKIT-EXPERIMENT-FIRST-REPO-RESET-1
-                       branch (now archived under research/experiments/)
-```
+## Working rule
 
-## Working rules
+Read `AGENTS.md` before changing anything. The current rule remains:
 
-Read `AGENTS.md` before changing anything, and `docs/PRD.md` for what the
-product must do. The current rule:
+> **Measure first. Do not design the production Markit parser or architecture
+> from unmeasured mechanism intuition.**
 
-> **Benchmark first. No production parser, no Markit algorithm claims, and no
-> architecture before #22 produces its measurement surface and Weakness Map.**
+The next evidence milestone is not another correctness gate. It is concrete
+project-level latency, throughput, CPU/memory/allocation, work-amplification,
+and mechanism-attribution data from #31.

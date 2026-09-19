@@ -3,52 +3,98 @@
 This page is the campaign status map for Markit parser research.
 
 ```text
-ACTIVE:
+ACTIVE UMBRELLA:
     #22 MARKIT-MARKDOWN-BENCHMARK-1
-    Standardized Markdown AST/CST update benchmark:
-    operations, payloads, work amplification, performance attribution.
-    Area: research/benchmarks/markdown-ast-update/
+    Controlled Rust comparison of H0-H4 Markdown update mechanisms.
+
+ACTIVE EXECUTION ISSUE:
+    #31 project-driven performance evaluation for H0-H4
+    Real-project corpus -> deterministic edit traces -> timing/work lanes
+    -> attribution -> Weakness Map.
+
+COMPLETED SUBSTRATE:
+    R0 methodology                         PASS
+    R1 controlled harness                  PASS
+    R2 prior-art extraction                PASS
+    R3 grammar/corpus/mutation freeze      PASS
+    R4 H0 reference                        PASS
+    R5 H1-H4 correctness/parity            PASS (PR #30 merged)
 
 ARCHIVED:
-    Experiment 0 — MARKIT-INCREMENTAL-MARKDOWN-PARSER-SURVEY-1 (#19, PR #20)
-    Historical evidence only. Physical archive:
+    Experiment 0 — #19 / PR #20
     research/experiments/experiment-0-parser-survey/
 
 SUPERSEDED:
-    #21 MARKIT-MARKDOWN-ARCHITECTURE-1 (CLOSED)
-    Treated Experiment 0 as architecture input; that sequencing is replaced
-    by benchmark-first research. Do not resume it.
+    #21 MARKIT-MARKDOWN-ARCHITECTURE-1
 ```
 
-## The only research path currently authorized
+## Authorized research path
 
 ```text
-existing Markdown parser / AST-CST update algorithms
-        ↓ #22 standardized benchmark          <- ACTIVE
-        ↓ Weakness Map
-        ↓ Markit-specific algorithm (future issue)
-        ↓ formal/correctness work (as applicable)
-        ↓ architecture synthesis
-        ↓ production implementation (BLOCKED)
+prior art / mechanism extraction
+        ↓
+controlled Rust substrate
+        ↓
+correctness-complete H0-H4 models          DONE
+        ↓
+real-project performance measurement       #31 NOW
+        ↓
+mechanism attribution + controlled scaling
+        ↓
+replication / optimization sensitivity
+        ↓
+Weakness Map
+        ↓
+Markit-specific algorithm                  future issue
+        ↓
+architecture / production implementation   blocked until earned
 ```
 
-Experiment 0 produced useful reconnaissance (locality, structural
-propagation, absolute-offset metadata cost, full/incremental crossover,
-syntax-vs-semantic invalidation separation), but it compared mechanisms on a
-non-normalized footing. Its `HYBRID` direction verdict and FROZEN / NOT-FROZEN
-lists are hypotheses, not decisions: `green-tree prototype != production
-representation`, `ReferenceIndex != production semantic index`, `HYBRID !=
-current architecture`, `P0-02 != current parser candidate`.
+## Active workspace
 
-## Rules
+`research/benchmarks/markdown-ast-update/` is the only active Markdown parser
+research workspace.
 
-- Research documents may propose mechanisms; they do not become architecture
-  authority automatically.
-- The lifecycle is `question -> experiment -> evidence -> verdict -> reviewed
-  architectural decision`.
-- Old experiments remain evidence within their original setup; old
-  recommendations are not inherited into the new Markit architecture by
-  default.
-- New benchmark evidence belongs under
-  `research/benchmarks/markdown-ast-update/results/` (raw local, curated
-  committed) once #22 defines the protocol.
+Its assets are separated by lifecycle:
+
+```text
+protocol/prior-art/grammar/corpus/mutations/cases
+    frozen research authority and synthetic controls
+
+common/instrumentation/oracle/runner/corpusgen/shared-grammar/mechanisms
+    executable benchmark substrate
+
+projects
+    pinned real-project manifests, eligibility, workload profiles
+
+traces
+    deterministic project edit traces
+
+results
+    raw machine-readable measurements and derived summaries
+
+analysis
+    attribution, scaling, crossover, replication analysis
+
+report
+    reviewed Weakness Map and paper-like presentation artifacts
+```
+
+See `research/benchmarks/markdown-ast-update/STRUCTURE.md` for ownership rules.
+
+## Evidence rule
+
+A performance statement must not stop at a timing adjective. Promoted results
+must connect:
+
+```text
+project/file distribution
+-> edit family
+-> p50/p95 latency / throughput / CPU / memory
+-> work counters
+-> mechanism-specific state/work
+-> controlled explanation
+```
+
+Synthetic corpora are controlled explanatory tools. Real-project measurements
+are the primary realism surface for #31.
