@@ -5,8 +5,9 @@ It is an information-architecture contract, not a benchmark-result document.
 
 ## Principle
 
-Preserve frozen R0-R5 paths. New #31 work follows a one-way research-data
-lifecycle:
+Preserve frozen R0-R5 paths. Post-R5 #31 work follows the explicit execution
+refinement in `protocol/R6-PROJECT-PERFORMANCE-EXECUTION-AMENDMENT.md` and a
+one-way research-data lifecycle:
 
 ```text
 frozen protocol + inputs
@@ -21,7 +22,7 @@ derived summaries
         ↓
 attribution / scaling analysis
         ↓
-reviewed report / Weakness Map
+later reviewed report / Weakness Map
 ```
 
 A later layer may reference an earlier layer; it must not silently rewrite it.
@@ -31,8 +32,8 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 ### Frozen authority and controlled inputs
 
 `protocol/`
-: Methodology, contracts, stage records, and gate evidence. Historical stage
-  files keep their existing paths.
+: Methodology, explicit amendments, contracts, stage records, and gate evidence.
+  Historical stage files keep their existing paths.
 
 `prior-art/`
 : Source/provenance/fidelity records for mechanism extraction.
@@ -41,8 +42,9 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 : BENCH-GRAMMAR-v1 and normalized-result semantics.
 
 `corpus/`
-: Frozen synthetic corpus definitions and receipts. Synthetic corpora are
-  controlled explanatory workloads, not the primary real-project headline.
+: Frozen synthetic corpus definitions and receipts. Under the R6 execution
+  amendment, these are the controlled explanatory/scaling surface after
+  real-project observations expose a candidate dimension.
 
 `mutations/`
 : Frozen mutation families / structural edit definitions.
@@ -84,26 +86,28 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 ### #31 real-project performance lifecycle
 
 `projects/`
-: Immutable project pins plus BENCH-GRAMMAR-v1 eligibility and workload
-  profiles. Do not put benchmark timing here.
+: Project pins plus BENCH-GRAMMAR-v1 eligibility and workload profiles. Once a
+  project manifest is frozen for a campaign, its SHA/eligibility inputs are
+  immutable for that campaign. Do not put benchmark timing here.
 
 `traces/`
 : Deterministic canonical edit traces derived from project structure. No timing
   or horse-specific selection is allowed here.
 
 `results/`
-: Machine-readable measurement outputs. `raw` is append-only evidence;
-  `summaries` is derived. Human interpretation does not belong here.
+: Machine-readable measurement outputs. `raw` is immutable evidence;
+  `summaries` is derived; `manifests` pins campaign identity. Human
+  interpretation does not belong here.
 
 `analysis/`
 : Scripts and records that join timing/work lanes, analyze scaling/crossover,
-  test attribution hypotheses, and perform replication/optimization
-  sensitivity. Analysis must name its input result manifest/hash.
+  test attribution hypotheses, and perform optimization sensitivity. Analysis
+  must name its input result manifest/hash. Generated figures belong here.
 
 `report/`
-: Reviewed human-facing findings: project tables, figures, Weakness Map, and
-  eventual paper-like narrative. Reports cite result/analysis artifacts and
-  never replace them as evidence.
+: Reserved for later reviewed synthesis under the final ROADMAP report stage.
+  It may consume reviewed result/analysis artifacts but does not own raw
+  evidence and is not the place for tentative #31 observations.
 
 ## Naming and identity
 
@@ -143,14 +147,20 @@ analysis command.
 - Do not treat `report/` as the only copy of evidence.
 - Do not add horse-specific project or edit selection.
 - Do not start Markit production parser code inside this workspace.
+- Do not let #31 issue text silently override frozen protocol; protocol changes
+  require an explicit amendment under `protocol/`.
 
 ## Current execution order
 
 ```text
-#31 P0  projects/ + traces policy freeze
-#31 P1  full parse/state construction -> results/
-#31 P2  real-project edit measurements -> results/
-#31 P3  mechanism attribution -> analysis/
-#31 P4  controlled synthetic explanations -> analysis/
-#31 P5  replication + optimization sensitivity -> analysis/ + report/
+#31 P0  project reconnaissance + eligibility/trace policy freeze
+#31 P1  R6 full parse/state construction -> results/
+#31 P2  R7/R8 real-project edit measurements -> results/
+#31 P3  R11 mechanism attribution -> analysis/
+#31 P4  R10 targeted synthetic scaling explanations -> analysis/
+#31 P5  R11 optimization-sensitivity / residual attribution -> analysis/
 ```
+
+R9 representation/query remains a required orthogonal surface as specified by
+the ROADMAP. Final report/Weakness Map authority remains with the later final
+synthesis stage; #31 does not move that authority into `report/` early.
