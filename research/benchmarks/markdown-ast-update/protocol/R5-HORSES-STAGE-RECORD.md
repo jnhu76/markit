@@ -1,6 +1,7 @@
 # R5 — H1/H2/H3/H4 Mechanism Implementation (Stage Record)
 
-Status: **READY_FOR_ADVERSARIAL_R5_REVIEW** (2026-09-19; PR #30, not merged)
+Status: **READY_FOR_FINAL_R5_REVIEW** (2026-09-19; PR #30, corrective-1
+applied and gate-passed at `e9539806`, not merged)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r5-horses-correctness-parity-1`
 Base: `master` @ `21d7d832fec84fceedb7600cccb4296745395fc1` (PR #29 merge)
@@ -365,13 +366,42 @@ development host). Every step green in one pass:
   logs of the gate run, not benchmark data (the R5 stage records no
   performance measurements).
 
+The AUTHORITATIVE corrective run is a single-pass `scripts/verify-r5.sh`
+on the same dedicated server host (Fedora Linux, 20 cores, 62 GB RAM)
+against `research/22-r5-horses-correctness-parity-1` at `e9539806` —
+the exact HEAD carrying MARKIT-R5-HORSE-CORRECTNESS-PARITY-CORRECTIVE-1
+(H1 ownership pass-through, H1/H4 retained semantic subtrees,
+instrumented inline source inspection, retained-inline node accounting,
+completed-state QUERY law, negative probes A/B/C) — toolchain pinned
+1.97.1 (rustc 8bab26f4f). Window 2026-09-19 09:36:54–14:03:15 (+0800),
+~4 h 26 min wall. Every step green in one pass:
+
+- debug workspace step: 193 `test result: ok` lines, 0 `FAILED`;
+- eager completed-state step: `H1_EAGER_COMPLETION_PASS` …
+  `H4_EAGER_COMPLETION_PASS`, `EAGER_COMPLETION_VALIDATION_PASS`;
+- release 370-slot matrices, `--test-threads=8 --nocapture`:
+  549/549 passed for each of H1 (285 s), H2 (5450 s), H3 (6012 s),
+  H4 (274 s) — per-case `ok` lines and the inventory frozen-count
+  test included;
+- static completed-state QUERY authority check: PASS;
+- R1/R3/R4 regressions: PASS, `R4 MUTATION CHECK: 5/5 DETECTED`;
+- `R5 MUTATION CHECK: 7/7 DETECTED` (the original 4 mechanism
+  mutations + corrective probes A clone-pseudo-reuse, B inline
+  emission off, C Pending-bypass);
+- final line: `R5 HORSE CORRECTNESS + PARITY GATE: PASS`, followed by
+  the stage banner "Correctness only: no benchmark campaign was run
+  and no timing was recorded." Wall durations above are operational
+  logs of the gate run, not benchmark data.
+
 ## 8. Self-assessment verdict
 
-The stage stops at `READY_FOR_ADVERSARIAL_R5_REVIEW`: all frozen H1-H4
-gates pass, the parity table is recorded, the freeze-record amendments
+The stage stops at `READY_FOR_FINAL_R5_REVIEW`: all frozen H1-H4 gates
+pass, the corrective-1 verdict items (MAJOR: 3 / IMPORTANT: 1) are
+implemented and re-gated green at `e9539806` (§7.1 corrective run,
+§10/§11), the parity table is recorded, the freeze-record amendments
 are explicit, and no measurement has been taken. R6 (state-construction
-surface) is NOT started. The PR is opened for adversarial review and is
-NOT merged by the implementing agent.
+surface) is NOT started. The PR is NOT merged by the implementing
+agent.
 
 ## 9. Observations carried to the Weakness Map (structural; no measurements)
 
@@ -537,3 +567,9 @@ skeleton and semantic subtree — resolved by the §11.6 rule, caught by
 the H1 fallback counter exactness test; (c) H4's definition table must
 be computable from skeletons BEFORE fresh inline materialization —
 restructured; (d) finding F1 above.
+
+CORRECTIVE-1 close-out: the focused self-review above (§11) was
+accepted by the human reviewer with `CORRECTIVE_CODE_VERDICT: PASS`;
+the single authoritative corrective gate run at `e9539806` ended
+`R5 HORSE CORRECTNESS + PARITY GATE: PASS` (§7.1). Nothing was written
+to the tree after that gate except this status/evidence record.
