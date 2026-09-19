@@ -626,9 +626,23 @@ multiplicity assertions, all green) and negative probe D in
 `mutation-check-r5.sh` (removing H4's separation-scan report must fail
 `h4_prepare_margins_report_source_inspection`). Gate count 7/7 → 8/8.
 
+Reviewer round on this commit (Corrective-2 review): the horse-private
+closure was accepted, with ONE remaining shared-substrate gap found —
+`BlockScanner::splice_to` reads the taken range's last byte
+(`src.get(new_pos - 1)`) for the frame-carry check, and a successful
+take skips `[pos, new_pos)` outright, so no per-line report ever covers
+that byte (1 byte per successful splice; PA-sensitive on small edits).
+Closure boundary: the reviewer explicitly did not extend the audit
+further. Fix: the carried check now reports the exact `(new_pos - 1,
+new_pos)` event; a shared attribution regression
+(`splice_take_reports_its_tail_byte_source_inspection`) asserts the
+event `(8, 9)` for a take `[5, 9)` AND that no event covers the reused
+interior `[5, 8)`; negative probe E removes the event and must fail the
+shared test. Gate count 8/8 → 9/9.
+
 Verification status at this commit: fmt / clippy `-D warnings` /
 `cargo test --workspace` (exit 0) and the four attribution tests pass
-locally. The focused server run — R1 regression, mutation gate 8/8,
-eager + attribution tests — runs after reviewer acceptance of this
-commit; the 370×4 release correctness matrices are NOT re-run (no
-mechanism semantics changed).
+locally. The focused server run — R1 regression, mutation gate 9/9,
+eager + attribution tests (per-horse and shared splice) — runs after
+reviewer acceptance of this commit; the 370×4 release correctness
+matrices are NOT re-run (no mechanism semantics changed).

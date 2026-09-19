@@ -362,6 +362,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
     /// `new_pos`. The placeholder span is bookkeeping only — the horse
     /// replaces placeholders with its retained pieces before
     /// materialization.
+    ///
+    /// The carried check reads the taken range's last byte — the only
+    /// source byte this method inspects, and one the per-line reports
+    /// never cover because the taken range is skipped outright — so it
+    /// is reported to the sink (source-inspection closure).
     fn splice_to(&mut self, pos: usize, new_pos: usize) {
         self.flush_para();
         let slot = self.slots;
@@ -373,7 +378,13 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
         };
         self.push_into_innermost(spliced);
         let prev = new_pos.saturating_sub(1);
-        let carried = new_pos > 0 && self.src.get(prev) == Some(&b'\n');
+        let carried = if new_pos > 0 {
+            self.sink
+                .record_source_inspection(prev as u64, new_pos as u64);
+            self.src.get(prev) == Some(&b'\n')
+        } else {
+            false
+        };
         if carried {
             for frame in &mut self.frames {
                 match frame {
@@ -1129,7 +1140,7 @@ pub fn refdef_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, usize
 #[cfg(test)]
 mod tests {
     use super::*;
-    use markit_mdbench_common::NoopWorkSink;
+    use markit_mdbench_common::{CounterSink, NoopWorkSink, WorkCounters};
     use markit_mdbench_oracle::normalized::NodeKind;
 
     #[test]
@@ -1218,6 +1229,49 @@ mod tests {
         ));
         // the surrounding paragraphs still parsed around the take
         assert_eq!(region.blocks.len(), 3);
+    }
+
+    /// Attribution regression (R5-CORRECTIVE-2 reviewer round): a
+    /// successful take skips `[pos, new_pos)` outright — the per-line
+    /// inspection reports never cover it — yet `splice_to` itself reads
+    /// the range's last byte to carry frame bookkeeping. That read must
+    /// be visible as an exact EVENT, or the mechanism work the take
+    /// replaced goes unreported and `unique_source_bytes_inspected`
+    /// understates real source work.
+    #[test]
+    fn splice_take_reports_its_tail_byte_source_inspection() {
+        let src = b"aaa\n\nbbb\n\nccc\n";
+        let mut counters = WorkCounters::all_unknown();
+        let mut sink = CounterSink::new(&mut counters);
+        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+            if pos == 5 {
+                Some(9) // take "bbb\n" = [5, 9)
+            } else {
+                None
+            }
+        };
+        let (region, slots) = parse_region_with_hook(src, 0, src.len(), &mut sink, &mut hook);
+        assert_eq!(slots, 1);
+        assert!(matches!(
+            region.blocks.iter().find(|b| b.start() == 5).unwrap(),
+            Skel::Spliced {
+                start: 5,
+                end: 9,
+                slot: 0
+            }
+        ));
+        // splice_to's carried-LF read is the tail byte of the taken
+        // range: exactly the event (8, 9). The range's interior [5, 8)
+        // is reused untouched — no event may cover it.
+        let events = sink.inspections();
+        assert!(
+            events.contains(&(8, 9)),
+            "splice tail byte (8, 9) not reported; events: {events:?}"
+        );
+        assert!(
+            !events.iter().any(|&(s, e)| s >= 5 && e <= 8),
+            "reused-range interior bytes must stay uninspected; events: {events:?}"
+        );
     }
 
     #[test]

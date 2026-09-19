@@ -19,7 +19,8 @@
 #       exercise (e) only where the restart-boundary backup already
 #       covers the join, so they stay green under its removal)
 #
-# Corrective probes (R5-CORRECTIVE-1 §12; D added by R5-CORRECTIVE-2):
+# Corrective probes (R5-CORRECTIVE-1 §12; D and E added by
+# R5-CORRECTIVE-2, E from its reviewer round):
 #   A   H1 prefix ownership move reverted to a clone while still
 #       reporting nodes_reused > 0 (pseudo reuse) — caught by the
 #       ownership pass-through witness
@@ -29,6 +30,9 @@
 #       result — caught by the static completed-state authority check
 #   D   a prepare-phase margin inspection event removed from H4's
 #       restart-boundary scan — caught by the H4 attribution test
+#   E   the splice tail-byte inspection event removed from the shared
+#       block scanner (`splice_to`) — caught by the shared splice
+#       attribution test
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -39,8 +43,9 @@ H2=mechanisms/fragment-reuse/src/lib.rs
 H3=mechanisms/old-tree-subtree-reuse/src/lib.rs
 H4=mechanisms/restart-convergence/src/lib.rs
 SGI=shared-grammar/src/inline.rs
+SGP=shared-grammar/src/parser.rs
 H1M=mechanisms/block-local/tests/matrix_r5.rs
-TARGETS=("$H1" "$H2" "$H3" "$H4" "$SGI" "$H1M")
+TARGETS=("$H1" "$H2" "$H3" "$H4" "$SGI" "$SGP" "$H1M")
 
 restore_all() {
     for f in "${TARGETS[@]}"; do
@@ -170,6 +175,16 @@ if cargo test -q -p markit-mdbench-restart-convergence --test h4_gate h4_prepare
 fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
+echo "--- CORRECTIVE PROBE E: shared splice_to tail-byte inspection event removed (attribution test must catch) ---"
+apply "$SGP" 's/self\.sink\s*\n\s*\.record_source_inspection\(prev as u64, new_pos as u64\);/let _ = (prev, new_pos);/' 'let _ = (prev, new_pos);'
+cargo build -q -p markit-mdbench-shared-grammar 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
+if cargo test -q -p markit-mdbench-shared-grammar --lib splice_take_reports_its_tail_byte_source_inspection >/tmp/r5-mutation-detector.log 2>&1; then
+    echo "MUTATION SURVIVED: shared splice attribution test passed with the tail-byte event removed" >&2
+    tail -20 /tmp/r5-mutation-detector.log >&2 || true
+    exit 1
+fi
+restore_all; detected=$((detected + 1)); echo "detected"
+
 restore_all
 echo
-echo "R5 MUTATION CHECK: $detected/8 DETECTED"
+echo "R5 MUTATION CHECK: $detected/9 DETECTED"
