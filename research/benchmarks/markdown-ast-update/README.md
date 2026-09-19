@@ -12,7 +12,7 @@ R3  grammar/corpus/mutation freeze     PASS
 R4  H0 reference full rebuild          PASS
 R5  H1-H4 correctness/parity           PASS — PR #30 merged
 
-ACTIVE: #31 project-driven performance evaluation
+ACTIVE: #31 project-driven performance evaluation under #22
 ```
 
 R5 established that H0-H4 solve the same BENCH-GRAMMAR-v1 problem under the
@@ -20,7 +20,8 @@ same normalized-result contract and that eager completion, correctness,
 identity/reuse accounting, fallback semantics, source-inspection attribution,
 and implementation parity are trustworthy.
 
-**R5 did not produce a performance ranking.** Formal timing begins with #31.
+**R5 did not produce a performance ranking.** Formal timing begins only after
+the #31 project/eligibility/trace freeze gate.
 
 ## Mechanisms
 
@@ -35,14 +36,19 @@ H4 RESTART_CONVERGENCE
 ## Research authority
 
 - umbrella issue: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
+- baseline methodology: `protocol/R0-METHODOLOGY.md`
+- post-R5 execution amendment: `protocol/R6-PROJECT-PERFORMANCE-EXECUTION-AMENDMENT.md`
 - active execution issue: **#31 project-driven performance evaluation**
-- methodology: `protocol/R0-METHODOLOGY.md`
 - harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 - grammar: `grammar/BENCH-GRAMMAR-v1.md`
 - normalized result: `grammar/NORMALIZED-RESULT-v1.md`
 - R5 mechanism freeze: `protocol/R5-HORSE-CORRECTNESS-PARITY.md`
 - R5 evidence: `protocol/R5-HORSES-STAGE-RECORD.md`
 - repository ownership map: `STRUCTURE.md`
+
+#31 is an execution refinement under #22; it does not independently override
+frozen R0 contracts. The explicit R6 amendment changes only the post-R5 role
+and ordering of real-project versus synthetic performance surfaces.
 
 Frozen R0-R5 paths are intentionally retained. Do not reorganize historical
 protocol/corpus/case files merely for aesthetics: citations and gate records
@@ -52,7 +58,7 @@ refer to them.
 
 ```text
 # Frozen research authority / controlled inputs
-protocol/           methodology, stage contracts, evidence records
+protocol/           methodology, amendments, stage contracts, evidence records
 prior-art/          mechanism provenance and fidelity boundaries
 grammar/            BENCH-GRAMMAR-v1 + normalized result contract
 corpus/             frozen synthetic corpus definitions / receipts
@@ -75,7 +81,7 @@ projects/           pinned project manifests, eligibility, profiles
 traces/             deterministic real-project edit traces
 results/            raw measurements + machine-readable summaries
 analysis/           attribution/scaling/crossover/replication analysis
-report/             Weakness Map and paper-like reviewed outputs
+report/             later reviewed Weakness Map / paper-like outputs
 ```
 
 The dependency direction is:
@@ -91,7 +97,7 @@ results/summaries
       ↓
 analysis
       ↓
-report / Weakness Map
+later report / Weakness Map
 ```
 
 No analysis script may rewrite raw observations. No report table is an
@@ -146,12 +152,13 @@ trace identity.
 
 ## Current next gate
 
-#31 starts with project reconnaissance and eligibility freeze:
+#31 starts with project reconnaissance and eligibility/trace freeze under the
+R6 execution amendment:
 
 ```text
 PROJECT_CORPUS_FREEZE_PASS
 ```
 
-No H0-H4 project timing should be treated as primary evidence before the
-project set, commit SHAs, BENCH-GRAMMAR-v1 eligibility policy, workload
-profiles, and deterministic trace-selection rules are frozen.
+No H0-H4 project timing is primary evidence before the project set, immutable
+SHAs, BENCH-GRAMMAR-v1 eligibility policy, workload-profile schema,
+deterministic trace-selection rules, and campaign identity are frozen.
