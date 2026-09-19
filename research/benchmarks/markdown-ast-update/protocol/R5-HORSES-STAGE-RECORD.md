@@ -2,8 +2,9 @@
 
 Status: **READY_FOR_FINAL_R5_REVIEW** (2026-09-19; PR #30, corrective-1
 gate-passed at `e9539806`; corrective-2 (§12, source-inspection
-closure) applied and locally green — focused server verification
-pending reviewer acceptance, not merged)
+closure) closed at `6e348aa` and focused-gate PASSED on the dedicated
+server at that HEAD — this commit is the docs-only evidence commit
+after the gate; not merged)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r5-horses-correctness-parity-1`
 Base: `master` @ `21d7d832fec84fceedb7600cccb4296745395fc1` (PR #29 merge)
@@ -402,6 +403,36 @@ completed-state QUERY law, negative probes A/B/C) — toolchain pinned
   and no timing was recorded." Wall durations above are operational
   logs of the gate run, not benchmark data.
 
+The FOCUSED corrective-2 run is the reviewer-prescribed subset (fmt,
+clippy, full debug workspace tests, per-horse + shared
+source-inspection attribution tests, H1-H4 eager completed-state
+tests, R1 regression, R5 negative mutation gate) on the same dedicated
+server host against `research/22-r5-horses-correctness-parity-1` at
+`6e348aa` — the exact HEAD carrying the Corrective-2 closure and its
+review-round fixes (shared `splice_to` tail-byte inspection event,
+shared splice attribution regression, probe E). Toolchain pinned
+1.97.1 (rustc 8bab26f4f). Window 2026-09-19 18:43:48–19:03:50 (+0800),
+~20 min wall. Deliberately NOT run: the 370x4 release correctness
+matrices (no mechanism semantics changed since `e9539806`) and any
+benchmark campaign. Every step green in one pass:
+
+- `FMT_PASS`; `CLIPPY_PASS` (`--workspace --all-targets -D warnings`);
+- debug workspace step: 46 `test result: ok` suites, 228 tests passed,
+  0 `FAILED` (the `supervisor_isolation` injected-crash panics are that
+  test's expected behavior);
+- `SOURCE_INSPECTION_ATTRIBUTION_PASS` (the four per-horse attribution
+  tests + `splice_take_reports_its_tail_byte_source_inspection`);
+- `H1_EAGER_COMPLETION_PASS` … `H4_EAGER_COMPLETION_PASS`,
+  `EAGER_COMPLETION_VALIDATION_PASS`;
+- R1 regression: `R1 ACCEPTANCE GATE: PASS` + `R1_REGRESSION_PASS`;
+- `R5 MUTATION CHECK: 9/9 DETECTED` (the 4 mechanism mutations +
+  corrective probes A-E; E = the shared splice tail-byte inspection
+  event removed);
+- final line: `FOCUSED R5 GATE: PASS — HEAD
+  6e348aa4ec28207ff01e963bdc50475c6d17a089 — 2026-09-19T19:03:50+08:00`,
+  followed by "Release matrices NOT run (no mechanism semantics
+  changed); no timing recorded."
+
 ## 8. Self-assessment verdict
 
 The stage stops at `READY_FOR_FINAL_R5_REVIEW`: all frozen H1-H4 gates
@@ -653,3 +684,15 @@ directly after these two non-semantic fixes: fmt / clippy / workspace
 tests / eager + attribution tests (per-horse and shared splice) / R1
 regression / mutation gate 9/9. The 370×4 release correctness matrices
 are NOT re-run (no mechanism semantics changed).
+
+Focused authoritative server run (executed directly after the two
+review-round fixes, per the reviewer's directive — no further
+pre-review): **PASS** at `6e348aa`, 2026-09-19 18:43:48–19:03:50
+(+0800) — fmt / clippy `-D warnings` / debug workspace (46 suites, 228
+passed, 0 failed) / source-inspection attribution (per-horse + shared
+splice) / H1–H4 eager completion + `EAGER_COMPLETION_VALIDATION_PASS` /
+R1 regression (`R1 ACCEPTANCE GATE: PASS`) / `R5 MUTATION CHECK: 9/9
+DETECTED` (probe E included); final line `FOCUSED R5 GATE: PASS`. The
+370×4 release correctness matrices were deliberately NOT re-run (no
+mechanism semantics changed since `e9539806`); no timing was recorded.
+Full operational detail in §7.1.
