@@ -447,3 +447,93 @@ started.
   The script's restore trap is now installed only AFTER its clean-tree
   refusal check (an earlier draft could have reverted uncommitted work
   on refusal; the check and the trap were reordered).
+
+## 11. Focused adversarial self-review (corrective §15; ONE pass)
+
+Scope: the corrective surfaces only. Every question answered with a
+concrete check; findings were fixed BEFORE the final authoritative run
+was launched. Local verification at the review HEAD: fmt clean, clippy
+`-D warnings` clean, full workspace suite green, mutation gate 7/7
+DETECTED.
+
+1. Does H1 report any cloned representation as nodes_reused? NO.
+   Prefix entries MOVE out of the consumed old state
+   (`moved_prefix.push(e)`; no clone on the safe-local path). Witness:
+   `h1_prefix_reuse_is_ownership_pass_through` (heap-address identity
+   of a retained inline buffer across the update); Probe A
+   (move -> clone) makes that witness FAIL. Fallback reports
+   `nodes_reused = Known(0)`; full_parse reports the measured zero.
+2. Are all inline source reads represented in inspection events? YES.
+   `scan_region_with_sink` reports `[ss, se)` before scanning; every
+   helper read (`run_len`, `find_run_exact`, `scan_link_candidate`,
+   `find_text_region_end`) is bounded by `se`, so the event covers the
+   scanned bytes exactly; recursive sub-scans report overlapping
+   subranges the collector unions. Fresh construction in H1-H4 uses
+   only the `*_with_sink` forms (grep: the only plain `finish_document`
+   call left in the tree is inside shared-grammar's own unit test).
+3. Can any reused subtree trigger inline scanning? NO. H2/H3 taken
+   members and H4 retained prefix/converged-suffix are `Arc` clones
+   with no scan call on the path; H1's prefix is moved and its
+   projection clones the retained subtree (pure).
+4. Can H1 safe-local W1 still prove actual sub-full coverage? YES —
+   `unique_source_bytes_inspected < post.len()` holds WITH honest
+   instrumentation, because only the damaged region's lines and inline
+   content are read; the suite asserts it (h1_identity_w1).
+5. Can H4 convergence prove suffix SYNTAX reuse, not skeleton reuse +
+   full inline rescan? YES, now structurally: new witness
+   `h4_converged_suffix_shares_retained_syntax_identity` asserts
+   `Arc::ptr_eq`-level identity of the converged suffix head between
+   old and new states, plus `nodes_reused > 0` and the sub-full
+   inspection union. Self-review finding F1 (this witness was missing;
+   added).
+6. Does completed-state normalization require Source? NO. Every
+   `normalize_v1(&self)` takes nothing; H1/H4 projections use the
+   stored `src_len`.
+7. Does completed-state QUERY use Pending.result? NO. All four matrix
+   helpers and QUERY batches project via `done.state.normalize_v1()`;
+   the static authority check in `verify-r5.sh` enforces >= 3
+   occurrences per matrix file, and Probe C fails it when a helper
+   reverts to the eager shortcut.
+8. Does completed-state QUERY invoke parser work? NO — pure traversal
+   over stored subtrees (`clone` + span shift only); `node_path_at` is
+   the oracle's pure query.
+9. Do H2/H3 counters include retained inline syntax? YES —
+   `count_node = 1 + payload_inline_nodes + children`; reused counts
+   and rebuilt counts use the same rule; fresh payload construction
+   adds `1 + payload_inline_nodes` per node.
+10. Does any horse store an undeclared full NormalizedDocument cache?
+    NO. H1State = tiling + defs + src_len; H2State = tree + fragments;
+    H3State = tree; H4State = blocks + checkpoints + gen + defs +
+    src_len. `Pending` holds the eager result only until `complete()`
+    (the frozen phase boundary), never retained. No Source is retained.
+11. Did mechanism identity change? NO. Guards F1-F6, fragment
+    windows/margins/minGap, patch-path + change flags + margins,
+    checkpoints/restart selection/backup/predicates (a)-(e),
+    restart-at-zero, gauges and fallback semantics are byte-identical
+    policy; only retained representation, instrumentation, counting
+    units, and the query surface changed. The four adversarial
+    differentials (504 sequences each) and all in-file probes pass
+    unchanged.
+12. Did R3 workload authority change? NO — zero diff under `cases/`,
+    `corpusgen/`, `grammar/`; matrix CASE_TABLEs and the frozen
+    inventory test are untouched.
+13. Did any performance tuning enter? NO — no constant, threshold, or
+    layout change; the only additions are measurement (Built counters),
+    retained data, and witnesses.
+14. Did R6 start? NO — no runner/instrumentation/cases changes; no
+    benchmark, no timing anywhere.
+
+Process incident recorded honestly: during gate preparation, the
+negative-gate script's restore-on-EXIT trap fired after its clean-tree
+REFUSAL and reverted six uncommitted corrective files; the premature
+authoritative run was killed (twice — once on reviewer instruction to
+self-review first), the files were re-applied with assert-guarded
+edits, the trap was moved below the refusal check, and the gate was
+revalidated 7/7 locally. Findings fixed before any run counted as
+evidence: (a) `shift_node_owned` initially missed the
+`FencedCode.content` interval — caught by the H1 64k grid differential;
+(b) the first counting rule double-counted block nodes stored in both
+skeleton and semantic subtree — resolved by the §11.6 rule, caught by
+the H1 fallback counter exactness test; (c) H4's definition table must
+be computable from skeletons BEFORE fresh inline materialization —
+restructured; (d) finding F1 above.
