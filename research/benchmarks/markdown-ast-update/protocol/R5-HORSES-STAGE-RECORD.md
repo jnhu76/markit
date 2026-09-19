@@ -636,13 +636,20 @@ Closure boundary: the reviewer explicitly did not extend the audit
 further. Fix: the carried check now reports the exact `(new_pos - 1,
 new_pos)` event; a shared attribution regression
 (`splice_take_reports_its_tail_byte_source_inspection`) asserts the
-event `(8, 9)` for a take `[5, 9)` AND that no event covers the reused
-interior `[5, 8)`; negative probe E removes the event and must fail the
-shared test. Gate count 8/8 → 9/9.
+event `(8, 9)` for a take `[5, 9)` AND that no event OVERLAPS the
+reused interior `[5, 8)` (`s < 8 && e > 5`; a partial poke such as
+`(4, 6)` or `(7, 9)` is rejected too); negative probe E removes the
+event and must fail the shared test. Gate count 8/8 → 9/9.
 
-Verification status at this commit: fmt / clippy `-D warnings` /
-`cargo test --workspace` (exit 0) and the four attribution tests pass
-locally. The focused server run — R1 regression, mutation gate 9/9,
-eager + attribution tests (per-horse and shared splice) — runs after
-reviewer acceptance of this commit; the 370×4 release correctness
-matrices are NOT re-run (no mechanism semantics changed).
+Verification status (local, at this commit): fmt PASS; clippy
+`--workspace --all-targets -D warnings` PASS; shared-grammar lib tests
+PASS (6/6, incl. the splice attribution regression); the four per-horse
+attribution tests PASS; probe E manually verified in both directions
+(event removed → the shared test fails on the missing `(8, 9)` event;
+restored → green). `cargo test --workspace` was NOT completed locally
+(that local run was cancelled) — it is delegated to the focused
+authoritative server run, per the reviewer's directive to run it
+directly after these two non-semantic fixes: fmt / clippy / workspace
+tests / eager + attribution tests (per-horse and shared splice) / R1
+regression / mutation gate 9/9. The 370×4 release correctness matrices
+are NOT re-run (no mechanism semantics changed).

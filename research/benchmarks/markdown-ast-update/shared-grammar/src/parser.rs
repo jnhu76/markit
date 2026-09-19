@@ -1262,15 +1262,17 @@ mod tests {
         ));
         // splice_to's carried-LF read is the tail byte of the taken
         // range: exactly the event (8, 9). The range's interior [5, 8)
-        // is reused untouched — no event may cover it.
+        // is reused untouched — no event may OVERLAP it (an event that
+        // merely pokes into it, e.g. ending at 6 or starting at 7, is
+        // just as much an unreported mechanism-work read).
         let events = sink.inspections();
         assert!(
             events.contains(&(8, 9)),
             "splice tail byte (8, 9) not reported; events: {events:?}"
         );
         assert!(
-            !events.iter().any(|&(s, e)| s >= 5 && e <= 8),
-            "reused-range interior bytes must stay uninspected; events: {events:?}"
+            !events.iter().any(|&(s, e)| s < 8 && e > 5),
+            "reused-range interior [5, 8) must stay uninspected (no overlapping event); events: {events:?}"
         );
     }
 
