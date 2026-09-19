@@ -3,16 +3,18 @@
 //!
 //! Mechanism identity (frozen in
 //! `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §9; checkpoint/restart
-//! model): retain the old top-level blocks (shared `Arc<Skel>` identity)
-//! plus a CHECKPOINT RECORD at every top-level block start — the
-//! line-aligned position, the entry [`ContextKey`], and the definition
-//! generation the record was validated under. On an edit, select the
-//! restart checkpoint at/before the damage; parse the post source
-//! forward from the restart (the prefix before it is retained untouched);
-//! at each live block start beyond the damage compare the live parser
-//! state against the MAPPED old checkpoint (`q = p − delta`); when the
-//! frozen convergence predicate holds, reuse the old stable suffix to EOF
-//! (structural sharing: the suffix keeps its `Arc<Skel>`s, retargeted by
+//! model): retain the old top-level blocks (shared `Arc<RetainedBlock>`
+//! identity — the block's skeleton AND its materialized semantic
+//! subtree, R5-CORRECTIVE-1 §11.4) plus a CHECKPOINT RECORD at every
+//! top-level block start — the line-aligned position, the entry
+//! [`ContextKey`], and the definition generation the record was
+//! validated under. On an edit, select the restart checkpoint at/before
+//! the damage; parse the post source forward from the restart (the
+//! prefix before it is retained untouched); at each live block start
+//! beyond the damage compare the live parser state against the MAPPED
+//! old checkpoint (`q = p − delta`); when the frozen convergence
+//! predicate holds, reuse the old stable suffix to EOF (structural
+//! sharing: the suffix keeps its `Arc<RetainedBlock>`s, retargeted by
 //! per-block base offsets).
 //!
 //! Convergence predicate (all parts source/state-derived, frozen):
@@ -317,19 +319,19 @@ impl Mechanism for RestartConvergenceMechanism {
                 backed += 1;
                 let prev = &old_state.blocks[s - 1];
                 let boundary = old_state.checkpoints[s].position;
-                let sep_lfs = old[prev.abs_end()..boundary]
-                    .iter()
-                    .filter(|&&b| b == b'\n')
-                    .count();
+                // Both margin reads below are prepare-phase mechanism
+                // work on the old source: report the exact scanned
+                // ranges (R5-CORRECTIVE-2, source-inspection closure).
+                let (sep_lo, sep_hi) = (prev.abs_end(), boundary);
+                cx.sink
+                    .record_source_inspection(sep_lo as u64, sep_hi as u64);
+                let sep_lfs = old[sep_lo..sep_hi].iter().filter(|&&b| b == b'\n').count();
                 if sep_lfs >= 2 {
                     break; // blank line terminates every continuation
                 }
                 let k = &old_state.blocks[s];
                 let k_start = k.abs_start();
-                let k_line_end = old[k_start..]
-                    .iter()
-                    .position(|&b| b == b'\n')
-                    .map_or(old.len(), |p| k_start + p);
+                let k_line_end = sg::parser::memchr_lf_reported(old, k_start, cx.sink);
                 if es >= k_line_end {
                     break; // the boundary line is intact
                 }
@@ -555,7 +557,8 @@ impl Mechanism for RestartConvergenceMechanism {
                     pairs.push((
                         BlockSlot {
                             base_shift: 0,
-                            line_offset: start - line_start_of(post, start),
+                            line_offset: start
+                                - sg::parser::line_start_of_reported(post, start, cx.sink),
                             block: Arc::new(RetainedBlock {
                                 skel: other.clone(),
                                 sem,
@@ -685,11 +688,16 @@ impl Cursor<'_> {
         // is blank, so no paragraph is open in the live parse (a blank
         // line terminates every continuation), matching the checkpoint's
         // proven block boundary. Source-derived: post[prev_line] blank.
+        // The read happens on every consult that reaches (e) — buffer the
+        // inspected range (the backward scan [prev_ls-1, pos-1) covers
+        // the blank check's span) BEFORE the check so failing checks are
+        // reported too (R5-CORRECTIVE-2).
         let prev_ls = line_start_of(self.post, pos - 1);
+        self.blank_checks
+            .push((prev_ls.saturating_sub(1) as u64, (pos - 1) as u64));
         if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
             return None;
         }
-        self.blank_checks.push((prev_ls as u64, (pos - 1) as u64));
         self.take = Some((idx, pos));
         Some(self.post.len())
     }
@@ -740,7 +748,9 @@ fn fresh_slots<W: WorkSink>(
             built.nodes += k + inline_forest_count(std::slice::from_ref(&sem));
             BlockSlot {
                 base_shift: 0,
-                line_offset: start - line_start_of(src, start),
+                // The line-offset derivation is a mechanism source read:
+                // reported (R5-CORRECTIVE-2).
+                line_offset: start - sg::parser::line_start_of_reported(src, start, sink),
                 block: Arc::new(RetainedBlock {
                     skel: sk.clone(),
                     sem,

@@ -363,8 +363,9 @@ impl Mechanism for FragmentReuseMechanism {
         cx.sink.add_metadata_records_touched(fragments.len() as u64);
 
         // Safe windows (open-edge rule): at an OPEN edge the one adjacent
-        // whole block is excluded from reuse.
-        let left_window_end = left_window_end(&old_state.tree, old, es);
+        // whole block is excluded from reuse. The left edge's paragraph
+        // margin reads source bytes: report them (R5-CORRECTIVE-2).
+        let left_window_end = left_window_end(&old_state.tree, old, es, cx.sink);
         let right_window_start = right_window_start(&old_state.tree, ee, old.len());
 
         // Broad conservative reference invalidation (R5 freeze §7): the
@@ -372,8 +373,10 @@ impl Mechanism for FragmentReuseMechanism {
         // a ReferenceDefinition, or the reparsed region creates one.
         // (Pre-computable and source-derived: any `]: ` occurrence inside
         // the edited span flags the region — a refdef line carries that
-        // sequence at any container depth.)
+        // sequence at any container depth.) The probe reads the edited
+        // span: report the scan (R5-CORRECTIVE-2).
         let damaged_has_def = any_def_in_range(&old_state.tree, es, ee);
+        cx.sink.record_source_inspection(es as u64, ee_new as u64);
         let region_may_create_def = post[es..ee_new].windows(3).any(|w| w == b"]: ");
         let definition_changing = damaged_has_def || region_may_create_def;
 
@@ -391,8 +394,9 @@ impl Mechanism for FragmentReuseMechanism {
             takes: Vec::new(),
             consultations: 0,
             reused: 0,
+            margin_checks: Vec::new(),
         };
-        let (rp, slot_count, takes, consultations, reused) = {
+        let (rp, slot_count, takes, consultations, reused, margin_checks) = {
             let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
             let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
             drop(hook); // end the cursor borrow before reading the take record
@@ -402,8 +406,12 @@ impl Mechanism for FragmentReuseMechanism {
                 cursor.takes,
                 cursor.consultations,
                 cursor.reused,
+                cursor.margin_checks,
             )
         };
+        for (a, b) in &margin_checks {
+            cx.sink.record_source_inspection(*a, *b);
+        }
 
         // Rebuild the document-global first-wins table from the assembled
         // structure (surviving fragments' recorded facts + new facts), in
@@ -474,7 +482,7 @@ fn ee_new_len(delta: isize, removed: usize) -> usize {
 /// cut. That is the deepest block containing the last byte before the
 /// cut; when that byte falls in a blank gap, the last block ending at or
 /// before the cut is still excluded (conservative).
-fn left_window_end(tree: &FTree, old: &[u8], es: usize) -> usize {
+fn left_window_end<W: WorkSink>(tree: &FTree, old: &[u8], es: usize, sink: &mut W) -> usize {
     if es == 0 {
         return 0;
     }
@@ -490,14 +498,14 @@ fn left_window_end(tree: &FTree, old: &[u8], es: usize) -> usize {
         // edit reaches into that first line, the boundary may have
         // vanished (e.g. the edit broke a ``` fence opener into paragraph
         // text): the left fragment is dropped entirely and the merge
-        // happens inside the live parse.
+        // happens inside the live parse. The margin's backward scan and
+        // terminator scan read source bytes: reported exactly
+        // (R5-CORRECTIVE-2); the blank check's span is covered by the
+        // backward-scan report.
         if boundary_start >= 2 && node_kind_at(tree, boundary_start - 2) == NodeKind::Paragraph {
-            let prev_ls = line_start_of(old, boundary_start - 1);
+            let prev_ls = sg::parser::line_start_of_reported(old, boundary_start - 1, sink);
             let blank_before = sg::parser::all_spaces(old, prev_ls, boundary_start - 1);
-            let first_lf = old[boundary_start..]
-                .iter()
-                .position(|&b| b == b'\n')
-                .map_or(old.len(), |p| boundary_start + p);
+            let first_lf = sg::parser::memchr_lf_reported(old, boundary_start, sink);
             if !blank_before && es < first_lf {
                 return 0;
             }
@@ -554,6 +562,11 @@ struct Cursor<'a> {
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
+    /// Inspected byte ranges of the consult-time paragraph margins,
+    /// buffered during the parse (the cursor borrow excludes the sink)
+    /// and reported by the caller afterwards (R5-CORRECTIVE-2). Every
+    /// consult that performs the read reports it, pass or fail.
+    margin_checks: Vec<(u64, u64)>,
 }
 
 /// One taken run: the placeholder covers POST bytes `[pos, pos + len)`;
@@ -582,6 +595,11 @@ impl Cursor<'_> {
         // para-state-dependent) degrade to reparse instead.
         if pos > 0 {
             let prev_ls = line_start_of(self.post, pos - 1);
+            // The margin read happens on every consult that reaches it
+            // (pass or fail): buffer the inspected range — the backward
+            // scan [prev_ls-1, pos-1) covers the blank check's span.
+            self.margin_checks
+                .push((prev_ls.saturating_sub(1) as u64, (pos - 1) as u64));
             if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
                 return None;
             }
@@ -913,7 +931,9 @@ fn build_fnode<W: WorkSink>(
     Arc::new(FNode {
         kind,
         size,
-        line_offset: start - line_start_of(src, start),
+        // The line-offset derivation is a mechanism source read: reported
+        // (R5-CORRECTIVE-2).
+        line_offset: start - sg::parser::line_start_of_reported(src, start, sink),
         marker,
         children,
         ctx: sk.ctx().clone(),
@@ -1175,7 +1195,7 @@ fn assemble_fnode<W: WorkSink>(
     Arc::new(FNode {
         kind,
         size,
-        line_offset: start - line_start_of(post, start),
+        line_offset: start - sg::parser::line_start_of_reported(post, start, sink),
         marker,
         children,
         ctx: sk.ctx().clone(),

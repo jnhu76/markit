@@ -418,7 +418,7 @@ impl Mechanism for BlockLocalMechanism {
             let entry = TopEntry::Block {
                 skel: sk.clone(),
                 sem,
-                facts: block_facts(sk, post),
+                facts: block_facts(sk, post, cx.sink),
             };
             region_nodes += entry_native_nodes(&entry);
             new_entries.push(entry);
@@ -494,7 +494,7 @@ fn tile_from_blocks<W: WorkSink>(
         out.push(TopEntry::Block {
             skel: skel.clone(),
             sem,
-            facts: block_facts(skel, src),
+            facts: block_facts(skel, src, sink),
         });
         cursor = e;
     }
@@ -512,8 +512,10 @@ fn tile_from_blocks<W: WorkSink>(
 }
 
 /// Soundness facts for one block, derived from the Skel + the source it
-/// was parsed from.
-fn block_facts(skel: &Skel, src: &[u8]) -> BlockFacts {
+/// was parsed from. The source reads are mechanism work and go through
+/// the reported scan helpers (R5-CORRECTIVE-2, source-inspection
+/// closure).
+fn block_facts<W: WorkSink>(skel: &Skel, src: &[u8], sink: &mut W) -> BlockFacts {
     match skel {
         Skel::Para { .. } => BlockFacts::Para,
         Skel::Quote { .. } => BlockFacts::Quote,
@@ -521,11 +523,11 @@ fn block_facts(skel: &Skel, src: &[u8]) -> BlockFacts {
             // Top-level list: marker indent = spaces before the marker on
             // the list's first line; the continuation-relevant item is the
             // LAST one, whose strip = indent + its marker delta (§7).
-            let ls = line_start_of(src, *start);
+            let ls = sg::parser::line_start_of_reported(src, *start, sink);
             let indent = start - ls;
             let strip = items
                 .last()
-                .map(|it| last_item_strip(it, src, indent))
+                .map(|it| last_item_strip(it, src, indent, sink))
                 .unwrap_or(indent + 1);
             BlockFacts::List { indent, strip }
         }
@@ -536,10 +538,10 @@ fn block_facts(skel: &Skel, src: &[u8]) -> BlockFacts {
     }
 }
 
-fn last_item_strip(item: &Skel, src: &[u8], indent: usize) -> usize {
+fn last_item_strip<W: WorkSink>(item: &Skel, src: &[u8], indent: usize, sink: &mut W) -> usize {
     if let Skel::Item { start, .. } = item {
-        let ls = line_start_of(src, *start);
-        let lf = sg::parser::memchr_lf(src, ls);
+        let ls = sg::parser::line_start_of_reported(src, *start, sink);
+        let lf = sg::parser::memchr_lf_reported(src, ls, sink);
         if let Some((_, delta)) = sg::parser::parse_marker(src, *start, lf) {
             return indent + delta;
         }
@@ -590,12 +592,14 @@ fn guards_fire<W: WorkSink>(
     // unchanged suffix bytes: the line is complete within the region. An
     // empty tail line (the cut sits on a line start) carries no content
     // and cannot merge — the continuation pairs below own that case.
+    // The backward scan and the terminator probe read source bytes:
+    // report both exactly (R5-CORRECTIVE-2).
     if rs < re_new {
-        let cut = post[rs..re_new]
-            .iter()
-            .rposition(|&b| b == b'\n')
-            .map_or(rs, |p| rs + p + 1);
-        if cut < re_new && sg::parser::memchr_lf(post, cut) > re_new {
+        let rscan = post[rs..re_new].iter().rposition(|&b| b == b'\n');
+        cx.sink
+            .record_source_inspection(rscan.map_or(rs, |p| rs + p) as u64, re_new as u64);
+        let cut = rscan.map_or(rs, |p| rs + p + 1);
+        if cut < re_new && sg::parser::memchr_lf_reported(post, cut, cx.sink) > re_new {
             return true;
         }
     }
@@ -616,7 +620,7 @@ fn guards_fire<W: WorkSink>(
     }
 
     let (right_end, right_facts) = match rp.blocks.last() {
-        Some(sk) => (sk.end(), block_facts(sk, post)),
+        Some(sk) => (sk.end(), block_facts(sk, post, cx.sink)),
         None => match prefix_last.as_ref() {
             Some(e) => (e.span().1, entry_facts(e).clone()),
             None => return false,
@@ -657,14 +661,22 @@ fn continuation_pair<W: WorkSink>(
     if lfs >= 2 {
         return false; // a blank line separates: no continuation is possible
     }
-    would_continue(a_facts, post, b_start)
+    would_continue(a_facts, post, b_start, cx.sink)
 }
 
 /// Can the block with `facts` continue onto the line containing
-/// `b_start` (the next block's first line, POST coordinates)?
-fn would_continue(facts: &BlockFacts, post: &[u8], b_start: usize) -> bool {
-    let ls = line_start_of(post, b_start);
-    let lf = sg::parser::memchr_lf(post, ls);
+/// `b_start` (the next block's first line, POST coordinates)? Every
+/// read below is bounded by the line's terminator, so the two reported
+/// scans cover the line the classification inspects
+/// (R5-CORRECTIVE-2).
+fn would_continue<W: WorkSink>(
+    facts: &BlockFacts,
+    post: &[u8],
+    b_start: usize,
+    sink: &mut W,
+) -> bool {
+    let ls = sg::parser::line_start_of_reported(post, b_start, sink);
+    let lf = sg::parser::memchr_lf_reported(post, ls, sink);
     match facts {
         BlockFacts::Terminated => false,
         BlockFacts::Para => matches!(
@@ -901,13 +913,6 @@ fn count_inline_node(n: &Node) -> u64 {
             | NodeKind::ReferenceLink
     ) as u64;
     here + count_inline_forest(&n.children)
-}
-
-fn line_start_of(src: &[u8], pos: usize) -> usize {
-    src[..pos]
-        .iter()
-        .rposition(|&b| b == b'\n')
-        .map_or(0, |p| p + 1)
 }
 
 fn ref_table(defs: &[(String, String)]) -> sg::RefTable {

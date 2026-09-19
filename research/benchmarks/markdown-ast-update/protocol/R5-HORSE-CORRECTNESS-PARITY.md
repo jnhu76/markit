@@ -632,6 +632,9 @@ MECHANISM_INTRINSIC_STATE (native retained state)
   §2), reference-environment generation }. Retained definition facts
   (prefix + suffix) for table rebuild. No benchmark counters are stored
   as mechanism state.
+  (AMENDED by §11.4, R5-CORRECTIVE-1: the shared unit is now
+  `Arc<RetainedBlock { skel, sem }>` — skeleton AND materialized
+  semantic subtree — so retained reuse shares complete syntax.)
 
 COMMON_INPUT / COMMON_INSTRUMENTATION
   As §1/§3. restart_distance / convergence_distance are COMMON

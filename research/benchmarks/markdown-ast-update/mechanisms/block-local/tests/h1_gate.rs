@@ -1099,3 +1099,71 @@ fn h1_updates_are_deterministic() {
     };
     assert_eq!(run(), run(), "two identical runs must agree");
 }
+
+// ---------------------------------------------------------------------------
+// Attribution — guard margin reads are reported (R5-CORRECTIVE-2)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn h1_guard_margins_report_source_inspection() {
+    // Fenced block followed by a paragraph: the right-edge pair (region
+    // fence vs suffix paragraph) drives `would_continue` over the
+    // suffix's first line — a read OUTSIDE the reparsed region [7, 18),
+    // so its exact event pair is attributable to the guard, not to a
+    // parse. Layout (old, 23 bytes): "alpha\n\n```\nc\n```\nomega\n" —
+    // fence [7, 16), omega [17, 22); edit "c" -> "xy" at [11, 12).
+    let old = "alpha\n\n```\nc\n```\nomega\n";
+    let post_b = "alpha\n\n```\nxy\n```\nomega\n";
+    let edit = CanonicalEdit::new(11, 12, "xy").expect("edit");
+
+    let old_state = h1_full_parse(old.as_bytes());
+    let mut counters = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = BlockLocalMechanism::new();
+        let old_source = source_of(old.as_bytes(), 70);
+        let post_source = source_of(post_b.as_bytes(), 71);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        assert_eq!(
+            pending.result(),
+            &parse_document(post_b.as_bytes()),
+            "result == H0"
+        );
+        mech.complete(pending).expect("complete");
+        cx.sink.finalize_derived();
+        let events = sink.inspections();
+        // `would_continue`'s suffix line scan is [18, 24) — the region
+        // parse never reports that pair. The edge separation pairs
+        // (17, 18) coincide with the region's final blank-line report,
+        // so they are pinned by multiplicity instead: the guards re-read
+        // those bytes (F4 backward scan + F5 pair + line-start scan),
+        // the parser reports the line exactly once.
+        assert!(
+            events.contains(&(18, 24)),
+            "would_continue's suffix-line scan must be reported, events: {events:?}"
+        );
+        let edge = events.iter().filter(|&&e| e == (17, 18)).count();
+        assert!(
+            edge >= 2,
+            "guard margin re-reads of the edge bytes must be reported, events: {events:?}"
+        );
+    }
+    assert_eq!(
+        counters.fallback_to_full_count,
+        Observed::Known(0),
+        "the guard path must not fall back (the events are from a local update)"
+    );
+}

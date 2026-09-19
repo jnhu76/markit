@@ -867,3 +867,78 @@ fn h2_updates_are_deterministic() {
     };
     assert_eq!(run(), run(), "two identical runs must agree");
 }
+
+// ---------------------------------------------------------------------------
+// Attribution — margin/probe reads are reported (R5-CORRECTIVE-2)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn h2_margins_report_source_inspection() {
+    // W1's padded scenario (a surviving left fragment and a taken run):
+    // the edit region reads, the left-edge paragraph margin's backward
+    // scan, and the consult-time paragraph margins must all appear as
+    // inspection EVENTS. The margin pairs are single-LF ranges the
+    // parser's per-line reports never emit.
+    let old = "alpha one\n\nbeta two\n\ngamma three\n\ndelta four\n\nepsilon five\n\nzeta six\n\neta seven\n";
+    let pad = "filler line one to push the fragment length well beyond the frozen minGap boundary\n\nfiller line two to keep both surviving fragment pieces safely above it\n\n";
+    let old_full = format!("{pad}{old}{pad}");
+    let gpos = pad.len() + old.find("gamma").unwrap();
+    let edit = CanonicalEdit::new(gpos + 2, gpos + 5, "UMMA").expect("edit");
+    let post: String = format!(
+        "{}{}{}",
+        &old_full[..gpos + 2],
+        "UMMA",
+        &old_full[gpos + 5..]
+    );
+    let post_b = post.as_bytes();
+
+    let old_state = h2_full_parse(old_full.as_bytes());
+    let mut counters = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = FragmentReuseMechanism::new();
+        let old_source = source_of(old_full.as_bytes(), 72);
+        let post_source = source_of(post_b, 73);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        assert_eq!(pending.result(), &parse_document(post_b), "result == H0");
+        mech.complete(pending).expect("complete");
+        cx.sink.finalize_derived();
+        let events = sink.inspections();
+        // The definition probe scans the edited span exactly.
+        assert!(
+            events.contains(&(gpos as u64 + 2, gpos as u64 + 6)),
+            "edited-span definition probe must be reported, events: {events:?}"
+        );
+        // The pair (gpos-2, gpos-1) — beta's LF byte — is reported by
+        // TWO independent mechanism paths: the left-edge margin's
+        // backward scan (before the boundary line) AND the consult-time
+        // paragraph margin at the damaged gamma block start. No parser
+        // line report is that pair, so multiplicity >= 2 pins both
+        // reporting paths at once. (The alpha/beta line starts are
+        // swallowed by the taken run — the scanner consults only at
+        // lines it actually dispatches.)
+        let pair = (gpos as u64 - 2, gpos as u64 - 1);
+        let count = events.iter().filter(|&&e| e == pair).count();
+        assert!(
+            count >= 2,
+            "left-edge margin backward scan AND the consult margin must both be reported, events: {events:?}"
+        );
+    }
+    match counters.nodes_reused {
+        Observed::Known(n) => assert!(n > 0, "the scenario must take a run (W1 shape)"),
+        other => panic!("nodes_reused must be Known, got {other:?}"),
+    }
+}

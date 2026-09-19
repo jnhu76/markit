@@ -19,7 +19,7 @@
 #       exercise (e) only where the restart-boundary backup already
 #       covers the join, so they stay green under its removal)
 #
-# Corrective probes (R5-CORRECTIVE-1 §12):
+# Corrective probes (R5-CORRECTIVE-1 §12; D added by R5-CORRECTIVE-2):
 #   A   H1 prefix ownership move reverted to a clone while still
 #       reporting nodes_reused > 0 (pseudo reuse) — caught by the
 #       ownership pass-through witness
@@ -27,6 +27,8 @@
 #       parse path — caught by the raw-event attribution gate
 #   C   completed-state QUERY bypassed back to the Pending's eager
 #       result — caught by the static completed-state authority check
+#   D   a prepare-phase margin inspection event removed from H4's
+#       restart-boundary scan — caught by the H4 attribution test
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -158,6 +160,16 @@ if static_query_authority; then
 fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
+echo "--- CORRECTIVE PROBE D: H4 restart-boundary margin inspection event removed (attribution test must catch) ---"
+apply "$H4" 's/cx\.sink\s*\n\s*\.record_source_inspection\(sep_lo as u64, sep_hi as u64\);/let _ = (sep_lo, sep_hi);/' 'let _ = (sep_lo, sep_hi);'
+cargo build -q -p markit-mdbench-restart-convergence 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
+if cargo test -q -p markit-mdbench-restart-convergence --test h4_gate h4_prepare_margins_report_source_inspection >/tmp/r5-mutation-detector.log 2>&1; then
+    echo "MUTATION SURVIVED: H4 attribution test passed with the margin event removed" >&2
+    tail -20 /tmp/r5-mutation-detector.log >&2 || true
+    exit 1
+fi
+restore_all; detected=$((detected + 1)); echo "detected"
+
 restore_all
 echo
-echo "R5 MUTATION CHECK: $detected/7 DETECTED"
+echo "R5 MUTATION CHECK: $detected/8 DETECTED"

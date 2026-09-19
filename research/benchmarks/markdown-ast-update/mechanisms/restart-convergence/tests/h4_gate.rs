@@ -1069,3 +1069,60 @@ fn h4_converged_suffix_shares_retained_syntax_identity() {
         "the shared suffix is counted as nodes_reused"
     );
 }
+
+// ---------------------------------------------------------------------------
+// Attribution — prepare-phase margin reads are reported (R5-CORRECTIVE-2)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn h4_prepare_margins_report_source_inspection() {
+    // An edit inside "ccc" selects the ccc checkpoint; the
+    // restart-boundary margin scans the separation between the previous
+    // retained block and the boundary. That scan is a prepare-phase read
+    // of the OLD source — the update-phase parse starts AT the boundary
+    // position, so the exact event pair (8, 10) is attributable to the
+    // margin, not to a parse.
+    // Old layout: aaa [0, 3], bbb [5, 8], ccc [10, 13], ddd [15, 18].
+    let old = "aaa\n\nbbb\n\nccc\n\nddd\n";
+    let edit = CanonicalEdit::new(11, 11, "X").expect("edit"); // inside ccc
+    let post_b: String = format!("{}{}{}", &old[..11], "X", &old[11..]);
+    let post = post_b.as_bytes();
+
+    let old_state = h4_full_parse(old.as_bytes());
+    let mut counters = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = RestartConvergenceMechanism::new();
+        let old_source = source_of(old.as_bytes(), 76);
+        let post_source = source_of(post, 77);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        assert_eq!(pending.result(), &parse_document(post), "result == H0");
+        mech.complete(pending).expect("complete");
+        cx.sink.finalize_derived();
+        let events = sink.inspections();
+        // The prepare margin scanned the bbb/ccc separation [8, 10) for
+        // blank-line termination (checkpoint s = ccc, prev = bbb).
+        assert!(
+            events.contains(&(8, 10)),
+            "restart-boundary separation scan must be reported, events: {events:?}"
+        );
+    }
+    assert_eq!(
+        counters.fallback_to_full_count,
+        Observed::NotApplicable,
+        "restart-at-zero is a restart, not a fallback"
+    );
+}

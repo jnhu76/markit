@@ -1,7 +1,9 @@
 # R5 — H1/H2/H3/H4 Mechanism Implementation (Stage Record)
 
 Status: **READY_FOR_FINAL_R5_REVIEW** (2026-09-19; PR #30, corrective-1
-applied and gate-passed at `e9539806`, not merged)
+gate-passed at `e9539806`; corrective-2 (§12, source-inspection
+closure) applied and locally green — focused server verification
+pending reviewer acceptance, not merged)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r5-horses-correctness-parity-1`
 Base: `master` @ `21d7d832fec84fceedb7600cccb4296745395fc1` (PR #29 merge)
@@ -159,7 +161,7 @@ Instantiates the §10 implementation-parity contract of the R5 freeze.
 | 1 | Grammar substrate | shared-grammar | shared-grammar | shared-grammar | shared-grammar | shared-grammar |
 | 2 | Inputs (`&Source` + `CanonicalEdit`) | common | common | common | common | common |
 | 3 | Result contract | NORMALIZED-RESULT-v1 + checksum | same | same | same | same |
-| 4 | Retained native state | full normalized doc + source len | tiling Vec<TopEntry{Skel,facts}> + defs | parent-relative Arc<FNode> tree + fragment table + defs | TEntry{gap,node} tree (no absolutes) + defs + change flags | Arc<Skel> slots (base_shift) + checkpoint records (position,key,gen) + defs |
+| 4 | Retained native state | full normalized doc + source len | tiling Vec<TopEntry{Skel, sem, facts}> + defs | parent-relative Arc<FNode> tree (materialized inline payloads) + fragment table + defs | TEntry{gap,node} tree (no absolutes; materialized inline payloads) + defs + change flags | Arc<RetainedBlock{skel, sem}> slots (base_shift) + checkpoint records (position,key,gen) + defs |
 | 5 | Damage/invalidation | none (full rebuild) | strict-overlap region + F1-F6 guards | split/drop windows around the edit; `]: ` + damaged has_def flag the table | changed flags along the edited ancestry + continuation margin | damaged-span scan + `]: ` scan; definition generation bump |
 | 6 | Reuse authority | none (reuses nothing; measured 0) | whole blocks OUTSIDE the reparse region, after guard veto | fragment takes via splice hook, window + ctx vouched | unmarked line-aligned ctx-agreeing runs via forward cursor | one stable-suffix take at a converged checkpoint |
 | 7 | Position strategy (R2-H09) | n/a (rebuild) | delta-shift rebuild | fragment offsets + parent-relative | patch-path + derive-at-read | per-block base offsets |
@@ -252,7 +254,9 @@ was fixed and re-gated within this stage (findings 2.1, 3.1, 3.2, 4.1,
 17. Are the negative mutations actually DETECTED (compile-fresh, test
     failing, tree restored)? `mutation-check-r5.sh` verifies all three
     properties per mutation and refuses to run on a dirty tree; expected
-    result 4/4 (verified by the script run in §7).
+    result 4/4 at the time (the negative gate later grew to 7/7 with
+    the R5-CORRECTIVE-1 probes A/B/C and to 8/8 with the
+    R5-CORRECTIVE-2 probe D — §7.1).
 18. Does the matrix instantiation reproduce CASE-MATRIX-v1 exactly? Yes —
     each horse's matrix test asserts 24 FULL_PARSE + 24 QUERY + 322
     updates = 370, the 7 declared overlaps as the only collapses, and all
@@ -307,9 +311,12 @@ was fixed and re-gated within this stage (findings 2.1, 3.1, 3.2, 4.1,
   `R5 HORSE CORRECTNESS + PARITY GATE: PASS`
   (fmt, clippy, workspace tests, four release matrices, R1/R3/R4
   regressions, negative gate).
-- `scripts/mutation-check-r5.sh`: 4/4 DETECTED (one mechanism-specific
-  mutation per horse; each compiles, each is caught by its targeted
-  detector, each restored; nothing mutated is committed).
+- `scripts/mutation-check-r5.sh`: 4/4 DETECTED at the pre-corrective
+  baseline (one mechanism-specific mutation per horse; each compiles,
+  each is caught by its targeted detector, each restored; nothing
+  mutated is committed). The negative gate later grew to 7/7
+  (R5-CORRECTIVE-1 probes A/B/C) and to 8/8 (R5-CORRECTIVE-2 probe D) —
+  see the corrective run entries below.
 
 ### 7.1 Gate run history (recorded honestly)
 
@@ -337,7 +344,8 @@ exit):
    differential DOES fail under (e) removal; the detector was switched
    to `adversarial_r5` (as H2/H3 already were). The probes remain fully
    differential and keep their role pinning gauge semantics and
-   soundness on the convergence path. Validated: 4/4 DETECTED.
+   soundness on the convergence path. Validated: 4/4 DETECTED
+   (pre-corrective).
    Freeze-doc §9 carries the matching amendment — recorded, not silent.
 
 Gate run 2 (local, tree at `e986301`) was killed by a host freeze of the
@@ -359,7 +367,8 @@ development host). Every step green in one pass:
 - R1/R3/R4 regressions: PASS (R4 re-runs R1+R3 and its own negative
   gate internally);
 - `R4 MUTATION CHECK: 5/5 DETECTED`, `R4 H0 REFERENCE GATE: PASS`,
-  `R5 MUTATION CHECK: 4/4 DETECTED`;
+  `R5 MUTATION CHECK: 4/4 DETECTED` (pre-corrective baseline; the
+  corrective runs below supersede this count);
 - final line: `R5 HORSE CORRECTNESS + PARITY GATE: PASS`, followed by
   the stage banner "Correctness only: no benchmark campaign was run and
   no timing was recorded." The wall durations above are operational
@@ -573,3 +582,53 @@ accepted by the human reviewer with `CORRECTIVE_CODE_VERDICT: PASS`;
 the single authoritative corrective gate run at `e9539806` ended
 `R5 HORSE CORRECTNESS + PARITY GATE: PASS` (§7.1). Nothing was written
 to the tree after that gate except this status/evidence record.
+
+## 12. CORRECTIVE-2 (final review verdict MAJOR 1: source-inspection closure)
+
+The final review of the corrective-1 gate state accepted correctness,
+identity, eager completion, completed-state QUERY, and node accounting,
+but found the MAJOR-2 instrumented-attribution surface still incomplete:
+mechanism-private source reads (margins, definition probes, boundary
+scans, line-offset derivations) were not reported as
+`record_source_inspection` events. Correctness was never in question —
+the defect is attributional: R0/R1's planned
+`unique_source_bytes_inspected / logical edited bytes` ratio would have
+under-reported real source work and could have produced falsely low
+PA values for H3/H4.
+
+Audit (non-test code, all four horses) and repairs — every repair is a
+sink call plus sink threading; NO parser/reuse/fallback/state/result
+expression changed, so the `e9539806` full correctness matrices remain
+valid for these mechanisms:
+
+- H4 `prepare_update` (the named finding): the restart-boundary
+  margin's separation scan `[prev.abs_end, boundary)` and the boundary
+  line's `k_line_end` forward scan now report exact ranges (the
+  `MechanismContext` was already in scope).
+- H4 `consult` (e): the blank-check read now reports on EVERY consult
+  that reaches it (pass or fail; previously only passing checks
+  reported, and the range omitted the backward scan's byte).
+- H1: `would_continue`'s line reads, F4(a)'s region backward scan +
+  terminator probe, `block_facts`/`last_item_strip` list-fact reads.
+- H2: the edited-span `]: ` probe, `left_window_end`'s three `old`
+  reads, the consult-time paragraph margin (previously unreported),
+  both `line_offset` derivations.
+- H3: `patch_tree`'s two separation `lfs` counts, the `]: ` probe, the
+  consult-time paragraph margin, both `line_offset` derivations.
+- Shared substrate: `line_start_of_reported` / `memchr_lf_reported`
+  (report the bytes actually scanned);
+  `CounterSink::inspections()` exposes raw events for event-level
+  assertions (a margin read inside a parser-reported line range is
+  invisible to the derived union counters).
+
+Detection: four per-horse attribution tests (event-level containment +
+multiplicity assertions, all green) and negative probe D in
+`mutation-check-r5.sh` (removing H4's separation-scan report must fail
+`h4_prepare_margins_report_source_inspection`). Gate count 7/7 → 8/8.
+
+Verification status at this commit: fmt / clippy `-D warnings` /
+`cargo test --workspace` (exit 0) and the four attribution tests pass
+locally. The focused server run — R1 regression, mutation gate 8/8,
+eager + attribution tests — runs after reviewer acceptance of this
+commit; the 370×4 release correctness matrices are NOT re-run (no
+mechanism semantics changed).

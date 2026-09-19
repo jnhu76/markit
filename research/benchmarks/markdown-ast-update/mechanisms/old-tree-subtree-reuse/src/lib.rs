@@ -304,6 +304,7 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
             },
             &mut scanned,
             &mut patched,
+            cx.sink,
         );
         cx.sink.add_metadata_records_touched(scanned + patched);
 
@@ -337,11 +338,15 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         let ee_new = prepared.edit_end_new;
         debug_assert_eq!(ee_new, es + edit.inserted_text_len_bytes() as usize);
         // The reparsed region may itself create a definition: flag on the
-        // region's post bytes (any `]: ` occurrence).
-        let definition_changing = prepared.definition_changing
-            || post[es..ee_new.min(post.len())]
+        // region's post bytes (any `]: ` occurrence). The probe reads the
+        // edited span when it runs: report the scan (R5-CORRECTIVE-2).
+        let definition_changing = prepared.definition_changing || {
+            cx.sink
+                .record_source_inspection(es as u64, ee_new.min(post.len()) as u64);
+            post[es..ee_new.min(post.len())]
                 .windows(3)
-                .any(|w| w == b"]: ");
+                .any(|w| w == b"]: ")
+        };
         declare_not_applicable(cx);
 
         // Forward pass with the reusable-node cursor.
@@ -354,13 +359,22 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
             takes: Vec::new(),
             consultations: 0,
             reused: 0,
+            margin_checks: Vec::new(),
         };
         let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
         let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
-        let (takes, consultations, reused) = {
+        let (takes, consultations, reused, margin_checks) = {
             drop(hook); // end the cursor borrow before reading the take record
-            (cursor.takes, cursor.consultations, cursor.reused)
+            (
+                cursor.takes,
+                cursor.consultations,
+                cursor.reused,
+                cursor.margin_checks,
+            )
         };
+        for (a, b) in &margin_checks {
+            cx.sink.record_source_inspection(*a, *b);
+        }
 
         // Rebuild the document-global first-wins table from the assembled
         // structure (fresh Def entries + taken runs' recorded facts).
@@ -425,13 +439,14 @@ struct EditFacts {
     delta: isize,
 }
 
-fn patch_tree(
+fn patch_tree<W: WorkSink>(
     tree: &TTree,
     old: &[u8],
     post: &[u8],
     f: &EditFacts,
     scanned: &mut u64,
     patched: &mut u64,
+    sink: &mut W,
 ) -> TTree {
     let es = f.es;
     let ee = f.ee;
@@ -478,7 +493,14 @@ fn patch_tree(
         start - entries[i].node.line_offset
     };
     if let Some(pi) = prev_idx {
-        let sep_lfs = lfs(old, prev_end.unwrap_or(0), es);
+        // The margin's LF count reads the separation bytes: report the
+        // exact scanned range (R5-CORRECTIVE-2); `lfs` reads nothing
+        // when the range is empty.
+        let (a, b) = (prev_end.unwrap_or(0), es);
+        if a < b {
+            sink.record_source_inspection(a as u64, b as u64);
+        }
+        let sep_lfs = lfs(old, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, prev_idx) {
             let node = mark_changed(&entries[pi].node, patched);
             entries[pi] = TEntry {
@@ -489,7 +511,11 @@ fn patch_tree(
     }
     if let Some(ni) = next_idx {
         let next_line_new = (line_aligned(ni, &tree.entries) as isize + delta).max(0) as usize;
-        let sep_lfs = lfs(post, ee_new.min(post.len()), next_line_new.min(post.len()));
+        let (a, b) = (ee_new.min(post.len()), next_line_new.min(post.len()));
+        if a < b {
+            sink.record_source_inspection(a as u64, b as u64);
+        }
+        let sep_lfs = lfs(post, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, next_idx) {
             let node = mark_changed(&entries[ni].node, patched);
             entries[ni] = TEntry {
@@ -669,6 +695,11 @@ struct Cursor<'a> {
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
+    /// Inspected byte ranges of the consult-time paragraph margins,
+    /// buffered during the parse (the cursor borrow excludes the sink)
+    /// and reported by the caller afterwards (R5-CORRECTIVE-2). Every
+    /// consult that performs the read reports it, pass or fail.
+    margin_checks: Vec<(u64, u64)>,
 }
 
 /// One taken run: the placeholder covers POST bytes `[pos, pos + len)`;
@@ -701,6 +732,11 @@ impl Cursor<'_> {
         // interruptor lines degrade to reparse.
         if pos > 0 {
             let prev_ls = line_start_of(self.post, pos - 1);
+            // The margin read happens on every consult that reaches it
+            // (pass or fail): buffer the inspected range — the backward
+            // scan [prev_ls-1, pos-1) covers the blank check's span.
+            self.margin_checks
+                .push((prev_ls.saturating_sub(1) as u64, (pos - 1) as u64));
             if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
                 return None;
             }
@@ -949,7 +985,9 @@ fn build_tnode<W: WorkSink>(
     Arc::new(TNode {
         kind,
         size,
-        line_offset: start - line_start_of(src, start),
+        // The line-offset derivation is a mechanism source read: reported
+        // (R5-CORRECTIVE-2).
+        line_offset: start - sg::parser::line_start_of_reported(src, start, sink),
         changed: false,
         marker,
         children,
@@ -1211,7 +1249,7 @@ fn assemble_tnode<W: WorkSink>(
     Arc::new(TNode {
         kind,
         size,
-        line_offset: start - line_start_of(post, start),
+        line_offset: start - sg::parser::line_start_of_reported(post, start, sink),
         changed: false,
         marker,
         children,

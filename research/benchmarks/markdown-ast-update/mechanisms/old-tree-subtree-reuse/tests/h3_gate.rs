@@ -807,3 +807,85 @@ fn h3_updates_are_deterministic() {
     };
     assert_eq!(run(), run(), "two identical runs must agree");
 }
+
+// ---------------------------------------------------------------------------
+// Attribution — patch margin reads are reported (R5-CORRECTIVE-2)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn h3_patch_margins_report_source_inspection() {
+    // Edit inside "gamma" of the four-paragraph document: the patch's
+    // continuation margins scan the separations on both sides of the
+    // damage, and every consult's paragraph margin reads the line before
+    // its block start. All of these must appear as inspection EVENTS —
+    // each pinned pair is one no parser line report emits.
+    // Old layout: alpha [0, 9], beta [11, 19], gamma [21, 32],
+    // delta [34, 44]; edit gamma[23..26) -> "UMMA" (delta +1).
+    let old = "alpha one\n\nbeta two\n\ngamma three\n\ndelta four\n";
+    let g = old.find("gamma").unwrap(); // 21
+    let edit = CanonicalEdit::new(g + 2, g + 5, "UMMA").expect("edit");
+    let post: String = format!("{}{}{}", &old[..g + 2], "UMMA", &old[g + 5..]);
+    let post_b = post.as_bytes();
+
+    let old_state = h3_full_parse(old.as_bytes());
+    let mut counters = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = OldTreeSubtreeReuseMechanism::new();
+        let old_source = source_of(old.as_bytes(), 74);
+        let post_source = source_of(post_b, 75);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        assert_eq!(pending.result(), &parse_document(post_b), "result == H0");
+        mech.complete(pending).expect("complete");
+        cx.sink.finalize_derived();
+        let events = sink.inspections();
+        // Prev-separation margin: [prev entry end, es) = [19, 23) — the
+        // blank bytes before a block are the entry's gap, so the entry
+        // ending at/before the edit is beta (end 19). Crosses no line
+        // boundary a parser report would carry.
+        assert!(
+            events.contains(&(19, 23)),
+            "prev-separation margin scan must be reported, events: {events:?}"
+        );
+        // Next-separation margin: [ee_new, delta's shifted line start) =
+        // [27, 35) in post coordinates.
+        assert!(
+            events.contains(&(27, 35)),
+            "next-separation margin scan must be reported, events: {events:?}"
+        );
+        // The definition probe over the edited span.
+        assert!(
+            events.contains(&(23, 27)),
+            "edited-span definition probe must be reported, events: {events:?}"
+        );
+        // Consult-time paragraph margins. The unmarked alpha+beta run is
+        // taken at pos 0 (no margin — pos is 0), so the consults whose
+        // margins must appear are gamma's (19, 20) and delta's (33, 34):
+        // (prev content line's LF, blank LF) pairs, neither of which a
+        // parser line report emits.
+        for pair in [(19u64, 20u64), (33, 34)] {
+            assert!(
+                events.contains(&pair),
+                "consult margin {pair:?} must be reported, events: {events:?}"
+            );
+        }
+    }
+    assert_eq!(
+        counters.fallback_to_full_count,
+        Observed::NotApplicable,
+        "H3 has no fallback lane"
+    );
+}

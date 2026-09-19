@@ -990,6 +990,30 @@ pub fn memchr_lf(src: &[u8], from: usize) -> usize {
         .unwrap_or(src.len())
 }
 
+/// `line_start_of`-shaped backward scan with attribution: reports the
+/// bytes the scan actually inspected — `[found_lf, pos)` (or `[0, pos)`
+/// before the first line). Mechanism-work source reads use this form so
+/// every inspected byte reaches the attribution lane
+/// (R5-CORRECTIVE-2, source-inspection closure); contexts that report
+/// their own covering range may keep the plain form.
+pub fn line_start_of_reported<W: WorkSink>(src: &[u8], pos: usize, sink: &mut W) -> usize {
+    let found = src[..pos].iter().rposition(|&b| b == b'\n');
+    sink.record_source_inspection(found.map_or(0, |p| p) as u64, pos as u64);
+    found.map_or(0, |p| p + 1)
+}
+
+/// [`memchr_lf`] with attribution: reports the bytes the scan actually
+/// inspected — `[from, lf]` including the terminator when found,
+/// `[from, len)` otherwise.
+pub fn memchr_lf_reported<W: WorkSink>(src: &[u8], from: usize, sink: &mut W) -> usize {
+    let found = src[from..].iter().position(|&b| b == b'\n');
+    sink.record_source_inspection(
+        from as u64,
+        found.map_or(src.len(), |p| from + p + 1) as u64,
+    );
+    found.map_or(src.len(), |p| from + p)
+}
+
 pub fn count_spaces(src: &[u8], from: usize, to: usize) -> usize {
     let mut n = from;
     while n < to && src[n] == b' ' {
