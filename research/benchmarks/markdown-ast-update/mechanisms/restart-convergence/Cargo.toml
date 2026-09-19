@@ -1,5 +1,5 @@
 [package]
-name = "markit-mdbench-full-rebuild"
+name = "markit-mdbench-restart-convergence"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -11,3 +11,6 @@ markit-mdbench-shared-grammar = { workspace = true }
 
 [dev-dependencies]
 markit-mdbench-corpusgen = { workspace = true }
+# Test-side oracle only (R5 freeze §1): tests may compare H4 against H0;
+# the mechanism itself never calls H0.
+markit-mdbench-full-rebuild = { workspace = true }

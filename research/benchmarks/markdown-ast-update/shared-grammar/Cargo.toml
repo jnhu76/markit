@@ -1,5 +1,5 @@
 [package]
-name = "markit-mdbench-full-rebuild"
+name = "markit-mdbench-shared-grammar"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -7,7 +7,3 @@ license.workspace = true
 [dependencies]
 markit-mdbench-common = { workspace = true }
 markit-mdbench-oracle = { workspace = true }
-markit-mdbench-shared-grammar = { workspace = true }
-
-[dev-dependencies]
-markit-mdbench-corpusgen = { workspace = true }

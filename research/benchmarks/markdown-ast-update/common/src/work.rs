@@ -188,6 +188,15 @@ impl<'a> CounterSink<'a> {
         }
     }
 
+    /// The recorded inspection events, unmerged and in arrival order.
+    /// Read-only view for attribution assertions: a mechanism-work read
+    /// must be visible as an EVENT (an exact `[start, end)` pair), which
+    /// the derived union counters cannot distinguish once a parser's own
+    /// per-line reports cover the same bytes.
+    pub fn inspections(&self) -> &[(u64, u64)] {
+        &self.inspections
+    }
+
     /// Derive the `unique_source_*` slots from the recorded inspection
     /// events (sort + merge overlapping/adjacent ranges, sum the merged
     /// lengths). The union of disjoint ranges inside `[0, u64::MAX]` can

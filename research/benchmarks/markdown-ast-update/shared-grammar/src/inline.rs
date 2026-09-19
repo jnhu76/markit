@@ -1,11 +1,10 @@
-//! H0 inline scanning — BENCH-GRAMMAR-v1 §4, §9, §10.
+//! Shared BENCH-GRAMMAR-v1 inline scanning — the R4 H0 inline pass,
+//! shared unchanged (R5 decision freeze §1).
 //!
 //! One scanner per content SEGMENT: a segment is a maximal byte range of
 //! one block's content between container prefixes (NORMALIZED-RESULT-v1
 //! §2: a container prefix and the LF before it are trivia BETWEEN text
-//! runs). Inline constructs are matched within a single segment; this is
-//! the H0 reference reading of "maximal runs within the parent block's
-//! content region" and is documented in the R4 stage record.
+//! runs). Inline constructs are matched within a single segment.
 //!
 //! Frozen rules implemented here:
 //!
@@ -22,9 +21,19 @@
 //!   tie-break and the empty-emphasis adjacency ban (§10.2); emphasis
 //!   content is re-scanned recursively.
 
-use markit_mdbench_oracle::normalized::{Node, NodeKind};
+use markit_mdbench_common::NoopWorkSink;
+use markit_mdbench_common::WorkSink;
+use markit_mdbench_oracle::normalized::{Node, NodeKind, NormalizedDocument};
 
 use crate::parser::Skel;
+
+// R5-CORRECTIVE-1 (MAJOR-2): every shared inline entry point has a
+// sink-instrumented form. The instrumented form reports each inspected
+// content segment `[ss, se)` once via `record_source_inspection(ss, se)`
+// before scanning it; recursive sub-scans (link text, emphasis content)
+// report their own (overlapping) subranges and the common collector
+// unions them. The plain forms below are the `NoopWorkSink` wrappers —
+// same algorithm, no attribution.
 
 /// Document-global reference-definition table, in source order; first
 /// definition of a normalized label wins lookup (§9.3). Later duplicates
@@ -51,6 +60,25 @@ impl RefTable {
             .find(|(l, _)| l == label)
             .map(|(_, d)| d.as_str())
     }
+
+    /// Recorded facts in source order (duplicates included).
+    pub fn entries(&self) -> &[(String, String)] {
+        &self.entries
+    }
+
+    /// Number of recorded facts.
+    pub fn len(&self) -> usize {
+        self.entries.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.entries.is_empty()
+    }
+
+    /// Extend from another table's facts, preserving order.
+    pub fn extend_from(&mut self, facts: &[(String, String)]) {
+        self.entries.extend(facts.iter().cloned());
+    }
 }
 
 /// Label normalization (§9.1): collapse space runs to one space, trim,
@@ -74,24 +102,46 @@ pub fn norm_label(bytes: &[u8]) -> String {
 
 /// Convert block skeletons into normalized nodes, running the inline
 /// pass with the completed definition table (§13: blocks -> table ->
-/// inlines).
+/// inlines). [`Skel::Spliced`] placeholders must have been replaced by
+/// the owning horse before this point.
 pub fn materialize(src: &[u8], skels: Vec<Skel>, defs: &RefTable) -> Vec<Node> {
+    materialize_with_sink(src, skels, defs, &mut NoopWorkSink)
+}
+
+/// Sink-instrumented [`materialize`]: every inline content segment the
+/// materializer scans is reported to `sink` (R5-CORRECTIVE-1, MAJOR-2).
+pub fn materialize_with_sink<W: WorkSink>(
+    src: &[u8],
+    skels: Vec<Skel>,
+    defs: &RefTable,
+    sink: &mut W,
+) -> Vec<Node> {
     let mut out = Vec::with_capacity(skels.len());
     for s in skels {
-        out.push(materialize_one(src, s, defs));
+        out.push(materialize_one_with_sink(src, s, defs, sink));
     }
     out
 }
 
-fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
+/// Materialize ONE top-level block into its normalized subtree.
+/// Sink-instrumented like [`materialize_with_sink`]; horses that retain
+/// per-block materialized syntax (H1/H4) call this at block-construction
+/// time.
+pub fn materialize_one_with_sink<W: WorkSink>(
+    src: &[u8],
+    s: Skel,
+    defs: &RefTable,
+    sink: &mut W,
+) -> Node {
     match s {
         Skel::Para {
             start,
             end,
             segments,
+            ..
         } => {
             let mut n = Node::new(NodeKind::Paragraph, start, end);
-            n.children = scan_inlines(src, &segments, true, defs);
+            n.children = scan_inlines_with_sink(src, &segments, true, defs, sink);
             n
         }
         Skel::Heading {
@@ -99,24 +149,28 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             level,
             content,
+            ..
         } => {
             let mut n = Node::new(NodeKind::Heading, start, end);
             n.level = Some(level);
-            n.children = scan_inlines(src, &[content], true, defs);
+            n.children = scan_inlines_with_sink(src, &[content], true, defs, sink);
             n
         }
         Skel::Quote {
             start,
             end,
             children,
+            ..
         } => {
             let mut n = Node::new(NodeKind::BlockQuote, start, end);
-            n.children = materialize(src, children, defs);
+            n.children = materialize_with_sink(src, children, defs, sink);
             n
         }
-        Skel::List { start, end, items } => {
+        Skel::List {
+            start, end, items, ..
+        } => {
             let mut n = Node::new(NodeKind::List, start, end);
-            n.children = materialize(src, items, defs);
+            n.children = materialize_with_sink(src, items, defs, sink);
             n
         }
         Skel::Item {
@@ -124,10 +178,11 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             marker,
             children,
+            ..
         } => {
             let mut n = Node::new(NodeKind::ListItem, start, end);
             n.marker = Some(if marker == b'-' { "-" } else { "*" }.to_string());
-            n.children = materialize(src, children, defs);
+            n.children = materialize_with_sink(src, children, defs, sink);
             n
         }
         Skel::Fence {
@@ -135,6 +190,7 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             info,
             content,
+            ..
         } => {
             let mut n = Node::new(NodeKind::FencedCode, start, end);
             n.info = Some(info);
@@ -146,11 +202,15 @@ fn materialize_one(src: &[u8], s: Skel, defs: &RefTable) -> Node {
             end,
             label,
             destination,
+            ..
         } => {
             let mut n = Node::new(NodeKind::ReferenceDefinition, start, end);
             n.label = Some(label);
             n.destination = Some(destination);
             n
+        }
+        Skel::Spliced { .. } => {
+            panic!("Spliced placeholder reached materialization: the owning horse must replace splice slots first")
         }
     }
 }
@@ -162,9 +222,21 @@ pub fn scan_inlines(
     links: bool,
     defs: &RefTable,
 ) -> Vec<Node> {
+    scan_inlines_with_sink(src, segments, links, defs, &mut NoopWorkSink)
+}
+
+/// Sink-instrumented [`scan_inlines`]: each scanned segment is reported
+/// to `sink` (R5-CORRECTIVE-1, MAJOR-2).
+pub fn scan_inlines_with_sink<W: WorkSink>(
+    src: &[u8],
+    segments: &[(usize, usize)],
+    links: bool,
+    defs: &RefTable,
+    sink: &mut W,
+) -> Vec<Node> {
     let mut out = Vec::new();
     for &(ss, se) in segments {
-        out.extend(scan_region(src, ss, se, links, defs));
+        out.extend(scan_region_with_sink(src, ss, se, links, defs, sink));
     }
     out
 }
@@ -179,7 +251,24 @@ enum Elem {
 
 /// Scan one segment region `[ss, se)`. `links` is false inside link
 /// text (nested links are literal; §9.2).
-fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -> Vec<Node> {
+pub fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -> Vec<Node> {
+    scan_region_with_sink(src, ss, se, links, defs, &mut NoopWorkSink)
+}
+
+/// Sink-instrumented [`scan_region`]: the segment is reported to `sink`
+/// before it is scanned (R5-CORRECTIVE-1, MAJOR-2). The scanner reads
+/// every byte of `[ss, se)` (lookahead included), so one event per scan
+/// covers exactly the inspected bytes; recursive sub-scans report their
+/// own overlapping subranges.
+pub fn scan_region_with_sink<W: WorkSink>(
+    src: &[u8],
+    ss: usize,
+    se: usize,
+    links: bool,
+    defs: &RefTable,
+    sink: &mut W,
+) -> Vec<Node> {
+    sink.record_source_inspection(ss as u64, se as u64);
     let mut out: Vec<Elem> = Vec::new();
     // pending maximal text run [text_start, i)
     let mut text_start: Option<usize> = None;
@@ -237,7 +326,7 @@ fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -
                         flush_text!(i);
                         let mut n = Node::new(NodeKind::Link, i, end);
                         n.destination = Some(destination);
-                        n.children = scan_region(src, ts, te, false, defs);
+                        n.children = scan_region_with_sink(src, ts, te, false, defs, sink);
                         out.push(Elem::Node(n));
                         i = end;
                     }
@@ -251,7 +340,7 @@ fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -
                         let mut n = Node::new(NodeKind::ReferenceLink, i, end);
                         n.label = Some(label);
                         n.destination = Some(destination);
-                        n.children = scan_region(src, ts, te, false, defs);
+                        n.children = scan_region_with_sink(src, ts, te, false, defs, sink);
                         out.push(Elem::Node(n));
                         i = end;
                     }
@@ -282,7 +371,7 @@ fn scan_region(src: &[u8], ss: usize, se: usize, links: bool, defs: &RefTable) -
                     let (opener, out_len) = stack.pop().expect("closable implies opener");
                     flush_text!(i);
                     out.truncate(out_len);
-                    let children = scan_region(src, opener + 1, i, links, defs);
+                    let children = scan_region_with_sink(src, opener + 1, i, links, defs, sink);
                     let mut n = Node::new(NodeKind::Emphasis, opener, i + 1);
                     n.children = children;
                     out.push(Elem::Node(n));
@@ -489,4 +578,23 @@ fn find_text_region_end(src: &[u8], from: usize, to: usize) -> Option<usize> {
         }
     }
     None
+}
+
+/// Convenience: full normalized document from parsed blocks + table.
+pub fn finish_document(src: &[u8], blocks: Vec<Skel>, defs: &RefTable) -> NormalizedDocument {
+    finish_document_with_sink(src, blocks, defs, &mut NoopWorkSink)
+}
+
+/// Sink-instrumented [`finish_document`]: the inline pass reports every
+/// scanned segment to `sink` (R5-CORRECTIVE-1, MAJOR-2).
+pub fn finish_document_with_sink<W: WorkSink>(
+    src: &[u8],
+    blocks: Vec<Skel>,
+    defs: &RefTable,
+    sink: &mut W,
+) -> NormalizedDocument {
+    let children = materialize_with_sink(src, blocks, defs, sink);
+    let mut root = Node::new(NodeKind::Document, 0, src.len());
+    root.children = children;
+    NormalizedDocument::new(root)
 }

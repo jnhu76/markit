@@ -8,8 +8,17 @@
 # The tree is restored after every mutation (and on any exit); nothing
 # mutated is committed.
 #
+# R5 AMENDMENT (explicit, not silent): since the R5 shared-substrate
+# extraction, H0's parser and inline semantics live in the shared
+# shared-grammar crate (mechanisms/full-rebuild is the H0 wrapper) and
+# this script's M1-M4 targets moved accordingly. The mutation classes,
+# the corrupted expressions, and the detector (full-rebuild's own suites
+# exercising H0 end-to-end through the shared crate) are unchanged.
+# The full-rebuild crate itself no longer contains parser.rs/inline.rs,
+# which is what the pre-amendment script pointed at.
+#
 # Mutation classes (one representative each):
-#   M1  span off-by-one            (parser.rs, paragraph start)
+#   M1  span off-by-one            (paragraph start, parser.rs)
 #   M2  byte/Unicode-fold drop     (inline.rs, label normalization D7)
 #   M3  refdef lookup last-wins    (inline.rs, §9.3 first-wins)
 #   M4  unclosed-fence span wrong  (parser.rs, §8 EOF rule)
@@ -19,8 +28,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-PARSER=mechanisms/full-rebuild/src/parser.rs
-INLINE=mechanisms/full-rebuild/src/inline.rs
+PARSER=shared-grammar/src/parser.rs
+INLINE=shared-grammar/src/inline.rs
 LIB=mechanisms/full-rebuild/src/lib.rs
 TARGETS=("$PARSER" "$INLINE" "$LIB")
 
@@ -42,7 +51,7 @@ done
 apply() {
     local file="$1" sub="$2" verify="$3"
     perl -0pi -e "$sub" "$file"
-    if ! grep -q "$verify" "$file"; then
+    if ! grep -qF "$verify" "$file"; then
         echo "MUTATION SCRIPT BUG: substitution did not apply to $file" >&2
         exit 1
     fi
@@ -66,7 +75,7 @@ run_detector() {
 detected=0
 
 echo "--- M1: paragraph span off-by-one (fixtures must catch) ---"
-apply "$PARSER" 's/start: col \+ s,/start: col + s + 1,/' 'start: col + s + 1,'
+apply "$PARSER" 's/self\.para = Some\(OpenPara \{\n                    start: col \+ s,/self.para = Some(OpenPara {\n                    start: col + s + 1,/' 'start: col + s + 1,'
 run_detector --test fixtures
 restore_all; detected=$((detected + 1)); echo "detected"
 
@@ -81,7 +90,7 @@ run_detector --test fixtures
 restore_all; detected=$((detected + 1)); echo "detected"
 
 echo "--- M4: unclosed-fence EOF span wrong (F017) ---"
-apply "$PARSER" 's/end: len,/end: f.start,/' 'end: f.start,'
+apply "$PARSER" 's/let mut end = self\.end;/let mut end = f.start;/' 'let mut end = f.start;'
 run_detector --test fixtures
 restore_all; detected=$((detected + 1)); echo "detected"
 

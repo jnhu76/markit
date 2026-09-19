@@ -6,8 +6,13 @@ members = [
     "oracle",
     "runner",
     "corpusgen",
+    "shared-grammar",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
+    "mechanisms/block-local",
+    "mechanisms/fragment-reuse",
+    "mechanisms/old-tree-subtree-reuse",
+    "mechanisms/restart-convergence",
 ]
 
 # R1 PRIMARY BUILD POLICY (frozen; see manifest/environment.toml and
@@ -35,7 +40,12 @@ markit-mdbench-instrumentation = { path = "instrumentation" }
 markit-mdbench-oracle = { path = "oracle" }
 markit-mdbench-null-r1 = { path = "mechanisms/null-r1" }
 markit-mdbench-corpusgen = { path = "corpusgen" }
+markit-mdbench-shared-grammar = { path = "shared-grammar" }
 markit-mdbench-full-rebuild = { path = "mechanisms/full-rebuild" }
+markit-mdbench-block-local = { path = "mechanisms/block-local" }
+markit-mdbench-fragment-reuse = { path = "mechanisms/fragment-reuse" }
+markit-mdbench-old-tree-subtree-reuse = { path = "mechanisms/old-tree-subtree-reuse" }
+markit-mdbench-restart-convergence = { path = "mechanisms/restart-convergence" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"

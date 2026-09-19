@@ -1,9 +1,9 @@
 # R4 — H0 Reference Full Rebuild
 
-Status: **READY_FOR_FINAL_R4_REVIEW** (2026-09-17; after
-[`R4-H0-REFERENCE-CORRECTIVE-1`](./R4-H0-REFERENCE-CORRECTIVE-1.md — the
-human adversarial review's targeted corrective; the sections below record
-the stage as reviewed at head `3f0a6f0`)
+Status: **H0_REFERENCE_PASS** (gate closed 2026-09-17: human final review
+passed after CORRECTIVE-1; PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`. The sections below record the
+stage as reviewed; this closure note records the gate result only.)
 Campaign: #22 MARKIT-MARKDOWN-BENCHMARK-1
 Branch: `research/22-r4-h0-reference-full-rebuild-1`
 Base: `master` @ `17f6040b21f59f452fa57d67b512d0f4858f431f` (R3 freeze,

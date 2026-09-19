@@ -1,8 +1,9 @@
 # MARKIT-MARKDOWN-BENCHMARK-1 — 实验 Roadmap
 
-Status: **R4 CORRECTIVE-1 APPLIED — READY_FOR_FINAL_R4_REVIEW (2026-09-17;
-H0 reference + differential gate + negative gate complete; the adversarial
-review's targeted corrective is applied). Prior: R3
+Status: **R5 READY_FOR_ADVERSARIAL_R5_REVIEW (2026-09-19; PR #30 opened, not
+merged). Prior: R4 H0_REFERENCE_PASS (2026-09-17; human final review
+passed; PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`). R3
 GRAMMAR_CORPUS_MUTATION_FREEZE_PASS (human final review passed; PR #28
 merged into master as
 `17f6040b21f59f452fa57d67b512d0f4858f431f`).**
@@ -12,7 +13,8 @@ Authority: GitHub Issue #22
 - Branch: `research/22-markdown-benchmark-1` (R0/R1) /
   `research/22-prior-art-mechanism-extraction-1` (R2) /
   `research/22-r3-grammar-corpus-mutation-freeze-1` (R3) /
-  `research/22-r4-h0-reference-full-rebuild-1` (R4)
+  `research/22-r4-h0-reference-full-rebuild-1` (R4) /
+  `research/22-r5-horses-correctness-parity-1` (R5)
 - R0 methodology: `protocol/R0-METHODOLOGY.md`
 - R1 harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 
@@ -272,8 +274,9 @@ Stop：`GRAMMAR_CORPUS_MUTATION_FREEZE_PASS`
 
 ## R4 — H0 Reference Full Rebuild
 
-Status: **READY_FOR_FINAL_R4_REVIEW (2026-09-17, after
-CORRECTIVE-1)**. Deliverables:
+Status: **H0_REFERENCE_PASS (2026-09-17; human final review passed after
+CORRECTIVE-1; PR #29 merged into master as
+`21d7d832fec84fceedb7600cccb4296745395fc1`)**. Deliverables:
 `protocol/R4-H0-REFERENCE-FULL-REBUILD.md` (stage record, incl.
 adversarial pass) + `protocol/R4-H0-REFERENCE-CORRECTIVE-1.md`
 (the human review's corrective), `oracle/` (NORMALIZED-RESULT-v1
@@ -308,6 +311,16 @@ Stop：`H0_REFERENCE_PASS`
 ## R5 — H1/H2/H3/H4 Mechanism Implementation
 
 顺序：H1 block-local → H2 fragment → H3 old-tree subtree → H4 restart-convergence。
+
+交付（2026-09-17，本 branch）：`mechanisms/{block-local,fragment-reuse,old-tree-subtree-reuse,restart-convergence}/`
++ 共享语法基底 `shared-grammar/`；机制决策冻结于
+`protocol/R5-HORSE-CORRECTNESS-PARITY.md`；阶段记录
+`protocol/R5-HORSES-STAGE-RECORD.md`（含 13 维 parity 审计表与 25 问
+adversarial self-review）；`scripts/verify-r5.sh`（correctness-only，
+末行 `R5 HORSE CORRECTNESS + PARITY GATE: PASS`）与
+`scripts/mutation-check-r5.sh`（每匹马一个机制特定 mutation，检测后还原，
+绝不提交）。EAGER_COMPLETION_VALIDATION_PASS 由每匹马的 gate suite
+逐马证明（pending 在 complete() 之前即持有完整 state+result）。
 
 每匹 horse 在正式 measurement 前必须通过：grammar fixtures、arbitrary/structural differential correctness、counter semantics、fallback、implementation parity、no timer-informed tuning、no undeclared horse-specific optimization。
 

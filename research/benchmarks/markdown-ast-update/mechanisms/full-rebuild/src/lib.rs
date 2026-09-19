@@ -8,18 +8,23 @@
 //! deterministic, eager, total over BENCH-GRAMMAR-v1, and byte-
 //! coordinate correct — deliberately not clever and not fast.
 //!
+//! R5 parity note: the BENCH-GRAMMAR-v1 block/inline algorithms now live
+//! in the shared non-research crate `markit-mdbench-shared-grammar`
+//! (extracted line-for-line from the R4 parser; identical algorithms,
+//! identical inspection events — regression-gated by `verify-r4.sh`).
+//! H0 remains FULL_REBUILD: it retains no state, reuses nothing, and
+//! owns no incremental machinery. The parse algorithm itself is shared
+//! grammar semantics; what makes H0 the control is that every update is
+//! a total clean parse.
+//!
 //! Boundaries held:
 //!
 //! - the frozen R1 `Mechanism` contract is implemented as-is; timing is
 //!   runner-owned and this crate never names a clock;
 //! - work facts are reported only through `MechanismContext`'s sink;
 //! - the normalized result is the oracle crate's frozen
-//!   NORMALIZED-RESULT-v1 vocabulary — the H0 parse algorithm itself is
-//!   horse-private (`pub(crate)` modules; no other crate links against
-//!   this one), so later horses cannot accidentally depend on it.
-
-mod inline;
-mod parser;
+//!   NORMALIZED-RESULT-v1 vocabulary — gated by the shared
+//!   `validate_normalized` before any result leaves this crate.
 
 use markit_mdbench_common::CanonicalEdit;
 use markit_mdbench_common::Completed;
@@ -39,15 +44,16 @@ use markit_mdbench_oracle::NormalizeV1;
 pub const H0_MECHANISM_ID: &str = "h0-full-rebuild";
 
 /// The H0 reference entry point: clean parse of a complete document into
-/// the frozen normalized vocabulary. Used by the R4 correctness suites;
-/// no other mechanism crate may depend on this crate.
+/// the frozen normalized vocabulary. Used by the R4/R5 correctness
+/// suites; no other mechanism crate may depend on this crate.
 ///
 /// The result is checked against the shared NORMALIZED-RESULT-v1
 /// conformance gate (exact field-kind legality, zero-length rule,
 /// `FencedCode.content` interval) before it is returned — every H0
 /// result is gated, not only the test surfaces (R4-CORRECTIVE-1).
 pub fn parse_document(src: &[u8]) -> NormalizedDocument {
-    let document = parser::parse(src);
+    let mut noop = markit_mdbench_common::NoopWorkSink;
+    let document = markit_mdbench_shared_grammar::parse_full(src, &mut noop);
     validate_normalized(&document, Some(src)).expect("H0 result violates NORMALIZED-RESULT-v1");
     document
 }
@@ -153,7 +159,7 @@ fn parse_with_attribution<W: WorkSink>(
     src: &[u8],
     cx: &mut MechanismContext<'_, W>,
 ) -> (NormalizedDocument, u64, u64) {
-    let document = parser::parse_with_inspection(src, cx.sink);
+    let document = markit_mdbench_shared_grammar::parse_full(src, cx.sink);
     validate_normalized(&document, Some(src)).expect("H0 result violates NORMALIZED-RESULT-v1");
     let (blocks, nodes) = count_blocks_nodes(&document.root);
     (document, blocks, nodes)
