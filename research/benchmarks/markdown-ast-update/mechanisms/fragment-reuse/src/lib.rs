@@ -43,6 +43,7 @@ use markit_mdbench_common::Observed;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkSink;
 use markit_mdbench_oracle::normalized::{normalized_checksum, Node, NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::NormalizeV1;
 use markit_mdbench_shared_grammar as sg;
 use sg::parser::{parse_region_with_hook, ContextKey, Skel, SpliceHook};
 
@@ -138,8 +139,27 @@ impl FTree {
     }
 }
 
+/// Native node count of one retained subtree under the corrective
+/// counting rule (R5-CORRECTIVE-1 §8): the FNode itself PLUS every
+/// retained inline syntax node in its payload (recursive through the
+/// whole block and inline structure). Reused subtrees are shared
+/// `Arc`s — their inline payloads ride with the identity, zero parser
+/// source reads.
 fn count_node(n: &FNode) -> u64 {
-    1 + n.children.iter().map(|(_, c)| count_node(c)).sum::<u64>()
+    1 + payload_inline_nodes(&n.payload)
+        + n.children.iter().map(|(_, c)| count_node(c)).sum::<u64>()
+}
+
+/// Recursive count of inline syntax nodes stored in one payload.
+fn payload_inline_nodes(p: &FPayload) -> u64 {
+    fn forest(nodes: &[Node]) -> u64 {
+        nodes.iter().map(|n| 1 + forest(&n.children)).sum()
+    }
+    match p {
+        FPayload::Para { inline } => forest(inline),
+        FPayload::Heading { inline, .. } => forest(inline),
+        _ => 0,
+    }
 }
 
 /// One fragment range in UPDATED-document coordinates; `to_old` maps a
@@ -168,6 +188,15 @@ impl H2State {
 
     pub fn fragment_count(&self) -> usize {
         self.fragments.len()
+    }
+}
+
+/// Completed-state normalization (R5-CORRECTIVE-1, MAJOR-3): the pure
+/// `project` traversal over the retained tree — no source, no sink, no
+/// parser. The retained payloads carry every inline syntax fact.
+impl NormalizeV1 for H2State {
+    fn normalize_v1(&self) -> NormalizedDocument {
+        project(&self.tree)
     }
 }
 
@@ -217,10 +246,10 @@ impl FragmentReuseMechanism {
         let rp = sg::parse_region(src, 0, src.len(), cx.sink);
         let defs = rp.defs.entries().to_vec();
         let table = ref_table(&defs);
-        let mut built = 0u64;
-        let slots = build_slots(&rp.blocks, src, &table, &mut built);
-        cx.sink.add_blocks_reparsed(built);
-        cx.sink.add_nodes_rebuilt(built);
+        let mut built = Built::default();
+        let slots = build_slots(&rp.blocks, src, &table, &mut built, cx.sink);
+        cx.sink.add_blocks_reparsed(built.fnodes);
+        cx.sink.add_nodes_rebuilt(built.nodes);
         cx.sink.add_nodes_reused(0);
         cx.sink.add_metadata_records_touched(slots.len() as u64);
         let tree = FTree {
@@ -385,11 +414,12 @@ impl Mechanism for FragmentReuseMechanism {
 
         // Assemble the new tree: fresh FNodes for parsed material, shared
         // Arcs for taken runs (containers wrapping takes are rebuilt; the
-        // run members keep their identity).
-        let mut built = 0u64;
-        let slots = assemble_slots(&rp.blocks, &takes, post, &table, &mut built);
-        cx.sink.add_blocks_reparsed(built);
-        cx.sink.add_nodes_rebuilt(built);
+        // run members keep their identity — their retained inline payloads
+        // are reused with ZERO parser source reads).
+        let mut built = Built::default();
+        let slots = assemble_slots(&rp.blocks, &takes, post, &table, &mut built, cx.sink);
+        cx.sink.add_blocks_reparsed(built.fnodes);
+        cx.sink.add_nodes_rebuilt(built.nodes);
         cx.sink.add_nodes_reused(reused);
         cx.sink
             .add_metadata_records_touched(consultations + slot_count as u64);
@@ -762,24 +792,47 @@ fn any_def_in_range(tree: &FTree, a: usize, b: usize) -> bool {
 // Node construction (fresh parse material -> FNode)
 // ---------------------------------------------------------------------------
 
+/// Construction counters (R5-CORRECTIVE-1 §8): `fnodes` counts block
+/// structure nodes (the `blocks_reparsed` unit); `nodes` counts every
+/// constructed native node INCLUDING freshly scanned inline syntax
+/// (the `nodes_rebuilt` unit).
+#[derive(Debug, Default)]
+struct Built {
+    fnodes: u64,
+    nodes: u64,
+}
+
 /// Build top-level slots from completed blocks (absolute spans in the
-/// parsed source). `built` counts every constructed FNode.
-fn build_slots(blocks: &[Skel], src: &[u8], table: &sg::RefTable, built: &mut u64) -> Vec<FSlot> {
+/// parsed source). Fresh inline scanning is instrumented: every scanned
+/// segment is reported to `sink` (R5-CORRECTIVE-1, MAJOR-2).
+fn build_slots<W: WorkSink>(
+    blocks: &[Skel],
+    src: &[u8],
+    table: &sg::RefTable,
+    built: &mut Built,
+    sink: &mut W,
+) -> Vec<FSlot> {
     let mut out = Vec::new();
     let mut cursor = 0usize;
     for sk in blocks {
         let start = sk.start();
         out.push(FSlot {
             gap: start - cursor,
-            node: build_fnode(sk, src, table, built),
+            node: build_fnode(sk, src, table, built, sink),
         });
         cursor = sk.end();
     }
     out
 }
 
-fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> Arc<FNode> {
-    *built += 1;
+fn build_fnode<W: WorkSink>(
+    sk: &Skel,
+    src: &[u8],
+    table: &sg::RefTable,
+    built: &mut Built,
+    sink: &mut W,
+) -> Arc<FNode> {
+    built.fnodes += 1;
     let start = sk.start();
     let size = sk.end() - start;
     let mut marker = None;
@@ -787,7 +840,7 @@ fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> 
         Skel::Para { segments, .. } => (
             NodeKind::Paragraph,
             FPayload::Para {
-                inline: rebased(scan_inlines_abs(src, segments, table), start),
+                inline: rebased(scan_inlines_abs(src, segments, table, sink), start),
             },
             Vec::new(),
         ),
@@ -797,7 +850,7 @@ fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> 
                 level: *level,
                 content_rel: (content.0 - start, content.1 - start),
                 inline: rebased(
-                    scan_inlines_abs(src, std::slice::from_ref(content), table),
+                    scan_inlines_abs(src, std::slice::from_ref(content), table, sink),
                     start,
                 ),
             },
@@ -824,12 +877,12 @@ fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> 
         Skel::Quote { children, .. } => (
             NodeKind::BlockQuote,
             FPayload::Container,
-            build_level(children, src, table, start, built),
+            build_level(children, src, table, start, built, sink),
         ),
         Skel::List { items, .. } => (
             NodeKind::List,
             FPayload::Container,
-            build_level(items, src, table, start, built),
+            build_level(items, src, table, start, built, sink),
         ),
         Skel::Item {
             marker: m,
@@ -840,11 +893,12 @@ fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> 
             (
                 NodeKind::ListItem,
                 FPayload::Container,
-                build_level(children, src, table, start, built),
+                build_level(children, src, table, start, built, sink),
             )
         }
         Skel::Spliced { .. } => unreachable!("initial construction has no splices"),
     };
+    built.nodes += 1 + payload_inline_nodes(&payload);
     let has_ref = payload_has_ref(&payload) || children.iter().any(|(_, c)| c.has_ref);
     let mut def_facts = Vec::new();
     if kind == NodeKind::ReferenceDefinition {
@@ -870,22 +924,34 @@ fn build_fnode(sk: &Skel, src: &[u8], table: &sg::RefTable, built: &mut u64) -> 
     })
 }
 
-fn build_level(
+fn build_level<W: WorkSink>(
     blocks: &[Skel],
     src: &[u8],
     table: &sg::RefTable,
     level_start: usize,
-    built: &mut u64,
+    built: &mut Built,
+    sink: &mut W,
 ) -> Vec<(usize, Arc<FNode>)> {
     blocks
         .iter()
-        .map(|sk| (sk.start() - level_start, build_fnode(sk, src, table, built)))
+        .map(|sk| {
+            (
+                sk.start() - level_start,
+                build_fnode(sk, src, table, built, sink),
+            )
+        })
         .collect()
 }
 
-/// Scan inline content for one segment list with absolute spans.
-fn scan_inlines_abs(src: &[u8], segments: &[(usize, usize)], table: &sg::RefTable) -> Vec<Node> {
-    sg::inline::scan_inlines(src, segments, true, table)
+/// Scan inline content for one segment list with absolute spans,
+/// reporting every scanned segment to `sink` (R5-CORRECTIVE-1, MAJOR-2).
+fn scan_inlines_abs<W: WorkSink>(
+    src: &[u8],
+    segments: &[(usize, usize)],
+    table: &sg::RefTable,
+    sink: &mut W,
+) -> Vec<Node> {
+    sg::inline::scan_inlines_with_sink(src, segments, true, table, sink)
 }
 
 /// Shift every span in an inline node forest by `delta` (rebase to
@@ -959,14 +1025,15 @@ fn rebuilt_table(blocks: &[Skel], takes: &[TakeRun]) -> sg::RefTable {
     table
 }
 
-fn assemble_slots(
+fn assemble_slots<W: WorkSink>(
     blocks: &[Skel],
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
-    built: &mut u64,
+    built: &mut Built,
+    sink: &mut W,
 ) -> Vec<FSlot> {
-    let entries = assemble_level(blocks, takes, post, table, built);
+    let entries = assemble_level(blocks, takes, post, table, built, sink);
     let mut out = Vec::new();
     let mut cursor = 0usize;
     for (start, node) in entries {
@@ -980,17 +1047,19 @@ fn assemble_slots(
     out
 }
 
-/// Assemble one container level: fresh Skels convert to fresh FNodes;
-/// Spliced placeholders expand to their shared member runs (new member
-/// positions derive from the placeholder start plus the members' old
-/// internal layout — unchanged bytes). Returns `(new_start, node)` pairs
-/// in order.
-fn assemble_level(
+/// Assemble one container level: fresh Skels convert to fresh FNodes
+/// (fresh inline scans reported to `sink`); Spliced placeholders expand
+/// to their shared member runs (new member positions derive from the
+/// placeholder start plus the members' old internal layout — unchanged
+/// bytes, and the members' retained inline payloads are reused without
+/// any source read). Returns `(new_start, node)` pairs in order.
+fn assemble_level<W: WorkSink>(
     blocks: &[Skel],
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
-    built: &mut u64,
+    built: &mut Built,
+    sink: &mut W,
 ) -> Vec<(usize, Arc<FNode>)> {
     let mut out = Vec::new();
     for sk in blocks {
@@ -1005,21 +1074,22 @@ fn assemble_level(
             }
             other => out.push((
                 other.start(),
-                assemble_fnode(other, takes, post, table, built),
+                assemble_fnode(other, takes, post, table, built, sink),
             )),
         }
     }
     out
 }
 
-fn assemble_fnode(
+fn assemble_fnode<W: WorkSink>(
     sk: &Skel,
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
-    built: &mut u64,
+    built: &mut Built,
+    sink: &mut W,
 ) -> Arc<FNode> {
-    *built += 1;
+    built.fnodes += 1;
     let start = sk.start();
     let size = sk.end() - start;
     let mut marker = None;
@@ -1027,7 +1097,7 @@ fn assemble_fnode(
         Skel::Para { segments, .. } => (
             NodeKind::Paragraph,
             FPayload::Para {
-                inline: rebased(scan_inlines_abs(post, segments, table), start),
+                inline: rebased(scan_inlines_abs(post, segments, table, sink), start),
             },
             Vec::new(),
         ),
@@ -1037,7 +1107,7 @@ fn assemble_fnode(
                 level: *level,
                 content_rel: (content.0 - start, content.1 - start),
                 inline: rebased(
-                    scan_inlines_abs(post, std::slice::from_ref(content), table),
+                    scan_inlines_abs(post, std::slice::from_ref(content), table, sink),
                     start,
                 ),
             },
@@ -1064,12 +1134,12 @@ fn assemble_fnode(
         Skel::Quote { children, .. } => (
             NodeKind::BlockQuote,
             FPayload::Container,
-            assemble_level(children, takes, post, table, built),
+            assemble_level(children, takes, post, table, built, sink),
         ),
         Skel::List { items, .. } => (
             NodeKind::List,
             FPayload::Container,
-            assemble_level(items, takes, post, table, built),
+            assemble_level(items, takes, post, table, built, sink),
         ),
         Skel::Item {
             marker: m,
@@ -1080,11 +1150,12 @@ fn assemble_fnode(
             (
                 NodeKind::ListItem,
                 FPayload::Container,
-                assemble_level(children, takes, post, table, built),
+                assemble_level(children, takes, post, table, built, sink),
             )
         }
         Skel::Spliced { .. } => unreachable!("splices expand at the level above"),
     };
+    built.nodes += 1 + payload_inline_nodes(&payload);
     // Relativize child positions to this node's span start.
     let children: Vec<(usize, Arc<FNode>)> = children
         .into_iter()

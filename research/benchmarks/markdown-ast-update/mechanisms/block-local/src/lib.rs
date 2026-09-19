@@ -27,7 +27,8 @@ use markit_mdbench_common::MechanismId;
 use markit_mdbench_common::Observed;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkSink;
-use markit_mdbench_oracle::normalized::{normalized_checksum, NormalizedDocument};
+use markit_mdbench_oracle::normalized::{normalized_checksum, Node, NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::NormalizeV1;
 use markit_mdbench_shared_grammar as sg;
 use sg::parser::{classify_top_level_line, LineClass, RegionParse, Skel};
 
@@ -62,11 +63,25 @@ pub enum BlockFacts {
 
 /// One entry of the retained top-level tiling. Blank runs are first-class
 /// entries (the mizchi BlankLines analogue): the tiling covers the whole
-/// document with no gaps and no overlaps.
+/// document with no gaps and no overlaps. A block entry carries its
+/// ALREADY MATERIALIZED semantic subtree (`sem`, R5-CORRECTIVE-1 §5) in
+/// the entry's own coordinates: prefix pass-through never re-reads or
+/// re-scans it, and completed-state projection is a pure traversal.
+// The variant size difference is the native representation, not a
+// layout problem to optimize: boxing `sem` would change nothing about
+// the mechanism and only obscure the ownership witness.
 #[derive(Debug, Clone)]
+#[allow(clippy::large_enum_variant)]
 pub enum TopEntry {
-    Block { skel: Skel, facts: BlockFacts },
-    Blank { start: usize, end: usize },
+    Block {
+        skel: Skel,
+        sem: Node,
+        facts: BlockFacts,
+    },
+    Blank {
+        start: usize,
+        end: usize,
+    },
 }
 
 impl TopEntry {
@@ -101,6 +116,30 @@ impl H1State {
     pub fn source_len_bytes(&self) -> usize {
         self.src_len
     }
+}
+
+/// Completed-state normalization (R5-CORRECTIVE-1, MAJOR-3): a PURE
+/// traversal over the retained semantic subtrees. No source, no sink, no
+/// parser, no repair — the retained representation itself carries the
+/// syntax facts.
+impl NormalizeV1 for H1State {
+    fn normalize_v1(&self) -> NormalizedDocument {
+        document_from_entries(&self.entries, self.src_len)
+    }
+}
+
+/// Assemble the normalized document from the tiling's retained semantic
+/// subtrees (pure; clones the per-block subtrees).
+fn document_from_entries(entries: &[TopEntry], src_len: usize) -> NormalizedDocument {
+    let mut root = Node::new(NodeKind::Document, 0, src_len);
+    root.children = entries
+        .iter()
+        .filter_map(|e| match e {
+            TopEntry::Block { sem, .. } => Some(sem.clone()),
+            TopEntry::Blank { .. } => None,
+        })
+        .collect();
+    NormalizedDocument::new(root)
 }
 
 /// Pending work handed to `complete()`. Per the eager-completion boundary
@@ -151,13 +190,14 @@ impl BlockLocalMechanism {
     ) -> H1Pending {
         let rp = sg::parse_region(src, 0, src.len(), cx.sink);
         let defs = rp.defs.entries().to_vec();
-        let entries = tile_from_blocks(&rp.blocks, src);
-        let blocks_total = count_blocks(&rp.blocks);
-        cx.sink.add_blocks_reparsed(blocks_total);
-        cx.sink.add_nodes_rebuilt(blocks_total);
-        cx.sink.add_metadata_records_touched(entries.len() as u64);
         let table = ref_table(&defs);
-        let result = sg::inline::finish_document(src, rp.blocks, &table);
+        let entries = tile_from_blocks(&rp.blocks, src, &table, cx.sink);
+        let blocks_total = count_blocks(&rp.blocks);
+        let nodes_total: u64 = entries.iter().map(entry_native_nodes).sum();
+        cx.sink.add_blocks_reparsed(blocks_total);
+        cx.sink.add_nodes_rebuilt(nodes_total);
+        cx.sink.add_metadata_records_touched(entries.len() as u64);
+        let result = document_from_entries(&entries, src.len());
         H1Pending {
             state: H1State {
                 entries,
@@ -243,7 +283,15 @@ impl Mechanism for BlockLocalMechanism {
         debug_assert_eq!(es, edit.start_byte() as usize);
         debug_assert_eq!(ee, edit.end_byte() as usize);
         declare_gauges_not_applicable(cx);
-        let entries = &old_state.entries;
+        // MAJOR-1 (R5-CORRECTIVE-1): the old state is consumed. All
+        // fallback decisions below are made while only borrowing
+        // `entries`; the vector is moved out of only after the last
+        // possible fallback return.
+        let H1State {
+            entries,
+            defs: old_defs,
+            src_len: _,
+        } = old_state;
 
         // DAMAGE SCAN (mizchi-faithful): one linear pass; strict overlap
         // `entry.start < edit_end && entry.end > edit_start`. The scan
@@ -305,7 +353,7 @@ impl Mechanism for BlockLocalMechanism {
         // forces a total parse. (On the normal path below the old
         // definitions are empty, so prefix/suffix contain no Def entries
         // and the new table is exactly the region's table.)
-        if !old_state.defs.is_empty() || !rp.defs.is_empty() {
+        if !old_defs.is_empty() || !rp.defs.is_empty() {
             return Ok(self.total_fallback(post, scanned, cx));
         }
 
@@ -313,7 +361,7 @@ impl Mechanism for BlockLocalMechanism {
         // propagation). Any fire -> total fallback: correct, counted,
         // never a silent guess.
         if guards_fire(
-            entries,
+            &entries,
             prefix_len,
             suffix_from,
             &rp,
@@ -326,19 +374,36 @@ impl Mechanism for BlockLocalMechanism {
             return Ok(self.total_fallback(post, scanned, cx));
         }
 
-        // Assemble the new tiling: prefix pass-through + region fill +
-        // suffix reconstruction.
-        let prefix_blocks: u64 = entries[..prefix_len]
-            .iter()
-            .map(|e| match e {
-                TopEntry::Block { skel, .. } => count_blocks(std::slice::from_ref(skel)),
-                TopEntry::Blank { .. } => 0,
-            })
-            .sum();
-        cx.sink.add_nodes_reused(prefix_blocks);
+        // MAJOR-1 (R5-CORRECTIVE-1): CONSUME the old tiling. Prefix
+        // entries MOVE into the new state unchanged — ownership
+        // pass-through, not clone-based pseudo reuse — and are counted as
+        // `nodes_reused`. Suffix entries are RECONSTRUCTED with
+        // delta-shifted spans over their retained syntax: parser-work
+        // avoidance but representation rebuild -> `nodes_rebuilt`, never
+        // `nodes_reused`. Every fallback decision above is complete
+        // before the vector is consumed.
+        let mut moved_prefix: Vec<TopEntry> = Vec::with_capacity(prefix_len);
+        let mut suffix_entries: Vec<TopEntry> = Vec::new();
+        let mut reused_nodes = 0u64;
+        let mut suffix_nodes = 0u64;
+        for (i, e) in entries.into_iter().enumerate() {
+            if i < prefix_len {
+                reused_nodes += entry_native_nodes(&e);
+                moved_prefix.push(e);
+            } else if i >= suffix_from {
+                suffix_nodes += entry_native_nodes(&e);
+                suffix_entries.push(shift_entry_owned(e, delta));
+            }
+        }
+        cx.sink.add_nodes_reused(reused_nodes);
 
-        let mut new_entries: Vec<TopEntry> = entries[..prefix_len].to_vec();
+        // Assemble the new tiling: moved prefix + region fill + shifted
+        // suffix. The F1 gate guarantees no definitions exist, so the
+        // region's fresh blocks materialize against an empty table.
+        let region_table = ref_table(&[]);
+        let mut new_entries = moved_prefix;
         let mut cursor = rs;
+        let mut region_nodes = 0u64;
         for sk in &rp.blocks {
             let (s, e) = (sk.start(), sk.end());
             debug_assert!(s >= cursor && e >= s);
@@ -348,10 +413,15 @@ impl Mechanism for BlockLocalMechanism {
                     end: s,
                 });
             }
-            new_entries.push(TopEntry::Block {
+            let sem =
+                sg::inline::materialize_one_with_sink(post, sk.clone(), &region_table, cx.sink);
+            let entry = TopEntry::Block {
                 skel: sk.clone(),
+                sem,
                 facts: block_facts(sk, post),
-            });
+            };
+            region_nodes += entry_native_nodes(&entry);
+            new_entries.push(entry);
             cursor = e;
         }
         if cursor < re_new {
@@ -360,47 +430,23 @@ impl Mechanism for BlockLocalMechanism {
                 end: re_new,
             });
         }
-        let region_inserted = (new_entries.len() - prefix_len) as u64;
+        let suffix_count = suffix_entries.len() as u64;
+        new_entries.extend(suffix_entries);
         let region_blocks = count_blocks(&rp.blocks);
+        let region_inserted = (new_entries.len() - prefix_len) as u64 - suffix_count;
 
-        // Suffix reconstruction: new Skel values with delta-shifted spans
-        // (mizchi shift_block_span — including nested and inline segment
-        // spans, closing upstream's stale-inline-span gap). Parser work
-        // avoided, representation rebuilt -> nodes_rebuilt, never
-        // nodes_reused.
-        let mut suffix_entries = 0u64;
-        let mut suffix_blocks = 0u64;
-        for e in &entries[suffix_from..] {
-            suffix_entries += 1;
-            if let TopEntry::Block { skel, .. } = e {
-                suffix_blocks += count_blocks(std::slice::from_ref(skel));
-            }
-            new_entries.push(shift_entry(e, delta));
-        }
         cx.sink.add_blocks_reparsed(region_blocks);
-        cx.sink.add_nodes_rebuilt(region_blocks + suffix_blocks);
+        cx.sink.add_nodes_rebuilt(region_nodes + suffix_nodes);
         cx.sink
-            .add_metadata_records_touched(region_inserted + suffix_entries);
+            .add_metadata_records_touched(region_inserted + suffix_count);
         // No fallback happened: the measured zero (Known(0) != Unknown).
         cx.sink.add_fallback_to_full(0);
 
-        // The F1 gate above guarantees the old document had no
-        // definitions, so prefix/suffix carry none; the new table is the
-        // region's table.
-        let defs = rp.defs.entries().to_vec();
-        let table = ref_table(&defs);
-        let blocks: Vec<Skel> = new_entries
-            .iter()
-            .filter_map(|e| match e {
-                TopEntry::Block { skel, .. } => Some(skel.clone()),
-                TopEntry::Blank { .. } => None,
-            })
-            .collect();
-        let result = sg::inline::finish_document(post, blocks, &table);
+        let result = document_from_entries(&new_entries, post.len());
         Ok(H1Pending {
             state: H1State {
                 entries: new_entries,
-                defs,
+                defs: rp.defs.entries().to_vec(),
                 src_len: post.len(),
             },
             result,
@@ -423,8 +469,15 @@ impl Mechanism for BlockLocalMechanism {
 // ---------------------------------------------------------------------------
 
 /// Tile [0, len) with block + blank-run entries from completed top-level
-/// blocks (absolute spans, in order).
-fn tile_from_blocks(blocks: &[Skel], src: &[u8]) -> Vec<TopEntry> {
+/// blocks (absolute spans, in order). Each block entry carries its
+/// materialized semantic subtree, built here with the instrumented
+/// inline pass (R5-CORRECTIVE-1 §5/MAJOR-2).
+fn tile_from_blocks<W: WorkSink>(
+    blocks: &[Skel],
+    src: &[u8],
+    table: &sg::RefTable,
+    sink: &mut W,
+) -> Vec<TopEntry> {
     let mut out = Vec::new();
     let mut cursor = 0usize;
     for skel in blocks {
@@ -437,8 +490,10 @@ fn tile_from_blocks(blocks: &[Skel], src: &[u8]) -> Vec<TopEntry> {
             });
         }
         debug_assert!(e > s, "block entries are non-degenerate");
+        let sem = sg::inline::materialize_one_with_sink(src, skel.clone(), table, sink);
         out.push(TopEntry::Block {
             skel: skel.clone(),
+            sem,
             facts: block_facts(skel, src),
         });
         cursor = e;
@@ -652,17 +707,45 @@ fn entry_facts(e: &TopEntry) -> &BlockFacts {
 // Suffix reconstruction (delta shift)
 // ---------------------------------------------------------------------------
 
-fn shift_entry(e: &TopEntry, delta: isize) -> TopEntry {
+/// Reconstruct an OWNED entry with every stored span shifted by `delta`
+/// (mizchi shift_block_span): the skeleton AND the retained semantic
+/// subtree. Parser work is avoided, but the representation is rebuilt —
+/// counted as `nodes_rebuilt`, never `nodes_reused` (R5-CORRECTIVE-1
+/// §5).
+fn shift_entry_owned(e: TopEntry, delta: isize) -> TopEntry {
     match e {
         TopEntry::Blank { start, end } => TopEntry::Blank {
-            start: shift_pos(*start, delta),
-            end: shift_pos(*end, delta),
+            start: shift_pos(start, delta),
+            end: shift_pos(end, delta),
         },
-        TopEntry::Block { skel, facts } => TopEntry::Block {
-            skel: shift_skel(skel, delta),
-            facts: facts.clone(), // indent/strip facts are shift-invariant
+        TopEntry::Block {
+            skel,
+            sem,
+            facts, // indent/strip facts are shift-invariant
+        } => TopEntry::Block {
+            skel: shift_skel(&skel, delta),
+            sem: shift_node_owned(sem, delta),
+            facts,
         },
     }
+}
+
+/// Reconstruct an owned normalized subtree with every span shifted by
+/// `delta`, preserving all semantic values (pure representation rebuild).
+/// Position-bearing fields: the node span, the `FencedCode.content`
+/// interval, and (recursively) the children.
+fn shift_node_owned(mut n: Node, delta: isize) -> Node {
+    n.start = shift_pos(n.start, delta);
+    n.end = shift_pos(n.end, delta);
+    if let Some((a, b)) = n.content {
+        n.content = Some((shift_pos(a, delta), shift_pos(b, delta)));
+    }
+    n.children = n
+        .children
+        .into_iter()
+        .map(|c| shift_node_owned(c, delta))
+        .collect();
+    n
 }
 
 fn shift_pos(p: usize, delta: isize) -> usize {
@@ -782,6 +865,42 @@ pub fn count_blocks(blocks: &[Skel]) -> u64 {
         }
     }
     blocks.iter().map(one).sum()
+}
+
+/// Native node count of one tiling entry under the corrective counting
+/// rule (R5-CORRECTIVE-1 §8): one structural block/container node per
+/// block unit (counted from the skeleton) PLUS every retained inline
+/// syntax node of the materialized subtree (recursive). The materialized
+/// subtree's own block-kind nodes are the SAME structural units the
+/// skeleton encodes — they are counted once, not twice. Blank entries
+/// store no syntax.
+fn entry_native_nodes(e: &TopEntry) -> u64 {
+    match e {
+        TopEntry::Block { skel, sem, .. } => {
+            count_blocks(std::slice::from_ref(skel))
+                + count_inline_forest(std::slice::from_ref(sem))
+        }
+        TopEntry::Blank { .. } => 0,
+    }
+}
+
+/// Recursive count of INLINE syntax nodes in a normalized forest. The
+/// inline scanner produces only inline-kind nodes below the block node,
+/// so this counts every retained inline syntax node exactly once.
+fn count_inline_forest(nodes: &[Node]) -> u64 {
+    nodes.iter().map(count_inline_node).sum()
+}
+
+fn count_inline_node(n: &Node) -> u64 {
+    let here = matches!(
+        n.kind,
+        NodeKind::Text
+            | NodeKind::Emphasis
+            | NodeKind::CodeSpan
+            | NodeKind::Link
+            | NodeKind::ReferenceLink
+    ) as u64;
+    here + count_inline_forest(&n.children)
 }
 
 fn line_start_of(src: &[u8], pos: usize) -> usize {

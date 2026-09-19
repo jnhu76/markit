@@ -33,7 +33,7 @@ use markit_mdbench_fragment_reuse::{FragmentReuseMechanism, H2State};
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_oracle::fixture::{load_fixtures, repo_fixture_dir};
 use markit_mdbench_oracle::normalized::{node_path_at, normalized_checksum, NodeKind};
-use markit_mdbench_oracle::validate_root;
+use markit_mdbench_oracle::{validate_root, NormalizeV1};
 
 // ---------------------------------------------------------------------------
 // Harness
@@ -678,6 +678,26 @@ fn h2_counters_and_eager_completion() {
     // EAGER (structural): complete() receives no source and no sink.
     let done = mech.complete(pending).expect("complete");
     assert_eq!(done.result_checksum, normalized_checksum(&clean));
+
+    // COMPLETED-STATE LAW (R5-CORRECTIVE-1, MAJOR-3/00a710): the sealed
+    // state projects to the normalized result PURELY — no Source, no
+    // WorkSink, no parser call is even expressible here.
+    let doc = done.state.normalize_v1();
+    assert_eq!(doc, clean, "completed-state projection == H0");
+    assert_eq!(
+        normalized_checksum(&doc),
+        done.result_checksum,
+        "checksum(completed normalize_v1) == completed checksum"
+    );
+    // QUERY from the completed state equals the H0 answers.
+    let [early, middle, late] = gen::mutations::query_anchors(post_b);
+    for (offset, label) in [(early, "EARLY"), (middle, "MIDDLE"), (late, "LATE")] {
+        assert_eq!(
+            node_path_at(&doc, offset),
+            node_path_at(&clean, offset),
+            "completed-state QUERY {label} must equal the H0 answer"
+        );
+    }
 }
 
 #[test]
@@ -789,9 +809,10 @@ fn h2_query_batch_matches_the_frozen_contract() {
                 let pending = mech
                     .full_parse(&source_of(&bytes, 90), &mut cx)
                     .expect("full_parse");
-                let d = pending.result().clone();
-                mech.complete(pending).expect("complete");
-                d
+                let done = mech.complete(pending).expect("complete");
+                // MAJOR-3 (R5-CORRECTIVE-1): the COMPLETED state's pure
+                // projection is the query authority.
+                done.state.normalize_v1()
             };
             let path = node_path_at(&doc, offset);
             assert!(!path.is_empty(), "{shape:?} {label}");

@@ -27,7 +27,11 @@
 pub mod inline;
 pub mod parser;
 
-pub use inline::{materialize, norm_label, RefTable};
+pub use inline::{
+    finish_document, finish_document_with_sink, materialize, materialize_one_with_sink,
+    materialize_with_sink, norm_label, scan_inlines, scan_inlines_with_sink, scan_region,
+    scan_region_with_sink, RefTable,
+};
 pub use parser::{
     classify_top_level_line, fence_opener_at, heading_at, parse_full, parse_marker, parse_region,
     parse_region_with_hook, ContextKey, FrameKey, LineClass, RegionParse, Skel, SpliceHook,

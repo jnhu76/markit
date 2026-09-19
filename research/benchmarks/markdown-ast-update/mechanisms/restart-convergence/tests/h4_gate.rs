@@ -37,7 +37,9 @@ use markit_mdbench_corpusgen::mutations::{
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_oracle::fixture::{load_fixtures, repo_fixture_dir};
 use markit_mdbench_oracle::normalized::{node_path_at, normalized_checksum, NodeKind};
-use markit_mdbench_oracle::validate_root;
+use markit_mdbench_oracle::{validate_root, NormalizeV1};
+use std::sync::Arc;
+
 use markit_mdbench_restart_convergence::{H4State, RestartConvergenceMechanism};
 
 // ---------------------------------------------------------------------------
@@ -886,6 +888,26 @@ fn h4_counters_and_eager_completion() {
     // EAGER (structural): complete() receives no source and no sink.
     let done = mech.complete(pending).expect("complete");
     assert_eq!(done.result_checksum, normalized_checksum(&clean));
+
+    // COMPLETED-STATE LAW (R5-CORRECTIVE-1, MAJOR-3/00a710): the sealed
+    // state projects to the normalized result PURELY — no Source, no
+    // WorkSink, no parser call is even expressible here.
+    let doc = done.state.normalize_v1();
+    assert_eq!(doc, clean, "completed-state projection == H0");
+    assert_eq!(
+        normalized_checksum(&doc),
+        done.result_checksum,
+        "checksum(completed normalize_v1) == completed checksum"
+    );
+    // QUERY from the completed state equals the H0 answers.
+    let [early, middle, late] = gen::mutations::query_anchors(post_b);
+    for (offset, label) in [(early, "EARLY"), (middle, "MIDDLE"), (late, "LATE")] {
+        assert_eq!(
+            node_path_at(&doc, offset),
+            node_path_at(&clean, offset),
+            "completed-state QUERY {label} must equal the H0 answer"
+        );
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -910,9 +932,10 @@ fn h4_query_batch_matches_the_frozen_contract() {
                 let pending = mech
                     .full_parse(&source_of(&bytes, 90), &mut cx)
                     .expect("full_parse");
-                let d = pending.result().clone();
-                mech.complete(pending).expect("complete");
-                d
+                let done = mech.complete(pending).expect("complete");
+                // MAJOR-3 (R5-CORRECTIVE-1): the COMPLETED state's pure
+                // projection is the query authority.
+                done.state.normalize_v1()
             };
             let path = node_path_at(&doc, offset);
             assert!(!path.is_empty(), "{shape:?} {label}");
@@ -975,4 +998,74 @@ fn h4_determinism_same_inputs_same_witnesses() {
     }
     assert_eq!(runs[0].0, runs[1].0, "same inputs, same result checksum");
     assert_eq!(runs[0].1, runs[1].1, "same inputs, same counters");
+}
+
+#[test]
+fn h4_converged_suffix_shares_retained_syntax_identity() {
+    // R5-CORRECTIVE-1 (self-review Q5): convergence must reuse the WHOLE
+    // retained block — skeleton AND materialized semantic subtree —
+    // through Arc identity, never a skeleton retarget followed by an
+    // inline rescan. Witness: the converged suffix head slot holds the
+    // SAME Arc object the old state held before the update.
+    let pad = "filler line one to push the document length well past any boundary checks\n\nfiller line two keeps the tail far from the edit region\n\n";
+    let old = format!("{pad}alpha one\n\nbeta two\n\ngamma three\n\ndelta four\n");
+    let gpos = old.find("gamma").unwrap();
+    let edit = CanonicalEdit::new(gpos + 2, gpos + 5, "UMMA").expect("edit");
+    let post: String = format!("{}{}{}", &old[..gpos + 2], "UMMA", &old[gpos + 5..]);
+    let post_b = post.as_bytes();
+
+    let old_state = h4_full_parse(old.as_bytes());
+    // The converged suffix head is the LAST top-level block ("delta
+    // four"): capture its shared object's address BEFORE the update.
+    let suffix_ptr_before =
+        Arc::as_ptr(&old_state.blocks().last().expect("delta slot").block) as usize;
+
+    let mut counters = WorkCounters::all_unknown();
+    let new_state;
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = RestartConvergenceMechanism::new();
+        let old_source = source_of(old.as_bytes(), 120);
+        let post_source = source_of(post_b, 121);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        let clean = parse_document(post_b);
+        assert_eq!(pending.result(), &clean, "structural mismatch");
+        let done = mech.complete(pending).expect("complete");
+        assert_eq!(
+            done.state.normalize_v1(),
+            clean,
+            "completed-state projection"
+        );
+        new_state = done.state;
+        cx.sink.finalize_derived();
+    }
+    let last = new_state.blocks().last().expect("delta slot");
+    assert_eq!(
+        last.abs_start(),
+        post.find("delta four").unwrap(),
+        "the converged suffix head is the delta block"
+    );
+    assert_eq!(
+        Arc::as_ptr(&last.block) as usize,
+        suffix_ptr_before,
+        "converged suffix must be the SAME retained syntax object (Arc identity), \
+         not a rebuilt representation rescanned from source"
+    );
+    assert!(
+        matches!(counters.nodes_reused, Observed::Known(n) if n > 0),
+        "the shared suffix is counted as nodes_reused"
+    );
 }

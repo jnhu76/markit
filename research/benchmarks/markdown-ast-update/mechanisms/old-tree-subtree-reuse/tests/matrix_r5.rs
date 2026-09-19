@@ -24,7 +24,7 @@ use markit_mdbench_corpusgen::mutations::{
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_old_tree_subtree_reuse::{H3State, OldTreeSubtreeReuseMechanism};
 use markit_mdbench_oracle::normalized::{node_path_at, normalized_checksum, NodeKind};
-use markit_mdbench_oracle::validate_root;
+use markit_mdbench_oracle::{validate_root, NormalizeV1};
 
 fn source_of(bytes: &[u8], id: u64) -> Source {
     Source::new(
@@ -55,9 +55,20 @@ fn completed_doc(
     let pending = mech
         .full_parse(&source_of(bytes, 2), &mut cx)
         .unwrap_or_else(|e| panic!("{context}: full_parse failed: {e:?}"));
-    let doc = pending.result().clone();
+    let eager = pending.result().clone();
     let done = mech.complete(pending).expect("complete");
-    assert_eq!(done.result_checksum, normalized_checksum(&doc), "{context}");
+    // MAJOR-3 (R5-CORRECTIVE-1): the QUERY authority is the COMPLETED
+    // state's pure projection — never the Pending's eager result.
+    let doc = done.state.normalize_v1();
+    assert_eq!(
+        doc, eager,
+        "{context}: completed-state projection == eager pending result"
+    );
+    assert_eq!(
+        normalized_checksum(&doc),
+        done.result_checksum,
+        "{context}: checksum law"
+    );
     doc
 }
 
@@ -146,6 +157,15 @@ fn run_update_case(old: &[u8], edit: &PlannedEdit, context: &str) {
             normalized_checksum(&clean),
             "{context}"
         );
+        // MAJOR-3 (R5-CORRECTIVE-1): the COMPLETED state must project
+        // purely to exactly the H0 result.
+        let doc = done.state.normalize_v1();
+        assert_eq!(doc, clean, "{context}: completed-state projection vs H0");
+        assert_eq!(
+            normalized_checksum(&doc),
+            done.result_checksum,
+            "{context}: checksum(normalize_v1) == completed checksum"
+        );
         new_state = done.state;
     }
     // The new retained state must be a usable input for a follow-up
@@ -185,7 +205,12 @@ fn run_update_case(old: &[u8], edit: &PlannedEdit, context: &str) {
             &clean,
             "{context}: chained mismatch vs H0"
         );
-        mech.complete(pending).expect("complete");
+        let done2 = mech.complete(pending).expect("complete");
+        assert_eq!(
+            done2.state.normalize_v1(),
+            clean,
+            "{context}: chained completed-state projection vs H0"
+        );
     }
 }
 

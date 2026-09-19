@@ -27,9 +27,10 @@
 //! freeze §1).
 
 use markit_mdbench_common::WorkSink;
-use markit_mdbench_oracle::normalized::{NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::normalized::NormalizedDocument;
 
-use crate::inline::{materialize, norm_label, RefTable};
+use crate::inline::norm_label;
+use crate::inline::RefTable;
 
 /// One container frame of the shared [`ContextKey`] (R5 decision freeze
 /// §2): the state BENCH-GRAMMAR-v1 dispatch consumes at a block-start
@@ -230,7 +231,9 @@ struct BlockScanner<'a, 'h, W: WorkSink> {
 
 /// Clean full parse of a complete BENCH-GRAMMAR-v1 document (no splice
 /// hook): block pass + inline pass with the completed definition table.
-/// The caller owns the NORMALIZED-RESULT-v1 conformance gate.
+/// The caller owns the NORMALIZED-RESULT-v1 conformance gate. The inline
+/// pass reports its inspected segments to the same sink as the block
+/// pass (R5-CORRECTIVE-1, MAJOR-2).
 pub fn parse_full<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
     let (blocks, defs) = {
         let mut scan = BlockScanner::new_region(src, 0, src.len(), sink, None);
@@ -238,10 +241,7 @@ pub fn parse_full<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
         scan.finish();
         scan.into_result()
     };
-    let children = materialize(src, blocks, &defs);
-    let mut root = markit_mdbench_oracle::normalized::Node::new(NodeKind::Document, 0, src.len());
-    root.children = children;
-    NormalizedDocument::new(root)
+    crate::inline::finish_document_with_sink(src, blocks, &defs, sink)
 }
 
 /// One region parse result: completed top-level blocks with ABSOLUTE

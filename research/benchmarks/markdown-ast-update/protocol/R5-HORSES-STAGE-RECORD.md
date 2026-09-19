@@ -385,3 +385,65 @@ NOT merged by the implementing agent.
   a Weakness Map candidate for the measurement stages, NOT tuned away:
   any lookup-structure change would alter the mechanism identity that
   R6/R7 are supposed to measure.
+
+## 10. CORRECTIVE-1 (human adversarial review of PR #30 @ a199819)
+
+Verdict received: `MAJOR: 3 / IMPORTANT: 1`, `R5_CORRECTIVE_1_REQUIRED`.
+One targeted corrective was executed
+(MARKIT-R5-HORSE-CORRECTIVE-PARITY-CORRECTIVE-1; commit 6f3961c and
+follow-ups); H1-H4 mechanism identities are unchanged, the R3 case
+authority is unchanged, no performance content entered, R6 was not
+started.
+
+- MAJOR-1 (H1 pseudo reuse): H1's update now CONSUMES the old state;
+  prefix entries MOVE (ownership pass-through) and only those are
+  counted `nodes_reused`; suffix entries are reconstructed by recursive
+  delta-shift over their retained syntax and counted `nodes_rebuilt`.
+  A heap-address ownership witness (`h1_prefix_reuse_is_ownership_pass_through`)
+  pins the path; negative probe A (move -> clone) must fail it.
+- MAJOR-2 (inline inspection): the shared inline scanner reports every
+  scanned content segment (`scan_region_with_sink` and siblings);
+  `parse_full` threads the same sink, so H0 keeps full-document
+  coverage through the identical instrumented path. Per the corrective,
+  instrumenting the old H1/H4 behavior alone was NOT acceptable: both
+  mechanisms now avoid global inline rescans natively (MAJOR-1/§6
+  retained syntax), so the identity witnesses show genuinely sub-full
+  inspection. Probe B (emission disabled) is caught by the raw-event
+  gate `inline_inspection_events_are_reported`.
+- §4/§5/§6 (retained syntax): H1 `TopEntry::Block { skel, sem, facts }`
+  and H4 `BlockSlot.block: Arc<RetainedBlock { skel, sem }>` retain the
+  MATERIALIZED semantic subtree; prefix/converged-suffix reuse shares
+  complete syntax with zero parser source reads; H1's suffix shift and
+  H4's `base_shift` retargeting are pure representation rebuilds over
+  retained syntax (spans + `FencedCode.content`), counted as rebuilt.
+  H2/H3 already retained inline payloads; their fresh-node construction
+  is now sink-instrumented and reused `Arc` members require zero inline
+  source reads.
+- MAJOR-3 (completed-state QUERY): every horse implements
+  `NormalizeV1`; the law is
+  `done.state.normalize_v1() == H0 clean result` with
+  `checksum(normalize_v1) == result_checksum`, no `Source`, no sink, no
+  parser. Matrix helpers and QUERY batches project from the COMPLETED
+  state only; the eager `Pending.result() == H0` check remains as an
+  eager-completion fact, and each eager gate additionally feeds the
+  completed state into a second update. Probe C (helper reverted to the
+  Pending shortcut) is caught by the static completed-state authority
+  check in `verify-r5.sh`.
+- IMPORTANT (node accounting): counting rule clarified and implemented
+  (protocol §11.6): one structural block/container node per block unit
+  + every retained inline syntax node, recursively. H2/H3 counters now
+  include payload inline nodes; H1/H4 count skeleton structure once and
+  the semantic subtree's inline nodes — under this rule a full clean
+  parse reports exactly the number of distinct normalized nodes (H0
+  parity). H1's W1 arithmetic is updated accordingly (4 = 2 moved
+  entries x (1 skeleton + 1 Text)).
+- Eager-completion banners: the gate runs the four
+  `h*_counters_and_eager_completion` tests explicitly and records
+  `H1_EAGER_COMPLETION_PASS` … `H4_EAGER_COMPLETION_PASS`,
+  `EAGER_COMPLETION_VALIDATION_PASS`.
+- Negative gate: `R5 MUTATION CHECK: 7/7 DETECTED`
+  (4 mechanism mutations + corrective probes A/B/C), each validated to
+  compile and be detected, each restored, nothing mutated committed.
+  The script's restore trap is now installed only AFTER its clean-tree
+  refusal check (an earlier draft could have reverted uncommitted work
+  on refusal; the check and the trap were reordered).

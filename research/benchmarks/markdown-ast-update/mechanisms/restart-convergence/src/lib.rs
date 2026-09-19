@@ -57,7 +57,8 @@ use markit_mdbench_common::NotApplicableSlot;
 use markit_mdbench_common::Observed;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkSink;
-use markit_mdbench_oracle::normalized::{normalized_checksum, NormalizedDocument};
+use markit_mdbench_oracle::normalized::{normalized_checksum, Node, NodeKind, NormalizedDocument};
+use markit_mdbench_oracle::NormalizeV1;
 use markit_mdbench_shared_grammar as sg;
 use sg::parser::{parse_region_with_hook, ContextKey, Skel, SpliceHook};
 
@@ -68,10 +69,24 @@ pub const H4_MECHANISM_ID: &str = "restart-convergence-h4";
 // Retained native state (checkpoints + shared blocks with base offsets)
 // ---------------------------------------------------------------------------
 
-/// One retained top-level block: a shared skeleton plus its base offset.
+/// One retained top-level block: the shared identity unit. It carries
+/// the block skeleton AND its already-materialized semantic subtree
+/// (`sem`, R5-CORRECTIVE-1 §6), so retained reuse (stable prefix,
+/// converged suffix) shares COMPLETE syntax — the projection never
+/// rescans inline content. `sem`'s spans are absolute in the coordinate
+/// system the block was parsed in; the current-document position derives
+/// purely at projection time via the slot's `base_shift`.
+#[derive(Debug, Clone)]
+pub struct RetainedBlock {
+    pub skel: Skel,
+    pub sem: Node,
+}
+
+/// One retained top-level slot: a shared block plus its base offset.
 /// The block's absolute span in the CURRENT document is
 /// `skel.start() + base_shift` — suffix reuse retargets the shared
-/// `Arc<Skel>` by adjusting `base_shift` alone (structural sharing).
+/// `Arc<RetainedBlock>` by adjusting `base_shift` alone (structural
+/// sharing; the normalized projection applies the shift purely).
 /// `line_offset` is the distance from the block's line start to its span
 /// start (always 0 for top-level blocks in this grammar; kept as the
 /// general line-alignment bookkeeping).
@@ -79,18 +94,18 @@ pub const H4_MECHANISM_ID: &str = "restart-convergence-h4";
 pub struct BlockSlot {
     pub base_shift: isize,
     pub line_offset: usize,
-    pub block: Arc<Skel>,
+    pub block: Arc<RetainedBlock>,
 }
 
 impl BlockSlot {
     /// Absolute span start in the current document's coordinates.
     pub fn abs_start(&self) -> usize {
-        (self.block.start() as isize + self.base_shift) as usize
+        (self.block.skel.start() as isize + self.base_shift) as usize
     }
 
     /// Absolute span end in the current document's coordinates.
     pub fn abs_end(&self) -> usize {
-        (self.block.end() as isize + self.base_shift) as usize
+        (self.block.skel.end() as isize + self.base_shift) as usize
     }
 
     /// The block's LINE start in the current coordinates — the checkpoint
@@ -143,6 +158,17 @@ impl H4State {
 
     pub fn src_len(&self) -> usize {
         self.src_len
+    }
+}
+
+/// Completed-state normalization (R5-CORRECTIVE-1, MAJOR-3): the pure
+/// projection over the retained semantic subtrees — no source, no sink,
+/// no parser. Retained suffix reuse shares complete syntax through the
+/// `Arc<RetainedBlock>` identity; the projection only applies each
+/// slot's `base_shift`.
+impl NormalizeV1 for H4State {
+    fn normalize_v1(&self) -> NormalizedDocument {
+        project(&self.blocks, self.src_len)
     }
 }
 
@@ -200,17 +226,23 @@ impl RestartConvergenceMechanism {
         cx: &mut MechanismContext<'_, W>,
     ) -> H4Pending {
         let rp = sg::parse_region(src, 0, src.len(), cx.sink);
-        let mut built = 0u64;
-        let slots = fresh_slots(&rp.blocks, src, &mut built);
+        // Definition facts come from the block skeletons (document
+        // order); the table must exist before the inline pass
+        // materializes the retained semantic subtrees.
+        let mut defs = Vec::new();
+        for sk in &rp.blocks {
+            collect_defs_skel(sk, &mut defs);
+        }
+        let table = ref_table(&defs);
+        let mut built = Built::default();
+        let slots = fresh_slots(&rp.blocks, src, &table, &mut built, cx.sink);
         let checkpoints = registers(&slots, 0);
-        cx.sink.add_blocks_reparsed(built);
-        cx.sink.add_nodes_rebuilt(built);
+        cx.sink.add_blocks_reparsed(built.fnodes);
+        cx.sink.add_nodes_rebuilt(built.nodes);
         cx.sink.add_nodes_reused(0);
         cx.sink
             .add_metadata_records_touched(checkpoints.len() as u64);
-        let defs = collect_defs(&slots);
-        let table = ref_table(&defs);
-        let result = project(&slots, src, &table);
+        let result = project(&slots, src.len());
         declare_gauges_not_applicable(cx);
         H4Pending {
             state: H4State {
@@ -328,7 +360,7 @@ impl Mechanism for RestartConvergenceMechanism {
             if s < ee && e > es {
                 damaged_entries += 1;
                 damaged_end = damaged_end.max(e);
-                damaged_has_def |= skel_has_def(&slot.block);
+                damaged_has_def |= skel_has_def(&slot.block.skel);
             }
         }
         cx.sink
@@ -377,21 +409,24 @@ impl Mechanism for RestartConvergenceMechanism {
             // through the same forward machinery), re-register every
             // checkpoint at the next generation.
             let rp = sg::parse_region(post, 0, post.len(), cx.sink);
-            let mut built = 0u64;
-            let slots = fresh_slots(&rp.blocks, post, &mut built);
+            let mut defs = Vec::new();
+            for sk in &rp.blocks {
+                collect_defs_skel(sk, &mut defs);
+            }
+            let table = ref_table(&defs);
+            let mut built = Built::default();
+            let slots = fresh_slots(&rp.blocks, post, &table, &mut built, cx.sink);
             let gen = old_state.gen + 1;
             let checkpoints = registers(&slots, gen);
-            cx.sink.add_blocks_reparsed(built);
-            cx.sink.add_nodes_rebuilt(built);
+            cx.sink.add_blocks_reparsed(built.fnodes);
+            cx.sink.add_nodes_rebuilt(built.nodes);
             cx.sink.add_nodes_reused(0);
             cx.sink
                 .add_metadata_records_touched(checkpoints.len() as u64);
             cx.sink.set_restart_distance(Observed::Known(es as u64));
             cx.sink
                 .set_convergence_distance(Observed::Known(post.len() as u64));
-            let defs = collect_defs(&slots);
-            let table = ref_table(&defs);
-            let result = project(&slots, post, &table);
+            let result = project(&slots, post.len());
             return Ok(H4Pending {
                 state: H4State {
                     blocks: slots,
@@ -433,6 +468,10 @@ impl Mechanism for RestartConvergenceMechanism {
         // the retained suffix with retargeted base offsets. Retained
         // blocks carry their old checkpoint records (key + generation
         // provenance); fresh blocks register at the current generation.
+        // MAJOR (R5-CORRECTIVE-1 §6): retained blocks share the whole
+        // `Arc<RetainedBlock>` — skeleton AND materialized semantic
+        // subtree — so neither the prefix nor the converged suffix
+        // re-reads or re-scans a single byte of inline content.
         let gen = old_state.gen;
         let mut pairs: Vec<(BlockSlot, Option<Checkpoint>)> = Vec::new();
         for (s, cp) in old_state.blocks[..prepared.restart_slot]
@@ -452,7 +491,31 @@ impl Mechanism for RestartConvergenceMechanism {
                 }),
             ));
         }
-        let mut built = 0u64;
+        // Document-order definition table for the assembled state:
+        // retained prefix facts, then (at the splice position) the
+        // retained suffix facts, with the fresh region's facts in their
+        // document positions. Computed from skeletons BEFORE the fresh
+        // inline pass materializes, so the table is complete.
+        let mut defs: Vec<(String, String)> = Vec::new();
+        for s in &old_state.blocks[..prepared.restart_slot] {
+            collect_defs_skel(&s.block.skel, &mut defs);
+        }
+        let mut suffix_defs_done = false;
+        for sk in &rp.blocks {
+            if matches!(sk, Skel::Spliced { .. }) {
+                let (old_idx, _) = take.expect("splice placeholder without a recorded take");
+                for s in &old_state.blocks[old_idx..] {
+                    collect_defs_skel(&s.block.skel, &mut defs);
+                }
+                suffix_defs_done = true;
+            } else {
+                collect_defs_skel(sk, &mut defs);
+            }
+        }
+        debug_assert!(suffix_defs_done || take.is_none());
+        let table = ref_table(&defs);
+
+        let mut built = Built::default();
         let mut reused = 0u64;
         let mut rebased = 0u64;
         for sk in &rp.blocks {
@@ -466,7 +529,7 @@ impl Mechanism for RestartConvergenceMechanism {
                         .iter()
                         .zip(&old_state.checkpoints[old_idx..])
                     {
-                        reused += skel_count(&s.block);
+                        reused += retained_block_nodes(&s.block);
                         rebased += 1;
                         pairs.push((
                             BlockSlot {
@@ -483,13 +546,20 @@ impl Mechanism for RestartConvergenceMechanism {
                     }
                 }
                 other => {
-                    built += skel_count(other);
+                    built.fnodes += skel_count(other);
                     let start = other.start();
+                    let sem =
+                        sg::inline::materialize_one_with_sink(post, other.clone(), &table, cx.sink);
+                    built.nodes +=
+                        skel_count(other) + inline_forest_count(std::slice::from_ref(&sem));
                     pairs.push((
                         BlockSlot {
                             base_shift: 0,
                             line_offset: start - line_start_of(post, start),
-                            block: Arc::new(other.clone()),
+                            block: Arc::new(RetainedBlock {
+                                skel: other.clone(),
+                                sem,
+                            }),
                         },
                         None,
                     ));
@@ -507,7 +577,7 @@ impl Mechanism for RestartConvergenceMechanism {
                 }
                 None => Checkpoint {
                     position,
-                    key: slot.block.ctx().clone(),
+                    key: slot.block.skel.ctx().clone(),
                     gen,
                 },
             });
@@ -518,8 +588,8 @@ impl Mechanism for RestartConvergenceMechanism {
         // a measured zero — e.g. an edit at the document start restarts at
         // position 0 with no distance).
         let convergence_pos = take.map_or(post.len(), |(_, p)| p);
-        cx.sink.add_blocks_reparsed(built);
-        cx.sink.add_nodes_rebuilt(built);
+        cx.sink.add_blocks_reparsed(built.fnodes);
+        cx.sink.add_nodes_rebuilt(built.nodes);
         cx.sink.add_nodes_reused(reused);
         cx.sink.add_metadata_records_touched(
             consultations + slot_count as u64 + checkpoints.len() as u64 + rebased,
@@ -529,9 +599,7 @@ impl Mechanism for RestartConvergenceMechanism {
         cx.sink
             .set_convergence_distance(Observed::Known((convergence_pos - r) as u64));
 
-        let defs = collect_defs(&slots);
-        let table = ref_table(&defs);
-        let result = project(&slots, post, &table);
+        let result = project(&slots, post.len());
         Ok(H4Pending {
             state: H4State {
                 blocks: slots,
@@ -641,17 +709,42 @@ fn map_back(pos: usize, delta: isize) -> usize {
 // State construction helpers
 // ---------------------------------------------------------------------------
 
-/// Fresh slots from parsed blocks (absolute spans in `src`, base offset 0).
-fn fresh_slots(blocks: &[Skel], src: &[u8], built: &mut u64) -> Vec<BlockSlot> {
+/// Construction counters (R5-CORRECTIVE-1 §8): `fnodes` counts block
+/// structure (skeleton) nodes of FRESH material — the `blocks_reparsed`
+/// unit; `nodes` counts every constructed native node INCLUDING the
+/// freshly materialized inline syntax — the `nodes_rebuilt` unit.
+#[derive(Debug, Default)]
+struct Built {
+    fnodes: u64,
+    nodes: u64,
+}
+
+/// Fresh slots from parsed blocks (absolute spans in `src`, base offset
+/// 0). Each block's semantic subtree is materialized here with the
+/// instrumented inline pass (R5-CORRECTIVE-1 §6/MAJOR-2); every scanned
+/// segment is reported to `sink`.
+fn fresh_slots<W: WorkSink>(
+    blocks: &[Skel],
+    src: &[u8],
+    table: &sg::RefTable,
+    built: &mut Built,
+    sink: &mut W,
+) -> Vec<BlockSlot> {
     blocks
         .iter()
         .map(|sk| {
-            *built += skel_count(sk);
+            let k = skel_count(sk);
+            built.fnodes += k;
             let start = sk.start();
+            let sem = sg::inline::materialize_one_with_sink(src, sk.clone(), table, sink);
+            built.nodes += k + inline_forest_count(std::slice::from_ref(&sem));
             BlockSlot {
                 base_shift: 0,
                 line_offset: start - line_start_of(src, start),
-                block: Arc::new(sk.clone()),
+                block: Arc::new(RetainedBlock {
+                    skel: sk.clone(),
+                    sem,
+                }),
             }
         })
         .collect()
@@ -663,7 +756,7 @@ fn registers(slots: &[BlockSlot], gen: u64) -> Vec<Checkpoint> {
         .iter()
         .map(|s| Checkpoint {
             position: s.line_position(),
-            key: s.block.ctx().clone(),
+            key: s.block.skel.ctx().clone(),
             gen,
         })
         .collect()
@@ -695,15 +788,6 @@ fn skel_has_def(sk: &Skel) -> bool {
     }
 }
 
-/// Document-order first-wins definition table over the assembled slots.
-fn collect_defs(slots: &[BlockSlot]) -> Vec<(String, String)> {
-    let mut defs = Vec::new();
-    for slot in slots {
-        collect_defs_skel(&slot.block, &mut defs);
-    }
-    defs
-}
-
 fn collect_defs_skel(sk: &Skel, defs: &mut Vec<(String, String)>) {
     match sk {
         Skel::Def {
@@ -730,116 +814,72 @@ fn collect_defs_skel(sk: &Skel, defs: &mut Vec<(String, String)>) {
 // Projection (retained shared Skels + base offsets -> NORMALIZED-RESULT-v1)
 // ---------------------------------------------------------------------------
 
-/// Materialize the completed document: clone each slot's skeleton,
-/// shifting spans whose base offset is nonzero, then run the shared
-/// finish pass (inline scan against the CURRENT table).
-fn project(slots: &[BlockSlot], src: &[u8], table: &sg::RefTable) -> NormalizedDocument {
-    let blocks = slots
+/// Pure projection of the completed state (R5-CORRECTIVE-1 §6/MAJOR-3):
+/// clone each slot's retained semantic subtree, applying the slot's
+/// `base_shift` to its spans when nonzero. No source, no sink, no
+/// parser, no repair — the retained representation carries every syntax
+/// fact.
+fn project(slots: &[BlockSlot], src_len: usize) -> NormalizedDocument {
+    let mut root = Node::new(NodeKind::Document, 0, src_len);
+    root.children = slots
         .iter()
         .map(|s| {
             if s.base_shift == 0 {
-                (*s.block).clone()
+                s.block.sem.clone()
             } else {
-                shift_skel(&s.block, s.base_shift)
+                shift_node_owned(s.block.sem.clone(), s.base_shift)
             }
         })
         .collect();
-    sg::inline::finish_document(src, blocks, table)
+    NormalizedDocument::new(root)
 }
 
-/// Deep clone of a skeleton with every absolute span shifted by `base`.
-fn shift_skel(sk: &Skel, base: isize) -> Skel {
+/// Deep clone of a normalized subtree with every span shifted by `base`,
+/// preserving all semantic values (pure representation retargeting).
+/// Position-bearing fields: the node span, the `FencedCode.content`
+/// interval, and (recursively) the children.
+fn shift_node_owned(mut n: Node, base: isize) -> Node {
     let sh = |p: usize| (p as isize + base) as usize;
-    match sk {
-        Skel::Para {
-            start,
-            end,
-            segments,
-            ctx,
-        } => Skel::Para {
-            start: sh(*start),
-            end: sh(*end),
-            segments: segments.iter().map(|&(a, b)| (sh(a), sh(b))).collect(),
-            ctx: ctx.clone(),
-        },
-        Skel::Heading {
-            start,
-            end,
-            level,
-            content,
-            ctx,
-        } => Skel::Heading {
-            start: sh(*start),
-            end: sh(*end),
-            level: *level,
-            content: (sh(content.0), sh(content.1)),
-            ctx: ctx.clone(),
-        },
-        Skel::Quote {
-            start,
-            end,
-            children,
-            ctx,
-        } => Skel::Quote {
-            start: sh(*start),
-            end: sh(*end),
-            children: children.iter().map(|c| shift_skel(c, base)).collect(),
-            ctx: ctx.clone(),
-        },
-        Skel::List {
-            start,
-            end,
-            items,
-            ctx,
-        } => Skel::List {
-            start: sh(*start),
-            end: sh(*end),
-            items: items.iter().map(|c| shift_skel(c, base)).collect(),
-            ctx: ctx.clone(),
-        },
-        Skel::Item {
-            start,
-            end,
-            marker,
-            children,
-            ctx,
-        } => Skel::Item {
-            start: sh(*start),
-            end: sh(*end),
-            marker: *marker,
-            children: children.iter().map(|c| shift_skel(c, base)).collect(),
-            ctx: ctx.clone(),
-        },
-        Skel::Fence {
-            start,
-            end,
-            info,
-            content,
-            ctx,
-        } => Skel::Fence {
-            start: sh(*start),
-            end: sh(*end),
-            info: info.clone(),
-            content: (sh(content.0), sh(content.1)),
-            ctx: ctx.clone(),
-        },
-        Skel::Def {
-            start,
-            end,
-            label,
-            destination,
-            ctx,
-        } => Skel::Def {
-            start: sh(*start),
-            end: sh(*end),
-            label: label.clone(),
-            destination: destination.clone(),
-            ctx: ctx.clone(),
-        },
-        Skel::Spliced { .. } => {
-            unreachable!("splice placeholders are expanded before projection")
-        }
+    n.start = sh(n.start);
+    n.end = sh(n.end);
+    if let Some((a, b)) = n.content {
+        n.content = Some((sh(a), sh(b)));
     }
+    n.children = n
+        .children
+        .into_iter()
+        .map(|c| shift_node_owned(c, base))
+        .collect();
+    n
+}
+
+/// Native node count of one retained block under the corrective counting
+/// rule (R5-CORRECTIVE-1 §8): every structural block/container node of
+/// the skeleton PLUS every retained inline syntax node of the
+/// materialized subtree (recursive).
+fn retained_block_nodes(b: &RetainedBlock) -> u64 {
+    skel_count(&b.skel) + inline_forest_count(std::slice::from_ref(&b.sem))
+}
+
+/// Recursive count of INLINE syntax nodes in a normalized forest. The
+/// inline scanner produces only inline-kind nodes below the block node,
+/// so this counts every retained inline syntax node exactly once (the
+/// materialized subtree's block-kind nodes are the same structural units
+/// the skeleton encodes and are counted once via `skel_count`).
+fn inline_forest_count(nodes: &[Node]) -> u64 {
+    nodes.iter().map(inline_node_count).sum()
+}
+
+fn inline_node_count(n: &Node) -> u64 {
+    let here = matches!(
+        n.kind,
+        NodeKind::Text
+            | NodeKind::Emphasis
+            | NodeKind::CodeSpan
+            | NodeKind::Link
+            | NodeKind::ReferenceLink
+    ) as u64;
+    here + inline_forest_count(&n.children)
 }
 
 // ---------------------------------------------------------------------------

@@ -86,7 +86,8 @@ the union); PA is never computed by a horse. `nodes_reused` counts native
 syntax nodes/subtrees structurally RETAINED (shared Arc identity or
 pass-through ownership) across an update; `nodes_rebuilt` counts native
 nodes newly constructed. Parser-work avoidance is never counted as
-`nodes_reused`. `blocks_reparsed` counts BENCH-GRAMMAR block-level parse
+`nodes_reused`. The exact unit per horse — including retained inline syntax
+nodes — is fixed in §11.6 (R5-CORRECTIVE-1). `blocks_reparsed` counts BENCH-GRAMMAR block-level parse
 units (Paragraph, Heading, BlockQuote, List, ListItem, FencedCode,
 ReferenceDefinition — the H0 block-kind set) actually constructed by a
 reparse entered this update. `metadata_records_touched` counts the horse's
@@ -134,6 +135,10 @@ Every horse answers the frozen ordered batch
 projecting the native state to `NormalizedDocument` (`NormalizeV1`) and
 applying the oracle's `node_path_at`. No horse-specific query index exists.
 The projection is pure traversal of already-complete state (no parser work).
+QUERY-AUTHORITY (R5-CORRECTIVE-1 §11.5): the projection comes from the
+COMPLETED state only — `done.state.normalize_v1()`; the eager
+`Pending.result()` is asserted as an eager-completion fact but is never
+the query authority.
 
 ---
 
@@ -802,3 +807,112 @@ strategy (H1 delta-shift rebuild / H2 fragment offsets + parent-relative /
 H3 patch-path + derive-at-read / H4 per-block base offsets — exactly the
 four R2-H09 position classes), fallback, counters. No unexplained
 one-horse privilege; no undeclared optimization; no timing anywhere.
+
+---
+
+## 11. CORRECTIVE clarifications (R5-CORRECTIVE-1; human adversarial
+## verdict MAJOR: 3 / IMPORTANT: 1 on PR #30 @ a199819)
+
+These are clarifications/repairs of the frozen surfaces above — made as
+evidence-backed corrections, not redefinitions designed around results.
+The R3 workload authority (CASE-MATRIX-v1) is untouched; H1–H4 mechanism
+identities are unchanged; no performance content exists anywhere.
+
+### 11.1 Ownership pass-through (repairs §3's `nodes_reused` authority)
+
+H1's prefix pass-through MOVEs the old `TopEntry` values into the new
+state (`old_state` is consumed; entries are never cloned or
+reconstructed on the safe-local path). A regression witness pins the
+implementation path: the heap address of a retained prefix block's
+inline node buffer is identical before and after the update (ownership
+pass-through, not Clone-based pseudo reuse while still reporting
+`nodes_reused > 0`). Negative probe A reverts the move to a clone; the
+witness must fail.
+
+### 11.2 Honest inline source inspection (repairs §3's PA authority)
+
+The shared inline scanner now reports every content segment it reads:
+the instrumented APIs
+(`scan_region_with_sink`, `scan_inlines_with_sink`,
+`materialize_one_with_sink`, `materialize_with_sink`,
+`finish_document_with_sink`) emit `record_source_inspection(ss, se)`
+once per scanned segment (recursive sub-scans report overlapping
+subranges; the common collector unions them). H0 uses the same
+instrumented path — its derived source coverage remains the full
+document. No horse computes PA; no range is fabricated from node
+counts. Instrumenting the OLD H1/H4 behavior would have exposed that
+their update paths re-scanned the WHOLE document's inline content; per
+the corrective, the mechanisms avoid that work natively instead (11.3,
+11.4), and the witnesses then show genuinely sub-full coverage where the
+input permits it. Negative probe B disables inline event emission on the
+fresh parse path; the raw-event attribution gate must fail.
+
+### 11.3 H1 retained representation (repairs §6)
+
+`TopEntry::Block { skel, sem, facts }` — a retained block carries its
+ALREADY MATERIALIZED semantic subtree (`sem`, the normalized block node
+with inline children, in the entry's own coordinates). Prefix:
+complete entry MOVED unchanged — no source read, no inline rescan.
+Region: fresh block parse + fresh instrumented inline parse. Suffix:
+mechanism's documented representation reconstruction (recursive
+delta-shift over the retained syntax, `FencedCode.content` included) —
+parser-work avoidance but representation rebuild → `nodes_rebuilt`,
+never `nodes_reused`. Fallback: fresh complete parse incl. inline scan;
+`nodes_reused = Known(0)`. The W1 witness still proves
+fallback == Known(0), inspected bytes < post bytes, result == H0.
+
+### 11.4 H4 retained representation (repairs §9)
+
+`BlockSlot.block: Arc<RetainedBlock { skel, sem }>` — the shared
+identity unit carries the COMPLETE materialized block. Retained prefix
+and converged suffix reuse share whole `Arc<RetainedBlock>`s: zero
+parser source reads, zero inline rescans; the projection applies each
+slot's `base_shift` purely (`FencedCode.content` shifted). Checkpoint /
+restart / convergence authority (§9) is unchanged; restart-at-zero
+remains a restart (fresh everything, `nodes_reused = Known(0)`), not a
+fallback. H4 does not become H2/H3.
+
+### 11.5 Completed-state QUERY + eager law (repairs §5)
+
+Law (per horse): `done = complete(pending); doc = done.state.normalize_v1()`
+— no `Source` argument, no `WorkSink`, no parser, no repair — and
+`doc == H0 clean normalized result`. The QUERY batch and every matrix
+helper project from the COMPLETED state; the eager surface
+(`Pending.result() == H0` before `complete()`) is still asserted, but
+the query authority never reads it. `checksum(doc) ==
+done.result_checksum` holds per horse. Negative probe C reverts a
+matrix helper to the `Pending.result()` shortcut; the static
+completed-state authority check in `verify-r5.sh` must fail. Eager
+completion gates additionally prove a second update consumes the
+completed state (banners `H1_EAGER_COMPLETION_PASS` …
+`H4_EAGER_COMPLETION_PASS`, `EAGER_COMPLETION_VALIDATION_PASS` in the
+gate record).
+
+### 11.6 Native node accounting — counting rule (repairs §3)
+
+The R5 definition stands (`nodes_rebuilt`/`nodes_reused` = native
+syntax representation nodes); this clarifies the unit so retained inline
+syntax is never invisible:
+
+```text
+one stored syntax node =
+    one structural block/container node (per block unit, counted once)
+  + every retained inline syntax node (Text/Emphasis/CodeSpan/Link/
+    ReferenceLink), counted recursively
+```
+
+- H2/H3: `FNode`/`TNode` = 1 structural node + their payload's
+  `Para.inline`/`Heading.inline` forest (nested inline nodes count
+  recursively). Reused `Arc` members carry their inline payloads —
+  zero inline source reads.
+- H1/H4: the native block entry stores the structural skeleton AND the
+  materialized semantic subtree; the subtree's own block-kind nodes are
+  the SAME structural units the skeleton encodes, so structure is
+  counted once per block unit (from the skeleton) and the semantic
+  subtree contributes its inline-kind nodes. Under this rule a full
+  clean parse reports exactly the number of distinct normalized nodes
+  (H0 parity), and W1's exact counter arithmetic stays derivable.
+
+Physical object layouts stay horse-specific (no forced uniformity); the
+counter describes actual native representation work, never normalized
+temporary output objects.

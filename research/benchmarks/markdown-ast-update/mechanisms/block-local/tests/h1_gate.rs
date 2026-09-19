@@ -34,8 +34,8 @@ use markit_mdbench_corpusgen::mutations::{
 };
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_oracle::fixture::{load_fixtures, repo_fixture_dir};
-use markit_mdbench_oracle::normalized::{normalized_checksum, NormalizedDocument};
-use markit_mdbench_oracle::validate_root;
+use markit_mdbench_oracle::normalized::{node_path_at, normalized_checksum, NormalizedDocument};
+use markit_mdbench_oracle::{validate_root, NormalizeV1};
 
 // ---------------------------------------------------------------------------
 // Harness
@@ -636,9 +636,13 @@ fn h1_identity_w1_safe_local_edit() {
         matches!(counters.blocks_reparsed, Observed::Known(n) if n > 0),
         "W1: the affected block was reparsed"
     );
+    // Corrective counting rule (R5-CORRECTIVE-1 §8): alpha and beta pass
+    // through structurally — each retained block entry is one structural
+    // block node (the skeleton) plus its retained inline syntax (the
+    // Text node), so the two moved entries are 2 x 2 = 4 native nodes.
     assert_eq!(
         counters.nodes_reused,
-        Observed::Known(2),
+        Observed::Known(4),
         "W1: alpha and beta pass through structurally"
     );
 }
@@ -767,12 +771,64 @@ fn h1_counters_and_eager_completion() {
     let done = mech.complete(pending).expect("complete");
     assert_eq!(done.result_checksum, normalized_checksum(&clean));
 
+    // COMPLETED-STATE LAW (R5-CORRECTIVE-1, MAJOR-3/§10): the sealed
+    // state projects to the normalized result PURELY — no Source, no
+    // WorkSink, no parser call is even expressible here.
+    let doc = done.state.normalize_v1();
+    assert_eq!(doc, clean, "completed-state projection == H0");
+    assert_eq!(
+        normalized_checksum(&doc),
+        done.result_checksum,
+        "checksum(completed normalize_v1) == completed checksum"
+    );
+    // QUERY from the completed state equals the H0 answers.
+    let [early, middle, late] = gen::mutations::query_anchors(post_b);
+    for (offset, label) in [(early, "EARLY"), (middle, "MIDDLE"), (late, "LATE")] {
+        assert_eq!(
+            node_path_at(&doc, offset),
+            node_path_at(&clean, offset),
+            "completed-state QUERY {label} must equal the H0 answer"
+        );
+    }
+    // The completed state is a usable input for the NEXT update.
+    let tail = CanonicalEdit::new(post_b.len(), post_b.len(), "+".to_string()).expect("edit");
+    let post2: Vec<u8> = post_b.iter().copied().chain(b"+".iter().copied()).collect();
+    let mut counters2 = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters2);
+        let mut cx = MechanismContext::new(&mut sink);
+        let prepared = mech
+            .prepare_update(
+                &source_of(post_b, 72),
+                &source_of(&post2, 73),
+                &tail,
+                &done.state,
+                &mut cx,
+            )
+            .expect("follow-up prepare");
+        let pending2 = mech
+            .update(
+                &source_of(post_b, 72),
+                &source_of(&post2, 73),
+                &tail,
+                done.state,
+                prepared,
+                &mut cx,
+            )
+            .expect("follow-up update");
+        let clean2 = parse_document(&post2);
+        assert_eq!(pending2.result(), &clean2, "follow-up update result");
+        let done2 = mech.complete(pending2).expect("follow-up complete");
+        assert_eq!(done2.state.normalize_v1(), clean2, "follow-up projection");
+    }
+
     // Counter arithmetic is exact on this hand-built case: alpha and beta
-    // pass through (2 retained blocks), gamma is reparsed (1 region
-    // block), delta is reconstructed (1 suffix block).
+    // pass through (2 retained blocks x 2 native nodes: skeleton + Text),
+    // gamma is reparsed (2), delta is reconstructed over its retained
+    // syntax (2).
     assert_eq!(counters.blocks_reparsed, Observed::Known(1));
-    assert_eq!(counters.nodes_rebuilt, Observed::Known(2));
-    assert_eq!(counters.nodes_reused, Observed::Known(2));
+    assert_eq!(counters.nodes_rebuilt, Observed::Known(4));
+    assert_eq!(counters.nodes_reused, Observed::Known(4));
 }
 
 #[test]
@@ -838,6 +894,24 @@ fn h1_fallback_counters_are_the_full_reconstruction() {
         Observed::Known(clean_blocks),
         "fallback reports the full document block count"
     );
+    // Corrective counting rule (§8): a full reconstruction counts EVERY
+    // native node it built — structural blocks and inline syntax alike.
+    let clean_nodes = {
+        fn walk(n: &markit_mdbench_oracle::normalized::Node, acc: &mut u64) {
+            *acc += 1;
+            for c in &n.children {
+                walk(c, acc);
+            }
+        }
+        let mut acc = 0u64;
+        walk(&clean.root, &mut acc);
+        acc - 1 // Document root is not a parse product
+    };
+    assert_eq!(
+        counters.nodes_rebuilt,
+        Observed::Known(clean_nodes),
+        "fallback reports the full native node count (blocks + inline)"
+    );
     assert_eq!(
         counters.unique_source_bytes_inspected,
         Observed::Known(post_b.len() as u64),
@@ -858,9 +932,10 @@ fn h1_query_batch_matches_the_frozen_contract() {
         assert_tiling_integrity(&state, &bytes);
         let [early, middle, late] = gen::mutations::query_anchors(&bytes);
         for (offset, label) in [(early, "EARLY"), (middle, "MIDDLE"), (late, "LATE")] {
-            // §5 of the R5 freeze: the answer comes from the projected
-            // normalized tree of the COMPLETED state (pure traversal, no
-            // parser work, no horse-only query index).
+            // §5 of the R5 freeze + MAJOR-3 (R5-CORRECTIVE-1): the answer
+            // comes from `done.state.normalize_v1()` — the COMPLETED
+            // state's pure projection. No Pending.result() shortcut, no
+            // parser work, no horse-only query index.
             let doc = {
                 let mut counters = WorkCounters::all_unknown();
                 let mut sink = CounterSink::new(&mut counters);
@@ -869,9 +944,8 @@ fn h1_query_batch_matches_the_frozen_contract() {
                 let pending = mech
                     .full_parse(&source_of(&bytes, 90), &mut cx)
                     .expect("full_parse");
-                let d = pending.result().clone();
-                mech.complete(pending).expect("complete");
-                d
+                let done = mech.complete(pending).expect("complete");
+                done.state.normalize_v1()
             };
             let path = node_path_at(&doc, offset);
             assert!(!path.is_empty(), "{shape:?} {label}");
@@ -889,6 +963,95 @@ fn h1_query_batch_matches_the_frozen_contract() {
             );
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// MAJOR-1 ownership witness (R5-CORRECTIVE-1) — prefix reuse is MOVE,
+// not clone-based pseudo reuse
+// ---------------------------------------------------------------------------
+
+#[test]
+fn h1_prefix_reuse_is_ownership_pass_through() {
+    // The retained representation of an untouched prefix block must be
+    // the SAME object after the update (ownership pass-through), not a
+    // clone that merely re-reports nodes_reused. Witness: the heap
+    // address of the block's retained inline node buffer is identical
+    // before and after — while the update runs, the old tiling is still
+    // alive, so a clone can never land on the same address.
+    let old = "alpha one\n\nbeta two\n\ngamma three\n\ndelta four\n";
+    let edit = CanonicalEdit::new(28, 30, "TH").expect("edit"); // inside gamma
+    let post: String = format!("{}{}{}", &old[..28], "TH", &old[30..]);
+    let post_b = post.as_bytes();
+
+    let old_state = h1_full_parse(old.as_bytes());
+    // beta's retained paragraph subtree ("beta two" starts at byte 11);
+    // its children Vec is a non-empty heap buffer.
+    let beta_before = old_state
+        .entries()
+        .iter()
+        .find_map(|e| match e {
+            markit_mdbench_block_local::TopEntry::Block { sem, .. }
+                if sem.kind == markit_mdbench_oracle::normalized::NodeKind::Paragraph
+                    && sem.start == 11 =>
+            {
+                Some(sem.children.as_ptr() as usize)
+            }
+            _ => None,
+        })
+        .expect("beta paragraph in the old tiling");
+
+    let mut counters = WorkCounters::all_unknown();
+    {
+        let mut sink = CounterSink::new(&mut counters);
+        let mut cx = MechanismContext::new(&mut sink);
+        let mech = BlockLocalMechanism::new();
+        let old_source = source_of(old.as_bytes(), 110);
+        let post_source = source_of(post_b, 111);
+        let prepared = mech
+            .prepare_update(&old_source, &post_source, &edit, &old_state, &mut cx)
+            .expect("prepare");
+        let pending = mech
+            .update(
+                &old_source,
+                &post_source,
+                &edit,
+                old_state,
+                prepared,
+                &mut cx,
+            )
+            .expect("update");
+        let done = mech.complete(pending).expect("complete");
+        // beta keeps its identity in the new tiling.
+        let beta_after = done
+            .state
+            .entries()
+            .iter()
+            .find_map(|e| match e {
+                markit_mdbench_block_local::TopEntry::Block { sem, .. }
+                    if sem.kind == markit_mdbench_oracle::normalized::NodeKind::Paragraph
+                        && sem.start == 11 =>
+                {
+                    Some(sem.children.as_ptr() as usize)
+                }
+                _ => None,
+            })
+            .expect("beta paragraph in the new tiling");
+        assert_eq!(
+            beta_after, beta_before,
+            "prefix reuse must MOVE the retained representation \
+             (clone-based pseudo reuse detected: buffer address changed)"
+        );
+        // And the result is still exactly H0.
+        assert_eq!(
+            done.state.normalize_v1(),
+            parse_document(post_b),
+            "ownership pass-through must not change the result"
+        );
+    }
+    assert!(
+        matches!(counters.nodes_reused, Observed::Known(n) if n > 0),
+        "the moved prefix is counted as nodes_reused"
+    );
 }
 
 // ---------------------------------------------------------------------------
