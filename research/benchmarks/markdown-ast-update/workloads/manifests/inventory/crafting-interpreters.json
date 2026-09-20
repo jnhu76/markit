@@ -1,0 +1,652 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4",
+  "entries": [
+    {
+      "bytes": 7705,
+      "git_blob_sha1": "78106464638f54ec597714c6d6c509f56329cf2c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 925,
+      "git_blob_sha1": "d15c956a74fa2b50af78589d26983ad938f4b7f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/a-bytecode-virtual-machine.md"
+    },
+    {
+      "bytes": 31351,
+      "git_blob_sha1": "038145ad98ff63036cd3c613e73bc76c4715b3ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/a-map-of-the-territory.md"
+    },
+    {
+      "bytes": 1188,
+      "git_blob_sha1": "4f6c3f0a82d16e6470ae0eaa1a29c15c9d0e8ea4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/a-tree-walk-interpreter.md"
+    },
+    {
+      "bytes": 37814,
+      "git_blob_sha1": "dd85e60574ac3a64fbd9a57d9110405ddf23ded1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/a-virtual-machine.md"
+    },
+    {
+      "bytes": 1791,
+      "git_blob_sha1": "150bdc32bdacfc86e21957f65695070f7fab95f3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/acknowledgements.md"
+    },
+    {
+      "bytes": 3762,
+      "git_blob_sha1": "c7b13dd206eef333891dbbf6b78e755dd44d6614",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/appendix-i.md"
+    },
+    {
+      "bytes": 3758,
+      "git_blob_sha1": "1b04146f127b21aa3e84707873f53ecb3e106e20",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/appendix-ii.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "e556d611824a88e4f962f2c25e5d4f52249894ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/backmatter.md"
+    },
+    {
+      "bytes": 57871,
+      "git_blob_sha1": "a6b678191b29279a5ed1f746ccc59825d7dcaf6b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/calls-and-functions.md"
+    },
+    {
+      "bytes": 48348,
+      "git_blob_sha1": "dedbfea3b7951242c90b5ac2f0a0f35d91441689",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/chunks-of-bytecode.md"
+    },
+    {
+      "bytes": 23533,
+      "git_blob_sha1": "c8064f0dc20a9964287b70f4886258d62b90d0a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/classes-and-instances.md"
+    },
+    {
+      "bytes": 49418,
+      "git_blob_sha1": "b9f8f9d6f19892937f1d622ccd90d3b6b5fbfdc3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/classes.md"
+    },
+    {
+      "bytes": 66759,
+      "git_blob_sha1": "748b5aa3e0b39c82bd79f9c17902df8991dd441b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/closures.md"
+    },
+    {
+      "bytes": 40501,
+      "git_blob_sha1": "4a6d859c9e88e8de7e28afff615704393cd9fce6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/compiling-expressions.md"
+    },
+    {
+      "bytes": 76,
+      "git_blob_sha1": "d71d1142d9c48c6f92ca0fedca88286a8d528790",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/contents.md"
+    },
+    {
+      "bytes": 29173,
+      "git_blob_sha1": "53e829db7779c05b37cd2f94fa3400e78f34f92a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/control-flow.md"
+    },
+    {
+      "bytes": 141,
+      "git_blob_sha1": "942f732e5626fa3fa052594bf8a06ed076ceb729",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/dedication.md"
+    },
+    {
+      "bytes": 28718,
+      "git_blob_sha1": "5970150c08d94f8be9ee4bcd9ad96df44d8ea05a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/evaluating-expressions.md"
+    },
+    {
+      "bytes": 41473,
+      "git_blob_sha1": "6cfe769b333060b758abb51672d122bb55cf93e3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/functions.md"
+    },
+    {
+      "bytes": 56477,
+      "git_blob_sha1": "8496e2d83e154e0aba2845e54fc90e29c46dedd9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/garbage-collection.md"
+    },
+    {
+      "bytes": 30517,
+      "git_blob_sha1": "6610685c1c93a614885d6db031bbcde2fb943950",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/global-variables.md"
+    },
+    {
+      "bytes": 50824,
+      "git_blob_sha1": "b010e8f32f54b7d38f5dd3a5b5f1618b8263e4f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/hash-tables.md"
+    },
+    {
+      "bytes": 73,
+      "git_blob_sha1": "8f90b0fcdb9ce82c14d2e0ce03c201cc122b266e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/index.md"
+    },
+    {
+      "bytes": 26715,
+      "git_blob_sha1": "3eac233abd556eeabe9851fc2b48558be4b05a23",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/inheritance.md"
+    },
+    {
+      "bytes": 23579,
+      "git_blob_sha1": "988cdd2755396f80719c88e11e9848cd1d904cc3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/introduction.md"
+    },
+    {
+      "bytes": 38119,
+      "git_blob_sha1": "303a9b2379a2223959b9dda1e8ad276a98bfc848",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/jumping-back-and-forth.md"
+    },
+    {
+      "bytes": 28733,
+      "git_blob_sha1": "845bc4e25bd4c80a7e6beae51f94e1b7486fb80c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/local-variables.md"
+    },
+    {
+      "bytes": 52568,
+      "git_blob_sha1": "085326a455a82e5f936faeae8f3f85de56a48d53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/methods-and-initializers.md"
+    },
+    {
+      "bytes": 55722,
+      "git_blob_sha1": "b9f97d6d31c2e07e1ccf682f2854054deff01461",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/optimization.md"
+    },
+    {
+      "bytes": 40952,
+      "git_blob_sha1": "fba175c479fea909362b60672b50b7929f1432d7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/parsing-expressions.md"
+    },
+    {
+      "bytes": 41485,
+      "git_blob_sha1": "a5a1507080d320b14c3350af7458f2f6d6e8414d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/representing-code.md"
+    },
+    {
+      "bytes": 39647,
+      "git_blob_sha1": "a663c38aad0796d0daa9841eb175d3d014c6dd4c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/resolving-and-binding.md"
+    },
+    {
+      "bytes": 33263,
+      "git_blob_sha1": "b34a4058262948d0031c942ccf0460f13888806e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/scanning-on-demand.md"
+    },
+    {
+      "bytes": 34691,
+      "git_blob_sha1": "8fb9418ca82e32d19f7b13bd6dab5c95ecd45b71",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/scanning.md"
+    },
+    {
+      "bytes": 54577,
+      "git_blob_sha1": "91da6992821bd1a25f4ebb713956ef5a85070aa5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/statements-and-state.md"
+    },
+    {
+      "bytes": 32898,
+      "git_blob_sha1": "086bf2c7dfe07abe342d37fd762767a59c671e91",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/strings.md"
+    },
+    {
+      "bytes": 29924,
+      "git_blob_sha1": "1eb17955b935437fd478da41bed5f8883fcd080f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/superclasses.md"
+    },
+    {
+      "bytes": 38648,
+      "git_blob_sha1": "48b8fe3db2703cee7cd87ba7ceca54d802dc7410",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/the-lox-language.md"
+    },
+    {
+      "bytes": 28305,
+      "git_blob_sha1": "53a01b9bba7e630bfc2f50223776e8a17a0d1b4a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/types-of-values.md"
+    },
+    {
+      "bytes": 824,
+      "git_blob_sha1": "07b3d85c31a65c61e82317bd9e76e8a635ca6197",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "book/welcome.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "6537d734f93078956a70fc8d4c160547441e5ce0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter01_introduction/1.md"
+    },
+    {
+      "bytes": 1058,
+      "git_blob_sha1": "853ddb2ec333d06d36a5ee6ab664281d8480ac51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter02_map.md"
+    },
+    {
+      "bytes": 1696,
+      "git_blob_sha1": "8dbf5a1731180542670602d8054a2df63bc12495",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter03_lox.md"
+    },
+    {
+      "bytes": 3111,
+      "git_blob_sha1": "eb4277ef65f1466d55429e0ff2368b78e95650d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter04_scanning.md"
+    },
+    {
+      "bytes": 2461,
+      "git_blob_sha1": "d2754c8281161527cdb0755a2973b0df995abfaf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter05_representing.md"
+    },
+    {
+      "bytes": 5888,
+      "git_blob_sha1": "4446d9a0e73a6cccc91fc02d982c8d18a4b4b419",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter06_parsing.md"
+    },
+    {
+      "bytes": 1571,
+      "git_blob_sha1": "d034677e8a2f1132ea4d5542c11b35bf3cb15a84",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter07_evaluating.md"
+    },
+    {
+      "bytes": 5497,
+      "git_blob_sha1": "87fe3f8403bf0c4487480ae6d5d0da40c0e22b8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter08_statements.md"
+    },
+    {
+      "bytes": 7030,
+      "git_blob_sha1": "60235995bbee05ae4e9a13d36cae08cd1de46b18",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter09_control.md"
+    },
+    {
+      "bytes": 6576,
+      "git_blob_sha1": "e74901040002180b6897e9ea0eb7202029d6b8ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter10_functions.md"
+    },
+    {
+      "bytes": 5464,
+      "git_blob_sha1": "147c85b1f4dbb7b27c51dafdd5daec56f431a268",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter11_resolving/chapter11_resolving.md"
+    },
+    {
+      "bytes": 11471,
+      "git_blob_sha1": "b9c38f1a0255adfc18140ac338e2049dd8df9ad7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter12_classes.md"
+    },
+    {
+      "bytes": 9360,
+      "git_blob_sha1": "3bfa2f6fa9ef6e46a08b7566b7cc46047092d854",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter13_inheritance/1.md"
+    },
+    {
+      "bytes": 2829,
+      "git_blob_sha1": "88c961ebd4dd3c6eab619c45e3f552e194621acb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter13_inheritance/2.md"
+    },
+    {
+      "bytes": 4076,
+      "git_blob_sha1": "5ed9b2369a4acc479e478cc29ef568fff2f71cd7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter13_inheritance/3.md"
+    },
+    {
+      "bytes": 4458,
+      "git_blob_sha1": "a208a22f49ca4bc350496113bd29ef78d292f937",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter14_chunks/1.md"
+    },
+    {
+      "bytes": 3154,
+      "git_blob_sha1": "f121ab5d610690779d8f7bf1d57b910ec2759fe1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter14_chunks/2.md"
+    },
+    {
+      "bytes": 663,
+      "git_blob_sha1": "61fdd1feaace911c001d032e5c44c74c00e33495",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter15_virtual/1.md"
+    },
+    {
+      "bytes": 1176,
+      "git_blob_sha1": "ef4f66c779ec2f35746cc0a89781b2173c81a3c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter15_virtual/2.md"
+    },
+    {
+      "bytes": 2300,
+      "git_blob_sha1": "7d3391faef751674ea7451437c9f479672e3fa4e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter15_virtual/3.md"
+    },
+    {
+      "bytes": 4187,
+      "git_blob_sha1": "90637a2e4971e3a1e209e87ff4fd6df4dbb8565b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter16_scanning.md"
+    },
+    {
+      "bytes": 2281,
+      "git_blob_sha1": "bd0a7c7ae0f8e7be1bd3380b6ee7fd1b72af194d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter17_compiling.md"
+    },
+    {
+      "bytes": 1993,
+      "git_blob_sha1": "15c86886a76dc66fcdd300192afa860b69677da3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter18_types.md"
+    },
+    {
+      "bytes": 6087,
+      "git_blob_sha1": "2328aa64456bd775b03bce661aeedccc7990b9b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter19_strings.md"
+    },
+    {
+      "bytes": 9634,
+      "git_blob_sha1": "7498cfa70fa0fcd4d593eac71b53b8b129a86888",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter20_hash/1.md"
+    },
+    {
+      "bytes": 6901,
+      "git_blob_sha1": "b2bb3dfe01761a98e6292a33e2c7e38a79caa005",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter21_global.md"
+    },
+    {
+      "bytes": 4969,
+      "git_blob_sha1": "796df9cdcabe29983eb2ddaf9a3fb4a6b7b229ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter23_jumping/1.md"
+    },
+    {
+      "bytes": 2561,
+      "git_blob_sha1": "2ec2031fa7f1d720f35aebdadb3bb76b94249007",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter23_jumping/2.md"
+    },
+    {
+      "bytes": 836,
+      "git_blob_sha1": "673d67c9bb4bd2342169c20bf4df238ddc9bfa8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter23_jumping/3.md"
+    },
+    {
+      "bytes": 4303,
+      "git_blob_sha1": "dfaa28353893404f7991f716403f80586cfe4a10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter24_calls/1.md"
+    },
+    {
+      "bytes": 2413,
+      "git_blob_sha1": "65e3f4e8614cb624828c7ac926d880fd2de2e254",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter24_calls/2.md"
+    },
+    {
+      "bytes": 4374,
+      "git_blob_sha1": "fcf6464abeefc4947e6fb4a129be4e72d8e1dc27",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter25_closures/1.md"
+    },
+    {
+      "bytes": 3394,
+      "git_blob_sha1": "8e9b6e877c832bbc47119ddae0fd0ab2c76aec8a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter25_closures/2.md"
+    },
+    {
+      "bytes": 4141,
+      "git_blob_sha1": "58a2413a15d52b3474fc3c1afb068e5ceaf256c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter26_garbage/1.md"
+    },
+    {
+      "bytes": 3144,
+      "git_blob_sha1": "12ab2acc55de709d598da62cad133f31881603e3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter26_garbage/2.md"
+    },
+    {
+      "bytes": 3203,
+      "git_blob_sha1": "a564e7d6d9abf4b15db7252fdc8133b0c6c41c98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter27_classes/1.md"
+    },
+    {
+      "bytes": 2673,
+      "git_blob_sha1": "248bbc5eb00eb48dcef02da6da9a5d8b9ebb055c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter27_classes/2.md"
+    },
+    {
+      "bytes": 2116,
+      "git_blob_sha1": "fe6d5f83b83e52a276c1e34a5da03dbc3286eeac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter27_classes/3.md"
+    },
+    {
+      "bytes": 159,
+      "git_blob_sha1": "92e0022ca21035556eddb63681cb8597bb5aade9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter27_classes/4.md"
+    },
+    {
+      "bytes": 1850,
+      "git_blob_sha1": "ac706c6881c5888c6e32afedbe07849961f4f30e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter28_methods/1.md"
+    },
+    {
+      "bytes": 599,
+      "git_blob_sha1": "553ebc3006d78ae6dc65e2bf62b59de6fe6c3a60",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter28_methods/2.md"
+    },
+    {
+      "bytes": 976,
+      "git_blob_sha1": "7198c65024e72ec3ffd97d2a289cc722aba4dbc3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter28_methods/3.md"
+    },
+    {
+      "bytes": 1099,
+      "git_blob_sha1": "03a480398afc3453e19ff8232630308eeb9c5f6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter29_superclasses/1.md"
+    },
+    {
+      "bytes": 4196,
+      "git_blob_sha1": "997e93edf22c4be2e79694933abe93e6fe30621f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter29_superclasses/2.md"
+    },
+    {
+      "bytes": 3872,
+      "git_blob_sha1": "a688fa92573ec3abb50acc6541df23286e548166",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/answers/chapter29_superclasses/3.md"
+    },
+    {
+      "bytes": 3356,
+      "git_blob_sha1": "ab72797fc63638689a0f7f2299f5a66716a5c192",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/design breaks.md"
+    },
+    {
+      "bytes": 1506,
+      "git_blob_sha1": "49963f8fc6063cce2495e096b92ef707ae4e80c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/images.md"
+    },
+    {
+      "bytes": 2711,
+      "git_blob_sha1": "2241117696747a97fe8270403778a381a4fe6362",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/indexing.md"
+    },
+    {
+      "bytes": 6848,
+      "git_blob_sha1": "2bff84c716f404d852e67fc78338479239203826",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/outline.md"
+    },
+    {
+      "bytes": 4490,
+      "git_blob_sha1": "37c452af9fa33497ce1b9069bbfe5057f9ee9da4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/note/**/*.md",
+      "upstream_path": "note/style guide.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 1394387,
+  "repository_md_files": 91,
+  "repository_url": "https://github.com/munificent/craftinginterpreters",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 181127,
+  "snapshot_md_files": 50,
+  "source_id": "crafting-interpreters"
+}

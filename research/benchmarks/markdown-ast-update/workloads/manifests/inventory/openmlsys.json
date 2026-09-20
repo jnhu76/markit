@@ -1,0 +1,1772 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "9c289782ccbb165ac8ad7c960ecffc12942a5560",
+  "entries": [
+    {
+      "bytes": 475,
+      "git_blob_sha1": "419fa8ad4d9f9527725f398019d00032084c04d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE/en.md"
+    },
+    {
+      "bytes": 496,
+      "git_blob_sha1": "5650579b6c25d24984313c77268fd27c9332b176",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE/zh.md"
+    },
+    {
+      "bytes": 4629,
+      "git_blob_sha1": "df84fa9abbab6557e6df420bcafd77e6b8a44244",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/CONTRIBUTING_en.md"
+    },
+    {
+      "bytes": 4253,
+      "git_blob_sha1": "acee9de59d82c1c87818126bc58fa97bfbe96e69",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/CONTRIBUTING_zh.md"
+    },
+    {
+      "bytes": 942,
+      "git_blob_sha1": "a80e416ff6338e094817a7ca002033913a32d015",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/Pic-Instruction/Requirements and Instructions.md"
+    },
+    {
+      "bytes": 1232,
+      "git_blob_sha1": "2d1d26676c24667521579e7811be095bf1709538",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/info_en.md"
+    },
+    {
+      "bytes": 1190,
+      "git_blob_sha1": "44e98d197b6b11912e625754c4b4f1d5ae6345d5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/info_zh.md"
+    },
+    {
+      "bytes": 580,
+      "git_blob_sha1": "362345e096e50d4811babd05019eb2d44dd37282",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/issue_en.md"
+    },
+    {
+      "bytes": 728,
+      "git_blob_sha1": "fbfd467778cf46c7093f2558f3e81a79bff73a94",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/issue_zh.md"
+    },
+    {
+      "bytes": 606,
+      "git_blob_sha1": "b28abc9d4f677a7a4a947028b209d5e1c72bcf20",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/reference_guide_en.md"
+    },
+    {
+      "bytes": 576,
+      "git_blob_sha1": "4977c23bfc4a1662e4cde99fc6559191ee8d9363",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/reference_guide_zh.md"
+    },
+    {
+      "bytes": 4502,
+      "git_blob_sha1": "3af3d2c3f8a5840a17458ea45a65ce4b16dac545",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/style_en.md"
+    },
+    {
+      "bytes": 4230,
+      "git_blob_sha1": "0d9d01082345ffa57bc9da05f355d74f2f84689f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/style_zh.md"
+    },
+    {
+      "bytes": 3922,
+      "git_blob_sha1": "7f3a83135f26c6e8d97eb5d6cf33438d0a481ee4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING/terminology.md"
+    },
+    {
+      "bytes": 4875,
+      "git_blob_sha1": "67e8efaae7b91833ec7b4181c52eea7ddb863f26",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 5541,
+      "git_blob_sha1": "c4e16ce8e7868e5f41e02ad7347b2f611828dd56",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README_EN.md"
+    },
+    {
+      "bytes": 1159,
+      "git_blob_sha1": "97f1716d799e7b54fd4fd3fcc2e0db6f5d7b8d66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 6315,
+      "git_blob_sha1": "7dd4fe5d17382a97c8a8397c04a7ed1570539e8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/classic_machine_learning.md"
+    },
+    {
+      "bytes": 8074,
+      "git_blob_sha1": "7ef9f21e5fe54c299f7b4f184ae7ab64f15abbdb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/gradient_descent.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "0816c9d066170207368d3006387622be100908bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/index.md"
+    },
+    {
+      "bytes": 12819,
+      "git_blob_sha1": "381b45b2b07a6172d2dfaf9c485060216c884975",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/neural_network.md"
+    },
+    {
+      "bytes": 10372,
+      "git_blob_sha1": "06be343acfdcb31e1ef2040e4531c026789fc8d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_architecture.md"
+    },
+    {
+      "bytes": 1903,
+      "git_blob_sha1": "363f658ca8fb48074980419691d2109e96760b33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_introduction.md"
+    },
+    {
+      "bytes": 20021,
+      "git_blob_sha1": "b1680de4a877e55eb4199e1a7fc9624458fc87fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_practise.md"
+    },
+    {
+      "bytes": 9391,
+      "git_blob_sha1": "7d3d4169a2bc8386cd6edbc9c1698a44730042c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_programming.md"
+    },
+    {
+      "bytes": 728,
+      "git_blob_sha1": "7f93d79c3d8aef2f64c62d24a594c2fa77d86155",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 827,
+      "git_blob_sha1": "ddd105e17eebd4798c7ade76cd76ee67727e38f9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/summary.md"
+    },
+    {
+      "bytes": 20829,
+      "git_blob_sha1": "6d7d3836bda8593aac066ad756dee1ddabcc4ef0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md"
+    },
+    {
+      "bytes": 5484,
+      "git_blob_sha1": "d946090f6a8bda2e251467691da55ec433d98e1e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/graph_optimizer.md"
+    },
+    {
+      "bytes": 1328,
+      "git_blob_sha1": "6217342543fc615b49a0596327088adb51a79cf0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/index.md"
+    },
+    {
+      "bytes": 10657,
+      "git_blob_sha1": "23d5b508eeeb191de43640ef265f135449886155",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/kernel_selecter.md"
+    },
+    {
+      "bytes": 13737,
+      "git_blob_sha1": "575a7cecaf8112e87a292d1b177c824f729217d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/memory_allocator.md"
+    },
+    {
+      "bytes": 14080,
+      "git_blob_sha1": "3ae148606fc62ad1d77d26399346f227587fa5ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/op_compiler.md"
+    },
+    {
+      "bytes": 2919,
+      "git_blob_sha1": "e8011d0cbb75da8f033fb7d2a778cf38bfb1a099",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/overview.md"
+    },
+    {
+      "bytes": 1530,
+      "git_blob_sha1": "9b8b073d2bcc6c6bf7e18c9aba907d64436b307c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/summary.md"
+    },
+    {
+      "bytes": 24008,
+      "git_blob_sha1": "3daaa5dcf34e668468e6413f626fec02cf9b4fac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/background_and_functionality.md"
+    },
+    {
+      "bytes": 3747,
+      "git_blob_sha1": "823fe9c02e82ed0a4f229f4efbeb576815368086",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/components_of_computational_graph.md"
+    },
+    {
+      "bytes": 23558,
+      "git_blob_sha1": "a750c1de0b54b1a840a9022f74d1e5f6990e555d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/generation_of_computational_graph.md"
+    },
+    {
+      "bytes": 917,
+      "git_blob_sha1": "0bf2eaff7433aaf2a1611fa3066aa3d4b4ce916a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/index.md"
+    },
+    {
+      "bytes": 12633,
+      "git_blob_sha1": "2eca7019c44912f7fc69b89a74cbaa0c58d46be1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/schedule_of_computational_graph.md"
+    },
+    {
+      "bytes": 1744,
+      "git_blob_sha1": "2accc57abb894348a99985ac7a19e0cd044f2f3d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/summary.md"
+    },
+    {
+      "bytes": 3756,
+      "git_blob_sha1": "996341a7e1248b395b342afaa18b38b69f2657a9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/data_order.md"
+    },
+    {
+      "bytes": 8314,
+      "git_blob_sha1": "19ddb8d0c285d28afad53db11a781d852c8edb0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/extension.md"
+    },
+    {
+      "bytes": 3669,
+      "git_blob_sha1": "1e48730702ea2b664b9ba38405c60778118d2b78",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 21990,
+      "git_blob_sha1": "eddf54701edeb40335dc8f10140f800c7ed9ecbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/performance.md"
+    },
+    {
+      "bytes": 14348,
+      "git_blob_sha1": "3d67bdfcf85b5a79ecf6c28f6dfbed52dfe33299",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/program_model.md"
+    },
+    {
+      "bytes": 5581,
+      "git_blob_sha1": "98469f83156b5d2551a1f96a2242230602d7767f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/requirements.md"
+    },
+    {
+      "bytes": 2374,
+      "git_blob_sha1": "cd605f6c7bc90644b1227551a42b3d5f01910388",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/summary.md"
+    },
+    {
+      "bytes": 5766,
+      "git_blob_sha1": "03ec17e90186d210f68f0098907efcd86903c73c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/cluster.md"
+    },
+    {
+      "bytes": 15383,
+      "git_blob_sha1": "c163236a2762c3b4775412332a57799a8913c854",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/collective.md"
+    },
+    {
+      "bytes": 2137,
+      "git_blob_sha1": "c1a177a37416f65b337111156d514f1f92dadeae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/index.md"
+    },
+    {
+      "bytes": 9766,
+      "git_blob_sha1": "8c490209c5a9ae12273e37fa27faf44d78b57ffc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/methods.md"
+    },
+    {
+      "bytes": 6786,
+      "git_blob_sha1": "a70dcba802681141d4de39099687f564487b2eaa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/overview.md"
+    },
+    {
+      "bytes": 9175,
+      "git_blob_sha1": "9459140cf5a492597224d5e30ea93ed031cdf975",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/parameter_servers.md"
+    },
+    {
+      "bytes": 1571,
+      "git_blob_sha1": "a6808c9ad7596c615669c3a8981a97a57dca748a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/summary.md"
+    },
+    {
+      "bytes": 32484,
+      "git_blob_sha1": "818eecd8d0dba5fc630f61c85bf2e9e5e45b8262",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_explainable_AI/explainable_ai.md"
+    },
+    {
+      "bytes": 2849,
+      "git_blob_sha1": "219c345dd33b92a6bc9233e7c163d1265b5df6a8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_explainable_AI/index.md"
+    },
+    {
+      "bytes": 6946,
+      "git_blob_sha1": "0de08eedbc9f43cb72fcd394cc1bda2a1b1bdbbc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/horizontal_fl.md"
+    },
+    {
+      "bytes": 702,
+      "git_blob_sha1": "77d0bc778a773f3801cf892e6b0c05c9d477e3e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/index.md"
+    },
+    {
+      "bytes": 8362,
+      "git_blob_sha1": "4ea9c05a87245a64a9cf6586b391170b529488a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/outlook.md"
+    },
+    {
+      "bytes": 10015,
+      "git_blob_sha1": "5283202e692d1936f1715d9dc079f872c05d76a9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/overview.md"
+    },
+    {
+      "bytes": 15064,
+      "git_blob_sha1": "7fde35446c13faa0c772183020543cb602df453c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/privacy_encryption_algorithm.md"
+    },
+    {
+      "bytes": 917,
+      "git_blob_sha1": "24a13e3f683dc75482e8ad3750c3706b3050fead",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/summary.md"
+    },
+    {
+      "bytes": 8099,
+      "git_blob_sha1": "d2b046be936306ba5817709e9bfdc5b0acb02dca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/vertical_fl.md"
+    },
+    {
+      "bytes": 24545,
+      "git_blob_sha1": "fbf76007498497861ff6e54e28fd3e056cadf50d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/ad.md"
+    },
+    {
+      "bytes": 4801,
+      "git_blob_sha1": "f7b3e5fda9066bd97e330e5a22bfac2a0fb0f7d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md"
+    },
+    {
+      "bytes": 4811,
+      "git_blob_sha1": "769604a579afaaab5ffd215fb2add3be621f07b2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md"
+    },
+    {
+      "bytes": 1253,
+      "git_blob_sha1": "05f077d511bd486e3417235ab10d9d87a2ba87c6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/index.md"
+    },
+    {
+      "bytes": 23087,
+      "git_blob_sha1": "1922c08536e3456c9a672b81da2f753e9c72c84e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/intermediate_representation.md"
+    },
+    {
+      "bytes": 2875,
+      "git_blob_sha1": "12a55002a798697ec1388efd67e4ab2aba8dffea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/overview_of_frontend.md"
+    },
+    {
+      "bytes": 2503,
+      "git_blob_sha1": "0fa2c045231d9f7ad2402202a05ad7115286f4a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/summary.md"
+    },
+    {
+      "bytes": 7022,
+      "git_blob_sha1": "a3c2ce1ab7f14378c34f3cd66f6f394d76f41de7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md"
+    },
+    {
+      "bytes": 2926,
+      "git_blob_sha1": "548b1854986594897342ecf807e02bb128d938f9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/applications.md"
+    },
+    {
+      "bytes": 4084,
+      "git_blob_sha1": "36146794cb5d69a4377392df13541a36b86b0c09",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/architecture.md"
+    },
+    {
+      "bytes": 5201,
+      "git_blob_sha1": "7ede2a7fa38b885306c9b73efc6da2c633b90a96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/design.md"
+    },
+    {
+      "bytes": 4378,
+      "git_blob_sha1": "f0185c9d71da4026cdf36a5f593e056faaef0fb2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/ecosystem.md"
+    },
+    {
+      "bytes": 508,
+      "git_blob_sha1": "2a21f6a2a319585e15fa80fbe03902ad604b1533",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/index.md"
+    },
+    {
+      "bytes": 1816,
+      "git_blob_sha1": "8c14166c0dbfbbbb0d49953ff8939c77ae23643e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/readers.md"
+    },
+    {
+      "bytes": 1084,
+      "git_blob_sha1": "ec00ccc4f5b0c5c6f350e42b33e961d363cf68aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/index.md"
+    },
+    {
+      "bytes": 19182,
+      "git_blob_sha1": "ad8131cfdc9609187883b9bf40e375633bdb7bb8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_compression.md"
+    },
+    {
+      "bytes": 11663,
+      "git_blob_sha1": "5ce3de2399779b3e477ae3a610233cbfb0ba99e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_converter_and_optimizer.md"
+    },
+    {
+      "bytes": 3866,
+      "git_blob_sha1": "9561ac768272837724f26f9a1e030b3a82bf5dfb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_deployment_introduction.md"
+    },
+    {
+      "bytes": 17661,
+      "git_blob_sha1": "98ff81d521b7888ca849f0acdf88545214aeb427",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_inference.md"
+    },
+    {
+      "bytes": 9727,
+      "git_blob_sha1": "58d7a9dd34f706e7980be22bbb13dbb652e25e37",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_security.md"
+    },
+    {
+      "bytes": 2031,
+      "git_blob_sha1": "b001e4669e59640da3747935fdc21c4a1bae05af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/summary.md"
+    },
+    {
+      "bytes": 13649,
+      "git_blob_sha1": "9d00b7fc7de7eb7c41b97daac61e810bd368ef19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_preface/index.md"
+    },
+    {
+      "bytes": 637,
+      "git_blob_sha1": "8e7aaaed449c8a706496ca718e33e4259448bb24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_preface_advanced/index.md"
+    },
+    {
+      "bytes": 292,
+      "git_blob_sha1": "638f40b9785ec4e833e94f4c6cbc051031de3941",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_preface_extension/index.md"
+    },
+    {
+      "bytes": 4195,
+      "git_blob_sha1": "43b25bfeba77333b89f489ab6bee1562db6e2ffa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/c_python_interaction.md"
+    },
+    {
+      "bytes": 5165,
+      "git_blob_sha1": "5c60d67416ae7d52096b48467498ea0202117638",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/development_history.md"
+    },
+    {
+      "bytes": 2035,
+      "git_blob_sha1": "11b7276db205831fb5fef44698841e427062b6f6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/index.md"
+    },
+    {
+      "bytes": 6247,
+      "git_blob_sha1": "9e7bb8f516aa3e406cb6938bf4e264f85333d953",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/ml_programming_paradigm.md"
+    },
+    {
+      "bytes": 5313,
+      "git_blob_sha1": "8fc64f1fd9537b441e5f2eb44b0f08fdab67f85d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/ml_workflow.md"
+    },
+    {
+      "bytes": 8026,
+      "git_blob_sha1": "34e94126f5a587c846716e8a0d12fafd328bc2e8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/neural_network_layer.md"
+    },
+    {
+      "bytes": 1101,
+      "git_blob_sha1": "73e9db3bf52e320ed6f819f253cd0b33cbb9893d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/summary.md"
+    },
+    {
+      "bytes": 12430,
+      "git_blob_sha1": "2f03a44385704adf9dd33faab1f74e107e09d077",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/case_study.md"
+    },
+    {
+      "bytes": 1736,
+      "git_blob_sha1": "ebb6bd97640207900d6e565d65f33e8b1d3aa8a0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/index.md"
+    },
+    {
+      "bytes": 5791,
+      "git_blob_sha1": "8270a30566708eea6e48c84b78c72b9c0305e82f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/model_update.md"
+    },
+    {
+      "bytes": 12856,
+      "git_blob_sha1": "1b2bbef969a000f0b36d0674049494a38680926f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/multi_stage_recommender_system.md"
+    },
+    {
+      "bytes": 1205,
+      "git_blob_sha1": "2c87f4fd814d1e4f718bd19b76e1879355aa9502",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/summary.md"
+    },
+    {
+      "bytes": 12829,
+      "git_blob_sha1": "3244ce5b154ce36991d877fefcc60f3d9c6f992a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/system_architecture.md"
+    },
+    {
+      "bytes": 635,
+      "git_blob_sha1": "44ff5b6dcdb1710ec406d406938d030117e02296",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/index.md"
+    },
+    {
+      "bytes": 8459,
+      "git_blob_sha1": "571d72b1f529da1af7e1aa26dd3d7e5709cf979f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/marl.md"
+    },
+    {
+      "bytes": 11803,
+      "git_blob_sha1": "9bfa20ef728590be3ff4dbbae1f1817bfc56234d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/marl_sys.md"
+    },
+    {
+      "bytes": 6930,
+      "git_blob_sha1": "24a8e7f2f13dd88a97b1c195e830f36c5bacfe79",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/rl_introduction.md"
+    },
+    {
+      "bytes": 8047,
+      "git_blob_sha1": "9fbd51384f3879c88e8391dc4bce347faaab2c82",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/single_node_rl.md"
+    },
+    {
+      "bytes": 1326,
+      "git_blob_sha1": "5fd0d8dd09e8994999ae0dcc2fd23e4954fc91b6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/summary.md"
+    },
+    {
+      "bytes": 2932,
+      "git_blob_sha1": "136d39b0aed0c12bb7ad2d781aac7fb6cb3e44bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/control.md"
+    },
+    {
+      "bytes": 7530,
+      "git_blob_sha1": "9ff52bc72f428ec2311c36163e1d7cd85f99d948",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/control_code_ex.md"
+    },
+    {
+      "bytes": 452,
+      "git_blob_sha1": "a452c90b9a6b59f13219ac0fc88340fcf606af4a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/index.md"
+    },
+    {
+      "bytes": 5863,
+      "git_blob_sha1": "97242ecdb248e33dad8f25e4921c6abf40b7e1da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/perception.md"
+    },
+    {
+      "bytes": 13270,
+      "git_blob_sha1": "267885f3489d78309354aa5b136ad720da304dc9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/perception_code_ex.md"
+    },
+    {
+      "bytes": 2180,
+      "git_blob_sha1": "47d6c4b1c437ef857195757d98050d3b7c7c9a21",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/planning.md"
+    },
+    {
+      "bytes": 11370,
+      "git_blob_sha1": "a403d1c71f5d3a8f4ea0938c70242d52df60bab1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/planning_code_ex.md"
+    },
+    {
+      "bytes": 16727,
+      "git_blob_sha1": "a59c1cbc7dc1346f32595f1e7c9e9e775f2abf5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/rl_sys_intro.md"
+    },
+    {
+      "bytes": 21775,
+      "git_blob_sha1": "0839f7ec1d7a88a727a89f135f1b7e1641476c60",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/robot_learning.md"
+    },
+    {
+      "bytes": 7244,
+      "git_blob_sha1": "05a990cc98418fd983f29502fd2870b3cdf1831f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/robot_safety.md"
+    },
+    {
+      "bytes": 8661,
+      "git_blob_sha1": "0ac04d2844ffd95010a5880c7f87d87152719877",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/ros.md"
+    },
+    {
+      "bytes": 46164,
+      "git_blob_sha1": "87642af796d7f522fdfcd5d499fa053d2b9d9afc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/ros_code_ex.md"
+    },
+    {
+      "bytes": 536,
+      "git_blob_sha1": "c2757c993585a74d9da197d26f92adad22a471db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/summary.md"
+    },
+    {
+      "bytes": 822,
+      "git_blob_sha1": "1b9b862ee57ae19e3f39edba9fb090dba02b27bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/en_chapters/**/*.md",
+      "upstream_path": "v1/en_chapters/index.md"
+    },
+    {
+      "bytes": 126,
+      "git_blob_sha1": "fe72c6b9187f971d7a4872e8b199b3d890ae8bc7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "v1/static/readme.md"
+    },
+    {
+      "bytes": 6625,
+      "git_blob_sha1": "e5dcd72acf6f8699a8f4fb6a5da30a1bd95b463e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 5621,
+      "git_blob_sha1": "e573e1d8f2ae92b0f006ea446be1fd457847fa9d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/classic_machine_learning.md"
+    },
+    {
+      "bytes": 7364,
+      "git_blob_sha1": "e7db43cf0cd07a83266cd05bcdfaaf7598a1335c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/gradient_descent.md"
+    },
+    {
+      "bytes": 338,
+      "git_blob_sha1": "680737bbc8be9d961831349f794944a1e161c088",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/index.md"
+    },
+    {
+      "bytes": 11221,
+      "git_blob_sha1": "f9ef31c6e001daf5146d361b79f503cdfb2f2843",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/neural_network.md"
+    },
+    {
+      "bytes": 9613,
+      "git_blob_sha1": "dfdf33831d057bf871cff2960d1aa1bb1da1a945",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_architecture.md"
+    },
+    {
+      "bytes": 2937,
+      "git_blob_sha1": "c24264259a76eada505177fdd4cbe4d85526df49",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_introduction.md"
+    },
+    {
+      "bytes": 21675,
+      "git_blob_sha1": "b7ea30652df39ed9a5811eea5547326650621fee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_practise.md"
+    },
+    {
+      "bytes": 16063,
+      "git_blob_sha1": "f8a1192910966696677791e1ba7fd0f8cb4fe75a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_programming.md"
+    },
+    {
+      "bytes": 979,
+      "git_blob_sha1": "78dc4092147bfb401c0d1338650a2d8442446e7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 753,
+      "git_blob_sha1": "b752398e7a13394b10b95d8eeb24f30894960d7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/summary.md"
+    },
+    {
+      "bytes": 16310,
+      "git_blob_sha1": "3b3507f7ec276b61c50153a33cabb0e0768de55a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md"
+    },
+    {
+      "bytes": 5338,
+      "git_blob_sha1": "fb3df766b9f73b391377c23516386f1b83b11e30",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/graph_optimizer.md"
+    },
+    {
+      "bytes": 1112,
+      "git_blob_sha1": "e995880a494f096338a17737448aa3b1406ad909",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/index.md"
+    },
+    {
+      "bytes": 9263,
+      "git_blob_sha1": "cdeeddb8f77572fdd5a1931fd05599e679001f6f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/kernel_selecter.md"
+    },
+    {
+      "bytes": 9807,
+      "git_blob_sha1": "cab2825d8d6c3dbbb0fbb73b25b80e0b69d33a14",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/memory_allocator.md"
+    },
+    {
+      "bytes": 14435,
+      "git_blob_sha1": "b1e3fd899a0a4e538019cec6b7c94d996d7e1e03",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/op_compiler.md"
+    },
+    {
+      "bytes": 5473,
+      "git_blob_sha1": "a56d7ebb4248f71afd5ad922e93a254bfc19c557",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/overview.md"
+    },
+    {
+      "bytes": 2767,
+      "git_blob_sha1": "139d78edc1c6c96ac31b23c848b50abd41866962",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/summary.md"
+    },
+    {
+      "bytes": 3058,
+      "git_blob_sha1": "64823c38cdb321de39a10af9ecafc0e20fc45a61",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/background_and_functionality.md"
+    },
+    {
+      "bytes": 21688,
+      "git_blob_sha1": "ff0cfc513c276d195a198b66719209c331412f54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/components_of_computational_graph.md"
+    },
+    {
+      "bytes": 21197,
+      "git_blob_sha1": "97cd79d46439314123632d45546ca40243151a51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/generation_of_computational_graph.md"
+    },
+    {
+      "bytes": 902,
+      "git_blob_sha1": "b1e53a0f70bf40978d4aa36fa54f6b3781d5ddf9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/index.md"
+    },
+    {
+      "bytes": 7661,
+      "git_blob_sha1": "1d55ee0629cc8f33f7dbc9f9544cced0398c948f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/schedule_of_computational_graph.md"
+    },
+    {
+      "bytes": 2376,
+      "git_blob_sha1": "7e70fce4e52ee94a3977966ffb47f10065b72330",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/summary.md"
+    },
+    {
+      "bytes": 3008,
+      "git_blob_sha1": "1e38a8dab363f3420c9bc4b1ec6f62574ffe0900",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/data_order.md"
+    },
+    {
+      "bytes": 7158,
+      "git_blob_sha1": "89d7ac187d195fcc5af5694e4997de388fce22ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/extension.md"
+    },
+    {
+      "bytes": 3095,
+      "git_blob_sha1": "594c073e7d14ca9f2ee2613f3d879e6fcea4f540",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 18577,
+      "git_blob_sha1": "13f48f2e845531ba851567f41f4165a4e9f18c5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/performance.md"
+    },
+    {
+      "bytes": 12680,
+      "git_blob_sha1": "a528aa7077fda0f4aaf40b7f996dc70fc04db77e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/program_model.md"
+    },
+    {
+      "bytes": 4873,
+      "git_blob_sha1": "2c665b517547fbb15fd1ede2fc8ac27bffdd18cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/requirements.md"
+    },
+    {
+      "bytes": 1829,
+      "git_blob_sha1": "83d3126c16077dfbf528bf013694266d7897f099",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/summary.md"
+    },
+    {
+      "bytes": 5039,
+      "git_blob_sha1": "fb430e4cf6f9a3389ab422149a39f544ced12100",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/cluster.md"
+    },
+    {
+      "bytes": 30613,
+      "git_blob_sha1": "16fc10bcb671d2ab1c3100d537d597a5bc1b3bd0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/collective.md"
+    },
+    {
+      "bytes": 1334,
+      "git_blob_sha1": "ef934338524e0be6279e33d321082f384f40b9cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/index.md"
+    },
+    {
+      "bytes": 13348,
+      "git_blob_sha1": "77af30d774d3f40093190574510dd11144b93b91",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/methods.md"
+    },
+    {
+      "bytes": 5762,
+      "git_blob_sha1": "16f2947edd17518a2edb464582935a321d37d57a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/overview.md"
+    },
+    {
+      "bytes": 5964,
+      "git_blob_sha1": "c46194f1e3082b065dd3c73d1cd4aac328f3c521",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/parameter_servers.md"
+    },
+    {
+      "bytes": 1793,
+      "git_blob_sha1": "82c818aaa263fa82fc242a5012c2a77802875d7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/summary.md"
+    },
+    {
+      "bytes": 26233,
+      "git_blob_sha1": "b638defdca8f47ebbca8a094e24c730ff9dc445c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_explainable_AI/explainable_ai.md"
+    },
+    {
+      "bytes": 2203,
+      "git_blob_sha1": "c434bd749f6a97e4526bb148788f89c01e5ecf98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_explainable_AI/index.md"
+    },
+    {
+      "bytes": 5443,
+      "git_blob_sha1": "63e7f0b1e2380316b67878714f5edebf44177b85",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/horizontal_fl.md"
+    },
+    {
+      "bytes": 513,
+      "git_blob_sha1": "08d05a92d398b84595e7841936cde765321b5946",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/index.md"
+    },
+    {
+      "bytes": 6402,
+      "git_blob_sha1": "263933d05e676c1769b4db2086a580d945652843",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/outlook.md"
+    },
+    {
+      "bytes": 8286,
+      "git_blob_sha1": "4ad9ee372e8589cf1dfb3882fd1216102340164a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/overview.md"
+    },
+    {
+      "bytes": 12689,
+      "git_blob_sha1": "641eb072bbe70434e21c1333287e8062e309f414",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/privacy_encryption_algorithm.md"
+    },
+    {
+      "bytes": 720,
+      "git_blob_sha1": "f1195c1e986cce8bb243e75763d7677281af6729",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/summary.md"
+    },
+    {
+      "bytes": 6336,
+      "git_blob_sha1": "bb18b03e22d84faefca3be1ab4088a7f49846c8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/vertical_fl.md"
+    },
+    {
+      "bytes": 21491,
+      "git_blob_sha1": "847bac9a504fecd63c158489705c0b68fa24e4b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/ad.md"
+    },
+    {
+      "bytes": 3934,
+      "git_blob_sha1": "ae99470f0e19391da2e459e351d6d685ff20cafb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md"
+    },
+    {
+      "bytes": 3234,
+      "git_blob_sha1": "130924b935b6daa0adb5fac2c7c48aa4002325f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md"
+    },
+    {
+      "bytes": 1468,
+      "git_blob_sha1": "0e7d82a1b558eb3feccccb14e0813a66e58b917b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/index.md"
+    },
+    {
+      "bytes": 21740,
+      "git_blob_sha1": "c6ce462da4efaaf4f1df02bf870cc78b6dd1515f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/intermediate_representation.md"
+    },
+    {
+      "bytes": 2630,
+      "git_blob_sha1": "63595ee7ed7e776e6b6786525380643032b96923",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/overview_of_frontend.md"
+    },
+    {
+      "bytes": 2049,
+      "git_blob_sha1": "21c69cc731c37c00832c4331c8ac00b98dc75448",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/summary.md"
+    },
+    {
+      "bytes": 5452,
+      "git_blob_sha1": "bd3403cc1363dc78c4387b86a2d49c07851c62ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md"
+    },
+    {
+      "bytes": 2504,
+      "git_blob_sha1": "5233681e05fef44a15b16def932b6585017fbe82",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/applications.md"
+    },
+    {
+      "bytes": 3293,
+      "git_blob_sha1": "44404b6ca5faa52c4b69377fd900ca4ff0bc4b6d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/architecture.md"
+    },
+    {
+      "bytes": 3850,
+      "git_blob_sha1": "b48a9e1159640b073e57b3e6d9bd627959c2efdb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/design.md"
+    },
+    {
+      "bytes": 3222,
+      "git_blob_sha1": "41c87fabe81fd19a7990572d149355879e672449",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/ecosystem.md"
+    },
+    {
+      "bytes": 285,
+      "git_blob_sha1": "0c5fff391f0d9e82076de7f731f234485c3927f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/index.md"
+    },
+    {
+      "bytes": 1165,
+      "git_blob_sha1": "e2a4475606ab00ef6d48644a49085e2c05de925b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/readers.md"
+    },
+    {
+      "bytes": 1080,
+      "git_blob_sha1": "fab7c37cfff4537c9966f569d0a5eac5a1287786",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/index.md"
+    },
+    {
+      "bytes": 16981,
+      "git_blob_sha1": "2d60952cf7f37f07338ef31019f0e0a13df675f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_compression.md"
+    },
+    {
+      "bytes": 10692,
+      "git_blob_sha1": "f0d34c9b785a8ed023e5360c06621c4d7ec32441",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_converter_and_optimizer.md"
+    },
+    {
+      "bytes": 3365,
+      "git_blob_sha1": "84724c3be9ac274917ab35066239425af8186d77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_deployment_introduction.md"
+    },
+    {
+      "bytes": 14070,
+      "git_blob_sha1": "53edaa052e4f0307d161203d0c7eb5b2e7fa24ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_inference.md"
+    },
+    {
+      "bytes": 7746,
+      "git_blob_sha1": "c71f53d8fdf1ce76d280c603cffb72fca5d94e0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_security.md"
+    },
+    {
+      "bytes": 2308,
+      "git_blob_sha1": "16cf61f9a19b4584c85070ca7df5366680771f12",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/summary.md"
+    },
+    {
+      "bytes": 11601,
+      "git_blob_sha1": "7d6fa92220c2884a2ecaf5b5acce79f053790ee2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface/index.md"
+    },
+    {
+      "bytes": 361,
+      "git_blob_sha1": "4fc625558ca9f9241b01f32f47939035d5ea60a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface_advanced/index.md"
+    },
+    {
+      "bytes": 1037,
+      "git_blob_sha1": "c93ea16d1c90d55ac96c85b2ee064464256d8df0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface_extension/index.md"
+    },
+    {
+      "bytes": 10260,
+      "git_blob_sha1": "47701bb280455ae1d112ff241e0cd12dbee3a09b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/c_python_interaction.md"
+    },
+    {
+      "bytes": 4170,
+      "git_blob_sha1": "78c9afb29d878c69602642eccc42e26c9bc2e913",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/development_history.md"
+    },
+    {
+      "bytes": 2066,
+      "git_blob_sha1": "2daefd525cd40537cd860c6a0031ee035584bcce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/index.md"
+    },
+    {
+      "bytes": 6120,
+      "git_blob_sha1": "d59971d38fb3f304d2e42409231e7c60aa0cc16c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/ml_programming_paradigm.md"
+    },
+    {
+      "bytes": 12452,
+      "git_blob_sha1": "799d0118bab50d8f9f6345802245bb012d944634",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/ml_workflow.md"
+    },
+    {
+      "bytes": 16107,
+      "git_blob_sha1": "2b93a1dcb78a3e29bd9141f30d5b55a4d798ed58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/neural_network_layer.md"
+    },
+    {
+      "bytes": 1530,
+      "git_blob_sha1": "6a86d6f4e2c62f764e6e071f176158172af956f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/summary.md"
+    },
+    {
+      "bytes": 13229,
+      "git_blob_sha1": "8392ff0ebeb5499270eca7088ae6cae98bd41f6b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/case_study.md"
+    },
+    {
+      "bytes": 1067,
+      "git_blob_sha1": "6bc0c5db82c13d64b70ea4aed65443de31f52428",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/index.md"
+    },
+    {
+      "bytes": 4709,
+      "git_blob_sha1": "922e39af5f604b772cc71670b7a300edf0470ee9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/model_update.md"
+    },
+    {
+      "bytes": 10073,
+      "git_blob_sha1": "3d693f262f84b7c97b80ef6a9c4928fc882bb856",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/multi_stage_recommender_system.md"
+    },
+    {
+      "bytes": 1133,
+      "git_blob_sha1": "9502651b0438c9e1288781023260e5d9a11b45f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/summary.md"
+    },
+    {
+      "bytes": 10539,
+      "git_blob_sha1": "058c4623c69c9ac707a5cf9844f03d90eebe3604",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/system_architecture.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "318893ab7ceda046afa00ca5b0a9e3c2af79de77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/index.md"
+    },
+    {
+      "bytes": 7890,
+      "git_blob_sha1": "d2741711e22198e616cc8c733cfe478e5b1c9d57",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/marl.md"
+    },
+    {
+      "bytes": 10688,
+      "git_blob_sha1": "781444534ea9345a31ffc69315e552b9a049f1ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/marl_sys.md"
+    },
+    {
+      "bytes": 5824,
+      "git_blob_sha1": "719921381e95c83555a4fc3522ae5dbfb082bd7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/rl_introduction.md"
+    },
+    {
+      "bytes": 7491,
+      "git_blob_sha1": "e14f7967d9d9ad3cbb8ab1fc2b96dfdac844096a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/single_node_rl.md"
+    },
+    {
+      "bytes": 789,
+      "git_blob_sha1": "b5beb8653cc007b9d890c3ad0485e69783954352",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/summary.md"
+    },
+    {
+      "bytes": 2443,
+      "git_blob_sha1": "766e6c8a99e8f9dde77b291fc30e5e479dff0f9b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/control.md"
+    },
+    {
+      "bytes": 6958,
+      "git_blob_sha1": "0565e017139b496046f9f30deab49e7a9e8b2fea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/control_code_ex.md"
+    },
+    {
+      "bytes": 332,
+      "git_blob_sha1": "f982d7bc71cdf3dad470c3a1831681a17f8d8c8e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/index.md"
+    },
+    {
+      "bytes": 4870,
+      "git_blob_sha1": "d8893b604473877e1e8dce2b7e22027b1405eeec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/perception.md"
+    },
+    {
+      "bytes": 12656,
+      "git_blob_sha1": "5c969d8aa010d5a692da76089c79329f2a786a0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/perception_code_ex.md"
+    },
+    {
+      "bytes": 1802,
+      "git_blob_sha1": "b016047f5a25d968fced6a9e8ef2a2a31614a950",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/planning.md"
+    },
+    {
+      "bytes": 10850,
+      "git_blob_sha1": "2e3b8fb64fc2883aca532c81cb3855461b23f68a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/planning_code_ex.md"
+    },
+    {
+      "bytes": 18103,
+      "git_blob_sha1": "781f6b59ce077d4b852c792a4c16266ef8e5e1ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/rl_sys_intro.md"
+    },
+    {
+      "bytes": 13557,
+      "git_blob_sha1": "93971e86bca9e1f959563890a16dceae35e0d7ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/robot_learning.md"
+    },
+    {
+      "bytes": 6510,
+      "git_blob_sha1": "39ac1e23147a7ef1114f9e501b4bdecc6d88feac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/robot_safety.md"
+    },
+    {
+      "bytes": 7915,
+      "git_blob_sha1": "d63311dd9428f21f2643c89719ddce1ff9b5c424",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/ros.md"
+    },
+    {
+      "bytes": 46006,
+      "git_blob_sha1": "38ff756de59ed59f8c59aa190c109004ebf8d4b6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/ros_code_ex.md"
+    },
+    {
+      "bytes": 561,
+      "git_blob_sha1": "101d2e4e65618fe7ebd538dcd979c951516ab004",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/summary.md"
+    },
+    {
+      "bytes": 837,
+      "git_blob_sha1": "ca06ba1d4a5761628e6bdc1ebeee598f97b86196",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v1/zh_chapters/**/*.md",
+      "upstream_path": "v1/zh_chapters/index.md"
+    },
+    {
+      "bytes": 128,
+      "git_blob_sha1": "ac441da1378cf28605ab08b7b813e44ac0f71b64",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/00_chapter_preface/index.md"
+    },
+    {
+      "bytes": 127,
+      "git_blob_sha1": "659515e1ee8428a509fa0175143e322fdec2faf2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/01_chapter_introduction/index.md"
+    },
+    {
+      "bytes": 171,
+      "git_blob_sha1": "e948cc100400105025a70008d6755b66db52c63a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/02_chapter_programming_and_graph/index.md"
+    },
+    {
+      "bytes": 137,
+      "git_blob_sha1": "debec6c9dc7eb9f3377c1ccd2bae954c02ce44f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/03_chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 146,
+      "git_blob_sha1": "ed41c5f974eb89df126901a3e86bf5a8b35cb01b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/04_chapter_compiler_and_runtime/index.md"
+    },
+    {
+      "bytes": 127,
+      "git_blob_sha1": "c89939476c5c48a945abaa6e8bf75aabb4bb2011",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/05_chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 146,
+      "git_blob_sha1": "e79a9f3df3bb2195eecf926fbe29ba0d4173b48f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/06_chapter_training_systems/index.md"
+    },
+    {
+      "bytes": 116,
+      "git_blob_sha1": "4247aeed6a37c20f649ad3abb28400263b04d1fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/07_chapter_model_serving/index.md"
+    },
+    {
+      "bytes": 132,
+      "git_blob_sha1": "88f23cb9616f33c3c9eb87efc46669b66d62f117",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/08_chapter_rl_systems/index.md"
+    },
+    {
+      "bytes": 153,
+      "git_blob_sha1": "89625695cd49adf158b0230de3e51daec85ed938",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/09_chapter_gpu_cluster/index.md"
+    },
+    {
+      "bytes": 862,
+      "git_blob_sha1": "0a85f48676f19b126867fb3e30ffddee2ca250c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 952,
+      "git_blob_sha1": "64bce19a636f12a23a4382df2c876df691b033bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/en_chapters/**/*.md",
+      "upstream_path": "v2/en_chapters/index.md"
+    },
+    {
+      "bytes": 89,
+      "git_blob_sha1": "4146dceeb0aa27e412fbf575874d3e65be8cf8f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/00_chapter_preface/index.md"
+    },
+    {
+      "bytes": 82,
+      "git_blob_sha1": "65dc102f6a92ef5491dab3c9bc6710ac7bb589bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/01_chapter_introduction/index.md"
+    },
+    {
+      "bytes": 106,
+      "git_blob_sha1": "095cb740ac673b83b58facbeb355d3bdce58b965",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/02_chapter_programming_and_graph/index.md"
+    },
+    {
+      "bytes": 101,
+      "git_blob_sha1": "681bff5752b5ab2843c23a06daae30b46e60b798",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/03_chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 116,
+      "git_blob_sha1": "c76c71fcd4e535bef91d89ab2cfcfa58be9254f9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/04_chapter_compiler_and_runtime/index.md"
+    },
+    {
+      "bytes": 103,
+      "git_blob_sha1": "0593bb22bd9f6ae515ecf3ef7cb5788c8b014094",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/05_chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 103,
+      "git_blob_sha1": "65396b7433059b10efb8b73632fec1dacde51f30",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/06_chapter_training_systems/index.md"
+    },
+    {
+      "bytes": 88,
+      "git_blob_sha1": "e88f8453bb3cb4d361cade77535c3c51ae99b48c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/07_chapter_model_serving/index.md"
+    },
+    {
+      "bytes": 102,
+      "git_blob_sha1": "abf52a748894ccf09312d0d49bdcdc5ab6322fe2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/08_chapter_rl_systems/index.md"
+    },
+    {
+      "bytes": 112,
+      "git_blob_sha1": "bdc246ad2978ecfc9900107c732f0f82f84b732b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/09_chapter_gpu_cluster/index.md"
+    },
+    {
+      "bytes": 771,
+      "git_blob_sha1": "043fabe48be0e3878f7456b76066f27c6e49bf3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 767,
+      "git_blob_sha1": "aac12c323c2050560599bd97ec0cb82e70e4d0d2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/v2/zh_chapters/**/*.md",
+      "upstream_path": "v2/zh_chapters/index.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 1675171,
+  "repository_md_files": 251,
+  "repository_url": "https://github.com/openmlsys/openmlsys",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 1636268,
+  "snapshot_md_files": 234,
+  "source_id": "openmlsys"
+}

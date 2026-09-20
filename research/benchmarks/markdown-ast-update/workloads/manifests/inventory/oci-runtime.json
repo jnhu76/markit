@@ -1,0 +1,169 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "6999a89a76a0329f440d5740497bedb9dd431297",
+  "entries": [
+    {
+      "bytes": 362,
+      "git_blob_sha1": "0e234dad04c4f9397a01f53c38131bd70d143cf5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "EMERITUS.md"
+    },
+    {
+      "bytes": 3876,
+      "git_blob_sha1": "c780b12efa15a997af8bf04d87c957a35c995c16",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 6933,
+      "git_blob_sha1": "2a7fa56860a6762ca1498afcbc3f86820b6a316e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 6212,
+      "git_blob_sha1": "071910aed4482e48c40f896e9070372dc31699fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "RELEASES.md"
+    },
+    {
+      "bytes": 1510,
+      "git_blob_sha1": "0924ad9fe7d6afabb3cd721423e961b3f4288c3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "bundle.md"
+    },
+    {
+      "bytes": 10635,
+      "git_blob_sha1": "b61c9fd90456bbf3b38e59214fc977955f47d52a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-freebsd.md"
+    },
+    {
+      "bytes": 52544,
+      "git_blob_sha1": "c71757494ca743fd90692c25e4897bf74cf00388",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-linux.md"
+    },
+    {
+      "bytes": 6107,
+      "git_blob_sha1": "f50fed98c3da61b2b4d03472b77a10bc26a7fe54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-solaris.md"
+    },
+    {
+      "bytes": 5973,
+      "git_blob_sha1": "506f406000d3fc85bfdd7226bef2f94df9d8e45f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-vm.md"
+    },
+    {
+      "bytes": 8110,
+      "git_blob_sha1": "037321a61f4bfbd08b79827ff71a77294fa92fe2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-windows.md"
+    },
+    {
+      "bytes": 2796,
+      "git_blob_sha1": "a00e5a578e5bb0e9751e360c08e88a939d2723cb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config-zos.md"
+    },
+    {
+      "bytes": 57114,
+      "git_blob_sha1": "4ca7b120b42026b29d199987b75fc59364755c5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config.md"
+    },
+    {
+      "bytes": 9229,
+      "git_blob_sha1": "3331266dd917c5c4910d547927d8358ebbe52e4c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "features-linux.md"
+    },
+    {
+      "bytes": 9654,
+      "git_blob_sha1": "9c729591ae7cac7387d965ce49754488c5277900",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "features.md"
+    },
+    {
+      "bytes": 2542,
+      "git_blob_sha1": "845fd130bb794f5f938b7362ea65999de2a44cbb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "glossary.md"
+    },
+    {
+      "bytes": 2644,
+      "git_blob_sha1": "51af41cb2fc2799ad23ab88b24a5c6c099d9e5fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "implementations.md"
+    },
+    {
+      "bytes": 3678,
+      "git_blob_sha1": "a204f905eb2921a35dd84e98db6d5b40fe718dbc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "principles.md"
+    },
+    {
+      "bytes": 1025,
+      "git_blob_sha1": "99c3b992a95a696e2f7bd25f51ca3d88a041b0f9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "runtime-linux.md"
+    },
+    {
+      "bytes": 10065,
+      "git_blob_sha1": "3e111c63bbe6c6cb72563f2e9497a8b1ebd5a005",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "runtime.md"
+    },
+    {
+      "bytes": 1672,
+      "git_blob_sha1": "831ee142a6bd32ba88f4f903d9847d3e84f2c29c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "schema/README.md"
+    },
+    {
+      "bytes": 3535,
+      "git_blob_sha1": "95cfeda8d8b492321a3bd8b9a620e1de9c0178a4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "spec.md"
+    },
+    {
+      "bytes": 5391,
+      "git_blob_sha1": "1d42043e7c96f67c774a0a1befa8688bf5ffb6c3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "style.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 211607,
+  "repository_md_files": 22,
+  "repository_url": "https://github.com/opencontainers/runtime-spec",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 209935,
+  "snapshot_md_files": 21,
+  "source_id": "oci-runtime"
+}

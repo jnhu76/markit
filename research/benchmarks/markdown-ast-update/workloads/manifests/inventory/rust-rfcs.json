@@ -1,0 +1,4614 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "51783df9a76c355de7ceebeae101cba47f8ca463",
+  "entries": [
+    {
+      "bytes": 593,
+      "git_blob_sha1": "6fa5caf0cf5b826c093ce0ce8bc6edc665f0bb29",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE.md"
+    },
+    {
+      "bytes": 5705,
+      "git_blob_sha1": "fdc40810e8650710b95ac83ee3b9ed274c9ca3b3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "0000-template.md"
+    },
+    {
+      "bytes": 13779,
+      "git_blob_sha1": "21bfe826eb9bda283106694c96705b8923675ba8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 2276,
+      "git_blob_sha1": "a8c12a7e3ed289213f1f85ef48f01e9208fbe3fe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "compiler_changes.md"
+    },
+    {
+      "bytes": 2025,
+      "git_blob_sha1": "bc09d9a417e6a30c8335939035f4ab6defbd19a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "lang_changes.md"
+    },
+    {
+      "bytes": 5684,
+      "git_blob_sha1": "a17095719bb4708dfb094d70ceba668c01d148ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "libs_changes.md"
+    },
+    {
+      "bytes": 6699,
+      "git_blob_sha1": "9c9a30245c66ecb3f23d56d79824d74be2e87b1a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0001-private-fields.md"
+    },
+    {
+      "bytes": 5336,
+      "git_blob_sha1": "8cf119bc55cd2ab650aa9d4910eef8ac4b073f9f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0002-rfc-process.md"
+    },
+    {
+      "bytes": 3747,
+      "git_blob_sha1": "bf2da13fe4f49a87c7a5776e7e5aac164a337d88",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0003-attribute-usage.md"
+    },
+    {
+      "bytes": 3033,
+      "git_blob_sha1": "644d16dc668f5540881be4dcec5426221cafd054",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0008-new-intrinsics.md"
+    },
+    {
+      "bytes": 6137,
+      "git_blob_sha1": "56d4de562b26f19d0bb60af548f4e8b2ba5ebbf4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0016-more-attributes.md"
+    },
+    {
+      "bytes": 24441,
+      "git_blob_sha1": "007869ad6c820ea47299e477d66b4149637cf3bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0019-opt-in-builtin-traits.md"
+    },
+    {
+      "bytes": 2078,
+      "git_blob_sha1": "686b763e93e313dda50736de1d5b3c606a0959a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0026-remove-priv.md"
+    },
+    {
+      "bytes": 3635,
+      "git_blob_sha1": "fc540cacc2f0f4245e4fa04e47506bcf12ec2e8d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0034-bounded-type-parameters.md"
+    },
+    {
+      "bytes": 19744,
+      "git_blob_sha1": "0ec317c8e0147a3056bb29cf9fcbda540d6a78fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0040-libstd-facade.md"
+    },
+    {
+      "bytes": 12747,
+      "git_blob_sha1": "e4286b29705a0c26a038cfd076daa22bab51adbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0042-regexps.md"
+    },
+    {
+      "bytes": 29197,
+      "git_blob_sha1": "b4e1ef371f62afb89ca7ceb789076c38a9c76114",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0048-traits.md"
+    },
+    {
+      "bytes": 2302,
+      "git_blob_sha1": "7b57948990774eeca0514602290666a556d6cc1a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0049-match-arm-attributes.md"
+    },
+    {
+      "bytes": 1257,
+      "git_blob_sha1": "4de152002285cc3276e953bc20550f453e447563",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0050-assert.md"
+    },
+    {
+      "bytes": 2269,
+      "git_blob_sha1": "d96250b6bdb3b4166e9c2217fe389a5535ac392f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0059-remove-tilde.md"
+    },
+    {
+      "bytes": 700,
+      "git_blob_sha1": "46a75e0db29fdfc5b50b476b1e2b77ab2e137935",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0060-rename-strbuf.md"
+    },
+    {
+      "bytes": 2498,
+      "git_blob_sha1": "5d740837875e7a9bd39f30e8bd7adbb1558ff464",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0063-module-file-system-hierarchy.md"
+    },
+    {
+      "bytes": 2038,
+      "git_blob_sha1": "e68a8f252b6e29be6ae91bbfc44c4b2ee522ba6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0066-better-temporary-lifetimes.md"
+    },
+    {
+      "bytes": 7298,
+      "git_blob_sha1": "0abe20ff19a32a162d14c3f35578d9c58b3fddbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0068-const-unsafe-pointers.md"
+    },
+    {
+      "bytes": 3657,
+      "git_blob_sha1": "195e150fd07d307921e3b6dc4ebc1339876ad4c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0069-ascii-literals.md"
+    },
+    {
+      "bytes": 3162,
+      "git_blob_sha1": "4377c7f7efdeeb006697b95cd19f8a78b5063d62",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0071-const-block-expr.md"
+    },
+    {
+      "bytes": 4851,
+      "git_blob_sha1": "9cdbf5df32ee15e72ca2ccc4098290821dd75b33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0079-undefined-struct-layout.md"
+    },
+    {
+      "bytes": 2298,
+      "git_blob_sha1": "410754a2d66ce8121ed8962edd517532168857f7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0085-pattern-macros.md"
+    },
+    {
+      "bytes": 3529,
+      "git_blob_sha1": "91599e78afca977af28306ac6d5a75b4595faa96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0086-plugin-registrar.md"
+    },
+    {
+      "bytes": 1507,
+      "git_blob_sha1": "9d326c86d569ef1834c9c79793c3af88c4ab9a99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0087-trait-bounds-with-plus.md"
+    },
+    {
+      "bytes": 6845,
+      "git_blob_sha1": "d088496fdaac4f3199ea7f8605463c3034d888eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0089-loadable-lints.md"
+    },
+    {
+      "bytes": 5322,
+      "git_blob_sha1": "e7d181681dbbaf2efa4e4369fd0f2ed18de1ac0c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0090-lexical-syntax-simplification.md"
+    },
+    {
+      "bytes": 3819,
+      "git_blob_sha1": "5389730995370f168782e836023e6064179f7feb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0092-struct-grammar.md"
+    },
+    {
+      "bytes": 4604,
+      "git_blob_sha1": "99713a57a753fbdae51a149ad5001d49763d9070",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0093-remove-format-intl.md"
+    },
+    {
+      "bytes": 4156,
+      "git_blob_sha1": "b229d711131e0b2d2fcc9e7b06636d155ac0c5e1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0100-partial-cmp.md"
+    },
+    {
+      "bytes": 4275,
+      "git_blob_sha1": "fafb17aa1e655a67719d5d9b671b84dec0b8a46d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0107-pattern-guards-with-bind-by-move.md"
+    },
+    {
+      "bytes": 9282,
+      "git_blob_sha1": "8c0c56036d7d433a8824336ba31af17f9b95e644",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0109-remove-crate-id.md"
+    },
+    {
+      "bytes": 1418,
+      "git_blob_sha1": "caf6bece53540a58f52950d3ac64827c939a69b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0111-index-traits.md"
+    },
+    {
+      "bytes": 1072,
+      "git_blob_sha1": "94b69d1c68f68fa743f964dd3bcc79237e8578c3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0112-remove-cross-borrowing.md"
+    },
+    {
+      "bytes": 18694,
+      "git_blob_sha1": "39980b93f10db543ca6afc2133081bd9beb50e97",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0114-closures.md"
+    },
+    {
+      "bytes": 2467,
+      "git_blob_sha1": "0d108b79521c07494433fd3777cd7c08cf216350",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0115-rm-integer-fallback.md"
+    },
+    {
+      "bytes": 8587,
+      "git_blob_sha1": "d91b91229d2bc2808e73682485718928f5f003be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0116-no-module-shadowing.md"
+    },
+    {
+      "bytes": 1329,
+      "git_blob_sha1": "bd1c56339e58fae08e9969988f0520508d7025ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0123-share-to-threadsafe.md"
+    },
+    {
+      "bytes": 4389,
+      "git_blob_sha1": "7989c53a1e802637812d8d43c3c1de77b7deeefc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0130-box-not-special.md"
+    },
+    {
+      "bytes": 4963,
+      "git_blob_sha1": "e1972e36beef59651be21549f135fe1dc74933c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0131-target-specification.md"
+    },
+    {
+      "bytes": 9129,
+      "git_blob_sha1": "18d2fc8225f8a55f51b74c464a5198cf731cc8df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0132-ufcs.md"
+    },
+    {
+      "bytes": 16068,
+      "git_blob_sha1": "a29e5bffc261ea5d8fda624e22cc8de842c48642",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0135-where.md"
+    },
+    {
+      "bytes": 8589,
+      "git_blob_sha1": "0f16508ef9ac8765adf61b1a9fb6bc301b9716c6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0136-no-privates-in-public.md"
+    },
+    {
+      "bytes": 1064,
+      "git_blob_sha1": "2e43d6eb8b398525ac830144b080d0a94043ca48",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0139-remove-cross-borrowing-entirely.md"
+    },
+    {
+      "bytes": 12405,
+      "git_blob_sha1": "0883db78f3bee46937331a6ea4f7f111570545d3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0141-lifetime-elision.md"
+    },
+    {
+      "bytes": 2029,
+      "git_blob_sha1": "1c0982daefe157462e844ab0433354ab5e17f144",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0151-capture-by-value.md"
+    },
+    {
+      "bytes": 5934,
+      "git_blob_sha1": "98f06e5f37eb4aac120e2d523404b9eb18a2d50a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0155-anonymous-impl-only-in-same-module.md"
+    },
+    {
+      "bytes": 6544,
+      "git_blob_sha1": "e8a5300b10fc51e14e482bb631ddeeccf8e06b5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0160-if-let.md"
+    },
+    {
+      "bytes": 1537,
+      "git_blob_sha1": "580e343a57ede15463f395070cbe99a5e4e9fc24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0164-feature-gate-slice-pats.md"
+    },
+    {
+      "bytes": 1435,
+      "git_blob_sha1": "760ff42458166f63a507729ee909ab8cc0af6abf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0168-mod.md"
+    },
+    {
+      "bytes": 6299,
+      "git_blob_sha1": "4c5596f7cb60bcbf3fe43bcd64b7931307074c2e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0169-use-path-as-id.md"
+    },
+    {
+      "bytes": 2701,
+      "git_blob_sha1": "de5646e617462d1fef4f356f9cd14209bdcfa43e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0179-and-mut-patterns.md"
+    },
+    {
+      "bytes": 2534,
+      "git_blob_sha1": "48243201125b8ef41205c006f032968a0539c100",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0184-tuple-accessors.md"
+    },
+    {
+      "bytes": 18276,
+      "git_blob_sha1": "d5ddd2eb7d086d3060bbe95e62482675a3c0a7f6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0192-bounds-on-object-and-generic-types.md"
+    },
+    {
+      "bytes": 4564,
+      "git_blob_sha1": "6bbf92f8a2b78eed3a0030e9999a5fd8fac4b810",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0194-cfg-syntax.md"
+    },
+    {
+      "bytes": 46578,
+      "git_blob_sha1": "83400eb5addc9cf0ae97bf48cd4d749120f1312d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0195-associated-items.md"
+    },
+    {
+      "bytes": 9073,
+      "git_blob_sha1": "ad690e3a767b4ae055e07d92e06320448aeb822d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0198-slice-notation.md"
+    },
+    {
+      "bytes": 5142,
+      "git_blob_sha1": "8d99d0a6b1779b10257f2433194d551d4c143aff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0199-ownership-variants.md"
+    },
+    {
+      "bytes": 12258,
+      "git_blob_sha1": "9602d7b03bba86d6d3beb18a9b6f659931d0f410",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0201-error-chaining.md"
+    },
+    {
+      "bytes": 1782,
+      "git_blob_sha1": "83bb708243aa5824030f94cdfc8ce06e94f86216",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0202-subslice-syntax-change.md"
+    },
+    {
+      "bytes": 8739,
+      "git_blob_sha1": "f42726bde52def7fe92070c2e60e14dad4353fdc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0212-restore-int-fallback.md"
+    },
+    {
+      "bytes": 23018,
+      "git_blob_sha1": "3a5a030cdf4410136f66e459a1d4345212958aac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0213-defaulted-type-params.md"
+    },
+    {
+      "bytes": 2959,
+      "git_blob_sha1": "35dd0961a7e7dd0ae81d9a861682590624533552",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0214-while-let.md"
+    },
+    {
+      "bytes": 9298,
+      "git_blob_sha1": "ecba0a2a114c56ece5ff2e5772352a356cb5efc3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0216-collection-views.md"
+    },
+    {
+      "bytes": 15843,
+      "git_blob_sha1": "d07bbe084db716d70fc30bd2e2e5f861a7d62dcd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0218-empty-struct-with-braces.md"
+    },
+    {
+      "bytes": 2579,
+      "git_blob_sha1": "4bf721f8413358c201f4a814541ce5244be95373",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0221-panic.md"
+    },
+    {
+      "bytes": 15011,
+      "git_blob_sha1": "8ea575e4ab1cee0f859c2abac6eacd5201f3bdcd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0230-remove-runtime.md"
+    },
+    {
+      "bytes": 3600,
+      "git_blob_sha1": "86001602a003630d09a8ef5549d775d64d01b749",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0231-upvar-capture-inference.md"
+    },
+    {
+      "bytes": 1957,
+      "git_blob_sha1": "92a5400f06a5136bd15b2537c499bf9e5f79bfdc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0234-variants-namespace.md"
+    },
+    {
+      "bytes": 61769,
+      "git_blob_sha1": "0cc6712770035cf97da04497f0531af9992bbaa8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0235-collections-conventions.md"
+    },
+    {
+      "bytes": 10287,
+      "git_blob_sha1": "63b5d94c18ccacf05626bb622a273eb193f78f59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0236-error-conventions.md"
+    },
+    {
+      "bytes": 7620,
+      "git_blob_sha1": "466e301fed5bf3722143d1e5debe73cf3ed7d8e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0240-unsafe-api-location.md"
+    },
+    {
+      "bytes": 10144,
+      "git_blob_sha1": "c7abeb1faa65d92e950b9f43ab4f88be32d874a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0241-deref-conversions.md"
+    },
+    {
+      "bytes": 27267,
+      "git_blob_sha1": "397f5dfa3ff24379a6f91c1d5052ab308e295e19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0243-trait-based-exception-handling.md"
+    },
+    {
+      "bytes": 10387,
+      "git_blob_sha1": "bbe371c97d22eba24ff7b70d7c32b4d2335ecc3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0246-const-vs-static.md"
+    },
+    {
+      "bytes": 7892,
+      "git_blob_sha1": "af53a83778735f31c197a8513128d22b0c1ca1fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0255-object-safety.md"
+    },
+    {
+      "bytes": 9129,
+      "git_blob_sha1": "e92e2c2ada7ebd853a2af8801ff618cff0a405a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0256-remove-refcounting-gc-of-t.md"
+    },
+    {
+      "bytes": 27090,
+      "git_blob_sha1": "b6a3906ea9eaf2d504804eda1265e46fe8f8c1a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0320-nonzeroing-dynamic-drop.md"
+    },
+    {
+      "bytes": 10729,
+      "git_blob_sha1": "07b2e2c3b045218b1da9f0572c2acb58f53e2d92",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0326-restrict-xXX-to-ascii.md"
+    },
+    {
+      "bytes": 9187,
+      "git_blob_sha1": "96665d296dd78b11a07265aa835164b0de4e0be1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0339-statically-sized-literals.md"
+    },
+    {
+      "bytes": 1438,
+      "git_blob_sha1": "9c14abf7aa14f07446c9708553933d7bb0de61c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0341-remove-virtual-structs.md"
+    },
+    {
+      "bytes": 1157,
+      "git_blob_sha1": "c07cca0f620c2bf67e8035a9495c043606854800",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0342-keywords.md"
+    },
+    {
+      "bytes": 11993,
+      "git_blob_sha1": "9f2151dc0ac1a556d33b95405000961519d427fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0344-conventions-galore.md"
+    },
+    {
+      "bytes": 2534,
+      "git_blob_sha1": "d02088d42461893c343bf6a5a1c052297105c72b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0356-no-module-prefixes.md"
+    },
+    {
+      "bytes": 15018,
+      "git_blob_sha1": "626d63682d7339332c91509aeabba02022431b6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0369-num-reform.md"
+    },
+    {
+      "bytes": 2817,
+      "git_blob_sha1": "6f884876d5019fe62c29490acb8418b7cc3fc7b8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0378-expr-macros.md"
+    },
+    {
+      "bytes": 4297,
+      "git_blob_sha1": "ead45cb0842d9225750e58162f5d9342653c8021",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0379-remove-reflection.md"
+    },
+    {
+      "bytes": 18560,
+      "git_blob_sha1": "28d2a94f763f5039ccd06996a352f35c40961e2b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0380-stabilize-std-fmt.md"
+    },
+    {
+      "bytes": 7876,
+      "git_blob_sha1": "65c489506c198b9ffe6d64f97cfbff413d43a63d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0385-module-system-cleanup.md"
+    },
+    {
+      "bytes": 9476,
+      "git_blob_sha1": "33ee48e3a86a47b697644fc17313833b270905b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0387-higher-ranked-trait-bounds.md"
+    },
+    {
+      "bytes": 10844,
+      "git_blob_sha1": "c74187816ba811842bf8edf7f98a66586979e300",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0390-enum-namespacing.md"
+    },
+    {
+      "bytes": 17946,
+      "git_blob_sha1": "d736a1c185802a3daf8ca0da2cea87fd76facf8d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0401-coercions.md"
+    },
+    {
+      "bytes": 26593,
+      "git_blob_sha1": "ee6361ee2c22028937b7aa2b17f09c82ab38f67b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0403-cargo-build-command.md"
+    },
+    {
+      "bytes": 6862,
+      "git_blob_sha1": "6d02db8ac8170325002980d53d01328ab318e3ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0404-change-prefer-dynamic.md"
+    },
+    {
+      "bytes": 3740,
+      "git_blob_sha1": "be70f5c3506734e76ce30e55c0b7b8b747f12786",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0418-struct-variants.md"
+    },
+    {
+      "bytes": 3610,
+      "git_blob_sha1": "dba6fbbaee50e7f765d179ffcb6632883fc3d19c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0430-finalizing-naming-conventions.md"
+    },
+    {
+      "bytes": 2879,
+      "git_blob_sha1": "3bcf6dcf0a16af35368c73038ce15c4dcacc73b8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0438-precedence-of-plus.md"
+    },
+    {
+      "bytes": 16776,
+      "git_blob_sha1": "4ea46da205245b1c08b420594204eb76c4afeae9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0439-cmp-ops-reform.md"
+    },
+    {
+      "bytes": 5480,
+      "git_blob_sha1": "4cecdf0f4bebfd2910d708a5a124d8883399c646",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0445-extension-trait-conventions.md"
+    },
+    {
+      "bytes": 2754,
+      "git_blob_sha1": "6909f95b8328711a448c7cfea22033dcc015fc20",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0446-es6-unicode-escapes.md"
+    },
+    {
+      "bytes": 5182,
+      "git_blob_sha1": "0fabc5fd5847e3b8ce52c6a751ddab2a7bfc55b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0447-no-unused-impl-parameters.md"
+    },
+    {
+      "bytes": 2018,
+      "git_blob_sha1": "6e6cc99b9a33035408d055f2922f725f14b59de3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0450-un-feature-gate-some-more-gates.md"
+    },
+    {
+      "bytes": 11533,
+      "git_blob_sha1": "cd4d5f8b9938bf3c593957f891e487550bda5c76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0453-macro-reform.md"
+    },
+    {
+      "bytes": 11842,
+      "git_blob_sha1": "73777b2674eeac309bef5604e2bdf8c9adad4003",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0458-send-improvements.md"
+    },
+    {
+      "bytes": 2504,
+      "git_blob_sha1": "434c8f97765ba25a0c1d6123f379c4c3b57ba073",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0459-disallow-shadowing.md"
+    },
+    {
+      "bytes": 15373,
+      "git_blob_sha1": "09e78dbf1409dfef102bdb814e00cdff404eb004",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0461-tls-overhaul.md"
+    },
+    {
+      "bytes": 4542,
+      "git_blob_sha1": "85668cb8ab22718def3f88cde23d0b801ecd0aa0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0463-future-proof-literal-suffixes.md"
+    },
+    {
+      "bytes": 1692,
+      "git_blob_sha1": "23a0198b765b6ec4af4fd4f005637792c697fa54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0469-feature-gate-box-patterns.md"
+    },
+    {
+      "bytes": 18545,
+      "git_blob_sha1": "bd63f297523e0042f6c4c93f65b7be00cce5e0fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0474-path-reform.md"
+    },
+    {
+      "bytes": 4461,
+      "git_blob_sha1": "4a31ca821f6a07c4f2597ec8e2048175be9ccad5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0486-std-ascii-reform.md"
+    },
+    {
+      "bytes": 6855,
+      "git_blob_sha1": "2d0d8432493158deb5ff76c0b82be0d14672b685",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0490-dst-syntax.md"
+    },
+    {
+      "bytes": 9710,
+      "git_blob_sha1": "f79280313802acda913fa5750a5cb8483a95bbe9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0494-c_str-and-c_vec-stability.md"
+    },
+    {
+      "bytes": 4560,
+      "git_blob_sha1": "72342547e51226e1bc7e6cea4866463059fdd52e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0495-array-pattern-changes.md"
+    },
+    {
+      "bytes": 3306,
+      "git_blob_sha1": "f4840b66e05021562a21147a7bb6aedf582ef4c8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0501-consistent_no_prelude_attributes.md"
+    },
+    {
+      "bytes": 15655,
+      "git_blob_sha1": "511e407a58b94c83a2891346486354ff9fe5c787",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0503-prelude-stabilization.md"
+    },
+    {
+      "bytes": 9216,
+      "git_blob_sha1": "be458794e02d7646474eba138fdfb5ccf4be81c8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0504-show-stabilization.md"
+    },
+    {
+      "bytes": 3899,
+      "git_blob_sha1": "34545c196e1ec271913589e6671ae7f100608324",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0505-api-comment-conventions.md"
+    },
+    {
+      "bytes": 22817,
+      "git_blob_sha1": "b39b1da02ebb1ac814a11ee7b691d28b7638c330",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0507-release-channels.md"
+    },
+    {
+      "bytes": 15220,
+      "git_blob_sha1": "54d41eaca3df5755c65d3ef546cfc5964553fc9a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0509-collections-reform-part-2.md"
+    },
+    {
+      "bytes": 71915,
+      "git_blob_sha1": "a4afc73d3bc66dae977723a4b20793d0904bf232",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0517-io-os-reform.md"
+    },
+    {
+      "bytes": 7456,
+      "git_blob_sha1": "bc3093cb9fd544324f68deabc733bd5a55758439",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0520-new-array-repeat-syntax.md"
+    },
+    {
+      "bytes": 1680,
+      "git_blob_sha1": "bef4248ce855b82daf71f4066ec824afd21ec971",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0522-self-impl.md"
+    },
+    {
+      "bytes": 4484,
+      "git_blob_sha1": "71a95d240c8b07804eee36872e40a54b7bdd0ef6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0526-fmt-text-writer.md"
+    },
+    {
+      "bytes": 21616,
+      "git_blob_sha1": "aeea13db04b39a40140959aa67920145d355ea4e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0528-string-patterns.md"
+    },
+    {
+      "bytes": 17018,
+      "git_blob_sha1": "5f86ba0bac5edf673321ee9a14031b833548a6da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0529-conversion-traits.md"
+    },
+    {
+      "bytes": 2060,
+      "git_blob_sha1": "412533c38e502368c86a512181adfdd12ae525a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0531-define-rfc-scope.md"
+    },
+    {
+      "bytes": 1931,
+      "git_blob_sha1": "873a09b22fb9db71c73544a8f46bd947177ffed6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0532-self-in-use.md"
+    },
+    {
+      "bytes": 3509,
+      "git_blob_sha1": "5d70cd84b92f69913d7d90dba62f691a219cc95d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0533-no-array-elem-moves.md"
+    },
+    {
+      "bytes": 1046,
+      "git_blob_sha1": "d99f24a584f8ab6d601ab2189c17d75850223463",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0534-deriving2derive.md"
+    },
+    {
+      "bytes": 16557,
+      "git_blob_sha1": "e0eaffd034c822926dee85579ebfe87ec5a78531",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0544-rename-int-uint.md"
+    },
+    {
+      "bytes": 4465,
+      "git_blob_sha1": "3f791ff1d889df7048d424a7e814d09f9d933948",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0546-Self-not-sized-by-default.md"
+    },
+    {
+      "bytes": 26232,
+      "git_blob_sha1": "2e24fe99c14992a5ca9c152d92f7376bd3085d99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0550-macro-future-proofing.md"
+    },
+    {
+      "bytes": 5278,
+      "git_blob_sha1": "d62d3603208e271f357581a2bbf74cd0033770d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0556-raw-lifetime.md"
+    },
+    {
+      "bytes": 2840,
+      "git_blob_sha1": "672b9baebce76d23785a38d4cde1f4a5fc634154",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0558-require-parentheses-for-chained-comparisons.md"
+    },
+    {
+      "bytes": 25007,
+      "git_blob_sha1": "16b216179b875d9dc4b58f73fe0fde3aed8d25a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0560-integer-overflow.md"
+    },
+    {
+      "bytes": 2920,
+      "git_blob_sha1": "9630362b39793dc9b5c6c7b5822ba57751d01fec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0563-remove-ndebug.md"
+    },
+    {
+      "bytes": 7157,
+      "git_blob_sha1": "c9bcfd31009f6719290ea094b2a44f0daddebc4a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0565-show-string-guidelines.md"
+    },
+    {
+      "bytes": 2904,
+      "git_blob_sha1": "c7e7af2eb9317e9acf610a18072e3cc1f0cbdcb6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0572-rustc-attribute.md"
+    },
+    {
+      "bytes": 2776,
+      "git_blob_sha1": "ad4e3552428ca4ff3ad5015a12045f21b7492320",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0574-drain-range.md"
+    },
+    {
+      "bytes": 5614,
+      "git_blob_sha1": "82f5db9d9fe81de368d2a0db5fdffc18e282fa22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0580-rename-collections.md"
+    },
+    {
+      "bytes": 4846,
+      "git_blob_sha1": "41a9735a74449446e90f7e8308fa421183169291",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0587-fn-return-should-be-an-associated-type.md"
+    },
+    {
+      "bytes": 6098,
+      "git_blob_sha1": "9b8f98ef240de2635a927db92cd4175530a03ad9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0592-c-str-deref.md"
+    },
+    {
+      "bytes": 1628,
+      "git_blob_sha1": "cd8ef2e6a5920dccdfde91bf7390f44f6996b983",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0593-forbid-Self-definitions.md"
+    },
+    {
+      "bytes": 15548,
+      "git_blob_sha1": "ddda346e3eefc37d393abb2fb4a95e1136aea408",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0599-default-object-bound.md"
+    },
+    {
+      "bytes": 1897,
+      "git_blob_sha1": "0d1257142c5728f3b7f0b4c36575da0deb7aab8e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0601-replace-be-with-become.md"
+    },
+    {
+      "bytes": 11740,
+      "git_blob_sha1": "82a6f999e40a8b88a72b70163612caa1ea4c663c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0639-discriminant-intrinsic.md"
+    },
+    {
+      "bytes": 7154,
+      "git_blob_sha1": "bf553775e28945ef079dd96e0f7bc941dfb74f13",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0640-debug-improvements.md"
+    },
+    {
+      "bytes": 2211,
+      "git_blob_sha1": "1b95cc91c2c63b44ecd62fd0d3722345261ea45d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0702-rangefull-expression.md"
+    },
+    {
+      "bytes": 2892,
+      "git_blob_sha1": "f7ae93647d2f0cb2414ce9060d320c1196fe2e20",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0735-allow-inherent-impls-anywhere.md"
+    },
+    {
+      "bytes": 11888,
+      "git_blob_sha1": "85ffa0afb7555da9a3903c00887299f920e20c63",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0736-privacy-respecting-fru.md"
+    },
+    {
+      "bytes": 21688,
+      "git_blob_sha1": "dd32272680d008365003600d1cec4b4ee9544a2b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0738-variance.md"
+    },
+    {
+      "bytes": 42611,
+      "git_blob_sha1": "5b037a4fca50f2edb3cd706d434aff1953827068",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0769-sound-generic-drop.md"
+    },
+    {
+      "bytes": 1957,
+      "git_blob_sha1": "45fa370d4d3130c03bb7b22f9240148e25881800",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0771-std-iter-once.md"
+    },
+    {
+      "bytes": 7875,
+      "git_blob_sha1": "13d9b87f7d90fce9871d4cec4bfd71c1c9f0c1fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0803-type-ascription.md"
+    },
+    {
+      "bytes": 28908,
+      "git_blob_sha1": "76853e947209c02a1a9aec865b8ef7c1569d7b7a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0809-box-and-in-for-stdlib.md"
+    },
+    {
+      "bytes": 16552,
+      "git_blob_sha1": "2d6050bd7a1f9fcb45ea2beaa64b9a88a5c83c64",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0823-hash-simplification.md"
+    },
+    {
+      "bytes": 3317,
+      "git_blob_sha1": "e15c905ea163cec35c92dc7967bc715ad8a1800f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0832-from-elem-with-love.md"
+    },
+    {
+      "bytes": 4122,
+      "git_blob_sha1": "d06c014dfc13c31b9594c4194e47336657f1a05c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0839-embrace-extend-extinguish.md"
+    },
+    {
+      "bytes": 3878,
+      "git_blob_sha1": "a536ff9dded82343e57041322c17be0f8718e072",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0840-no-panic-in-c-string.md"
+    },
+    {
+      "bytes": 8181,
+      "git_blob_sha1": "e2240b6faaefeef11d3df1a75abda782d1503769",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0873-type-macros.md"
+    },
+    {
+      "bytes": 2969,
+      "git_blob_sha1": "2dc2f20c8149723e14f524f94bce40f9562994b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0879-small-base-lexing.md"
+    },
+    {
+      "bytes": 2940,
+      "git_blob_sha1": "0a1fdb7c83e1f1291b5dd502d4828a5c437d1546",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0888-compiler-fence-intrinsics.md"
+    },
+    {
+      "bytes": 1599,
+      "git_blob_sha1": "a162ff0b8b889c55383c1c938d01687d4894b220",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0909-move-thread-local-to-std-thread.md"
+    },
+    {
+      "bytes": 9372,
+      "git_blob_sha1": "75f6713ded719e0149928212cf7930e2ab68de3e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0911-const-fn.md"
+    },
+    {
+      "bytes": 4071,
+      "git_blob_sha1": "7b1a8e418ccb5bc211bfacf987c05fc66dc814fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0921-entry_v3.md"
+    },
+    {
+      "bytes": 4942,
+      "git_blob_sha1": "76e04b5087a5b6beece22aa6d0781ca5f4e94f72",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0940-hyphens-considered-harmful.md"
+    },
+    {
+      "bytes": 3301,
+      "git_blob_sha1": "1ab54fa499501298972c2b7ab9c31456458c79eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0953-op-assign.md"
+    },
+    {
+      "bytes": 2111,
+      "git_blob_sha1": "21d58a1c3448ca5826d27d16d94e76aa03bb8e1b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0968-closure-return-type-syntax.md"
+    },
+    {
+      "bytes": 3500,
+      "git_blob_sha1": "1646f959f6b3b5c7d04a55699eef149b8a689e83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0979-align-splitn-with-other-languages.md"
+    },
+    {
+      "bytes": 13217,
+      "git_blob_sha1": "0e1baa52106f8c3d868a6badc0d1b16d80f12734",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0980-read-exact.md"
+    },
+    {
+      "bytes": 8396,
+      "git_blob_sha1": "a107924d057f9bdc6f10d5c2c4d9007f66481af1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/0982-dst-coercion.md"
+    },
+    {
+      "bytes": 3952,
+      "git_blob_sha1": "ec2cd05b5055d43bbe415e7c865500f4b30559ea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1011-process.exit.md"
+    },
+    {
+      "bytes": 2763,
+      "git_blob_sha1": "68e86c96c618642ac1d54a55c657b4f63ea362a4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1014-stdout-existential-crisis.md"
+    },
+    {
+      "bytes": 11525,
+      "git_blob_sha1": "7018fcd24589d7366c8a9d6d599f89ff420663b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1023-rebalancing-coherence.md"
+    },
+    {
+      "bytes": 1864,
+      "git_blob_sha1": "330c9d916974bcb798d6fec99e119deb840aa999",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1030-prelude-additions.md"
+    },
+    {
+      "bytes": 10041,
+      "git_blob_sha1": "fbe2c695233a1289e25bfae6f0da1269c94b5660",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1040-duration-reform.md"
+    },
+    {
+      "bytes": 22879,
+      "git_blob_sha1": "33187c169b59eb8714f0fe636c3c209f2cb2cb1d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1044-io-fs-2.1.md"
+    },
+    {
+      "bytes": 6135,
+      "git_blob_sha1": "6f1e36dd98cddfdd271ae9ec8bb48778eef79787",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1047-socket-timeouts.md"
+    },
+    {
+      "bytes": 9984,
+      "git_blob_sha1": "0c34e6e923f0c35612dc53d295931656331fb8ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1048-rename-soft-link-to-symlink.md"
+    },
+    {
+      "bytes": 2840,
+      "git_blob_sha1": "d5655489cbf8304c20ca0d786634a352b56e7f5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1054-str-words.md"
+    },
+    {
+      "bytes": 3407,
+      "git_blob_sha1": "09fecc77e5afb6d2898a8a4bc7e2b1a2d3ec10cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1057-io-error-sync.md"
+    },
+    {
+      "bytes": 3593,
+      "git_blob_sha1": "0d30e3e01505a5d8c06d54834507edea9d47a4d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1058-slice-tail-redesign.md"
+    },
+    {
+      "bytes": 6699,
+      "git_blob_sha1": "fb49b08e83b89014af35496f29a7c214ee641547",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1066-safe-mem-forget.md"
+    },
+    {
+      "bytes": 33620,
+      "git_blob_sha1": "03cdc47f67559a035baa131c8ea741df94a94905",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1068-rust-governance.md"
+    },
+    {
+      "bytes": 2252,
+      "git_blob_sha1": "2dc94edd43e883ec31db5991e887efee30150c2c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1096-remove-static-assert.md"
+    },
+    {
+      "bytes": 3310,
+      "git_blob_sha1": "0ee7f0428f7be27c3c4806c6b2dde29e5919e6df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1102-rename-connect-to-join.md"
+    },
+    {
+      "bytes": 30885,
+      "git_blob_sha1": "3ce4088ac4776ad3aef200351b53c98a7107e508",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1105-api-evolution.md"
+    },
+    {
+      "bytes": 1427,
+      "git_blob_sha1": "455ee81a0c439e46e5b4860538973f0289a48ea1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1119-result-expect.md"
+    },
+    {
+      "bytes": 16128,
+      "git_blob_sha1": "51ce4757b59f11a9153fb2b698a99415a1debc66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1122-language-semver.md"
+    },
+    {
+      "bytes": 3431,
+      "git_blob_sha1": "becf8f2719b56056424f8a634e6d29afca159846",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1123-str-split-at.md"
+    },
+    {
+      "bytes": 2866,
+      "git_blob_sha1": "954e0c00f5d13b63105b88adc1971787badcb38c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1131-likely-intrinsic.md"
+    },
+    {
+      "bytes": 2084,
+      "git_blob_sha1": "62ea7f2fafc730ee886bf7eab65cf98047c6f536",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1135-raw-pointer-comparisons.md"
+    },
+    {
+      "bytes": 2496,
+      "git_blob_sha1": "567332aeeba032e85da379339a498b72b9d40f44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1152-slice-string-symmetry.md"
+    },
+    {
+      "bytes": 10484,
+      "git_blob_sha1": "2772c6cdf880c5787d66b77b5660a0cdd8a2b4bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1156-adjust-default-object-bounds.md"
+    },
+    {
+      "bytes": 2323,
+      "git_blob_sha1": "d7792ff7a1408b416779e380708fd164f47adc98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1174-into-raw-fd-socket-handle-traits.md"
+    },
+    {
+      "bytes": 11164,
+      "git_blob_sha1": "b6199cd1b9675963c1d4632a6441af649feaa730",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1183-swap-out-jemalloc.md"
+    },
+    {
+      "bytes": 6986,
+      "git_blob_sha1": "280de38dcbb6fe5ac458f1bde80ac3c16512032c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1184-stabilize-no_std.md"
+    },
+    {
+      "bytes": 3460,
+      "git_blob_sha1": "f51c701eadbaa78f5ebc861bcabfdb29a00b0826",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1191-hir.md"
+    },
+    {
+      "bytes": 6881,
+      "git_blob_sha1": "505b166bd1d953c591f624d2873ed3b2f8e993c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1192-inclusive-ranges.md"
+    },
+    {
+      "bytes": 5032,
+      "git_blob_sha1": "58ba7dcc1eca4600250073fc584b653f249e00cc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1193-cap-lints.md"
+    },
+    {
+      "bytes": 3149,
+      "git_blob_sha1": "ae5fcce9f2bc8afb077ec3a7f16c75b515b1a804",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1194-set-recovery.md"
+    },
+    {
+      "bytes": 16369,
+      "git_blob_sha1": "8071fc3a57c8071a7cacf43030749820cf4311e2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1199-simd-infrastructure.md"
+    },
+    {
+      "bytes": 11649,
+      "git_blob_sha1": "4bf979dd9d530aaf4c081d0afa7418c0aeee5aa9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1200-cargo-install.md"
+    },
+    {
+      "bytes": 7952,
+      "git_blob_sha1": "e67627d95eef2aee418d5c742c3e847a9eed2cec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1201-naked-fns.md"
+    },
+    {
+      "bytes": 71258,
+      "git_blob_sha1": "ff8af3995916fa51ef9da89e9b5d269498e69ef8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1210-impl-specialization.md"
+    },
+    {
+      "bytes": 35559,
+      "git_blob_sha1": "34b5fdebb64300412b7d1c7293e22332079f0efd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1211-mir.md"
+    },
+    {
+      "bytes": 3398,
+      "git_blob_sha1": "2e5b722ccbb6145e59fa9d95c4831a1b4aa6ccda",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1212-line-endings.md"
+    },
+    {
+      "bytes": 45459,
+      "git_blob_sha1": "46326f1016dca47cb4c2ef18f0a368fdf25b6222",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1214-projections-lifetimes-and-wf.md"
+    },
+    {
+      "bytes": 16210,
+      "git_blob_sha1": "d29ea18111d61990f0d87df1d112b112c46945de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1216-bang-type.md"
+    },
+    {
+      "bytes": 1820,
+      "git_blob_sha1": "16be025294e560752e7fe4412532ca066a5cda75",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1219-use-group-as.md"
+    },
+    {
+      "bytes": 8953,
+      "git_blob_sha1": "d8045bb77cd42ef678da363ffc2757b777f8063d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1228-placement-left-arrow.md"
+    },
+    {
+      "bytes": 3299,
+      "git_blob_sha1": "87bc20bd99718db960a6488b42464b1dc21fdf34",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1229-compile-time-asserts.md"
+    },
+    {
+      "bytes": 22246,
+      "git_blob_sha1": "b951d85f01218fbbd3bbfaf4b3b4e532a03ab96b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1236-stabilize-catch-panic.md"
+    },
+    {
+      "bytes": 21960,
+      "git_blob_sha1": "1711a00169eef3a1d252287aeade2532c61ef31d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1238-nonparametric-dropck.md"
+    },
+    {
+      "bytes": 23658,
+      "git_blob_sha1": "83867257fa5fdc564567f18101e0ce0f13513a7f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1240-repr-packed-unsafe-ref.md"
+    },
+    {
+      "bytes": 7066,
+      "git_blob_sha1": "84f1485fd4b7e412c2da1747d2966dc1655e9c90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1241-no-wildcard-deps.md"
+    },
+    {
+      "bytes": 10649,
+      "git_blob_sha1": "425e9def8ecee0a674185f34d53892ca73531f3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1242-rust-lang-crates.md"
+    },
+    {
+      "bytes": 31615,
+      "git_blob_sha1": "42c59efee5ded08c154016cd06f870f1d1a79ad2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1252-open-options.md"
+    },
+    {
+      "bytes": 4622,
+      "git_blob_sha1": "51bcd811cafb0b2a2b23469f26714941b71c9fca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1257-drain-range-2.md"
+    },
+    {
+      "bytes": 1558,
+      "git_blob_sha1": "3b85d60c5000f99cd6a47c42a3e3e4e915afa0de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1260-main-reexport.md"
+    },
+    {
+      "bytes": 4779,
+      "git_blob_sha1": "3f12dd0183dbd9d8058833f4df3f7b2490783c41",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1268-allow-overlapping-impls-on-marker-traits.md"
+    },
+    {
+      "bytes": 5647,
+      "git_blob_sha1": "a2cfe15e7a7e7c8552bc051b31a2f40191c3f28b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1270-deprecation.md"
+    },
+    {
+      "bytes": 13970,
+      "git_blob_sha1": "7ac4279ebbda8c1af72a1d6c069b783a6ddc50c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1288-time-improvements.md"
+    },
+    {
+      "bytes": 15666,
+      "git_blob_sha1": "cd0c7a5a3ea9328bf0c61e5f756a4e8aae9dbbe7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1291-promote-libc.md"
+    },
+    {
+      "bytes": 29499,
+      "git_blob_sha1": "b77f3330b9bcd86956035d06a65b77acab5b43f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1298-incremental-compilation.md"
+    },
+    {
+      "bytes": 2161,
+      "git_blob_sha1": "ba9441cde16e7a9f06a3209a82eede9df663e2de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1300-intrinsic-semantics.md"
+    },
+    {
+      "bytes": 2346,
+      "git_blob_sha1": "5c77bc63c75e0800e436cc0b4a85a3a2ee6a33b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1307-osstring-methods.md"
+    },
+    {
+      "bytes": 14038,
+      "git_blob_sha1": "d1f83509f53a385a40b8f499598e11dd895b7214",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1317-ide.md"
+    },
+    {
+      "bytes": 22699,
+      "git_blob_sha1": "edff826d91eb5f4c8bca61ab60fa2c4036efc8be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1327-dropck-param-eyepatch.md"
+    },
+    {
+      "bytes": 7853,
+      "git_blob_sha1": "9983530ac4dafb1bff9ebf902f466e401dc73bbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1328-global-panic-handler.md"
+    },
+    {
+      "bytes": 4881,
+      "git_blob_sha1": "df6684a10c325350c5030dcad35cffe6519fa8e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1331-grammar-is-canonical.md"
+    },
+    {
+      "bytes": 6180,
+      "git_blob_sha1": "187508e23bc1a1ae9abea68660ba261523de6edb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1358-repr-align.md"
+    },
+    {
+      "bytes": 5888,
+      "git_blob_sha1": "2ca2e4fead77208940989b9b90cf5bf350b7e507",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1359-process-ext-unix.md"
+    },
+    {
+      "bytes": 6186,
+      "git_blob_sha1": "ce1a6ec475a15dd6fb921d749087cbf42ea9641a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1361-cargo-cfg-dependencies.md"
+    },
+    {
+      "bytes": 93750,
+      "git_blob_sha1": "bb676d85f176b6d5cfc0c5653e18b1e0b47c91cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1398-kinds-of-allocators.md"
+    },
+    {
+      "bytes": 4259,
+      "git_blob_sha1": "7ba9084b9c4084b4beb7c21da92cda7b82c0be10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1399-repr-pack.md"
+    },
+    {
+      "bytes": 6429,
+      "git_blob_sha1": "2ac6c098116eea9b673b04c49af13d734647a968",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1414-rvalue_static_promotion.md"
+    },
+    {
+      "bytes": 8069,
+      "git_blob_sha1": "3619a8c87151618194dc00724cf12022120edfbe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1415-trim-std-os.md"
+    },
+    {
+      "bytes": 2017,
+      "git_blob_sha1": "d0076c3d005129edab9e702283ba6a8fc031b347",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1419-slice-copy.md"
+    },
+    {
+      "bytes": 33634,
+      "git_blob_sha1": "ac7d87fc745eeb263fb4af41a1d06203462aedfd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1422-pub-restricted.md"
+    },
+    {
+      "bytes": 6183,
+      "git_blob_sha1": "7cc5bbaa4bd39f019bddc669ecef5d22fff352fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1432-replace-slice.md"
+    },
+    {
+      "bytes": 2604,
+      "git_blob_sha1": "c8dfec7285ac29639cb67f22af34b1df03315c53",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1434-contains-method-for-ranges.md"
+    },
+    {
+      "bytes": 3326,
+      "git_blob_sha1": "016a25504f943a842779d95eeff805c8ce96ec24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1440-drop-types-in-const.md"
+    },
+    {
+      "bytes": 6978,
+      "git_blob_sha1": "ea3dfeb3bcc45dcfd75d3f578d102372ece77446",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1443-extended-compare-and-swap.md"
+    },
+    {
+      "bytes": 16423,
+      "git_blob_sha1": "ee7c4e80dec467fee75e33609a03a29b26938fa2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1444-union.md"
+    },
+    {
+      "bytes": 22438,
+      "git_blob_sha1": "a3a36c327efa082e32396cfb14a8138552a2fa06",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1445-restrict-constants-in-patterns.md"
+    },
+    {
+      "bytes": 4585,
+      "git_blob_sha1": "0dc587b51ee855bab0d261c52b4a2cf1eb3b7e55",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1461-net2-mutators.md"
+    },
+    {
+      "bytes": 1586,
+      "git_blob_sha1": "6e5ebe3204d6b12dccbd54dcbdf010116044990a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1467-volatile.md"
+    },
+    {
+      "bytes": 15628,
+      "git_blob_sha1": "d8b77158b518407de928c022f1cc763f5998bb24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1479-unix-socket.md"
+    },
+    {
+      "bytes": 4259,
+      "git_blob_sha1": "82fbf04d536c2ee5467342082a1b005208743308",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1492-dotdot-in-patterns.md"
+    },
+    {
+      "bytes": 2447,
+      "git_blob_sha1": "8e7b10cf1447ac188c213a6b3cdbce624ee328bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1498-ipv6addr-octets.md"
+    },
+    {
+      "bytes": 6065,
+      "git_blob_sha1": "7de8f2f9810b4ec863128d9c7196a0527d3756e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1504-int128.md"
+    },
+    {
+      "bytes": 7283,
+      "git_blob_sha1": "8d2d8d701e147d092c994cd9994f2a80803b836c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1506-adt-kinds.md"
+    },
+    {
+      "bytes": 4971,
+      "git_blob_sha1": "f3ad8686e90258d3d40afc3ed047a87b0ff14fa2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1510-cdylib.md"
+    },
+    {
+      "bytes": 13369,
+      "git_blob_sha1": "fc90f94f90a8bdff4617a2ec0b245690e56de201",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1513-less-unwinding.md"
+    },
+    {
+      "bytes": 2712,
+      "git_blob_sha1": "426320aec2ae13fb3469057376785da0ce5ba9c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1521-copy-clone-semantics.md"
+    },
+    {
+      "bytes": 23010,
+      "git_blob_sha1": "c413c0cb986f4720c0c49bee3cbde9910f19646a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1522-conservative-impl-trait.md"
+    },
+    {
+      "bytes": 12595,
+      "git_blob_sha1": "a86b05c361cba819f9061e6cebd4dc9bd263d833",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1525-cargo-workspace.md"
+    },
+    {
+      "bytes": 1879,
+      "git_blob_sha1": "6c0b6b8252b691a84fb39af7d252eca75cc9b2bc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1535-stable-overflow-checks.md"
+    },
+    {
+      "bytes": 5167,
+      "git_blob_sha1": "d68de70371ad9181fb521aa7fc332626eff4f743",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1542-try-from.md"
+    },
+    {
+      "bytes": 5361,
+      "git_blob_sha1": "2754c819c76dd597d6bf693a2f98555299362a96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1543-integer_atomics.md"
+    },
+    {
+      "bytes": 2068,
+      "git_blob_sha1": "f28700c1dc7ebeb4599d3d65b4e7183401907ba1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1548-global-asm.md"
+    },
+    {
+      "bytes": 2879,
+      "git_blob_sha1": "b33dd7d3651170024195bdb46571df697d5a3a76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1552-contains-method-for-various-collections.md"
+    },
+    {
+      "bytes": 7533,
+      "git_blob_sha1": "bcde6383eab27ab3fd988a9f34ec7e46b6edc5ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1558-closure-to-fn-coercion.md"
+    },
+    {
+      "bytes": 5852,
+      "git_blob_sha1": "ba0690fc6cf9b20e28e2112151e2fc1042be0972",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1559-attributes-with-literals.md"
+    },
+    {
+      "bytes": 22804,
+      "git_blob_sha1": "f6fc0aa1acbce073cad24f84a0daee885b931963",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1560-name-resolution.md"
+    },
+    {
+      "bytes": 7684,
+      "git_blob_sha1": "8a944e66de064522aa12da73ebe9a464c99d2b54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1561-macro-naming.md"
+    },
+    {
+      "bytes": 22045,
+      "git_blob_sha1": "9d2bd2fbbfee046e1b5b8ce3a6c354d052e27f29",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1566-proc-macros.md"
+    },
+    {
+      "bytes": 4541,
+      "git_blob_sha1": "7064519735e0f1149438ab612f2174f3572a9c7e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1567-long-error-codes-explanation-normalization.md"
+    },
+    {
+      "bytes": 16464,
+      "git_blob_sha1": "bdf8c5acf73702dacb3ea12993a623654525481e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1574-more-api-documentation-conventions.md"
+    },
+    {
+      "bytes": 3980,
+      "git_blob_sha1": "7b80ef1ac93ea7b2e9f6a6cf42efb9801a2b668f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1576-macros-literal-matcher.md"
+    },
+    {
+      "bytes": 7665,
+      "git_blob_sha1": "14e83eefede065c65eba5076b4e5ab923b7cbf09",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1581-fused-iterator.md"
+    },
+    {
+      "bytes": 4702,
+      "git_blob_sha1": "4bb9f4ede48dcbfaf79feb26d61ae8ffad0734a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1584-macros.md"
+    },
+    {
+      "bytes": 11543,
+      "git_blob_sha1": "7479541978daf58fd3d8a4414f564ab226e370f5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1589-rustc-bug-fix-procedure.md"
+    },
+    {
+      "bytes": 1872,
+      "git_blob_sha1": "8facf485a36dbd0839901300a93ad02456a58768",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1590-macro-lifetimes.md"
+    },
+    {
+      "bytes": 18401,
+      "git_blob_sha1": "c57b8f85622044892017bc5b3e14a009f28f6a21",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1598-generic_associated_types.md"
+    },
+    {
+      "bytes": 14556,
+      "git_blob_sha1": "f2c05e8a9a4c6d6f71716b4f56ebe06098e6f64d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1607-style-rfcs.md"
+    },
+    {
+      "bytes": 5394,
+      "git_blob_sha1": "baf107787d92230941d90fcadd89e182ccc3a4f5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1618-ergonomic-format-args.md"
+    },
+    {
+      "bytes": 40510,
+      "git_blob_sha1": "e1e80f39a0cc5a12b28ca22393d30d259d7fbafa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1620-regex-1.0.md"
+    },
+    {
+      "bytes": 4501,
+      "git_blob_sha1": "2f3284b3dbd4d290e7df1cd67fa2dd7025551e51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1623-static.md"
+    },
+    {
+      "bytes": 8572,
+      "git_blob_sha1": "02d7f12da3beec80cb08b936135bff38aa45d188",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1624-loop-break-value.md"
+    },
+    {
+      "bytes": 21423,
+      "git_blob_sha1": "27f233693198c858b93298739984290bfca7e78a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1636-document_all_features.md"
+    },
+    {
+      "bytes": 2630,
+      "git_blob_sha1": "bae5e3de6e7939eddf3c7e657f749a887adb0758",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1640-duration-checked-sub.md"
+    },
+    {
+      "bytes": 14836,
+      "git_blob_sha1": "ec40eec56f253ad17c3e545ff09704ae15e073f6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1643-memory-model-strike-team.md"
+    },
+    {
+      "bytes": 18083,
+      "git_blob_sha1": "2ccf5139efc9399c9ba2cbd4ddbe33765e402604",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1644-default-and-expanded-rustc-errors.md"
+    },
+    {
+      "bytes": 2478,
+      "git_blob_sha1": "04af7e237aa0d6513dbba4ace6cdafc3912f168a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1647-allow-self-in-where-clauses.md"
+    },
+    {
+      "bytes": 3646,
+      "git_blob_sha1": "5bdcd68db9a088fab958f8ef9925c1cea976ce8e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1649-atomic-access.md"
+    },
+    {
+      "bytes": 2418,
+      "git_blob_sha1": "9907da65fb611d16015231634d76885eef51d411",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1651-movecell.md"
+    },
+    {
+      "bytes": 2011,
+      "git_blob_sha1": "e9548bb1565455e7947266dea9bff43ccc433e87",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1653-assert_ne.md"
+    },
+    {
+      "bytes": 1934,
+      "git_blob_sha1": "d035c6f507c53dfbbebe9d3d8cff2ecba308753e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1660-try-borrow.md"
+    },
+    {
+      "bytes": 6198,
+      "git_blob_sha1": "82fed65c79067ac22ce9a741aabc50687de31360",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1665-windows-subsystem.md"
+    },
+    {
+      "bytes": 4062,
+      "git_blob_sha1": "d8aaa0eb1a71f9bef7d0b5a46ab566ed1b0bd440",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1679-panic-safe-slicing.md"
+    },
+    {
+      "bytes": 25627,
+      "git_blob_sha1": "24da93a59f36a0e67a5c56b622092442719fe51e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1681-macros-1.1.md"
+    },
+    {
+      "bytes": 9268,
+      "git_blob_sha1": "48b0e4990f8bff96e69d880387620d3a168c43e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1682-field-init-shorthand.md"
+    },
+    {
+      "bytes": 5242,
+      "git_blob_sha1": "4e6a62efd63888110b63265970da4ca6adbbf44f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1683-docs-team.md"
+    },
+    {
+      "bytes": 6025,
+      "git_blob_sha1": "5b7db482618aea0994fb6e46eae20704108155e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1685-deprecate-anonymous-parameters.md"
+    },
+    {
+      "bytes": 2107,
+      "git_blob_sha1": "429c73022abe2b86afd4aafb2dccec375f78b4fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1695-add-error-macro.md"
+    },
+    {
+      "bytes": 6362,
+      "git_blob_sha1": "b3dc2605f429e829a1b140bca7c02e5d3fe6eb5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1696-discriminant.md"
+    },
+    {
+      "bytes": 6389,
+      "git_blob_sha1": "6c55f7d2831ad4e4adcd39f939932c51cf98aeda",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1717-dllimport.md"
+    },
+    {
+      "bytes": 17238,
+      "git_blob_sha1": "01d8b7036a8cd67a05a81627d0998671ac57590e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1721-crt-static.md"
+    },
+    {
+      "bytes": 2114,
+      "git_blob_sha1": "d6155453c69fb339cd035792342bf495d7fb22f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1725-unaligned-access.md"
+    },
+    {
+      "bytes": 24526,
+      "git_blob_sha1": "32ce70368f29f77ca2236f192d826c046c6f8765",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1728-north-star.md"
+    },
+    {
+      "bytes": 15400,
+      "git_blob_sha1": "6d4cf08dc2ae1ea47ab3c3269b34cfd1e8b1af39",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1733-trait-alias.md"
+    },
+    {
+      "bytes": 5796,
+      "git_blob_sha1": "b1e9f751268dd0aaa5c518e0cc7bdb6bf1a74b40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1758-repr-transparent.md"
+    },
+    {
+      "bytes": 30820,
+      "git_blob_sha1": "bcf06409d573d533b92b150fdc97c703bae8d976",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1774-roadmap-2017.md"
+    },
+    {
+      "bytes": 14097,
+      "git_blob_sha1": "0866e7f6324279b6cf253643aaa30cec8efb971d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1789-as-cell.md"
+    },
+    {
+      "bytes": 38901,
+      "git_blob_sha1": "b236334e1354c37074d72b514f1dac3247388901",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1824-crates.io-default-ranking.md"
+    },
+    {
+      "bytes": 4343,
+      "git_blob_sha1": "1d670940cec6d31a78e96566b0497d06409fc11d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1826-change-doc-default-urls.md"
+    },
+    {
+      "bytes": 4623,
+      "git_blob_sha1": "761124a64d5c3339ff6a507aaf18da5e9fe27d35",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1828-rust-bookshelf.md"
+    },
+    {
+      "bytes": 21565,
+      "git_blob_sha1": "de4f1eecc6690a076e113879429e51da8f659e0a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1845-shared-from-slice.md"
+    },
+    {
+      "bytes": 4006,
+      "git_blob_sha1": "288e604259c3039a092e1eda048a5d2888c6a1af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1849-non-static-type-id.md"
+    },
+    {
+      "bytes": 7579,
+      "git_blob_sha1": "a62d380f453461e43d4265ac5ff14397b2787dca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1857-stabilize-drop-order.md"
+    },
+    {
+      "bytes": 19334,
+      "git_blob_sha1": "5110d79bcbdfaba0ea2142750a9cfdd9e60fe403",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1859-try-trait.md"
+    },
+    {
+      "bytes": 5431,
+      "git_blob_sha1": "662aa0db2d37cd777be73a0aaca290b8ae9453b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1860-manually-drop.md"
+    },
+    {
+      "bytes": 7641,
+      "git_blob_sha1": "4bcc04d09fc4158db778bdc01e68b4c663524c15",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1861-extern-types.md"
+    },
+    {
+      "bytes": 3242,
+      "git_blob_sha1": "95d5d5f50ecce7d87892324f54aa8ec2b5a41dd6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1866-more-readable-assert-eq.md"
+    },
+    {
+      "bytes": 27563,
+      "git_blob_sha1": "9e49e81fdddd5fa67b1cbd349398acb252472e81",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1868-portability-lint.md"
+    },
+    {
+      "bytes": 8303,
+      "git_blob_sha1": "4195977c560287ddf9f6c291968b74aa127d7870",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1869-eprintln.md"
+    },
+    {
+      "bytes": 8822,
+      "git_blob_sha1": "da3969d9e5b5d67f3093301f77b751eda8b8421e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1884-unstable-sort.md"
+    },
+    {
+      "bytes": 11539,
+      "git_blob_sha1": "0f02c2f9818c9238b992a97e27a2cc2c26faaef9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1892-uninitialized-uninhabited.md"
+    },
+    {
+      "bytes": 9155,
+      "git_blob_sha1": "310025fc3ebf64347dc788d907981c3b98c5cbc0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1909-unsized-rvalues.md"
+    },
+    {
+      "bytes": 4852,
+      "git_blob_sha1": "736abccff043de2e5612266b326d3c27d356ec90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1925-optional-match-vert.md"
+    },
+    {
+      "bytes": 31384,
+      "git_blob_sha1": "fc35037c4d0b32469fa8567669e3101832288b8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1937-ques-in-main.md"
+    },
+    {
+      "bytes": 4433,
+      "git_blob_sha1": "c26855387c55468d434d82bdbedc724cb731a47f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1940-must-use-functions.md"
+    },
+    {
+      "bytes": 19938,
+      "git_blob_sha1": "16382533794a3b2881981c137bbc1895fea1fe9b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1946-intra-rustdoc-links.md"
+    },
+    {
+      "bytes": 39099,
+      "git_blob_sha1": "61ce807d7455692f5bec44429ee605f58c30d63e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1951-expand-impl-trait.md"
+    },
+    {
+      "bytes": 3595,
+      "git_blob_sha1": "e887dad05f0fd1b89755312a5f77f33cf1e15d6b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1961-clamp.md"
+    },
+    {
+      "bytes": 11713,
+      "git_blob_sha1": "ea787c66ca19cc67ea18d405d7f9ec0b11d96bc0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1966-unsafe-pointer-reform.md"
+    },
+    {
+      "bytes": 17646,
+      "git_blob_sha1": "1cfa73d84c9579b762debc11a82afb0b13a1d080",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1969-cargo-prepublish.md"
+    },
+    {
+      "bytes": 9290,
+      "git_blob_sha1": "3cc8d5e1ae21688d3946e37315b09b8921f768aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1974-global-allocators.md"
+    },
+    {
+      "bytes": 20666,
+      "git_blob_sha1": "b220125d1f0a90b150f50b18c5246f95d77e34e2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1977-public-private-dependencies.md"
+    },
+    {
+      "bytes": 2632,
+      "git_blob_sha1": "2364befc26ec46bb4a748f8343418e7b469dd4f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1983-nursery-deprecation.md"
+    },
+    {
+      "bytes": 11384,
+      "git_blob_sha1": "d9fd8908b03414af42aa3ba1c7bd9370da575e8d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1985-tiered-browser-support.md"
+    },
+    {
+      "bytes": 9263,
+      "git_blob_sha1": "9b735c1a254039c32bd7e80670f24a7c66661361",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/1990-external-doc-attribute.md"
+    },
+    {
+      "bytes": 14087,
+      "git_blob_sha1": "271570add712b9100a87ff4de97a6e29c6da7e77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2000-const-generics.md"
+    },
+    {
+      "bytes": 15783,
+      "git_blob_sha1": "c6cc467005238b5167fbf808f5b00eb602fc6688",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2005-match-ergonomics.md"
+    },
+    {
+      "bytes": 17126,
+      "git_blob_sha1": "26b3199478c0071abae6c7d4d8a72636b3915191",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2008-non-exhaustive.md"
+    },
+    {
+      "bytes": 4225,
+      "git_blob_sha1": "743a9c650032462b7c7ecf29f7247ff7bef8ddec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2011-generic-assert.md"
+    },
+    {
+      "bytes": 34744,
+      "git_blob_sha1": "7e4bb7fb54895827364effb305761988051a01dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2025-nested-method-calls.md"
+    },
+    {
+      "bytes": 4724,
+      "git_blob_sha1": "65d8e80c732add8ae69b0728fa58434769779035",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2027-object_safe_for_dispatch.md"
+    },
+    {
+      "bytes": 22488,
+      "git_blob_sha1": "785dc7b9608f6a1943c617ad290bc34a7bdc553f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2033-experimental-coroutines.md"
+    },
+    {
+      "bytes": 10256,
+      "git_blob_sha1": "44bfa86317edda196d9417bf23e34942dbf987be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2043-is-aligned-intrinsic.md"
+    },
+    {
+      "bytes": 5467,
+      "git_blob_sha1": "2894a6226d9ef1dc8bd0d39c9c5824bf7f0dfae8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2044-license-rfcs.md"
+    },
+    {
+      "bytes": 29091,
+      "git_blob_sha1": "062f00f894ed5d60c8763495b0d4331b4c491299",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2045-target-feature.md"
+    },
+    {
+      "bytes": 5055,
+      "git_blob_sha1": "65237589d3603715dbcb71bc97cc47dc78ea86cc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2046-label-break-value.md"
+    },
+    {
+      "bytes": 30104,
+      "git_blob_sha1": "ad8e014ad53b0cdbcdab5a8c6c9ee7b4c4ce5f92",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2052-epochs.md"
+    },
+    {
+      "bytes": 3372,
+      "git_blob_sha1": "b701aa62828428c1594ccf2eec9db59c4a93ae10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2056-allow-trivial-where-clause-constraints.md"
+    },
+    {
+      "bytes": 3402,
+      "git_blob_sha1": "4b54e0f797fa49cab9d739fc3413e2557e50a493",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2057-refcell-replace.md"
+    },
+    {
+      "bytes": 8093,
+      "git_blob_sha1": "b1a40c70d501e7f47bff6b310cebfd780c4a00e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2070-panic-implementation.md"
+    },
+    {
+      "bytes": 20335,
+      "git_blob_sha1": "a260462861b644826a6b0e1f0aac446626ffaf88",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2071-impl-trait-existential-types.md"
+    },
+    {
+      "bytes": 87,
+      "git_blob_sha1": "f60a5b731c77f5df7e8f3b58c96175698e5dffa8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2071-impl-trait-type-alias.md"
+    },
+    {
+      "bytes": 3015,
+      "git_blob_sha1": "a52c2ee634ca7d0fa6a8c179adb7eda3d1da9652",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2086-allow-if-let-irrefutables.md"
+    },
+    {
+      "bytes": 25349,
+      "git_blob_sha1": "c5e096f2c1b6dec10e4dd385ab952f94fdff87ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2089-implied-bounds.md"
+    },
+    {
+      "bytes": 46751,
+      "git_blob_sha1": "803332edd45ae7c66ba8d84be37eee865befb1ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2091-inline-semantic.md"
+    },
+    {
+      "bytes": 22292,
+      "git_blob_sha1": "76b06807c5b9276695f3de4061b37462e4334b1f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2093-infer-outlives.md"
+    },
+    {
+      "bytes": 83823,
+      "git_blob_sha1": "9df0d65b6ac0bd738bec168f407233e5c4e72723",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2094-nll.md"
+    },
+    {
+      "bytes": 22966,
+      "git_blob_sha1": "3baf81515c5a469f5ef36feb4ffdb6239b928e23",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2102-unnamed-fields.md"
+    },
+    {
+      "bytes": 11661,
+      "git_blob_sha1": "76c5c81092631f0e2c8c5872b897389927b5e767",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2103-tool-attributes.md"
+    },
+    {
+      "bytes": 10240,
+      "git_blob_sha1": "2a5faf7de7ac96ebc9c47d1fe6d14bf7160c0ef6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2113-dyn-trait-syntax.md"
+    },
+    {
+      "bytes": 19034,
+      "git_blob_sha1": "834ebd6e7a0eb6acd20e89c55fe5bc6e54704759",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2115-argument-lifetimes.md"
+    },
+    {
+      "bytes": 32900,
+      "git_blob_sha1": "80e81c1cdcb35c1094f622ed075ed11e1a709e84",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2116-alloc-me-maybe.md"
+    },
+    {
+      "bytes": 6818,
+      "git_blob_sha1": "bbe1c7c6c4508cb5f4bbc355c03cca37f5689594",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2124-option-filter.md"
+    },
+    {
+      "bytes": 28544,
+      "git_blob_sha1": "617c9c49f34a8e95b9d041dcd45aa0369e5e817c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2126-path-clarity.md"
+    },
+    {
+      "bytes": 4857,
+      "git_blob_sha1": "fdbdf3580e4c3954f24e04027285be159e5ad62d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2128-use-nested-groups.md"
+    },
+    {
+      "bytes": 5704,
+      "git_blob_sha1": "f37654298115e6d2749acf84d59b3df5719a7acd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2132-copy-closures.md"
+    },
+    {
+      "bytes": 7035,
+      "git_blob_sha1": "87a7f78df9bcf05a684c10f06a1c7cc855ba5847",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2133-all-the-clones.md"
+    },
+    {
+      "bytes": 27781,
+      "git_blob_sha1": "cd7df14e3402d60b381e9f8272d620caf920a0e1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2136-build-systems.md"
+    },
+    {
+      "bytes": 11772,
+      "git_blob_sha1": "39f28bda00d21c4468637da1340e66bccb96df7e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2137-variadic.md"
+    },
+    {
+      "bytes": 18492,
+      "git_blob_sha1": "7a739680ec23ececc6dcc92e0a3068a0ba8eb240",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2141-alternative-registries.md"
+    },
+    {
+      "bytes": 19896,
+      "git_blob_sha1": "41e355782bb73044abd028914c747046cace0c21",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2145-type-privacy.md"
+    },
+    {
+      "bytes": 7353,
+      "git_blob_sha1": "e145e18448fcdb988900ef789e2d4c324b466c17",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2151-raw-identifiers.md"
+    },
+    {
+      "bytes": 3357,
+      "git_blob_sha1": "3bd3b3f86442a2843c1b7a63a864269ade330a77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2166-impl-only-use.md"
+    },
+    {
+      "bytes": 6588,
+      "git_blob_sha1": "74cccf983ffc6aa72d22494168d213f4b4c8c79b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2169-euclidean-modulo.md"
+    },
+    {
+      "bytes": 10697,
+      "git_blob_sha1": "727aa3ea0aa130c2f68e21279615b36fd98d7cb8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2175-if-while-or-patterns.md"
+    },
+    {
+      "bytes": 18168,
+      "git_blob_sha1": "68edf663f4d26d28f856c9eaff6b03889ab193bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2195-really-tagged-unions.md"
+    },
+    {
+      "bytes": 7197,
+      "git_blob_sha1": "94e694d99b13cc87496979e54f209b4adc9b3b98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2196-metabuild.md"
+    },
+    {
+      "bytes": 6535,
+      "git_blob_sha1": "4cacf8d5169191d81562a3f0e1177e30fe7f3bfe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2203-const-repeat-expr.md"
+    },
+    {
+      "bytes": 5292,
+      "git_blob_sha1": "c71bca153550be4d1e0dd65a60435c97c9a69ea8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2226-fmt-debug-hex.md"
+    },
+    {
+      "bytes": 9994,
+      "git_blob_sha1": "39d704058a2569b41f923b90aebfeb1fa5f74e03",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2229-capture-disjoint-fields.md"
+    },
+    {
+      "bytes": 2742,
+      "git_blob_sha1": "a49b6e59be73df4959da899d80ce7216c6a410d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2230-bury-description.md"
+    },
+    {
+      "bytes": 5418,
+      "git_blob_sha1": "51762e5ec5a954fd823fbd07c478c5602d702863",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2235-libc-struct-traits.md"
+    },
+    {
+      "bytes": 8629,
+      "git_blob_sha1": "68ff353c006785fdd9609e56c68d8d5641cdb17d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2250-finalize-impl-dyn-syntax.md"
+    },
+    {
+      "bytes": 6540,
+      "git_blob_sha1": "6758f6745d042418c0c1a42649da3632b47fd0cc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2282-profile-dependencies.md"
+    },
+    {
+      "bytes": 7279,
+      "git_blob_sha1": "75906292cc323ac095ce59f9903c27f0e1900d4f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2289-associated-type-bounds.md"
+    },
+    {
+      "bytes": 8267,
+      "git_blob_sha1": "0d587f1f7aa5306bc9199e1fb83c45f17b2a1e5c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2294-if-let-guard.md"
+    },
+    {
+      "bytes": 21480,
+      "git_blob_sha1": "1bd471fc63964cece4b8cabfdd2f016726b74a0d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2295-os-str-pattern.md"
+    },
+    {
+      "bytes": 2202,
+      "git_blob_sha1": "0f04d76404ce493c3fe4d8df0b588508e93430a8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2296-option-replace.md"
+    },
+    {
+      "bytes": 6408,
+      "git_blob_sha1": "8c87a48541d2573b5105ac76c9f1283104601e80",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2298-macro-at-most-once-rep.md"
+    },
+    {
+      "bytes": 18620,
+      "git_blob_sha1": "6832e5c743ea0d703cfe610a84ace87af4869583",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2300-self-in-typedefs.md"
+    },
+    {
+      "bytes": 8762,
+      "git_blob_sha1": "177897dd4170010f4de274fa8fc84611625cc23f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2302-tuple-struct-self-ctor.md"
+    },
+    {
+      "bytes": 8298,
+      "git_blob_sha1": "c8e53eba8a2988db8008e64a864906430a9f5aed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2306-convert-id.md"
+    },
+    {
+      "bytes": 8563,
+      "git_blob_sha1": "0a77effb9fef8e12939d0c80795405657a04b577",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2307-concrete-nonzero-types.md"
+    },
+    {
+      "bytes": 33245,
+      "git_blob_sha1": "fa429d4cd9d561b90d8ceca70accf4047c669f44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2314-roadmap-2018.md"
+    },
+    {
+      "bytes": 8755,
+      "git_blob_sha1": "d9340f82d7638643d9be2af678781e5c2d3878b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2316-safe-unsafe-trait-methods.md"
+    },
+    {
+      "bytes": 14209,
+      "git_blob_sha1": "0bf369afe1eda85bae37f7d808fca47607770b08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2318-custom-test-frameworks.md"
+    },
+    {
+      "bytes": 32980,
+      "git_blob_sha1": "092a83d1ab972d8fd82e0efbbba53deb827b62dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2325-stable-simd.md"
+    },
+    {
+      "bytes": 9960,
+      "git_blob_sha1": "df2ed75b98f6776f0194adbae13ffa80db4a30f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2333-prior-art.md"
+    },
+    {
+      "bytes": 4348,
+      "git_blob_sha1": "83f01a81a2fa74f76e6fecb737aa98e543a58727",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2338-type-alias-enum-variants.md"
+    },
+    {
+      "bytes": 2324,
+      "git_blob_sha1": "06f70ce088421d3cd29a5875173e2bbc25c7dfed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2341-const-locals.md"
+    },
+    {
+      "bytes": 3721,
+      "git_blob_sha1": "5893e4ceb036d73603e70149b810c3c53610a1c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2342-const-control-flow.md"
+    },
+    {
+      "bytes": 3622,
+      "git_blob_sha1": "7db2d99b9a0b597e5e5df24f05564ec86e22d7bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2344-const-looping.md"
+    },
+    {
+      "bytes": 4090,
+      "git_blob_sha1": "a717ad58452c13458fea824d2d4bed9e3d727ac1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2345-const-panic.md"
+    },
+    {
+      "bytes": 16800,
+      "git_blob_sha1": "6ca4d35412a1107d9a248dd69085166876449568",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2349-pin.md"
+    },
+    {
+      "bytes": 11968,
+      "git_blob_sha1": "acdfbe360f8ad1b769e8e24d6c750965586c58b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2351-is-sorted.md"
+    },
+    {
+      "bytes": 11943,
+      "git_blob_sha1": "5cad0b4fab7a017b0ca817189ff321857bcb1103",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2359-subslice-pattern-syntax.md"
+    },
+    {
+      "bytes": 10662,
+      "git_blob_sha1": "fdc0b378333e9435aa72f985d1dffd80abda1967",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2360-bench-black-box.md"
+    },
+    {
+      "bytes": 10885,
+      "git_blob_sha1": "ba20ff87a45407cd8a403b319404526962e3dc12",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2361-dbg-macro.md"
+    },
+    {
+      "bytes": 8192,
+      "git_blob_sha1": "3133394a5319ea7ccbcff1277000354566b9b6b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2363-arbitrary-enum-discriminant.md"
+    },
+    {
+      "bytes": 12983,
+      "git_blob_sha1": "68fb2c4f6fed9b4086f4eefc5f0047ccf9979865",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2383-lint-reasons.md"
+    },
+    {
+      "bytes": 8713,
+      "git_blob_sha1": "26a3c92d31325f5702a870b297661f1d1c90d54a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2386-used.md"
+    },
+    {
+      "bytes": 39499,
+      "git_blob_sha1": "c5e46e0a5b77b5d77276ea84deef319717fdc4db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2388-try-expr.md"
+    },
+    {
+      "bytes": 26810,
+      "git_blob_sha1": "ecf07473f2e0a0962952929a9ea7e8909e727667",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2394-async_await.md"
+    },
+    {
+      "bytes": 9844,
+      "git_blob_sha1": "b14cde56822248aab69b0c4048c5cafc849aad70",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2396-target-feature-1.1.md"
+    },
+    {
+      "bytes": 11541,
+      "git_blob_sha1": "b03becbda30cde2bb53d40bc3c5a3fff2e27e89d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2397-do-not-recommend.md"
+    },
+    {
+      "bytes": 8537,
+      "git_blob_sha1": "9deb3508567a9dd25af79c31c70ac0702c8b103a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2412-optimize-attr.md"
+    },
+    {
+      "bytes": 2484,
+      "git_blob_sha1": "860f166070a53d3ccf2f633979a3441aa4c4fbe1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2420-unreserve-proc.md"
+    },
+    {
+      "bytes": 9601,
+      "git_blob_sha1": "c7e8c1d4322432f728bbd698a22740b8f91e801a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2421-unreservations-2018.md"
+    },
+    {
+      "bytes": 5406,
+      "git_blob_sha1": "490e91a28731a757aa866f07e054ce593d35db50",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2436-style-guide.md"
+    },
+    {
+      "bytes": 17240,
+      "git_blob_sha1": "0bbacf3e37cacffdf2ef08ba0ba92aec21bc6645",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2437-rustfmt-stability.md"
+    },
+    {
+      "bytes": 6999,
+      "git_blob_sha1": "2e4ed35ae2d0d28c8aae2550ada58908704aa989",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2438-deny-integer-literal-overflow-lint.md"
+    },
+    {
+      "bytes": 15871,
+      "git_blob_sha1": "aa4652d9b9120c14ba28172b01fc43c8f42491ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2451-re-rebalancing-coherence.md"
+    },
+    {
+      "bytes": 27171,
+      "git_blob_sha1": "18d84c77317376536786186d789251cf35d28d5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2457-non-ascii-idents.md"
+    },
+    {
+      "bytes": 2207,
+      "git_blob_sha1": "909959b28e8ad5a55d9dae1c358e602658bfb1ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2471-lint-test-inner-function.md"
+    },
+    {
+      "bytes": 64700,
+      "git_blob_sha1": "f7cabe1c709d5c1a10e2e5a240ac80287f0ebdcf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2476-clippy-uno.md"
+    },
+    {
+      "bytes": 13406,
+      "git_blob_sha1": "812f3c5b9cbdca5a2266df44458a45d7d32d2c46",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2480-liballoc.md"
+    },
+    {
+      "bytes": 7871,
+      "git_blob_sha1": "cb98f6bc5ad92af3e5276a30935ba99b2aaa908b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2495-min-rust-version.md"
+    },
+    {
+      "bytes": 70554,
+      "git_blob_sha1": "f3acb5d66bb62b43aab76fa538eccfa95d1d6672",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2497-if-let-chains.md"
+    },
+    {
+      "bytes": 65607,
+      "git_blob_sha1": "c30dcb7184895e38a3bb5909b156e34053b9630c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2500-needle.md"
+    },
+    {
+      "bytes": 9576,
+      "git_blob_sha1": "e0634b87ac09acb9e7b1203f6f96bf8363bab61e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2504-fix-error.md"
+    },
+    {
+      "bytes": 2580,
+      "git_blob_sha1": "408153eac2165af79406bde21aaeb162c7272376",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2509-byte-concat.md"
+    },
+    {
+      "bytes": 16859,
+      "git_blob_sha1": "8c4bbd1b3d9e08f7ee6402739d777f833cb6f0a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2514-union-initialization-and-drop.md"
+    },
+    {
+      "bytes": 20259,
+      "git_blob_sha1": "2ce452431bd6d904d7fce9f8f8141e1ffc73517e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2515-type_alias_impl_trait.md"
+    },
+    {
+      "bytes": 7664,
+      "git_blob_sha1": "9597d4d1b61769bd4ea94876e50298003f8f0763",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2521-c_void-reunification.md"
+    },
+    {
+      "bytes": 37087,
+      "git_blob_sha1": "f4839d1fe832d8b32e9e36862264f66d782c84c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2523-cfg-path-version.md"
+    },
+    {
+      "bytes": 4283,
+      "git_blob_sha1": "5919b651aa25b960e4440fc207d217517caec6ca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2526-const-wildcard.md"
+    },
+    {
+      "bytes": 10263,
+      "git_blob_sha1": "aca0efc58782f3faf8705b7b8fc2c5f6362fec94",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2528-type-changing-struct-update-syntax.md"
+    },
+    {
+      "bytes": 52964,
+      "git_blob_sha1": "12caecf54f2fe2e0a6bb32b69aa5cf3ba82586fb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2532-associated-type-defaults.md"
+    },
+    {
+      "bytes": 26612,
+      "git_blob_sha1": "b52d888646118eeb81225c31e73ba0cb0a35297a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2535-or-patterns.md"
+    },
+    {
+      "bytes": 6438,
+      "git_blob_sha1": "444cf9c8dfdab847506c948f29371a64f0dce6df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2539-cfg_attr-multiple-attrs.md"
+    },
+    {
+      "bytes": 8107,
+      "git_blob_sha1": "c0a96a7196f5217ca71a9658caa17c67213b1788",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2561-future-possibilities.md"
+    },
+    {
+      "bytes": 16190,
+      "git_blob_sha1": "6af809a7f115c51fcbcaf891c411e8600e17f197",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2565-formal-function-parameter-attributes.md"
+    },
+    {
+      "bytes": 12751,
+      "git_blob_sha1": "77a0a058a1dabed1b95852536c7a9b440e28365d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2570-linked-list-cursors.md"
+    },
+    {
+      "bytes": 8300,
+      "git_blob_sha1": "39a406e5090292f8065d534f2ea56e7483914e36",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2574-simd-ffi.md"
+    },
+    {
+      "bytes": 14972,
+      "git_blob_sha1": "8b81bb0da91e961be3e6ee8c578cec750e466d62",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2580-ptr-meta.md"
+    },
+    {
+      "bytes": 14610,
+      "git_blob_sha1": "c36f11ebd4b019a8cd16d1ed9d0027c56f2b5953",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2582-raw-reference-mir-operator.md"
+    },
+    {
+      "bytes": 9883,
+      "git_blob_sha1": "d6467d2e838bb9a4bec17f9b042e3fec4563b62a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2585-unsafe-block-in-unsafe-fn.md"
+    },
+    {
+      "bytes": 4876,
+      "git_blob_sha1": "4f8f7b6c855482c95710c94edb3b0f19248a3c5c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2591-exhaustive-integer-pattern-matching.md"
+    },
+    {
+      "bytes": 30384,
+      "git_blob_sha1": "5979ed678945a5ce75e6cda06d1d376a8a0c20d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2592-futures.md"
+    },
+    {
+      "bytes": 48061,
+      "git_blob_sha1": "1cb8ed946705143f932aa309a464dcbd62a913cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2603-rust-symbol-name-mangling-v0.md"
+    },
+    {
+      "bytes": 8204,
+      "git_blob_sha1": "8d7bea7c17d17682d39db9cd014bd481721a8316",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2627-raw-dylib-kind.md"
+    },
+    {
+      "bytes": 12202,
+      "git_blob_sha1": "b30209a1d61c30494c05cd513be721fcf39705f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2645-transparent-unions.md"
+    },
+    {
+      "bytes": 17894,
+      "git_blob_sha1": "2a6290ca5fafb76f01c783281cbf3853aa70e831",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2657-roadmap-2019.md"
+    },
+    {
+      "bytes": 11868,
+      "git_blob_sha1": "96fd32f0f22c0216c2bbd77ba62f85227d7ab188",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2678-named-custom-cargo-profiles.md"
+    },
+    {
+      "bytes": 16704,
+      "git_blob_sha1": "0d07d02e593d00640daf5968c276aa59e93d2987",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2689-compiler-team-contributors.md"
+    },
+    {
+      "bytes": 9165,
+      "git_blob_sha1": "8df5f80a7a06527479541b57e1c561cfc38ca834",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2696-debug-map-key-value.md"
+    },
+    {
+      "bytes": 17860,
+      "git_blob_sha1": "2f57864b4ea2224352abb4b48a1dbe6a7b787341",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2700-associated-constants-on-ints.md"
+    },
+    {
+      "bytes": 2970,
+      "git_blob_sha1": "493fd348dc84e5b7fc53a608f429306dd7556ed2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2707-dotdot-patterns.md"
+    },
+    {
+      "bytes": 8410,
+      "git_blob_sha1": "bb6948682188c487eb49ab30e6d11f9f28c04090",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2730-cargo-token-from-process.md"
+    },
+    {
+      "bytes": 18202,
+      "git_blob_sha1": "827327f6b32b09325aa5a1df35d0c2e79da187c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2788-standard-lazy-types.md"
+    },
+    {
+      "bytes": 14189,
+      "git_blob_sha1": "13aa864b6306ae7f011343501286d0ca32cd5a9a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2789-sparse-index.md"
+    },
+    {
+      "bytes": 29693,
+      "git_blob_sha1": "3fa7fe8042e652737089d646029a8b38f19f9d89",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2795-format-args-implicit-identifiers.md"
+    },
+    {
+      "bytes": 9652,
+      "git_blob_sha1": "4f52052c66093eae76be11179223d078d3bcf3aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2797-project-ffi-unwind.md"
+    },
+    {
+      "bytes": 47466,
+      "git_blob_sha1": "29bac54d25427bf78fda7474fee9375f78c57ad9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2803-target-tier-policy.md"
+    },
+    {
+      "bytes": 2866,
+      "git_blob_sha1": "5c01cc71710843f2e1d0fc2436a9fdb22d3e583c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2832-core-net-types.md"
+    },
+    {
+      "bytes": 33628,
+      "git_blob_sha1": "cd56bc4d449a903f6f0a3fe6b124b58a001963ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2834-cargo-report-future-incompat.md"
+    },
+    {
+      "bytes": 4861,
+      "git_blob_sha1": "724f05a086c18aef55dbd038f257240237a07ddc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2835-project-safe-transmute.md"
+    },
+    {
+      "bytes": 2475,
+      "git_blob_sha1": "e7ee9af200a4e083863e38ac94258bcbb67f68c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2836-project-asm.md"
+    },
+    {
+      "bytes": 5305,
+      "git_blob_sha1": "392e9a74e73c0c199a04af39731eccb461b13dc4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2837-demote-apple-32bit.md"
+    },
+    {
+      "bytes": 5374,
+      "git_blob_sha1": "343f46e947d390a800d00261ed65397cdf0a4dc2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2841-export-executable-symbols.md"
+    },
+    {
+      "bytes": 3293,
+      "git_blob_sha1": "6c432f9075ffba8214ab98b36e7d9eb05cb3a417",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2843-llvm-asm.md"
+    },
+    {
+      "bytes": 18690,
+      "git_blob_sha1": "d2b415f3abb2be986d93371aed325c167b3dc863",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2845-supertrait-item-shadowing.md"
+    },
+    {
+      "bytes": 15422,
+      "git_blob_sha1": "771eec7afa6faf12238098394eeb344df3074d84",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2856-project-groups.md"
+    },
+    {
+      "bytes": 17772,
+      "git_blob_sha1": "74f5f7d7b6038f3a0ee4ac5937d71ce123349b49",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2857-roadmap-2020.md"
+    },
+    {
+      "bytes": 15870,
+      "git_blob_sha1": "c3c35f964e077cc2b3206307f941e3b221a5200f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2867-isa-attribute.md"
+    },
+    {
+      "bytes": 6737,
+      "git_blob_sha1": "59677f380777f839b03f2c59dce8373edd1fd979",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2872-github-access-policy.md"
+    },
+    {
+      "bytes": 62318,
+      "git_blob_sha1": "971931b162725786af243259cb722343d2683e33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2873-inline-asm.md"
+    },
+    {
+      "bytes": 15961,
+      "git_blob_sha1": "e4f0b212de4a5e6cbff272350755e791cb0b6347",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2904-compiler-major-change-process.md"
+    },
+    {
+      "bytes": 25281,
+      "git_blob_sha1": "fbfb2484cfac943816db2a1bb6a3e2e82da28ea7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2906-cargo-workspace-deduplicate.md"
+    },
+    {
+      "bytes": 15436,
+      "git_blob_sha1": "3c5deadbf1a98154f6ef9fb710dd312271732df8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2909-destructuring-assignment.md"
+    },
+    {
+      "bytes": 17671,
+      "git_blob_sha1": "922416cfa94adfdf41050cf13e47a118427ed67a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2912-rust-analyzer.md"
+    },
+    {
+      "bytes": 10760,
+      "git_blob_sha1": "46c87e3ed32bb87a4f2a64553537bc92fda5e4ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2920-inline-const.md"
+    },
+    {
+      "bytes": 26368,
+      "git_blob_sha1": "9696a3c4a220366fafbfb47a2c513280452f378c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2930-read-buf.md"
+    },
+    {
+      "bytes": 25994,
+      "git_blob_sha1": "0e8ef592c4c51f53a5f87c5a90c536662c155a43",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2945-c-unwind-abi.md"
+    },
+    {
+      "bytes": 9287,
+      "git_blob_sha1": "e68ddf8d2ff62e211f58d70753686053546e1370",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2947-crates-io-token-scopes.md"
+    },
+    {
+      "bytes": 10383,
+      "git_blob_sha1": "721c28763141cc82f35492eac053065f5b007481",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2951-native-link-modifiers.md"
+    },
+    {
+      "bytes": 27271,
+      "git_blob_sha1": "728dba434e814cf3faf8387745b1f71cb7659a13",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2957-cargo-features2.md"
+    },
+    {
+      "bytes": 11846,
+      "git_blob_sha1": "4ec6e7d39dfc483a5c809dc9ad8ea9992b8c73aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2959-promote-aarch64-unknown-linux-gnu-to-tier1.md"
+    },
+    {
+      "bytes": 46174,
+      "git_blob_sha1": "d0726453c70e18aaac3bacb3c18f64ecf43ba0f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2963-rustdoc-json.md"
+    },
+    {
+      "bytes": 7299,
+      "git_blob_sha1": "14a8a2ffbcfdb7e0b01f4641bb6d48d381ec6119",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2965-project-error-handling.md"
+    },
+    {
+      "bytes": 10113,
+      "git_blob_sha1": "94d015a58674c1e4329bdffb165f006df334404d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2972-constrained-naked.md"
+    },
+    {
+      "bytes": 3875,
+      "git_blob_sha1": "63ea407b63e58d860b4c44d4e1742766aa696f04",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2977-stdsimd.md"
+    },
+    {
+      "bytes": 3661,
+      "git_blob_sha1": "fb0a34655ad046ade8054df9a5b83e29046f5de9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2992-cfg-target-abi.md"
+    },
+    {
+      "bytes": 33578,
+      "git_blob_sha1": "b016f3bf20e7374236e7b3ac4859a218b659381e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/2996-async-iterator.md"
+    },
+    {
+      "bytes": 9083,
+      "git_blob_sha1": "3da02941ae268725ba4eecc95db8bf98584f4e9c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3007-panic-plan.md"
+    },
+    {
+      "bytes": 25663,
+      "git_blob_sha1": "141536a212224e2a9a43fdf713c68e832150dcdc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3013-conditional-compilation-checking.md"
+    },
+    {
+      "bytes": 8820,
+      "git_blob_sha1": "15f9117644e213e2ac57ec2b8d177de7f26ec0d0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3014-must-not-suspend-lint.md"
+    },
+    {
+      "bytes": 7968,
+      "git_blob_sha1": "8490eb678a7ffdad12605bd5e2c5c3517a7d2f33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3016-const-ub.md"
+    },
+    {
+      "bytes": 15096,
+      "git_blob_sha1": "3fdc0722f7f5abeda7f376c1bed8a7bc64e2f508",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3027-infallible-promotion.md"
+    },
+    {
+      "bytes": 21145,
+      "git_blob_sha1": "ee3ae4337cd0efb7d9e0298c6c270815d4f09438",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3028-cargo-binary-dependencies.md"
+    },
+    {
+      "bytes": 14860,
+      "git_blob_sha1": "1c8eff9082f4f9595dd9a9ef6f70da7ecdd1dfb5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3037-roadmap-2021.md"
+    },
+    {
+      "bytes": 5858,
+      "git_blob_sha1": "25f36c77b0be1bbf5ca916fc61103d2585c33d86",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3052-optional-authors-field.md"
+    },
+    {
+      "bytes": 63858,
+      "git_blob_sha1": "5de69a885222f93dabcf4e1709a90621e6874fe2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3058-try-trait-v2.md"
+    },
+    {
+      "bytes": 29437,
+      "git_blob_sha1": "fc8bfee72e5e4acd2ab53628d065b1c07869bd05",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3085-edition-2021.md"
+    },
+    {
+      "bytes": 15280,
+      "git_blob_sha1": "ab57cf369dad2a6b8dec8bddf31c70bb9ba9c043",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3086-macro-metavar-expr.md"
+    },
+    {
+      "bytes": 12383,
+      "git_blob_sha1": "21eed36284a5d627f77188fa54901e4210bfeeb8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3101-reserved_prefixes.md"
+    },
+    {
+      "bytes": 10855,
+      "git_blob_sha1": "2dfba82461eedcf94ab03429f01e4920543cbebe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3107-derive-default-enum.md"
+    },
+    {
+      "bytes": 10827,
+      "git_blob_sha1": "701bc666d655614a55fec3c94a628a9620fca5b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3114-prelude-2021.md"
+    },
+    {
+      "bytes": 13350,
+      "git_blob_sha1": "3965c06bedeefd6971920ddfe6bdfd679e46d7f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3119-rust-crate-ownership.md"
+    },
+    {
+      "bytes": 10501,
+      "git_blob_sha1": "03c48822bf5d6864d207e9843213f5cb84d282fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3123-rustdoc-scrape-examples.md"
+    },
+    {
+      "bytes": 23090,
+      "git_blob_sha1": "97fca5b966b92ca3a63a0a2c336b8b4b258857c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3127-trim-paths.md"
+    },
+    {
+      "bytes": 21729,
+      "git_blob_sha1": "1993aa01e2943887355e7c3b2e575d68987de436",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3128-io-safety.md"
+    },
+    {
+      "bytes": 27950,
+      "git_blob_sha1": "efffed1e033b358596b6b5757042ca69721816ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3137-let-else.md"
+    },
+    {
+      "bytes": 10678,
+      "git_blob_sha1": "2392a02ee34baa74149944b4fa5e291522108851",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3139-cargo-alternative-registry-auth.md"
+    },
+    {
+      "bytes": 15843,
+      "git_blob_sha1": "f4af02ef2ca53e44f958591ce76d9628b41e2093",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3143-cargo-weak-namespaced-features.md"
+    },
+    {
+      "bytes": 2655,
+      "git_blob_sha1": "cedaf70b855b0ff172c1f175023fc9c136ae3584",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3148-option-result-map-or-default.md"
+    },
+    {
+      "bytes": 9822,
+      "git_blob_sha1": "2e194b5a8a6b993f1904e0a360b6430b16aa3984",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3151-scoped-threads.md"
+    },
+    {
+      "bytes": 13907,
+      "git_blob_sha1": "f2f6e6f3e8be6484dadaf3e0460034645aaea963",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3173-float-next-up-down.md"
+    },
+    {
+      "bytes": 9254,
+      "git_blob_sha1": "9cd895130bc782c3b5f8166c3cb563e5f0c449be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3176-cargo-multi-dep-artifacts.md"
+    },
+    {
+      "bytes": 6447,
+      "git_blob_sha1": "a7874761b5633f74ff45c279776dd8ef476eda28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3180-cargo-cli-crate-type.md"
+    },
+    {
+      "bytes": 12612,
+      "git_blob_sha1": "5da9adcf86b6a35d0224b373aab3067f0a94afae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3184-thread-local-cell-methods.md"
+    },
+    {
+      "bytes": 11059,
+      "git_blob_sha1": "164992365f9289b9320a7b4d406fd736c1b7ec13",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3185-static-async-fn-in-trait.md"
+    },
+    {
+      "bytes": 29873,
+      "git_blob_sha1": "b5a586ae088dd6ca2ae5173e04496ade0890e5ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3191-debugger-visualizer.md"
+    },
+    {
+      "bytes": 22200,
+      "git_blob_sha1": "6a78c524ddf5365f0cc470992fd1fcf47224b4e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3192-dyno.md"
+    },
+    {
+      "bytes": 17594,
+      "git_blob_sha1": "dfa68ea098f2e04e8bace39793b1cd712991f42f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3216-closure-lifetime-binder.md"
+    },
+    {
+      "bytes": 2968,
+      "git_blob_sha1": "4ba7b63452a2a03ee692df5cecba7d1161e0a509",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3228-process-process_group.md"
+    },
+    {
+      "bytes": 34274,
+      "git_blob_sha1": "8d56cab33a82d6438db9f062c668fb1476fbdff6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3231-cargo-asymmetric-tokens.md"
+    },
+    {
+      "bytes": 4624,
+      "git_blob_sha1": "11dac477519950a2eef20ee268ca920311f92f58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3239-cfg-target.md"
+    },
+    {
+      "bytes": 19239,
+      "git_blob_sha1": "f2e9908fbc407fb66c00c96d1584dff68c23248c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3243-packages-as-optional-namespaces.md"
+    },
+    {
+      "bytes": 24917,
+      "git_blob_sha1": "8d4072d0a9056d1d842e3311678651221d73fd62",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3245-refined-impls.md"
+    },
+    {
+      "bytes": 16961,
+      "git_blob_sha1": "184c3864a1bce1f8b2ca0a9c821a71eded95c6cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3254-types-team.md"
+    },
+    {
+      "bytes": 13188,
+      "git_blob_sha1": "08f9dfaf3cc0b48f2b93a68cde955368acd76914",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3262-compiler-team-rolling-leads.md"
+    },
+    {
+      "bytes": 7209,
+      "git_blob_sha1": "abd7ccae62b2b78ab8761c4795a1a9c7ec040f55",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3289-source_replacement_ambiguity.md"
+    },
+    {
+      "bytes": 8568,
+      "git_blob_sha1": "c3ce8e26b839cdbab3d98c0fd75c80fcf0cfe489",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3307-de-rfc-type-ascription.md"
+    },
+    {
+      "bytes": 25511,
+      "git_blob_sha1": "df29ebc73180b65467a612dd7fad8a831310d741",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3308-offset_of.md"
+    },
+    {
+      "bytes": 8317,
+      "git_blob_sha1": "bdfa630cb52c62b471918bbbe43d83f1bd202ed1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3309-style-team.md"
+    },
+    {
+      "bytes": 22657,
+      "git_blob_sha1": "9ac1a95a0b24693a7d7b4af2f1564a85156860ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3323-restrictions.md"
+    },
+    {
+      "bytes": 19107,
+      "git_blob_sha1": "06b1e0f7e12ae858bc6b60973a9f8481d2e3aae6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3324-dyn-upcasting.md"
+    },
+    {
+      "bytes": 9797,
+      "git_blob_sha1": "7470c2b42945dfe2e17279f1f4f3dde881ff08d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3325-unsafe-attributes.md"
+    },
+    {
+      "bytes": 8042,
+      "git_blob_sha1": "ecece0ccc734e58cd83d322b8bb5cd329f97a014",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3327-lang-team-advisors.md"
+    },
+    {
+      "bytes": 19791,
+      "git_blob_sha1": "4059850ce389500f3d8bb3efbdb7220bd4e2806d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3336-maybe-dangling.md"
+    },
+    {
+      "bytes": 6606,
+      "git_blob_sha1": "efd2736d27975539f1a61cdf9396e3430346d729",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3338-style-evolution.md"
+    },
+    {
+      "bytes": 11051,
+      "git_blob_sha1": "81c98211829dab20c4a5500603c04045ea14222e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3346-t-opsem.md"
+    },
+    {
+      "bytes": 7710,
+      "git_blob_sha1": "18b748c65cc58b6042bdc9145eea32f6d4c51a97",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3348-c-str-literal.md"
+    },
+    {
+      "bytes": 6475,
+      "git_blob_sha1": "472c3a0dd4020d9c39c0d5aa2aeff46c16346258",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3349-mixed-utf8-literals.md"
+    },
+    {
+      "bytes": 12043,
+      "git_blob_sha1": "2815f39825657efbf4b56d53540586efbccb88e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3355-rust-spec.md"
+    },
+    {
+      "bytes": 14382,
+      "git_blob_sha1": "ac628d49ac2fc0997473d693fd419ca9f9aae647",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3368-diagnostic-attribute-namespace.md"
+    },
+    {
+      "bytes": 3784,
+      "git_blob_sha1": "58bc061ac0b7d069419779f0496e9fe6cf87f63b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3373-avoid-nonlocal-definitions-in-fns.md"
+    },
+    {
+      "bytes": 24060,
+      "git_blob_sha1": "13119f7520801c4cc6ac38c44c9c5f735da40e75",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3389-manifest-lint.md"
+    },
+    {
+      "bytes": 4593,
+      "git_blob_sha1": "2532d63c9d8d0f793106e060f7ee12c79cbacc7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3391-result_ffi_guarantees.md"
+    },
+    {
+      "bytes": 86026,
+      "git_blob_sha1": "f0f64e075e86a5cc292b4616c35e6ef4b856c148",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council.md"
+    },
+    {
+      "bytes": 16159,
+      "git_blob_sha1": "4814be931bd96a242cd2c03baef92179ddb58d4a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/Leadership-Council-RFCja.md"
+    },
+    {
+      "bytes": 14063,
+      "git_blob_sha1": "7932e7d78a31ac0253679f3a013159b0649e3db3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/Leadership-Council-RFCko.md"
+    },
+    {
+      "bytes": 21576,
+      "git_blob_sha1": "8b090274ee02c2ba18b693e0d4e22ad4f46e1207",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/Leadership-Council-RFCru-RU.md"
+    },
+    {
+      "bytes": 11757,
+      "git_blob_sha1": "f7914bb0c5992aa3aa8dda6c693701f106b2d1f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/Leadership-Council-RFCzh-Hans.md"
+    },
+    {
+      "bytes": 11793,
+      "git_blob_sha1": "bcccbb10228b75dff02f339fd645109fd62f9133",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/Leadership-Council-RFCzh-Hant.md"
+    },
+    {
+      "bytes": 12948,
+      "git_blob_sha1": "21a654a9cf2570c6c7c12243ffee140d6cd980fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/alternatives.md"
+    },
+    {
+      "bytes": 9519,
+      "git_blob_sha1": "85643991c2dae7bd8124b0306371a7c251995b4b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/initial-work-of-the-council.md"
+    },
+    {
+      "bytes": 4523,
+      "git_blob_sha1": "4c4a05da5bc45cf3eb41bf8622b7fe44d662b1eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/motivation.md"
+    },
+    {
+      "bytes": 2616,
+      "git_blob_sha1": "22b8a05ce3e51f3717fbda12d8ca7ffb3b6ba33b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3392-leadership-council/non-goals.md"
+    },
+    {
+      "bytes": 7469,
+      "git_blob_sha1": "0f5105ba437f391bcc4ea5ef03de572913f10ece",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3399-cfg-attribute-in-where.md"
+    },
+    {
+      "bytes": 6770,
+      "git_blob_sha1": "fd72a8c8a30c07eb593b2fb3dd93c99b5a83cce6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3416-feature-metadata.md"
+    },
+    {
+      "bytes": 25181,
+      "git_blob_sha1": "8ffada13a6bfa3111e8f3531d8c141d981748b69",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3424-cargo-script.md"
+    },
+    {
+      "bytes": 34133,
+      "git_blob_sha1": "32b29db28fa67f38272ed8931e015811e41cc5ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3425-return-position-impl-trait-in-traits.md"
+    },
+    {
+      "bytes": 11284,
+      "git_blob_sha1": "7e74aa59c4aefe2ff416d78ffd7eb597ae96b9c8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3453-f16-and-f128.md"
+    },
+    {
+      "bytes": 7323,
+      "git_blob_sha1": "ff1ff07649a1bd6f9f08b74cbb2935c88a61ad78",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3455-t-test.md"
+    },
+    {
+      "bytes": 42805,
+      "git_blob_sha1": "4d9bc5b975d54327ae41df16bbab8bdf729893c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3458-unsafe-fields.md"
+    },
+    {
+      "bytes": 14389,
+      "git_blob_sha1": "c962ac4a341dfcbd7245698d6ecef4765949ef80",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3463-crates-io-policy-update.md"
+    },
+    {
+      "bytes": 28042,
+      "git_blob_sha1": "e39fc7f9485a2c6da5077ae1f1125a9b61bbe9f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3467-unsafe-pinned.md"
+    },
+    {
+      "bytes": 4935,
+      "git_blob_sha1": "d4f149f5bff82093a214bedd044cc50e5001c459",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3477-cargo-check-lang-policy.md"
+    },
+    {
+      "bytes": 19814,
+      "git_blob_sha1": "507ffab16ff96ab86099e96236729b920976c2bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3484-unsafe-extern-blocks.md"
+    },
+    {
+      "bytes": 9132,
+      "git_blob_sha1": "7e04a5d40a57979546f49926625e5abe491718b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3485-feature-documentation.md"
+    },
+    {
+      "bytes": 5815,
+      "git_blob_sha1": "5164e8e7a8cf835200c9c44c303b895bac0c9fbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3491-remove-implicit-features.md"
+    },
+    {
+      "bytes": 14533,
+      "git_blob_sha1": "9e3c19444f9db0c6a809ca98b3c3adaecb65d858",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3493-precise-pre-release-cargo-update.md"
+    },
+    {
+      "bytes": 40730,
+      "git_blob_sha1": "09f75c94390b974a1f43661ad80f7318772c7a22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3498-lifetime-capture-rules-2024.md"
+    },
+    {
+      "bytes": 6105,
+      "git_blob_sha1": "4954eb5741b70fc43cfa5d0e3b5c622b0171c2cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3501-edition-2024.md"
+    },
+    {
+      "bytes": 55745,
+      "git_blob_sha1": "4e47ea388af217f2fd532b942716d3a86abc01e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3502-cargo-script.md"
+    },
+    {
+      "bytes": 26429,
+      "git_blob_sha1": "fa909c2b0bf971c7517506a3dcdaec6769d77755",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3503-frontmatter.md"
+    },
+    {
+      "bytes": 6313,
+      "git_blob_sha1": "eb4e20da28ddd4d758a5e5d05e9bee3029d6061a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3509-prelude-2024-future.md"
+    },
+    {
+      "bytes": 28905,
+      "git_blob_sha1": "4f7732acf16f6eb85ec056ccb0ff31a6cedf2a2b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3513-gen-blocks.md"
+    },
+    {
+      "bytes": 35132,
+      "git_blob_sha1": "7a4e8b1aabca4c3f816a73b56c5db3981ddfb595",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3514-float-semantics.md"
+    },
+    {
+      "bytes": 21994,
+      "git_blob_sha1": "ee936e27099373f2ba55fba800bec3e795cdb7af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3516-public-private-dependencies.md"
+    },
+    {
+      "bytes": 40751,
+      "git_blob_sha1": "ef9fd1ba305247ad8d1503510ac279fbff7b1f06",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3519-arbitrary-self-types-v2.md"
+    },
+    {
+      "bytes": 21157,
+      "git_blob_sha1": "5b528906ccb96f5ba6fdaa1dec23e646cebcedc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3529-cargo-path-bases.md"
+    },
+    {
+      "bytes": 9960,
+      "git_blob_sha1": "6decbb4b6b2cf4a9adb3ce577d2829c61c0a9e06",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3531-macro-fragment-policy.md"
+    },
+    {
+      "bytes": 5578,
+      "git_blob_sha1": "18355fb0ad0ddc2826b02fdd9fefddacd8bda0b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3533-combine-infra-and-release-teams.md"
+    },
+    {
+      "bytes": 23307,
+      "git_blob_sha1": "6bb8163ca4a1887f37d05790b97adccfe7fc2d4a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3535-constants-in-patterns.md"
+    },
+    {
+      "bytes": 74731,
+      "git_blob_sha1": "e9a129f353836a581d153d6255c37b76a60532b2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3537-msrv-resolver.md"
+    },
+    {
+      "bytes": 16778,
+      "git_blob_sha1": "b4110a95079b3ab67957089985cf507f19d3e519",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3543-patchable-function-entry.md"
+    },
+    {
+      "bytes": 27618,
+      "git_blob_sha1": "0a6ad4893aacbd68a123f5fcd661ee6280fdeb92",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3550-new-range.md"
+    },
+    {
+      "bytes": 8594,
+      "git_blob_sha1": "3e462a9383fba99bef6b538faaeb99b0a8f018f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3558-libtest-json.md"
+    },
+    {
+      "bytes": 30455,
+      "git_blob_sha1": "011bcb6694b92fd97e6d029043b42e72d04dc260",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3559-rust-has-provenance.md"
+    },
+    {
+      "bytes": 12037,
+      "git_blob_sha1": "2f156bc5fccf8df4517815fdf4e4165ea9270ded",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3591-import-trait-associated-functions.md"
+    },
+    {
+      "bytes": 5045,
+      "git_blob_sha1": "28e93c39b8062d8821c2d4b8b1e261ec03c03412",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3593-unprefixed-guarded-strings.md"
+    },
+    {
+      "bytes": 7107,
+      "git_blob_sha1": "57bf060efa44f70d6ebc8ac55cddec88e70abd3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3595-move-crates-io-team-under-dev-tools.md"
+    },
+    {
+      "bytes": 21998,
+      "git_blob_sha1": "1355919b7889eb4431d5a53e4b7cc44500834d1a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3599-compiler-team-reorganisation.md"
+    },
+    {
+      "bytes": 7122,
+      "git_blob_sha1": "2370118183d58a517c82177ffc7b7b5a1dd241dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3606-temporary-lifetimes-in-tail-expressions.md"
+    },
+    {
+      "bytes": 18203,
+      "git_blob_sha1": "ea3ecadd6d341e34b0a88846213cc50823ebb0e4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3614-project-goals.md"
+    },
+    {
+      "bytes": 49203,
+      "git_blob_sha1": "654b31fce51bb02761b77724ba98d633acaf40ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3617-precise-capturing.md"
+    },
+    {
+      "bytes": 33935,
+      "git_blob_sha1": "7512455c3bd811a349dbc9ba950b34db796d566d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3621-derive-smart-pointer.md"
+    },
+    {
+      "bytes": 5748,
+      "git_blob_sha1": "7a8dff65213829810ceb360e7883a1f09661a2dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3624-supertrait-item-shadowing-v2.md"
+    },
+    {
+      "bytes": 19002,
+      "git_blob_sha1": "2013552895547a11f29f9c1bfa1d2361c2aa5864",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3627-match-ergonomics-2024.md"
+    },
+    {
+      "bytes": 14466,
+      "git_blob_sha1": "b6001bcbb41f44da9f9f14e8671235b0d7c07df4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3631-rustdoc-cfgs-handling.md"
+    },
+    {
+      "bytes": 16191,
+      "git_blob_sha1": "8ff0b241cd06b40519cca84f2df524595f94b074",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3637-guard-patterns.md"
+    },
+    {
+      "bytes": 6231,
+      "git_blob_sha1": "90a1aeeeaf29ed5c76c140d1c51ace6c83b61647",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3641-export-function-ordinals.md"
+    },
+    {
+      "bytes": 11110,
+      "git_blob_sha1": "d973c2883a92477c5bb61695d58dc9f0732bdae2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3642-thread-spawn-hook.md"
+    },
+    {
+      "bytes": 4138,
+      "git_blob_sha1": "d1cc1980be795493a25de7c8178b279b465721ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3646-remove-crate-transfer-mediation-policy.md"
+    },
+    {
+      "bytes": 60639,
+      "git_blob_sha1": "062a29aa2ee789143f28e8fb109dd7190dce5023",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3654-return-type-notation.md"
+    },
+    {
+      "bytes": 6766,
+      "git_blob_sha1": "14ef88fe09981a952d1b8286985f177baaf62c7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3660-crates-io-crate-deletions.md"
+    },
+    {
+      "bytes": 32697,
+      "git_blob_sha1": "5f72951175f13b759ad6f71f1f6b045581ac7cf9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3662-mergeable-rustdoc-cross-crate-info.md"
+    },
+    {
+      "bytes": 36672,
+      "git_blob_sha1": "dd0be6eee2429f93c80a3bc40e8f816f7c7b2edd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3668-async-closures.md"
+    },
+    {
+      "bytes": 5936,
+      "git_blob_sha1": "71893ffe987f9fef63f66e247a7acaabc1bf6033",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3671-promote-aarch64-apple-darwin-to-tier-1.md"
+    },
+    {
+      "bytes": 53844,
+      "git_blob_sha1": "2cdc25d41216ff9d68f8c441b285a53ec3c7ac6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3672-Project-Goals-2024h2.md"
+    },
+    {
+      "bytes": 8539,
+      "git_blob_sha1": "297ae0f9f30c1b2035b17948b41ae5501dc5f3a0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3673-rustdoc-types-maintainers.md"
+    },
+    {
+      "bytes": 8786,
+      "git_blob_sha1": "2df3ab525233150131885b00fe0afb48a3155c68",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3678-final.md"
+    },
+    {
+      "bytes": 61101,
+      "git_blob_sha1": "3f6d9f9d65254e33ecd4e5552961222f062541c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3681-default-field-values.md"
+    },
+    {
+      "bytes": 26339,
+      "git_blob_sha1": "469e9f7675abe4f6ac1b69885b189988ea82b5f6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3691-trusted-publishing-cratesio.md"
+    },
+    {
+      "bytes": 12315,
+      "git_blob_sha1": "50eb111909e4575a5af12df4d213ac2a4d899d78",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3692-feature-unification.md"
+    },
+    {
+      "bytes": 3618,
+      "git_blob_sha1": "c879794576db7d69338bccede980dfafa74d7e67",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3695-cfg-boolean-literals.md"
+    },
+    {
+      "bytes": 11403,
+      "git_blob_sha1": "f79884074fba9adb0d1bb01b4ef661e449d7e91e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3697-declarative-attribute-macros.md"
+    },
+    {
+      "bytes": 13830,
+      "git_blob_sha1": "27bc382c54ea3cf09473b85776d8f027f754f7b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3698-declarative-derive-macros.md"
+    },
+    {
+      "bytes": 25016,
+      "git_blob_sha1": "021a657c9e63672a049d80aee8d2d35b09677bbf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3716-target-modifiers.md"
+    },
+    {
+      "bytes": 28826,
+      "git_blob_sha1": "9adec3ce1d07944ff1d6b6debfaa364eedf52f3e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3721-homogeneous-try-blocks.md"
+    },
+    {
+      "bytes": 3610,
+      "git_blob_sha1": "22f42690eac6532fc7fd263e1a961c2550503e37",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3722-explicit-extern-abis.md"
+    },
+    {
+      "bytes": 74565,
+      "git_blob_sha1": "62562777c51f65cf340e457f2a056262ed4107a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3764-Project-Goals-2025h1.md"
+    },
+    {
+      "bytes": 11571,
+      "git_blob_sha1": "b246a75c8caf5cc6e9bb13e7073e1cc75a560991",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3771-demote-i686-pc-windows-gnu.md"
+    },
+    {
+      "bytes": 8166,
+      "git_blob_sha1": "b721312ebae320b025a68f5fb3cefd5e885fb626",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3772-build-target-edition.md"
+    },
+    {
+      "bytes": 13922,
+      "git_blob_sha1": "680a9c6094891fa3a4ca8f92230ab491fe4ace6d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3791-crate-attr.md"
+    },
+    {
+      "bytes": 25652,
+      "git_blob_sha1": "8a91beb299dd59e010d4bb0c833a6d60e936819d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3808-register-tool.md"
+    },
+    {
+      "bytes": 20215,
+      "git_blob_sha1": "39e1f69e7aa39ffefb17fbd72d8a436d3b5f4e6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3809-derive-from.md"
+    },
+    {
+      "bytes": 11201,
+      "git_blob_sha1": "a7a9d7dd79feffd07907c26e655122edcf884c77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3817-promote-aarch64-pc-windows-msvc-to-tier-1.md"
+    },
+    {
+      "bytes": 44293,
+      "git_blob_sha1": "4237691c186badab5d29d5074f8d738ff3e8f99d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3834-export-visibility.md"
+    },
+    {
+      "bytes": 7522,
+      "git_blob_sha1": "27f53a8be1d7e9428f2a95082e8897806b501bc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3841-demote-x86_64-apple-darwin.md"
+    },
+    {
+      "bytes": 32421,
+      "git_blob_sha1": "fb5d99670678b112e12e446898dca0889847a5e2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3848-asm-const-ptr.md"
+    },
+    {
+      "bytes": 89139,
+      "git_blob_sha1": "ad9c56d9bce8348840b795b10000d9b1db5ccb4d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3849-Project-Goals-2025h2.md"
+    },
+    {
+      "bytes": 31427,
+      "git_blob_sha1": "1b55fc8a2fd0c19adadee44c666acd160aaed55d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3855-mitigation-enforcement.md"
+    },
+    {
+      "bytes": 8057,
+      "git_blob_sha1": "928ff6ccc1cb5b73382da2d40ffe534062b1b1a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3872-crates-io-security.md"
+    },
+    {
+      "bytes": 66313,
+      "git_blob_sha1": "7515506c5cafba14930a01cdd3bea80691dc39ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3873-build-std-context.md"
+    },
+    {
+      "bytes": 79822,
+      "git_blob_sha1": "070b09c16323962592bc64806b8f266e8a7b2d2d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3874-build-std-always.md"
+    },
+    {
+      "bytes": 56092,
+      "git_blob_sha1": "bb9b735bf4f2365d467659cdc698f2d0b066cccc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3875-build-std-explicit-dependencies.md"
+    },
+    {
+      "bytes": 9635,
+      "git_blob_sha1": "41488795d20e201c2a0dabb4e5e83656971c4022",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3892-complex-numbers.md"
+    },
+    {
+      "bytes": 27053,
+      "git_blob_sha1": "e67c1fe0442c47273d456539e4d5b46c3edaa0b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3923-cargo-min-publish-age.md"
+    },
+    {
+      "bytes": 10556,
+      "git_blob_sha1": "1cb316fe03dc67c312b7237b6ceafca82fe623fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3924-cargo-hints-min-opt-level.md"
+    },
+    {
+      "bytes": 6508,
+      "git_blob_sha1": "4f5abee8a7806e9d45e64b97b383134e2b56dcb1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3928-todo-overreach.md"
+    },
+    {
+      "bytes": 44662,
+      "git_blob_sha1": "51d557b2dc8447f03a87ce8fb114e77e7882e2bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3931-rfmf-rust-foundation-maintainer-fund.md"
+    },
+    {
+      "bytes": 171886,
+      "git_blob_sha1": "032114637955e5e65218d0e9420a4d26bcfafa19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3935-Project-Goals-2026.md"
+    },
+    {
+      "bytes": 9871,
+      "git_blob_sha1": "8a58bd038240c3364751578fe657cb53f0a4d436",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3945-inherit-default-features.md"
+    },
+    {
+      "bytes": 39660,
+      "git_blob_sha1": "62540b25c8dc83c488b6c1b6697e5b5476adc4d3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3946-crates-io-username-identity.md"
+    },
+    {
+      "bytes": 6691,
+      "git_blob_sha1": "777975d436bbc83c0ddde4bda91592b2b0e708c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3955-named-fn-trait-parameters.md"
+    },
+    {
+      "bytes": 22448,
+      "git_blob_sha1": "c558baab8f4c3f8216de4950d6381cd3a26a6edd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3958-rustdoc-texmath.md"
+    },
+    {
+      "bytes": 7603,
+      "git_blob_sha1": "7dbd68cec8a3070c9abd17e6168aeac3668e2d40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3980-extern-custom.md"
+    },
+    {
+      "bytes": 22680,
+      "git_blob_sha1": "e3f4cc28a9671b967c2ce808bd20518e7f760e37",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3984-libs-team-refactor.md"
+    },
+    {
+      "bytes": 13840,
+      "git_blob_sha1": "759b49bac92a113f1dec2edc61c0756af0c4e534",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/text/**/*.md",
+      "upstream_path": "text/3999-std-only-i686-msvc.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 9298037,
+  "repository_md_files": 657,
+  "repository_url": "https://github.com/rust-lang/rfcs",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 9267975,
+  "snapshot_md_files": 651,
+  "source_id": "rust-rfcs"
+}

@@ -1,0 +1,181 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "FORMAL_SPEC",
+  "commit_sha": "ca68a05fad732be329ef67e713c3af60fb7d5f76",
+  "commit_timestamp": "2026-09-17T13:09:02-04:00",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 18,
+  "files": [
+    {
+      "bytes": 392,
+      "git_blob_sha1": "66682f298ee79136ea34b1ef879271cd973082ce",
+      "sha256": "c41310579b6916e92d3a58dd1bf18ead10fc8b7d522f90e40b47304c88fd63a9",
+      "snapshot_path": "files/EMERITUS.md",
+      "upstream_path": "EMERITUS.md"
+    },
+    {
+      "bytes": 3902,
+      "git_blob_sha1": "7fab7b36c9377d57b08814978723f2bc24ff8753",
+      "sha256": "c9785c201603abafecc33fe4796d06a57ada831600aacade74aad2b335b60bd3",
+      "snapshot_path": "files/GOVERNANCE.md",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 1857,
+      "git_blob_sha1": "63efe0b3019787fb5b620bce582058cca8c2b703",
+      "sha256": "d242636379272058e98eb8c8e13f5b656543499755fc44298f4414d8afb12573",
+      "snapshot_path": "files/HACKING.md",
+      "upstream_path": "HACKING.md"
+    },
+    {
+      "bytes": 7169,
+      "git_blob_sha1": "abfeed59410aafff5633f87d459dfe8b489fc2c1",
+      "sha256": "d7fe948f9ea2e6554e5bf919014ce4d19b2794f4d93c9c684ea7bdbaa4d932c8",
+      "snapshot_path": "files/README.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 6423,
+      "git_blob_sha1": "53b3eac621ee7fab426ad5022f48d7e22c734a94",
+      "sha256": "0755dbcd6ec49a7c8a1b480bc02f4bff57b9dd48ba77f03b5b0b31ace76d07db",
+      "snapshot_path": "files/RELEASES.md",
+      "upstream_path": "RELEASES.md"
+    },
+    {
+      "bytes": 6032,
+      "git_blob_sha1": "96f5abfd87a63dde371a6fc1a528cea53c54e805",
+      "sha256": "e080458d943cb404387adbb1a0d5b95362340203ee98ab50525f07aef7cb02ad",
+      "snapshot_path": "files/annotations.md",
+      "upstream_path": "annotations.md"
+    },
+    {
+      "bytes": 603,
+      "git_blob_sha1": "49b8c634ee026e027e503d884fe3afda34a83f05",
+      "sha256": "2c716295bf463cdde920511a0e8fd1498091ade4d782ae6c48ad04a202795803",
+      "snapshot_path": "files/artifacts-guidance.md",
+      "upstream_path": "artifacts-guidance.md"
+    },
+    {
+      "bytes": 15474,
+      "git_blob_sha1": "904d74912e2776faec37f9d8d9b68f86400c90fb",
+      "sha256": "2b9dffcd8087aed0ad30f4dcf6ff63daf1a82dd4d63a50c839c9bc5819fc9a97",
+      "snapshot_path": "files/config.md",
+      "upstream_path": "config.md"
+    },
+    {
+      "bytes": 6288,
+      "git_blob_sha1": "1e069ba0649b6bd3d0e7a7610eb0ce798e69f05f",
+      "sha256": "e552cfe029da17e7ee46948d1e437accd94bc935c1b33a5bcf7d1605a012dac5",
+      "snapshot_path": "files/considerations.md",
+      "upstream_path": "considerations.md"
+    },
+    {
+      "bytes": 9623,
+      "git_blob_sha1": "3c707c8948560f284b6ad84dfd72a6880554bfcf",
+      "sha256": "6f985ee2b07500f87bbf292a05f781fc69a5aeeb825d282394cfff1e7e2a6a4d",
+      "snapshot_path": "files/conversion.md",
+      "upstream_path": "conversion.md"
+    },
+    {
+      "bytes": 12950,
+      "git_blob_sha1": "56c76d6e4cd9f266f99c670ff29ccc6a4c313494",
+      "sha256": "90d5fa13d43a8f4ebbf50341d6c131f97e894f36190779f2a05ef2c76b31a041",
+      "snapshot_path": "files/descriptor.md",
+      "upstream_path": "descriptor.md"
+    },
+    {
+      "bytes": 8287,
+      "git_blob_sha1": "7cd44ea2e3665482a20fe7e416e10d794f2f3412",
+      "sha256": "78684cc6b8833ec440cb6526d431f322d3ffefbb2e4f4d5a38a397e6e657884a",
+      "snapshot_path": "files/image-index.md",
+      "upstream_path": "image-index.md"
+    },
+    {
+      "bytes": 8790,
+      "git_blob_sha1": "026e71ecd03f780f635da0da9b2ed41da13d4fc5",
+      "sha256": "2036bb3a1ae6822a62e3dc4374b6d404b75688151a61513033a65d95b926b9bb",
+      "snapshot_path": "files/image-layout.md",
+      "upstream_path": "image-layout.md"
+    },
+    {
+      "bytes": 2421,
+      "git_blob_sha1": "53957cb4559b7d1581131bd3ef3cc1ad5ab97f46",
+      "sha256": "72277dddc093e5079eabd640807e8ef5484c1fa29190fed659f31e3e4286ac2e",
+      "snapshot_path": "files/implementations.md",
+      "upstream_path": "implementations.md"
+    },
+    {
+      "bytes": 15348,
+      "git_blob_sha1": "ce7bd560cd05d76a704818d3fd8f0335f184c313",
+      "sha256": "e4bcea539746c5a63d707d9b7d1dab55990a7d2dc33a2d181d87b7636aa8092f",
+      "snapshot_path": "files/layer.md",
+      "upstream_path": "layer.md"
+    },
+    {
+      "bytes": 14008,
+      "git_blob_sha1": "7a0ef73406543b15c1253d7f0c961b89158dea79",
+      "sha256": "3327bef0ca31d1418f88c155d38a411aafc0bd0017c86b2b9bb63be98f1414f9",
+      "snapshot_path": "files/manifest.md",
+      "upstream_path": "manifest.md"
+    },
+    {
+      "bytes": 5435,
+      "git_blob_sha1": "25a26fa2217c3451c8f57bfb8f8515c3605e72ac",
+      "sha256": "c806571174402a5be70af0f9978a8e88f2d72352ae1cf817484e792ba0d11118",
+      "snapshot_path": "files/media-types.md",
+      "upstream_path": "media-types.md"
+    },
+    {
+      "bytes": 4247,
+      "git_blob_sha1": "162350c7e1a18212dbb345543e0435950c69c326",
+      "sha256": "d0aceadacc2c2950a25743c3599d62639bb6b1884e44c98f6e026d72b2370c69",
+      "snapshot_path": "files/spec.md",
+      "upstream_path": "spec.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/oci-image/LICENSE",
+        "bytes": 11358,
+        "git_blob_sha1": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "Apache-2.0"
+  },
+  "repository_url": "https://github.com/opencontainers/image-spec",
+  "retrieved_at": "2026-09-20T04:02:22Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = root-level specification Markdown (the image specification lives at the repository root). License text is excluded by explicit mechanical rule; every other repository Markdown file is recorded in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [
+      "/COPYING.md",
+      "/LICENSE",
+      "/LICENSE.md",
+      "/LICENSE.rst",
+      "/LICENSE.txt"
+    ],
+    "include": [
+      "/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "oci-image",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 129249
+}

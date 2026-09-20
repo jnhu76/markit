@@ -1,0 +1,210 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "FORMAL_SPEC",
+  "commit_sha": "c9f8f040e825a827bb011955bd41b7e2d899688f",
+  "commit_timestamp": "2026-09-11T21:55:29+01:00",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 23,
+  "files": [
+    {
+      "bytes": 49580,
+      "git_blob_sha1": "814e34dfad2ae5be8b696396aaace8ecd9b55f7b",
+      "sha256": "bfc7bbe68e57f9cbe4ebce804e4b1f4267579cfa040836303cf0ae1d338fa3d2",
+      "snapshot_path": "files/versions/1.2.md",
+      "upstream_path": "versions/1.2.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "de30bb5d631f631a1b17140c8b5cc2ab179b2736",
+      "sha256": "a2563ef3a6c165d4d764a9da7fcfce76e752fd93beadcadb31736e5b08bbad9d",
+      "snapshot_path": "files/versions/2.0-editors.md",
+      "upstream_path": "versions/2.0-editors.md"
+    },
+    {
+      "bytes": 80699,
+      "git_blob_sha1": "bc4a36d17265042149ef3a4de3ed49616bd8c198",
+      "sha256": "57bf00dfabdb79634e2886e022f3c6195296682b237ed4a56c7fc631c85b3c91",
+      "snapshot_path": "files/versions/2.0.md",
+      "upstream_path": "versions/2.0.md"
+    },
+    {
+      "bytes": 302,
+      "git_blob_sha1": "7278a62ab572459fca98bd5667893b12cb35e1e7",
+      "sha256": "edc37fd55f36a8a7924dc7bbc6508562988089c03c3d0d56a0beadb399481ae7",
+      "snapshot_path": "files/versions/3.0.0-editors.md",
+      "upstream_path": "versions/3.0.0-editors.md"
+    },
+    {
+      "bytes": 123376,
+      "git_blob_sha1": "84248257b448a37a9bcc57c3d08e08e8a4bf71dd",
+      "sha256": "b55a1df4501cd095cfc86878e86dfffd215d4ad36fc6764b84cf8ec6b3976620",
+      "snapshot_path": "files/versions/3.0.0.md",
+      "upstream_path": "versions/3.0.0.md"
+    },
+    {
+      "bytes": 367,
+      "git_blob_sha1": "05849e61f5e58d404054a8c783746bc24952ca5e",
+      "sha256": "4c3f5ac7012102e4e612f121e15a77b79a0f90da1261167e8c616e2e0a23337b",
+      "snapshot_path": "files/versions/3.0.1-editors.md",
+      "upstream_path": "versions/3.0.1-editors.md"
+    },
+    {
+      "bytes": 121681,
+      "git_blob_sha1": "2c1ba6c3174d11887661399abd15c6656cf91190",
+      "sha256": "9e120058b65e79288f7920271f18d745943e10866f00f0fbfa54190660da343f",
+      "snapshot_path": "files/versions/3.0.1.md",
+      "upstream_path": "versions/3.0.1.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "sha256": "065c3bd87ee242ec438559e94de95eb1f578c6fcc5e26ff87c820ae09d840ed2",
+      "snapshot_path": "files/versions/3.0.2-editors.md",
+      "upstream_path": "versions/3.0.2-editors.md"
+    },
+    {
+      "bytes": 122448,
+      "git_blob_sha1": "ff86a527ce96098a0900a72ff9414be219929cda",
+      "sha256": "504a61acec0c22beaab2942d15a055afadb4589e56cf9512e8e8b0bf8fcf9b77",
+      "snapshot_path": "files/versions/3.0.2.md",
+      "upstream_path": "versions/3.0.2.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "sha256": "065c3bd87ee242ec438559e94de95eb1f578c6fcc5e26ff87c820ae09d840ed2",
+      "snapshot_path": "files/versions/3.0.3-editors.md",
+      "upstream_path": "versions/3.0.3-editors.md"
+    },
+    {
+      "bytes": 125206,
+      "git_blob_sha1": "13a96ea657bfba70de3c7bfb0b73421e48c0c4bf",
+      "sha256": "8ccccaab5172a41ac1270fd0f0b40940e783134e0685ef3d41c63b62571feb29",
+      "snapshot_path": "files/versions/3.0.3.md",
+      "upstream_path": "versions/3.0.3.md"
+    },
+    {
+      "bytes": 802,
+      "git_blob_sha1": "678e911b2bb5bcb7fe31d86dbaed86a3be9298d4",
+      "sha256": "73cf20f00bed6f921324e25c87228d60e1ba424be339d2765a894ac933d7276f",
+      "snapshot_path": "files/versions/3.0.4-editors.md",
+      "upstream_path": "versions/3.0.4-editors.md"
+    },
+    {
+      "bytes": 194950,
+      "git_blob_sha1": "90cdc0a22987bccbab47e5826cd96e29d250df19",
+      "sha256": "77af0760571a228e61ca2126d6f4de9efcf053d5dcfb7f0ad2f84d7ecf622ff6",
+      "snapshot_path": "files/versions/3.0.4.md",
+      "upstream_path": "versions/3.0.4.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "sha256": "065c3bd87ee242ec438559e94de95eb1f578c6fcc5e26ff87c820ae09d840ed2",
+      "snapshot_path": "files/versions/3.1.0-editors.md",
+      "upstream_path": "versions/3.1.0-editors.md"
+    },
+    {
+      "bytes": 130288,
+      "git_blob_sha1": "1f0830643f75f8280f694355a08cb2e8a53a2f96",
+      "sha256": "ee99bcc50c7610f4876ce77b2f746036d4095e0909968bb6839259f955bac022",
+      "snapshot_path": "files/versions/3.1.0.md",
+      "upstream_path": "versions/3.1.0.md"
+    },
+    {
+      "bytes": 802,
+      "git_blob_sha1": "678e911b2bb5bcb7fe31d86dbaed86a3be9298d4",
+      "sha256": "73cf20f00bed6f921324e25c87228d60e1ba424be339d2765a894ac933d7276f",
+      "snapshot_path": "files/versions/3.1.1-editors.md",
+      "upstream_path": "versions/3.1.1-editors.md"
+    },
+    {
+      "bytes": 212540,
+      "git_blob_sha1": "b2db701c19f5a48d687056dafb1c54666534644f",
+      "sha256": "a612d2b72d422925616b2cabfa7acc0419ffaaf4b0eb42bfb11dc9b804f92749",
+      "snapshot_path": "files/versions/3.1.1.md",
+      "upstream_path": "versions/3.1.1.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "sha256": "fc88736c3288a82c795021872de3b91c55920e61e97c6be9e829d59712bb30f3",
+      "snapshot_path": "files/versions/3.1.2-editors.md",
+      "upstream_path": "versions/3.1.2-editors.md"
+    },
+    {
+      "bytes": 221889,
+      "git_blob_sha1": "43c2a04cfe062a9c935dd37f7c33a4cb152f824d",
+      "sha256": "7e30126d65acad53523f420e522d34edb3717af225aae727e73a522abc227da7",
+      "snapshot_path": "files/versions/3.1.2.md",
+      "upstream_path": "versions/3.1.2.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "sha256": "fc88736c3288a82c795021872de3b91c55920e61e97c6be9e829d59712bb30f3",
+      "snapshot_path": "files/versions/3.2.0-editors.md",
+      "upstream_path": "versions/3.2.0-editors.md"
+    },
+    {
+      "bytes": 296276,
+      "git_blob_sha1": "0b04a6acd6e0999b27d0f24750af23319f6881c1",
+      "sha256": "5282d73cdedf7019be39d58e4763ee3294cb0ecbbc336de1ffb1d7ae67850397",
+      "snapshot_path": "files/versions/3.2.0.md",
+      "upstream_path": "versions/3.2.0.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "sha256": "fc88736c3288a82c795021872de3b91c55920e61e97c6be9e829d59712bb30f3",
+      "snapshot_path": "files/versions/3.2.1-editors.md",
+      "upstream_path": "versions/3.2.1-editors.md"
+    },
+    {
+      "bytes": 298132,
+      "git_blob_sha1": "b927789b431d9a7341f9e3e7ac5a63a8cc00ac91",
+      "sha256": "01fadb4ce8253fa70b962e1a04cb73c549f2fe98c6311dff2b323cac6e322fad",
+      "snapshot_path": "files/versions/3.2.1.md",
+      "upstream_path": "versions/3.2.1.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "23b34fdff275c143d8a862afbb81995a82d30af5",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/openapi/LICENSE",
+        "bytes": 11345,
+        "git_blob_sha1": "23b34fdff275c143d8a862afbb81995a82d30af5",
+        "sha256": "4948367c65e1ce06690e2cadc6e86fce1a6a6db55ef874ce4b78c0f472ce5f13",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "Apache-2.0"
+  },
+  "repository_url": "https://github.com/OAI/OpenAPI-Specification",
+  "retrieved_at": "2026-09-20T04:02:20Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the versions/ tree (versioned specification documents). Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/versions/**/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "openapi",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 1983802
+}

@@ -1,0 +1,10 @@
+# Candidate-stage snapshot bytes are NOT tracked in Git (corrective 1, PR #34
+# review finding 4). They are reconstructed locally from the frozen lock by
+#   python3 tools/acquire.py materialize
+# and verified byte-exactly against the hash-pinned SOURCE.json manifests:
+#   python3 tools/acquire.py verify --full
+# Only the final frozen benchmark corpus (a later, separately reviewed
+# campaign) will receive a tracked-storage decision, governed per source by
+# storage_policy in acquisition-config.json.
+_cache/
+sources/*/files/

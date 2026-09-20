@@ -1,0 +1,214 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "note": "Acquisition-scope coverage: complete pinned-repository Markdown denominator vs candidate-snapshot numerator, per source and in total. Makes acquisition-scope bias measurable before static characterization. No syntax inspection, no eligibility, no performance judgment happens here.",
+  "schema_version": "inventory-summary-v1",
+  "sources": [
+    {
+      "byte_coverage": 0.9703392420361672,
+      "commit_sha": "33bcd015997f0d8e0fa0202eb66254a16f59ad8f",
+      "file_coverage": 0.14285714285714285,
+      "repository_md_bytes": 867139,
+      "repository_md_files": 7,
+      "snapshot_md_bytes": 841419,
+      "snapshot_md_files": 1,
+      "source_id": "cpp-core-guidelines"
+    },
+    {
+      "byte_coverage": 0.12989722365455214,
+      "commit_sha": "4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4",
+      "file_coverage": 0.5494505494505495,
+      "repository_md_bytes": 1394387,
+      "repository_md_files": 91,
+      "snapshot_md_bytes": 181127,
+      "snapshot_md_files": 50,
+      "source_id": "crafting-interpreters"
+    },
+    {
+      "byte_coverage": 0.7493991216790964,
+      "commit_sha": "8ec57ccfc32379ae4b37c45de949af359673f92f",
+      "file_coverage": 0.45454545454545453,
+      "repository_md_bytes": 808816,
+      "repository_md_files": 66,
+      "snapshot_md_bytes": 606126,
+      "snapshot_md_files": 30,
+      "source_id": "cs231n"
+    },
+    {
+      "byte_coverage": 0.9637233640666684,
+      "commit_sha": "23d7a5aecceee57d1292c56e90cce307f183bb0a",
+      "file_coverage": 0.9138755980861244,
+      "repository_md_bytes": 3173861,
+      "repository_md_files": 209,
+      "snapshot_md_bytes": 3058724,
+      "snapshot_md_files": 191,
+      "source_id": "d2l-en"
+    },
+    {
+      "byte_coverage": 0.8369763139776886,
+      "commit_sha": "dbc6d457cbf90d5f9d55552f3fd91d58b88cc898",
+      "file_coverage": 0.9465346534653465,
+      "repository_md_bytes": 7859361,
+      "repository_md_files": 1010,
+      "snapshot_md_bytes": 6578099,
+      "snapshot_md_files": 956,
+      "source_id": "ethereum-eips"
+    },
+    {
+      "byte_coverage": 0.5143704233226105,
+      "commit_sha": "59bc70ac974b0d5d1e00869f41c06bb3bfc756da",
+      "file_coverage": 0.7142857142857143,
+      "repository_md_bytes": 654678,
+      "repository_md_files": 21,
+      "snapshot_md_bytes": 336747,
+      "snapshot_md_files": 15,
+      "source_id": "graphql-spec"
+    },
+    {
+      "byte_coverage": 0.997895590835389,
+      "commit_sha": "0469acb1d9444635135faf5a6c6711486b1a9040",
+      "file_coverage": 0.9797687861271677,
+      "repository_md_bytes": 20951724,
+      "repository_md_files": 692,
+      "snapshot_md_bytes": 20907633,
+      "snapshot_md_files": 678,
+      "source_id": "kubernetes-keps"
+    },
+    {
+      "byte_coverage": 0.4410104444676614,
+      "commit_sha": "723cffcf84213f0cb58695b27eec9ad72052b53a",
+      "file_coverage": 0.32926829268292684,
+      "repository_md_bytes": 315861,
+      "repository_md_files": 82,
+      "snapshot_md_bytes": 139298,
+      "snapshot_md_files": 27,
+      "source_id": "myst-parser"
+    },
+    {
+      "byte_coverage": 0.5119607731754645,
+      "commit_sha": "d09d3e59391c3163e73aa88ce2b97092e2e5612e",
+      "file_coverage": 0.19955156950672645,
+      "repository_md_bytes": 1214679,
+      "repository_md_files": 446,
+      "snapshot_md_bytes": 621868,
+      "snapshot_md_files": 89,
+      "source_id": "mystmd"
+    },
+    {
+      "byte_coverage": 0.20564463325992163,
+      "commit_sha": "97af3d7da562406b75d1baeecb79ef8105d4b92a",
+      "file_coverage": 0.10248901903367497,
+      "repository_md_bytes": 22832874,
+      "repository_md_files": 683,
+      "snapshot_md_bytes": 4695458,
+      "snapshot_md_files": 70,
+      "source_id": "node"
+    },
+    {
+      "byte_coverage": 0.9954865791196519,
+      "commit_sha": "ca68a05fad732be329ef67e713c3af60fb7d5f76",
+      "file_coverage": 0.9473684210526315,
+      "repository_md_bytes": 129835,
+      "repository_md_files": 19,
+      "snapshot_md_bytes": 129249,
+      "snapshot_md_files": 18,
+      "source_id": "oci-image"
+    },
+    {
+      "byte_coverage": 0.9920985600665384,
+      "commit_sha": "6999a89a76a0329f440d5740497bedb9dd431297",
+      "file_coverage": 0.9545454545454546,
+      "repository_md_bytes": 211607,
+      "repository_md_files": 22,
+      "snapshot_md_bytes": 209935,
+      "snapshot_md_files": 21,
+      "source_id": "oci-runtime"
+    },
+    {
+      "byte_coverage": 0.9297168860748816,
+      "commit_sha": "c9f8f040e825a827bb011955bd41b7e2d899688f",
+      "file_coverage": 0.38333333333333336,
+      "repository_md_bytes": 2133770,
+      "repository_md_files": 60,
+      "snapshot_md_bytes": 1983802,
+      "snapshot_md_files": 23,
+      "source_id": "openapi"
+    },
+    {
+      "byte_coverage": 0.9767766992145877,
+      "commit_sha": "9c289782ccbb165ac8ad7c960ecffc12942a5560",
+      "file_coverage": 0.9322709163346613,
+      "repository_md_bytes": 1675171,
+      "repository_md_files": 251,
+      "snapshot_md_bytes": 1636268,
+      "snapshot_md_files": 234,
+      "source_id": "openmlsys"
+    },
+    {
+      "byte_coverage": 0.5011805479604469,
+      "commit_sha": "148f27606cf0352c11a314e7bf9eefa6bf88db86",
+      "file_coverage": 0.5076923076923077,
+      "repository_md_bytes": 2642417,
+      "repository_md_files": 195,
+      "snapshot_md_bytes": 1324328,
+      "snapshot_md_files": 99,
+      "source_id": "opentelemetry-spec"
+    },
+    {
+      "byte_coverage": 0.8903423183542457,
+      "commit_sha": "ffa997b0ba0604176cba2bdba1a9563ae258329a",
+      "file_coverage": 0.7770700636942676,
+      "repository_md_bytes": 2851264,
+      "repository_md_files": 157,
+      "snapshot_md_bytes": 2538601,
+      "snapshot_md_files": 122,
+      "source_id": "owasp-cheatsheets"
+    },
+    {
+      "byte_coverage": 0.9114097910330619,
+      "commit_sha": "a013e3230a1207cfa5ae94d28ba7d2021063c337",
+      "file_coverage": 0.75,
+      "repository_md_bytes": 10193,
+      "repository_md_files": 4,
+      "snapshot_md_bytes": 9290,
+      "snapshot_md_files": 3,
+      "source_id": "progit"
+    },
+    {
+      "byte_coverage": 0.4419951437895816,
+      "commit_sha": "1500248d8f230566e4ec9f27fcbb8fe9e2898ab1",
+      "file_coverage": 0.23430962343096234,
+      "repository_md_bytes": 2762648,
+      "repository_md_files": 478,
+      "snapshot_md_bytes": 1221077,
+      "snapshot_md_files": 112,
+      "source_id": "rust-book"
+    },
+    {
+      "byte_coverage": 0.996766844442542,
+      "commit_sha": "51783df9a76c355de7ceebeae101cba47f8ca463",
+      "file_coverage": 0.9908675799086758,
+      "repository_md_bytes": 9298037,
+      "repository_md_files": 657,
+      "snapshot_md_bytes": 9267975,
+      "snapshot_md_files": 651,
+      "source_id": "rust-rfcs"
+    },
+    {
+      "byte_coverage": 0.9609574297616506,
+      "commit_sha": "5d88903d843f6f2babaf6d5e76b29dd58d9fcae8",
+      "file_coverage": 0.9634551495016611,
+      "repository_md_bytes": 10515445,
+      "repository_md_files": 602,
+      "snapshot_md_bytes": 10104895,
+      "snapshot_md_files": 580,
+      "source_id": "swift-evolution"
+    }
+  ],
+  "totals": {
+    "repository_md_bytes": 92303767,
+    "repository_md_files": 5752,
+    "snapshot_md_bytes": 66391919,
+    "snapshot_md_files": 3970
+  }
+}

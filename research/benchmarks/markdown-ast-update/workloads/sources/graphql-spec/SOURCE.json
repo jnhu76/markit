@@ -1,0 +1,161 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "FORMAL_SPEC",
+  "commit_sha": "59bc70ac974b0d5d1e00869f41c06bb3bfc756da",
+  "commit_timestamp": "2026-09-17T11:17:59-07:00",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 15,
+  "files": [
+    {
+      "bytes": 11603,
+      "git_blob_sha1": "6d1b284e24fdb61753dd96f3f378173d00db03b1",
+      "sha256": "71855425b2f179dd22e29348e22a9dea93c9363ea06747178925685862265c92",
+      "snapshot_path": "files/CONTRIBUTING.md",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 29093,
+      "git_blob_sha1": "d99a68545fb1905d79e6e3962948f0ac6fbcad08",
+      "sha256": "4f30ea042537f1fe7835f86312eab2243649d891d7e358f97f2dec6b418ab5df",
+      "snapshot_path": "files/README.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 4551,
+      "git_blob_sha1": "ca68e0d16552dbb6d82ed3baaac1b859954bbe35",
+      "sha256": "6da5d02798f0d5d1189a4cf0d5763d5ffd3dba66498567db5a68cdb522ccdfb5",
+      "snapshot_path": "files/STYLE_GUIDE.md",
+      "upstream_path": "STYLE_GUIDE.md"
+    },
+    {
+      "bytes": 2706,
+      "git_blob_sha1": "d975b024f8d89f2bb786555efa6a53070e5c739b",
+      "sha256": "d07d583c4a62797a44eeb5861cbdeea468a007519b08472e6eb9f2fdbd18d165",
+      "snapshot_path": "files/spec/Appendix A -- Conformance.md",
+      "upstream_path": "spec/Appendix A -- Conformance.md"
+    },
+    {
+      "bytes": 8481,
+      "git_blob_sha1": "60a716dbc1bedf636ee8b596cd0f3cec8b5dd7d1",
+      "sha256": "4b3a788a15a66662892e39ebbce51ddadcfe06237de31e46d61368b2e9531a11",
+      "snapshot_path": "files/spec/Appendix B -- Notation Conventions.md",
+      "upstream_path": "spec/Appendix B -- Notation Conventions.md"
+    },
+    {
+      "bytes": 8829,
+      "git_blob_sha1": "17e253e46ec9cd0f52db90a2b82ce4b8e478a3e5",
+      "sha256": "4926d74740c1c6b35dcc7a9a206450f8b672980e93401576619658b9108e655d",
+      "snapshot_path": "files/spec/Appendix C -- Grammar Summary.md",
+      "upstream_path": "spec/Appendix C -- Grammar Summary.md"
+    },
+    {
+      "bytes": 2376,
+      "git_blob_sha1": "e4a14986be1b1e4b284f6923fd444f19982eab0b",
+      "sha256": "09ac011fd6410c95adc1cd755f098f8b80cd8bc591dd1bd0e0e4768935138ebc",
+      "snapshot_path": "files/spec/Appendix D -- Specified Definitions.md",
+      "upstream_path": "spec/Appendix D -- Specified Definitions.md"
+    },
+    {
+      "bytes": 2624,
+      "git_blob_sha1": "7ac0717aca4eae005313c3088c0695a4fbdcff40",
+      "sha256": "4858142b6ffa403de137d8bd2b2d6353176127716e8cb11ca9ba153342707d28",
+      "snapshot_path": "files/spec/GraphQL.md",
+      "upstream_path": "spec/GraphQL.md"
+    },
+    {
+      "bytes": 3995,
+      "git_blob_sha1": "c94c89a7bfb88df633ee2bfb17bd62eefb502302",
+      "sha256": "922c56f7ec839cc68d20c78dea9e9bd05cad3db9d0f397e0a5ffa753ff7d82f5",
+      "snapshot_path": "files/spec/Section 1 -- Overview.md",
+      "upstream_path": "spec/Section 1 -- Overview.md"
+    },
+    {
+      "bytes": 48614,
+      "git_blob_sha1": "f46372671c4ec8ffe11f5700618b63d20f3486f2",
+      "sha256": "a8cae18758f9182e2fe9311720e56913dbc87f4eca6469e162210d9381f763c8",
+      "snapshot_path": "files/spec/Section 2 -- Language.md",
+      "upstream_path": "spec/Section 2 -- Language.md"
+    },
+    {
+      "bytes": 83820,
+      "git_blob_sha1": "a33f30f5d17a5a53bd7474b600c099f7eb7b0194",
+      "sha256": "794a8382fe7bebaee3b2b7727642bc0634c62ea8ef494176aebfe77c2f20b265",
+      "snapshot_path": "files/spec/Section 3 -- Type System.md",
+      "upstream_path": "spec/Section 3 -- Type System.md"
+    },
+    {
+      "bytes": 16292,
+      "git_blob_sha1": "d8290091316ce04622df23f9d4b3205036fc54a7",
+      "sha256": "23982ca90298dcd00c35651a11c1342d915b9d22986691080735f25cd6023bc2",
+      "snapshot_path": "files/spec/Section 4 -- Introspection.md",
+      "upstream_path": "spec/Section 4 -- Introspection.md"
+    },
+    {
+      "bytes": 56611,
+      "git_blob_sha1": "71127b3fc9915b0fa0cb8bf55c0f9861ad2bafdb",
+      "sha256": "8a5c03f466db13d97da746f2cad8327291b968a422e4abbe27c5160d959d90a2",
+      "snapshot_path": "files/spec/Section 5 -- Validation.md",
+      "upstream_path": "spec/Section 5 -- Validation.md"
+    },
+    {
+      "bytes": 41538,
+      "git_blob_sha1": "89795c1af70eba327fcd038800c96bfe9bf6bcf7",
+      "sha256": "43424b06bc141bc60765e35696a39048f321105aa4e9ddeb399fa70ee8144a62",
+      "snapshot_path": "files/spec/Section 6 -- Execution.md",
+      "upstream_path": "spec/Section 6 -- Execution.md"
+    },
+    {
+      "bytes": 15614,
+      "git_blob_sha1": "94ab487c2c4f61c2126a11718818c38c222d7044",
+      "sha256": "5ee0bc4ed5deb0cfa691fb6826d123756a2422cd9116766b352b38af2548c498",
+      "snapshot_path": "files/spec/Section 7 -- Response.md",
+      "upstream_path": "spec/Section 7 -- Response.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "4cf0a3e78df8455143b806511c209853347843d5",
+        "upstream_path": "LICENSE.md"
+      }
+    ],
+    "note": "LICENSE.md at the pinned commit: specification deliverables under Open Web Foundation Agreement 1.0 (patent and copyright grants); source code MIT; datasets CC0-1.0. The snapshotted spec Markdown is a specification deliverable.",
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/graphql-spec/LICENSE.md",
+        "bytes": 2391,
+        "git_blob_sha1": "4cf0a3e78df8455143b806511c209853347843d5",
+        "sha256": "346cb9becafd31de19119755780416343df289e54d24baf25ed6a4928d9b9130",
+        "upstream_path": "LICENSE.md"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "OWFa-1.0"
+  },
+  "repository_url": "https://github.com/graphql/graphql-spec",
+  "retrieved_at": "2026-09-20T04:02:23Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the spec/ tree plus root-level Markdown (the specification deliverable). License files at root are excluded by explicit mechanical rule; everything else is recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [
+      "/COPYING.md",
+      "/LICENSE",
+      "/LICENSE.md",
+      "/LICENSE.rst",
+      "/LICENSE.txt"
+    ],
+    "include": [
+      "/spec/**/*.md",
+      "/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "graphql-spec",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (OWFa-1.0 (specification deliverable)); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 336747
+}

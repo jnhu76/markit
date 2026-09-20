@@ -1,0 +1,589 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "723cffcf84213f0cb58695b27eec9ad72052b53a",
+  "entries": [
+    {
+      "bytes": 14178,
+      "git_blob_sha1": "b9ce18dd777626c5433105b71632287c8f97534d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "AGENTS.md"
+    },
+    {
+      "bytes": 48208,
+      "git_blob_sha1": "ff2d904fc848dbc47cda4108fc808a714cfaaf69",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CHANGELOG.md"
+    },
+    {
+      "bytes": 2703,
+      "git_blob_sha1": "634d1f021217b27721a434d79682d6d0b8f10d2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 6236,
+      "git_blob_sha1": "4acdf0595953d10d932e3318dfa6caf7ce9fb82f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/configuration.md"
+    },
+    {
+      "bytes": 76,
+      "git_blob_sha1": "d24e7ac0718f3e54c31bd9bbe1d98fb63ae03f2d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/_changelog.md"
+    },
+    {
+      "bytes": 1136,
+      "git_blob_sha1": "b1ef1503c60a527c71d82691ca39c0e55016b767",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/architecture.md"
+    },
+    {
+      "bytes": 3685,
+      "git_blob_sha1": "b8973d4bf6baacffecfa659607bc8e9b18b6ed7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/background.md"
+    },
+    {
+      "bytes": 2727,
+      "git_blob_sha1": "e4f0e22153ca0d08d5515bd6a8a310f19caf8ba4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/contributing.md"
+    },
+    {
+      "bytes": 402,
+      "git_blob_sha1": "f3a3f97775553b421095c6a82abfe97f3c52b654",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/index.md"
+    },
+    {
+      "bytes": 2250,
+      "git_blob_sha1": "ebef0115f102534374715f99ed95e06226d5460a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/develop/test_infrastructure.md"
+    },
+    {
+      "bytes": 2924,
+      "git_blob_sha1": "0ab3942722b383c780ff677252f3b069ea540d92",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/docutils.md"
+    },
+    {
+      "bytes": 5596,
+      "git_blob_sha1": "aed98f38781f25d12fe6fa14498cf500f9391ebc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/faq/index.md"
+    },
+    {
+      "bytes": 68,
+      "git_blob_sha1": "3935b1c56ebed180fd46f00028f1ce639faadd56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/faq/snippets/include-md.md"
+    },
+    {
+      "bytes": 4107,
+      "git_blob_sha1": "df1d25e118f0e5cfdf33f63da54ffeef24c26575",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/index.md"
+    },
+    {
+      "bytes": 6416,
+      "git_blob_sha1": "e0aea01958136644adf9106e4256701cb146fdc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/intro.md"
+    },
+    {
+      "bytes": 2164,
+      "git_blob_sha1": "f1f2910bb383c9d984cc69fed403fd0636ed8d40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/live-preview.md"
+    },
+    {
+      "bytes": 3116,
+      "git_blob_sha1": "dca9c61a1ee8088a2d085ec79025cd223796288d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/admonitions.md"
+    },
+    {
+      "bytes": 6891,
+      "git_blob_sha1": "2b01a77483c957782a00645b29368dd5a7f01776",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/code_and_apis.md"
+    },
+    {
+      "bytes": 16924,
+      "git_blob_sha1": "73bc9d8986f9794907073e0281ab54737171a19c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/cross-referencing.md"
+    },
+    {
+      "bytes": 53,
+      "git_blob_sha1": "4c36cfe1190760be42d93283bc3bd4d2b80663a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/examples/content_child1.md"
+    },
+    {
+      "bytes": 44,
+      "git_blob_sha1": "f682c919e1fb0d813dd3735505e16a1e9070f5fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/examples/content_child2.md"
+    },
+    {
+      "bytes": 1036,
+      "git_blob_sha1": "f4550498ffdcf4fc1ada70966165622997f21310",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/glossary.md"
+    },
+    {
+      "bytes": 4442,
+      "git_blob_sha1": "5b7b4ccaca7e16fae7be84c180b6735281d0c53e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/images_and_figures.md"
+    },
+    {
+      "bytes": 2440,
+      "git_blob_sha1": "355881bdfd8549fb401ef084bef2d70ebe9891ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/math.md"
+    },
+    {
+      "bytes": 33479,
+      "git_blob_sha1": "367154e20db63db1e19643050bbd782b884b9dc9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/optional.md"
+    },
+    {
+      "bytes": 5686,
+      "git_blob_sha1": "2ae3027debc613de942801381163328b6a5e7fdb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/organising_content.md"
+    },
+    {
+      "bytes": 5816,
+      "git_blob_sha1": "a4961ad6bff2de990bbc8f5d45116076f4c86776",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/reference.md"
+    },
+    {
+      "bytes": 7389,
+      "git_blob_sha1": "6dfeb76f395210be2dbce691d9f4401336828a1b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/roles-and-directives.md"
+    },
+    {
+      "bytes": 6216,
+      "git_blob_sha1": "c07ce64e642cf69c45a7222d34ac74acf29c3f10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/tables.md"
+    },
+    {
+      "bytes": 7979,
+      "git_blob_sha1": "3de04ce521460d1e2f2472f00476f92e798ceba4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax/typography.md"
+    },
+    {
+      "bytes": 71,
+      "git_blob_sha1": "3f85dc541e07a5f1946f7c14f6d4d64002048da9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "example-include.md"
+    },
+    {
+      "bytes": 2007,
+      "git_blob_sha1": "0abbdeef4a3bfd7d98fdbe397b37ecde0a5bf106",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_html/html_ast.md"
+    },
+    {
+      "bytes": 1209,
+      "git_blob_sha1": "c5ceb5c72ebd00355739798ccb2eb766507034dc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_html/html_round_trip.md"
+    },
+    {
+      "bytes": 3231,
+      "git_blob_sha1": "e118eb99cd45b47accfd6b265c64feb862259760",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_html/html_to_nodes.md"
+    },
+    {
+      "bytes": 1225,
+      "git_blob_sha1": "34d7f06475c1edfc915b8fd36f32d83affccb561",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/amsmath.md"
+    },
+    {
+      "bytes": 1502,
+      "git_blob_sha1": "59b780a07cc4cd787691b6d158fab7c17a3612bc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/attributes.md"
+    },
+    {
+      "bytes": 857,
+      "git_blob_sha1": "2cff30700375be57f6510616d7ec85f72b48a95f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/containers.md"
+    },
+    {
+      "bytes": 1202,
+      "git_blob_sha1": "c064fa2cdb6184b4e09e26637f66df53c9f81a9d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/definition_lists.md"
+    },
+    {
+      "bytes": 4446,
+      "git_blob_sha1": "61b999773e960f2a2a3bb7ee84372eae5692c018",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/directive_options.md"
+    },
+    {
+      "bytes": 6483,
+      "git_blob_sha1": "e2a7df12501cf96a485b220142b188d5042655af",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/docutil_directives.md"
+    },
+    {
+      "bytes": 5838,
+      "git_blob_sha1": "e29b8d9fc436d8ae4f3119f9d0f6b98ea0de9121",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/docutil_link_resolution.md"
+    },
+    {
+      "bytes": 2375,
+      "git_blob_sha1": "51fa48d1334a842569d760f9583b9add73c4c9d9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/docutil_roles.md"
+    },
+    {
+      "bytes": 13752,
+      "git_blob_sha1": "c23079534169db97803217c00d1db01dad8b142b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/docutil_syntax_elements.md"
+    },
+    {
+      "bytes": 1116,
+      "git_blob_sha1": "e3e5fd235aeff7ac2d52e52988ae8b0fe6730121",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/dollarmath.md"
+    },
+    {
+      "bytes": 480,
+      "git_blob_sha1": "9f21bd19b1143b919997e1a02b76b4e1e2b1fffd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/eval_rst.md"
+    },
+    {
+      "bytes": 1009,
+      "git_blob_sha1": "18d0583df4b56af0c9c63035cb129a25fa6073e7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/mock_include.md"
+    },
+    {
+      "bytes": 395,
+      "git_blob_sha1": "6e443cb65a8a32ab952d74d451eecacc0c23d31b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/mock_include_errors.md"
+    },
+    {
+      "bytes": 4530,
+      "git_blob_sha1": "457d9e346ebb42723e2555f14feda037215ba06e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/reporter_warnings.md"
+    },
+    {
+      "bytes": 10476,
+      "git_blob_sha1": "99370f05cc443d29f0dd92e9cc1d7a3e879d72cc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/sphinx_directives.md"
+    },
+    {
+      "bytes": 6618,
+      "git_blob_sha1": "6cdf66a6e65bb957a173330f8ac915ab913d92d5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/sphinx_link_resolution.md"
+    },
+    {
+      "bytes": 17493,
+      "git_blob_sha1": "d74b14f4b08ea64f97e94514cbd820181550355f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/sphinx_roles.md"
+    },
+    {
+      "bytes": 13739,
+      "git_blob_sha1": "6b90d3ad979ea61136e28cbaff8f5ee7f31e4486",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/sphinx_syntax_elements.md"
+    },
+    {
+      "bytes": 3912,
+      "git_blob_sha1": "b478b926a3226eedb9d347f8d3ea0dde92f497f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_renderers/fixtures/tables.md"
+    },
+    {
+      "bytes": 1292,
+      "git_blob_sha1": "ab7b6e2f56c48b68c5220bd15b93d19c93f82509",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/basic/content.md"
+    },
+    {
+      "bytes": 25,
+      "git_blob_sha1": "1c9d9c78c2ed28f81650a96ae26db2c4cd414be1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/basic/index.md"
+    },
+    {
+      "bytes": 81,
+      "git_blob_sha1": "c42b7c3f2e8e014505f0069b6418cc6e2dd0fe5e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/basic/orphan.md"
+    },
+    {
+      "bytes": 36,
+      "git_blob_sha1": "42125199c80cad6b76242114a66d99786a20c72f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/commonmark_only/index.md"
+    },
+    {
+      "bytes": 782,
+      "git_blob_sha1": "fd757f41c613b996980a2625a43e24b45910b9b7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/extended_syntaxes/index.md"
+    },
+    {
+      "bytes": 365,
+      "git_blob_sha1": "2ed48561447dfb4a7bdc49ba9ff25a0519f27513",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/fieldlist/index.md"
+    },
+    {
+      "bytes": 430,
+      "git_blob_sha1": "11dc184c230a88d2fd653c5931ba6f4b8aecd0e1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/footnotes/footnote_md.md"
+    },
+    {
+      "bytes": 42,
+      "git_blob_sha1": "4e4bc088ac2ecd99c084d951271348345c6b2c40",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/footnotes/index.md"
+    },
+    {
+      "bytes": 756,
+      "git_blob_sha1": "66ade85f3e46cf503d0a78062ebd7a1ce0681f54",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/gettext/index.md"
+    },
+    {
+      "bytes": 25,
+      "git_blob_sha1": "ec11adaf2b36bf7602f159ad2238d67f7a714700",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/heading_slug_func/index.md"
+    },
+    {
+      "bytes": 52,
+      "git_blob_sha1": "20f34b9cab95618cb226790261ad82a6309475f5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/include_from_rst/include.md"
+    },
+    {
+      "bytes": 169,
+      "git_blob_sha1": "3eea6ac792a3b4009aa6c94c5e4b0c7dd33ac2e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/includes/include1.inc.md"
+    },
+    {
+      "bytes": 433,
+      "git_blob_sha1": "3f3c4cf05a183381022c3f5922df1bab0609d4fd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/includes/index.md"
+    },
+    {
+      "bytes": 358,
+      "git_blob_sha1": "a6eebcfd08f584a3ed9b715ae53e9a8b3f2eebe1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/includes/subfolder/include2.inc.md"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "0226511b7041de0f5283193505321de1ee0f348f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/mathjax/index.md"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "0226511b7041de0f5283193505321de1ee0f348f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/mathjax4/index.md"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "0226511b7041de0f5283193505321de1ee0f348f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/mathjax_default/index.md"
+    },
+    {
+      "bytes": 1106,
+      "git_blob_sha1": "88bd5d8da754b76dea4884961aaafaeb40d90ef9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references/index.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "9dfb9bea36dcfc726afa8e28d6f6415b77da76ad",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references/other.md"
+    },
+    {
+      "bytes": 49,
+      "git_blob_sha1": "6687282315c7b3c202752cec071ab990fefa79d2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references/subfolder/other2.md"
+    },
+    {
+      "bytes": 146,
+      "git_blob_sha1": "d38d87500138c150d627b1acc2248c50397e4963",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references_singlehtml/index.md"
+    },
+    {
+      "bytes": 45,
+      "git_blob_sha1": "3a4fb08e1619b3c42e1d02453a25b2bfd45e756a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references_singlehtml/other/index.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "a833673a758297b4724cf0f7e13fd15639ac7d3c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references_singlehtml/other/other.md"
+    },
+    {
+      "bytes": 16,
+      "git_blob_sha1": "f97239ef28e61464b540e23e49d5654a466edf15",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/references_singlehtml/other/other2.md"
+    },
+    {
+      "bytes": 895,
+      "git_blob_sha1": "9773a95159b4d3d1e02f49a192442c5dee844fec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/substitutions/index.md"
+    },
+    {
+      "bytes": 24,
+      "git_blob_sha1": "8681af4a66076520e7eae5d0f3746ce776bff280",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/substitutions/other.md"
+    },
+    {
+      "bytes": 38,
+      "git_blob_sha1": "45cb85f9eac3696354b3b5b9007e9c25370594ac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/substitutions_missing/index.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "eeea438d64517881e27b8f7cd5256b44db095dd4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/texinfo/file.md"
+    },
+    {
+      "bytes": 133,
+      "git_blob_sha1": "c0f15f928e42f5cdb0197ee94c8f8e5c7acc7e7e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/test_sphinx/sourcedirs/texinfo/index.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 315861,
+  "repository_md_files": 82,
+  "repository_url": "https://github.com/executablebooks/MyST-Parser",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 139298,
+  "snapshot_md_files": 27,
+  "source_id": "myst-parser"
+}

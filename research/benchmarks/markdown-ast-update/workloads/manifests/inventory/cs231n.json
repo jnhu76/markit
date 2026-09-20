@@ -1,0 +1,477 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "8ec57ccfc32379ae4b37c45de949af359673f92f",
+  "entries": [
+    {
+      "bytes": 154,
+      "git_blob_sha1": "dfc3cdf717ff0b7786c2ee85b562e156f1d317db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "Readme.md"
+    },
+    {
+      "bytes": 24990,
+      "git_blob_sha1": "d18b4b4ca77554fa12ea06c1c21595c12f73c8af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "adversary-attacks.md"
+    },
+    {
+      "bytes": 4896,
+      "git_blob_sha1": "bc5d6955fa1a5ed30d9cd764119664dd4fca4f7c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2015/assignment1.md"
+    },
+    {
+      "bytes": 4688,
+      "git_blob_sha1": "49a0e6f857151dc74eff5003ab1a0d6904acbf73",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2015/assignment2.md"
+    },
+    {
+      "bytes": 4640,
+      "git_blob_sha1": "28d7b489df9a5fe2be53337d22304ae70fe4cb89",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2015/assignment3.md"
+    },
+    {
+      "bytes": 5961,
+      "git_blob_sha1": "ee2a5a94af8e1b8be2339e7d678e21683c0e4c14",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2016/assignment1.md"
+    },
+    {
+      "bytes": 6103,
+      "git_blob_sha1": "ac51f033f0b08e08ee0a1aeeb4405e756192459c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2016/assignment2.md"
+    },
+    {
+      "bytes": 6278,
+      "git_blob_sha1": "368e2cef80a37de7e4814413c75a0c6f56e15c37",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2016/assignment3.md"
+    },
+    {
+      "bytes": 6928,
+      "git_blob_sha1": "e8570cc49b7992e97a12f2c68340914535600507",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2017/assignment1.md"
+    },
+    {
+      "bytes": 8767,
+      "git_blob_sha1": "50ac79eeb53ea0136a37ba4e4e0801d2d27d94bb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2017/assignment2.md"
+    },
+    {
+      "bytes": 10442,
+      "git_blob_sha1": "0270d38f45da8a88a8f402673c77786bb39379a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2017/assignment3.md"
+    },
+    {
+      "bytes": 6087,
+      "git_blob_sha1": "77c8c4d98549f62f6a5b730651fb383a63dbf02e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2018/assignment1.md"
+    },
+    {
+      "bytes": 6730,
+      "git_blob_sha1": "313a801b25bc9e2c2b26146a5aec2d6a9975f038",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2018/assignment2.md"
+    },
+    {
+      "bytes": 7738,
+      "git_blob_sha1": "d1ed3ce7245224134c5f32742cf99408ca421bd1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2018/assignment3.md"
+    },
+    {
+      "bytes": 5496,
+      "git_blob_sha1": "bdffd77bc0247b9a499355700dff736f66755dcb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2019/assignment1.md"
+    },
+    {
+      "bytes": 5206,
+      "git_blob_sha1": "318db2c14181d64f3eaf3e9a70b0c275dad4c48d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2019/assignment2.md"
+    },
+    {
+      "bytes": 5675,
+      "git_blob_sha1": "ad369c8ca89f24124b5208700153d6651da369e3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2019/assignment3.md"
+    },
+    {
+      "bytes": 8325,
+      "git_blob_sha1": "937ba72621164a1802785fbbb1fc39e294e2b3e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2020/assignment1.md"
+    },
+    {
+      "bytes": 6826,
+      "git_blob_sha1": "c7946039f7ebdd213de918ac8588066d84f07b6d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2020/assignment2.md"
+    },
+    {
+      "bytes": 8051,
+      "git_blob_sha1": "74e8e8ae4e5772250827b21d851edf8ed07f296c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2020/assignment3.md"
+    },
+    {
+      "bytes": 4116,
+      "git_blob_sha1": "794651b9be4037398ace703bc6ee7991c71540eb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2021/assignment1.md"
+    },
+    {
+      "bytes": 4493,
+      "git_blob_sha1": "972745cd816ec62c85ea346517ef31509aa512a3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2021/assignment2.md"
+    },
+    {
+      "bytes": 5695,
+      "git_blob_sha1": "764b6723e5066a61d560d6fde435aca425e60095",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2021/assignment3.md"
+    },
+    {
+      "bytes": 4325,
+      "git_blob_sha1": "448f336fec45c6dcdc09cf6e095629da43cd24b7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2022/assignment1.md"
+    },
+    {
+      "bytes": 4937,
+      "git_blob_sha1": "87990151c80f36989c5802d90c427d4ed78f9236",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2022/assignment2.md"
+    },
+    {
+      "bytes": 5402,
+      "git_blob_sha1": "13db03d8ced4e51bb2ab6aa44b2dea1f692f8142",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2022/assignment3.md"
+    },
+    {
+      "bytes": 4325,
+      "git_blob_sha1": "373a6acc0cf67f1d5a41c8d2d2f5fa8296f4a034",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2023/assignment1.md"
+    },
+    {
+      "bytes": 4352,
+      "git_blob_sha1": "6f4986273908008d2a0ce198ff3836b0ac953132",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2023/assignment2.md"
+    },
+    {
+      "bytes": 5434,
+      "git_blob_sha1": "59a57fb896c926fcb5818e143c7e9dd8edbbf7f3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2023/assignment3.md"
+    },
+    {
+      "bytes": 4203,
+      "git_blob_sha1": "f255bd8ad0d03e7451b834e6fbefdf8a288b30ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2024/assignment1.md"
+    },
+    {
+      "bytes": 4704,
+      "git_blob_sha1": "8824411690b271a05dd7d3faf9f9dc141cbef3ba",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2024/assignment2.md"
+    },
+    {
+      "bytes": 4944,
+      "git_blob_sha1": "3535a31e42e534065d37cd0032fb74d901ad3bf4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2024/assignment3.md"
+    },
+    {
+      "bytes": 4227,
+      "git_blob_sha1": "76638dd650e2a5b25caad255cb125411d3dec54a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2025/assignment1.md"
+    },
+    {
+      "bytes": 4530,
+      "git_blob_sha1": "7ae4eba6696be4080421123bb53bd1fa609f0c7d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2025/assignment2.md"
+    },
+    {
+      "bytes": 4614,
+      "git_blob_sha1": "113cd73647a5fb89f47c2bf2a8366e2400c003f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2025/assignment3.md"
+    },
+    {
+      "bytes": 4548,
+      "git_blob_sha1": "852b773b30aaad249cf713c757d68a4d8488ac8a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2026/assignment1.md"
+    },
+    {
+      "bytes": 4389,
+      "git_blob_sha1": "97f2d67a3066d65e5308e343c9125580537303af",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2026/assignment2.md"
+    },
+    {
+      "bytes": 4615,
+      "git_blob_sha1": "54bc6561a484370ba303b67792c72d9d2b323f4a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "assignments/2026/assignment3.md"
+    },
+    {
+      "bytes": 12880,
+      "git_blob_sha1": "c3180b656c0bee2e258df49cf1761b8066a09d7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "attention.md"
+    },
+    {
+      "bytes": 6190,
+      "git_blob_sha1": "15ab379fa0d3618096cbbe7b3815123b72b9c28d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "aws-tutorial.md"
+    },
+    {
+      "bytes": 19337,
+      "git_blob_sha1": "d3df0f797aa51c56191bb5448329b9139c51b041",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "choose-project.md"
+    },
+    {
+      "bytes": 31743,
+      "git_blob_sha1": "0d6f81eceef3baa668b77bea4b263a6c622d6ef1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "classification.md"
+    },
+    {
+      "bytes": 490,
+      "git_blob_sha1": "d1cfc06dcdc3373c0317621ead263876b720a9cc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "convnet-tips.md"
+    },
+    {
+      "bytes": 58488,
+      "git_blob_sha1": "c03eb871fe74732cba630aaa73860fe3c2d2f05c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "convolutional-networks.md"
+    },
+    {
+      "bytes": 23687,
+      "git_blob_sha1": "b0222b3ed725613cddde84c06909e83f7ab9ab09",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "generative-modeling.md"
+    },
+    {
+      "bytes": 31681,
+      "git_blob_sha1": "83db65407d5cd4c8972ac138412b7da2c67f93ca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "generative-models.md"
+    },
+    {
+      "bytes": 4309,
+      "git_blob_sha1": "53f5324b966be59dcbbfa3a9f622a743533c733f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "jupyter-colab-tutorial.md"
+    },
+    {
+      "bytes": 42393,
+      "git_blob_sha1": "66ad39f5aac38e04810801ef1650c48844a97aa1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "linear-classify.md"
+    },
+    {
+      "bytes": 7112,
+      "git_blob_sha1": "129f5e7a123ced78a2c58a12e4cacd4331543204",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "nerf.md"
+    },
+    {
+      "bytes": 31113,
+      "git_blob_sha1": "9dca87f8158f7bb4096d63adbd06ec5f412231e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "neural-networks-1.md"
+    },
+    {
+      "bytes": 37186,
+      "git_blob_sha1": "d543d474f7c149adc3be0f598150625c5743b574",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "neural-networks-2.md"
+    },
+    {
+      "bytes": 46034,
+      "git_blob_sha1": "cf526c230f832d109d3cf217a4b4a5c36c9e748b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "neural-networks-3.md"
+    },
+    {
+      "bytes": 18748,
+      "git_blob_sha1": "132624afa60b11ea5fca3ae35a11eac0e581d5b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "neural-networks-case-study.md"
+    },
+    {
+      "bytes": 28243,
+      "git_blob_sha1": "277f7ab642e1a2ac778ed677afe7333cb48508ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "optimization-1.md"
+    },
+    {
+      "bytes": 40488,
+      "git_blob_sha1": "1fa6224e03598b1902dae8b79f827a4f237cddc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "optimization-2.md"
+    },
+    {
+      "bytes": 365,
+      "git_blob_sha1": "278287ac767635dd942810d2d7a8253077ce7a40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "overview.md"
+    },
+    {
+      "bytes": 7250,
+      "git_blob_sha1": "d34eeccadcf26be7f26e9f06d2f5637ed0aceb29",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "pixelrnn.md"
+    },
+    {
+      "bytes": 15378,
+      "git_blob_sha1": "173eba4fc0c10f86b8fee41e5afc534a79f52f23",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "poster-2018.md"
+    },
+    {
+      "bytes": 21053,
+      "git_blob_sha1": "eaf4d853485054bfe68eaf5fe137dd3235ac7097",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "poster.md"
+    },
+    {
+      "bytes": 40058,
+      "git_blob_sha1": "fe737a3c79dbc11318348a79fff22686c749167b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "python-numpy-tutorial.md"
+    },
+    {
+      "bytes": 20523,
+      "git_blob_sha1": "5673a87a02014065d18c743c2ae9b86eb468c328",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "rnn.md"
+    },
+    {
+      "bytes": 7344,
+      "git_blob_sha1": "1bf1946235ce01b64cd1f59c54896800828c5617",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "setup.md"
+    },
+    {
+      "bytes": 3125,
+      "git_blob_sha1": "771efb6863f0022e79fb58cbfe7f7adde6d63805",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "terminal-tutorial.md"
+    },
+    {
+      "bytes": 7012,
+      "git_blob_sha1": "08a0f88837de48e4a7188d0eabb0aa7467d8e950",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "transfer-learning.md"
+    },
+    {
+      "bytes": 9479,
+      "git_blob_sha1": "3fb6ea3133827347c150645fcac1568d9bf07af4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "transformers.md"
+    },
+    {
+      "bytes": 9273,
+      "git_blob_sha1": "7430c1b460cc1917f799dc8058a1bf86764cab10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "understanding-cnn.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 808816,
+  "repository_md_files": 66,
+  "repository_url": "https://github.com/cs231n/cs231n.github.io",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 606126,
+  "snapshot_md_files": 30,
+  "source_id": "cs231n"
+}

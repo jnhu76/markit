@@ -1,0 +1,182 @@
+{
+  "acquisition_config": "acquisition-config.json",
+  "acquisition_config_sha256": "a79acde88fec5ae7cf97a9241a273f3348342b88946918f29b0341ff0ec8c594",
+  "acquisition_tool": "tools/acquire.py",
+  "acquisition_tool_sha256": "afd36a485998cf37bec426d591d72b84914a4701c785afa30df65ba074a38063",
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_universe_manifest": "candidate-universe-v1.json",
+  "candidate_universe_manifest_sha256": "f8a9917b8e45736ea728cc4d997822aa2689ce05dd1b46847bfe114ce2d7a19a",
+  "exact_duplicates_manifest": "exact-duplicates-v1.json",
+  "exact_duplicates_manifest_sha256": "aabd11d95ac6189a58d7854d1ce24a296f0be75ba1d308ae21d2f40bd805fb98",
+  "identity_semantics": "source_manifest_hash = sha256(canonical json of sources/<id>/SOURCE.json excluding volatile retrieved_at). Same source-lock -> same upstream versions -> same snapshot bytes -> same hashes. Candidate snapshot bytes are not tracked in Git during the candidate stage; 'materialize' reconstructs them locally and verifies them against these identities.",
+  "inventory_manifests": {
+    "cpp-core-guidelines.json": "ca5f8d14317f28d28c63be9d65c02b756dee5202ba0511ce81137a9804e8e964",
+    "crafting-interpreters.json": "2828c61e739799982be941ad0468ecd42a50514a0bd9150bb67976a0a69e843c",
+    "cs231n.json": "9f71d3242a94df0a33c890bd3dfc66ec8a16459c987315447f0052198d685649",
+    "d2l-en.json": "1cbcb26daa5853cdda7c063fe6572a7bfe3787e8ef865d8f12834c42fed97631",
+    "ethereum-eips.json": "2998fddd84fce614fdfaca5c783da62862e2e62b4539fd10b951104913b793a5",
+    "graphql-spec.json": "289587b68aedfeb48682cefb3977a5a2a7f47d92ab75db109e1b797aa81dc0ad",
+    "kubernetes-keps.json": "7ae6893b9043d473f8a2af84a411d853acd130bc61912a104d308e5f36ef8cc2",
+    "myst-parser.json": "05b9aa28b5df4cd6a5b3e722f2ee9998791122d1bdf58706636a9ccee5e3d003",
+    "mystmd.json": "db7c5f8b58970b279ad931d57e9215238be6fab656270f9972d0e930ab621338",
+    "node.json": "7544599720ef4efdeea536e8d4f0320432860c6047e0b5544ba96e71eb0a8f76",
+    "oci-image.json": "65050e29c9e3db1be50f97913e06dad410d54e2087c47a7e9f5fc9aa27632cbd",
+    "oci-runtime.json": "e62dbbb44ad68f8ad1a94da107df09b58c68ad6e53834f9647235ad55d5a2bd8",
+    "openapi.json": "94c054ce698d095a2393956d5e48ef0708995055422b29c83c56b2fff5c6d74e",
+    "openmlsys.json": "4f41ac619dea1fd1f2ee8bf78b5fd4467ce01b8ea19d87588c74767718992f1c",
+    "opentelemetry-spec.json": "bbc0616d1681963e0b562470ca3030268edec5d735d370d18c78bd27e324b07b",
+    "owasp-cheatsheets.json": "efc939121c8b14f4e61fd72766dd49de0384f23326f6c2175a18d5f3da3ea454",
+    "progit.json": "e581f8f3dc5e0a16df549720dbb9eba70aec61ac43c3fd8a22e7bbc8042daad9",
+    "rust-book.json": "31326906470a2af4d51e1b9452f0b40c3b182da3a9006f1cd924d2aba0d817be",
+    "rust-rfcs.json": "51fb0f4b0b5ebe0f676dac44e198a66f21b90fea8c0866139bca900a5554d08a",
+    "swift-evolution.json": "36a2a49a5e5a1cac12603d3c9dbdd8b7186947e380a506ca35eb08e25c38b16c"
+  },
+  "inventory_summary_manifest": "inventory-summary-v1.json",
+  "inventory_summary_manifest_sha256": "6d1273b4a9ea9418c8af3a6a8798f49bf85535dadd17ba07477fa26ba84db1d6",
+  "lock_semantics": "FROZEN LOCK. Once this file exists, acquire/materialize are strict replay: they preflight acquisition-config hash, acquisition-tool hash, campaign identity, exact source set, per-source pins, SOURCE.json identity, and storage policy BEFORE any mutation, and fail closed on any mismatch. Replay never regenerates or refreshes this lock; init (first discovery) and relock (explicit operation) are the only writers.",
+  "protocol_root": "research/benchmarks/markdown-ast-update",
+  "schema_version": "2",
+  "sources": [
+    {
+      "commit_sha": "33bcd015997f0d8e0fa0202eb66254a16f59ad8f",
+      "repository_url": "https://github.com/isocpp/CppCoreGuidelines",
+      "source_id": "cpp-core-guidelines",
+      "source_manifest_hash": "fe438cd3614208c5a884e393f7093691f2b801c70352a0bb228c44bd41c7c01d",
+      "storage_policy": "MATERIALIZE_ONLY"
+    },
+    {
+      "commit_sha": "4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4",
+      "repository_url": "https://github.com/munificent/craftinginterpreters",
+      "source_id": "crafting-interpreters",
+      "source_manifest_hash": "ef3a691e2b1f9d0f7cc88c26488b2b4f9f747bd7f40c1b6d95841aac7171eb81",
+      "storage_policy": "MATERIALIZE_ONLY"
+    },
+    {
+      "commit_sha": "8ec57ccfc32379ae4b37c45de949af359673f92f",
+      "repository_url": "https://github.com/cs231n/cs231n.github.io",
+      "source_id": "cs231n",
+      "source_manifest_hash": "884caae0ace9f2f5ae808cac7e02a522bc69a40e48a46db985556017b863f074",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "23d7a5aecceee57d1292c56e90cce307f183bb0a",
+      "repository_url": "https://github.com/d2l-ai/d2l-en",
+      "source_id": "d2l-en",
+      "source_manifest_hash": "d9ab89bdfa4eee1a6d838017e740160bef5f72b35fe4c84601f6c8e4d5b0f526",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "dbc6d457cbf90d5f9d55552f3fd91d58b88cc898",
+      "repository_url": "https://github.com/ethereum/EIPs",
+      "source_id": "ethereum-eips",
+      "source_manifest_hash": "c9ec9a967f3c3343b1aa50fa9dd634fd01de8a569e1d8e1569fa7b0736c33b52",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "59bc70ac974b0d5d1e00869f41c06bb3bfc756da",
+      "repository_url": "https://github.com/graphql/graphql-spec",
+      "source_id": "graphql-spec",
+      "source_manifest_hash": "0e97a7965d7b3c3614cf3a4328b9337b95ea087d276cb4020a7156167237214f",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "0469acb1d9444635135faf5a6c6711486b1a9040",
+      "repository_url": "https://github.com/kubernetes/enhancements",
+      "source_id": "kubernetes-keps",
+      "source_manifest_hash": "fc51076e99a3a5692bbff9d4878dc752de5b84c2ff0d7d07876a9e5cbcc7cacb",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "723cffcf84213f0cb58695b27eec9ad72052b53a",
+      "repository_url": "https://github.com/executablebooks/MyST-Parser",
+      "source_id": "myst-parser",
+      "source_manifest_hash": "e6797bccdf16f42153d3e9e054a90fcecb7a460f6b8cd884c627f29a286e790c",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "d09d3e59391c3163e73aa88ce2b97092e2e5612e",
+      "repository_url": "https://github.com/jupyter-book/mystmd",
+      "source_id": "mystmd",
+      "source_manifest_hash": "5a8c58391661e163b4aa5ffb3be79485c47d1dd2d617c132213005fcf1b66e4c",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "97af3d7da562406b75d1baeecb79ef8105d4b92a",
+      "repository_url": "https://github.com/nodejs/node",
+      "source_id": "node",
+      "source_manifest_hash": "5457798468005c1757368b78724ee869f48cc6dfbbd1d95b36be6d65dca2ecf0",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "ca68a05fad732be329ef67e713c3af60fb7d5f76",
+      "repository_url": "https://github.com/opencontainers/image-spec",
+      "source_id": "oci-image",
+      "source_manifest_hash": "ff7ccffa746a333af6479b4c42c46e91f913b75733df0b7f8b21b2a515580d11",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "6999a89a76a0329f440d5740497bedb9dd431297",
+      "repository_url": "https://github.com/opencontainers/runtime-spec",
+      "source_id": "oci-runtime",
+      "source_manifest_hash": "c13a38fc787747be1a18fd99b5c46d68a8b52f0423568f8648dec0f50d5c67e5",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "c9f8f040e825a827bb011955bd41b7e2d899688f",
+      "repository_url": "https://github.com/OAI/OpenAPI-Specification",
+      "source_id": "openapi",
+      "source_manifest_hash": "ab7b272bfd401df2c9017611414ec884cf62eb76968428c37385bb2502339648",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "9c289782ccbb165ac8ad7c960ecffc12942a5560",
+      "repository_url": "https://github.com/openmlsys/openmlsys",
+      "source_id": "openmlsys",
+      "source_manifest_hash": "c22c68ba88b9fae7dca4fcdae8df0d18d32b16168f29cf85c1bf65d2e85f0dc7",
+      "storage_policy": "MATERIALIZE_ONLY"
+    },
+    {
+      "commit_sha": "148f27606cf0352c11a314e7bf9eefa6bf88db86",
+      "repository_url": "https://github.com/open-telemetry/opentelemetry-specification",
+      "source_id": "opentelemetry-spec",
+      "source_manifest_hash": "398c7a68c92a985e80e8a3f0549309a08ab23f190bc18824393dea61f52cc404",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "ffa997b0ba0604176cba2bdba1a9563ae258329a",
+      "repository_url": "https://github.com/OWASP/CheatSheetSeries",
+      "source_id": "owasp-cheatsheets",
+      "source_manifest_hash": "2a28f7920a3e4651445c901abb8e9823cc5ba1259c5b742b226f9fdfaae78d7c",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "a013e3230a1207cfa5ae94d28ba7d2021063c337",
+      "repository_url": "https://github.com/progit/progit2",
+      "source_id": "progit",
+      "source_manifest_hash": "097b9f0e45cfcf129ed9cdcbd660432b7e5574584b179d3d845054c6190ca252",
+      "storage_policy": "MATERIALIZE_ONLY"
+    },
+    {
+      "commit_sha": "1500248d8f230566e4ec9f27fcbb8fe9e2898ab1",
+      "repository_url": "https://github.com/rust-lang/book",
+      "source_id": "rust-book",
+      "source_manifest_hash": "65e77885c7e5d254b66de2e601210d1bb6daef23db905d68478a91dcb79aea23",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "51783df9a76c355de7ceebeae101cba47f8ca463",
+      "repository_url": "https://github.com/rust-lang/rfcs",
+      "source_id": "rust-rfcs",
+      "source_manifest_hash": "f6856de11d35b6f1909419278a952162e76621f1d27bca4a04f09b34a6157109",
+      "storage_policy": "VENDORED"
+    },
+    {
+      "commit_sha": "5d88903d843f6f2babaf6d5e76b29dd58d9fcae8",
+      "repository_url": "https://github.com/swiftlang/swift-evolution",
+      "source_id": "swift-evolution",
+      "source_manifest_hash": "6a1d195d24d9e2258e29a54dd62e78078c6b19fa77ad60f032384e26b0e7aaed",
+      "storage_policy": "VENDORED"
+    }
+  ]
+}

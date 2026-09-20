@@ -1,0 +1,522 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "notes": "Frozen acquisition definition for real Markdown workload round 1 under #33, as corrected by CORRECTIVE-1 (human adversarial review on PR #34). Include/exclude globs are gitignore-style (patterns containing '/' are root-anchored; '**' spans path segments) and define the acquisition SAMPLING FRAME: a deliberate, pre-performance scope decision recorded per source in scope_rationale; the complete pinned-repository Markdown inventory (manifests/inventory/) makes everything outside the frame measurable. No redundancy-based or performance-based exclusion is applied at acquisition. storage_policy separates VENDORED from MATERIALIZE_ONLY sources: NEEDS_REVIEW license state must never permit public vendoring by default. Candidate snapshot bytes are NOT tracked in Git during the candidate stage; 'materialize' reconstructs and verifies them locally at the pinned commits. Candidate != final workload: no eligibility filtering, no representativeness selection, no byte modification. SPDX values are filled after reading the actual license files at the pinned commits; NEEDS_REVIEW means the identity was not confirmed from the license text.",
+  "round": 1,
+  "schema_version": "1",
+  "sources": [
+    {
+      "candidate_role": "LARGE_TECHNICAL",
+      "category": "LARGE_TECHNICAL",
+      "exclude": [],
+      "include": [
+        "/CppCoreGuidelines.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt",
+          "COPYING"
+        ],
+        "note": "LICENSE at the pinned commit is a custom Standard C++ Foundation license (copy/use/modify for personal or internal business use only); no SPDX identifier exists. Internal benchmark research use only; review before any wider redistribution.",
+        "spdx": "NEEDS_REVIEW"
+      },
+      "notes": "Mode A: single very large technical document CppCoreGuidelines.md (large-file incremental behavior; prose/headings/lists/links/inline code).",
+      "repository_url": "https://github.com/isocpp/CppCoreGuidelines",
+      "scope_rationale": "Scope = the single upstream document CppCoreGuidelines.md at the repository root; that document is the entire deliverable of the project, so the frame is the whole target text by construction. Any other repository Markdown is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "A",
+      "source_id": "cpp-core-guidelines",
+      "storage_policy": "MATERIALIZE_ONLY",
+      "storage_policy_rationale": "Custom Standard C++ Foundation license grants copy/use/modify for personal or internal business use only; license identity NEEDS_REVIEW. MATERIALIZE_ONLY is mandatory under the acquisition contract: a NEEDS_REVIEW license state must never permit public vendoring by default. Redistribution requires explicit upstream permission, which is not established; uncertainty is recorded, not resolved."
+    },
+    {
+      "candidate_role": "API_REFERENCE",
+      "category": "LARGE_TECHNICAL",
+      "exclude": [],
+      "include": [
+        "/doc/api/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md"
+        ],
+        "note": "LICENSE at the pinned commit licenses Node.js under MIT and also contains bundled third-party component notices; the snapshotted doc/api Markdown is Node.js project documentation under the MIT grant.",
+        "spdx": "MIT"
+      },
+      "notes": "Mode A: initial candidate API files (doc/api/fs.md, crypto.md, n-api.md, http2.md, stream.md, buffer.md). The full doc/api markdown tree is snapshotted so later static characterization can inspect other Node API Markdown files without a new acquisition round. This list is not assumed to be the final Node workload.",
+      "repository_url": "https://github.com/nodejs/node",
+      "scope_rationale": "Scope = the doc/api Markdown tree (API-reference prose). The remainder of the node repository (guides, per-module READMEs, changelogs) is outside the frame and is recorded as unselected in the complete inventory, so the scope decision is measurable before characterization.",
+      "snapshot_mode": "A",
+      "source_id": "node",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT (with bundled third-party notices preserved as attribution artifacts)); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "RFC_PROPOSAL",
+      "category": "RFC_PROPOSAL",
+      "exclude": [],
+      "include": [
+        "/text/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE-MIT",
+          "LICENSE-APACHE",
+          "LICENSE",
+          "LICENSE.md"
+        ],
+        "spdx": "MIT OR Apache-2.0"
+      },
+      "notes": "Mode B multi-file proposal corpus; no per-file selection during acquisition.",
+      "repository_url": "https://github.com/rust-lang/rfcs",
+      "scope_rationale": "Scope = the text/ RFC tree (the RFC documents themselves). Root README/template and other administrative Markdown are outside the frame; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "rust-rfcs",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT OR Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "RFC_PROPOSAL",
+      "category": "RFC_PROPOSAL",
+      "exclude": [],
+      "include": [
+        "/proposals/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B multi-file proposal corpus; no per-file selection during acquisition.",
+      "repository_url": "https://github.com/swiftlang/swift-evolution",
+      "scope_rationale": "Scope = the proposals/ tree (the evolution proposals). Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "swift-evolution",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "RFC_PROPOSAL",
+      "category": "RFC_PROPOSAL",
+      "exclude": [],
+      "include": [
+        "/keps/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B multi-file KEP corpus; kep.yaml sidecars are not Markdown and are excluded by the include rule, not by content judgment.",
+      "repository_url": "https://github.com/kubernetes/enhancements",
+      "scope_rationale": "Scope = the keps/ tree (KEP documents; kep.yaml sidecars are non-Markdown by construction, excluded by the include rule not by content judgment). Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "kubernetes-keps",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "RFC_PROPOSAL",
+      "category": "RFC_PROPOSAL",
+      "exclude": [],
+      "include": [
+        "/EIPS/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "CC0-1.0"
+      },
+      "notes": "Mode B multi-file proposal corpus; no per-file selection during acquisition.",
+      "repository_url": "https://github.com/ethereum/EIPs",
+      "scope_rationale": "Scope = the EIPS/ directory (EIP documents). Root READMEs and administrative pages are outside the frame; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "ethereum-eips",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (CC0-1.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "FORMAL_SPEC",
+      "category": "FORMAL_SPEC",
+      "exclude": [],
+      "include": [
+        "/versions/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B formal-specification corpus (versioned spec Markdown).",
+      "repository_url": "https://github.com/OAI/OpenAPI-Specification",
+      "scope_rationale": "Scope = the versions/ tree (versioned specification documents). Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "openapi",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "FORMAL_SPEC",
+      "category": "FORMAL_SPEC",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B formal-specification corpus (root-level specification Markdown).",
+      "repository_url": "https://github.com/opencontainers/runtime-spec",
+      "scope_rationale": "Scope = root-level specification Markdown (the runtime specification lives at the repository root). License text is excluded by explicit mechanical rule; every other repository Markdown file is recorded in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "oci-runtime",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "FORMAL_SPEC",
+      "category": "FORMAL_SPEC",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B formal-specification corpus (root-level specification Markdown).",
+      "repository_url": "https://github.com/opencontainers/image-spec",
+      "scope_rationale": "Scope = root-level specification Markdown (the image specification lives at the repository root). License text is excluded by explicit mechanical rule; every other repository Markdown file is recorded in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "oci-image",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "FORMAL_SPEC",
+      "category": "FORMAL_SPEC",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/spec/**/*.md",
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE-CODE",
+          "LICENSE.txt"
+        ],
+        "note": "LICENSE.md at the pinned commit: specification deliverables under Open Web Foundation Agreement 1.0 (patent and copyright grants); source code MIT; datasets CC0-1.0. The snapshotted spec Markdown is a specification deliverable.",
+        "spdx": "OWFa-1.0"
+      },
+      "notes": "Mode B formal-specification corpus (spec tree plus root Markdown).",
+      "repository_url": "https://github.com/graphql/graphql-spec",
+      "scope_rationale": "Scope = the spec/ tree plus root-level Markdown (the specification deliverable). License files at root are excluded by explicit mechanical rule; everything else is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "graphql-spec",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (OWFa-1.0 (specification deliverable)); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "FORMAL_SPEC",
+      "category": "FORMAL_SPEC",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/specification/**/*.md",
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "Apache-2.0"
+      },
+      "notes": "Mode B formal-specification corpus (specification tree plus root Markdown).",
+      "repository_url": "https://github.com/open-telemetry/opentelemetry-specification",
+      "scope_rationale": "Scope = the specification/ tree plus root-level Markdown. Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "opentelemetry-spec",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "SECURITY_GUIDE",
+      "category": "SECURITY_GUIDE",
+      "exclude": [],
+      "include": [
+        "/cheatsheets/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "CC-BY-SA-4.0"
+      },
+      "notes": "Mode B security-guide corpus; no representative-file selection during acquisition.",
+      "repository_url": "https://github.com/OWASP/CheatSheetSeries",
+      "scope_rationale": "Scope = the cheatsheets/ tree (the cheat-sheet corpus). Repository plumbing Markdown is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "owasp-cheatsheets",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (CC-BY-SA-4.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "BOOK_TUTORIAL",
+      "category": "BOOK_TUTORIAL",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE.asc",
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "note": "LICENSE.asc at the pinned commit: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported. Note the book content itself is AsciiDoc and is not part of the snapshot.",
+        "spdx": "CC-BY-NC-SA-3.0"
+      },
+      "notes": "The Pro Git book source is AsciiDoc (book/*/*.asc). Per the acquisition contract it is NOT converted; only genuine repository Markdown (root *.md) is snapshotted, and this fact is recorded as provenance.",
+      "repository_url": "https://github.com/progit/progit2",
+      "role_caveat": "INTENDED_BOOK_SOURCE_IS_ASCIIDOC: the Pro Git book text (book/*/*.asc) is not Markdown and is not snapshotted; the snapshotted root Markdown is administrative repository material. This candidate must NOT be counted as BOOK_TUTORIAL Markdown workload coverage during the workload-selection stage.",
+      "scope_rationale": "Scope = root-level repository Markdown only. The intended book source is AsciiDoc (book/*/*.asc) and is deliberately NOT converted, so the book text is outside any Markdown frame by format; see role_caveat.",
+      "snapshot_mode": "B",
+      "source_id": "progit",
+      "storage_policy": "MATERIALIZE_ONLY",
+      "storage_policy_rationale": "CC BY-NC-SA 3.0 (NonCommercial + ShareAlike) makes public vendoring from this repository uncertain for benchmark use; the policy fails closed (MATERIALIZE_ONLY) and records the uncertainty instead of making a legal claim. The snapshotted root Markdown is administrative repository material, not book text."
+    },
+    {
+      "candidate_role": "BOOK_TUTORIAL",
+      "category": "BOOK_TUTORIAL",
+      "exclude": [],
+      "include": [
+        "/src/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE-APACHE",
+          "LICENSE-MIT",
+          "LICENSE",
+          "LICENSE.md"
+        ],
+        "spdx": "MIT OR Apache-2.0"
+      },
+      "notes": "Mode B book/tutorial corpus (book source tree src/).",
+      "repository_url": "https://github.com/rust-lang/book",
+      "scope_rationale": "Scope = the src/ book-source tree. Build output and administrative Markdown are recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "rust-book",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT OR Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "BOOK_TUTORIAL",
+      "category": "BOOK_TUTORIAL",
+      "exclude": [],
+      "include": [
+        "/note/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "note": "LICENSE at the pinned commit applies MIT to code and CC BY-NC-ND 4.0 to all other files including .md; the snapshotted note/ materials are therefore CC BY-NC-ND 4.0.",
+        "spdx": "CC-BY-NC-ND-4.0"
+      },
+      "notes": "The Crafting Interpreters book chapters are HTML (book/). Per the acquisition contract they are NOT converted; only genuine repository Markdown (note/ exercise materials) is snapshotted, and this fact is recorded as provenance.",
+      "repository_url": "https://github.com/munificent/craftinginterpreters",
+      "role_caveat": "INTENDED_BOOK_SOURCE_IS_HTML: the Crafting Interpreters book text (book/) is HTML, not Markdown, and is not snapshotted; note/*.md holds exercise notes only. This candidate must NOT be counted as BOOK_TUTORIAL Markdown workload coverage during the workload-selection stage.",
+      "scope_rationale": "Scope = the note/ exercise-notes Markdown. The intended book source is HTML (book/) and is NOT converted, so the book text is outside any Markdown frame by format; see role_caveat.",
+      "snapshot_mode": "B",
+      "source_id": "crafting-interpreters",
+      "storage_policy": "MATERIALIZE_ONLY",
+      "storage_policy_rationale": "CC BY-NC-ND 4.0 (NonCommercial + NoDerivatives, per the upstream LICENSE split between MIT code and CC-licensed other files) makes public vendoring uncertain; the policy fails closed (MATERIALIZE_ONLY); uncertainty is recorded, not resolved."
+    },
+    {
+      "candidate_role": "MATH_CODE_MIXED",
+      "category": "MATH_CODE_MIXED",
+      "exclude": [],
+      "include": [
+        "/chapter_*/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "CC-BY-SA-4.0"
+      },
+      "notes": "Tier-0 math+code mixed corpus: prose with $...$ and $$...$$ plus inline code and fenced code. D2L-specific fence info strings (e.g. ```{.python .input}) are preserved verbatim as real source.",
+      "repository_url": "https://github.com/d2l-ai/d2l-en",
+      "scope_rationale": "Scope = the chapter_*/*.md book chapters at the repository root (the book itself). Auxiliary Markdown (img/, CONTRIBUTING, README) is outside the frame and recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "d2l-en",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (CC-BY-SA-4.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "CJK_MATH_CODE_MIXED",
+      "category": "CJK_MATH_CODE_MIXED",
+      "exclude": [],
+      "include": [
+        "/v1/zh_chapters/**/*.md",
+        "/v1/en_chapters/**/*.md",
+        "/v2/zh_chapters/**/*.md",
+        "/v2/en_chapters/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "note": "No dedicated LICENSE file exists in the repository at the pinned commit; README.md at that commit states the project is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.",
+        "spdx": "CC-BY-NC-SA-4.0"
+      },
+      "notes": "CJK/English math+code systems corpus, v1 AND v2 editions. Chinese and English Markdown are both preserved; translation deduplication is deferred to later characterization. Corrective 1 added the v2 globs (see scope_rationale).",
+      "repository_url": "https://github.com/openmlsys/openmlsys",
+      "scope_rationale": "Scope = v1 AND v2 edition chapters (zh + en). Corrective 1 explicitly added v2 after round 1 had scoped v1 only; v2 was never excluded for redundancy or performance reasons (none were measured) but through an undocumented v1-only scope decision, now corrected. Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "openmlsys",
+      "storage_policy": "MATERIALIZE_ONLY",
+      "storage_policy_rationale": "CC BY-NC-SA 4.0 stated in README at the pinned commit (no dedicated LICENSE file exists there): NonCommercial + ShareAlike terms make public vendoring uncertain; the policy fails closed (MATERIALIZE_ONLY); uncertainty is recorded, not resolved."
+    },
+    {
+      "candidate_role": "MATH_CODE_MIXED",
+      "category": "MATH_CODE_MIXED",
+      "exclude": [
+        "/COPYING.md",
+        "/LICENSE",
+        "/LICENSE.md",
+        "/LICENSE.rst",
+        "/LICENSE.txt"
+      ],
+      "include": [
+        "/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "MIT"
+      },
+      "notes": "Math-dense course notes with $...$/$$...$$ and other delimiter conventions. Delimiters outside BENCH-GRAMMAR-v1 are recorded as source truth only; eligibility is a later phase.",
+      "repository_url": "https://github.com/cs231n/cs231n.github.io",
+      "scope_rationale": "Scope = root-level course-note Markdown. The generated HTML site is non-Markdown by format and outside any Markdown frame; other repository Markdown is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "cs231n",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "MATH_DIALECT_BOUNDARY",
+      "category": "MATH_DIALECT_BOUNDARY",
+      "exclude": [],
+      "include": [
+        "/docs/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "MIT"
+      },
+      "notes": "Dollar-math boundary/dialect candidate; syntax-about-syntax documentation preserved as source truth. Not automatically representative workload.",
+      "repository_url": "https://github.com/jupyter-book/mystmd",
+      "scope_rationale": "Scope = the docs/ tree. Repository plumbing Markdown is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "mystmd",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    },
+    {
+      "candidate_role": "MATH_DIALECT_BOUNDARY",
+      "category": "MATH_DIALECT_BOUNDARY",
+      "exclude": [],
+      "include": [
+        "/docs/**/*.md"
+      ],
+      "license": {
+        "candidate_paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ],
+        "spdx": "MIT"
+      },
+      "notes": "Dollar-math boundary/dialect candidate; syntax-about-syntax documentation preserved as source truth. Not automatically representative workload.",
+      "repository_url": "https://github.com/executablebooks/MyST-Parser",
+      "scope_rationale": "Scope = the docs/ tree. Repository plumbing Markdown is recorded as unselected in the complete inventory.",
+      "snapshot_mode": "B",
+      "source_id": "myst-parser",
+      "storage_policy": "VENDORED",
+      "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions."
+    }
+  ]
+}
