@@ -83,6 +83,19 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 `scripts/`
 : Verification, campaign orchestration, and reproducibility entrypoints.
 
+### #33 real-workload acquisition substrate
+
+`workloads/`
+: Real Markdown workload acquisition substrate for the #33 real-first
+  Stage A pipeline. `sources/` stores byte-exact upstream Markdown
+  snapshots pinned by immutable commit SHAs with per-file hashes;
+  `manifests/` records candidate-universe membership and provenance;
+  `_cache/` is a rebuildable, gitignored acquisition cache that is not
+  benchmark authority. Acquisition is the only phase allowed here: no
+  eligibility filtering, no workload selection, no edit traces, and no
+  H0-H4 execution. See `workloads/README.md` and
+  `workloads/ACQUISITION-REPORT-1.md`.
+
 ### #31 real-project performance lifecycle
 
 `projects/`

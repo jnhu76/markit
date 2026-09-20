@@ -1,0 +1,4796 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "97af3d7da562406b75d1baeecb79ef8105d4b92a",
+  "entries": [
+    {
+      "bytes": 1933,
+      "git_blob_sha1": "3950bc702eb58b517ec9ef5103098e46ea1ee4f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE.md"
+    },
+    {
+      "bytes": 1400,
+      "git_blob_sha1": "4613512bf2d01f9eccbb22ef8d228074cb6ee43a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/SUPPORT.md"
+    },
+    {
+      "bytes": 3083,
+      "git_blob_sha1": "0e00d2fc5496242333d9ae532ed8e3305c9ea32b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "AGENTS.md"
+    },
+    {
+      "bytes": 44450,
+      "git_blob_sha1": "c32d1889c96fb55caebf386eba078efa39f5b999",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "BUILDING.md"
+    },
+    {
+      "bytes": 54125,
+      "git_blob_sha1": "4a6c2f6eb40a1989f77a9f0c9e792e6193f9854f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CHANGELOG.md"
+    },
+    {
+      "bytes": 203,
+      "git_blob_sha1": "d724027fd9aadb9987b8213c66e78de32c31e042",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 4654,
+      "git_blob_sha1": "cfc1bf72b47f15e36bf3f95ff9cc550182c6f00e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 18671,
+      "git_blob_sha1": "c71ec5ee96a14927c9b085ea902c6d32e041c6a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 41882,
+      "git_blob_sha1": "d90887e0f5d8ba106b48c77d2374acb8a363b0be",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 37858,
+      "git_blob_sha1": "f5a4ef3370adb6dcc335091e7e4a634bf3be8be3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "SECURITY.md"
+    },
+    {
+      "bytes": 7182,
+      "git_blob_sha1": "78a55fba453f8e60e28e0eb18e76c8abe34c1ca9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "benchmark/README.md"
+    },
+    {
+      "bytes": 7028,
+      "git_blob_sha1": "0276c436d973d356c0c34b185355807a2d3241a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/README.md"
+    },
+    {
+      "bytes": 132,
+      "git_blob_sha1": "df1eec18ea4aef8bdba2e92b0f3415efe3414dfc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/src/PE/utils/ordinals_lookup_tables_std/README.md"
+    },
+    {
+      "bytes": 3956,
+      "git_blob_sha1": "ecfc7d9bfa8e9b5c2631aeb2cbd07b2e9ab8da45",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/third-party/expected/README.md"
+    },
+    {
+      "bytes": 21653,
+      "git_blob_sha1": "b70c67e030d02432813754a8a1b6ca8a8e831f0e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/third-party/mbedtls/README.md"
+    },
+    {
+      "bytes": 18547,
+      "git_blob_sha1": "c8644915bc806e14a0ca3ed4a2166e77697ca756",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/third-party/spdlog/README.md"
+    },
+    {
+      "bytes": 81455,
+      "git_blob_sha1": "37f3de739cd9dbd22cf457cf3ce7016df0548b73",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/LIEF/third-party/utfcpp/README.md"
+    },
+    {
+      "bytes": 3913,
+      "git_blob_sha1": "de4168f21a4508e3cc65eb2436d3a7682f0a502e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/acorn/acorn-walk/CHANGELOG.md"
+    },
+    {
+      "bytes": 4467,
+      "git_blob_sha1": "eaec57fda3b3ff4f1d817d3b687078dfd5b0f40a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/acorn/acorn-walk/README.md"
+    },
+    {
+      "bytes": 24556,
+      "git_blob_sha1": "d8d95e1a944c2d4513ceb916894c64a9332f66b2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/acorn/acorn/CHANGELOG.md"
+    },
+    {
+      "bytes": 11759,
+      "git_blob_sha1": "5412329c6d1c8088c5e0426aa82fdca9816637a2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/acorn/acorn/README.md"
+    },
+    {
+      "bytes": 322,
+      "git_blob_sha1": "018262c9519f0adb8b5689415b71f74189d699ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ada/README.md"
+    },
+    {
+      "bytes": 1089,
+      "git_blob_sha1": "debb68feeb8aadffb534088d05e7974181b6fd7f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/amaro/LICENSE.md"
+    },
+    {
+      "bytes": 3252,
+      "git_blob_sha1": "44c44c4dc6ad4a2495552e60aadc0db74914fea9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/amaro/README.md"
+    },
+    {
+      "bytes": 4028,
+      "git_blob_sha1": "8792314ee14953b22c138015e1cda7f9a6b079ac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/brotli/c/tools/brotli.md"
+    },
+    {
+      "bytes": 369,
+      "git_blob_sha1": "a984e430fd75fe943ca824ff0eb343e7cdd5229f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 2631,
+      "git_blob_sha1": "c8a2f0b762407b543ef8b60492f65325648f891f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/DEVELOPER-NOTES.md"
+    },
+    {
+      "bytes": 15365,
+      "git_blob_sha1": "dc58ab8c0457caa01bc095cd5d5890dc45ba891b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/INSTALL.md"
+    },
+    {
+      "bytes": 1211,
+      "git_blob_sha1": "910ddded5c7a698cbf42c4819d24850aff72d744",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/LICENSE.md"
+    },
+    {
+      "bytes": 7974,
+      "git_blob_sha1": "7e818df8fa5b129d6900b1921b424ee8d994cd1a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/README.md"
+    },
+    {
+      "bytes": 9235,
+      "git_blob_sha1": "93cc10fc74bd8ef9114e35c60d3bf361b0da1ed2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/RELEASE-NOTES.md"
+    },
+    {
+      "bytes": 4469,
+      "git_blob_sha1": "0b66cc1146ad31ccfa895776c417ff183d963528",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/cares/SECURITY.md"
+    },
+    {
+      "bytes": 36924,
+      "git_blob_sha1": "c90032328ab39967161601df4797c47e2ca0b38f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/corepack/CHANGELOG.md"
+    },
+    {
+      "bytes": 1063,
+      "git_blob_sha1": "965ccaa1ae72fac3c5f971ba92b6a8e4665c51f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/corepack/LICENSE.md"
+    },
+    {
+      "bytes": 16961,
+      "git_blob_sha1": "e2adeb94958c6d05266feaa3a474446ab7d64dd6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/corepack/README.md"
+    },
+    {
+      "bytes": 3705,
+      "git_blob_sha1": "a3d8ac4995c6b41ff69e4df05e04b50cf88015c4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/autocfg-v1/README.md"
+    },
+    {
+      "bytes": 884,
+      "git_blob_sha1": "6b2c559cff78d2b1f6a58e38e23fdaf66b53a7ce",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/calendrical_calculations-v0_2/README.md"
+    },
+    {
+      "bytes": 393,
+      "git_blob_sha1": "ac1b3f974d5d53f1324d3d6f046c1def2992967b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/core_maths-v0_1/README.md"
+    },
+    {
+      "bytes": 2436,
+      "git_blob_sha1": "a13915aca9e9564ff601b1a723d93d8c4ec9c50b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/diplomat-runtime-v0_15/README.md"
+    },
+    {
+      "bytes": 2436,
+      "git_blob_sha1": "a13915aca9e9564ff601b1a723d93d8c4ec9c50b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/diplomat-v0_15/README.md"
+    },
+    {
+      "bytes": 2436,
+      "git_blob_sha1": "a13915aca9e9564ff601b1a723d93d8c4ec9c50b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/diplomat_core-v0_15/README.md"
+    },
+    {
+      "bytes": 2004,
+      "git_blob_sha1": "b4d6cad0a56f878aa0a1b58261746f1cd98ee274",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/displaydoc-v0_2/CHANGELOG.md"
+    },
+    {
+      "bytes": 4616,
+      "git_blob_sha1": "a609b0f270aced450d0f610867f41a10835583c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/displaydoc-v0_2/README.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "d36890278b328ee3adb74652af44756aa36a74d7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/either-v1/README-crates.io.md"
+    },
+    {
+      "bytes": 2930,
+      "git_blob_sha1": "857bddb2a1548f209a0b0cc07086fe72e8fe9964",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_calendar-v2/README.md"
+    },
+    {
+      "bytes": 492,
+      "git_blob_sha1": "5a8dd8de71d271555f86bca058fd4f19e6059e57",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_calendar_data-v2/README.md"
+    },
+    {
+      "bytes": 1598,
+      "git_blob_sha1": "e90aa210bb69379fbd9bbeed4e4da4e5998fd166",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_collections-v2/README.md"
+    },
+    {
+      "bytes": 2763,
+      "git_blob_sha1": "418237748bcb10f64ca96c1b145773b05bf93999",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_locale-v2/README.md"
+    },
+    {
+      "bytes": 2092,
+      "git_blob_sha1": "f450134435aadae95665aba66ee1d10ecd6815b1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_locale_core-v2/README.md"
+    },
+    {
+      "bytes": 484,
+      "git_blob_sha1": "eb237e9ab1cd1cfe6382f3ece11c3689228eb4ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_locale_data-v2/README.md"
+    },
+    {
+      "bytes": 4119,
+      "git_blob_sha1": "c8fcff6a100377336afe974fbee4b6639b04f4e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/icu_provider-v2/README.md"
+    },
+    {
+      "bytes": 13026,
+      "git_blob_sha1": "7f91807a87572f8a12d8f801bc3abee5f7e8cde6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/ixdtf-v0_6/README.md"
+    },
+    {
+      "bytes": 6069,
+      "git_blob_sha1": "037f79ef3ef1c291461ae216d181f8523ef03bde",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/libm-v0_2/CHANGELOG.md"
+    },
+    {
+      "bytes": 1229,
+      "git_blob_sha1": "77608db3d0d7800baf0cc8543ec52f1929caccfa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/libm-v0_2/README.md"
+    },
+    {
+      "bytes": 2401,
+      "git_blob_sha1": "d0ae06022430725bbc692a10efcf9a09e7095b07",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/litemap-v0_8/README.md"
+    },
+    {
+      "bytes": 1794,
+      "git_blob_sha1": "fd420705ffba21cfb976bb2ff3cb73afad70374c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/num-traits-v0_2/README.md"
+    },
+    {
+      "bytes": 12754,
+      "git_blob_sha1": "5f23f56ad53ba5340442eb1b40c7e45dce6258d1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/num-traits-v0_2/RELEASES.md"
+    },
+    {
+      "bytes": 390,
+      "git_blob_sha1": "f9515abf01ca40677c1c406413f63aa1aa2a56a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/potential_utf-v0_1/README.md"
+    },
+    {
+      "bytes": 3866,
+      "git_blob_sha1": "08ce65760710f6b61a1efb16889249d368e151d8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/proc-macro2-v1/README.md"
+    },
+    {
+      "bytes": 9203,
+      "git_blob_sha1": "62585db9caf0bbaa4054429e3c9e8bb00bc33938",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/quote-v1/README.md"
+    },
+    {
+      "bytes": 479,
+      "git_blob_sha1": "44e3e8b8189f1e2a748d7a8622242cf8e710d922",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/resb-v0_1/README.md"
+    },
+    {
+      "bytes": 4366,
+      "git_blob_sha1": "bf83d766272a07980127af4413582d212be10da2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/serde-v1/README.md"
+    },
+    {
+      "bytes": 2538,
+      "git_blob_sha1": "e6e7d9fb6d6e10d5ae6ba139af2c518c01d0e75f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/serde-v1/crates-io.md"
+    },
+    {
+      "bytes": 1051,
+      "git_blob_sha1": "94a765e2818b800f9aa61b6ce971d7858f4042e7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/serde_core-v1/README.md"
+    },
+    {
+      "bytes": 4366,
+      "git_blob_sha1": "bf83d766272a07980127af4413582d212be10da2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/serde_derive-v1/README.md"
+    },
+    {
+      "bytes": 2538,
+      "git_blob_sha1": "e6e7d9fb6d6e10d5ae6ba139af2c518c01d0e75f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/serde_derive-v1/crates-io.md"
+    },
+    {
+      "bytes": 649,
+      "git_blob_sha1": "724637c6ec25e0e11ac8ed31b443421352bd4aa0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/smallvec-v1/README.md"
+    },
+    {
+      "bytes": 5231,
+      "git_blob_sha1": "9a5596ba0abff13f07596b7c4bec7160814eb47f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/smallvec-v1/debug_metadata/README.md"
+    },
+    {
+      "bytes": 1502,
+      "git_blob_sha1": "24fd4b099292451d19b7b505eb87281f5ab79ef5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/stable_deref_trait-v1/README.md"
+    },
+    {
+      "bytes": 4723,
+      "git_blob_sha1": "e08d0c9e6533cba10232fb0cc12ee6bf9470c6c4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/strck-v1/README.md"
+    },
+    {
+      "bytes": 10340,
+      "git_blob_sha1": "9ae472ea6699740f96c42e7ca9bb86d359fdeaab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/syn-v2/README.md"
+    },
+    {
+      "bytes": 4695,
+      "git_blob_sha1": "c7a6c5fd70add0368bc64dee11af3be4fc3ba740",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/synstructure-v0_13/README.md"
+    },
+    {
+      "bytes": 716,
+      "git_blob_sha1": "284b0e2e1ab274a6a8933743d9e04ae961dd3d5b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/temporal_capi-v0_2/README.md"
+    },
+    {
+      "bytes": 54575,
+      "git_blob_sha1": "b14b555cb92aa2a2c5c1e3e04e4ee2b124af3cbb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/temporal_rs-v0_2/CHANGELOG.md"
+    },
+    {
+      "bytes": 11970,
+      "git_blob_sha1": "b6453f8f4c9cac1353cc118d62a159c10c33071d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/temporal_rs-v0_2/README.md"
+    },
+    {
+      "bytes": 504,
+      "git_blob_sha1": "6d6a355bf466ce397270f8b477f11d4c86568a4c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/temporal_rs-v0_2/tools/README.md"
+    },
+    {
+      "bytes": 3037,
+      "git_blob_sha1": "481ca265c98b7ebcd25e1c7ca7fa8040cdd72ae1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/timezone_provider-v0_2/README.md"
+    },
+    {
+      "bytes": 1832,
+      "git_blob_sha1": "92b74c0d1b9eddf8966f1cedc1d18d62d4520ca2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/tinystr-v0_8/README.md"
+    },
+    {
+      "bytes": 12338,
+      "git_blob_sha1": "2e4668ef62528cef691a8a662756227a83a02c5b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/unicode-ident-v1/README.md"
+    },
+    {
+      "bytes": 1441,
+      "git_blob_sha1": "08334d4db82302e01b9fb1284a61d84b34da0dba",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/utf8_iter-v1/README.md"
+    },
+    {
+      "bytes": 2181,
+      "git_blob_sha1": "7d015568cbc18620c11b5dc564d3693e373df4a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/writeable-v0_6/README.md"
+    },
+    {
+      "bytes": 379,
+      "git_blob_sha1": "04ef27e066bc1c54fa699f7857f72d50af3de1e0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/yoke-derive-v0_8/README.md"
+    },
+    {
+      "bytes": 1879,
+      "git_blob_sha1": "23c1ac8c3886d74b49859a88e30a801a205644cc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/yoke-v0_8/README.md"
+    },
+    {
+      "bytes": 395,
+      "git_blob_sha1": "ad803c599463e6097e3021cdb91880670dc8a1b9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zerofrom-derive-v0_1/README.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "7f171afa0eda72be578630d6acda4a8542a23f1b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zerofrom-v0_1/README.md"
+    },
+    {
+      "bytes": 1667,
+      "git_blob_sha1": "d9fec2867b084fad3d9f1e776ef8270619307bb1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zerotrie-v0_2/README.md"
+    },
+    {
+      "bytes": 418,
+      "git_blob_sha1": "e80b8abe55f965c9eb9905969bdf562ebfbbd76a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zerovec-derive-v0_11/README.md"
+    },
+    {
+      "bytes": 8446,
+      "git_blob_sha1": "954166d6969740626547edb52fc9f8f6c7d3f333",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zerovec-v0_11/README.md"
+    },
+    {
+      "bytes": 1365,
+      "git_blob_sha1": "10203f2355533016754dffd278dfc8e029e83b5a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/crates/vendor/zoneinfo64-v0_3/README.md"
+    },
+    {
+      "bytes": 1269,
+      "git_blob_sha1": "cb49e2c754c250ed975e371551267b938ebcdfa1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/googletest/include/gtest/internal/custom/README.md"
+    },
+    {
+      "bytes": 71,
+      "git_blob_sha1": "b6775fd6dcb6035da39036eb7d96d46a5660068f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/histogram/README.md"
+    },
+    {
+      "bytes": 698,
+      "git_blob_sha1": "d15f719fdda32c59d9eb416ed2aaf63580b06e7a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/inspector_protocol/README.md"
+    },
+    {
+      "bytes": 4722,
+      "git_blob_sha1": "a3bc75943fd21308640bf0979c2679a4ba41ed8d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/inspector_protocol/crdtp/README.md"
+    },
+    {
+      "bytes": 26783,
+      "git_blob_sha1": "797d0fd9aa8eeda4081d2a05a7184ef679b3113c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/libffi/README.md"
+    },
+    {
+      "bytes": 21282,
+      "git_blob_sha1": "019a1d152265108fd1c19387e5d6c0f8f0cffe63",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/llhttp/README.md"
+    },
+    {
+      "bytes": 604,
+      "git_blob_sha1": "5a740eb23506678cd72f021c82054b955ab619fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/nbytes/CHANGELOG.md"
+    },
+    {
+      "bytes": 240,
+      "git_blob_sha1": "9ff412adb305608755948c85e8ff0015faa40499",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/nbytes/README.md"
+    },
+    {
+      "bytes": 283,
+      "git_blob_sha1": "8881155719a6927b51fe10a50bc8b515767be22a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ncrypto/README.md"
+    },
+    {
+      "bytes": 1722,
+      "git_blob_sha1": "f3bf7e03957c92023c186daa61cbef0981a01c1b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ngtcp2/README.md"
+    },
+    {
+      "bytes": 9319,
+      "git_blob_sha1": "439b30998d43dd545a40970c9c76f93a0a735ecb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ngtcp2/ngtcp2/third-party/http-parser/README.md"
+    },
+    {
+      "bytes": 9545,
+      "git_blob_sha1": "e38d3a57881a6a38f733e19efcd1e3fbf16dc2b6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ngtcp2/ngtcp2/third-party/urlparse/http-parser/README.md"
+    },
+    {
+      "bytes": 1787,
+      "git_blob_sha1": "9f861f2a1d90327ea5293ab67fb55113d45f590a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/ngtcp2/ngtcp2/third-party/urlparse/munit/README.md"
+    },
+    {
+      "bytes": 3352,
+      "git_blob_sha1": "4d79b192e1f47c35c3da8049eb01ac9a8722130b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/README.md"
+    },
+    {
+      "bytes": 2888,
+      "git_blob_sha1": "2752703b64cd0c5997c31df8b48958739c414d18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-access.md"
+    },
+    {
+      "bytes": 2033,
+      "git_blob_sha1": "be2685d7853c4df5f9a144afcc8c54ba13ea2bc4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-adduser.md"
+    },
+    {
+      "bytes": 4602,
+      "git_blob_sha1": "c4d3c15a8149f2764f7e90bd0890794857bc4da5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-approve-scripts.md"
+    },
+    {
+      "bytes": 16252,
+      "git_blob_sha1": "e0b80373ad181b3b34837dadd0cdff67a7110ccd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-audit.md"
+    },
+    {
+      "bytes": 2997,
+      "git_blob_sha1": "0531b49083ea38b5d8c7239acc727ab09258f8f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-bugs.md"
+    },
+    {
+      "bytes": 3450,
+      "git_blob_sha1": "d1b114cfbeffeeafadac6430e5e55d1babfa925b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-cache.md"
+    },
+    {
+      "bytes": 14262,
+      "git_blob_sha1": "741caf5eae70268c85bb989fef20ea5701fee4fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-ci.md"
+    },
+    {
+      "bytes": 907,
+      "git_blob_sha1": "f34c3713b2df9a20a2129959e0abe3ead873b503",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-completion.md"
+    },
+    {
+      "bytes": 4091,
+      "git_blob_sha1": "2ca4a640031153b96e9143a00ba682364c039e62",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-config.md"
+    },
+    {
+      "bytes": 12137,
+      "git_blob_sha1": "a48bf1bd622e5c03bb0fb01fdf8e7f560c181fae",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-dedupe.md"
+    },
+    {
+      "bytes": 2873,
+      "git_blob_sha1": "fdefca28957cddd879ad4db693b9519b113731d4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-deny-scripts.md"
+    },
+    {
+      "bytes": 2156,
+      "git_blob_sha1": "fbb207da6bfa4550df9521cb61ebf97c9aa39858",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-deprecate.md"
+    },
+    {
+      "bytes": 8985,
+      "git_blob_sha1": "e29faff1caf9f112a0c530cf9f2598133e04bfff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-diff.md"
+    },
+    {
+      "bytes": 5170,
+      "git_blob_sha1": "1b775a9bf619f9c5f848aa133e51b89579b73018",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-dist-tag.md"
+    },
+    {
+      "bytes": 2975,
+      "git_blob_sha1": "6841307db72efd8770b16f5421fd1777d734d5ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-docs.md"
+    },
+    {
+      "bytes": 5047,
+      "git_blob_sha1": "848f38a1c8b1023d81ae81d2aefe4a2b2d34e920",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-doctor.md"
+    },
+    {
+      "bytes": 1091,
+      "git_blob_sha1": "dad77b0b7f30388824d01f764f8966f7fc43f5c2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-edit.md"
+    },
+    {
+      "bytes": 13255,
+      "git_blob_sha1": "ff08d07786a8d3e2bd3ebb717d64518db47753bc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-exec.md"
+    },
+    {
+      "bytes": 2794,
+      "git_blob_sha1": "a5e85a3c04ea9b2bd8ae3d7ca861388b80b00124",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-explain.md"
+    },
+    {
+      "bytes": 1006,
+      "git_blob_sha1": "5777aa89a4b9237f6af7e5a0af5bec670dffa78c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-explore.md"
+    },
+    {
+      "bytes": 7240,
+      "git_blob_sha1": "2d72186fe5a22e59125ba249b14da92da5ee6c24",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-find-dupes.md"
+    },
+    {
+      "bytes": 3674,
+      "git_blob_sha1": "b4d7e0b88897ed93dc17a932582a0380913864c0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-fund.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "4f79cdde4667acad3abfe5cb8f25c2235c19076c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-get.md"
+    },
+    {
+      "bytes": 755,
+      "git_blob_sha1": "caf761750c5551d858155a044600ef20c2165030",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-help-search.md"
+    },
+    {
+      "bytes": 1003,
+      "git_blob_sha1": "79c4062c239cd85dccee4293bf83dbb7f2e00b9f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-help.md"
+    },
+    {
+      "bytes": 10213,
+      "git_blob_sha1": "4b3b6342380d6158663a0d35cb51d05ff05fe585",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-init.md"
+    },
+    {
+      "bytes": 12575,
+      "git_blob_sha1": "2194a4df84a80c2c811551eb9788b2cb6e79b635",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-install-ci-test.md"
+    },
+    {
+      "bytes": 5674,
+      "git_blob_sha1": "4182392c9a3d1e7f69b892da20cad4b9271facce",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-install-scripts.md"
+    },
+    {
+      "bytes": 18260,
+      "git_blob_sha1": "e13f79a51e6f18dcc4b62f17949302b799884bf9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-install-test.md"
+    },
+    {
+      "bytes": 35993,
+      "git_blob_sha1": "98d69d5e84245181b80f8345bfc22f1ea832d51b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-install.md"
+    },
+    {
+      "bytes": 14980,
+      "git_blob_sha1": "fa9626c4edd80405f90007d03f01c90b2dac4ba9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-link.md"
+    },
+    {
+      "bytes": 5777,
+      "git_blob_sha1": "dacac2f5a262bb3b7d7efa7702c5c666ec308f5f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-ll.md"
+    },
+    {
+      "bytes": 2354,
+      "git_blob_sha1": "59b24b6ad7ad86cae340173265e2e661413fee79",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-login.md"
+    },
+    {
+      "bytes": 1749,
+      "git_blob_sha1": "0008259ce78d9ab1905ca0d9e948dd2d1f864716",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-logout.md"
+    },
+    {
+      "bytes": 7239,
+      "git_blob_sha1": "b38603c203fcc785d6be806ee83b0598f3697bd8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-ls.md"
+    },
+    {
+      "bytes": 1974,
+      "git_blob_sha1": "40cafafe6052aff82bbb10ef1c249d66911ade52",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-org.md"
+    },
+    {
+      "bytes": 9251,
+      "git_blob_sha1": "40f7e835a68a515e1a5d4219bf8d786f3087a30a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-outdated.md"
+    },
+    {
+      "bytes": 3082,
+      "git_blob_sha1": "f20fa216860e40a93754fcd8912c79f6c8f97de9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-owner.md"
+    },
+    {
+      "bytes": 3832,
+      "git_blob_sha1": "7d9c8974d290b18d42a9c9528991db03315bdfa6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-pack.md"
+    },
+    {
+      "bytes": 769,
+      "git_blob_sha1": "cc3326f7594286f599bb03b6749696f1a1fbd803",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-ping.md"
+    },
+    {
+      "bytes": 8056,
+      "git_blob_sha1": "72a5a90d98fe3f3ea0f4451f1172ff54dccb6726",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-pkg.md"
+    },
+    {
+      "bytes": 1206,
+      "git_blob_sha1": "cc86ae0e2d515a7d82cf669444ea6129ab9369ac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-prefix.md"
+    },
+    {
+      "bytes": 3067,
+      "git_blob_sha1": "8c1ad4ee79c5c51e5c20d8cde2592a78835a21a6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-profile.md"
+    },
+    {
+      "bytes": 5737,
+      "git_blob_sha1": "35150fd5abcb16c090c175468b8781b9be61db5c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-prune.md"
+    },
+    {
+      "bytes": 8191,
+      "git_blob_sha1": "04c020b3563f7d248ead307e23d348979fe40ff6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-publish.md"
+    },
+    {
+      "bytes": 10258,
+      "git_blob_sha1": "4349e47ad23e0610ac521f3f957b1abc88147c28",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-query.md"
+    },
+    {
+      "bytes": 6892,
+      "git_blob_sha1": "c70307a2a7fe2d871cf146c0e438fc22e0bf113b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-rebuild.md"
+    },
+    {
+      "bytes": 2755,
+      "git_blob_sha1": "71357ab3224032077be194a1e82c43b74b56fc12",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-repo.md"
+    },
+    {
+      "bytes": 1444,
+      "git_blob_sha1": "03eeec5da785debf717586c8c1461e7d479205ba",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-restart.md"
+    },
+    {
+      "bytes": 1096,
+      "git_blob_sha1": "8f4825bafaa3f783b4c6f3cb95e6254cb5740377",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-root.md"
+    },
+    {
+      "bytes": 7538,
+      "git_blob_sha1": "9894e4b939d0dbda6c1eff7d45862ecd2df28185",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-run.md"
+    },
+    {
+      "bytes": 8337,
+      "git_blob_sha1": "f15e30bfcd05d9bbe3778e4ba56df2b3f6e58894",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-sbom.md"
+    },
+    {
+      "bytes": 3463,
+      "git_blob_sha1": "d3f46a90c1a236414425ab0c17f9244c8c795852",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-search.md"
+    },
+    {
+      "bytes": 1433,
+      "git_blob_sha1": "9420216a14e18abc8f74d1f72d162bf24acd512d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-set.md"
+    },
+    {
+      "bytes": 909,
+      "git_blob_sha1": "813affd9f56071efa0cab58c4dbe9224fd384101",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-shrinkwrap.md"
+    },
+    {
+      "bytes": 13180,
+      "git_blob_sha1": "798d6c2d953a7c917a203d36f494888d8d38fdee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-stage.md"
+    },
+    {
+      "bytes": 1712,
+      "git_blob_sha1": "2820d1ca2e26062257487c96ec29b6de3687cfd6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-star.md"
+    },
+    {
+      "bytes": 743,
+      "git_blob_sha1": "f49883a7a2c1931be5f05a3de484204872fc111c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-stars.md"
+    },
+    {
+      "bytes": 1632,
+      "git_blob_sha1": "eb5d5c54684ac8a2d13161b6802923a016aeb47b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-start.md"
+    },
+    {
+      "bytes": 1320,
+      "git_blob_sha1": "2ccad18038e0b2378a7125cbee8782230811ee3a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-stop.md"
+    },
+    {
+      "bytes": 4084,
+      "git_blob_sha1": "9ac1805c705e0419e83387bbc4658e1d0269b512",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-team.md"
+    },
+    {
+      "bytes": 1213,
+      "git_blob_sha1": "f145dc8958bf8c1b54cfc88fdf054382b1200cc4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-test.md"
+    },
+    {
+      "bytes": 4905,
+      "git_blob_sha1": "3c8e08d7fc38ad904055a906b8de5f78be293643",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-token.md"
+    },
+    {
+      "bytes": 11475,
+      "git_blob_sha1": "bebbd1efa312ffa1b2c12dcb9eb5c22f497cede6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-trust.md"
+    },
+    {
+      "bytes": 1406,
+      "git_blob_sha1": "fdd1a25504e1c43069549c49932ee0ed2e2a5f46",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-undeprecate.md"
+    },
+    {
+      "bytes": 4447,
+      "git_blob_sha1": "43b706f9c9440141a902bebedb0e6f9d274a91fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-uninstall.md"
+    },
+    {
+      "bytes": 4491,
+      "git_blob_sha1": "fe2d9be0f4a97b341e016231d3ee88509d66c29d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-unpublish.md"
+    },
+    {
+      "bytes": 1574,
+      "git_blob_sha1": "24764733e4a0e9f200602b40cbf9adbe3b0c9caa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-unstar.md"
+    },
+    {
+      "bytes": 17447,
+      "git_blob_sha1": "317f85f7d0dbd622e6e36a8fa8d12ec61b6a2add",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-update.md"
+    },
+    {
+      "bytes": 8186,
+      "git_blob_sha1": "9016c8071f7593baa02dadc1b328a25263a0d0a2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-version.md"
+    },
+    {
+      "bytes": 7425,
+      "git_blob_sha1": "3b4fa50976d260486093c21e5cd73c4d8137b7b4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-view.md"
+    },
+    {
+      "bytes": 800,
+      "git_blob_sha1": "fb09864050ff6ca63153f1f9a36f272225d96ea0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm-whoami.md"
+    },
+    {
+      "bytes": 5638,
+      "git_blob_sha1": "75157bd7b5983ef8faec8ff02acc2d17c19c9d61",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npm.md"
+    },
+    {
+      "bytes": 6286,
+      "git_blob_sha1": "2f24477f93bda4e2c42ea963cde97310bf2e016c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/commands/npx.md"
+    },
+    {
+      "bytes": 7752,
+      "git_blob_sha1": "20458512d8b9070686b0cee6703c3276bfd01e8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/folders.md"
+    },
+    {
+      "bytes": 2598,
+      "git_blob_sha1": "4af74954692f8c705afab72d7ba5cefa6efe25b0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/install.md"
+    },
+    {
+      "bytes": 1251,
+      "git_blob_sha1": "4ea5e4dc20b1d07c8ed9122ba9316252db1fc192",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/npm-shrinkwrap-json.md"
+    },
+    {
+      "bytes": 6377,
+      "git_blob_sha1": "b1e7d16be10c792f276782b90c9dde078ff0378a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/npmrc.md"
+    },
+    {
+      "bytes": 37607,
+      "git_blob_sha1": "12b87cb7a84c981319990f26aca9daadf49ac7f4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/package-json.md"
+    },
+    {
+      "bytes": 10993,
+      "git_blob_sha1": "4d81156bd9c3c7e06c3c230cd0d140e06935524f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/configuring-npm/package-lock-json.md"
+    },
+    {
+      "bytes": 59697,
+      "git_blob_sha1": "5d951493e8a1c1313b1c365a3306ef8fcaf690de",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/config.md"
+    },
+    {
+      "bytes": 12292,
+      "git_blob_sha1": "ea4a23146763662a3c1f4af8cff343da3bb0a546",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/dependency-selectors.md"
+    },
+    {
+      "bytes": 9055,
+      "git_blob_sha1": "b1fff0e3894f30ce01d6d71776e6a347e102f728",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/developers.md"
+    },
+    {
+      "bytes": 3894,
+      "git_blob_sha1": "6f1a2be102a1a5de194cfdf048c30c3aae18a780",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/logging.md"
+    },
+    {
+      "bytes": 2268,
+      "git_blob_sha1": "ea1173a852acc740d3dcf280c279fc7ecf2b9a81",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/orgs.md"
+    },
+    {
+      "bytes": 2874,
+      "git_blob_sha1": "fa98f21eb5686c20274c4ef693ffe485a5aa7096",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/package-spec.md"
+    },
+    {
+      "bytes": 3484,
+      "git_blob_sha1": "739f2a6a203f5aae1982568cf5310f5ed3c3e085",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/registry.md"
+    },
+    {
+      "bytes": 1645,
+      "git_blob_sha1": "4cf3b64c6d4cf89d3188f73780380bb3429af5c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/removal.md"
+    },
+    {
+      "bytes": 5154,
+      "git_blob_sha1": "f9fc14075c4a3683248ecdf8fbf74c0682ebea06",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/scope.md"
+    },
+    {
+      "bytes": 14695,
+      "git_blob_sha1": "dcae0c66da0e3f2b34c943bc7abd110f35a2e4d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/scripts.md"
+    },
+    {
+      "bytes": 6611,
+      "git_blob_sha1": "09d569748cd23fd85c106538c0c261a989ef26d9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/docs/content/using-npm/workspaces.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/arborist/LICENSE.md"
+    },
+    {
+      "bytes": 16361,
+      "git_blob_sha1": "bdffaf4041ab683c9b8568c310efc15694990b84",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/arborist/README.md"
+    },
+    {
+      "bytes": 9700,
+      "git_blob_sha1": "6a948d9b11a9122ff3db037560f8c43112f3cb48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/config/README.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/fs/LICENSE.md"
+    },
+    {
+      "bytes": 4190,
+      "git_blob_sha1": "edd23bd26d64c81ec95f1eeb1c390ed7b1b70c00",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/installed-package-contents/README.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/@npmcli/map-workspaces/LICENSE.md"
+    },
+    {
+      "bytes": 1155,
+      "git_blob_sha1": "61ece8cc92afb41fdb1552ec1f72ac147b9eaceb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/balanced-match/LICENSE.md"
+    },
+    {
+      "bytes": 755,
+      "git_blob_sha1": "8d28acf866d9325ba4d3d882a167368bc3356bee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/cacache/LICENSE.md"
+    },
+    {
+      "bytes": 1764,
+      "git_blob_sha1": "881248b6d7f0ca2c4f65c41c0af5e02bb0680601",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/chownr/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/common-ancestor-path/LICENSE.md"
+    },
+    {
+      "bytes": 6585,
+      "git_blob_sha1": "58fb8fe0b6b91f8d3ce0207f5c967f5d22c46eff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/cssesc/README.md"
+    },
+    {
+      "bytes": 988,
+      "git_blob_sha1": "320bd00edf9f7268a230277e8a9207c6a115f44d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/diff/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 39064,
+      "git_blob_sha1": "00a277084c8bfbbcc56310643b6f3bc6f159ebd5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/diff/release-notes.md"
+    },
+    {
+      "bytes": 1072,
+      "git_blob_sha1": "0e62da309fa1ebd816df676419cfd7c2f454390e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/fastest-levenshtein/LICENSE.md"
+    },
+    {
+      "bytes": 1764,
+      "git_blob_sha1": "881248b6d7f0ca2c4f65c41c0af5e02bb0680601",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/glob/LICENSE.md"
+    },
+    {
+      "bytes": 717,
+      "git_blob_sha1": "845be76f64e7899eb1ab0e4d932a9f389276347a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/init-package-json/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/isexe/LICENSE.md"
+    },
+    {
+      "bytes": 1209,
+      "git_blob_sha1": "6991b7cbb89db9a54a2ade0bb017eb8729b6ccc2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/json-parse-even-better-errors/LICENSE.md"
+    },
+    {
+      "bytes": 3207,
+      "git_blob_sha1": "233b61e65ea1ad06d088fccdee9d482afec7c485",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmaccess/README.md"
+    },
+    {
+      "bytes": 3558,
+      "git_blob_sha1": "68fcd88af2d791052ccbbba3400d8b7e7578cc8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmdiff/README.md"
+    },
+    {
+      "bytes": 2398,
+      "git_blob_sha1": "84512ac590498a10c4fb711632a85b5a9142a1e6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmexec/README.md"
+    },
+    {
+      "bytes": 3980,
+      "git_blob_sha1": "2b5b283014c8613a743cccedd16ed61e15fa8be9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmfund/README.md"
+    },
+    {
+      "bytes": 4271,
+      "git_blob_sha1": "d5165523eec98638c6f0101188788fa9d2712b75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmorg/README.md"
+    },
+    {
+      "bytes": 1776,
+      "git_blob_sha1": "949dd07d8b5198a5d04c0ef748a07ba2342f5949",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmpack/README.md"
+    },
+    {
+      "bytes": 4882,
+      "git_blob_sha1": "4daac34feaad10ffae92eb1013bf32b2954385dd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmpublish/README.md"
+    },
+    {
+      "bytes": 5138,
+      "git_blob_sha1": "86d75b16a433e1241fe16627c5d03896e1a5b9c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmsearch/README.md"
+    },
+    {
+      "bytes": 4405,
+      "git_blob_sha1": "f61032514bf822074b9d162c7f7e2b4499d8af67",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmteam/README.md"
+    },
+    {
+      "bytes": 6178,
+      "git_blob_sha1": "d60a144bcc1bf170c4d9079a430bc751fc9234ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/libnpmversion/README.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/lru-cache/LICENSE.md"
+    },
+    {
+      "bytes": 1550,
+      "git_blob_sha1": "8cb5cc6e616c0d9259b4965f9d2ce8528e4d2828",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/minimatch/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/minipass-flush/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/minipass/LICENSE.md"
+    },
+    {
+      "bytes": 1079,
+      "git_blob_sha1": "fa5d39b6213f8a5e142b643575f99d9149cc71c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/ms/license.md"
+    },
+    {
+      "bytes": 2619,
+      "git_blob_sha1": "63d537d3f681143b17f9250b199a865297b020be",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/negotiator/HISTORY.md"
+    },
+    {
+      "bytes": 123501,
+      "git_blob_sha1": "83881ed2a399834021606a5ce6eaf0eb6ffc8690",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/CHANGELOG.md"
+    },
+    {
+      "bytes": 207,
+      "git_blob_sha1": "4c211405596cb42eac87cbf2c90c2764766fbb18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 1774,
+      "git_blob_sha1": "618fb6ae9e03a83dbe33e6044f9c24ee9a12c6ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 12285,
+      "git_blob_sha1": "3afa252874b31f575603e50a3bfff448a73a058e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/README.md"
+    },
+    {
+      "bytes": 151,
+      "git_blob_sha1": "1e168d76e3b1b0b9b0c746e1cc4bf9b317b68525",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/SECURITY.md"
+    },
+    {
+      "bytes": 6291,
+      "git_blob_sha1": "6d659a6123b661b55f68caff401d3a5b2c8ab7af",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/GypVsCMake.md"
+    },
+    {
+      "bytes": 1185,
+      "git_blob_sha1": "156d485b5b82d1f4d1a10ced368448dddeccda35",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/Hacking.md"
+    },
+    {
+      "bytes": 39057,
+      "git_blob_sha1": "4b114f2debca459288f1401382fbffc351a3daa3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/InputFormatReference.md"
+    },
+    {
+      "bytes": 22149,
+      "git_blob_sha1": "f8fff097ab73f3db469e966dc4c4c61154df312f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/LanguageSpecification.md"
+    },
+    {
+      "bytes": 1143,
+      "git_blob_sha1": "5f9b6a59ce0f925d0fb414ff4f807ce35a869953",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/README.md"
+    },
+    {
+      "bytes": 11874,
+      "git_blob_sha1": "a52031e88819a6025363fe9f57fb2f4077e0ea0b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/Testing.md"
+    },
+    {
+      "bytes": 25796,
+      "git_blob_sha1": "b9d412e1c847ba1727e42052e11b8b31f2a67bc8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/node-gyp/gyp/docs/UserDocumentation.md"
+    },
+    {
+      "bytes": 7983,
+      "git_blob_sha1": "19ef097bb2c2203cd95e12dd95cd0fa2d53a9e95",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/nopt/README.md"
+    },
+    {
+      "bytes": 755,
+      "git_blob_sha1": "8d28acf866d9325ba4d3d882a167368bc3356bee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/npm-pick-manifest/LICENSE.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/npm-profile/LICENSE.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/npm-registry-fetch/LICENSE.md"
+    },
+    {
+      "bytes": 12984,
+      "git_blob_sha1": "cf85dfda5ddbb530199b31cd713c0e8ce727240f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/pacote/README.md"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "5fc208ff122e08e2ca9777f80b0551617b30ba2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/parse-conflict-json/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/path-scurry/LICENSE.md"
+    },
+    {
+      "bytes": 21096,
+      "git_blob_sha1": "e564830b66b04b4410e2a9f4c28bab6ae033e617",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/postcss-selector-parser/API.md"
+    },
+    {
+      "bytes": 1870,
+      "git_blob_sha1": "f5c830f20f45bd8deed20d02711d5db919404253",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/qrcode-terminal/README.md"
+    },
+    {
+      "bytes": 12794,
+      "git_blob_sha1": "68d86bab032fabc624b2e312ec3a87666a12b07c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/safer-buffer/Porting-Buffer.md"
+    },
+    {
+      "bytes": 25666,
+      "git_blob_sha1": "c307e82d46ae44f4910abca941f9ed06d9e84bc0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/semver/README.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/smart-buffer/docs/ROADMAP.md"
+    },
+    {
+      "bytes": 354,
+      "git_blob_sha1": "87bfe250e208fea1ecc979d5fc2dd421f8df235c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/index.md"
+    },
+    {
+      "bytes": 3274,
+      "git_blob_sha1": "c2c7b17b737977960e6417824dbc2f09ab265e34",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/javascript/associateExample.md"
+    },
+    {
+      "bytes": 2772,
+      "git_blob_sha1": "be601d522e7890fe5421a3307e8eaf1dde0bd26c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/javascript/bindExample.md"
+    },
+    {
+      "bytes": 7567,
+      "git_blob_sha1": "66244c5b839b55f5262200a66a81bf362a2b85cb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/javascript/connectExample.md"
+    },
+    {
+      "bytes": 3337,
+      "git_blob_sha1": "e8ca193444b3d5c0ec871682dff3b7642c6e0c48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/typescript/associateExample.md"
+    },
+    {
+      "bytes": 2838,
+      "git_blob_sha1": "6b7607df727f31b096a1941cf08a5c44895aaf75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/typescript/bindExample.md"
+    },
+    {
+      "bytes": 7738,
+      "git_blob_sha1": "30606d0ba507bda3b9fa0a1c3232cb37e8a99924",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/examples/typescript/connectExample.md"
+    },
+    {
+      "bytes": 129,
+      "git_blob_sha1": "3eb1d71182b8526f3a9809c2f085dec0f564fd65",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/index.md"
+    },
+    {
+      "bytes": 2629,
+      "git_blob_sha1": "dd008384b9bbfae70096ccf2078721c313b1e15c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/socks/docs/migratingFromV1.md"
+    },
+    {
+      "bytes": 760,
+      "git_blob_sha1": "e335388869f50f3f32cc5e041082a7e53aef27a2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/ssri/LICENSE.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/tar/LICENSE.md"
+    },
+    {
+      "bytes": 1068,
+      "git_blob_sha1": "e42aca312b693aa42acff620e4c4d00f80e092a0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/tiny-relative-date/LICENSE.md"
+    },
+    {
+      "bytes": 2797,
+      "git_blob_sha1": "dd5d99bc1e1287e647f3112534cf4454847af535",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Agent.md"
+    },
+    {
+      "bytes": 2817,
+      "git_blob_sha1": "183ef523185a90a59ae7fae0b64fad5c4be100c9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/BalancedPool.md"
+    },
+    {
+      "bytes": 1078,
+      "git_blob_sha1": "08ee99fab148cea2b8de9e2d27efdc6fa417fbd0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/CacheStorage.md"
+    },
+    {
+      "bytes": 11596,
+      "git_blob_sha1": "e0d41b47805ec238306e8df8779363e724fb3bf5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Client.md"
+    },
+    {
+      "bytes": 3464,
+      "git_blob_sha1": "56821bd6430279cf07066e9b543749aa0748cb04",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Connector.md"
+    },
+    {
+      "bytes": 1130,
+      "git_blob_sha1": "2bcc9f71ca3252a189d58d338001942c93dba50f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/ContentType.md"
+    },
+    {
+      "bytes": 2043,
+      "git_blob_sha1": "0cad37914d625889459e439768aa7d72848816aa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Cookies.md"
+    },
+    {
+      "bytes": 2297,
+      "git_blob_sha1": "7efc99e3e31f5fb1608fde02de18cc1d454eb611",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Debug.md"
+    },
+    {
+      "bytes": 6271,
+      "git_blob_sha1": "099c072f6c6ca7d833cb238920551be105ed85fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/DiagnosticsChannel.md"
+    },
+    {
+      "bytes": 1524,
+      "git_blob_sha1": "7dfc260e32a9c867f473ee748d8852300712899f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/DispatchInterceptor.md"
+    },
+    {
+      "bytes": 42083,
+      "git_blob_sha1": "107e133ebd4f09133f8697101d3d9e847270e9e2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Dispatcher.md"
+    },
+    {
+      "bytes": 5704,
+      "git_blob_sha1": "a4932de8be790829971a5b19d4fc7a9fb7a806f1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/EnvHttpProxyAgent.md"
+    },
+    {
+      "bytes": 3877,
+      "git_blob_sha1": "a6af44de762c2f25feec3b902c603409701ce22b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Errors.md"
+    },
+    {
+      "bytes": 1236,
+      "git_blob_sha1": "8244aa77ed9426c3acb7d8a4fa4384fb269a0f18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/EventSource.md"
+    },
+    {
+      "bytes": 2124,
+      "git_blob_sha1": "00c349847dcd333ecec3712ef676b95714ee1338",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Fetch.md"
+    },
+    {
+      "bytes": 15248,
+      "git_blob_sha1": "85ae69046e73f999b00bbb4e3acbcc75be2bdf08",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/MockAgent.md"
+    },
+    {
+      "bytes": 2021,
+      "git_blob_sha1": "ac546913d237d5f15a6ba9dbf85159acea63a307",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/MockClient.md"
+    },
+    {
+      "bytes": 595,
+      "git_blob_sha1": "c1aa3dbee8ec5e7a311c07f4be431a59a5fc389e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/MockErrors.md"
+    },
+    {
+      "bytes": 16229,
+      "git_blob_sha1": "96a986f57bb3898fef0af5e591bee0db949278e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/MockPool.md"
+    },
+    {
+      "bytes": 2769,
+      "git_blob_sha1": "8fcabac31541d95f17b5bbdab1063424f5cd87dc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Pool.md"
+    },
+    {
+      "bytes": 775,
+      "git_blob_sha1": "16b6dc25364a21808614fdad3ce41a17f2f19e2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/PoolStats.md"
+    },
+    {
+      "bytes": 5031,
+      "git_blob_sha1": "a1a0d4651c82bed44411d07d96dbafc11dd98e35",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/ProxyAgent.md"
+    },
+    {
+      "bytes": 3206,
+      "git_blob_sha1": "90a937e7c13b94c6eafef92d34e1caa6ac91fbdd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/RedirectHandler.md"
+    },
+    {
+      "bytes": 2015,
+      "git_blob_sha1": "53ce52313156d3f5092e66ae74803cf060c017c9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/RetryAgent.md"
+    },
+    {
+      "bytes": 4375,
+      "git_blob_sha1": "0dd9f29533f8614103b8d90e104f64e05b6d0c08",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/RetryHandler.md"
+    },
+    {
+      "bytes": 732,
+      "git_blob_sha1": "53b96e3ed3f50300c5d2089b9823c91987a39e1b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/Util.md"
+    },
+    {
+      "bytes": 1923,
+      "git_blob_sha1": "8b6f7b9cfdaeac94b01e64e004e4a74490aa1192",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/WebSocket.md"
+    },
+    {
+      "bytes": 7749,
+      "git_blob_sha1": "69144b61538f7d67b581cbf72846b6ba54485a10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/api/api-lifecycle.md"
+    },
+    {
+      "bytes": 2053,
+      "git_blob_sha1": "9ead733af9e87e0833cff2fdecff840950ffda14",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/best-practices/client-certificate.md"
+    },
+    {
+      "bytes": 3341,
+      "git_blob_sha1": "695439274449a5bab5eb23fc9863ca1addd29dcd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/best-practices/mocking-request.md"
+    },
+    {
+      "bytes": 3327,
+      "git_blob_sha1": "42f22461c15c7759cbcdf96501a2a2e2f74dc1c9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/best-practices/proxy.md"
+    },
+    {
+      "bytes": 648,
+      "git_blob_sha1": "57549de63572a7eccf5f63f52129886e8aa07777",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/undici/docs/docs/best-practices/writing-tests.md"
+    },
+    {
+      "bytes": 282,
+      "git_blob_sha1": "acc8675372e980824723cfcfec09c0ba43a3195a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/util-deprecate/History.md"
+    },
+    {
+      "bytes": 1377,
+      "git_blob_sha1": "942bf1e0932b899624c0cd17c1d49cd5c315c57e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/which/README.md"
+    },
+    {
+      "bytes": 733,
+      "git_blob_sha1": "af4588069db82d09339ce56d27225f37975f8744",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/write-file-atomic/LICENSE.md"
+    },
+    {
+      "bytes": 1764,
+      "git_blob_sha1": "881248b6d7f0ca2c4f65c41c0af5e02bb0680601",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/npm/node_modules/yallist/LICENSE.md"
+    },
+    {
+      "bytes": 4061,
+      "git_blob_sha1": "c3e48022c604e4ac36fc2773a1e367d2a507d916",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/README.md"
+    },
+    {
+      "bytes": 159,
+      "git_blob_sha1": "10178d7caeed850b227e565a1eb78629c00cfbf6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/ACKNOWLEDGEMENTS.md"
+    },
+    {
+      "bytes": 1022,
+      "git_blob_sha1": "5b036a0d8358167c87c7fa275cc671cd222dcce6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/AUTHORS.md"
+    },
+    {
+      "bytes": 846578,
+      "git_blob_sha1": "b440f013313f6bf573b0d5559892e90f81b9ba52",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/CHANGES.md"
+    },
+    {
+      "bytes": 169,
+      "git_blob_sha1": "a5ba2ae6da627b8ec7ec0718d3b50cccf54ad803",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/CODE-OF-CONDUCT.md"
+    },
+    {
+      "bytes": 6734,
+      "git_blob_sha1": "8a0d40524ddbdeb6cf3289d7bc2ba3165d154da9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 24441,
+      "git_blob_sha1": "ef21a3ae28402836164f375b4c5d2cb5e9fdb21c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/Configurations/README-design.md"
+    },
+    {
+      "bytes": 32367,
+      "git_blob_sha1": "b07e758296450578eb7a0737483a3db58f299538",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/Configurations/README.md"
+    },
+    {
+      "bytes": 3218,
+      "git_blob_sha1": "b58f08a2dc9acf7342159ce2ac900c21c9378754",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/HACKING.md"
+    },
+    {
+      "bytes": 71231,
+      "git_blob_sha1": "983f6aad136932f0d947e5d741936ee4f48227c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/INSTALL.md"
+    },
+    {
+      "bytes": 102753,
+      "git_blob_sha1": "329b1772c34831c7d26f2f6af3e89a0daecbc164",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NEWS.md"
+    },
+    {
+      "bytes": 4619,
+      "git_blob_sha1": "b71365fe731e650e27bce84f64ae11ab25af33dd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-ANDROID.md"
+    },
+    {
+      "bytes": 835,
+      "git_blob_sha1": "feeb5434855748507784da736117754568ba15c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-ANSI.md"
+    },
+    {
+      "bytes": 2112,
+      "git_blob_sha1": "0b23c48370b330563fbce262c57a07d79a8df5cc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-DJGPP.md"
+    },
+    {
+      "bytes": 10642,
+      "git_blob_sha1": "a2d485132da6840fd48d5592497436ca5216c8b5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-NONSTOP.md"
+    },
+    {
+      "bytes": 4995,
+      "git_blob_sha1": "3a91f09c2d5e17081b1978144a66e89eccb6d515",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-PERL.md"
+    },
+    {
+      "bytes": 748,
+      "git_blob_sha1": "4b8a845e87d51cc6f38c5b2283e4d15f83f46c15",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-POSIX.md"
+    },
+    {
+      "bytes": 5685,
+      "git_blob_sha1": "fa52de68abc62ca176e2183e08ef0f97b1311fc9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-UNIX.md"
+    },
+    {
+      "bytes": 2871,
+      "git_blob_sha1": "96f0df1d194d518446822d82f4f24acb2a16e634",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-VALGRIND.md"
+    },
+    {
+      "bytes": 4832,
+      "git_blob_sha1": "566a04d2a9fed386e42ffd6fbf52d2b74220999b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-VMS.md"
+    },
+    {
+      "bytes": 10951,
+      "git_blob_sha1": "5d6287a8e8fdc86f1d65f151488fcbc10f4454eb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/NOTES-WINDOWS.md"
+    },
+    {
+      "bytes": 15636,
+      "git_blob_sha1": "24ec748fe5662c82916077a72f0a4e17b474f29f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/README-ENGINES.md"
+    },
+    {
+      "bytes": 8744,
+      "git_blob_sha1": "feb6892a2c47c02c125400c75fe274298325ee97",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/README-FIPS.md"
+    },
+    {
+      "bytes": 5483,
+      "git_blob_sha1": "3b5476831b263e03586b896c7246e27bdca50645",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/README-PROVIDERS.md"
+    },
+    {
+      "bytes": 4769,
+      "git_blob_sha1": "5b70464e5db129f03b0830c3baca796fb6482d26",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/README-QUIC.md"
+    },
+    {
+      "bytes": 8137,
+      "git_blob_sha1": "d3f79363d50aa08518ef587f8c9a63520f9f173e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/README.md"
+    },
+    {
+      "bytes": 3897,
+      "git_blob_sha1": "c0b6babe89ada919960cd7809dfdc6cc9db90463",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/SUPPORT.md"
+    },
+    {
+      "bytes": 5721,
+      "git_blob_sha1": "bc2ff0cb8aeee4e16e81de3e00400861fadbd094",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/README-sparse_array.md"
+    },
+    {
+      "bytes": 14004,
+      "git_blob_sha1": "b45115ca2481f355a6c6303f33132b557e2b7699",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/engine/README.md"
+    },
+    {
+      "bytes": 1824,
+      "git_blob_sha1": "477dffa2ad3251c8024a6bc41e96c831f9024189",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/err/README.md"
+    },
+    {
+      "bytes": 1552,
+      "git_blob_sha1": "49c749887d2f017af7b14e1bea6f53ba5e3a6955",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/objects/README.md"
+    },
+    {
+      "bytes": 4316,
+      "git_blob_sha1": "912dac7f0736f425a7785a1563df677df0343d2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/perlasm/README.md"
+    },
+    {
+      "bytes": 4593,
+      "git_blob_sha1": "9d97a69873052cdbb734ed405a6190dc21492770",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/crypto/property/README.md"
+    },
+    {
+      "bytes": 7385,
+      "git_blob_sha1": "795606fec2c439ac09504d37e4adbb1d2cc0f800",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/fuzz/README.md"
+    },
+    {
+      "bytes": 3383,
+      "git_blob_sha1": "ee49ed986371c54935e905b02de3d5764bdc2114",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/openssl/openssl/ssl/statem/README.md"
+    },
+    {
+      "bytes": 196,
+      "git_blob_sha1": "cb674bc46b0644c0182700ad71fab793eb0f9c50",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 11006,
+      "git_blob_sha1": "35f2773e6354e6680554616e01ed2979a7044ce0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 5544,
+      "git_blob_sha1": "dc1223cb07f641d537fcdc5fa33588bdadc865e5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/GOVERNANCE.md"
+    },
+    {
+      "bytes": 2370,
+      "git_blob_sha1": "cefd1ffa5d91cf8e5e133f4dfd186edd49461a8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/MAINTAINERS.md"
+    },
+    {
+      "bytes": 33235,
+      "git_blob_sha1": "8ccd602b5c55cd0b62e27e73a9cf4c1020a53ba5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/README.md"
+    },
+    {
+      "bytes": 9518,
+      "git_blob_sha1": "ad984a32f281ed6abb149ac3b1a5cecf08cb3581",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/SECURITY.md"
+    },
+    {
+      "bytes": 8578,
+      "git_blob_sha1": "0c59b6eac56a6f260836109937ca629492b0214f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Agent.md"
+    },
+    {
+      "bytes": 7869,
+      "git_blob_sha1": "77cd0a819b6b3190faf3e89dfe12ea0911ea9b0c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/BalancedPool.md"
+    },
+    {
+      "bytes": 4944,
+      "git_blob_sha1": "49d84bcd2de1a2f15402ce126b0134d682ea2d88",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/CacheStorage.md"
+    },
+    {
+      "bytes": 11357,
+      "git_blob_sha1": "3e30abd5699b88a479997c55bdc854c01c25c053",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/CacheStore.md"
+    },
+    {
+      "bytes": 18267,
+      "git_blob_sha1": "5f44ae42db860d4a28c1d866df01755e78de74fe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Client.md"
+    },
+    {
+      "bytes": 1904,
+      "git_blob_sha1": "0a6af86a1ff75f1feec708bf87285ae1654c3d9c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/ClientStats.md"
+    },
+    {
+      "bytes": 7457,
+      "git_blob_sha1": "8e21f1713f0ea4a9b6a2e0a1d1d870426e80b56e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Connector.md"
+    },
+    {
+      "bytes": 3091,
+      "git_blob_sha1": "3b94ba10bdbf0650df1c0c1c8de91d9f09c1d27f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/ContentType.md"
+    },
+    {
+      "bytes": 5501,
+      "git_blob_sha1": "55aa2e1563af664c464843c38fb0258fd5e25a91",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Cookies.md"
+    },
+    {
+      "bytes": 3349,
+      "git_blob_sha1": "da511b29cf58e290f247e1ddeac606c6e60d592f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Debug.md"
+    },
+    {
+      "bytes": 15695,
+      "git_blob_sha1": "aee300302fc11b2832bc13a4b11d31f225c66cef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/DiagnosticsChannel.md"
+    },
+    {
+      "bytes": 27399,
+      "git_blob_sha1": "10d4fcf1968f5f0607d65ac104d41e7f06ccc0f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Dispatcher.md"
+    },
+    {
+      "bytes": 5745,
+      "git_blob_sha1": "f14b8760964ef92db3b622397ecbb9a84559c852",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/EnvHttpProxyAgent.md"
+    },
+    {
+      "bytes": 13751,
+      "git_blob_sha1": "713537395b2263de862478095b2ea71ac1cdf12a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Errors.md"
+    },
+    {
+      "bytes": 9716,
+      "git_blob_sha1": "285a983379f7a32b60b5ff4994f235f1fec97741",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/EventSource.md"
+    },
+    {
+      "bytes": 17198,
+      "git_blob_sha1": "af3527422329e29f6cbfa475bd5408fa3bbfb753",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Fetch.md"
+    },
+    {
+      "bytes": 3268,
+      "git_blob_sha1": "f50504a375d1b33d77f9236bc0d7b0ea012b8922",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/GlobalInstallation.md"
+    },
+    {
+      "bytes": 13166,
+      "git_blob_sha1": "298a7d4c68857b6baa3caa25fa656d1bb9280f82",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/H2CClient.md"
+    },
+    {
+      "bytes": 12424,
+      "git_blob_sha1": "856877c3e4ae21167bbdde42fbe3c27ff5863e1a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Interceptors.md"
+    },
+    {
+      "bytes": 18083,
+      "git_blob_sha1": "20682c41c97d584b7eeb376571203ef76072425f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockAgent.md"
+    },
+    {
+      "bytes": 10661,
+      "git_blob_sha1": "27c7a2aaf6b56dd826934c4a7c6572572a346846",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockCallHistory.md"
+    },
+    {
+      "bytes": 4892,
+      "git_blob_sha1": "40c1bdbfdf0bdb24c219b56afa2e2840058d7b7f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockCallHistoryLog.md"
+    },
+    {
+      "bytes": 6389,
+      "git_blob_sha1": "56c929756348cd24eb0432386bdcf6803fbb53ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockClient.md"
+    },
+    {
+      "bytes": 1683,
+      "git_blob_sha1": "4842cc773d8a1879b4fbaa5773aaca169d3500b8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockErrors.md"
+    },
+    {
+      "bytes": 19764,
+      "git_blob_sha1": "e5c2da151ea19ded60f7ad912e263a8cee0eddb8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/MockPool.md"
+    },
+    {
+      "bytes": 8355,
+      "git_blob_sha1": "dc0bd2d0f683da89cd20691d3bbc0c3df7a38af7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Pool.md"
+    },
+    {
+      "bytes": 3325,
+      "git_blob_sha1": "758068d12ce8caae926c4bd77cc02d0af59219c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/PoolStats.md"
+    },
+    {
+      "bytes": 8518,
+      "git_blob_sha1": "94d377ec401a7bd36ab030eeb5198a516357954a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/ProxyAgent.md"
+    },
+    {
+      "bytes": 8831,
+      "git_blob_sha1": "cedb0291d8a3db91f3e8f0865713b56130b10d2a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/RedirectHandler.md"
+    },
+    {
+      "bytes": 5012,
+      "git_blob_sha1": "726620b72f27d8f8cdad73056a6d81e38239535a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/RetryAgent.md"
+    },
+    {
+      "bytes": 7349,
+      "git_blob_sha1": "fa028ef1d59c2944ef24347cfb752303fc2bc8ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/RetryHandler.md"
+    },
+    {
+      "bytes": 6917,
+      "git_blob_sha1": "2e979284a60ec6799f2db757123a7e6df9784afb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/RoundRobinPool.md"
+    },
+    {
+      "bytes": 11453,
+      "git_blob_sha1": "27c132ba76343ad0eaea6cb4a4de64c8b8eac7b3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/SnapshotAgent.md"
+    },
+    {
+      "bytes": 7910,
+      "git_blob_sha1": "783424da5114973d3923c66154fb4f09291d1a4c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Socks5ProxyAgent.md"
+    },
+    {
+      "bytes": 2574,
+      "git_blob_sha1": "2468c72224deaa528d20eb3b7a3b196f2a5a7055",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/Util.md"
+    },
+    {
+      "bytes": 14363,
+      "git_blob_sha1": "316d222915d44bf4b34564fe507dc7e04c1660ec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/WebSocket.md"
+    },
+    {
+      "bytes": 6885,
+      "git_blob_sha1": "c43adc908a2b2219607379bc83a60ada37930475",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/api/api-lifecycle.md"
+    },
+    {
+      "bytes": 2071,
+      "git_blob_sha1": "82ae4e76b364c418775e8abd9aa103ae274ae8d7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/client-certificate.md"
+    },
+    {
+      "bytes": 3172,
+      "git_blob_sha1": "9ed235c1c8b032cbf78d638e0aeb4376f3b932ad",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/crawling.md"
+    },
+    {
+      "bytes": 5771,
+      "git_blob_sha1": "b5f18224e2111807eac15e7dd15cd99df872ff9b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/migrating-from-v7-to-v8.md"
+    },
+    {
+      "bytes": 5538,
+      "git_blob_sha1": "86ebca94f7a5a7e0cf83fd3cb09a1b57fe931dc4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/mocking-request.md"
+    },
+    {
+      "bytes": 3324,
+      "git_blob_sha1": "c1fded968851e431725d6edaa46aefbd4aefc7d8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/proxy.md"
+    },
+    {
+      "bytes": 6588,
+      "git_blob_sha1": "42ce9e10d3647eb09cc71eab3a57c23fcb330474",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/undici-vs-builtin-fetch.md"
+    },
+    {
+      "bytes": 2236,
+      "git_blob_sha1": "7c5fe167349536ad3b54cdf6436d5cdf854fb219",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/best-practices/writing-tests.md"
+    },
+    {
+      "bytes": 6946,
+      "git_blob_sha1": "abe021d0e7f30c5c4e12eab442b78b122ba21f5f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/getting-started.md"
+    },
+    {
+      "bytes": 33270,
+      "git_blob_sha1": "ab28166fcf354e995168563901b8de6b14cfd91b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/docs/docs/index.md"
+    },
+    {
+      "bytes": 385,
+      "git_blob_sha1": "289a2b84d466d085b243c49fae084b78e25dbcdd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/lib/web/subresource-integrity/Readme.md"
+    },
+    {
+      "bytes": 455,
+      "git_blob_sha1": "20a721c445a21b60d9d3a20d142da608bffd7d9b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/undici/src/types/README.md"
+    },
+    {
+      "bytes": 5740,
+      "git_blob_sha1": "d37c51d63638562d6004929ef50084df4498d46f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 7739,
+      "git_blob_sha1": "c73c455223c47b1438562eb774ff9174341538e1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/LINKS.md"
+    },
+    {
+      "bytes": 2628,
+      "git_blob_sha1": "ff8be88b7b7cd56bd168d18d42a5e7c2e369f230",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/MAINTAINERS.md"
+    },
+    {
+      "bytes": 9972,
+      "git_blob_sha1": "1f1fdbfe3f7059b66f94a310577bbb383fda2fca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/README.md"
+    },
+    {
+      "bytes": 1302,
+      "git_blob_sha1": "32abba81544c2202c571f493938fb0f831431cd3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/SECURITY.md"
+    },
+    {
+      "bytes": 2675,
+      "git_blob_sha1": "b317da6f45c66fa883b7cb3c010b899e4abad455",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/uv/SUPPORTED_PLATFORMS.md"
+    },
+    {
+      "bytes": 459,
+      "git_blob_sha1": "15fc2259ada6b7703062bf1de6444e19e04d96bb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 16351,
+      "git_blob_sha1": "a05de91ed9d0dcf082ebb8844073c76a6dc5f73e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/GEMINI.md"
+    },
+    {
+      "bytes": 964,
+      "git_blob_sha1": "5c548542eeab8c6e1020adb77b4d93480b6bb269",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/README.md"
+    },
+    {
+      "bytes": 126,
+      "git_blob_sha1": "f49930fb939d96afe4377a5849baeb6c15399490",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/custom_deps/README.md"
+    },
+    {
+      "bytes": 77,
+      "git_blob_sha1": "e84a81dfdc16a6c02ffe33faa47e972934a101e3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/docs/README.md"
+    },
+    {
+      "bytes": 3377,
+      "git_blob_sha1": "fe42c8ed5da36eca3c9fb7a12e306baabcc7bf53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/include/APIDesign.md"
+    },
+    {
+      "bytes": 8274,
+      "git_blob_sha1": "d825ea5bd5ba9b0ab2fe5e83c4566933b9378aa0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/include/cppgc/README.md"
+    },
+    {
+      "bytes": 46,
+      "git_blob_sha1": "5788e8ad72a95dd42193a4daf62fc19c6486379e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/infra/README.md"
+    },
+    {
+      "bytes": 52,
+      "git_blob_sha1": "0e26001058892dad87319487d0854cce3e66f3e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/infra/playground/README.md"
+    },
+    {
+      "bytes": 3159,
+      "git_blob_sha1": "67231e9d641189ff432e057ecbf8eae07290f198",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/infra/testing/README.md"
+    },
+    {
+      "bytes": 20144,
+      "git_blob_sha1": "d2d375f4fc2241f8e2222d2aa23429039a8494f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/src/base/numerics/README.md"
+    },
+    {
+      "bytes": 6385,
+      "git_blob_sha1": "33e496a2c8b2ef03e848e955318cb5f1abff9a37",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/src/heap/WRITE_BARRIER.md"
+    },
+    {
+      "bytes": 8227,
+      "git_blob_sha1": "be3339478d0ebfcc156d4b389d9038b3ef245c8f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/src/sandbox/GLOSSARY.md"
+    },
+    {
+      "bytes": 7441,
+      "git_blob_sha1": "f59ab7d07997ee8dc97cc675a7a26ca94e30e591",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/src/sandbox/README.md"
+    },
+    {
+      "bytes": 1530,
+      "git_blob_sha1": "26cfa3a733476a57ff2d989bd102abe9be790df6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/benchmarks/csuite/README.md"
+    },
+    {
+      "bytes": 3513,
+      "git_blob_sha1": "676be470008fb87e6fb9ab98a79cfe2d91da7231",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/fuzzer/README.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "a3764e8a7c4562c741dce6ebc8a445b01b500ed1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/fuzzer/multi_return/README.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "a3764e8a7c4562c741dce6ebc8a445b01b500ed1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/fuzzer/wasm/async/README.md"
+    },
+    {
+      "bytes": 235,
+      "git_blob_sha1": "afcce7a60bcecc0e3c7aec232473e796bde64c5e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/fuzzer/wasm/streaming/README.md"
+    },
+    {
+      "bytes": 1332,
+      "git_blob_sha1": "48a0e5afbde9b539e90078a03059452a814f16a0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/fuzzilli/README.md"
+    },
+    {
+      "bytes": 600,
+      "git_blob_sha1": "6cab8b0cf8bdbd1a91351d0e9318c8dc0cb76afd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/test/message/README.md"
+    },
+    {
+      "bytes": 1095,
+      "git_blob_sha1": "ed5461f166c3f7ae1c177054e1a3b3e3970f3cb4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/ABSEIL_ISSUE_TEMPLATE.md"
+    },
+    {
+      "bytes": 7119,
+      "git_blob_sha1": "ecaeaf067e40cddafa3531914260f82623dff4f5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/CMake/README.md"
+    },
+    {
+      "bytes": 6872,
+      "git_blob_sha1": "a87254c503571f530304796dddff567d4e36e018",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 9034,
+      "git_blob_sha1": "fbd92ce97576c09868f12ff2617ea536809d5635",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/FAQ.md"
+    },
+    {
+      "bytes": 6564,
+      "git_blob_sha1": "c2c851ec35bffe1b84b0962099dd71c0ad065833",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/README.md"
+    },
+    {
+      "bytes": 641,
+      "git_blob_sha1": "3cac141d0f4fdf6bfa67cbe0cc6109285f01b0ec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/abseil-cpp/UPGRADES.md"
+    },
+    {
+      "bytes": 19300,
+      "git_blob_sha1": "800d2cfcdabd5a41def9d8048e2ecf3d89b3d047",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/highway/src/hwy/contrib/sort/README.md"
+    },
+    {
+      "bytes": 1695,
+      "git_blob_sha1": "396b122db204edafd2980159b10e3a6d1941638b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/highway/src/hwy/contrib/unroller/README.md"
+    },
+    {
+      "bytes": 698,
+      "git_blob_sha1": "d15f719fdda32c59d9eb416ed2aaf63580b06e7a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/inspector_protocol/README.md"
+    },
+    {
+      "bytes": 1692,
+      "git_blob_sha1": "4844f55651706a3333f037bf146798c7568bc6ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/ittapi/README.md"
+    },
+    {
+      "bytes": 671,
+      "git_blob_sha1": "6934062078684787f862a7a353effed1a20970ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/ittapi/ittapi-rs/README.md"
+    },
+    {
+      "bytes": 1013,
+      "git_blob_sha1": "a6180b0536a89f20560ac487a92da69e41ee1ee3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/ittapi/src/ittnotify_refcol/README.md"
+    },
+    {
+      "bytes": 14,
+      "git_blob_sha1": "ff81b04cea450630d89007a9a94f71c1cbcdcc4b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/llvm-libc/README.md"
+    },
+    {
+      "bytes": 313,
+      "git_blob_sha1": "9f15dd23dec279c6f83f7243b8dbd2d8173d1630",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/third_party/zlib/contrib/minizip/minizip.md"
+    },
+    {
+      "bytes": 582,
+      "git_blob_sha1": "e955779a2016b436d7a89addcb0c25d0fc2bdbab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/README.md"
+    },
+    {
+      "bytes": 3316,
+      "git_blob_sha1": "d00858ba7abdf79e8ff8471fcc2c5bcaf497e70d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/clusterfuzz/js_fuzzer/README.md"
+    },
+    {
+      "bytes": 631,
+      "git_blob_sha1": "0059d394ddf91b0dfe6b59f5a48fb0c47c264f5e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/clusterfuzz/trials/README.md"
+    },
+    {
+      "bytes": 322,
+      "git_blob_sha1": "bc99569c4302070d228d0edf684484803d2e6655",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/debug_helper/README.md"
+    },
+    {
+      "bytes": 563,
+      "git_blob_sha1": "9cf6e5673c7c03201e1bb96674750ceca8d9f5c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/heap-stats/README.md"
+    },
+    {
+      "bytes": 820,
+      "git_blob_sha1": "4e73a8e9fc762a666c2b4c9e4d421d01b4282016",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/mb/README.md"
+    },
+    {
+      "bytes": 115,
+      "git_blob_sha1": "f29007d9ede41fc3b5e9c19b60457d3bd78afce5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/mb/docs/README.md"
+    },
+    {
+      "bytes": 17715,
+      "git_blob_sha1": "c119e65e9043263ec1ee2670107385ffec260f27",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/mb/docs/design_spec.md"
+    },
+    {
+      "bytes": 12898,
+      "git_blob_sha1": "13d3edcd0adc661958808561575b0f81062ff136",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/mb/docs/user_guide.md"
+    },
+    {
+      "bytes": 265,
+      "git_blob_sha1": "1bf713b56d805e7ce61c513f69ed782d86184da6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/profiling/README.md"
+    },
+    {
+      "bytes": 608,
+      "git_blob_sha1": "fbdef0fd0de0e34b5cc42333e1aa7a909c52ef07",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/torque/vim-torque/README.md"
+    },
+    {
+      "bytes": 3364,
+      "git_blob_sha1": "c1f42b9ffa7ab8924b810263b9e13d99e13c1135",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/turbolizer/README.md"
+    },
+    {
+      "bytes": 6922,
+      "git_blob_sha1": "887f437b0dec946e65502b61529d02270895636a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/v8/tools/v8windbg/README.md"
+    },
+    {
+      "bytes": 313,
+      "git_blob_sha1": "9f15dd23dec279c6f83f7243b8dbd2d8173d1630",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/zlib/contrib/minizip/minizip.md"
+    },
+    {
+      "bytes": 300,
+      "git_blob_sha1": "c76648fb08a4ef3b0efc3b2cf9c094f330ecca72",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/zlib/google/test/data/README.md"
+    },
+    {
+      "bytes": 12909,
+      "git_blob_sha1": "b37f5fc4f3ffeaae05b5b157f44f92a5c4adfe82",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/zstd/lib/README.md"
+    },
+    {
+      "bytes": 2956,
+      "git_blob_sha1": "46aec798005745569e043fd84afd025b7ac3d982",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "deps/zstd/lib/dll/example/README.md"
+    },
+    {
+      "bytes": 6438,
+      "git_blob_sha1": "a026746ff713a0ad94c3819a218c21288c7ad2b2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/README.md"
+    },
+    {
+      "bytes": 42301,
+      "git_blob_sha1": "80d23a4cf48ad36c5de748ec51f87b5269aa7fa0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/addons.md"
+    },
+    {
+      "bytes": 70811,
+      "git_blob_sha1": "c33f4ba82336c6031fc6ad6f038c821187ce308d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/assert.md"
+    },
+    {
+      "bytes": 31425,
+      "git_blob_sha1": "b133eea182deaf13b8546dd913da95bae12af270",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/async_context.md"
+    },
+    {
+      "bytes": 32408,
+      "git_blob_sha1": "ad566239cf191adaf2bee661d37757211b1b4448",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/async_hooks.md"
+    },
+    {
+      "bytes": 33932,
+      "git_blob_sha1": "e06622ddf366d17915b90158315b4dc41d42158a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/bench.md"
+    },
+    {
+      "bytes": 162501,
+      "git_blob_sha1": "7a574e3c4ddbd707549f2fe0dd08590e7b24f9d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/buffer.md"
+    },
+    {
+      "bytes": 89051,
+      "git_blob_sha1": "e06f88af3a5f45d6ea3a2c4ac742135d7dc3948b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/child_process.md"
+    },
+    {
+      "bytes": 139782,
+      "git_blob_sha1": "1fd1e98643384081015ea21260cc1605dbffddf1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/cli.md"
+    },
+    {
+      "bytes": 29459,
+      "git_blob_sha1": "936a535977c5cb7116df0a340b635054d672e00d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/cluster.md"
+    },
+    {
+      "bytes": 18061,
+      "git_blob_sha1": "804778bd5fa681392801f1262244583b0deb9c4f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/console.md"
+    },
+    {
+      "bytes": 269038,
+      "git_blob_sha1": "cc20fd5c7f7cafabeca38be80730478789fa200f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/crypto.md"
+    },
+    {
+      "bytes": 23268,
+      "git_blob_sha1": "c7490af8292431b18f40e50095a7018499663de9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/debugger.md"
+    },
+    {
+      "bytes": 145697,
+      "git_blob_sha1": "5179f0bc5420c2e7529375a6898219d26d0e20d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/deprecations.md"
+    },
+    {
+      "bytes": 36938,
+      "git_blob_sha1": "79f8e3189b3f33d259cb6c00cc5fa4bf79c4a2bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/dgram.md"
+    },
+    {
+      "bytes": 59462,
+      "git_blob_sha1": "1509c830b99e09f663bc5c887a4546bab950e92f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/diagnostics_channel.md"
+    },
+    {
+      "bytes": 61034,
+      "git_blob_sha1": "d8b1839d9736fccc26fff03436584985e4b8adc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/dns.md"
+    },
+    {
+      "bytes": 3575,
+      "git_blob_sha1": "6938ac40a21374bf5b1d3a47b7fbb913e478f43c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/documentation.md"
+    },
+    {
+      "bytes": 15560,
+      "git_blob_sha1": "af0613e16b9afe8f62a69f376ea5d47ca355dd8c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/domain.md"
+    },
+    {
+      "bytes": 43728,
+      "git_blob_sha1": "50f23e8444d8af27c611c70be48be0f561363428",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/dtls.md"
+    },
+    {
+      "bytes": 7586,
+      "git_blob_sha1": "dfb84b49ef9b4969557596a576e4b65a71e797f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/embedding.md"
+    },
+    {
+      "bytes": 5200,
+      "git_blob_sha1": "ebaa5c9f5e86ef46dcc920c68c66b6743e95bfca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/environment_variables.md"
+    },
+    {
+      "bytes": 127651,
+      "git_blob_sha1": "f02a2950318c268bd740cf164ce0cd7ea7257875",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/errors.md"
+    },
+    {
+      "bytes": 49301,
+      "git_blob_sha1": "7bee6777458375012b132858a5022c4c0f68fa5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/esm.md"
+    },
+    {
+      "bytes": 71980,
+      "git_blob_sha1": "0c61b17803498c8dc90a8491fc5a53445d0ea68c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/events.md"
+    },
+    {
+      "bytes": 33360,
+      "git_blob_sha1": "84547c62acf7dade06c75317153c09a138fafd44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/ffi.md"
+    },
+    {
+      "bytes": 312155,
+      "git_blob_sha1": "f1d6e799d6c466749c09ee9e2c042a788747c833",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/fs.md"
+    },
+    {
+      "bytes": 39254,
+      "git_blob_sha1": "a5998d14885d585aaa69f61d11db8d96b49bcc81",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/globals.md"
+    },
+    {
+      "bytes": 143753,
+      "git_blob_sha1": "f263469d807c2eb700feab859866ea7f15de6d54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/http.md"
+    },
+    {
+      "bytes": 175914,
+      "git_blob_sha1": "f3d8ff6d85fc11f76aafa2e40293805806068e71",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/http2.md"
+    },
+    {
+      "bytes": 22402,
+      "git_blob_sha1": "eba303b6600a7890df48c2e0fad14a6136d2eeac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/https.md"
+    },
+    {
+      "bytes": 2078,
+      "git_blob_sha1": "a30724c064e17dff8912d8cc7198b9f9041492bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/index.md"
+    },
+    {
+      "bytes": 21634,
+      "git_blob_sha1": "6a31799ac68e2521e55073ffe1571b1f6b909359",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/inspector.md"
+    },
+    {
+      "bytes": 11767,
+      "git_blob_sha1": "e16c353db14bed5878314c4b26e98d3cc329feef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/intl.md"
+    },
+    {
+      "bytes": 78821,
+      "git_blob_sha1": "a4f83a812f96a425ced76b35f6754921678c7e38",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/module.md"
+    },
+    {
+      "bytes": 42503,
+      "git_blob_sha1": "01a5343e92dd7210fe380afcce51c5c91d075c36",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/modules.md"
+    },
+    {
+      "bytes": 245906,
+      "git_blob_sha1": "edc145f0ea421c1eacac78ec212547f16ba9595c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/n-api.md"
+    },
+    {
+      "bytes": 84431,
+      "git_blob_sha1": "abe4661b70be98a4e9a7315cfae5b07989d5ad8d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/net.md"
+    },
+    {
+      "bytes": 37124,
+      "git_blob_sha1": "a2592a2f20cc9dd9fc657a14ac45af5fdc191a9f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/os.md"
+    },
+    {
+      "bytes": 46630,
+      "git_blob_sha1": "8e1f5038f96ba53ec34e546a88f28c0678445bd2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/packages.md"
+    },
+    {
+      "bytes": 17008,
+      "git_blob_sha1": "91620516244fcec472463088d91ca47e06b63bad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/path.md"
+    },
+    {
+      "bytes": 93329,
+      "git_blob_sha1": "6b4ef8582a0683cb8869ac058e1cad19982803b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/perf_hooks.md"
+    },
+    {
+      "bytes": 17170,
+      "git_blob_sha1": "dc5e3e6111ca99a0d5d7a4d65bfa619f8a8280fe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/permissions.md"
+    },
+    {
+      "bytes": 134576,
+      "git_blob_sha1": "c237943b69f0dbd58fdd66968d8be8c05c462448",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/process.md"
+    },
+    {
+      "bytes": 4283,
+      "git_blob_sha1": "43ea7d518fc3888e0d422e2f017a098619b97773",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/punycode.md"
+    },
+    {
+      "bytes": 5687,
+      "git_blob_sha1": "f7f45d57d927ce94174453936b3fa5be18217d63",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/querystring.md"
+    },
+    {
+      "bytes": 140762,
+      "git_blob_sha1": "bd737ae230f088768e58a23d07f075c94ee33452",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/quic.md"
+    },
+    {
+      "bytes": 42620,
+      "git_blob_sha1": "02e56e4c6a322b8a900d68e9858b650bcfe4eb26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/readline.md"
+    },
+    {
+      "bytes": 34139,
+      "git_blob_sha1": "7a57af574422888638e574ec7a4146d6dcf4516c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/repl.md"
+    },
+    {
+      "bytes": 24052,
+      "git_blob_sha1": "a63a310ac677ae37b08fee455e0d4b88241853f7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/report.md"
+    },
+    {
+      "bytes": 29581,
+      "git_blob_sha1": "dd4478675fd8290af00cbc29cfe2c03b928464d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/single-executable-applications.md"
+    },
+    {
+      "bytes": 75936,
+      "git_blob_sha1": "36804b060e80673393714eed5a96e85a63c681af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/sqlite.md"
+    },
+    {
+      "bytes": 160003,
+      "git_blob_sha1": "1e8a2bd1ef930fc7277cdda5bade3e624e94edfd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/stream.md"
+    },
+    {
+      "bytes": 61500,
+      "git_blob_sha1": "80579fba9820656c62cae8a4e8bce917ae72489e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/stream_iter.md"
+    },
+    {
+      "bytes": 3654,
+      "git_blob_sha1": "5d848cfb6d550bfb5f28f727fac64bed97551b18",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/string_decoder.md"
+    },
+    {
+      "bytes": 171930,
+      "git_blob_sha1": "e5ce08a76303c09ed5637e413bf3966c6443dfd9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/test.md"
+    },
+    {
+      "bytes": 17375,
+      "git_blob_sha1": "cdbed03ba7ac372b5aacf999e430b5d3d1c00d85",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/timers.md"
+    },
+    {
+      "bytes": 102860,
+      "git_blob_sha1": "7df2ab938606ea6c60c78cc5828104f2f587e22c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/tls.md"
+    },
+    {
+      "bytes": 10818,
+      "git_blob_sha1": "577ec5c23cd8008a6182ba30f9b7348c86faf0cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/tracing.md"
+    },
+    {
+      "bytes": 11001,
+      "git_blob_sha1": "8fee96bb4c6dc24e39f7dc26d0a595545565ab14",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/tty.md"
+    },
+    {
+      "bytes": 7931,
+      "git_blob_sha1": "3959fd58b56c8405f79b211175d41e72dcc3e3b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/typescript.md"
+    },
+    {
+      "bytes": 66295,
+      "git_blob_sha1": "7759c03a15e721c811a6f018e01a3207c16d4205",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/url.md"
+    },
+    {
+      "bytes": 124571,
+      "git_blob_sha1": "a111d65ed6eed244a8a7256dc63c516a6f4b9cdf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/util.md"
+    },
+    {
+      "bytes": 56312,
+      "git_blob_sha1": "fc69b311faa3ca64649dbaac78779476941a24a8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/v8.md"
+    },
+    {
+      "bytes": 23417,
+      "git_blob_sha1": "f12ca239e1666afb93e4df77c523f7306bee5440",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/vfs.md"
+    },
+    {
+      "bytes": 95166,
+      "git_blob_sha1": "14cd1f269b126c6c802459fd856d1ea75630e5a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/vm.md"
+    },
+    {
+      "bytes": 9173,
+      "git_blob_sha1": "6f477a765daf3a9563d0614984478fdd1f960326",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/wasi.md"
+    },
+    {
+      "bytes": 68738,
+      "git_blob_sha1": "1d94af41363c5d0b3aab6ab8de20a999e6b32524",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/webcrypto.md"
+    },
+    {
+      "bytes": 44421,
+      "git_blob_sha1": "45e87152b86b27f8b03e758b572cfca7c786fa25",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/webstreams.md"
+    },
+    {
+      "bytes": 68790,
+      "git_blob_sha1": "d39365d965e4a78270f2aef125073c74b78c0f5b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/worker_threads.md"
+    },
+    {
+      "bytes": 104879,
+      "git_blob_sha1": "656331d9b08ed0ab66ec45fbb508dd5daee3dd0e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/doc/api/**/*.md",
+      "upstream_path": "doc/api/zlib.md"
+    },
+    {
+      "bytes": 167250,
+      "git_blob_sha1": "38be98ddb1e528f2a0d244efc618ff664ebe045b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_ARCHIVE.md"
+    },
+    {
+      "bytes": 352496,
+      "git_blob_sha1": "db0af594f60f0faca629c32e0cea29f1a953c9a1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_IOJS.md"
+    },
+    {
+      "bytes": 53328,
+      "git_blob_sha1": "bc243ad748c95a2acb27e6667a5e0812b04e6219",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V010.md"
+    },
+    {
+      "bytes": 37777,
+      "git_blob_sha1": "4c8abcccf4a8b1d78fc7ecd77686d4bd6ec16825",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V012.md"
+    },
+    {
+      "bytes": 800312,
+      "git_blob_sha1": "8739adb6905a462496af54732089ee2bf0e1c09a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V10.md"
+    },
+    {
+      "bytes": 510186,
+      "git_blob_sha1": "a3d53f6c99b6716eb365597c938439b9e215882d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V11.md"
+    },
+    {
+      "bytes": 956573,
+      "git_blob_sha1": "921c77aedd498fa892a2e1d3105cd1a1030cc90d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V12.md"
+    },
+    {
+      "bytes": 381096,
+      "git_blob_sha1": "58b27accd24e83e5670c01723c2d7a081ffa12f6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V13.md"
+    },
+    {
+      "bytes": 690547,
+      "git_blob_sha1": "356fe7ec2acbd686f8e4743d2b17a964c8061a77",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V14.md"
+    },
+    {
+      "bytes": 339548,
+      "git_blob_sha1": "27275533bf6fdef4a78cc0babdee7dcee712f01b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V15.md"
+    },
+    {
+      "bytes": 720296,
+      "git_blob_sha1": "3bcb3f2d1b430b06b926c150a7768cfda000c49f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V16.md"
+    },
+    {
+      "bytes": 258458,
+      "git_blob_sha1": "4e6e435ea6c3a2943cc24a731e126ca8e8782a2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V17.md"
+    },
+    {
+      "bytes": 747730,
+      "git_blob_sha1": "8233cba99ee705064fd465c25892e6a6f35771aa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V18.md"
+    },
+    {
+      "bytes": 271991,
+      "git_blob_sha1": "d536d8827e7dc78e726c65cf4dbbd0e196556cb0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V19.md"
+    },
+    {
+      "bytes": 844011,
+      "git_blob_sha1": "a5a43972a0bed43553f20d1f5360004ccd9d4015",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V20.md"
+    },
+    {
+      "bytes": 223507,
+      "git_blob_sha1": "a4fcd49b4f3f455e3b5792f224770ac1d3585e15",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V21.md"
+    },
+    {
+      "bytes": 872782,
+      "git_blob_sha1": "392eb92921a5ad1fcaa64f09914db536e1bd93fa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V22.md"
+    },
+    {
+      "bytes": 305825,
+      "git_blob_sha1": "a13d9a8011718d45b8659b33144c08c36c04172b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V23.md"
+    },
+    {
+      "bytes": 741144,
+      "git_blob_sha1": "b8bc22c8c5ad05de5c6ac4186094fe30ff6a73fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V24.md"
+    },
+    {
+      "bytes": 251768,
+      "git_blob_sha1": "af2efd87dc1a6479a91bb5a339588017198f76e5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V25.md"
+    },
+    {
+      "bytes": 408985,
+      "git_blob_sha1": "825c6d1e9aff0df3b21ea93b10f9e2513c9c3cfb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V26.md"
+    },
+    {
+      "bytes": 510358,
+      "git_blob_sha1": "faa5d758fd41c0aa71ae4f5fb999236960698acb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V4.md"
+    },
+    {
+      "bytes": 265661,
+      "git_blob_sha1": "73cce56ce41109c2fb785db75a35e806f6b654d7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V5.md"
+    },
+    {
+      "bytes": 818357,
+      "git_blob_sha1": "7c2ee2052232ed8729872d20978e1f897269ed04",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V6.md"
+    },
+    {
+      "bytes": 364537,
+      "git_blob_sha1": "0612e8632845b1eb2d965d2c531852971422718b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V7.md"
+    },
+    {
+      "bytes": 803335,
+      "git_blob_sha1": "314919baa0f7dc2f6945567b7adaf8714d74aded",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V8.md"
+    },
+    {
+      "bytes": 387374,
+      "git_blob_sha1": "521e0c59b330abd11ad2f15f7d8943bab5aa8cd1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/changelogs/CHANGELOG_V9.md"
+    },
+    {
+      "bytes": 2397,
+      "git_blob_sha1": "b17abb03ad7a5c812d806d57b7ca9fdb4070c903",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/adding-new-napi-api.md"
+    },
+    {
+      "bytes": 18423,
+      "git_blob_sha1": "fa7dc47c480653abe654e6321eec14575334a298",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/adding-v8-fast-api.md"
+    },
+    {
+      "bytes": 14532,
+      "git_blob_sha1": "ba79079245c6075496c53b8bec7984ad9bfe6b55",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/advocacy-ambassador-program.md"
+    },
+    {
+      "bytes": 5779,
+      "git_blob_sha1": "f83c573d6cd1159aa5b775821da021c3f5dba035",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/ai-guidelines.md"
+    },
+    {
+      "bytes": 6156,
+      "git_blob_sha1": "75ba24b112a8b8384c695db98c36b1b59986ac53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/api-documentation.md"
+    },
+    {
+      "bytes": 4036,
+      "git_blob_sha1": "407df93c7a12af0da6305b14a9254c777bc9677e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/backporting-to-release-lines.md"
+    },
+    {
+      "bytes": 2125,
+      "git_blob_sha1": "dbac1c5363444ead8abb5ce5628f27c2e3fdeb9b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/building-node-with-ninja.md"
+    },
+    {
+      "bytes": 2175,
+      "git_blob_sha1": "1332246e404b7fe4f50979a81abd8270eca90f57",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/code-of-conduct.md"
+    },
+    {
+      "bytes": 55250,
+      "git_blob_sha1": "49ece70c2bb04f3868e77def0711fdc59a6d0baf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/collaborator-guide.md"
+    },
+    {
+      "bytes": 2843,
+      "git_blob_sha1": "43fd52f597097127ad508aa8e98c5aa3804f4263",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/commit-queue.md"
+    },
+    {
+      "bytes": 2566,
+      "git_blob_sha1": "2cae1c40e59f20971b35f6563931a539ac1f355c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/components-in-core.md"
+    },
+    {
+      "bytes": 13120,
+      "git_blob_sha1": "f698bf21c7ccf1d4fad1343cbba0458a54d60be1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/cpp-style-guide.md"
+    },
+    {
+      "bytes": 8191,
+      "git_blob_sha1": "c8d07907c0248844f988c009ac2df7961e93cf4b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/diagnostic-tooling-support-tiers.md"
+    },
+    {
+      "bytes": 1343,
+      "git_blob_sha1": "522d082e95965ffa148005891bf5904a6efadd60",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/distribution.md"
+    },
+    {
+      "bytes": 18953,
+      "git_blob_sha1": "d57acbb8bba2820b21c301c5624149a397a19bdc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/erm-guidelines.md"
+    },
+    {
+      "bytes": 2274,
+      "git_blob_sha1": "aa42ea166449ac06eb4ca58172e9fd46d7176af3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/feature-request-management.md"
+    },
+    {
+      "bytes": 23660,
+      "git_blob_sha1": "7408b095b578a34bafb1775c2034c35c3c34d659",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/ffi-fast-api-internals.md"
+    },
+    {
+      "bytes": 15739,
+      "git_blob_sha1": "174fb38d0585ab0577f87ae4f424fcb843944a1e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/first-contributions.md"
+    },
+    {
+      "bytes": 4649,
+      "git_blob_sha1": "9054ed5e7d41c4ed2cef57f3eb9ac12862621df4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/gn-build.md"
+    },
+    {
+      "bytes": 1305,
+      "git_blob_sha1": "999a36a2cf3a6a661adb24f00b4e3dae7df02cb9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/internal-api.md"
+    },
+    {
+      "bytes": 31292,
+      "git_blob_sha1": "6639617b54c53cc08203649328f36264f237e1d0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/investigating-native-memory-leaks.md"
+    },
+    {
+      "bytes": 4034,
+      "git_blob_sha1": "c997c223b49ef80fe3359064b213f78c4db7664b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/issues.md"
+    },
+    {
+      "bytes": 8118,
+      "git_blob_sha1": "6660fb0d48f1856471f531dd3ccfc2b195fd1f15",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/large-pull-requests.md"
+    },
+    {
+      "bytes": 18265,
+      "git_blob_sha1": "740af7f228f6943fef4f3832ef3adf5353ce9acf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-V8.md"
+    },
+    {
+      "bytes": 15967,
+      "git_blob_sha1": "e84307620b9ca8226b4d78021020f170b0b824d5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-dependencies.md"
+    },
+    {
+      "bytes": 3971,
+      "git_blob_sha1": "a1ffdff5045e8a8ea1aaf57bc5b9bbcf4741f947",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-http.md"
+    },
+    {
+      "bytes": 8368,
+      "git_blob_sha1": "e83aa8a5b0c40741c44e473945cfa69d4626fe4e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-icu.md"
+    },
+    {
+      "bytes": 1243,
+      "git_blob_sha1": "66b9d61e5b1311d7161ecf87069a29d0229965cc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-merve.md"
+    },
+    {
+      "bytes": 3742,
+      "git_blob_sha1": "aba013bb3c58e0d5d4803db252103adb704752b1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-openssl.md"
+    },
+    {
+      "bytes": 4052,
+      "git_blob_sha1": "aff4b1cc20b7d8458d738b4e76f456cf0196f793",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-root-certs.md"
+    },
+    {
+      "bytes": 4611,
+      "git_blob_sha1": "a2e0e4d4805d1fcfb21d4893cdbf0c81e223be5d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-shared-library-support.md"
+    },
+    {
+      "bytes": 3560,
+      "git_blob_sha1": "4f2bbdf6e6bc5b7e071e685c2052251ff5cc4c77",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-single-executable-application-support.md"
+    },
+    {
+      "bytes": 2461,
+      "git_blob_sha1": "24a97876bf17bea7fcb7ae45462ba68926575fc2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-the-build-files.md"
+    },
+    {
+      "bytes": 6185,
+      "git_blob_sha1": "573aec4bd27204586d1344ce057f38f983c5483b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-types-for-nodejs.md"
+    },
+    {
+      "bytes": 3758,
+      "git_blob_sha1": "6eaa545186309b9433dec86617700fabc2e59948",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/maintaining/maintaining-web-assembly.md"
+    },
+    {
+      "bytes": 1557,
+      "git_blob_sha1": "20c0adc0d8d6be0f050b64848ef15092eab96cdb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/managing-social-media-accounts.md"
+    },
+    {
+      "bytes": 2588,
+      "git_blob_sha1": "2136f953dcf636bcb4d4a1326656b491e9d8fbe5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/node-postmortem-support.md"
+    },
+    {
+      "bytes": 1675,
+      "git_blob_sha1": "8f431b5e9a6072bc743037179bb8fbec8cb92da2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/offboarding.md"
+    },
+    {
+      "bytes": 24463,
+      "git_blob_sha1": "4b143c485ff9d999cd98892c640e9cc25d11524a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/primordials.md"
+    },
+    {
+      "bytes": 27384,
+      "git_blob_sha1": "77b9148213b76bf256674088b282136468fb24e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/pull-requests.md"
+    },
+    {
+      "bytes": 2501,
+      "git_blob_sha1": "f79bd8dd2c55caa09ca6f4f16f3d3eda7ca7f3d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/recognizing-contributors.md"
+    },
+    {
+      "bytes": 7802,
+      "git_blob_sha1": "6d1f52902f662af282795ecd2a7123dd1b82b457",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/releases-node-api.md"
+    },
+    {
+      "bytes": 58614,
+      "git_blob_sha1": "57bf2dc31bf85c986148fec5e7cc406f6dd794f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/releases.md"
+    },
+    {
+      "bytes": 2212,
+      "git_blob_sha1": "d0ccca10032d281d4c0058d55ea9da5a901c67f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/security-model-strategy.md"
+    },
+    {
+      "bytes": 11494,
+      "git_blob_sha1": "e5ecbe39e407590aa0dcbd3c12f8d3a6b6dabd08",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/security-release-process.md"
+    },
+    {
+      "bytes": 1040,
+      "git_blob_sha1": "a689e6f33c03c87ed878db2f119561a59a0ead8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/security-steward-on-off-boarding.md"
+    },
+    {
+      "bytes": 1620,
+      "git_blob_sha1": "c29086055a367e51ce46d0d070cb0645c79fe59b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/sharing-project-news.md"
+    },
+    {
+      "bytes": 918,
+      "git_blob_sha1": "702e878b1389ba06775c6282c24ee183ea8913d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/static-analysis.md"
+    },
+    {
+      "bytes": 3728,
+      "git_blob_sha1": "ce68d17d89094118adc69a719a0d67a109b154ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/strategic-initiatives.md"
+    },
+    {
+      "bytes": 4614,
+      "git_blob_sha1": "5cac25b76d3423c9c9517c0fda0a0da4c5b17121",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/streaming-to-youtube.md"
+    },
+    {
+      "bytes": 257,
+      "git_blob_sha1": "7b7200ee7bac88e1c842e5da31746344696a07d4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/suggesting-social-media-posts.md"
+    },
+    {
+      "bytes": 7830,
+      "git_blob_sha1": "478a4cc98193de616db0841a8d0fa3540649da5e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/technical-priorities.md"
+    },
+    {
+      "bytes": 2852,
+      "git_blob_sha1": "f6d41207d16916e628333e27e777f426fa5d3a81",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/technical-values.md"
+    },
+    {
+      "bytes": 6139,
+      "git_blob_sha1": "77483b87c4abb67943f32fd1f1f8657d7b4b5357",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/using-devcontainer.md"
+    },
+    {
+      "bytes": 5239,
+      "git_blob_sha1": "fec768663631224e151fb0b4008ed0798f30bd1c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/using-internal-errors.md"
+    },
+    {
+      "bytes": 2384,
+      "git_blob_sha1": "d901e88a85ff991e3eb47548e8cde2b0cbaabcea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/using-symbols.md"
+    },
+    {
+      "bytes": 41805,
+      "git_blob_sha1": "bf397c123a24061728d54608225bc49a88bf5809",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/writing-and-running-benchmarks.md"
+    },
+    {
+      "bytes": 1255,
+      "git_blob_sha1": "2dc77d98117f58d29340ebf86f855b7d81c9f364",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/writing-docs.md"
+    },
+    {
+      "bytes": 17269,
+      "git_blob_sha1": "f9ca3c7720176a8917c72abf1bc6280075ad283c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "doc/contributing/writing-tests.md"
+    },
+    {
+      "bytes": 12126,
+      "git_blob_sha1": "451fdc13ca37c236780b4be1783f52f51c096816",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "glossary.md"
+    },
+    {
+      "bytes": 683,
+      "git_blob_sha1": "f02d352f6cdd04e26a45dca429af40f01bb5aec6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "lib/internal/README.md"
+    },
+    {
+      "bytes": 16476,
+      "git_blob_sha1": "74c1145260444c76afbd3a088fa8866645fd3a21",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "onboarding.md"
+    },
+    {
+      "bytes": 61204,
+      "git_blob_sha1": "7cdf099ff8191d46c0812279e8bb97fe6a7a0ef8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "src/README.md"
+    },
+    {
+      "bytes": 20182,
+      "git_blob_sha1": "de4883c424c4d0db5da01ce2b9b132d614d089c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "src/crypto/README.md"
+    },
+    {
+      "bytes": 21023,
+      "git_blob_sha1": "8c23ed2f4af9118f8341121991ff3ced5df78053",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "src/quic/README.md"
+    },
+    {
+      "bytes": 4764,
+      "git_blob_sha1": "02359ca68265013ea95e1fd5585371d5a117e692",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/README.md"
+    },
+    {
+      "bytes": 1944,
+      "git_blob_sha1": "1950db6ec008d95c29abd962e9cbae70f645fd54",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/async-hooks/coverage.md"
+    },
+    {
+      "bytes": 37391,
+      "git_blob_sha1": "bc27da028c46b44fa5d1ce519552533438dd47c2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/common/README.md"
+    },
+    {
+      "bytes": 830,
+      "git_blob_sha1": "928efbec9609c239f1d48a6ccf5cea907592a919",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/0-dns/README.md"
+    },
+    {
+      "bytes": 38,
+      "git_blob_sha1": "f5320533ad699c92cf513276b1f64c92a384d82b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/altdocs.md"
+    },
+    {
+      "bytes": 8,
+      "git_blob_sha1": "fec56017dc1b1ac87ad6e54e3cb3a20bb8dcc5ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/copy/kitchen-sink/README.md"
+    },
+    {
+      "bytes": 8,
+      "git_blob_sha1": "fec56017dc1b1ac87ad6e54e3cb3a20bb8dcc5ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/copy/kitchen-sink/a/b/README2.md"
+    },
+    {
+      "bytes": 8,
+      "git_blob_sha1": "fec56017dc1b1ac87ad6e54e3cb3a20bb8dcc5ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/copy/kitchen-sink/a/c/README2.md"
+    },
+    {
+      "bytes": 8,
+      "git_blob_sha1": "fec56017dc1b1ac87ad6e54e3cb3a20bb8dcc5ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/copy/kitchen-sink/a/c/d/README3.md"
+    },
+    {
+      "bytes": 56,
+      "git_blob_sha1": "92858d0200c2375bb191d8c91c5b1c1b25eec878",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/doc_inc_1.md"
+    },
+    {
+      "bytes": 42,
+      "git_blob_sha1": "17d0b86a0cc51fa5958cf45a017becd75bf0f158",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/doc_inc_2.md"
+    },
+    {
+      "bytes": 183,
+      "git_blob_sha1": "8b4fe5efaf4d37bcb8d9b1f1c58dd9391d166a5f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/doc_with_backticks_in_headings.md"
+    },
+    {
+      "bytes": 593,
+      "git_blob_sha1": "89cf28104e553331f5eb6f9f84c5391ce6c7b58b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/doc_with_yaml.md"
+    },
+    {
+      "bytes": 145,
+      "git_blob_sha1": "aae5ea28353a7d333ce31955519e3650b5a2c293",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/document_with_cjs_and_esm_code_snippet.md"
+    },
+    {
+      "bytes": 145,
+      "git_blob_sha1": "a7e1438376297999e3cadc8ece3c081884481fb5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/document_with_esm_and_cjs_code_snippet.md"
+    },
+    {
+      "bytes": 378,
+      "git_blob_sha1": "1392029a30ba6a15e1f53b6bd98223fb2f22c422",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/document_with_links.md"
+    },
+    {
+      "bytes": 152,
+      "git_blob_sha1": "817ec936e9396d53cd76fc3fbcec2d7211883d67",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/document_with_special_heading.md"
+    },
+    {
+      "bytes": 207,
+      "git_blob_sha1": "be6602bbf6969cbb0f1b7e593accd6937eed5b74",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/encoding/README.md"
+    },
+    {
+      "bytes": 485,
+      "git_blob_sha1": "0dcd69007a9142b4b30927b9c2e87399a5ea0b20",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/keys/selfsigned-no-keycertsign/README.md"
+    },
+    {
+      "bytes": 80,
+      "git_blob_sha1": "888fe231802019b60cab1c50aa2972afcebe4cce",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/order_of_end_tags_5873.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "845763d2403ff469bf87a128bdfe70278c0b364d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/permission/deny/protected-file.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "845763d2403ff469bf87a128bdfe70278c0b364d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/permission/deny/protected-folder/protected-file.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/permission/deny/regular-file.md"
+    },
+    {
+      "bytes": 41282,
+      "git_blob_sha1": "ed19cff6332b4f9eaf5641b2824516c9e0d49013",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/postject-copy/node_modules/commander/Readme.md"
+    },
+    {
+      "bytes": 198,
+      "git_blob_sha1": "b3db25d2f6e7e0af89aded3b200040e3fe09c34e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/postject-copy/node_modules/postject/CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 1286,
+      "git_blob_sha1": "3c547fbbba336b2e94a632811bf5a837f9a5f7a6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/postject-copy/node_modules/postject/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 3304,
+      "git_blob_sha1": "4acacb20cb3d334c2623d1c29af007366e94de25",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/postject-copy/node_modules/postject/README.markdown"
+    },
+    {
+      "bytes": 78,
+      "git_blob_sha1": "d1ba308b6d9c26b85e602a4eb25e5e43f1d4f319",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/sample_document.md"
+    },
+    {
+      "bytes": 458,
+      "git_blob_sha1": "479b2e8312042b7227b5f459bf07ed0e7883f402",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/test-runner/coverage/README.md"
+    },
+    {
+      "bytes": 2228,
+      "git_blob_sha1": "39501a3b7c70dd44a41ef3eb86c9a5deca2aa4ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/test426/LICENSE.md"
+    },
+    {
+      "bytes": 2967,
+      "git_blob_sha1": "1eb2818fcfa992b97d71a2028fcadaece81afa56",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/test426/README.md"
+    },
+    {
+      "bytes": 1512,
+      "git_blob_sha1": "57b47c0f042f571e9fb565f23af4342397637205",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/test426/decoding/README.md"
+    },
+    {
+      "bytes": 969,
+      "git_blob_sha1": "7b3271adb3ada78a1a0cffa1972f1cfcf774cb2d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/test426/decoding/scopes/README.md"
+    },
+    {
+      "bytes": 1500,
+      "git_blob_sha1": "39c46d03ac2988226f949ee7ab3c7347d5481bd8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/LICENSE.md"
+    },
+    {
+      "bytes": 555,
+      "git_blob_sha1": "1443e070fce8552716882385081873eb147dcb08",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/README.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "5546cf2b6f2a1b9d06054a515cc0bfc851a3c998",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/WebCryptoAPI/README.md"
+    },
+    {
+      "bytes": 594,
+      "git_blob_sha1": "9aef19cb73fa10c2962c489f43a4517e7f215116",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/common/README.md"
+    },
+    {
+      "bytes": 8501,
+      "git_blob_sha1": "cfaafb6e5d6496800afd40d04898bbbf946651ec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/common/dispatcher/README.md"
+    },
+    {
+      "bytes": 20542,
+      "git_blob_sha1": "f957541f75ecc37416895d6bc19d1c229c0f71b8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/common/security-features/README.md"
+    },
+    {
+      "bytes": 3111,
+      "git_blob_sha1": "17079916c1efa6839fa24b175fdd49cd2d381346",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/common/security-features/types.md"
+    },
+    {
+      "bytes": 3306,
+      "git_blob_sha1": "39b8d13435ef49919533ef7497326dac06bf964b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/resource-timing/CodingConventions.md"
+    },
+    {
+      "bytes": 557,
+      "git_blob_sha1": "09a62fbd7bfd7c58d3ded0115bd0ee1efb04f8c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/resources/readme.md"
+    },
+    {
+      "bytes": 278,
+      "git_blob_sha1": "1bd583269d2929a16b1c7ad0c58fab6e99b72a10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/resources/webidl2/lib/README.md"
+    },
+    {
+      "bytes": 69,
+      "git_blob_sha1": "2614a8d194be62af0ac639687864ddd2d05fd57b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/resources/webidl2/lib/VERSION.md"
+    },
+    {
+      "bytes": 250,
+      "git_blob_sha1": "33e508aba2c4d552379e2de831cf1a8018ef0a69",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/service-workers/service-worker/tentative/static-router/README.md"
+    },
+    {
+      "bytes": 434,
+      "git_blob_sha1": "9ab6e1284ad50d2982ea1f6fc78d7a519e796460",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/streams/README.md"
+    },
+    {
+      "bytes": 2778,
+      "git_blob_sha1": "50227bc4b330ef8790eb8d6a2b0af15c2e08123e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/url/README.md"
+    },
+    {
+      "bytes": 487,
+      "git_blob_sha1": "a89258a4e01267a27ff25e559d69a1a85f0c314e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/wasm/jsapi/functions/resources/README.md"
+    },
+    {
+      "bytes": 155,
+      "git_blob_sha1": "84af41baa8224b8e1c807bdefe43366235102612",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/web-locks/README.md"
+    },
+    {
+      "bytes": 67,
+      "git_blob_sha1": "136a7649981ea41f5ea7bba6e08ba57b8e22d8b1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/webidl/README.md"
+    },
+    {
+      "bytes": 225,
+      "git_blob_sha1": "2bbc5fbfb6a1df0db59cca67435e9c39937cac02",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/webstorage/README.md"
+    },
+    {
+      "bytes": 4896,
+      "git_blob_sha1": "58ee7cca1ab3e9856e380eaccde042d5700c2603",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/fixtures/wpt/workers/README.md"
+    },
+    {
+      "bytes": 4664,
+      "git_blob_sha1": "8a3783b1ce1e40be0fec59b7a9f94aa589486b15",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/system-ca/README.md"
+    },
+    {
+      "bytes": 743,
+      "git_blob_sha1": "2bc52a566ba924fc3be06bc3b6def547774c6679",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/test426/README.md"
+    },
+    {
+      "bytes": 573,
+      "git_blob_sha1": "6aab9dd0581514ef4d0d19bb7357efedcdcc2a55",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/wasi/README.md"
+    },
+    {
+      "bytes": 9809,
+      "git_blob_sha1": "1b6911740a0614e22f486edc5cadc6f9adcf513a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "test/wpt/README.md"
+    },
+    {
+      "bytes": 4363,
+      "git_blob_sha1": "ba7a47d8a507be11e9f1e07b2566eafa8b330b59",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/dep_updaters/README.md"
+    },
+    {
+      "bytes": 246,
+      "git_blob_sha1": "df0e8aacfb3601c28de446b5183976f5492f6b17",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/doc/README.md"
+    },
+    {
+      "bytes": 21011,
+      "git_blob_sha1": "c6686c4784a75747923bcbb26ea1c7359caff4d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/CHANGELOG.md"
+    },
+    {
+      "bytes": 203,
+      "git_blob_sha1": "d724027fd9aadb9987b8213c66e78de32c31e042",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/CODE_OF_CONDUCT.md"
+    },
+    {
+      "bytes": 1425,
+      "git_blob_sha1": "5237b216fb52944ed88159f3bb51143ec303f54a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 1156,
+      "git_blob_sha1": "6360a6c334296ec2beae5f1ca149a5f35e2ac869",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/README.md"
+    },
+    {
+      "bytes": 6291,
+      "git_blob_sha1": "6d659a6123b661b55f68caff401d3a5b2c8ab7af",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/GypVsCMake.md"
+    },
+    {
+      "bytes": 1185,
+      "git_blob_sha1": "156d485b5b82d1f4d1a10ced368448dddeccda35",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/Hacking.md"
+    },
+    {
+      "bytes": 39057,
+      "git_blob_sha1": "4b114f2debca459288f1401382fbffc351a3daa3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/InputFormatReference.md"
+    },
+    {
+      "bytes": 22149,
+      "git_blob_sha1": "f8fff097ab73f3db469e966dc4c4c61154df312f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/LanguageSpecification.md"
+    },
+    {
+      "bytes": 1143,
+      "git_blob_sha1": "5f9b6a59ce0f925d0fb414ff4f807ce35a869953",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/README.md"
+    },
+    {
+      "bytes": 11874,
+      "git_blob_sha1": "a52031e88819a6025363fe9f57fb2f4077e0ea0b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/Testing.md"
+    },
+    {
+      "bytes": 25796,
+      "git_blob_sha1": "b9d412e1c847ba1727e42052e11b8b31f2a67bc8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/gyp/docs/UserDocumentation.md"
+    },
+    {
+      "bytes": 1763,
+      "git_blob_sha1": "711f459696b69aeb5a6c80dfa6b971c0b30c0e79",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/icu/README.md"
+    },
+    {
+      "bytes": 1383,
+      "git_blob_sha1": "1d2a0465d538812226db1d1970f78a0479268e59",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/inspector_protocol/README.md"
+    },
+    {
+      "bytes": 6024,
+      "git_blob_sha1": "234f20e638ac201a248fdad0befa7e372fd52157",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/pgo/README.md"
+    },
+    {
+      "bytes": 4886,
+      "git_blob_sha1": "d61c2306e3516f557c9f65c125400e5fa9893182",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tools/snapshot/README.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 22832874,
+  "repository_md_files": 683,
+  "repository_url": "https://github.com/nodejs/node",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 4695458,
+  "snapshot_md_files": 70,
+  "source_id": "node"
+}

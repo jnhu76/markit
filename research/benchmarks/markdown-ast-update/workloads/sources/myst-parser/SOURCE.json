@@ -1,0 +1,238 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "MATH_DIALECT_BOUNDARY",
+  "commit_sha": "723cffcf84213f0cb58695b27eec9ad72052b53a",
+  "commit_timestamp": "2026-07-27T23:23:31+02:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 27,
+  "files": [
+    {
+      "bytes": 6236,
+      "git_blob_sha1": "4acdf0595953d10d932e3318dfa6caf7ce9fb82f",
+      "sha256": "63d97cc547513d4593fe409f77074f58814bf0145a890c0514701d98c5c41d0d",
+      "snapshot_path": "files/docs/configuration.md",
+      "upstream_path": "docs/configuration.md"
+    },
+    {
+      "bytes": 76,
+      "git_blob_sha1": "d24e7ac0718f3e54c31bd9bbe1d98fb63ae03f2d",
+      "sha256": "e6e9d08d53ecfe306c2d26ae37708f2e94b32512f8306bf8d850147f0c032933",
+      "snapshot_path": "files/docs/develop/_changelog.md",
+      "upstream_path": "docs/develop/_changelog.md"
+    },
+    {
+      "bytes": 1136,
+      "git_blob_sha1": "b1ef1503c60a527c71d82691ca39c0e55016b767",
+      "sha256": "077f518d46e86e156026b889ad7bed24509d65624103722cd3df0516f56e17b6",
+      "snapshot_path": "files/docs/develop/architecture.md",
+      "upstream_path": "docs/develop/architecture.md"
+    },
+    {
+      "bytes": 3685,
+      "git_blob_sha1": "b8973d4bf6baacffecfa659607bc8e9b18b6ed7d",
+      "sha256": "1fac0a194a3c39c2aeb35f45551428713f71d8067de673318d8872977c5d7d25",
+      "snapshot_path": "files/docs/develop/background.md",
+      "upstream_path": "docs/develop/background.md"
+    },
+    {
+      "bytes": 2727,
+      "git_blob_sha1": "e4f0e22153ca0d08d5515bd6a8a310f19caf8ba4",
+      "sha256": "8d561a6e9928ad42f7dc1dd12735b68a330c18ecce9a5ce13a03a1cedb8d00f7",
+      "snapshot_path": "files/docs/develop/contributing.md",
+      "upstream_path": "docs/develop/contributing.md"
+    },
+    {
+      "bytes": 402,
+      "git_blob_sha1": "f3a3f97775553b421095c6a82abfe97f3c52b654",
+      "sha256": "472091b52f6d7ee87f9290fc601ea08962c718a686ddcdac3e50877d521cde1d",
+      "snapshot_path": "files/docs/develop/index.md",
+      "upstream_path": "docs/develop/index.md"
+    },
+    {
+      "bytes": 2250,
+      "git_blob_sha1": "ebef0115f102534374715f99ed95e06226d5460a",
+      "sha256": "beed5b9d71a9234604613bf02391de72622b3ca66236c3b99fe0fc37ae558e3f",
+      "snapshot_path": "files/docs/develop/test_infrastructure.md",
+      "upstream_path": "docs/develop/test_infrastructure.md"
+    },
+    {
+      "bytes": 2924,
+      "git_blob_sha1": "0ab3942722b383c780ff677252f3b069ea540d92",
+      "sha256": "800f90e1ec254f634727549d9a79cc595d01344196939d550e6b47c97e3775a7",
+      "snapshot_path": "files/docs/docutils.md",
+      "upstream_path": "docs/docutils.md"
+    },
+    {
+      "bytes": 5596,
+      "git_blob_sha1": "aed98f38781f25d12fe6fa14498cf500f9391ebc",
+      "sha256": "316fc09533b1a188e6a98f7a729fe1cd7b16d7dacce3430cc153f24b7700c4b1",
+      "snapshot_path": "files/docs/faq/index.md",
+      "upstream_path": "docs/faq/index.md"
+    },
+    {
+      "bytes": 68,
+      "git_blob_sha1": "3935b1c56ebed180fd46f00028f1ce639faadd56",
+      "sha256": "f067ca05baeea51661539e803a8a05182a42efa1a8ebd88f24a40761f1798efe",
+      "snapshot_path": "files/docs/faq/snippets/include-md.md",
+      "upstream_path": "docs/faq/snippets/include-md.md"
+    },
+    {
+      "bytes": 4107,
+      "git_blob_sha1": "df1d25e118f0e5cfdf33f63da54ffeef24c26575",
+      "sha256": "b5da7d480a5c92af9e485807b7e3eabd68e6d7d65c738ebc675d112d1119f642",
+      "snapshot_path": "files/docs/index.md",
+      "upstream_path": "docs/index.md"
+    },
+    {
+      "bytes": 6416,
+      "git_blob_sha1": "e0aea01958136644adf9106e4256701cb146fdc7",
+      "sha256": "978ec5c14f88e4248520c112675d95030c3c8acd674d6da38b5f38f572299ef6",
+      "snapshot_path": "files/docs/intro.md",
+      "upstream_path": "docs/intro.md"
+    },
+    {
+      "bytes": 2164,
+      "git_blob_sha1": "f1f2910bb383c9d984cc69fed403fd0636ed8d40",
+      "sha256": "9689cfbe1cb90e58f180a530b87b8829114f5a2ccb620ed89803bf45d5913005",
+      "snapshot_path": "files/docs/live-preview.md",
+      "upstream_path": "docs/live-preview.md"
+    },
+    {
+      "bytes": 3116,
+      "git_blob_sha1": "dca9c61a1ee8088a2d085ec79025cd223796288d",
+      "sha256": "5fde122ef5690bc3fd4aa4cf013ae2e16f5a625f5cbb155e2d86f59667cf2495",
+      "snapshot_path": "files/docs/syntax/admonitions.md",
+      "upstream_path": "docs/syntax/admonitions.md"
+    },
+    {
+      "bytes": 6891,
+      "git_blob_sha1": "2b01a77483c957782a00645b29368dd5a7f01776",
+      "sha256": "8b81a6c42cac2b4e9410c6675210e1d926e9ce4224ef611d9f3708aaa542d807",
+      "snapshot_path": "files/docs/syntax/code_and_apis.md",
+      "upstream_path": "docs/syntax/code_and_apis.md"
+    },
+    {
+      "bytes": 16924,
+      "git_blob_sha1": "73bc9d8986f9794907073e0281ab54737171a19c",
+      "sha256": "d91dd45bd8c13234ed1c950514f6d916d2a398c3288be743d53eabf7ebb78b90",
+      "snapshot_path": "files/docs/syntax/cross-referencing.md",
+      "upstream_path": "docs/syntax/cross-referencing.md"
+    },
+    {
+      "bytes": 53,
+      "git_blob_sha1": "4c36cfe1190760be42d93283bc3bd4d2b80663a7",
+      "sha256": "b704d91b6a04e8a35c6f2ab8693956c1893438420464eacf62a20a10627e4bf3",
+      "snapshot_path": "files/docs/syntax/examples/content_child1.md",
+      "upstream_path": "docs/syntax/examples/content_child1.md"
+    },
+    {
+      "bytes": 44,
+      "git_blob_sha1": "f682c919e1fb0d813dd3735505e16a1e9070f5fa",
+      "sha256": "034cab77dd69a9cbde91d68056a8ccccbc357b45745b0c2424a835e04962fcb9",
+      "snapshot_path": "files/docs/syntax/examples/content_child2.md",
+      "upstream_path": "docs/syntax/examples/content_child2.md"
+    },
+    {
+      "bytes": 1036,
+      "git_blob_sha1": "f4550498ffdcf4fc1ada70966165622997f21310",
+      "sha256": "8bd6d2262e0495c70f8b305031cd8acf85f388b079d50d717a9a40730327dea0",
+      "snapshot_path": "files/docs/syntax/glossary.md",
+      "upstream_path": "docs/syntax/glossary.md"
+    },
+    {
+      "bytes": 4442,
+      "git_blob_sha1": "5b7b4ccaca7e16fae7be84c180b6735281d0c53e",
+      "sha256": "9ea1eb11db185e56ef138a1d4e9fb9d9a65f833d8e4f4715ad35627d3223881a",
+      "snapshot_path": "files/docs/syntax/images_and_figures.md",
+      "upstream_path": "docs/syntax/images_and_figures.md"
+    },
+    {
+      "bytes": 2440,
+      "git_blob_sha1": "355881bdfd8549fb401ef084bef2d70ebe9891ae",
+      "sha256": "43fb935ef452ff4a7e3692c77b262921e19ae6922538d90a1d0d8e5f97143474",
+      "snapshot_path": "files/docs/syntax/math.md",
+      "upstream_path": "docs/syntax/math.md"
+    },
+    {
+      "bytes": 33479,
+      "git_blob_sha1": "367154e20db63db1e19643050bbd782b884b9dc9",
+      "sha256": "b5e35232721edcb3602ead2b0367e49b7000a7304344b4d8b91ec3d6f920d8bd",
+      "snapshot_path": "files/docs/syntax/optional.md",
+      "upstream_path": "docs/syntax/optional.md"
+    },
+    {
+      "bytes": 5686,
+      "git_blob_sha1": "2ae3027debc613de942801381163328b6a5e7fdb",
+      "sha256": "96360bf2332b3136dc11fd46b9c9ffdc764351702a4ac03051b1360165b29130",
+      "snapshot_path": "files/docs/syntax/organising_content.md",
+      "upstream_path": "docs/syntax/organising_content.md"
+    },
+    {
+      "bytes": 5816,
+      "git_blob_sha1": "a4961ad6bff2de990bbc8f5d45116076f4c86776",
+      "sha256": "e3655a542fb26b51ceec1a4cb971807d28dd1ec3ccc9490471c9c2c5bbbe9e5e",
+      "snapshot_path": "files/docs/syntax/reference.md",
+      "upstream_path": "docs/syntax/reference.md"
+    },
+    {
+      "bytes": 7389,
+      "git_blob_sha1": "6dfeb76f395210be2dbce691d9f4401336828a1b",
+      "sha256": "410d42764253289434ef275da4f8883b7d552018b2732d1828ff36da82b27168",
+      "snapshot_path": "files/docs/syntax/roles-and-directives.md",
+      "upstream_path": "docs/syntax/roles-and-directives.md"
+    },
+    {
+      "bytes": 6216,
+      "git_blob_sha1": "c07ce64e642cf69c45a7222d34ac74acf29c3f10",
+      "sha256": "5a758de88ffb3203a05af68febe70c16ee6889ac2a9acf274115913fc9b3742a",
+      "snapshot_path": "files/docs/syntax/tables.md",
+      "upstream_path": "docs/syntax/tables.md"
+    },
+    {
+      "bytes": 7979,
+      "git_blob_sha1": "3de04ce521460d1e2f2472f00476f92e798ceba4",
+      "sha256": "bc4afcc97f9c9450dda53ea8b65ae9e32ca5a79621928fc491163096b1ce9332",
+      "snapshot_path": "files/docs/syntax/typography.md",
+      "upstream_path": "docs/syntax/typography.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "582ddf59e08277fe6e78cee924d2c84805fe36fe",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/myst-parser/LICENSE",
+        "bytes": 1078,
+        "git_blob_sha1": "582ddf59e08277fe6e78cee924d2c84805fe36fe",
+        "sha256": "4a2260d6e2cd0f5a151a1e86dbfe7d3ed552b1e2beabf9941c1ba5c49cbce484",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "MIT"
+  },
+  "repository_url": "https://github.com/executablebooks/MyST-Parser",
+  "retrieved_at": "2026-09-20T04:02:36Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the docs/ tree. Repository plumbing Markdown is recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/docs/**/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "myst-parser",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 139298
+}

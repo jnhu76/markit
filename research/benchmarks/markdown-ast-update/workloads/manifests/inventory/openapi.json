@@ -1,0 +1,435 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "c9f8f040e825a827bb011955bd41b7e2d899688f",
+  "entries": [
+    {
+      "bytes": 1051,
+      "git_blob_sha1": "5c8d9a6394bbc906375764808dc37e392493d57f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/registry_feature_request.md"
+    },
+    {
+      "bytes": 524,
+      "git_blob_sha1": "c642b83569be30439b272c9653f7b41b05e72b72",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/spec_bug_report.md"
+    },
+    {
+      "bytes": 756,
+      "git_blob_sha1": "7f1720803a9bfc9c16da701bcf00afe5a261a5df",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/pull_request_template.md"
+    },
+    {
+      "bytes": 2531,
+      "git_blob_sha1": "f9990bb764df0fdcfcc2232e7b937ad455cffd1d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/templates/agenda.md"
+    },
+    {
+      "bytes": 5013,
+      "git_blob_sha1": "277c5265708abca7f16acb65b163102b793f7497",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "AI.md"
+    },
+    {
+      "bytes": 31500,
+      "git_blob_sha1": "5641cd70744caa8fa611f32589a1e5d016c5f62f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "EDITORS.md"
+    },
+    {
+      "bytes": 3598,
+      "git_blob_sha1": "6deffa362120103d92d25a0075f2533d83c6ed75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 319,
+      "git_blob_sha1": "859c5d7df70e013509e27447b6436ed2ebf1dac5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "IMPLEMENTATIONS.md"
+    },
+    {
+      "bytes": 773,
+      "git_blob_sha1": "e68935f643306c0aa7f126217a897ee0ab2d30ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "MAINTAINERS.md"
+    },
+    {
+      "bytes": 5875,
+      "git_blob_sha1": "da4675b4d72c9ce115b445cc46dadf593d4c0410",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 2034,
+      "git_blob_sha1": "794f435c07a7597f0c387b2939f8aac96b9b9c9c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "SECURITY_CONSIDERATIONS.md"
+    },
+    {
+      "bytes": 600,
+      "git_blob_sha1": "661a757799a31c487012a0b184c158fc42c63f21",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "SPECIAL_INTEREST_GROUPS.md"
+    },
+    {
+      "bytes": 529,
+      "git_blob_sha1": "f325829b7e4f667e2b770125ea6babc0c60127e7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "TOB.md"
+    },
+    {
+      "bytes": 78,
+      "git_blob_sha1": "b5e176213e6c4deeba501c748853070663e7b4ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "_archive_/README.md"
+    },
+    {
+      "bytes": 450,
+      "git_blob_sha1": "78d9c18db0e3866d5bc085485f95d86095488e1e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "_archive_/schemas/README.md"
+    },
+    {
+      "bytes": 325,
+      "git_blob_sha1": "b443664da003cc3eaebd7239b46d26a52497083a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "_archive_/schemas/v1.2/README.md"
+    },
+    {
+      "bytes": 248,
+      "git_blob_sha1": "47b0c8e817fee2f53fc5ebae047b86e7327ac2b1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "_archive_/schemas/v2.0/README.md"
+    },
+    {
+      "bytes": 2164,
+      "git_blob_sha1": "5bda66cf5a968e0a9d2cec59711a9e5a750b4cd5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "_archive_/schemas/v3.0/README.md"
+    },
+    {
+      "bytes": 2299,
+      "git_blob_sha1": "aae45e00a5c31b34b33292aae5c74ef09e9a0217",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2019-01-01-Proposal-Template.md"
+    },
+    {
+      "bytes": 4032,
+      "git_blob_sha1": "de53463736f6c59ca2cff4d0d1b0df45c0bd2874",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2019-03-15-Alternative-Schema.md"
+    },
+    {
+      "bytes": 10834,
+      "git_blob_sha1": "493b444451353f4aa8a85009adb2661f7ed91c95",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2019-07-17-Webhooks.md"
+    },
+    {
+      "bytes": 16797,
+      "git_blob_sha1": "9d437c150cc414fc76a8c54d21f6ddb4f6aad313",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2019-10-31-Clarify-Nullable.md"
+    },
+    {
+      "bytes": 10075,
+      "git_blob_sha1": "7b9bc0cadf8524a6bdd51e38f3429a4bda9fe8ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2019-12-24-Overlays.md"
+    },
+    {
+      "bytes": 6676,
+      "git_blob_sha1": "aa34522070f7b0342c42dc3e102841f72482779b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2020-10-28-Experimental.md"
+    },
+    {
+      "bytes": 9118,
+      "git_blob_sha1": "2bb920c587b239851c6e4c6585edde1309a5932b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2024-08-01-Self-Identification.md"
+    },
+    {
+      "bytes": 8830,
+      "git_blob_sha1": "95631018a9014727770ca9b11c0abc6bb8058f11",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2024-09-01-Tags-Improvement.md"
+    },
+    {
+      "bytes": 9345,
+      "git_blob_sha1": "9de7d9ddead15eea752e7e08937b966e09b0b3ae",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/2025-03-20-URIs-for-Tags.md"
+    },
+    {
+      "bytes": 120,
+      "git_blob_sha1": "227901b37afa5f0ec17053f355f9b9c38b4b4f1c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/Alternative-Schema/CONTRIBUTORS.md"
+    },
+    {
+      "bytes": 915,
+      "git_blob_sha1": "a59451bce333936f49b315c46081512e1e56cfd8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/Alternative-Schema/alternative_schema_object.md"
+    },
+    {
+      "bytes": 1387,
+      "git_blob_sha1": "96f7189576ff23cc059397667f5c972693692033",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/Alternative-Schema/examples.md"
+    },
+    {
+      "bytes": 1556,
+      "git_blob_sha1": "f1d61e48f2e794d9dc0cff9a7a016e2bb1b060aa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/Alternative-Schema/implementations.md"
+    },
+    {
+      "bytes": 2727,
+      "git_blob_sha1": "7d9f57ecdda16264680639ac7bde2b29b6ebe4a4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposals/Alternative-Schema/schema_object.md"
+    },
+    {
+      "bytes": 3337,
+      "git_blob_sha1": "811347b1568f58f40b3a09bc18dbb9b5931e1d18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "style-guide.md"
+    },
+    {
+      "bytes": 208,
+      "git_blob_sha1": "726a104d589cd7e8fe8cf13ab2fa9d87ee3ffb77",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/md2html/README.md"
+    },
+    {
+      "bytes": 2097,
+      "git_blob_sha1": "8c5ffc209ceb2a4194d437f05a6f4ddc89a9f5fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/md2html/fixtures/basic-new.md"
+    },
+    {
+      "bytes": 319,
+      "git_blob_sha1": "22be28ae5794ea81b09c2bbee216a95a9eaa0673",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "tests/md2html/fixtures/basic-old.md"
+    },
+    {
+      "bytes": 49580,
+      "git_blob_sha1": "814e34dfad2ae5be8b696396aaace8ecd9b55f7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/1.2.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "de30bb5d631f631a1b17140c8b5cc2ab179b2736",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/2.0-editors.md"
+    },
+    {
+      "bytes": 80699,
+      "git_blob_sha1": "bc4a36d17265042149ef3a4de3ed49616bd8c198",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/2.0.md"
+    },
+    {
+      "bytes": 302,
+      "git_blob_sha1": "7278a62ab572459fca98bd5667893b12cb35e1e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.0-editors.md"
+    },
+    {
+      "bytes": 123376,
+      "git_blob_sha1": "84248257b448a37a9bcc57c3d08e08e8a4bf71dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.0.md"
+    },
+    {
+      "bytes": 367,
+      "git_blob_sha1": "05849e61f5e58d404054a8c783746bc24952ca5e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.1-editors.md"
+    },
+    {
+      "bytes": 121681,
+      "git_blob_sha1": "2c1ba6c3174d11887661399abd15c6656cf91190",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.1.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.2-editors.md"
+    },
+    {
+      "bytes": 122448,
+      "git_blob_sha1": "ff86a527ce96098a0900a72ff9414be219929cda",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.2.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.3-editors.md"
+    },
+    {
+      "bytes": 125206,
+      "git_blob_sha1": "13a96ea657bfba70de3c7bfb0b73421e48c0c4bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.3.md"
+    },
+    {
+      "bytes": 802,
+      "git_blob_sha1": "678e911b2bb5bcb7fe31d86dbaed86a3be9298d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.4-editors.md"
+    },
+    {
+      "bytes": 194950,
+      "git_blob_sha1": "90cdc0a22987bccbab47e5826cd96e29d250df19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.0.4.md"
+    },
+    {
+      "bytes": 481,
+      "git_blob_sha1": "34421f2c62b8834fe2538bca7ff1fe85114ab274",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.0-editors.md"
+    },
+    {
+      "bytes": 130288,
+      "git_blob_sha1": "1f0830643f75f8280f694355a08cb2e8a53a2f96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.0.md"
+    },
+    {
+      "bytes": 802,
+      "git_blob_sha1": "678e911b2bb5bcb7fe31d86dbaed86a3be9298d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.1-editors.md"
+    },
+    {
+      "bytes": 212540,
+      "git_blob_sha1": "b2db701c19f5a48d687056dafb1c54666534644f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.1.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.2-editors.md"
+    },
+    {
+      "bytes": 221889,
+      "git_blob_sha1": "43c2a04cfe062a9c935dd37f7c33a4cb152f824d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.1.2.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.2.0-editors.md"
+    },
+    {
+      "bytes": 296276,
+      "git_blob_sha1": "0b04a6acd6e0999b27d0f24750af23319f6881c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.2.0.md"
+    },
+    {
+      "bytes": 928,
+      "git_blob_sha1": "fc5f99079431e0f2d1886e5ee0302315f3d1a8e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.2.1-editors.md"
+    },
+    {
+      "bytes": 298132,
+      "git_blob_sha1": "b927789b431d9a7341f9e3e7ac5a63a8cc00ac91",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/versions/**/*.md",
+      "upstream_path": "versions/3.2.1.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 2133770,
+  "repository_md_files": 60,
+  "repository_url": "https://github.com/OAI/OpenAPI-Specification",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 1983802,
+  "snapshot_md_files": 23,
+  "source_id": "openapi"
+}

@@ -1,0 +1,6 @@
+# Frozen byte preservation for the #33 real-workload acquisition substrate.
+# Upstream Markdown snapshots under workloads/sources/ are byte-exact
+# provenance (see workloads/README.md): git must never apply line-ending or
+# text conversion to this subtree at checkin or checkout, regardless of any
+# core.autocrlf setting on the machine performing the commit.
+research/benchmarks/markdown-ast-update/workloads/** -text

@@ -1,0 +1,3361 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "1500248d8f230566e4ec9f27fcbb8fe9e2898ab1",
+  "entries": [
+    {
+      "bytes": 379,
+      "git_blob_sha1": "2423c4cd4f911cdb413404803f2c72f5dfe196b3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/bug_report.md"
+    },
+    {
+      "bytes": 170,
+      "git_blob_sha1": "c7bdc06eddccea21084465aafc7a421b2d713b03",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/new_translation.md"
+    },
+    {
+      "bytes": 6782,
+      "git_blob_sha1": "db8991c0031f9315df9a6514bb83a396d15df863",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/SUMMARY.md"
+    },
+    {
+      "bytes": 382,
+      "git_blob_sha1": "c4145d6d8ce1db7d58d5bdd74dc8535c3afb2e5b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-00.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "dde1ac6ce9eb80d1ae9ac8fda535845a0b450084",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-01-keywords.md"
+    },
+    {
+      "bytes": 428,
+      "git_blob_sha1": "4bca5b78f03c8e34a6ef60358a4b2e8c4df45e7a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-02-operators.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "effe9c22affebe9fbe0469ce6fd12ffadfdfe7b4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-03-derivable-traits.md"
+    },
+    {
+      "bytes": 461,
+      "git_blob_sha1": "9757c17ab8cb38e693aff372282a89e82d03f949",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-04-useful-development-tools.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "fe225436272f0dc432278bebd1d532b86453795b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-05-editions.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "ef6345533ead1c45fc8f63bdd95743167af6cca1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-06-translation.md"
+    },
+    {
+      "bytes": 452,
+      "git_blob_sha1": "d5ee3806de254fddaae02b0f7073e8668ba1d949",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/appendix-07-nightly-rust.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "2645d6f549d2fbd47ff54398c156347b7df6e47f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch00-00-introduction.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "18db714093fd3e22b9582f08d67f15fd8cab5f3e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch01-00-getting-started.md"
+    },
+    {
+      "bytes": 405,
+      "git_blob_sha1": "29ec038dee542085f5fae70e8570a68e48948f40",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch01-01-installation.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "f56f59291cfe180b811eab5a26faf85ca5b8283d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch01-02-hello-world.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "464955150a2fcb24d548a6e8bec2c661cb3a474f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch01-03-hello-cargo.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "40a5936914702a83de32647f36094e344e0b86f9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch02-00-guessing-game-tutorial.md"
+    },
+    {
+      "bytes": 449,
+      "git_blob_sha1": "52e38dedf3035bb84e878d9f4155673f1f149e6b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-00-common-programming-concepts.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "990602058ad935303d075ee3e863364d447631bf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-01-variables-and-mutability.md"
+    },
+    {
+      "bytes": 399,
+      "git_blob_sha1": "7109be297d2f5dc322263ce096673e54e51b2404",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-02-data-types.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "60213ba9ae982e267fd81ef123b2789069ab575d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-03-how-functions-work.md"
+    },
+    {
+      "bytes": 393,
+      "git_blob_sha1": "679c7ee212ba7b1e998f25fa96118ee7a3e9f3d0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-04-comments.md"
+    },
+    {
+      "bytes": 405,
+      "git_blob_sha1": "de3f331be263790a3eae764561b659baf572b1a6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch03-05-control-flow.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "d48cc711b72995556e7719399df629a9f4a14e43",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch04-00-understanding-ownership.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "f6a2e485e9ddfc9922c87c76165400aad941ce67",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch04-01-what-is-ownership.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "a6b9d5cba365d8b931b8f7e929b0c26ee9eb9411",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch04-02-references-and-borrowing.md"
+    },
+    {
+      "bytes": 395,
+      "git_blob_sha1": "8e1f8bcf92a03bd99e90e9f4a3e687d8040ea5ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch04-03-slices.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "8957ae29d4fba0745e7e2cb01dc6e54fd47e04c4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch05-00-structs.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "abd150f93b149d5d5611dcd41c8fc7d729f19b41",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch05-01-defining-structs.md"
+    },
+    {
+      "bytes": 431,
+      "git_blob_sha1": "ac6b43e19d367b1c33d8e5ab35c4df0d19b46d95",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch05-02-example-structs.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "a45b9f3346b499b08b3c1fb0690e62af59724c2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch05-03-method-syntax.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "55d2cd16247161cc59c64c07d75f41b0879c00be",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch06-00-enums.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "81c2603dcca75a950c4353e729f16a2392ed299c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch06-01-defining-an-enum.md"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "5663fb82a8ea10ef2be23350e73b21904e3e2fd4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch06-02-match.md"
+    },
+    {
+      "bytes": 415,
+      "git_blob_sha1": "24b14c1d02eb29e2bb4a81f5da87ca3bad9544a3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch06-03-if-let.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "b4ea933777bf9853c86d4996c66c65cf843fa7fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch07-00-packages-crates-and-modules.md"
+    },
+    {
+      "bytes": 478,
+      "git_blob_sha1": "605267733da2c02fba3bbae2bef338723f2f9c78",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch07-01-packages-and-crates-for-making-libraries-and-executables.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "c137290e208b7ef357f4720937cb5f4123e7e4b9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch07-02-modules-and-use-to-control-scope-and-privacy.md"
+    },
+    {
+      "bytes": 422,
+      "git_blob_sha1": "079daccf3d922cc8b90006b3f7c29a297967c0bf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch08-00-common-collections.md"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "e13e45d5226f2a973d0a9418848f5373efbf48cd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch08-01-vectors.md"
+    },
+    {
+      "bytes": 422,
+      "git_blob_sha1": "2ca314b872bc6f4676d56291861d864dbcc6ce82",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch08-02-strings.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "365ede452ab940320a7dd25015fc171db0eaed8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch08-03-hash-maps.md"
+    },
+    {
+      "bytes": 410,
+      "git_blob_sha1": "d4990777577ba56238e90298a4b7c1f0f8863d75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch09-00-error-handling.md"
+    },
+    {
+      "bytes": 465,
+      "git_blob_sha1": "4850a3d00e54683ef6cc2fb221ccdc2336d11959",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch09-01-unrecoverable-errors-with-panic.md"
+    },
+    {
+      "bytes": 461,
+      "git_blob_sha1": "12c2158f9714c0fe2a7ffe3ec652ab04bb1c2dd7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch09-02-recoverable-errors-with-result.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "1d1d06e482efdd4b33d0773c00793a31ad6751bb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch09-03-to-panic-or-not-to-panic.md"
+    },
+    {
+      "bytes": 420,
+      "git_blob_sha1": "e2959124792995e39a5fd5acc21634f2f579bad0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch10-00-generics.md"
+    },
+    {
+      "bytes": 399,
+      "git_blob_sha1": "0237c769451aab2e6f4e095f556bd4f2cad25e7d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch10-01-syntax.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "667383339b2d7c4133e2dbe4c8a74155b8cfb1ce",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch10-02-traits.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "a3ccf0033ba2085db6196f043cd39fae3ce7189d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch10-03-lifetime-syntax.md"
+    },
+    {
+      "bytes": 405,
+      "git_blob_sha1": "33f5d7eeb1f00047737d9fe4a6643f7082660887",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch11-00-testing.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "17c608e61fa5f4d404e8f0045283c95a9d9fa8c3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch11-01-writing-tests.md"
+    },
+    {
+      "bytes": 424,
+      "git_blob_sha1": "377407684685f653d126ca1fc114fd60de8e65fb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch11-02-running-tests.md"
+    },
+    {
+      "bytes": 420,
+      "git_blob_sha1": "92cca4c74d28b5e0c7a30ec49ebe99594010a223",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch11-03-test-organization.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "3e1fbac98e1f74ed50fc3bafb9ededb16cdccc8e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-00-an-io-project.md"
+    },
+    {
+      "bytes": 465,
+      "git_blob_sha1": "a91b0cad1c4ceca2067d86556c32cd907974651e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-01-accepting-command-line-arguments.md"
+    },
+    {
+      "bytes": 411,
+      "git_blob_sha1": "6ef33493986b9a240aba2808021268f641ad4911",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-02-reading-a-file.md"
+    },
+    {
+      "bytes": 499,
+      "git_blob_sha1": "5d52ab8933939b43b7c1819de24820b37f755cf2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-03-improving-error-handling-and-modularity.md"
+    },
+    {
+      "bytes": 506,
+      "git_blob_sha1": "12b0204d8255b7c13c16f31f9dab7f6f257734e4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-04-testing-the-librarys-functionality.md"
+    },
+    {
+      "bytes": 471,
+      "git_blob_sha1": "d6316cb2d3b4d487e55287cf9f45c1353073a5a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-05-working-with-environment-variables.md"
+    },
+    {
+      "bytes": 506,
+      "git_blob_sha1": "6114b4bb8c3a0e6bdcfdf114f8b092320f68ddb5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch12-06-writing-to-stderr-instead-of-stdout.md"
+    },
+    {
+      "bytes": 458,
+      "git_blob_sha1": "466b49c6f5dd7c9056579c53a129343263c6a94c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch13-00-functional-features.md"
+    },
+    {
+      "bytes": 449,
+      "git_blob_sha1": "bc580304e8f21e94f2f3a5ed249812fcbfd4eec8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch13-01-closures.md"
+    },
+    {
+      "bytes": 430,
+      "git_blob_sha1": "7f5e9cf8670c55d444e836321e2d09cb04cd4df8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch13-02-iterators.md"
+    },
+    {
+      "bytes": 442,
+      "git_blob_sha1": "5148fcf1bb8bf26960cfa86313ff2de921f47023",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch13-03-improving-our-io-project.md"
+    },
+    {
+      "bytes": 433,
+      "git_blob_sha1": "817a13844f3d95b571b8f9eaae200bd000b569c9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch13-04-performance.md"
+    },
+    {
+      "bytes": 430,
+      "git_blob_sha1": "dea00b8aa5553a86efacfc8510292aa66c44ff10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-00-more-about-cargo.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "eb9946ac734fefd371efc5f85fac2f4554d1c39b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-01-release-profiles.md"
+    },
+    {
+      "bytes": 446,
+      "git_blob_sha1": "a5707e5ace6026624d1a8301985dde7cc1c37e03",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-02-publishing-to-crates-io.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "50691e6541693af179b97ad6c6069682c598d33f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-03-cargo-workspaces.md"
+    },
+    {
+      "bytes": 462,
+      "git_blob_sha1": "b6e196bb93d20faf96d8d726811375b7f1a861e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-04-installing-binaries.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "ed1235de65821e16534a2dc50c90f2d241dbc59f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch14-05-extending-cargo.md"
+    },
+    {
+      "bytes": 410,
+      "git_blob_sha1": "de4c648df0adceaebbcd5f86c79af0f8ab31f399",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-00-smart-pointers.md"
+    },
+    {
+      "bytes": 418,
+      "git_blob_sha1": "cbbc07bbf8899fa141906344e3a44536e1a581a4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-01-box.md"
+    },
+    {
+      "bytes": 449,
+      "git_blob_sha1": "b5f1f8612a91ede0dc48233eacc9d61739e56135",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-02-deref.md"
+    },
+    {
+      "bytes": 422,
+      "git_blob_sha1": "2ae0b436d924305256baa4d8fa0c2b9f18118a8f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-03-drop.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "2b4015e7e4e4f4272b32ca1c6e5f1a35f7b5b8c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-04-rc.md"
+    },
+    {
+      "bytes": 455,
+      "git_blob_sha1": "fb1f96df7a773bf3af9a3a38e365426aeedf1a55",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-05-interior-mutability.md"
+    },
+    {
+      "bytes": 433,
+      "git_blob_sha1": "ac93fe3bbc60cb5779be11b28f806e4c21857749",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch15-06-reference-cycles.md"
+    },
+    {
+      "bytes": 410,
+      "git_blob_sha1": "1cf6b2f5806dec0269dbb27623d866aed6217be7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch16-00-concurrency.md"
+    },
+    {
+      "bytes": 423,
+      "git_blob_sha1": "708e30be79c7a4a4dacc1d3c1b9ce1a270f01d62",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch16-01-threads.md"
+    },
+    {
+      "bytes": 453,
+      "git_blob_sha1": "4540efaac315022480b456b420b1a3ea6f5039ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch16-02-message-passing.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "043aa25cdb640d0ba1522965289a8b23f2a75fc9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch16-03-shared-state.md"
+    },
+    {
+      "bytes": 497,
+      "git_blob_sha1": "44a4a0b1977f3b9649e0ca3c03184cad6aa50bb4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch16-04-extensible-concurrency-sync-and-send.md"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "6ff4dc33e8421d227044bef274d8b66480cd6c6d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch17-00-oop.md"
+    },
+    {
+      "bytes": 434,
+      "git_blob_sha1": "28835201bf3f69c87743afe4186fb9d22ae1ab4b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch17-01-what-is-oo.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "b83ab904ee784b2c273bc19eb1390343ed84e53d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch17-02-trait-objects.md"
+    },
+    {
+      "bytes": 452,
+      "git_blob_sha1": "9513538f57d5745d9918b6cd5649a8c419b0d336",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch17-03-oo-design-patterns.md"
+    },
+    {
+      "bytes": 406,
+      "git_blob_sha1": "213bac305d5cf4c2f17704e1900d811f5851c702",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch18-00-patterns.md"
+    },
+    {
+      "bytes": 459,
+      "git_blob_sha1": "f2dfa71a322a26faab65f5069b2d0577b34ade31",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch18-01-all-the-places-for-patterns.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "3eddb4dcd5f9ff713f8dbf8937fb50aa32a120e2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch18-02-refutability.md"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "44c73500e1b906fe1e2b47dd989840556bf7ca89",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch18-03-pattern-syntax.md"
+    },
+    {
+      "bytes": 420,
+      "git_blob_sha1": "16c72a906ab96c4d9fc87cd9bac127c6525fe208",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-00-advanced-features.md"
+    },
+    {
+      "bytes": 403,
+      "git_blob_sha1": "7316eb44a97f3217408417f68101869f21377ac0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-01-unsafe-rust.md"
+    },
+    {
+      "bytes": 402,
+      "git_blob_sha1": "dd84b462780c1c78ddd8926ce24ae01125614bec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-02-advanced-lifetimes.md"
+    },
+    {
+      "bytes": 415,
+      "git_blob_sha1": "94f578ae288a740301a31c9469eb0dc29de2434b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-03-advanced-traits.md"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "7628f68b4266ad66140c76e24c45ebdb1d59fdf4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-04-advanced-types.md"
+    },
+    {
+      "bytes": 463,
+      "git_blob_sha1": "d31f20a62f10274bd343898f99f456a7ad5b113d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-05-advanced-functions-and-closures.md"
+    },
+    {
+      "bytes": 388,
+      "git_blob_sha1": "cd92908bb004e865f60f7f75204c09b679c43ddc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch19-06-macros.md"
+    },
+    {
+      "bytes": 471,
+      "git_blob_sha1": "cac55848956050f61cb0c57374e48d77a141318c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch20-00-final-project-a-web-server.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "e1b4200be8de9a06a2440b39281e5193253288b5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch20-01-single-threaded.md"
+    },
+    {
+      "bytes": 458,
+      "git_blob_sha1": "7d54d56bc89cbc57f60365ad70aa1ded60a06770",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch20-02-multithreaded.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "f4879c4ac7c249e699bb25be40d1d6fa077c9297",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/ch20-03-graceful-shutdown-and-cleanup.md"
+    },
+    {
+      "bytes": 376,
+      "git_blob_sha1": "3af707e354a1b93119e948d08de60ed9e419430c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "2018-edition/src/foreword.md"
+    },
+    {
+      "bytes": 7290,
+      "git_blob_sha1": "d4c650d104a8c67d907661109214b342d755b6ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "ADMIN_TASKS.md"
+    },
+    {
+      "bytes": 3945,
+      "git_blob_sha1": "23fea7c0a57ee18717037ac99d8403218a739a21",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 3769,
+      "git_blob_sha1": "6ee459448bf3f3d1f9339b933f54bf8a4ec6034e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 607,
+      "git_blob_sha1": "b61f8531454dcd53cea5037ce91cb09f2a7bea88",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "TODO.md"
+    },
+    {
+      "bytes": 394,
+      "git_blob_sha1": "31babb298c17146af7deee86ba3e39315d155062",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/README.md"
+    },
+    {
+      "bytes": 2232,
+      "git_blob_sha1": "c3763cdf9d6d7ad7f3a0706c8b1747c27d53b499",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/SUMMARY.md"
+    },
+    {
+      "bytes": 482,
+      "git_blob_sha1": "69340a539206c68698e9f289c1f9d73990fd805d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/associated-types.md"
+    },
+    {
+      "bytes": 379,
+      "git_blob_sha1": "b39fcdd679aa05c751b191478ce124a36848c6d2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/attributes.md"
+    },
+    {
+      "bytes": 383,
+      "git_blob_sha1": "9609068fd09230ca74e5c76e826bcb5ec81b9131",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/bibliography.md"
+    },
+    {
+      "bytes": 409,
+      "git_blob_sha1": "a088bc8d75d146c35136d73a15095946ab636072",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/borrow-and-asref.md"
+    },
+    {
+      "bytes": 401,
+      "git_blob_sha1": "34d4e84e57492e0fa226ca151f61dc79db7e5a3b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/casting-between-types.md"
+    },
+    {
+      "bytes": 425,
+      "git_blob_sha1": "9e56d9da23cb3265034e116a131d2fd1086c3d30",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/choosing-your-guarantees.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "3852e28f5906bbc7ec1f9cfc016d85d6fa029446",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/closures.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "cf56cd67b10275d0a849a048cfbff502afc67c74",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/comments.md"
+    },
+    {
+      "bytes": 396,
+      "git_blob_sha1": "adb6e85b8a13e794225d5be513371298b8037802",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/concurrency.md"
+    },
+    {
+      "bytes": 406,
+      "git_blob_sha1": "80184ba3efedaa7d3e0bad69c17a74550506a0ec",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/conditional-compilation.md"
+    },
+    {
+      "bytes": 455,
+      "git_blob_sha1": "7e667e50c6fde8f0ecda66181106b62d00a59e46",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/const-and-static.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "66262b34018823c4c2fc48dd7d88afffc8f7997a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/crates-and-modules.md"
+    },
+    {
+      "bytes": 452,
+      "git_blob_sha1": "1e43ff4531e3f81dd136c15d23b99d5334ab358d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/deref-coercions.md"
+    },
+    {
+      "bytes": 449,
+      "git_blob_sha1": "ac9ecba80734e297399b5532a615be22fa3feec8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/documentation.md"
+    },
+    {
+      "bytes": 375,
+      "git_blob_sha1": "1abde150e8e738291b1077724ddd69d4d4a95cb1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/drop.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "1087c65410e9647862c2a8b525ec77dc013147c4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/effective-rust.md"
+    },
+    {
+      "bytes": 389,
+      "git_blob_sha1": "e26e198203cf3370a9a904cda9ce6d896d640ba2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/enums.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "35b780ae7d34d8a81ffe1f5cf3f54329cc146566",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/error-handling.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "a8c3f818ee4172c3c2ca860c67b405bb7bbca66c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/ffi.md"
+    },
+    {
+      "bytes": 399,
+      "git_blob_sha1": "b6af0f670f946833cda8e1ca0f1e0211b8db5911",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/functions.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "953ba03e27c57189c64112641a6170b5a48c48fb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/generics.md"
+    },
+    {
+      "bytes": 405,
+      "git_blob_sha1": "cd3ccf7757f5eb130f72f9d69a2d2f97c784077d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/getting-started.md"
+    },
+    {
+      "bytes": 375,
+      "git_blob_sha1": "03a2833e40cf2df3518e10bf5393249f7b9e86c3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/glossary.md"
+    },
+    {
+      "bytes": 411,
+      "git_blob_sha1": "3191cc9724c5f2527f0681e1cbca1a6f28187d8a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/guessing-game.md"
+    },
+    {
+      "bytes": 381,
+      "git_blob_sha1": "b4a95d24f9387838af841459fa8952241bcb3b89",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/if-let.md"
+    },
+    {
+      "bytes": 394,
+      "git_blob_sha1": "bd8f8e6c775a26d63581d99300dd3384436c8812",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/if.md"
+    },
+    {
+      "bytes": 390,
+      "git_blob_sha1": "d4dbd1e2991ec9dbfef4f7a912e6b689da3f7197",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/iterators.md"
+    },
+    {
+      "bytes": 396,
+      "git_blob_sha1": "2208c966e38d2718a9b85db96a7e6b624292549f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/lifetimes.md"
+    },
+    {
+      "bytes": 407,
+      "git_blob_sha1": "07ecd3342479146dbcb48697b011cf075503e751",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/loops.md"
+    },
+    {
+      "bytes": 381,
+      "git_blob_sha1": "587f0c79b1ce143ac916e8c4301f3dd66e0893f4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/macros.md"
+    },
+    {
+      "bytes": 378,
+      "git_blob_sha1": "b9808193e2bcbf9c2f989323b1c48e4dae28a09f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/match.md"
+    },
+    {
+      "bytes": 402,
+      "git_blob_sha1": "74c232bf93eb2e80d8cbef8320d82b6ff57d2130",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/method-syntax.md"
+    },
+    {
+      "bytes": 407,
+      "git_blob_sha1": "2f557de1de6068c9f9f83bf328f4fac56680b55e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/mutability.md"
+    },
+    {
+      "bytes": 485,
+      "git_blob_sha1": "2b4eecfbd44986512e1e5e9d59e0fefef5feeadc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/operators-and-overloading.md"
+    },
+    {
+      "bytes": 404,
+      "git_blob_sha1": "70fbe4847618b3a3e9cd5f45b5823122837480f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/ownership.md"
+    },
+    {
+      "bytes": 393,
+      "git_blob_sha1": "7bc6949b2f8f93b910f273c7823ddaf2adf8fb78",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/patterns.md"
+    },
+    {
+      "bytes": 403,
+      "git_blob_sha1": "39ee0b2d1ea44ec9abcfc939a72d85113a42ecf7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/primitive-types.md"
+    },
+    {
+      "bytes": 498,
+      "git_blob_sha1": "b52a43d7485ef65a513a673969b781feabe3f4cb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/procedural-macros.md"
+    },
+    {
+      "bytes": 426,
+      "git_blob_sha1": "a4cc68d47400041312efcbbb8553a667b9da7f8a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/raw-pointers.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "1d8c75e2d8ce04c7e04e626898abeed21933a006",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/references-and-borrowing.md"
+    },
+    {
+      "bytes": 391,
+      "git_blob_sha1": "f0a643f2706d1ff0c1cfb52fa77640b24ff31f69",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/release-channels.md"
+    },
+    {
+      "bytes": 384,
+      "git_blob_sha1": "f7648cde510a16b1820c27b5d4c0e325b76e1706",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/strings.md"
+    },
+    {
+      "bytes": 384,
+      "git_blob_sha1": "acfcdaf515e3badd4e772a7806b3c72261a036c1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/structs.md"
+    },
+    {
+      "bytes": 430,
+      "git_blob_sha1": "62740385c84fbe0d3e1063c7255552488b423a84",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/syntax-and-semantics.md"
+    },
+    {
+      "bytes": 383,
+      "git_blob_sha1": "a2ab62caca0f71f4441f3af06515d7d029115d6b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/syntax-index.md"
+    },
+    {
+      "bytes": 384,
+      "git_blob_sha1": "d594189791c4de7c810320b004ff3e3f383b60d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/testing.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "5c53af3563250f3d3244922bff8ace6a926f6be3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/the-stack-and-the-heap.md"
+    },
+    {
+      "bytes": 402,
+      "git_blob_sha1": "a04d16b4b2b8ada4a8e9092c39d17fec1b40743c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/trait-objects.md"
+    },
+    {
+      "bytes": 381,
+      "git_blob_sha1": "955776a74b53987b24486cc15cb458a84e89e590",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/traits.md"
+    },
+    {
+      "bytes": 442,
+      "git_blob_sha1": "8e9bde0f11f41799ace4848b1523b686d5868e33",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/type-aliases.md"
+    },
+    {
+      "bytes": 393,
+      "git_blob_sha1": "dad121ab30c521d269a8750c4b31b8ed6185fd00",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/ufcs.md"
+    },
+    {
+      "bytes": 386,
+      "git_blob_sha1": "187fef52e1f8b9ddbaa5827b2064b07e95c93b44",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/unsafe.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "cc16741f9cbb835a7262fdfd1399971430234c7a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/unsized-types.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "28e4e763b372eca45bead8356ebd1fc42a2a5357",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/using-rust-without-the-standard-library.md"
+    },
+    {
+      "bytes": 393,
+      "git_blob_sha1": "d11c926fde02e0cdd0034d85fc27f1f1bdc0c301",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/variable-bindings.md"
+    },
+    {
+      "bytes": 384,
+      "git_blob_sha1": "14f83b7f78f725efadfc1eea2ba46a9d79ecb9fe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "first-edition/src/vectors.md"
+    },
+    {
+      "bytes": 42536,
+      "git_blob_sha1": "7a68652b7011f6bbadef25586c856318527b1f01",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix.md"
+    },
+    {
+      "bytes": 5127,
+      "git_blob_sha1": "92b3c833936611b7f4105f02b7b0e7713771108a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix_a.md"
+    },
+    {
+      "bytes": 9841,
+      "git_blob_sha1": "4d894dd51ea55c795954198c8c012b51a2ef6d10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix_b.md"
+    },
+    {
+      "bytes": 9304,
+      "git_blob_sha1": "4023b12fa7fb8716f152cda22776f21646bde0fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix_c.md"
+    },
+    {
+      "bytes": 5093,
+      "git_blob_sha1": "48a5fa33d0d55076aea52c8651d5d7c2c87f7115",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix_d.md"
+    },
+    {
+      "bytes": 3201,
+      "git_blob_sha1": "f7244328cff4031363401db1709a8848263745d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/appendix_e.md"
+    },
+    {
+      "bytes": 271,
+      "git_blob_sha1": "38b0508bcdc2af2cb64df4adfd6a88e59888e64b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/bio.md"
+    },
+    {
+      "bytes": 10559,
+      "git_blob_sha1": "5be07f2473f3615ad0232904e787f1e9711213e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter00.md"
+    },
+    {
+      "bytes": 24554,
+      "git_blob_sha1": "df138f62021e4d69b6a9f9363268ae6e10500960",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter01.md"
+    },
+    {
+      "bytes": 41524,
+      "git_blob_sha1": "471649b36ff17129430ba0f2ddbc0938441e291c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter02.md"
+    },
+    {
+      "bytes": 59297,
+      "git_blob_sha1": "2b53775fd36641b477772b65f44f2064e1833682",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter03.md"
+    },
+    {
+      "bytes": 55489,
+      "git_blob_sha1": "c968309c54cb3a6006310baf4f6cdd0042bb4852",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter04.md"
+    },
+    {
+      "bytes": 39119,
+      "git_blob_sha1": "db516ed005a3f3fb91e476de9cc9339a6e4538cb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter05.md"
+    },
+    {
+      "bytes": 37993,
+      "git_blob_sha1": "ef22bebc2554ef41bdf93224fddb146f45a90716",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter06.md"
+    },
+    {
+      "bytes": 51014,
+      "git_blob_sha1": "f5ee14212b89c66d7c01eef065ae79e787c06c2e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter07.md"
+    },
+    {
+      "bytes": 44038,
+      "git_blob_sha1": "250da12e494fd40fd78f5666537155b54aadf37a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter08.md"
+    },
+    {
+      "bytes": 52260,
+      "git_blob_sha1": "2356f063a72485870a9d2fcf788c19928453af73",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter09.md"
+    },
+    {
+      "bytes": 76356,
+      "git_blob_sha1": "29860d91487450b169a1f855f94aca835a0523bd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter10.md"
+    },
+    {
+      "bytes": 61660,
+      "git_blob_sha1": "f90efc3fe144836aa6de74cce3e79503cde78878",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter11.md"
+    },
+    {
+      "bytes": 66591,
+      "git_blob_sha1": "7b228544008f9f2c2913a9acd47ac18ea0933e0c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter12.md"
+    },
+    {
+      "bytes": 51374,
+      "git_blob_sha1": "ca9ddf1c1a25847d134c53245731888a4cec990b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter13.md"
+    },
+    {
+      "bytes": 41743,
+      "git_blob_sha1": "e376fe0109f7c6a27ee77b1b2a8f8e537b66a066",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter14.md"
+    },
+    {
+      "bytes": 91441,
+      "git_blob_sha1": "a3e5c900a4bcd23f18540ff30b812448438f3b1c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter15.md"
+    },
+    {
+      "bytes": 52678,
+      "git_blob_sha1": "1877883b2ffb327f2ca4cb05fc6aaa1f9df2e63e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter16.md"
+    },
+    {
+      "bytes": 102083,
+      "git_blob_sha1": "efab2a38e87bd9aaf71907b3728c4ebe9137d8d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter17.md"
+    },
+    {
+      "bytes": 53445,
+      "git_blob_sha1": "d2f56ea790629c5765f6dc05bb591c8149d36e0d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter18.md"
+    },
+    {
+      "bytes": 48908,
+      "git_blob_sha1": "b7df52a9b4e1e9fafa55b0eec2f3ea9359b01286",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter19.md"
+    },
+    {
+      "bytes": 105247,
+      "git_blob_sha1": "77a69459de6a3c733818ced1f32130149ec34bcb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter20.md"
+    },
+    {
+      "bytes": 80959,
+      "git_blob_sha1": "32bcd7db9d528c7e2d5c23cf2fac6dc8356ae5f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/chapter21.md"
+    },
+    {
+      "bytes": 2348,
+      "git_blob_sha1": "2265e271421dc74621b91716c1f8fe756103208e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/foreword.md"
+    },
+    {
+      "bytes": 16693,
+      "git_blob_sha1": "5124118f33338bac325d7ed3c9fa9ca02612d224",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/frontmatter.md"
+    },
+    {
+      "bytes": 9566,
+      "git_blob_sha1": "bcaed24c5607e5af47266894c92655fbd9a2b09f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/introduction.md"
+    },
+    {
+      "bytes": 1241,
+      "git_blob_sha1": "33b1a0fd867b9ed9c7516b89a19671d0509acf28",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "nostarch/preface.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "15aacced0d07146cf3d8b10173885d4ae01344e0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mdbook-trpl/README.md"
+    },
+    {
+      "bytes": 1916,
+      "git_blob_sha1": "3e54ae7fd1e5e2ba224b936ec9a08c9f8a4a5206",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mdbook-trpl/src/bin/README - mdbook-trpl-note.md"
+    },
+    {
+      "bytes": 541,
+      "git_blob_sha1": "61ca4999272bd13ca49e7c4d2a4e7037f9145a9d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/trpl/CHANGELOG.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "bd14bf21d770ed1f835bbfeff9d7c66bc710cf36",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/trpl/CONTRIBUTING.md"
+    },
+    {
+      "bytes": 834,
+      "git_blob_sha1": "3e97ac9b3b3ee83facba65e78d9d7e51d3ffbbfc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/trpl/README.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "6540e789f7016e07dcac5f0208583f1d9c05bb3d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/README.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "6540e789f7016e07dcac5f0208583f1d9c05bb3d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/SUMMARY.md"
+    },
+    {
+      "bytes": 529,
+      "git_blob_sha1": "f91fc23d6f51fd61372aa45d2a2812f8998899c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/associated-types.md"
+    },
+    {
+      "bytes": 535,
+      "git_blob_sha1": "812cbbcd338fcce06ea2517b2e55a87667a1e814",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/attributes.md"
+    },
+    {
+      "bytes": 472,
+      "git_blob_sha1": "aca777e397b79f8dcb9578fa26d4e17f81a1da45",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/bibliography.md"
+    },
+    {
+      "bytes": 692,
+      "git_blob_sha1": "6541e59bafbe08435b0746d4ee5fbf973945efa0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/borrow-and-asref.md"
+    },
+    {
+      "bytes": 1015,
+      "git_blob_sha1": "7e1eb7744dc02a72b1c81215ef4c000356026a0b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/casting-between-types.md"
+    },
+    {
+      "bytes": 735,
+      "git_blob_sha1": "d8a4e3a3f9cb216ee26f55360d3cb29e9029a1a9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/choosing-your-guarantees.md"
+    },
+    {
+      "bytes": 673,
+      "git_blob_sha1": "55b88767fb3cc02eb09954eca08f75a407e215c4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/closures.md"
+    },
+    {
+      "bytes": 733,
+      "git_blob_sha1": "d8e94f7e93863b0f69e52dd82d2a7e83e5c6115a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/comments.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "67187f5f6b33271c4d495b9b9a1a78bd71f33c02",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/compiler-plugins.md"
+    },
+    {
+      "bytes": 633,
+      "git_blob_sha1": "da7fb2fb0977b137bb10e2439551ccd1d13be3c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/concurrency.md"
+    },
+    {
+      "bytes": 1021,
+      "git_blob_sha1": "b25c02f7419614115b6ccfe7b01f1a644ce54f8b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/conditional-compilation.md"
+    },
+    {
+      "bytes": 629,
+      "git_blob_sha1": "60b13f62ace398a29754dd8a4ed1546a981fca57",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/const-and-static.md"
+    },
+    {
+      "bytes": 993,
+      "git_blob_sha1": "d526c956414777624335596e15d7a363dbd30e58",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/crates-and-modules.md"
+    },
+    {
+      "bytes": 909,
+      "git_blob_sha1": "61d407e1d5c9ed17d64d0ff82750d5153c03593e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/deref-coercions.md"
+    },
+    {
+      "bytes": 634,
+      "git_blob_sha1": "ac7c881de1a93be34e4ac450c8f9ac5b4a754622",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/documentation.md"
+    },
+    {
+      "bytes": 873,
+      "git_blob_sha1": "164f1d7459b826775e1181f73bfaabfd17e4da51",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/drop.md"
+    },
+    {
+      "bytes": 489,
+      "git_blob_sha1": "30312a3ddbdd30a5b9cc72038a1549b74207decd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/effective-rust.md"
+    },
+    {
+      "bytes": 500,
+      "git_blob_sha1": "c770d6b001ffdd0e94a9535680fc41ac189b16f5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/enums.md"
+    },
+    {
+      "bytes": 533,
+      "git_blob_sha1": "7abc9642b6fa8c1e908a57c039d2924bf126a7b6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/error-handling.md"
+    },
+    {
+      "bytes": 588,
+      "git_blob_sha1": "63308ab1de9e3c60babfae677a13ab2371d6fb3d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/ffi.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "eecbfd49cdb469db623c7a71bb7498849ae47342",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/functions.md"
+    },
+    {
+      "bytes": 693,
+      "git_blob_sha1": "80700973fbd8569cf07689d7a022a53bf67964f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/generics.md"
+    },
+    {
+      "bytes": 463,
+      "git_blob_sha1": "1c84cbbaf714a7045780b4b70e2d5f9e85dc5ccc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/getting-started.md"
+    },
+    {
+      "bytes": 476,
+      "git_blob_sha1": "c0f9f8e72539b89559fefe8511f464ed0adf5da1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/glossary.md"
+    },
+    {
+      "bytes": 459,
+      "git_blob_sha1": "6abf4023b0eec35ee185f9ce802f937d81d83492",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/guessing-game.md"
+    },
+    {
+      "bytes": 627,
+      "git_blob_sha1": "edbe5d88b01c6177823e97a9453a5698efb489b3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/if-let.md"
+    },
+    {
+      "bytes": 432,
+      "git_blob_sha1": "ff97e94f163fb4b7e350300b44579946c0375017",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/if.md"
+    },
+    {
+      "bytes": 699,
+      "git_blob_sha1": "d8a73dab87501955a49952ac21cf30e3ec257fe5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/iterators.md"
+    },
+    {
+      "bytes": 814,
+      "git_blob_sha1": "8a27ec17244370581230386f52caaf179d331630",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/lifetimes.md"
+    },
+    {
+      "bytes": 780,
+      "git_blob_sha1": "30c7d4059f3c5cb23f2cd65b8d6f6aca5f4f6f04",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/loops.md"
+    },
+    {
+      "bytes": 743,
+      "git_blob_sha1": "f8ada9abf9952f9882f6e4102f449cbf4e751972",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/macros.md"
+    },
+    {
+      "bytes": 930,
+      "git_blob_sha1": "c76ffadb7a283c453cb303947e13105e6d414cab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/match.md"
+    },
+    {
+      "bytes": 776,
+      "git_blob_sha1": "29cd2cd7cdad5a593658c9e2a14f5f53ae4a7a93",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/method-syntax.md"
+    },
+    {
+      "bytes": 631,
+      "git_blob_sha1": "4e64953c10c27de14f8af16559b46ac9a0afb0d5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/mutability.md"
+    },
+    {
+      "bytes": 833,
+      "git_blob_sha1": "b77cf7c913bcbf54afd510bf18498f7fc135abfc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/operators-and-overloading.md"
+    },
+    {
+      "bytes": 720,
+      "git_blob_sha1": "3e7ece3b48f3e622a3ae3aa667ed28f83883c70a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/ownership.md"
+    },
+    {
+      "bytes": 691,
+      "git_blob_sha1": "1936368b20fcfeff0ac4958469b56439792679a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/patterns.md"
+    },
+    {
+      "bytes": 743,
+      "git_blob_sha1": "aff51f782f974c09305454064894cc6a02b886c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/primitive-types.md"
+    },
+    {
+      "bytes": 743,
+      "git_blob_sha1": "7c72392b707dccc2823f92a3282a23407774f0e9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/procedural-macros.md"
+    },
+    {
+      "bytes": 389,
+      "git_blob_sha1": "4076907b5c057440ab8f125335e5c459a46d6548",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/raw-pointers.md"
+    },
+    {
+      "bytes": 833,
+      "git_blob_sha1": "7eb8da2bdf360ecd7dfadb6b9beddf36111e57ed",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/references-and-borrowing.md"
+    },
+    {
+      "bytes": 1200,
+      "git_blob_sha1": "bf2f87315dc2c36f960038c1630e2c300fb0f3d4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/release-channels.md"
+    },
+    {
+      "bytes": 528,
+      "git_blob_sha1": "3084e8d457e24d58c1c2ad5e7a9cb352d07e6255",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/strings.md"
+    },
+    {
+      "bytes": 606,
+      "git_blob_sha1": "5c5427c55a383aff3534c44789eea144aabf2bfe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/structs.md"
+    },
+    {
+      "bytes": 614,
+      "git_blob_sha1": "b1f4f8acaddec8f70083b7ae71b87aa315da2925",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/syntax-and-semantics.md"
+    },
+    {
+      "bytes": 474,
+      "git_blob_sha1": "c9513bf0e53d344cf0f7abd93fd02fbc1582efc1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/syntax-index.md"
+    },
+    {
+      "bytes": 525,
+      "git_blob_sha1": "f2030654fd9118cc66300a6787b84d135aaa262f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/testing.md"
+    },
+    {
+      "bytes": 642,
+      "git_blob_sha1": "e2d4d3ac936a57d05c5276fa72639b32647cf728",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/the-stack-and-the-heap.md"
+    },
+    {
+      "bytes": 1515,
+      "git_blob_sha1": "a0e7438d453b69896de17b4e36473ab180627aab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/trait-objects.md"
+    },
+    {
+      "bytes": 594,
+      "git_blob_sha1": "2ff60daae2101f13be34b1dafbc7778308b6cd74",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/traits.md"
+    },
+    {
+      "bytes": 383,
+      "git_blob_sha1": "986e7b9e33da5c5e5dae5f3c4fc83cca96955e4b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/type-aliases.md"
+    },
+    {
+      "bytes": 1074,
+      "git_blob_sha1": "383465398bdb87d50aeeb6c85d5cd204bf570b18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/ufcs.md"
+    },
+    {
+      "bytes": 600,
+      "git_blob_sha1": "7d9adb39d81a693f15e0dd01a0936f9301a10288",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/unsafe.md"
+    },
+    {
+      "bytes": 694,
+      "git_blob_sha1": "a9ca1e03e005060e5ecf2a09c6cfffd29d4cb87c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/unsized-types.md"
+    },
+    {
+      "bytes": 704,
+      "git_blob_sha1": "0fbdfebdd642f32d4d1cfd6bd7f9fe3a233765db",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/using-rust-without-the-standard-library.md"
+    },
+    {
+      "bytes": 327,
+      "git_blob_sha1": "0bd437ec31af394e1481e27eef2483af9e5d93ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/variable-bindings.md"
+    },
+    {
+      "bytes": 608,
+      "git_blob_sha1": "1359f9da84249e75863bcbb6398c7e2a2d8189bc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "redirects/vectors.md"
+    },
+    {
+      "bytes": 6677,
+      "git_blob_sha1": "37d703d8ea7acb36a9905a2a2c71e86685e23611",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/SUMMARY.md"
+    },
+    {
+      "bytes": 386,
+      "git_blob_sha1": "a19a914dabc6d0af2c6d72000b4620d72d852ed7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-00.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "a2dd6702562982d9d2442783761d57b7ae668f02",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-01-keywords.md"
+    },
+    {
+      "bytes": 432,
+      "git_blob_sha1": "decfc730571edab79f6a1c53ba0528028df59030",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-02-operators.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "f09dceeed9242f39ef20d81bb5c0f6f7f34c7c58",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-03-derivable-traits.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "f04f9eb4e86f9eed5eb4682fe2988b4cd2114e63",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-04-macros.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "69562bc965bd08bf4a4ad3b067cae657dc52ac75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-05-translation.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "c1b2f9152a8b40a2953071715dbd934ef15bab1d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-06-newest-features.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "41f3b3ec79f785554f41258500250db3451d6615",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/appendix-07-nightly-rust.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "7de0c638a0f861bfafb61406352775c785a649cd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch00-00-introduction.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "6aa4e1e5b5861c7586e95676ff77a7872e1262c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch01-00-getting-started.md"
+    },
+    {
+      "bytes": 409,
+      "git_blob_sha1": "478be2f7ce4bc804da6c7e272720f58d54556155",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch01-01-installation.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "6d690501cb9ce55b13a2f48f56be9c7799f97cc9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch01-02-hello-world.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "72227bc8e8d19fa06c6282790a5289cd1d12b627",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch01-03-hello-cargo.md"
+    },
+    {
+      "bytes": 443,
+      "git_blob_sha1": "c670083bc831bbb9392e77140664ffb32a3626b2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch02-00-guessing-game-tutorial.md"
+    },
+    {
+      "bytes": 453,
+      "git_blob_sha1": "b2cb97064c36c872427a0c2d683eee72d02e28a7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-00-common-programming-concepts.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "70a85b269c7607ef0114be63a9d217549b96ea0f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-01-variables-and-mutability.md"
+    },
+    {
+      "bytes": 403,
+      "git_blob_sha1": "43b14f4e9356ba95bdb0ebac974dad27adc731c3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-02-data-types.md"
+    },
+    {
+      "bytes": 418,
+      "git_blob_sha1": "e37d09ebaff1ebec2d9097db2a520f4f09ac34e7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-03-how-functions-work.md"
+    },
+    {
+      "bytes": 397,
+      "git_blob_sha1": "1775b7d0678ee364bd38867afc38c73698bbc260",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-04-comments.md"
+    },
+    {
+      "bytes": 409,
+      "git_blob_sha1": "977c19aa0415cce249a66e305ddc559a6274e54c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch03-05-control-flow.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "3764c3c0c617f2871220de6e9b525f4a8989b7c7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch04-00-understanding-ownership.md"
+    },
+    {
+      "bytes": 425,
+      "git_blob_sha1": "8f857a394fc05cb48001aa0198fddb7027550a43",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch04-01-what-is-ownership.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "f9ccceaa1e39d710a13300335779f26c8099cedf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch04-02-references-and-borrowing.md"
+    },
+    {
+      "bytes": 399,
+      "git_blob_sha1": "4b4c3967f20a103fb66813b17cb4d4c0cb3c3d50",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch04-03-slices.md"
+    },
+    {
+      "bytes": 425,
+      "git_blob_sha1": "e7b6e512e0ac6089c1e59c36f2e13edf9a7fdd0f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch05-00-structs.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "39bf82831b912ebd9f0b7c60aecdfcfd7004debe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch05-01-defining-structs.md"
+    },
+    {
+      "bytes": 435,
+      "git_blob_sha1": "b32a1e3019e0518bff8e22949823d572c74f39e4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch05-02-example-structs.md"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "d8338023a4cb99fa67267124668971a6e22d051c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch05-03-method-syntax.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "367060de341dad76361ae4d7094ad5938608a017",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch06-00-enums.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "1963c7bc2839658532e0087861f69343713b4333",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch06-01-defining-an-enum.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "57c7a701b8ba0ab0b82dd3b3aa8c7ea53b865436",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch06-02-match.md"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "ba599834033d07d63740bb797f936b21ba6b34e9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch06-03-if-let.md"
+    },
+    {
+      "bytes": 464,
+      "git_blob_sha1": "43cd6bb2075f734cd53188ede6495957e74f1d2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch07-00-modules.md"
+    },
+    {
+      "bytes": 464,
+      "git_blob_sha1": "6889001130900ddb38158c7b5fe5b33afaa86a53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch07-01-mod-and-the-filesystem.md"
+    },
+    {
+      "bytes": 482,
+      "git_blob_sha1": "8eb9e5455bf114f0ffb09ab3e8ae80f7cf728329",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch07-02-controlling-visibility-with-pub.md"
+    },
+    {
+      "bytes": 482,
+      "git_blob_sha1": "afcdc29d30ce3ccbf290be6b867e7384bf607247",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch07-03-importing-names-with-use.md"
+    },
+    {
+      "bytes": 426,
+      "git_blob_sha1": "b1711089c5d7bf1a11f13d87777b9a6c9c89a33a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch08-00-common-collections.md"
+    },
+    {
+      "bytes": 423,
+      "git_blob_sha1": "37469503ec0f2496886cfe080cfd6ad464b8ae64",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch08-01-vectors.md"
+    },
+    {
+      "bytes": 426,
+      "git_blob_sha1": "f5ed14390f42805f20be4ce4a9f4163bf815e9f1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch08-02-strings.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "21d14bcccc84a99a7931acb7bd019876e1c98290",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch08-03-hash-maps.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "3a5de11a259716125925346ee78e56de4729d1d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch09-00-error-handling.md"
+    },
+    {
+      "bytes": 469,
+      "git_blob_sha1": "2596c367787e624d48d2295ae4d5e8cd3f3ab346",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch09-01-unrecoverable-errors-with-panic.md"
+    },
+    {
+      "bytes": 465,
+      "git_blob_sha1": "ac1bfe1518fc3519a32b7cd1f4b69a5830fa5353",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch09-02-recoverable-errors-with-result.md"
+    },
+    {
+      "bytes": 451,
+      "git_blob_sha1": "f2037237fa39f9258c70614c8c3484f183af336f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch09-03-to-panic-or-not-to-panic.md"
+    },
+    {
+      "bytes": 424,
+      "git_blob_sha1": "e8dd4a07acc4fb1db148e473d9b6c18356f958e6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch10-00-generics.md"
+    },
+    {
+      "bytes": 403,
+      "git_blob_sha1": "fcfb3e69b0e6fbf866d264bbeab45701d6f3ffb9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch10-01-syntax.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "9d0d72bd8c8d525df406616de37927acb765df3d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch10-02-traits.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "05d6e5dc396f9340a032cb673e0fcd9c0efedc9a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch10-03-lifetime-syntax.md"
+    },
+    {
+      "bytes": 409,
+      "git_blob_sha1": "76aa84e75f2682c42d8a1e09c3bdb6a47496b0c7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch11-00-testing.md"
+    },
+    {
+      "bytes": 417,
+      "git_blob_sha1": "0b332ef5c666a7a5eb97abc06328d7bb89e5066e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch11-01-writing-tests.md"
+    },
+    {
+      "bytes": 428,
+      "git_blob_sha1": "b1276b381190e2bf1dcc41b65c1fce6e18a25b63",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch11-02-running-tests.md"
+    },
+    {
+      "bytes": 424,
+      "git_blob_sha1": "4edb0c08338c5ef6809918a27eacf290eb0216d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch11-03-test-organization.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "a631a15cc22484cd77fefade09585688e7216b62",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-00-an-io-project.md"
+    },
+    {
+      "bytes": 469,
+      "git_blob_sha1": "a904cad3118f888bfbcf83214669f1e6446e7311",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-01-accepting-command-line-arguments.md"
+    },
+    {
+      "bytes": 415,
+      "git_blob_sha1": "d3b74d03089cea0ad4323e031b4c6896d4b0b81f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-02-reading-a-file.md"
+    },
+    {
+      "bytes": 503,
+      "git_blob_sha1": "cd6fd68fc13488e9167eaadecc663c5d23630501",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-03-improving-error-handling-and-modularity.md"
+    },
+    {
+      "bytes": 510,
+      "git_blob_sha1": "c9bfa60c92530bea2125dfee7a859080ae2c1729",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-04-testing-the-librarys-functionality.md"
+    },
+    {
+      "bytes": 475,
+      "git_blob_sha1": "58ffd2967fc65beaa6302401c3a20dd48c5dd0e6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-05-working-with-environment-variables.md"
+    },
+    {
+      "bytes": 510,
+      "git_blob_sha1": "e0dc231cdc0d707996b53c8270c85cc3d65c24a4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch12-06-writing-to-stderr-instead-of-stdout.md"
+    },
+    {
+      "bytes": 462,
+      "git_blob_sha1": "169779ffa2a0cfa76051b8bdb7fb9976c367910f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch13-00-functional-features.md"
+    },
+    {
+      "bytes": 453,
+      "git_blob_sha1": "0a519e3b7b469eb1f09945a01709927fe8ec714d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch13-01-closures.md"
+    },
+    {
+      "bytes": 434,
+      "git_blob_sha1": "7afcb18cd7c3cd4b353f25bdb8ed44e16fb1bab9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch13-02-iterators.md"
+    },
+    {
+      "bytes": 446,
+      "git_blob_sha1": "75a40b1a80ae67de09a8b337a3b97b629a5ab207",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch13-03-improving-our-io-project.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "b8bd6437b58e343709fb630a242cd6eaa54d5768",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch13-04-performance.md"
+    },
+    {
+      "bytes": 434,
+      "git_blob_sha1": "ff19c7b55789590fb5dd5514a5dce91126218a09",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-00-more-about-cargo.md"
+    },
+    {
+      "bytes": 445,
+      "git_blob_sha1": "dcad779bc380a51ba10b7d2204d9a7ee47330e4b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-01-release-profiles.md"
+    },
+    {
+      "bytes": 450,
+      "git_blob_sha1": "a4e2f79a876385eecc1c9f03d8ed1d977ed49399",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-02-publishing-to-crates-io.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "b748600e3a64aa86586b7974762174a0ba1d9c25",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-03-cargo-workspaces.md"
+    },
+    {
+      "bytes": 466,
+      "git_blob_sha1": "8f435f22c0b7db25dd98e44d0ad21cfad73aa992",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-04-installing-binaries.md"
+    },
+    {
+      "bytes": 439,
+      "git_blob_sha1": "66cae5f5746360a8b649ebf790b9b0a80c18dc78",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch14-05-extending-cargo.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "720732d01e8900f0ce85c9a1ee93044224f7674e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-00-smart-pointers.md"
+    },
+    {
+      "bytes": 422,
+      "git_blob_sha1": "1ea314fc274bac57ae2a6b4169f07f9a457e6915",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-01-box.md"
+    },
+    {
+      "bytes": 453,
+      "git_blob_sha1": "654b6befe73a33986af735944b4dce660e305b00",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-02-deref.md"
+    },
+    {
+      "bytes": 426,
+      "git_blob_sha1": "96914d3558dfaafeb9956a31dc262f49d52d204a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-03-drop.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "6179a0e1cc56b0107d8a919bc684fd486fb779cd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-04-rc.md"
+    },
+    {
+      "bytes": 459,
+      "git_blob_sha1": "eeeb93269ef11dd6d4329c512425ef8a4070d460",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-05-interior-mutability.md"
+    },
+    {
+      "bytes": 437,
+      "git_blob_sha1": "8edae3ed20c9ae72d5a80fca29e1de847b848e58",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch15-06-reference-cycles.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "9069bd985e9d88b16b653ef98140374f5cd4283f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch16-00-concurrency.md"
+    },
+    {
+      "bytes": 427,
+      "git_blob_sha1": "0d287512d47f6de5d877c0b140e7b2b1d7593ae2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch16-01-threads.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "186ab0b59925efda29a367c7ff1267589055a453",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch16-02-message-passing.md"
+    },
+    {
+      "bytes": 421,
+      "git_blob_sha1": "dbd58bfbafd512c3920b5737e1b52eb896e0279c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch16-03-shared-state.md"
+    },
+    {
+      "bytes": 501,
+      "git_blob_sha1": "81fb6cb8bbd0b2346abc470b79a45d5be6d16086",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch16-04-extensible-concurrency-sync-and-send.md"
+    },
+    {
+      "bytes": 423,
+      "git_blob_sha1": "e3633405f11fb2eeb5b50b7032187e3810da6bdb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch17-00-oop.md"
+    },
+    {
+      "bytes": 438,
+      "git_blob_sha1": "a705d19416d139ff08ab73391d75702793a2b08c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch17-01-what-is-oo.md"
+    },
+    {
+      "bytes": 460,
+      "git_blob_sha1": "16dad6368ebd3254cc9b1b5410393107a5591cbc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch17-02-trait-objects.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "b29dc2393cbc48c548271d4a97acd4354c082856",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch17-03-oo-design-patterns.md"
+    },
+    {
+      "bytes": 410,
+      "git_blob_sha1": "e315b352746e6e1468083a52c13e1422494d1ff7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch18-00-patterns.md"
+    },
+    {
+      "bytes": 463,
+      "git_blob_sha1": "4a76aded0a2accfc664468e26c65c5cb03758d11",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch18-01-all-the-places-for-patterns.md"
+    },
+    {
+      "bytes": 449,
+      "git_blob_sha1": "768df16b25f5c4be714febd7fce8cd8fa7c42b5f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch18-02-refutability.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "08676091e1d06650152e2ec5953cdef9b2fe8b5f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch18-03-pattern-syntax.md"
+    },
+    {
+      "bytes": 424,
+      "git_blob_sha1": "3633c0548ed5e4fe16a8a00f99ec21681e62f6ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-00-advanced-features.md"
+    },
+    {
+      "bytes": 407,
+      "git_blob_sha1": "0e740ce03d39e9ed8a2d838989e0c9aa7856f8f1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-01-unsafe-rust.md"
+    },
+    {
+      "bytes": 406,
+      "git_blob_sha1": "374382886bdf662e4453ad3e469fb1968beaf3d3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-02-advanced-lifetimes.md"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "07c9d71a54558d896656fe18cc1b13316b1483f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-03-advanced-traits.md"
+    },
+    {
+      "bytes": 416,
+      "git_blob_sha1": "153ad9cf444d053517f0e3ea1f4d170c244d42c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-04-advanced-types.md"
+    },
+    {
+      "bytes": 467,
+      "git_blob_sha1": "2d8b64c07d58fb6b3f5b91ee03ebe092374d4652",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch19-05-advanced-functions-and-closures.md"
+    },
+    {
+      "bytes": 475,
+      "git_blob_sha1": "0c99ac623b94653ec567ed20e2e3d73a0f7849b4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch20-00-final-project-a-web-server.md"
+    },
+    {
+      "bytes": 441,
+      "git_blob_sha1": "a06b0cbc1af4e786fbc7b00ca6b56e00694efdb6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch20-01-single-threaded.md"
+    },
+    {
+      "bytes": 462,
+      "git_blob_sha1": "8826bd9f1a80040e7ad807615a24977b9f65dcb1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch20-02-multithreaded.md"
+    },
+    {
+      "bytes": 461,
+      "git_blob_sha1": "457b294f90ae3d3826774a58aa790ed6a1b11bb3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/ch20-03-graceful-shutdown-and-cleanup.md"
+    },
+    {
+      "bytes": 380,
+      "git_blob_sha1": "f369abbf62c3a147167cd3854caaba13bc04e568",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "second-edition/src/foreword.md"
+    },
+    {
+      "bytes": 7350,
+      "git_blob_sha1": "74584668186dcc85ac1df982480e650dfd1f8aa7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/SUMMARY.md"
+    },
+    {
+      "bytes": 104,
+      "git_blob_sha1": "83a7e913292baba90488caf02ac501e0d677bc3a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-00.md"
+    },
+    {
+      "bytes": 5268,
+      "git_blob_sha1": "5d4716b934828fd2ba10107a70c5c1cbdab30d08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-01-keywords.md"
+    },
+    {
+      "bytes": 22595,
+      "git_blob_sha1": "e938b5e531234fedff2c469fabd634fd0ad25d0b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-02-operators.md"
+    },
+    {
+      "bytes": 9870,
+      "git_blob_sha1": "1bcc1de9319bbae11f9b5922b42967d8fff76734",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-03-derivable-traits.md"
+    },
+    {
+      "bytes": 5335,
+      "git_blob_sha1": "6719eaa26d6b51340b4c61b0f010eeb68ebda7f5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-04-useful-development-tools.md"
+    },
+    {
+      "bytes": 3075,
+      "git_blob_sha1": "ef210ce6a49dca1b496740b6a6c9b9631a4ce65d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-05-editions.md"
+    },
+    {
+      "bytes": 1991,
+      "git_blob_sha1": "09339077579866b82b26eeff249b16a229302946",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-06-translation.md"
+    },
+    {
+      "bytes": 9050,
+      "git_blob_sha1": "7108441fa330cc02e359f88b373d6938c396cd56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/appendix-07-nightly-rust.md"
+    },
+    {
+      "bytes": 10839,
+      "git_blob_sha1": "4dfa272fcc54d5c3707735fdf5ac1dc174f19704",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch00-00-introduction.md"
+    },
+    {
+      "bytes": 303,
+      "git_blob_sha1": "ccb10e884e8f05b98b9fa125c6f2e61d5a0eb4b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch01-00-getting-started.md"
+    },
+    {
+      "bytes": 6660,
+      "git_blob_sha1": "a9e03f534aec9791f6b8200068376fa5678a576c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch01-01-installation.md"
+    },
+    {
+      "bytes": 7690,
+      "git_blob_sha1": "a70b2db6d39201822c1e77379dca127d19e446d2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch01-02-hello-world.md"
+    },
+    {
+      "bytes": 11025,
+      "git_blob_sha1": "70898e1180cd0c7a5af47e81809bee08b358bb49",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch01-03-hello-cargo.md"
+    },
+    {
+      "bytes": 40398,
+      "git_blob_sha1": "f118eb5455f20aa14128056733a0182869d816d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch02-00-guessing-game-tutorial.md"
+    },
+    {
+      "bytes": 1183,
+      "git_blob_sha1": "722a95fb11c24f6bb1b1e2f2f80cc00041ae13cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-00-common-programming-concepts.md"
+    },
+    {
+      "bytes": 9435,
+      "git_blob_sha1": "ed15afc0fd46a011578cdf41b3e4f03a5e3257fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-01-variables-and-mutability.md"
+    },
+    {
+      "bytes": 17272,
+      "git_blob_sha1": "b95f01913d25096145df62f13cd67b903fa2d11b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-02-data-types.md"
+    },
+    {
+      "bytes": 10772,
+      "git_blob_sha1": "5f9e512da29756cecd3cc61ce8e4d2f653a75a43",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-03-how-functions-work.md"
+    },
+    {
+      "bytes": 1529,
+      "git_blob_sha1": "fdcdbd48a1f6b3fe2764f1ee3828dbbaf3acc6d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-04-comments.md"
+    },
+    {
+      "bytes": 17064,
+      "git_blob_sha1": "6bde6748fe27baf0aafcfb70b82b99ca340b06c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch03-05-control-flow.md"
+    },
+    {
+      "bytes": 406,
+      "git_blob_sha1": "52eda6a12f0a69dbbead2ac2b38818c401e25f88",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch04-00-understanding-ownership.md"
+    },
+    {
+      "bytes": 25352,
+      "git_blob_sha1": "aa8fc61b00c415da53ce62396ee2ff49c4cb2bb6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch04-01-what-is-ownership.md"
+    },
+    {
+      "bytes": 10608,
+      "git_blob_sha1": "8c37601d57cfe6cd1c9c4fe51c48dee18cf2c711",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch04-02-references-and-borrowing.md"
+    },
+    {
+      "bytes": 13237,
+      "git_blob_sha1": "7f145baf1d943371c460b46996621b28418d9736",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch04-03-slices.md"
+    },
+    {
+      "bytes": 859,
+      "git_blob_sha1": "4c0f7d35b9ffd406cf16fcc52542c49ad1991d22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch05-00-structs.md"
+    },
+    {
+      "bytes": 13693,
+      "git_blob_sha1": "66da9389568e8505e5cfd2611a087d251e7e273b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch05-01-defining-structs.md"
+    },
+    {
+      "bytes": 11585,
+      "git_blob_sha1": "fe59bb402e7a1d62f94c272adbb9987ecd8e2779",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch05-02-example-structs.md"
+    },
+    {
+      "bytes": 12204,
+      "git_blob_sha1": "fe0c7e3a2fea2340c79d557b198cb07fa94ae5bc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch05-03-method-syntax.md"
+    },
+    {
+      "bytes": 670,
+      "git_blob_sha1": "982e62c2b4bc689d22535cdf4780fa21cc16d309",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch06-00-enums.md"
+    },
+    {
+      "bytes": 15757,
+      "git_blob_sha1": "74e460d1e464693be3c7b9246b38d66489aa0aae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch06-01-defining-an-enum.md"
+    },
+    {
+      "bytes": 12595,
+      "git_blob_sha1": "e96ec79ba39867da137efd4d963cdcbb33dfeda1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch06-02-match.md"
+    },
+    {
+      "bytes": 6634,
+      "git_blob_sha1": "06b517e2ae2b72e5c9e40c5ff9aae85d6dfa84d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch06-03-if-let.md"
+    },
+    {
+      "bytes": 2970,
+      "git_blob_sha1": "8c6d7fb6631495ef7f6e27bc32c95bfa0345fe99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-00-managing-growing-projects-with-packages-crates-and-modules.md"
+    },
+    {
+      "bytes": 3806,
+      "git_blob_sha1": "63e6d4142655c9601083608ebb31655aece3303d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-01-packages-and-crates.md"
+    },
+    {
+      "bytes": 8018,
+      "git_blob_sha1": "5dc3197e8257b951f1c7af2a72cadf0aeeb5c880",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-02-defining-modules-to-control-scope-and-privacy.md"
+    },
+    {
+      "bytes": 15311,
+      "git_blob_sha1": "d1249fc368f01c2310d834e5e7a646aa93a7d6c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md"
+    },
+    {
+      "bytes": 13686,
+      "git_blob_sha1": "83820e2fee7945c9871f18c0613e4ef78d19ea1c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-04-bringing-paths-into-scope-with-the-use-keyword.md"
+    },
+    {
+      "bytes": 6077,
+      "git_blob_sha1": "ed3f49f7b3246fdd3d3eb528c11cfe4152832c1d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch07-05-separating-modules-into-different-files.md"
+    },
+    {
+      "bytes": 1355,
+      "git_blob_sha1": "550ee2c0904e225aba46ba702b63dd69d46f5950",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch08-00-common-collections.md"
+    },
+    {
+      "bytes": 11646,
+      "git_blob_sha1": "25b8f67bf76f9baf77712665f4b55e2543df291a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch08-01-vectors.md"
+    },
+    {
+      "bytes": 17635,
+      "git_blob_sha1": "7e73a9073e7d944474638577109eeecb116b897c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch08-02-strings.md"
+    },
+    {
+      "bytes": 11627,
+      "git_blob_sha1": "696216245f1274ffa97abb786235246628c5b1e2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch08-03-hash-maps.md"
+    },
+    {
+      "bytes": 1378,
+      "git_blob_sha1": "f32061c4ff6a2750b2b68ea768ea142f9e289663",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch09-00-error-handling.md"
+    },
+    {
+      "bytes": 8520,
+      "git_blob_sha1": "f74ad3206c0ece21e235117561c217ca9dfb590a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch09-01-unrecoverable-errors-with-panic.md"
+    },
+    {
+      "bytes": 26432,
+      "git_blob_sha1": "fa26509d7a910d71ca8080e11d87697565a37eaa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch09-02-recoverable-errors-with-result.md"
+    },
+    {
+      "bytes": 13532,
+      "git_blob_sha1": "256c367f5fee96813bd3fee2abdc70044be4fcc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch09-03-to-panic-or-not-to-panic.md"
+    },
+    {
+      "bytes": 5738,
+      "git_blob_sha1": "7e1055fdc6da7151589d119a142a8b9236782107",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch10-00-generics.md"
+    },
+    {
+      "bytes": 14580,
+      "git_blob_sha1": "8a13a252e0ef1e5b65c50be39afe6fd7bf977483",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch10-01-syntax.md"
+    },
+    {
+      "bytes": 18682,
+      "git_blob_sha1": "1698cda0d3eeba1fb6197887316d0fa62cab445e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch10-02-traits.md"
+    },
+    {
+      "bytes": 30935,
+      "git_blob_sha1": "fc38d7415106494f003db0518bf8b4565c5e231a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch10-03-lifetime-syntax.md"
+    },
+    {
+      "bytes": 1987,
+      "git_blob_sha1": "110d3d28b1b00fadb441a4a38aa9ab6fb1fb926a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch11-00-testing.md"
+    },
+    {
+      "bytes": 25511,
+      "git_blob_sha1": "e071b4c3295fe1689561a8236910a8b370bead09",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch11-01-writing-tests.md"
+    },
+    {
+      "bytes": 8133,
+      "git_blob_sha1": "788ff64596763a1686478f0bb9fe5d3ff6ed3d05",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch11-02-running-tests.md"
+    },
+    {
+      "bytes": 12716,
+      "git_blob_sha1": "dad604f6d039e06b43c3ada875447411dfdbc476",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch11-03-test-organization.md"
+    },
+    {
+      "bytes": 2497,
+      "git_blob_sha1": "67650f12de313c935c88f08b649d5e41f078c0fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-00-an-io-project.md"
+    },
+    {
+      "bytes": 6275,
+      "git_blob_sha1": "46f2f37f007f13bb2ce58740179e5abd55e4ab6f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-01-accepting-command-line-arguments.md"
+    },
+    {
+      "bytes": 2372,
+      "git_blob_sha1": "ce2eae5cc6a4741b2a04d2008acb24dea63c3a22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-02-reading-a-file.md"
+    },
+    {
+      "bytes": 25414,
+      "git_blob_sha1": "5d3db28dac75623cff6ed97d392deb9218792546",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-03-improving-error-handling-and-modularity.md"
+    },
+    {
+      "bytes": 9800,
+      "git_blob_sha1": "b5b5e4d997d9998f561c02af070c0ff376270902",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-04-testing-the-librarys-functionality.md"
+    },
+    {
+      "bytes": 9541,
+      "git_blob_sha1": "39c3dade8ac1624c43ad1afb8291445480d70efc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-05-working-with-environment-variables.md"
+    },
+    {
+      "bytes": 4451,
+      "git_blob_sha1": "dcd55777b9ed90d04e842c23a07357a4ed2d5f83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch12-06-writing-to-stderr-instead-of-stdout.md"
+    },
+    {
+      "bytes": 1242,
+      "git_blob_sha1": "2ed6770a989450ecf392c5c173704ead53a317ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch13-00-functional-features.md"
+    },
+    {
+      "bytes": 20936,
+      "git_blob_sha1": "ecda1acff5cfecdcc955d1256c9f185e6b99dea4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch13-01-closures.md"
+    },
+    {
+      "bytes": 10151,
+      "git_blob_sha1": "cc51553dd90dd6d0b0707fc61740bf300d2c9ccc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch13-02-iterators.md"
+    },
+    {
+      "bytes": 9090,
+      "git_blob_sha1": "6bfeb97705ae85131e8813ba6d42c22ce188fda8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch13-03-improving-our-io-project.md"
+    },
+    {
+      "bytes": 2871,
+      "git_blob_sha1": "cdc2f98fd4dde99c752d4ce636354a1a30a22628",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch13-04-performance.md"
+    },
+    {
+      "bytes": 718,
+      "git_blob_sha1": "59408b8e9a616b283ee6929c993109138b5a9256",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-00-more-about-cargo.md"
+    },
+    {
+      "bytes": 3018,
+      "git_blob_sha1": "4bbb2d390a26d858bdaf0baaa77463216559dac5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-01-release-profiles.md"
+    },
+    {
+      "bytes": 21548,
+      "git_blob_sha1": "2af90dc9a1d97661731ea96c01910d1afc1b89f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-02-publishing-to-crates-io.md"
+    },
+    {
+      "bytes": 14191,
+      "git_blob_sha1": "16a1a26227eb3bca5a86c1875c08f0868bce75e4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-03-cargo-workspaces.md"
+    },
+    {
+      "bytes": 2175,
+      "git_blob_sha1": "40fc633e6c4996545eb0e356d407ed6a545c365b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-04-installing-binaries.md"
+    },
+    {
+      "bytes": 977,
+      "git_blob_sha1": "b351d7fff72aa30500d733bd91f5ac691f87278b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch14-05-extending-cargo.md"
+    },
+    {
+      "bytes": 2687,
+      "git_blob_sha1": "8e0c0e89d8335a5233614edd6606b25969a5c9dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-00-smart-pointers.md"
+    },
+    {
+      "bytes": 13269,
+      "git_blob_sha1": "723d2c9364b08b57a2f82ca0b1fdc06ca5121e4e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-01-box.md"
+    },
+    {
+      "bytes": 14476,
+      "git_blob_sha1": "7a8339602ae70f7075a56ddc6de32f97d89871f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-02-deref.md"
+    },
+    {
+      "bytes": 7158,
+      "git_blob_sha1": "58b244b77b7802b65bde6eb15e08657c762403ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-03-drop.md"
+    },
+    {
+      "bytes": 8911,
+      "git_blob_sha1": "9b5f7f86eb49d1937905a85ffd65922e4ba03f2a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-04-rc.md"
+    },
+    {
+      "bytes": 18548,
+      "git_blob_sha1": "2bc04a770cbe1f4c5102dc1777c8064d5d5aa704",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-05-interior-mutability.md"
+    },
+    {
+      "bytes": 16080,
+      "git_blob_sha1": "1c11b02a4d206abe7f3d7d025528de2de2825bb7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch15-06-reference-cycles.md"
+    },
+    {
+      "bytes": 3010,
+      "git_blob_sha1": "95b1562f1df7247d415a7a98b147f1675fe0c478",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch16-00-concurrency.md"
+    },
+    {
+      "bytes": 12564,
+      "git_blob_sha1": "6a1e3d40633dc1803a7ff5e1118695d27b746f3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch16-01-threads.md"
+    },
+    {
+      "bytes": 11867,
+      "git_blob_sha1": "75bb15724b89a474f3465ce4cab96ee420423b7f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch16-02-message-passing.md"
+    },
+    {
+      "bytes": 12519,
+      "git_blob_sha1": "621f74b4089ac68353b5264b2ebbe098a668e8e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch16-03-shared-state.md"
+    },
+    {
+      "bytes": 5153,
+      "git_blob_sha1": "a866b6174ff5d7a84eaa80c236f27634f3dea170",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch16-04-extensible-concurrency-sync-and-send.md"
+    },
+    {
+      "bytes": 9734,
+      "git_blob_sha1": "8564b1e41d1c701f6217c1321716625955f8c111",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-00-async-await.md"
+    },
+    {
+      "bytes": 19958,
+      "git_blob_sha1": "4ac55c467a6174d2564abd5fd2e51423de65ef19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-01-futures-and-syntax.md"
+    },
+    {
+      "bytes": 19550,
+      "git_blob_sha1": "783053702a2cb4b6dc584e77b7591c1fa1dbd2f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-02-concurrency-with-async.md"
+    },
+    {
+      "bytes": 10329,
+      "git_blob_sha1": "893385d585502a0d0e04b4fd9cfdedd639f7ecff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-03-more-futures.md"
+    },
+    {
+      "bytes": 5159,
+      "git_blob_sha1": "b7cb2f543f4026744e0a419521430fbb41b574fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-04-streams.md"
+    },
+    {
+      "bytes": 27754,
+      "git_blob_sha1": "7f2b66bd4db768795ecd5e5c6531309efa4b51b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-05-traits-for-async.md"
+    },
+    {
+      "bytes": 5828,
+      "git_blob_sha1": "a2d801c0f32c382613cee30fb8b4d5ab692a49cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch17-06-futures-tasks-threads.md"
+    },
+    {
+      "bytes": 1004,
+      "git_blob_sha1": "b55c0cf0f30062ea13161654533636ca98fa92d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch18-00-oop.md"
+    },
+    {
+      "bytes": 8203,
+      "git_blob_sha1": "482c7fd756e6a63a137cf8d1230f991c78e9953f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch18-01-what-is-oo.md"
+    },
+    {
+      "bytes": 13160,
+      "git_blob_sha1": "aee4e1e1427cd3b749bb0168de6575cb81f0a08b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch18-02-trait-objects.md"
+    },
+    {
+      "bytes": 28054,
+      "git_blob_sha1": "e6e5943861596eece465934879b5793969446b84",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch18-03-oo-design-patterns.md"
+    },
+    {
+      "bytes": 1436,
+      "git_blob_sha1": "ad6976ca77f9ecdaa50628acacd3dcd2eed6d635",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch19-00-patterns.md"
+    },
+    {
+      "bytes": 11039,
+      "git_blob_sha1": "1a6d21eb549669eb2bea087bb83cc101ff9630a4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch19-01-all-the-places-for-patterns.md"
+    },
+    {
+      "bytes": 4380,
+      "git_blob_sha1": "8c71a330e40f8e0f85f9de5c19787659276b8be4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch19-02-refutability.md"
+    },
+    {
+      "bytes": 27808,
+      "git_blob_sha1": "92a3cc40869ff5bca2a2f04d1315bd592f7364f9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch19-03-pattern-syntax.md"
+    },
+    {
+      "bytes": 1178,
+      "git_blob_sha1": "6754bce3f198f1aa8be3af3febe18de1b3544ffe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-00-advanced-features.md"
+    },
+    {
+      "bytes": 28212,
+      "git_blob_sha1": "12f9fb6f271d5f87f53847b183bfed6f135efab6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-01-unsafe-rust.md"
+    },
+    {
+      "bytes": 22062,
+      "git_blob_sha1": "a16d5c83477f68a68a9159fd4d68e05c214f321c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-02-advanced-traits.md"
+    },
+    {
+      "bytes": 14390,
+      "git_blob_sha1": "02e418f36b7ddcdc6a6a9fd76b13e3658399fa7a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-03-advanced-types.md"
+    },
+    {
+      "bytes": 8215,
+      "git_blob_sha1": "72aa6a25b269afaa8572d11b5722363065c3df23",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-04-advanced-functions-and-closures.md"
+    },
+    {
+      "bytes": 24927,
+      "git_blob_sha1": "6d2e48f5a295d1d7d774e422eebce4def3431bca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch20-05-macros.md"
+    },
+    {
+      "bytes": 2123,
+      "git_blob_sha1": "32cede1cc1241ce7e52f36ad16f85e8016fae1a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch21-00-final-project-a-web-server.md"
+    },
+    {
+      "bytes": 21877,
+      "git_blob_sha1": "fabac99ca447decb6924fe165f47035dafa6f35c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch21-01-single-threaded.md"
+    },
+    {
+      "bytes": 33854,
+      "git_blob_sha1": "c13249556db26aa513844dcd27b759cafce4afdf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch21-02-multithreaded.md"
+    },
+    {
+      "bytes": 10563,
+      "git_blob_sha1": "cfce45283bd2beabf69b5b21ca1f4225a7c37c8b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/ch21-03-graceful-shutdown-and-cleanup.md"
+    },
+    {
+      "bytes": 2804,
+      "git_blob_sha1": "706e4ab8e4f15a81283db68a5d602819f188d3a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/foreword.md"
+    },
+    {
+      "bytes": 1284,
+      "git_blob_sha1": "005b5fa5e062194d5e7aed6d825accc9eb0571c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/src/**/*.md",
+      "upstream_path": "src/title-page.md"
+    },
+    {
+      "bytes": 1487,
+      "git_blob_sha1": "04dc805ca55f12e29ee7d8a4d91bfb723cfb9273",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "style-guide.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 2762648,
+  "repository_md_files": 478,
+  "repository_url": "https://github.com/rust-lang/book",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 1221077,
+  "snapshot_md_files": 112,
+  "source_id": "rust-book"
+}

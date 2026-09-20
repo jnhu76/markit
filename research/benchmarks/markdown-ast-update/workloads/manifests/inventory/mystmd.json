@@ -1,0 +1,3137 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "d09d3e59391c3163e73aa88ce2b97092e2e5612e",
+  "entries": [
+    {
+      "bytes": 510,
+      "git_blob_sha1": "e5b6d8d6a67ad0dca8f20117fbfc72e076882d00",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/README.md"
+    },
+    {
+      "bytes": 47,
+      "git_blob_sha1": "bb2c151218274bf4d6e43694b4c9b120bbb35431",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/all-planets-know.md"
+    },
+    {
+      "bytes": 139,
+      "git_blob_sha1": "6f4b17cf4853c21a5bf913863309594bac7340a9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/dirty-steaks-burn.md"
+    },
+    {
+      "bytes": 54,
+      "git_blob_sha1": "9b428ec4165195efe66b8e7d3dc4f32f3e60e2a1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/dull-meals-fix.md"
+    },
+    {
+      "bytes": 114,
+      "git_blob_sha1": "bf71e62ef953e9235647d6fe4053ea37f3278a2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/easy-bikes-divide.md"
+    },
+    {
+      "bytes": 93,
+      "git_blob_sha1": "169bdc7cbdd86996d7075ec6c3039284dbf23250",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/eighty-dots-train.md"
+    },
+    {
+      "bytes": 73,
+      "git_blob_sha1": "ef6cca11b8358ae7709cc4669ac66d3c0842c77a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/fifty-waves-smile.md"
+    },
+    {
+      "bytes": 112,
+      "git_blob_sha1": "70d28ba5a455760c56cee3ecfaf9f0c3ee3626ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/fruity-ties-speak.md"
+    },
+    {
+      "bytes": 122,
+      "git_blob_sha1": "0fe1a6e43a6583f2079fd9d9e6f1bbe16f342cbe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/great-pandas-relate.md"
+    },
+    {
+      "bytes": 57,
+      "git_blob_sha1": "1ce1be7d28c154ccb56b0c165309f3aa16c8f68d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/grumpy-lions-push.md"
+    },
+    {
+      "bytes": 80,
+      "git_blob_sha1": "26254d098a40c327fa80e56d8846dc37ab7424e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/khaki-papayas-jog.md"
+    },
+    {
+      "bytes": 95,
+      "git_blob_sha1": "96b22b90148b7c0049279d11b176ac1778a01487",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/neat-shirts-attend.md"
+    },
+    {
+      "bytes": 65,
+      "git_blob_sha1": "d577637e3f4217b107213cbebe92e85f24939609",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/nine-onions-arrive.md"
+    },
+    {
+      "bytes": 60,
+      "git_blob_sha1": "c06441e899c6942edc2ffad99185234a607d3fcd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/nine-times-dream.md"
+    },
+    {
+      "bytes": 87,
+      "git_blob_sha1": "4bf77e608d328a90890ddf5a569c843f43edf5a5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/polite-eels-do.md"
+    },
+    {
+      "bytes": 58,
+      "git_blob_sha1": "c386ba2199de939168c7506a26830a61a3f7bfd2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/proud-items-smash.md"
+    },
+    {
+      "bytes": 108,
+      "git_blob_sha1": "488c94e84045dbfdb1cb0c02345322a4bc0f7314",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/proud-mangos-begin.md"
+    },
+    {
+      "bytes": 61,
+      "git_blob_sha1": "6ec54e47e51d04831f8ebd9f58675122b0d925c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/red-oranges-smash.md"
+    },
+    {
+      "bytes": 103,
+      "git_blob_sha1": "0f75e8309ccc548787e9117750a5170aec7ed608",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/shaky-clocks-hide.md"
+    },
+    {
+      "bytes": 83,
+      "git_blob_sha1": "afa8bbb6ae070274b410c5e0df4337696dc224ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/silly-phones-warn.md"
+    },
+    {
+      "bytes": 722,
+      "git_blob_sha1": "831cccbc13fdef990cb9533ff8d7f0576571455f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/tangy-cameras-cross.md"
+    },
+    {
+      "bytes": 82,
+      "git_blob_sha1": "3122ca2fa677f3ffa634cd06ab314d57e3acfdd6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/tangy-mirrors-double.md"
+    },
+    {
+      "bytes": 90,
+      "git_blob_sha1": "53cbb03ee3e5f0529507aca693f48bc4c07789ab",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/true-buses-fail.md"
+    },
+    {
+      "bytes": 367,
+      "git_blob_sha1": "902fdb54e9b91508e45f82baa88bbc095a0251a3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/typst-label-spaces.md"
+    },
+    {
+      "bytes": 265,
+      "git_blob_sha1": "23c0db26cbcbb13e947a4ec5feb639551f4ac700",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/typst-label-targets.md"
+    },
+    {
+      "bytes": 68,
+      "git_blob_sha1": "025de5f099a79b03e681e6d551bfb9de266ef95f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/vast-brooms-clap.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "881365ffc3ece05691d7876094ff9034adf1f4b5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".changeset/yellow-bikes-carry.md"
+    },
+    {
+      "bytes": 371,
+      "git_blob_sha1": "214753e3233c071f039b3ee63307c726c9780c1d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/0-bug_report.md"
+    },
+    {
+      "bytes": 119,
+      "git_blob_sha1": "645c9ec484a967bc5dd3931ceb7a1aa189c7eb36",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 1838,
+      "git_blob_sha1": "2ab67674a4a237feb8f6b3c1fb5a90046dfdf5c8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 222,
+      "git_blob_sha1": "95f7bc42f59984c31ad17dda525d29c4e8c67756",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/README.md"
+    },
+    {
+      "bytes": 7562,
+      "git_blob_sha1": "a19ef11f3770a74dd21c24ff914524963cd175c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/accessibility-and-performance.md"
+    },
+    {
+      "bytes": 6847,
+      "git_blob_sha1": "5cdd4271bda04d9b5a5034a422a4fe7375553a06",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/admonitions.md"
+    },
+    {
+      "bytes": 1886,
+      "git_blob_sha1": "bd253b3e8775acda5df0d216198b0d3c22e6980c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/analytics.md"
+    },
+    {
+      "bytes": 2032,
+      "git_blob_sha1": "b993bcc246235fb8061f0dfe466ba1791ed6834f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/asides.md"
+    },
+    {
+      "bytes": 7770,
+      "git_blob_sha1": "e5f50fe91b54e71f1c156f33b4b45a423c96fd00",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/authorship.md"
+    },
+    {
+      "bytes": 4256,
+      "git_blob_sha1": "877d78a3834006ca9aec7cc58ff89fbd632c02a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/background.md"
+    },
+    {
+      "bytes": 2826,
+      "git_blob_sha1": "460babeb77607ded349478ef5fcc37ad7b333fa5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/blocks.md"
+    },
+    {
+      "bytes": 8173,
+      "git_blob_sha1": "f3778ef1f18a18731b8a2872fc69e2eebc37fa18",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/citations.md"
+    },
+    {
+      "bytes": 886,
+      "git_blob_sha1": "7a2db8398495bbe030c8ed121cb07dc8026cc90d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/cite.md"
+    },
+    {
+      "bytes": 5268,
+      "git_blob_sha1": "d0609ca73523b199d20772d9785a5f79e27edd44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/code.md"
+    },
+    {
+      "bytes": 4609,
+      "git_blob_sha1": "6acc6c2121472bf3ca8fd2683335da4e908dc8ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/commonmark.md"
+    },
+    {
+      "bytes": 9060,
+      "git_blob_sha1": "6f06ad409405b4239aabb5aa346a68980e6bcaab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/configuration.md"
+    },
+    {
+      "bytes": 20582,
+      "git_blob_sha1": "d08a863350c05789547c3f25d8fb969788093105",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/contribute-add-feature.md"
+    },
+    {
+      "bytes": 1151,
+      "git_blob_sha1": "b937ac79e77c36056ae15b72a07c2a4a4cd38ae8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/contribute-build-locally.md"
+    },
+    {
+      "bytes": 15050,
+      "git_blob_sha1": "ac6d992f76ac0ebb0274cfc4f785143d381f6374",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/contribute-docs.md"
+    },
+    {
+      "bytes": 2345,
+      "git_blob_sha1": "ae1a59817b7cbb065fcacea7ccbf42348fe3b9a8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/contribute-templates.md"
+    },
+    {
+      "bytes": 6336,
+      "git_blob_sha1": "367914886e9c4c511985e5fffeb80bb9de590915",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/contributing.md"
+    },
+    {
+      "bytes": 1501,
+      "git_blob_sha1": "f3c86289efcb46e4e00107e6e9a7d2e6dba59304",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/creating-citation-cff.md"
+    },
+    {
+      "bytes": 3583,
+      "git_blob_sha1": "f1dcf23c55bfdf34376aaa2f9a962b829f22eeeb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/creating-jats-xml.md"
+    },
+    {
+      "bytes": 16544,
+      "git_blob_sha1": "3bd26fb280303039b18f2cbdfb08538179b06c0b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/creating-pdf-documents.md"
+    },
+    {
+      "bytes": 2503,
+      "git_blob_sha1": "f765d9845135dfaa97d3193670cd0f2ad66cf77a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/creating-word-documents.md"
+    },
+    {
+      "bytes": 16871,
+      "git_blob_sha1": "4c67202f6371df5388195a9e09a0211eadb928b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/cross-references.md"
+    },
+    {
+      "bytes": 2024,
+      "git_blob_sha1": "723977ec707e45dddf5c5c71bb96e8c7963ee02f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-curvenote.md"
+    },
+    {
+      "bytes": 4217,
+      "git_blob_sha1": "c8e54bf6ef449c3e8ac09324ca7c89b007e552d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-github-pages.md"
+    },
+    {
+      "bytes": 9206,
+      "git_blob_sha1": "f69025c096ec271d166603bfc9a7ee367d131485",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-gitlab.md"
+    },
+    {
+      "bytes": 4998,
+      "git_blob_sha1": "a7b55e48695706a6496288ec959f421532dda5dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-netlify.md"
+    },
+    {
+      "bytes": 3101,
+      "git_blob_sha1": "ab8e8ad708c516235e716d63b6148da0e747f8c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-readthedocs.md"
+    },
+    {
+      "bytes": 810,
+      "git_blob_sha1": "3448177ed04e71fac875528ce1b84b71b359cdba",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment-webserver.md"
+    },
+    {
+      "bytes": 7196,
+      "git_blob_sha1": "2ba38ce95d8dd47460d008c6ffa94bba4d1514d6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/deployment.md"
+    },
+    {
+      "bytes": 42679,
+      "git_blob_sha1": "988278d333413140b7bb85769ac1e3e2aa1dce56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/developer.md"
+    },
+    {
+      "bytes": 738,
+      "git_blob_sha1": "dddb3c0cfce131bec7f9ea87e5feeaf0ad6577ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/diagrams.md"
+    },
+    {
+      "bytes": 952,
+      "git_blob_sha1": "a3fc16c7db885ddd0ab5e6e7af4da4d30f30ae6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/directives.md"
+    },
+    {
+      "bytes": 10253,
+      "git_blob_sha1": "ab0671101fae7c0ddf15a681acbde8e32a51189e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/document-parts.md"
+    },
+    {
+      "bytes": 6143,
+      "git_blob_sha1": "dcffdd55a616a674c5ce4cd69e960e0d9642c06d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/documents-exports.md"
+    },
+    {
+      "bytes": 4771,
+      "git_blob_sha1": "5b1e781995a799c918b2dc7abf98a1933a18169e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/dropdowns-cards-and-tabs.md"
+    },
+    {
+      "bytes": 7973,
+      "git_blob_sha1": "0006d46c518e7dc43fe13b80bd68928ed96e7037",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/embed.md"
+    },
+    {
+      "bytes": 5708,
+      "git_blob_sha1": "dae6d61e4394352f1d083c0b04a6a1a7d34f5f0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/executable-plugins.md"
+    },
+    {
+      "bytes": 8525,
+      "git_blob_sha1": "41a1bbd6c2fceebbda20cad877f06d1e47552005",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/execute-notebooks.md"
+    },
+    {
+      "bytes": 9111,
+      "git_blob_sha1": "2d68fb6ae02ad364f97b945c20160085bfd987b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/exercises.md"
+    },
+    {
+      "bytes": 16369,
+      "git_blob_sha1": "d3531cf1085702d981eb8a6880113d35f68abad1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/external-references.md"
+    },
+    {
+      "bytes": 10936,
+      "git_blob_sha1": "8b48e379933b079d377bb347af7af2b4b390e486",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/figures.md"
+    },
+    {
+      "bytes": 27137,
+      "git_blob_sha1": "290fd5143370a75b1adee13eef30dc53353b7fd2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/frontmatter.md"
+    },
+    {
+      "bytes": 7439,
+      "git_blob_sha1": "0afd315dc57327a31c3bc53ebd7fd11476b25a43",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/glossaries-and-terms.md"
+    },
+    {
+      "bytes": 6915,
+      "git_blob_sha1": "3502f0c3e1a0e14602304f15849ac12ad75336f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/glossary.md"
+    },
+    {
+      "bytes": 6846,
+      "git_blob_sha1": "0fcf3ca2d5f61efe6205c23925e2cd6f72d25b58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/guiding-principles.md"
+    },
+    {
+      "bytes": 12000,
+      "git_blob_sha1": "62030b2d5039c6e8e63ba4ee048207b28f14998a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/in-page-execution.md"
+    },
+    {
+      "bytes": 6287,
+      "git_blob_sha1": "ed61d8b7b86e2c9716bf75bd0d6cc993e10ec77c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/index.md"
+    },
+    {
+      "bytes": 1860,
+      "git_blob_sha1": "57cb374b0fd7484db42a362895ee14292076e48c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/inline-options.md"
+    },
+    {
+      "bytes": 4259,
+      "git_blob_sha1": "e89370f31dab5367f377cbe97df28d87cd6ee3ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/install-node.md"
+    },
+    {
+      "bytes": 3544,
+      "git_blob_sha1": "8d724b6e79395e7b435a721735c4c9ae169f6af4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/installing.md"
+    },
+    {
+      "bytes": 4670,
+      "git_blob_sha1": "e686bd6e5c246553b9a12e23f8e1089d0da066a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/javascript-plugins.md"
+    },
+    {
+      "bytes": 11368,
+      "git_blob_sha1": "acf882ad01c0d40ec6ad1331f09cf366269d6955",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/math.md"
+    },
+    {
+      "bytes": 5121,
+      "git_blob_sha1": "e372b55b13c5663769ef82d73c28ed0a980245ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/md-vs-ipynb.md"
+    },
+    {
+      "bytes": 4145,
+      "git_blob_sha1": "863dd998ddf042a76e9d12bb9c790c1f8b611158",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/notebook-configuration.md"
+    },
+    {
+      "bytes": 9206,
+      "git_blob_sha1": "36c71f394165e094296e223badac79b2ca86f870",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/notebooks-with-markdown.md"
+    },
+    {
+      "bytes": 14864,
+      "git_blob_sha1": "75ea64f9b2ce8c682a4fd3d11b2af57ba68d2982",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/overview.md"
+    },
+    {
+      "bytes": 5197,
+      "git_blob_sha1": "c0c6d219544b829d53ec1bcad1faec64f4bd6db7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/plugins-ast.md"
+    },
+    {
+      "bytes": 2198,
+      "git_blob_sha1": "62e66c4ef231f0c61072edaec84513cfec0129d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/plugins-debug.md"
+    },
+    {
+      "bytes": 3268,
+      "git_blob_sha1": "fd0adf6e47526eddfc576197c9db58c99237b845",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/plugins-distribute.md"
+    },
+    {
+      "bytes": 3307,
+      "git_blob_sha1": "2b5678c08591d368b0100dca7853419fd83e32ab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/plugins-dry.md"
+    },
+    {
+      "bytes": 2905,
+      "git_blob_sha1": "5abd13e18757c05890cfa610f775839b421b9a80",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/plugins.md"
+    },
+    {
+      "bytes": 8636,
+      "git_blob_sha1": "78c3962b92c5b5b145b2f488dbe9f1a43f507064",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/proofs-and-theorems.md"
+    },
+    {
+      "bytes": 4814,
+      "git_blob_sha1": "2fb3d7ec90948c027beced8b7cf4ba1ec67ce166",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart-executable-documents.md"
+    },
+    {
+      "bytes": 4628,
+      "git_blob_sha1": "0aba743fe57eaf403c84e02bb25ca5bac33e8b7e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart-jupyter-lab-myst.md"
+    },
+    {
+      "bytes": 8519,
+      "git_blob_sha1": "e7c9a3950e79188735c48c975d2e329c6c26d5c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart-myst-documents.md"
+    },
+    {
+      "bytes": 10623,
+      "git_blob_sha1": "9a298f3e85f62ef09620dd7279db019b87d1bc99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart-myst-markdown.md"
+    },
+    {
+      "bytes": 10352,
+      "git_blob_sha1": "7e75c3d7dcc021dbd29d15254ff6a2e1453c2a93",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart-static-exports.md"
+    },
+    {
+      "bytes": 10376,
+      "git_blob_sha1": "4a355aedff1696fe31a289f5a33a4b683f84bff5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/quickstart.md"
+    },
+    {
+      "bytes": 8266,
+      "git_blob_sha1": "12af99f2bfe599eaa7b46012d8c3d42943834d41",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/reuse-jupyter-outputs.md"
+    },
+    {
+      "bytes": 571,
+      "git_blob_sha1": "28990e3f7a11eb21447622e3374a497d8cc5996d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/roles.md"
+    },
+    {
+      "bytes": 3020,
+      "git_blob_sha1": "122f00840015f896176f6036a14caa3b483ecf10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/seo-and-social.md"
+    },
+    {
+      "bytes": 8844,
+      "git_blob_sha1": "13d7fef7883e6fb9e13c8d9c6bb8f3d656c3d429",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/settings.md"
+    },
+    {
+      "bytes": 6799,
+      "git_blob_sha1": "254bafedba8191892eb9325ae4292d39aa4d1eb7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/syntax-overview.md"
+    },
+    {
+      "bytes": 13085,
+      "git_blob_sha1": "dc7fb6a5d97d7aa21aab8668c370e58be4ed839c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/table-of-contents.md"
+    },
+    {
+      "bytes": 4172,
+      "git_blob_sha1": "409417e0ea946b7619e1f3a65a16d43918fc82a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/tables.md"
+    },
+    {
+      "bytes": 6356,
+      "git_blob_sha1": "03202d452742c3faec2904a1ceacaa054f580b3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/theme-developer.md"
+    },
+    {
+      "bytes": 7869,
+      "git_blob_sha1": "03b29198aaa2b3b6f778c34f34d7d3a56cf731e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/typography.md"
+    },
+    {
+      "bytes": 1889,
+      "git_blob_sha1": "4734baa363d29dda79b91576171919f01e0326e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/update-myst.md"
+    },
+    {
+      "bytes": 669,
+      "git_blob_sha1": "ebe8abac308365d7d6ebc4ca8f779fe683780f2c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/versions.md"
+    },
+    {
+      "bytes": 9173,
+      "git_blob_sha1": "a2187afe5bcc95bde8d8e8c850c8cbda9cf04aea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-downloads.md"
+    },
+    {
+      "bytes": 5071,
+      "git_blob_sha1": "8fd575c1a95083d0f7b9eeb082c2e57b38746d76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-landing-pages.md"
+    },
+    {
+      "bytes": 1796,
+      "git_blob_sha1": "2ef49a038c0aa37ebfa6742116bead5ce857d210",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-launch-buttons.md"
+    },
+    {
+      "bytes": 9797,
+      "git_blob_sha1": "6bcc46d724cc541469bf27f8420c885d9bb87383",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-metadata.md"
+    },
+    {
+      "bytes": 8889,
+      "git_blob_sha1": "f9f2d634e28f4d557bd3a59068530f93b6aa3b3d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-navigation.md"
+    },
+    {
+      "bytes": 4128,
+      "git_blob_sha1": "bfae6f7ee7ff5a206d526888a2fb3a7e6db307b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-style.md"
+    },
+    {
+      "bytes": 5751,
+      "git_blob_sha1": "064535b3bbf43648b5aa75ca5d74428115f4c473",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/website-templates.md"
+    },
+    {
+      "bytes": 7285,
+      "git_blob_sha1": "bb415521b1c298ecb4ad00950a3d47d0d10b1257",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/widgets.md"
+    },
+    {
+      "bytes": 4381,
+      "git_blob_sha1": "81265f932acd257c263f8b09073ffa63080a8198",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/docs/**/*.md",
+      "upstream_path": "docs/writing-in-latex.md"
+    },
+    {
+      "bytes": 2449,
+      "git_blob_sha1": "d0f0049cf71db42a353acadaa91c8d294ce307d9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/citation-js-utils/CHANGELOG.md"
+    },
+    {
+      "bytes": 48,
+      "git_blob_sha1": "e2506027c91a9d8dc210c67a6271212a7329ed8f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/citation-js-utils/README.md"
+    },
+    {
+      "bytes": 14376,
+      "git_blob_sha1": "c274962f44b139dcda1efce355380e7dba5f918a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jats-to-myst/CHANGELOG.md"
+    },
+    {
+      "bytes": 56,
+      "git_blob_sha1": "a2df1ee89979bae9f26cb29f316f43df1652ef64",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jats-to-myst/README.md"
+    },
+    {
+      "bytes": 10515,
+      "git_blob_sha1": "5302bc0e9599038f5af1591527719b2097b3af10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/CHANGELOG.md"
+    },
+    {
+      "bytes": 408,
+      "git_blob_sha1": "76f7e8167749846e31577ce1ad2efab76bc91c63",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/README.md"
+    },
+    {
+      "bytes": 2375,
+      "git_blob_sha1": "0bbe9b52dd41f721ed2977aa3eaeca6b19a990a6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/command-line.md"
+    },
+    {
+      "bytes": 2948,
+      "git_blob_sha1": "25ce27a0df6b4bee50c42591e329d01cb1c5ba74",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/contribute-a-template.md"
+    },
+    {
+      "bytes": 1831,
+      "git_blob_sha1": "cdd47bf228f3553094c621fac89fa4aceac22538",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/create-a-beamer-template.md"
+    },
+    {
+      "bytes": 12679,
+      "git_blob_sha1": "be869bfe8fc0d8db40c82c0a65944f9abcd111a2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/create-a-latex-template.md"
+    },
+    {
+      "bytes": 6512,
+      "git_blob_sha1": "1f703e74c16d8b316996df0be24f0f62c2d8e16d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/document.md"
+    },
+    {
+      "bytes": 2682,
+      "git_blob_sha1": "3a64532b84e4e631eb9cf607be9d843992634bbd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/index.md"
+    },
+    {
+      "bytes": 5128,
+      "git_blob_sha1": "e3e403661f8e95e0ffe4b9061e75bf323ec3465c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/pandoc-comparison.md"
+    },
+    {
+      "bytes": 3297,
+      "git_blob_sha1": "5fcec3fdf6e06e10850d3bbf6f4329f3a292f7fa",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/template-rules.md"
+    },
+    {
+      "bytes": 8626,
+      "git_blob_sha1": "b85aa97b499069a0303cc4bce7353fd1ac27589f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/jtex/docs/template-yml.md"
+    },
+    {
+      "bytes": 2282,
+      "git_blob_sha1": "5d07ac9773947167315c29c36391f5947f4f3d20",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/markdown-it-myst/CHANGELOG.md"
+    },
+    {
+      "bytes": 19,
+      "git_blob_sha1": "f18bb9732d8eff0f1abaf25e33e4dcb93fd5fb3e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/markdown-it-myst/README.md"
+    },
+    {
+      "bytes": 2248,
+      "git_blob_sha1": "c16af1e2fa0c7fefb133143ace59636f95266709",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli-utils/CHANGELOG.md"
+    },
+    {
+      "bytes": 55,
+      "git_blob_sha1": "bf33820c5f17192ac46dfe14174bbff7ee81857f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli-utils/README.md"
+    },
+    {
+      "bytes": 93385,
+      "git_blob_sha1": "cd7f88eaf07daf0521c3eb89fbed2b0bb3d2a293",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli/CHANGELOG.md"
+    },
+    {
+      "bytes": 52,
+      "git_blob_sha1": "82b484f72562375880dc0e0621fc25a8d29da61b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli/README.md"
+    },
+    {
+      "bytes": 279,
+      "git_blob_sha1": "b64857ddc5713de23cd28d336a951daa718bb4f6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli/docs/index.md"
+    },
+    {
+      "bytes": 5727,
+      "git_blob_sha1": "15cd65d18d07b8c06f556314447fd45937730dc9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-cli/docs/reference.md"
+    },
+    {
+      "bytes": 13453,
+      "git_blob_sha1": "ead4c6a64cfac6e0546c36f2b173a326fc02126a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-common/CHANGELOG.md"
+    },
+    {
+      "bytes": 52,
+      "git_blob_sha1": "d1fa316e26247086f47fb8770e90e6b16fe28fed",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-common/README.md"
+    },
+    {
+      "bytes": 1085,
+      "git_blob_sha1": "1522ee3a295021de7f64765624a99eeb20c35885",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-common/scripts/README.md"
+    },
+    {
+      "bytes": 13795,
+      "git_blob_sha1": "23e9846c191e7327b155a1e5ff1765c8faaed549",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-config/CHANGELOG.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-config/README.md"
+    },
+    {
+      "bytes": 13003,
+      "git_blob_sha1": "0c3d485c65f249d4f5a66732da5c711229390f21",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-directives/CHANGELOG.md"
+    },
+    {
+      "bytes": 225,
+      "git_blob_sha1": "fa2ff28f75079bdfde2d206005d75785fd214867",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-directives/README.md"
+    },
+    {
+      "bytes": 2999,
+      "git_blob_sha1": "494f707dfd115c2355fa6c99f39b64120d441bcf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-execute/CHANGELOG.md"
+    },
+    {
+      "bytes": 286,
+      "git_blob_sha1": "29537761041a2b76e80cf4afbdc473ee2943602f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-execute/README.md"
+    },
+    {
+      "bytes": 160,
+      "git_blob_sha1": "3581a4606d03effaead1508666345b765780d314",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-button/CHANGELOG.md"
+    },
+    {
+      "bytes": 56,
+      "git_blob_sha1": "bdf031fd01ba59ace34844abe3e6284125a30cf0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-button/README.md"
+    },
+    {
+      "bytes": 2066,
+      "git_blob_sha1": "627aa43d5cba4450eda3e5f6d99c290b0fda1ca2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-card/CHANGELOG.md"
+    },
+    {
+      "bytes": 57,
+      "git_blob_sha1": "aaf751a59440e71a3d26adbc03eed2f8046406f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-card/README.md"
+    },
+    {
+      "bytes": 1503,
+      "git_blob_sha1": "e3526a922c1e9581e23de0e8319928ee76b940a1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-exercise/CHANGELOG.md"
+    },
+    {
+      "bytes": 65,
+      "git_blob_sha1": "be43101009c9588d89db23254f6d93ef5149da7d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-exercise/README.md"
+    },
+    {
+      "bytes": 2049,
+      "git_blob_sha1": "72ab6ae828ee13dcaf8fb26c4cf23e9f018a7329",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-grid/CHANGELOG.md"
+    },
+    {
+      "bytes": 57,
+      "git_blob_sha1": "922447bec36a45ad36c55774abe660894ee06bd4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-grid/README.md"
+    },
+    {
+      "bytes": 216,
+      "git_blob_sha1": "6dc5a724370d3bdf2dc3daa935ea490e906db46a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-icon/CHANGELOG.md"
+    },
+    {
+      "bytes": 52,
+      "git_blob_sha1": "189dc7d65b03b61723860061f745fae62865d9ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-icon/README.md"
+    },
+    {
+      "bytes": 1982,
+      "git_blob_sha1": "9f8a51d789f635025118b43e8ddfb0f59d2b614e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-proof/CHANGELOG.md"
+    },
+    {
+      "bytes": 59,
+      "git_blob_sha1": "2906a04d3b2cc05769278fdfec28207bced1a79f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-proof/README.md"
+    },
+    {
+      "bytes": 1938,
+      "git_blob_sha1": "0a63b2f6f69f892d9806119090e824b9ed8c8baf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-reactive/CHANGELOG.md"
+    },
+    {
+      "bytes": 57,
+      "git_blob_sha1": "aaf751a59440e71a3d26adbc03eed2f8046406f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-reactive/README.md"
+    },
+    {
+      "bytes": 2060,
+      "git_blob_sha1": "a0c501fd26c5fdd13989e79a8dc61313169dc5dd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-tabs/CHANGELOG.md"
+    },
+    {
+      "bytes": 76,
+      "git_blob_sha1": "4de19c5f68dfddd1abbf5f21097396c7de092013",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-ext-tabs/README.md"
+    },
+    {
+      "bytes": 12335,
+      "git_blob_sha1": "4422312d7955a69e6d431d23900c081c5dbb3ffc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-frontmatter/CHANGELOG.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-frontmatter/README.md"
+    },
+    {
+      "bytes": 525,
+      "git_blob_sha1": "a644f9ba930743ead8b5d54777e283673cb4f585",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-migrate/CHANGELOG.md"
+    },
+    {
+      "bytes": 66,
+      "git_blob_sha1": "a9b1879a8fffe6c3f79308240bd95681b256fb13",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-migrate/README.md"
+    },
+    {
+      "bytes": 17055,
+      "git_blob_sha1": "a70ba67d58ba7ba538cda9d67d15ed3e63d5e1fe",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/CHANGELOG.md"
+    },
+    {
+      "bytes": 4129,
+      "git_blob_sha1": "1d7a4409e1f1143ff248aed937e6c64e95d040bc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/README.md"
+    },
+    {
+      "bytes": 3587,
+      "git_blob_sha1": "ee5c98ffeace3e64c2f4f4b8bec55a5c040ffc96",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/consuming/advanced.md"
+    },
+    {
+      "bytes": 1549,
+      "git_blob_sha1": "0d0e5866bf853c01692feb338fbc8ae2fc7b82d2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/consuming/basic.md"
+    },
+    {
+      "bytes": 65,
+      "git_blob_sha1": "73c8186b2984833df42be5fdd15a5bbbfa38a6a0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/consuming/mdast.md"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "2d0cb9923c6eb9757336819ced67a773363cc297",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/extending/advanced.md"
+    },
+    {
+      "bytes": 4706,
+      "git_blob_sha1": "7f341969ab0c8e8f9d8ed47e29ed5d10f20293e1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/extending/directives.md"
+    },
+    {
+      "bytes": 26,
+      "git_blob_sha1": "e7d3674331887680b8e1e0d656e99c065481845f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/extending/roles.md"
+    },
+    {
+      "bytes": 3405,
+      "git_blob_sha1": "201b633fd2d461a86f9d43221c900a9be44a2bd5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/docs/index.md"
+    },
+    {
+      "bytes": 706,
+      "git_blob_sha1": "85f3d3e383276d5a243f2ce9793eaa6abe139a95",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/tests/blocks.target.md"
+    },
+    {
+      "bytes": 538,
+      "git_blob_sha1": "55435d6df20aeed99c4462032ca4e907990d9af9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/tests/directives.math.md"
+    },
+    {
+      "bytes": 817,
+      "git_blob_sha1": "408e2402441dd4a41759c66fecb694873a1e7e12",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/tests/roles.generic.md"
+    },
+    {
+      "bytes": 1279,
+      "git_blob_sha1": "b841268e7ece8f4782e724146afe09645dec8cf9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-parser/tests/roles.references.md"
+    },
+    {
+      "bytes": 9428,
+      "git_blob_sha1": "b5e5014a9da1ac95f193bf2f342754407295feca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-roles/CHANGELOG.md"
+    },
+    {
+      "bytes": 221,
+      "git_blob_sha1": "afbbfa780c4461c698c18b32a3e28bfed1ad95e5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-roles/README.md"
+    },
+    {
+      "bytes": 5407,
+      "git_blob_sha1": "7bbf8d1269d710c900276f43fa49789d5c43d595",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec-ext/CHANGELOG.md"
+    },
+    {
+      "bytes": 45,
+      "git_blob_sha1": "fce9ce40367936b9733475b59da60a6d80568fbb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec-ext/README.md"
+    },
+    {
+      "bytes": 3523,
+      "git_blob_sha1": "2bafdfd6a9cc7df168aa533d2b044db1faea4e60",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/README.md"
+    },
+    {
+      "bytes": 10309,
+      "git_blob_sha1": "47e57133c358b17549bab07f03b92cc55e541cf8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/ast-primer.md"
+    },
+    {
+      "bytes": 1175,
+      "git_blob_sha1": "8f38ffe5e70e899f269174cf9d2a40cb49447e36",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/commonmark.md"
+    },
+    {
+      "bytes": 629,
+      "git_blob_sha1": "83a8cae73a8b13d2346c79d4b3217e60c03bab5a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/directives.md"
+    },
+    {
+      "bytes": 667,
+      "git_blob_sha1": "c283e265b206f53ef2462af235df5cdaf011aa76",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/abbreviation.md"
+    },
+    {
+      "bytes": 970,
+      "git_blob_sha1": "52915875d2c00a50d695277199792c1a4989fac6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/admonition.md"
+    },
+    {
+      "bytes": 358,
+      "git_blob_sha1": "6e806c746982ec1c20331dd469c02d414ebe2285",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/blockbreak.md"
+    },
+    {
+      "bytes": 370,
+      "git_blob_sha1": "f2c49a71ab8dd2a4f644406cfcd976b14ef1602a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/blockquote.md"
+    },
+    {
+      "bytes": 407,
+      "git_blob_sha1": "89a43a634971498c14441f1cfcf868d10cce7227",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/break.md"
+    },
+    {
+      "bytes": 333,
+      "git_blob_sha1": "01ec0d12a4f484684191f43b021c665349f7cfba",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/code.md"
+    },
+    {
+      "bytes": 468,
+      "git_blob_sha1": "3c519ba840dc748088c4971b0efd4ec3e9abfd1e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/comment.md"
+    },
+    {
+      "bytes": 1075,
+      "git_blob_sha1": "64a4b9e3ebc4d4e5292ed02f3bf566c9f67251ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/container.md"
+    },
+    {
+      "bytes": 1566,
+      "git_blob_sha1": "479f0c6a482814f353660c0d802c3639104f946d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/crossreference.md"
+    },
+    {
+      "bytes": 413,
+      "git_blob_sha1": "d44906818f079b3032055e5147983ff05040c7a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/directive.md"
+    },
+    {
+      "bytes": 1820,
+      "git_blob_sha1": "da8c5be739b6da0b845d51be1dfdc54e5a02254f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/footnote.md"
+    },
+    {
+      "bytes": 711,
+      "git_blob_sha1": "d4f98e71edfee24759aedd1fb94a52028a0df555",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/formatting.md"
+    },
+    {
+      "bytes": 304,
+      "git_blob_sha1": "5eab6c65f1832098230b1c558a22b496ddc522d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/heading.md"
+    },
+    {
+      "bytes": 306,
+      "git_blob_sha1": "4b5e46b9bb565bd98f1f273857b967da016eaa79",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/html.md"
+    },
+    {
+      "bytes": 335,
+      "git_blob_sha1": "1029af9a9fd3d78e4c0c85d6dc75e9efe02f2f1b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/image.md"
+    },
+    {
+      "bytes": 473,
+      "git_blob_sha1": "203e4c5e653f951fd90470c2518f3b3ff36ba284",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/inlinemath.md"
+    },
+    {
+      "bytes": 473,
+      "git_blob_sha1": "8c33ee0ca536f0073d926784b726a94c37219fb1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/link.md"
+    },
+    {
+      "bytes": 658,
+      "git_blob_sha1": "102e61fb9c8e2feede57be5f0388ec617ec50bfc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/list.md"
+    },
+    {
+      "bytes": 456,
+      "git_blob_sha1": "61f312f0f078337f7d93eba97833cbe0b74b28e5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/math.md"
+    },
+    {
+      "bytes": 288,
+      "git_blob_sha1": "e3dd6cbdbcd52691456743142614b0a99d0d068f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/paragraph.md"
+    },
+    {
+      "bytes": 321,
+      "git_blob_sha1": "51b9bd42c28e3cf995d40d13fb08c49660984408",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/role.md"
+    },
+    {
+      "bytes": 518,
+      "git_blob_sha1": "e68339b84796955dcf0f854dbe1c0d5bc7045b55",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/subscript.md"
+    },
+    {
+      "bytes": 551,
+      "git_blob_sha1": "07a0360d51e55662f4d680c8f2a86dfd39ccc644",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/superscript.md"
+    },
+    {
+      "bytes": 968,
+      "git_blob_sha1": "b88379b5862e97929ba9a22cfa9e18201e98d272",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/table.md"
+    },
+    {
+      "bytes": 359,
+      "git_blob_sha1": "2b5f3f8047f957f205034d845e0917d744306358",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/examples/target.md"
+    },
+    {
+      "bytes": 281,
+      "git_blob_sha1": "c224e6266ed6e8b447112fce843ec029cc73b5f9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/admonitions.md"
+    },
+    {
+      "bytes": 326,
+      "git_blob_sha1": "9310c398e8d03d9087bf394a74218bd2a19c76ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/basic.md"
+    },
+    {
+      "bytes": 944,
+      "git_blob_sha1": "9b0d0a706559bbb7aaf1484037549e5001548e18",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/blocks.md"
+    },
+    {
+      "bytes": 3025,
+      "git_blob_sha1": "bb80a54ca609fce0797a35ed3136b6a79d26bfda",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/commonmark.md"
+    },
+    {
+      "bytes": 308,
+      "git_blob_sha1": "b1ff952934836319b384079f766b01a9749e34ce",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/figures.md"
+    },
+    {
+      "bytes": 490,
+      "git_blob_sha1": "d1ac871f39f426dc8e0ba0ba5635cecbf5d0c0ca",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/footnotes.md"
+    },
+    {
+      "bytes": 281,
+      "git_blob_sha1": "b3fcdc6cf0f17c90a61d8b1fde6d1e74bc041d26",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/math.md"
+    },
+    {
+      "bytes": 4516,
+      "git_blob_sha1": "aecf4aa864708cef2253a31730056cd85f56d47e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/overview.md"
+    },
+    {
+      "bytes": 5293,
+      "git_blob_sha1": "edc44210acce8545057647da4faed0ddc8c6ff4e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/references.md"
+    },
+    {
+      "bytes": 115,
+      "git_blob_sha1": "4404fd4e90bda5017a72d7f086126bf947e989a5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/features/tables.md"
+    },
+    {
+      "bytes": 4227,
+      "git_blob_sha1": "1ae05eb32203d60fadc936682295ebbb3d7da8e0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/index.md"
+    },
+    {
+      "bytes": 25271,
+      "git_blob_sha1": "ea0b18f70f09b63680fe7dad1bbc5c34eb1c12e1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/myst.schema.md"
+    },
+    {
+      "bytes": 409,
+      "git_blob_sha1": "8b9841c86c3449e4686bf45dee2b05d8587651bf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/abbreviation.md"
+    },
+    {
+      "bytes": 690,
+      "git_blob_sha1": "347efccb0d9ea6f12cefd24898f400544f732bf4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/admonition.md"
+    },
+    {
+      "bytes": 324,
+      "git_blob_sha1": "a9220b7c3400ce3bca292d44c388b126457cab90",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/admonitiontitle.md"
+    },
+    {
+      "bytes": 94,
+      "git_blob_sha1": "21c268b613970015d347bee20229b7a94bcdc477",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/alternative.md"
+    },
+    {
+      "bytes": 279,
+      "git_blob_sha1": "893da6f6fce06687708a810f96ba307c41d88145",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/association.md"
+    },
+    {
+      "bytes": 556,
+      "git_blob_sha1": "8ab5e6ea757f35349cfb13f8969cd454316266ef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/block.md"
+    },
+    {
+      "bytes": 394,
+      "git_blob_sha1": "da9875c53db8d6ab454a6c2f0ba3a5d9e0cca9c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/blockbreak.md"
+    },
+    {
+      "bytes": 262,
+      "git_blob_sha1": "a79c5bb9e9a911e307c4c721f937dc17bad6ccfc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/blockquote.md"
+    },
+    {
+      "bytes": 199,
+      "git_blob_sha1": "394ae69f1d88042d4301907df2bda143062ca112",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/break.md"
+    },
+    {
+      "bytes": 290,
+      "git_blob_sha1": "6c4c68bbbda83ec105f43b1fbafb9b56e83f4c1e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/caption.md"
+    },
+    {
+      "bytes": 857,
+      "git_blob_sha1": "20455344f5aa303f359858b51b2b94332d8cc7c1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/code.md"
+    },
+    {
+      "bytes": 308,
+      "git_blob_sha1": "c964e0ae89f05603c2458bbc95910c002c8a871c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/comment.md"
+    },
+    {
+      "bytes": 856,
+      "git_blob_sha1": "080c89b6c62cdfa58a92c0e2de71518ac9d3c522",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/container.md"
+    },
+    {
+      "bytes": 799,
+      "git_blob_sha1": "82e82bcb8b7c566d3d6730e104140661e265623c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/crossreference.md"
+    },
+    {
+      "bytes": 462,
+      "git_blob_sha1": "2e5630b8d78bbeb067067b2429ee79e41006f2f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/definition.md"
+    },
+    {
+      "bytes": 615,
+      "git_blob_sha1": "0173f2d9640f8c5d0b09a69e6788c2af70193794",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/directive.md"
+    },
+    {
+      "bytes": 294,
+      "git_blob_sha1": "4db3f555cfd29e1e4ab7d9d8df383cd7b353cde3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/emphasis.md"
+    },
+    {
+      "bytes": 369,
+      "git_blob_sha1": "98bc7c1d21b4067d6b82a4cb582ff4ed5f6e91df",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/emphasisstatic.md"
+    },
+    {
+      "bytes": 294,
+      "git_blob_sha1": "fb5994fce72207ebd1ca1cbf3497ab7b107580c7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/flowcontent.md"
+    },
+    {
+      "bytes": 463,
+      "git_blob_sha1": "40ade6df3c43b9abea76e1cb539c7629aafefbe8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/footnotedefinition.md"
+    },
+    {
+      "bytes": 364,
+      "git_blob_sha1": "8c6ba5e07a348447da3457e30f19f31e4dac1573",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/footnotereference.md"
+    },
+    {
+      "bytes": 659,
+      "git_blob_sha1": "68c0b6af01709400a1e04488f9c65cff096a9c09",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/heading.md"
+    },
+    {
+      "bytes": 295,
+      "git_blob_sha1": "bd413b5c88fcedc5069d7eea37a120b6764d8c33",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/html.md"
+    },
+    {
+      "bytes": 606,
+      "git_blob_sha1": "047ab0365768cf7440bc611dfbfbc5fb371d55fc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/image.md"
+    },
+    {
+      "bytes": 513,
+      "git_blob_sha1": "37d20eb365a95ce836af617a2f5a9f618d795e3f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/imagereference.md"
+    },
+    {
+      "bytes": 257,
+      "git_blob_sha1": "affd905fbf390c28e687a38fa2f2d6a724e4bb69",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/inlinecode.md"
+    },
+    {
+      "bytes": 299,
+      "git_blob_sha1": "a79142f2406098ecab62b19d3f821dda94891d53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/inlinemath.md"
+    },
+    {
+      "bytes": 288,
+      "git_blob_sha1": "8e7adae35ba4c408042014947624ed9df1fda1a2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/legend.md"
+    },
+    {
+      "bytes": 383,
+      "git_blob_sha1": "0674d0405c71a8b086eb11712b45ed4aa0a7cd46",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/link.md"
+    },
+    {
+      "bytes": 535,
+      "git_blob_sha1": "26a339483b5d5cc5dfbfeab230b72d0d721afa82",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/linkreference.md"
+    },
+    {
+      "bytes": 496,
+      "git_blob_sha1": "f7ec959fe011e1e90d6313c7b46a9d14edf0a124",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/list.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "bdae201c5797189c96eae5952e0666a64a4e7fef",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/listcontent.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "6ab7d466b1ca683d14152e10cc0e9d37699e85f6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/listitem.md"
+    },
+    {
+      "bytes": 447,
+      "git_blob_sha1": "d74cb060d5d01277e4ea0446b5c0ce37519653b2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/literal.md"
+    },
+    {
+      "bytes": 626,
+      "git_blob_sha1": "75d14ebae94aaed971e41a6d94f9726d055d6301",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/math.md"
+    },
+    {
+      "bytes": 385,
+      "git_blob_sha1": "b6284c2bd58db5881806e732e03b2f548f1c9d76",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/node.md"
+    },
+    {
+      "bytes": 422,
+      "git_blob_sha1": "fc138ef8490c3d5c504668e5267766855a1e6e2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/optionalassociation.md"
+    },
+    {
+      "bytes": 265,
+      "git_blob_sha1": "aacb3d7e92d00c6f125ce2ddd3424536a2f6e5df",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/paragraph.md"
+    },
+    {
+      "bytes": 466,
+      "git_blob_sha1": "420aa7e749f4cd115f992c598d46ba0c2bb2c0f2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/parent.md"
+    },
+    {
+      "bytes": 239,
+      "git_blob_sha1": "127d738a8e8d845f357a51f7747dbf5aeaac05c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/phrasingcontent.md"
+    },
+    {
+      "bytes": 232,
+      "git_blob_sha1": "c19177a6cf30994a72986768c6003c2fc11e6884",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/point.md"
+    },
+    {
+      "bytes": 373,
+      "git_blob_sha1": "3928b42a307aff9f4cabc9bad0335adf7f3000b5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/position.md"
+    },
+    {
+      "bytes": 302,
+      "git_blob_sha1": "c5c984b76cecedcd499b0de3a8a69184d79aa728",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/reference.md"
+    },
+    {
+      "bytes": 195,
+      "git_blob_sha1": "0259af133930c93d0c76891600fdbe06f3f591b4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/resource.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "e2f5c032222e3a4bcf9270a4862b78616ea4f5ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/role.md"
+    },
+    {
+      "bytes": 379,
+      "git_blob_sha1": "4dd9abefa11d8ec84b16e00e51ac0991e2bda977",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/root.md"
+    },
+    {
+      "bytes": 264,
+      "git_blob_sha1": "22c9fd096ebd945bf70120391d2c5aa46c932367",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/staticphrasingcontent.md"
+    },
+    {
+      "bytes": 304,
+      "git_blob_sha1": "833703233c8ca7faf3e86860815469ac644c7ecd",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/strong.md"
+    },
+    {
+      "bytes": 379,
+      "git_blob_sha1": "c8d24f17bc071a5a100d5af1b4a9c52cfd716c53",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/strongstatic.md"
+    },
+    {
+      "bytes": 308,
+      "git_blob_sha1": "229ccf921135bf4bcb82b0513e88fdf6042772d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/subscript.md"
+    },
+    {
+      "bytes": 359,
+      "git_blob_sha1": "d39237ddcc8b16d40da4197d9be4984164ec9328",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/subscriptstatic.md"
+    },
+    {
+      "bytes": 314,
+      "git_blob_sha1": "8d58d715f55b355179c60da30740109768895f82",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/superscript.md"
+    },
+    {
+      "bytes": 363,
+      "git_blob_sha1": "4c5939496b9f5adfe598d815567decf53e84db9e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/superscriptstatic.md"
+    },
+    {
+      "bytes": 382,
+      "git_blob_sha1": "90dfa51e930b210a01e1719ca2e347812a86f6c6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/table.md"
+    },
+    {
+      "bytes": 454,
+      "git_blob_sha1": "88111a5c2b637d1d939f9a0fe9818f015566ddaf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/tablecell.md"
+    },
+    {
+      "bytes": 293,
+      "git_blob_sha1": "9920eb7e04f24653472419950649b43d839e9042",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/tablerow.md"
+    },
+    {
+      "bytes": 315,
+      "git_blob_sha1": "4cbbe1da95327988043e3d104e34b8b039ffc1bf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/target.md"
+    },
+    {
+      "bytes": 233,
+      "git_blob_sha1": "aa97bf4955b2d83c6afcfa2868e1bf2b8dd7e3d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/text.md"
+    },
+    {
+      "bytes": 195,
+      "git_blob_sha1": "4b14c6565a79960760a41f638d20e36dcf00b28c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/thematicbreak.md"
+    },
+    {
+      "bytes": 308,
+      "git_blob_sha1": "5989a339f056e7e5f558a94c132bf09330ec9b88",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/underline.md"
+    },
+    {
+      "bytes": 359,
+      "git_blob_sha1": "62f39bf1c5e972b41a45e26619651e3a820c3df0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-spec/docs/nodes/underlinestatic.md"
+    },
+    {
+      "bytes": 10494,
+      "git_blob_sha1": "48bf4a9d3ad001353b21a6d24d26b18e262f5ab6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-templates/CHANGELOG.md"
+    },
+    {
+      "bytes": 7998,
+      "git_blob_sha1": "961d44afb33437541469ecf7e71454e3fe791578",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-docx/CHANGELOG.md"
+    },
+    {
+      "bytes": 3234,
+      "git_blob_sha1": "068908c425b35ff07a9bc51dfe0c929e18057890",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-docx/README.md"
+    },
+    {
+      "bytes": 8198,
+      "git_blob_sha1": "f619e9bc576019ad2b6b3990884485ce5cd0ef8f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-html/CHANGELOG.md"
+    },
+    {
+      "bytes": 248,
+      "git_blob_sha1": "5a163fe8e836037f4b00b4abf10303d73fbe9fed",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-html/README.md"
+    },
+    {
+      "bytes": 17799,
+      "git_blob_sha1": "788063a32742eb878d0fe0db9ac9b13e0f3b2353",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-jats/CHANGELOG.md"
+    },
+    {
+      "bytes": 48,
+      "git_blob_sha1": "8429bafbf6053b224604a6b11132b306f50a5520",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-jats/README.md"
+    },
+    {
+      "bytes": 1597,
+      "git_blob_sha1": "6aae18c36f795d5d213028539b79f27b9618d97b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-jats/docs/index.md"
+    },
+    {
+      "bytes": 4300,
+      "git_blob_sha1": "de03dfcda4e94d8e8023ecba8421fba034f64887",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-md/CHANGELOG.md"
+    },
+    {
+      "bytes": 46,
+      "git_blob_sha1": "e185a8f24e4d6b926e372c6cfce48456bfd289a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-md/README.md"
+    },
+    {
+      "bytes": 1412,
+      "git_blob_sha1": "7f9ab1ddef4ae7304f82958181dd546608d6041a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-md/docs/index.md"
+    },
+    {
+      "bytes": 16044,
+      "git_blob_sha1": "4a3ad7b29fd350af866ec81908f0d8acdd72deba",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-tex/CHANGELOG.md"
+    },
+    {
+      "bytes": 44,
+      "git_blob_sha1": "039bd7defe2ac9bed3e5dc159d39ddf480149dff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-tex/README.md"
+    },
+    {
+      "bytes": 1683,
+      "git_blob_sha1": "89e0ef2352c2986b0fbfbbb2a3b665dc2b69531c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-tex/docs/index.md"
+    },
+    {
+      "bytes": 9222,
+      "git_blob_sha1": "1f11da3322b5ff20df6c50849806f49d177a8c51",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-typst/CHANGELOG.md"
+    },
+    {
+      "bytes": 46,
+      "git_blob_sha1": "bf3469b9182647aa918847ee4220a49d6a2152c1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-to-typst/README.md"
+    },
+    {
+      "bytes": 535,
+      "git_blob_sha1": "5ebaa3a483f0918a603ceeefacb5235889fcdb56",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-toc/CHANGELOG.md"
+    },
+    {
+      "bytes": 771,
+      "git_blob_sha1": "94db299d3dfd606a4677b461a74367609028eae3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-toc/README.md"
+    },
+    {
+      "bytes": 29555,
+      "git_blob_sha1": "d5fe1e90d7883cd54772fa20e60645d8b7e540d6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/CHANGELOG.md"
+    },
+    {
+      "bytes": 623,
+      "git_blob_sha1": "68dc0e3c39b3aed3b5207ad5f6a1131dac337ba4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/README.md"
+    },
+    {
+      "bytes": 1482,
+      "git_blob_sha1": "1966346b0cb9b1fca559930780951eb4864770da",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/docs/conventions.md"
+    },
+    {
+      "bytes": 1237,
+      "git_blob_sha1": "21fee124c41a5a33b702e9709be3e4a78ec7c444",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/docs/enumeration.md"
+    },
+    {
+      "bytes": 852,
+      "git_blob_sha1": "34a3cfb8966aeb93450cd10d806cb8c990a44f0d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/docs/index.md"
+    },
+    {
+      "bytes": 1669,
+      "git_blob_sha1": "8f5613180bae0bbe1868d57e8708c0ac90f3d8a8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/docs/links.md"
+    },
+    {
+      "bytes": 2651,
+      "git_blob_sha1": "ba6c8abb787273df34003c35fa3e6427332671f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/myst-transforms/docs/overview.md"
+    },
+    {
+      "bytes": 1738,
+      "git_blob_sha1": "d47a1f1af2467e97a420582cae4b1200d4fecade",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd-py/README.md"
+    },
+    {
+      "bytes": 6422,
+      "git_blob_sha1": "2c42e0e4b360113042b8ce7f78b46b5ca89fa290",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/CHANGELOG.md"
+    },
+    {
+      "bytes": 78,
+      "git_blob_sha1": "52cb5548c9292012af6c3327a13281a9ccc20b89",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/README.md"
+    },
+    {
+      "bytes": 142,
+      "git_blob_sha1": "b5bdd3a1eabc867cb93f3f922178e2b14835a0ae",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/acronym/input.md"
+    },
+    {
+      "bytes": 488,
+      "git_blob_sha1": "795d83f4f842932c565790ce1963b2d3081af774",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/alternate-config/index.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "9a3a1218003669455602c346cae5ab4b78e4bc68",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-md-and-config/index.md"
+    },
+    {
+      "bytes": 82,
+      "git_blob_sha1": "27c8e573f93d162d2e67ff915a5a4632c43de5b3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-plugin/index.md"
+    },
+    {
+      "bytes": 488,
+      "git_blob_sha1": "795d83f4f842932c565790ce1963b2d3081af774",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-site/index.md"
+    },
+    {
+      "bytes": 238,
+      "git_blob_sha1": "a0b0d3bd092351268ccfd2e415968b13b5f493c0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-tex-math/input.md"
+    },
+    {
+      "bytes": 161,
+      "git_blob_sha1": "1e741a8dd8f7f200bebb243b826e382f3c300455",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-tex/input.md"
+    },
+    {
+      "bytes": 161,
+      "git_blob_sha1": "1e741a8dd8f7f200bebb243b826e382f3c300455",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/basic-typst/input.md"
+    },
+    {
+      "bytes": 7,
+      "git_blob_sha1": "1630f897198abb505c67798556d21c002ff8d20a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/citation-cff/index.md"
+    },
+    {
+      "bytes": 384,
+      "git_blob_sha1": "1df13a45ba827405ea68e0bcbab7d150e852cf70",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/concurrent-execution/first.md"
+    },
+    {
+      "bytes": 245,
+      "git_blob_sha1": "eaacead667e3240f6da05df6608e90fdc25d469b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/concurrent-execution/second.md"
+    },
+    {
+      "bytes": 523,
+      "git_blob_sha1": "8c6ed2ae05dfe74fc3d91d369334c9f74ef52f89",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/dois/index.md"
+    },
+    {
+      "bytes": 161,
+      "git_blob_sha1": "cc3cb974a21604ddb340b45734b4445ae86dbade",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/export-fm-override/input.md"
+    },
+    {
+      "bytes": 499,
+      "git_blob_sha1": "8efc7489331e920affe41c057a07f5a425ee9efc",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/extend-config/proj-a/index.md"
+    },
+    {
+      "bytes": 54,
+      "git_blob_sha1": "b18a8606eaa31f9a656bf367e65f222a721447f6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/extend-part-plugin/index.md"
+    },
+    {
+      "bytes": 139,
+      "git_blob_sha1": "fd3d8a35dc7b6757fa188cc3525063c69c37972f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/glossary/input.md"
+    },
+    {
+      "bytes": 727,
+      "git_blob_sha1": "658f89e5535c0c325a5343c1e6146a06f476748d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/grid-in-figure/index.md"
+    },
+    {
+      "bytes": 79,
+      "git_blob_sha1": "14f053911107b51eee046e6c354a3d87aa31ded6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/hidden-pages/hidden.md"
+    },
+    {
+      "bytes": 157,
+      "git_blob_sha1": "ce0b0fd87fe986f1401294fb96f8b1b754ae8939",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/hidden-pages/index.md"
+    },
+    {
+      "bytes": 73,
+      "git_blob_sha1": "fe8b09888055f139cc87fce50fbe3d4cdf549fc7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/hidden-pages/not-hidden.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "142b483c07705ba810911359ac298fee1b61528c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-circular/dir/three.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "9e1777490912b9709ee646c4010cc2b37131ee46",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-circular/dir/two.md"
+    },
+    {
+      "bytes": 81,
+      "git_blob_sha1": "78648ee7f2197106527427749c163d33264ec741",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-circular/four.md"
+    },
+    {
+      "bytes": 273,
+      "git_blob_sha1": "123548be15ee410ce32a4f56e44078c2785cd3e9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-circular/one.md"
+    },
+    {
+      "bytes": 221,
+      "git_blob_sha1": "69321ab27ee1865e49ef1ff3621eb871274517eb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-recursive/one.md"
+    },
+    {
+      "bytes": 67,
+      "git_blob_sha1": "c65d6ce7d246925ad17c04a1e78069e1e32cd2e1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-recursive/three.md"
+    },
+    {
+      "bytes": 84,
+      "git_blob_sha1": "9e1777490912b9709ee646c4010cc2b37131ee46",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/include-recursive/two.md"
+    },
+    {
+      "bytes": 819,
+      "git_blob_sha1": "45c1b41596dfd31dfe3ce54e7c0a628bbc48b2ee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/indices/first.md"
+    },
+    {
+      "bytes": 218,
+      "git_blob_sha1": "6d35eacef5f60aa62a7a16b9729fe8a825cd7098",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/indices/index.md"
+    },
+    {
+      "bytes": 239,
+      "git_blob_sha1": "a5487af081f1f67af50d6d32e696056b074c63b1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/indices/joke.md"
+    },
+    {
+      "bytes": 1241,
+      "git_blob_sha1": "6275554b3858ca6862a3387d50a632aed96f04c9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/indices/recipes.md"
+    },
+    {
+      "bytes": 575,
+      "git_blob_sha1": "7cd5262c86dcad9a87daec063defdda79295972d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/math-macros/index.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "9794be18a3cda8cfd5ee2830a56d5886e99cf742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-articles-tex/one.md"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "7c5be0642ff3bd5c99e315b2a39f63e2a6344099",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-articles-tex/three.md"
+    },
+    {
+      "bytes": 655,
+      "git_blob_sha1": "84ae368f14058006ba19cfef869b884ffcc7798f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-articles-tex/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-articles-tex/zero.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-figures-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "c129d290e6e2a21355c3d86e8f7d618df9c3a52c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-figures-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "a569bc405573d2a4a3c138bf887b47c6c16b031a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-figures-typ-site/c.md"
+    },
+    {
+      "bytes": 200,
+      "git_blob_sha1": "f8116edde3d91274a6160b19cdf96baae91eb67e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-figures-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-figures-typ-site/index.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-headings-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-headings-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-headings-typ-site/c.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "d80f8f46ea8afdd649e8b2376e835a11d154b8ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-headings-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-headings-typ-site/index.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "9794be18a3cda8cfd5ee2830a56d5886e99cf742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-legacy-toc-tex/one.md"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "7c5be0642ff3bd5c99e315b2a39f63e2a6344099",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-legacy-toc-tex/three.md"
+    },
+    {
+      "bytes": 655,
+      "git_blob_sha1": "84ae368f14058006ba19cfef869b884ffcc7798f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-legacy-toc-tex/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-legacy-toc-tex/zero.md"
+    },
+    {
+      "bytes": 800,
+      "git_blob_sha1": "3a0dcbe976dd3d144e4fe0a5d47e975cec4f7ced",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-override-tex/one.md"
+    },
+    {
+      "bytes": 767,
+      "git_blob_sha1": "63314ac838b675f397c984f4471ffe97ee53634f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-override-tex/three.md"
+    },
+    {
+      "bytes": 643,
+      "git_blob_sha1": "ae769617cb03f02a7fc84c4766238c2a939f38ea",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-override-tex/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-override-tex/zero.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "9794be18a3cda8cfd5ee2830a56d5886e99cf742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-tex-parts/one.md"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "7c5be0642ff3bd5c99e315b2a39f63e2a6344099",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-tex-parts/three.md"
+    },
+    {
+      "bytes": 655,
+      "git_blob_sha1": "84ae368f14058006ba19cfef869b884ffcc7798f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-tex-parts/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-tex-parts/zero.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-and-headings-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-and-headings-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-and-headings-typ-site/c.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "d80f8f46ea8afdd649e8b2376e835a11d154b8ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-and-headings-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-and-headings-typ-site/index.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-offset-0-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-offset-0-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-offset-0-typ-site/c.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "d80f8f46ea8afdd649e8b2376e835a11d154b8ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-offset-0-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-offset-0-typ-site/index.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-typ-site/c.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "d80f8f46ea8afdd649e8b2376e835a11d154b8ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-titles-typ-site/index.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "9794be18a3cda8cfd5ee2830a56d5886e99cf742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-toc-tex/one.md"
+    },
+    {
+      "bytes": 900,
+      "git_blob_sha1": "220e55ebaf590395ca32fa2f76969b449233cde8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-toc-tex/three.md"
+    },
+    {
+      "bytes": 655,
+      "git_blob_sha1": "84ae368f14058006ba19cfef869b884ffcc7798f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-toc-tex/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-toc-tex/zero.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-typ-site/a.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-typ-site/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-typ-site/c.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "d80f8f46ea8afdd649e8b2376e835a11d154b8ff",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-typ-site/d.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-typ-site/index.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder-and-headings-off/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder-and-headings-off/c.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder-and-headings-off/index.md"
+    },
+    {
+      "bytes": 186,
+      "git_blob_sha1": "3d086daf7161ec1656cbe9e5406710a380623b48",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder/b.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "afb843d43a757462697f8164b403a294e9d20e10",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder/c.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/multi-page-with-pageless-folder/index.md"
+    },
+    {
+      "bytes": 812,
+      "git_blob_sha1": "9794be18a3cda8cfd5ee2830a56d5886e99cf742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/one.md"
+    },
+    {
+      "bytes": 656,
+      "git_blob_sha1": "57c99911526518b0efc47577bd7320b10600b418",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/subfolder/five.md"
+    },
+    {
+      "bytes": 813,
+      "git_blob_sha1": "fd9127a6166bbd680c71caff0a5569c5a15d631d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/subfolder/four.md"
+    },
+    {
+      "bytes": 779,
+      "git_blob_sha1": "78b427799411449dde98d0e11d52ca7dacf789b7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/subfolder/six.md"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "7c5be0642ff3bd5c99e315b2a39f63e2a6344099",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/three.md"
+    },
+    {
+      "bytes": 655,
+      "git_blob_sha1": "84ae368f14058006ba19cfef869b884ffcc7798f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/two.md"
+    },
+    {
+      "bytes": 31,
+      "git_blob_sha1": "4e82294260d601971e74f5c8a808977eb01cb826",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/nested-toc-file/zero.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "9a3a1218003669455602c346cae5ab4b78e4bc68",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/no-config/index.md"
+    },
+    {
+      "bytes": 313,
+      "git_blob_sha1": "0aa5ee71210e10d4ee08355039b47200d7b78a9a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/notebook-fig-embed/index.md"
+    },
+    {
+      "bytes": 237,
+      "git_blob_sha1": "8cbcaecf5ef2fd69a898013880937b3d5a8fa4f2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/raw/index.md"
+    },
+    {
+      "bytes": 1607,
+      "git_blob_sha1": "21d82d22946b2d2b4920932343b6c840847adde8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/serial-execution/first.md"
+    },
+    {
+      "bytes": 1637,
+      "git_blob_sha1": "24829baf8f7e3829b1ed0e7121713c28ed744a39",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/serial-execution/second.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/single-page-headings-typ-site/index.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/single-page-titles-typ-site/index.md"
+    },
+    {
+      "bytes": 177,
+      "git_blob_sha1": "3923d65171f58d476d800b7286b453f84b3d3da8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/single-page-typ-site/index.md"
+    },
+    {
+      "bytes": 83,
+      "git_blob_sha1": "05551c65ff309f868291c9517b099227bddb33ac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-index/homepage.md"
+    },
+    {
+      "bytes": 82,
+      "git_blob_sha1": "1ea60e85e08f301bf24c117e9bec73f30f7a0cb3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-index/index.md"
+    },
+    {
+      "bytes": 259,
+      "git_blob_sha1": "fcc17c30b8cb98bc3370751a6b3193e967325384",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-search/index.md"
+    },
+    {
+      "bytes": 248,
+      "git_blob_sha1": "ae1e0dfd680d2cb820a2571936cc27193360033d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-search/page-2.md"
+    },
+    {
+      "bytes": 660,
+      "git_blob_sha1": "a5a75326924f4f2ff10ac57d6efd0c266f977f77",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-xrefs/index.md"
+    },
+    {
+      "bytes": 1237,
+      "git_blob_sha1": "63a71b29c7daaa15701ba2c0add7ca484ca8dc3e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/site-xrefs/targets.md"
+    },
+    {
+      "bytes": 64,
+      "git_blob_sha1": "ad0f456a1d2a3de74b5781e264856ba9d2ba88f8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/static-files-html/index.md"
+    },
+    {
+      "bytes": 54,
+      "git_blob_sha1": "7a030ca44eee43eb132db2778d2a082aad303f1c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/static-files/index.md"
+    },
+    {
+      "bytes": 184,
+      "git_blob_sha1": "825164fc967a33aebf43c527949aca405e1f9daf",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/strict-no-check-links/index.md"
+    },
+    {
+      "bytes": 161,
+      "git_blob_sha1": "1e741a8dd8f7f200bebb243b826e382f3c300455",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/templated-tex/input.md"
+    },
+    {
+      "bytes": 172,
+      "git_blob_sha1": "78d81be679f599d659a1e8c8304d99dbd044eee8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/tex-with-bib/input.md"
+    },
+    {
+      "bytes": 27,
+      "git_blob_sha1": "ad777d2600fe433e22c4ec0e4aa0aa1e15864789",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/one.folder/page.md"
+    },
+    {
+      "bytes": 20,
+      "git_blob_sha1": "e57320091484e5a8f03c5a3eef58cb2320324485",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/one.with.dots.md"
+    },
+    {
+      "bytes": 92,
+      "git_blob_sha1": "1f69aaed0ad40d0ddc4de3889a423efae48eaa56",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/readme.md"
+    },
+    {
+      "bytes": 5,
+      "git_blob_sha1": "ddcc3a902d1a421affa865cea80592b52a9a4c9f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/two.md"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "ccd8748056d429fec596b4ed0713c1b5dc6bbb95",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/two/a.md"
+    },
+    {
+      "bytes": 20,
+      "git_blob_sha1": "5b3d2e7bb83543249d356e7be7bda5377a306e77",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/two/index.md"
+    },
+    {
+      "bytes": 73,
+      "git_blob_sha1": "405189b231fa1a0b3c2e4ffbd81f7e1d9a5c6fee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/url-folders/two/page.md"
+    },
+    {
+      "bytes": 51,
+      "git_blob_sha1": "621a32543618affb0cccb99878c2e1ffc9bc5251",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/mystmd/tests/write-doi-bib/index.md"
+    },
+    {
+      "bytes": 1078,
+      "git_blob_sha1": "fe3f80fd352e32bbd984ad6fa017872aed981574",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/simple-validators/CHANGELOG.md"
+    },
+    {
+      "bytes": 2561,
+      "git_blob_sha1": "c4284928b9527ea13d3741145bce8ac1adcc2c2d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/simple-validators/README.md"
+    },
+    {
+      "bytes": 14457,
+      "git_blob_sha1": "b86d889fd61cddc0fffd6efafc72b0e89b67a2de",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/tex-to-myst/CHANGELOG.md"
+    },
+    {
+      "bytes": 44,
+      "git_blob_sha1": "064622ba7496525dfcb9c62a618e654f42932429",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/tex-to-myst/README.md"
+    },
+    {
+      "bytes": 66,
+      "git_blob_sha1": "16f01cf318c09c4800b067982f40cb568ca93879",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/tsconfig/CHANGELOG.md"
+    },
+    {
+      "bytes": 106,
+      "git_blob_sha1": "0da79cf231837ac98aaed434b6ae954452864359",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "packages/tsconfig/README.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 1214679,
+  "repository_md_files": 446,
+  "repository_url": "https://github.com/jupyter-book/mystmd",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 621868,
+  "snapshot_md_files": 89,
+  "source_id": "mystmd"
+}

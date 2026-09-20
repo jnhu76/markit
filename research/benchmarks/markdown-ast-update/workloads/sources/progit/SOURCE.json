@@ -1,0 +1,76 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "BOOK_TUTORIAL",
+  "commit_sha": "a013e3230a1207cfa5ae94d28ba7d2021063c337",
+  "commit_timestamp": "2026-05-25T10:07:29+02:00",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 3,
+  "files": [
+    {
+      "bytes": 2011,
+      "git_blob_sha1": "ba00b375ca782c54d04ec52bf635d952e793c9ee",
+      "sha256": "acc9b9e414db3c09983aa7da111c8f4687515a76b8ab321567c1061e59e100c1",
+      "snapshot_path": "files/CONTRIBUTING.md",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 245,
+      "git_blob_sha1": "f1ed9cb694dd52139348ac78f09a42f173f65520",
+      "sha256": "4ec7676009a088236be7169fa60005207c01eae42fc6d282bc79d2b2b9ce8cd9",
+      "snapshot_path": "files/SECURITY.md",
+      "upstream_path": "SECURITY.md"
+    },
+    {
+      "bytes": 7034,
+      "git_blob_sha1": "1c8670925c699b09eedd162db680935807f9fb12",
+      "sha256": "6daedc1e8f6ae350fce0330d615ebc7ccbd967f6ea532804140fb16b617424aa",
+      "snapshot_path": "files/TRANSLATING.md",
+      "upstream_path": "TRANSLATING.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "5aceb9e9b0ac28485ba538650b48ab2d23526ab0",
+        "upstream_path": "LICENSE.asc"
+      }
+    ],
+    "note": "LICENSE.asc at the pinned commit: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported. Note the book content itself is AsciiDoc and is not part of the snapshot.",
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/progit/LICENSE.asc",
+        "bytes": 277,
+        "git_blob_sha1": "5aceb9e9b0ac28485ba538650b48ab2d23526ab0",
+        "sha256": "10332ca5127ffe7acd5526b0dad1f3b73f0191f725e656e2e86c35bc123aa3e3",
+        "upstream_path": "LICENSE.asc"
+      }
+    ],
+    "redistribution_note": "Storage policy MATERIALIZE_ONLY: these bytes must not be publicly vendored by default. They are materialized locally at the pinned commit for verification and characterization and are excluded from public Git storage; expected sha256/bytes/blob-id are recorded here so any local materialization is verifiable.",
+    "spdx": "CC-BY-NC-SA-3.0"
+  },
+  "repository_url": "https://github.com/progit/progit2",
+  "retrieved_at": "2026-09-20T04:02:27Z",
+  "role_caveat": "INTENDED_BOOK_SOURCE_IS_ASCIIDOC: the Pro Git book text (book/*/*.asc) is not Markdown and is not snapshotted; the snapshotted root Markdown is administrative repository material. This candidate must NOT be counted as BOOK_TUTORIAL Markdown workload coverage during the workload-selection stage.",
+  "schema_version": "2",
+  "scope_rationale": "Scope = root-level repository Markdown only. The intended book source is AsciiDoc (book/*/*.asc) and is deliberately NOT converted, so the book text is outside any Markdown frame by format; see role_caveat.",
+  "snapshot_policy": {
+    "exclude": [
+      "/COPYING.md",
+      "/LICENSE",
+      "/LICENSE.md",
+      "/LICENSE.rst",
+      "/LICENSE.txt"
+    ],
+    "include": [
+      "/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "progit",
+  "storage_policy": "MATERIALIZE_ONLY",
+  "storage_policy_rationale": "CC BY-NC-SA 3.0 (NonCommercial + ShareAlike) makes public vendoring from this repository uncertain for benchmark use; the policy fails closed (MATERIALIZE_ONLY) and records the uncertainty instead of making a legal claim. The snapshotted root Markdown is administrative repository material, not book text.",
+  "total_bytes": 9290
+}

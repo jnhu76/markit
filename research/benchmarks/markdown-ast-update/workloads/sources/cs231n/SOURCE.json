@@ -1,0 +1,265 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "MATH_CODE_MIXED",
+  "commit_sha": "8ec57ccfc32379ae4b37c45de949af359673f92f",
+  "commit_timestamp": "2026-05-14T16:39:54-07:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 30,
+  "files": [
+    {
+      "bytes": 154,
+      "git_blob_sha1": "dfc3cdf717ff0b7786c2ee85b562e156f1d317db",
+      "sha256": "0615ab808fb62016152b3bc2cbbeb17c453b83463a192f25b19345dc15534874",
+      "snapshot_path": "files/Readme.md",
+      "upstream_path": "Readme.md"
+    },
+    {
+      "bytes": 24990,
+      "git_blob_sha1": "d18b4b4ca77554fa12ea06c1c21595c12f73c8af",
+      "sha256": "788028620dbada9a7880609391fc7ce41c90439a53b6ab195d790b2b4895b9a8",
+      "snapshot_path": "files/adversary-attacks.md",
+      "upstream_path": "adversary-attacks.md"
+    },
+    {
+      "bytes": 12880,
+      "git_blob_sha1": "c3180b656c0bee2e258df49cf1761b8066a09d7d",
+      "sha256": "0988d0ce5312ffa22533415fd0521086fc55c5569c81e22c3453f22391afdd6d",
+      "snapshot_path": "files/attention.md",
+      "upstream_path": "attention.md"
+    },
+    {
+      "bytes": 6190,
+      "git_blob_sha1": "15ab379fa0d3618096cbbe7b3815123b72b9c28d",
+      "sha256": "2c560a9001d6397b55cb6d73a1f0b2f49d4d7dcd84fc29fd7b64c206fabd690d",
+      "snapshot_path": "files/aws-tutorial.md",
+      "upstream_path": "aws-tutorial.md"
+    },
+    {
+      "bytes": 19337,
+      "git_blob_sha1": "d3df0f797aa51c56191bb5448329b9139c51b041",
+      "sha256": "21b3e39efde37c75a04959a00e55d4549f4af026ecd5dc09bf8d77c133877c88",
+      "snapshot_path": "files/choose-project.md",
+      "upstream_path": "choose-project.md"
+    },
+    {
+      "bytes": 31743,
+      "git_blob_sha1": "0d6f81eceef3baa668b77bea4b263a6c622d6ef1",
+      "sha256": "65c0c3671362465d68b2b078143c09440e0290b549cedb10c42cdf1f4668106f",
+      "snapshot_path": "files/classification.md",
+      "upstream_path": "classification.md"
+    },
+    {
+      "bytes": 490,
+      "git_blob_sha1": "d1cfc06dcdc3373c0317621ead263876b720a9cc",
+      "sha256": "881db10064da7fe8a37d8a8bf4b874a9f48e6127db51e698f649d045039ace86",
+      "snapshot_path": "files/convnet-tips.md",
+      "upstream_path": "convnet-tips.md"
+    },
+    {
+      "bytes": 58488,
+      "git_blob_sha1": "c03eb871fe74732cba630aaa73860fe3c2d2f05c",
+      "sha256": "725ee0ce429408655acee7f49b77d8ff241ad867d4a74db0867d95e86f150830",
+      "snapshot_path": "files/convolutional-networks.md",
+      "upstream_path": "convolutional-networks.md"
+    },
+    {
+      "bytes": 23687,
+      "git_blob_sha1": "b0222b3ed725613cddde84c06909e83f7ab9ab09",
+      "sha256": "0b9cc97bb8e92ebb66d61692290f33990b264b1bdc8627934bbcb629da063f0b",
+      "snapshot_path": "files/generative-modeling.md",
+      "upstream_path": "generative-modeling.md"
+    },
+    {
+      "bytes": 31681,
+      "git_blob_sha1": "83db65407d5cd4c8972ac138412b7da2c67f93ca",
+      "sha256": "8a494bcb6b0f09a48b500ab24f023d5406d8e8100acf674b538432bd8d6d440a",
+      "snapshot_path": "files/generative-models.md",
+      "upstream_path": "generative-models.md"
+    },
+    {
+      "bytes": 4309,
+      "git_blob_sha1": "53f5324b966be59dcbbfa3a9f622a743533c733f",
+      "sha256": "10bd04722c78fbf0b27e4ef2a55145e2f68f7561ac47e592256fac1dbd55c25c",
+      "snapshot_path": "files/jupyter-colab-tutorial.md",
+      "upstream_path": "jupyter-colab-tutorial.md"
+    },
+    {
+      "bytes": 42393,
+      "git_blob_sha1": "66ad39f5aac38e04810801ef1650c48844a97aa1",
+      "sha256": "0062ffae16d3c9ad11b5d47b6cfa28949c48587103f31f9cf7071f7995464563",
+      "snapshot_path": "files/linear-classify.md",
+      "upstream_path": "linear-classify.md"
+    },
+    {
+      "bytes": 7112,
+      "git_blob_sha1": "129f5e7a123ced78a2c58a12e4cacd4331543204",
+      "sha256": "49aedf2406934a64c4386b1e7a0e05f79595cbdc4f80317022b5012830d41dde",
+      "snapshot_path": "files/nerf.md",
+      "upstream_path": "nerf.md"
+    },
+    {
+      "bytes": 31113,
+      "git_blob_sha1": "9dca87f8158f7bb4096d63adbd06ec5f412231e5",
+      "sha256": "28196e335053230ac9f1fff728c8baa089e05814982d950ffc6339462828f0f3",
+      "snapshot_path": "files/neural-networks-1.md",
+      "upstream_path": "neural-networks-1.md"
+    },
+    {
+      "bytes": 37186,
+      "git_blob_sha1": "d543d474f7c149adc3be0f598150625c5743b574",
+      "sha256": "dd285c391db3f507859bab8319198812b8a4254e8290a1bf03277c7c33055d21",
+      "snapshot_path": "files/neural-networks-2.md",
+      "upstream_path": "neural-networks-2.md"
+    },
+    {
+      "bytes": 46034,
+      "git_blob_sha1": "cf526c230f832d109d3cf217a4b4a5c36c9e748b",
+      "sha256": "6aced5e0903fca06faeb263db9395a3373ec2d53680d859bdc96927c5f153d51",
+      "snapshot_path": "files/neural-networks-3.md",
+      "upstream_path": "neural-networks-3.md"
+    },
+    {
+      "bytes": 18748,
+      "git_blob_sha1": "132624afa60b11ea5fca3ae35a11eac0e581d5b9",
+      "sha256": "b5d02e1e57874e6809b06a529e43d4c961568b0b0775101dc06071ec86311a39",
+      "snapshot_path": "files/neural-networks-case-study.md",
+      "upstream_path": "neural-networks-case-study.md"
+    },
+    {
+      "bytes": 28243,
+      "git_blob_sha1": "277f7ab642e1a2ac778ed677afe7333cb48508ef",
+      "sha256": "cc3e5ba969bdf3a825b284898d4980df9f1f7d24860b628e433c206db4305e9c",
+      "snapshot_path": "files/optimization-1.md",
+      "upstream_path": "optimization-1.md"
+    },
+    {
+      "bytes": 40488,
+      "git_blob_sha1": "1fa6224e03598b1902dae8b79f827a4f237cddc5",
+      "sha256": "f11216ba5f9611b039d11d614050c7ad7736df6b9f47ec83e5cfba2f336e366a",
+      "snapshot_path": "files/optimization-2.md",
+      "upstream_path": "optimization-2.md"
+    },
+    {
+      "bytes": 365,
+      "git_blob_sha1": "278287ac767635dd942810d2d7a8253077ce7a40",
+      "sha256": "05de524b714ea401d4a3cd8ba9af08b63637ee2d2ff134224f8102be1440fc1e",
+      "snapshot_path": "files/overview.md",
+      "upstream_path": "overview.md"
+    },
+    {
+      "bytes": 7250,
+      "git_blob_sha1": "d34eeccadcf26be7f26e9f06d2f5637ed0aceb29",
+      "sha256": "0797fd425bddb516214c60b9c1a000988070532c4594341c2056bf8eac93217a",
+      "snapshot_path": "files/pixelrnn.md",
+      "upstream_path": "pixelrnn.md"
+    },
+    {
+      "bytes": 15378,
+      "git_blob_sha1": "173eba4fc0c10f86b8fee41e5afc534a79f52f23",
+      "sha256": "f513d8a1abfa6b1a30785dc38d855b102b0e70838460ef8c7fc16fb4a621a2eb",
+      "snapshot_path": "files/poster-2018.md",
+      "upstream_path": "poster-2018.md"
+    },
+    {
+      "bytes": 21053,
+      "git_blob_sha1": "eaf4d853485054bfe68eaf5fe137dd3235ac7097",
+      "sha256": "f2a801cdbab8b204bd6e7d6fa4976248c7cf1afa0a4651b2bd4bda5fc668ead3",
+      "snapshot_path": "files/poster.md",
+      "upstream_path": "poster.md"
+    },
+    {
+      "bytes": 40058,
+      "git_blob_sha1": "fe737a3c79dbc11318348a79fff22686c749167b",
+      "sha256": "3ac74fe26228fbc6deb764a9563000705508dfba3d4fdb7c2b8c2a5fde39b5fc",
+      "snapshot_path": "files/python-numpy-tutorial.md",
+      "upstream_path": "python-numpy-tutorial.md"
+    },
+    {
+      "bytes": 20523,
+      "git_blob_sha1": "5673a87a02014065d18c743c2ae9b86eb468c328",
+      "sha256": "058c1f3859cef3776188495726ee850cb594067401406a5ac3b11b7a4d4945bd",
+      "snapshot_path": "files/rnn.md",
+      "upstream_path": "rnn.md"
+    },
+    {
+      "bytes": 7344,
+      "git_blob_sha1": "1bf1946235ce01b64cd1f59c54896800828c5617",
+      "sha256": "48d0f0284426132235f24251744a54c981353f881b6d3dce8c055a334e6b14ad",
+      "snapshot_path": "files/setup.md",
+      "upstream_path": "setup.md"
+    },
+    {
+      "bytes": 3125,
+      "git_blob_sha1": "771efb6863f0022e79fb58cbfe7f7adde6d63805",
+      "sha256": "649b7992566172958c5bc60bb83d9be017f398736badedee548cbe246e215f6f",
+      "snapshot_path": "files/terminal-tutorial.md",
+      "upstream_path": "terminal-tutorial.md"
+    },
+    {
+      "bytes": 7012,
+      "git_blob_sha1": "08a0f88837de48e4a7188d0eabb0aa7467d8e950",
+      "sha256": "f1b9996bed3bde2c4f42473e8e09e777cf0c15799226687f4a771afca30986d0",
+      "snapshot_path": "files/transfer-learning.md",
+      "upstream_path": "transfer-learning.md"
+    },
+    {
+      "bytes": 9479,
+      "git_blob_sha1": "3fb6ea3133827347c150645fcac1568d9bf07af4",
+      "sha256": "4c4fdc198eb2cf9b4f3b0c748459cf64a6f1e96ad74e77c66c93601251113497",
+      "snapshot_path": "files/transformers.md",
+      "upstream_path": "transformers.md"
+    },
+    {
+      "bytes": 9273,
+      "git_blob_sha1": "7430c1b460cc1917f799dc8058a1bf86764cab10",
+      "sha256": "bdc731af204944ccb5b621683cbd209fdc5abdc82c3b5ed5b91797c69cf4f7ec",
+      "snapshot_path": "files/understanding-cnn.md",
+      "upstream_path": "understanding-cnn.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "9e183c7b86c98b1e448769591548e1972414fac1",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/cs231n/LICENSE",
+        "bytes": 1082,
+        "git_blob_sha1": "9e183c7b86c98b1e448769591548e1972414fac1",
+        "sha256": "85b365f07b4cfc5d678c548bc41965bc3bc782106b8903bd3b876d9d49a4270d",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "MIT"
+  },
+  "repository_url": "https://github.com/cs231n/cs231n.github.io",
+  "retrieved_at": "2026-09-20T04:02:34Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = root-level course-note Markdown. The generated HTML site is non-Markdown by format and outside any Markdown frame; other repository Markdown is recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [
+      "/COPYING.md",
+      "/LICENSE",
+      "/LICENSE.md",
+      "/LICENSE.rst",
+      "/LICENSE.txt"
+    ],
+    "include": [
+      "/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "cs231n",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (MIT); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 606126
+}

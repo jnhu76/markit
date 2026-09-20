@@ -1,0 +1,1380 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "148f27606cf0352c11a314e7bf9eefa6bf88db86",
+  "entries": [
+    {
+      "bytes": 665,
+      "git_blob_sha1": "4cb5beb62e6f0c015e0eef4a196735506b0e1ac0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/baggage.md"
+    },
+    {
+      "bytes": 665,
+      "git_blob_sha1": "0d10a867acce9bf697f5ebfee63ee2f44fd51de3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/context.md"
+    },
+    {
+      "bytes": 656,
+      "git_blob_sha1": "5cbd3591785c600e7982ed540b3f6a568609b79d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/logs.md"
+    },
+    {
+      "bytes": 665,
+      "git_blob_sha1": "617dc2232b1073a4992d9480c3b6c443bed2eb29",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/metrics.md"
+    },
+    {
+      "bytes": 684,
+      "git_blob_sha1": "9abf11205a444a800541a9830416dfd397e3302a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/miscellaneous.md"
+    },
+    {
+      "bytes": 671,
+      "git_blob_sha1": "e0de920b2e8fb461c86487b42e7a78f9284a353d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/profiling.md"
+    },
+    {
+      "bytes": 668,
+      "git_blob_sha1": "29bebf1ab856a1bfd9ca2e83fa91eff10f124ed5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/protocol.md"
+    },
+    {
+      "bytes": 668,
+      "git_blob_sha1": "727e026b759778454100487290fb4b566177a9f0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/resource.md"
+    },
+    {
+      "bytes": 659,
+      "git_blob_sha1": "e8a74ca7b1e080a4c83d6ca8415d285188a4ca85",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/trace.md"
+    },
+    {
+      "bytes": 1006,
+      "git_blob_sha1": "f1ceb67a6d0aad9d924ed561b4fd7a54be9e79eb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE.md"
+    },
+    {
+      "bytes": 2009,
+      "git_blob_sha1": "77cb6b5bfaedfa93e4b97294c2d503b91b4457be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "AGENTS.md"
+    },
+    {
+      "bytes": 162794,
+      "git_blob_sha1": "c5e772fb6965e19d006286ff8720e4b07512698c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "CHANGELOG.md"
+    },
+    {
+      "bytes": 43,
+      "git_blob_sha1": "dd3c4594fc15453f878812d557f9812321268711",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "CLAUDE.md"
+    },
+    {
+      "bytes": 7718,
+      "git_blob_sha1": "613e7c6c4bb040c8f61907bba5490471eebcb6aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 5654,
+      "git_blob_sha1": "46fca1508404ff896d1ba2be136fca419c83a7f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 1160,
+      "git_blob_sha1": "1c3457b86e177847b1e6d641f4aa50515dcaecc1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "RELEASING.md"
+    },
+    {
+      "bytes": 1335,
+      "git_blob_sha1": "849ec4300b238f4feb0eebcb6eb28f12dddb8bc0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "development/README.md"
+    },
+    {
+      "bytes": 12493,
+      "git_blob_sha1": "bc248d788326d320cea5376987306b767cc2ba97",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "development/metrics/config-service.md"
+    },
+    {
+      "bytes": 17218,
+      "git_blob_sha1": "635d2db0036f825f216b86a64e091bbdda685ee0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "development/trace/zpages.md"
+    },
+    {
+      "bytes": 6819,
+      "git_blob_sha1": "b59bfb08d3f9c624be237780c04eeca984e386ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "issue-management.md"
+    },
+    {
+      "bytes": 2431,
+      "git_blob_sha1": "5a0b24501dd202cb0bd71e2c79b3aef90acb01d7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0000-template.md"
+    },
+    {
+      "bytes": 11879,
+      "git_blob_sha1": "6fe4cf03e45cc7038e51e9f8d5d620912c4509f3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0001-telemetry-without-manual-instrumentation.md"
+    },
+    {
+      "bytes": 3992,
+      "git_blob_sha1": "6c8ec8e03789393fdd61abe35b110586b7abb211",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0005-global-init.md"
+    },
+    {
+      "bytes": 3290,
+      "git_blob_sha1": "17579a2bb033bbedf5dba4df03c569f6df3f5a78",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0007-no-out-of-band-reporting.md"
+    },
+    {
+      "bytes": 12108,
+      "git_blob_sha1": "e7e36080b629ac74594a2da7cb21d55c64b7ab7e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0016-named-tracers.md"
+    },
+    {
+      "bytes": 34128,
+      "git_blob_sha1": "6b9e7d808e7ad9f27d44bfb359373fa826bd526f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0035-opentelemetry-protocol.md"
+    },
+    {
+      "bytes": 1540,
+      "git_blob_sha1": "9314eaf1c3a44de41518fb6cc997eb5e77ecd12c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0038-version-semantic-attribute.md"
+    },
+    {
+      "bytes": 25042,
+      "git_blob_sha1": "86dae81e4e5adb733c27818156ad2012e6d74914",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0066-separate-context-propagation.md"
+    },
+    {
+      "bytes": 4983,
+      "git_blob_sha1": "34b959196565286cad1a0722f46493310f7ddfac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0083-component.md"
+    },
+    {
+      "bytes": 7693,
+      "git_blob_sha1": "463a3309d8be7da8767f3dd23d91b0aef9512e49",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0099-otlp-http.md"
+    },
+    {
+      "bytes": 1969,
+      "git_blob_sha1": "e9eac4e053aeede0cadf01e8403313b65696ec12",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0110-z-pages.md"
+    },
+    {
+      "bytes": 8889,
+      "git_blob_sha1": "c6c9db144cb773e06a068371fe39a138c49f1bd7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0111-auto-resource-detection.md"
+    },
+    {
+      "bytes": 13578,
+      "git_blob_sha1": "2b6a7f4a9fc958b72b7cba5d65bfcabf86b0b135",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0119-standard-system-metrics.md"
+    },
+    {
+      "bytes": 6651,
+      "git_blob_sha1": "336bf05cd914c0a71ad65485e14b17fd28522ad9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0122-otlp-http-json.md"
+    },
+    {
+      "bytes": 15369,
+      "git_blob_sha1": "27dfdadf8a11d6128715d47316a836d17aabaec0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0143-versioning-and-stability.md"
+    },
+    {
+      "bytes": 6349,
+      "git_blob_sha1": "f46b0d6a4e31ccfa06abd648c217a307a916a3e6",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0147-upgrade-procedures.md"
+    },
+    {
+      "bytes": 12776,
+      "git_blob_sha1": "0a34cb3ab9cdbf49056a01f1ddba32a5bda74383",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0149-exponential-histogram.md"
+    },
+    {
+      "bytes": 49463,
+      "git_blob_sha1": "dfcd6ea9efab3df707d0af87ff743ea2b047c194",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0152-telemetry-schemas.md"
+    },
+    {
+      "bytes": 8677,
+      "git_blob_sha1": "042a868ab9c1f8653d73552a9efc65559c0fdba0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0155-external-modules.md"
+    },
+    {
+      "bytes": 54866,
+      "git_blob_sha1": "7fe0e41b2ce016aa35b6a28892ef7fb3fd0a2a1d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0156-columnar-encoding.md"
+    },
+    {
+      "bytes": 10525,
+      "git_blob_sha1": "d61018137501c8c38ffa79a5c98cfd71b5915d56",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0178-mapping-to-otlp-anyvalue.md"
+    },
+    {
+      "bytes": 6012,
+      "git_blob_sha1": "972a4389ac8c9041afb0a2542c1ad2041481df98",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0182-otlp-remote-parent.md"
+    },
+    {
+      "bytes": 24583,
+      "git_blob_sha1": "cc152bafb1306ebfadbce05da513c995e8e03238",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0199-support-elastic-common-schema-in-opentelemetry.md"
+    },
+    {
+      "bytes": 8541,
+      "git_blob_sha1": "855a169c44117ced0ab4686e419a39f67116f2e8",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0201-scope-attributes.md"
+    },
+    {
+      "bytes": 7971,
+      "git_blob_sha1": "99ee79328b4af3ff94788a637640018f93bde360",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0202-events-and-logs-api.md"
+    },
+    {
+      "bytes": 20060,
+      "git_blob_sha1": "b635e036aa5ed90b3a0b4d93ec97add5f1802c75",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0225-configuration.md"
+    },
+    {
+      "bytes": 8815,
+      "git_blob_sha1": "a4f4d3249046784ce200829200305eada1140e20",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0227-separate-semantic-conventions.md"
+    },
+    {
+      "bytes": 8374,
+      "git_blob_sha1": "6525b6a8ffc2f885a21faac70f919f1527efdea7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0232-maturity-of-otel.md"
+    },
+    {
+      "bytes": 21664,
+      "git_blob_sha1": "445662e412007086b611c2ff3294bbaff5015f5c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0243-app-telemetry-schema-vision-roadmap.md"
+    },
+    {
+      "bytes": 14570,
+      "git_blob_sha1": "1482b7938166b7381290d45573624c7732e34e40",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0258-env-context-baggage-carriers.md"
+    },
+    {
+      "bytes": 4426,
+      "git_blob_sha1": "0fd3b8f82397915f1beca30f0afba863a5a6a299",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0265-event-vision.md"
+    },
+    {
+      "bytes": 4424,
+      "git_blob_sha1": "d58345758d7efddc609ea75a0590ef4dbeafc7f2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/0266-move-oteps-to-spec.md"
+    },
+    {
+      "bytes": 5688,
+      "git_blob_sha1": "ba29391507b744d2915cd7d4b9af00848e1f5f7e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/4430-span-event-api-deprecation-plan.md"
+    },
+    {
+      "bytes": 16095,
+      "git_blob_sha1": "4505b05d36bab92be4458fcfdae2424e5cb72631",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/4485-extending-attributes-to-support-complex-values.md"
+    },
+    {
+      "bytes": 37727,
+      "git_blob_sha1": "2ce38c359206e3442e9e04186c3e3fb57458181f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/4738-telemetry-policy.md"
+    },
+    {
+      "bytes": 33960,
+      "git_blob_sha1": "b8ee0a590e9ec50484f4e9cae6a418d9586f1eda",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/4815-semantic-conventions-schema-v2.md"
+    },
+    {
+      "bytes": 18611,
+      "git_blob_sha1": "704991ef15766586186eaf1d8bdc78b33824ba19",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/4931-context-scoped-attributes.md"
+    },
+    {
+      "bytes": 12567,
+      "git_blob_sha1": "be7b37a066457e4da5700dae8329273c03b2ed52",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/5109-central-benchmarks-repository.md"
+    },
+    {
+      "bytes": 29593,
+      "git_blob_sha1": "d9a95c071e95637faef03f42374d51d906f13c06",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/5233-span-type.md"
+    },
+    {
+      "bytes": 6050,
+      "git_blob_sha1": "ec1250cee2a13b05e065934c56488c989ac1177b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/README.md"
+    },
+    {
+      "bytes": 28363,
+      "git_blob_sha1": "1a0997e935fb05445cfd3e0d3b921d394a062f29",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/entities/0256-entities-data-model.md"
+    },
+    {
+      "bytes": 50295,
+      "git_blob_sha1": "e62b694495672e718ade5c93f78799799f5a58be",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/entities/0264-resource-and-entities.md"
+    },
+    {
+      "bytes": 11507,
+      "git_blob_sha1": "f9ead5a3fa23f8b385925fe7826232fd81219458",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/entities/4665-multiple-resource-in-sdk.md"
+    },
+    {
+      "bytes": 9392,
+      "git_blob_sha1": "c6886fc59399fed7f9000ddcd30dbf52a57ffa70",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/experimental/0121-config-service.md"
+    },
+    {
+      "bytes": 2056,
+      "git_blob_sha1": "5e9246344b0db80ddfea81a0fc2019c47c5c6b8d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/logs/0091-logs-vocabulary.md"
+    },
+    {
+      "bytes": 5580,
+      "git_blob_sha1": "1826a9a5e79e7b984c341a42c88c8264a93f316a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/logs/0092-logs-vision.md"
+    },
+    {
+      "bytes": 45176,
+      "git_blob_sha1": "d11e4024255309bd29050de23b0c3c367d6298e2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/logs/0097-log-data-model.md"
+    },
+    {
+      "bytes": 2385,
+      "git_blob_sha1": "d5f09b2dc3370ecfd8d05d99825289ab6c2a199f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/logs/0130-logs-1.0ga-definition.md"
+    },
+    {
+      "bytes": 10994,
+      "git_blob_sha1": "2d679d4c2b99202bae54c101fefbea90db3fe6b4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/logs/0150-logging-library-sdk.md"
+    },
+    {
+      "bytes": 15609,
+      "git_blob_sha1": "0a282a7754aa3e8577c997108a15767a2da0bd2f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0003-measure-metric-type.md"
+    },
+    {
+      "bytes": 3351,
+      "git_blob_sha1": "f29a2523fe1b929876bc355f1f881247a3a2363f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0008-metric-observer.md"
+    },
+    {
+      "bytes": 3138,
+      "git_blob_sha1": "a81386b30e96102855cb4fa934d5b38c27d650d4",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0009-metric-handles.md"
+    },
+    {
+      "bytes": 1984,
+      "git_blob_sha1": "0ee551d9fca1f80bf0104d062659f991b3c75269",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0010-cumulative-to-counter.md"
+    },
+    {
+      "bytes": 4781,
+      "git_blob_sha1": "f4a2a1bbec78248932cb7014869878d27fa0b927",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0049-metric-label-set.md"
+    },
+    {
+      "bytes": 2576,
+      "git_blob_sha1": "357a24f63d590be548ff8ea535246305b19bb9f7",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0070-metric-bound-instrument.md"
+    },
+    {
+      "bytes": 8181,
+      "git_blob_sha1": "0e92d909a68d00618606920b27f75c521682f329",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0072-metric-observer.md"
+    },
+    {
+      "bytes": 5847,
+      "git_blob_sha1": "7674119fac017fa8493a6ebe2939844b12200c52",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0080-remove-metric-gauge.md"
+    },
+    {
+      "bytes": 25690,
+      "git_blob_sha1": "721ee19856be495c7be5806c347865b9c28a84a5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0088-metric-instrument-optional-refinements.md"
+    },
+    {
+      "bytes": 2370,
+      "git_blob_sha1": "bf719d71527c538d561b5fb2d313ed3e251fdb0d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0090-remove-labelset-from-metrics-api.md"
+    },
+    {
+      "bytes": 26029,
+      "git_blob_sha1": "5b0f77da66d37abc31c394990da3e3442078a049",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0098-metric-instruments-explained.md"
+    },
+    {
+      "bytes": 2609,
+      "git_blob_sha1": "61f76681277cd0f205699c12c464b2d0cb8a7212",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0108-naming-guidelines.md"
+    },
+    {
+      "bytes": 7204,
+      "git_blob_sha1": "d0a4be102cbe28f90f4d536eb3f6c7f5626dc83e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0113-exemplars.md"
+    },
+    {
+      "bytes": 6061,
+      "git_blob_sha1": "e8f2aef52c4a5c812d5d804ec4003d8405aeccc1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0126-Configurable-Metric-Aggregations.md"
+    },
+    {
+      "bytes": 5423,
+      "git_blob_sha1": "4788ccfd153a401fe57a780a299fb5ed3b41da3c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0131-otlp-export-behavior.md"
+    },
+    {
+      "bytes": 11941,
+      "git_blob_sha1": "9a903f6d05965c292fc5a07660b6170e2e134c4f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/metrics/0146-metrics-prototype-scenarios.md"
+    },
+    {
+      "bytes": 9263,
+      "git_blob_sha1": "7bb4f23446337db3501787a6b4e296bc88a6c73f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/profiles/0212-profiling-vision.md"
+    },
+    {
+      "bytes": 73857,
+      "git_blob_sha1": "fe72806bfd3937e1cf2be952c8f1283e899319eb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/profiles/0239-profiles-data-model.md"
+    },
+    {
+      "bytes": 32240,
+      "git_blob_sha1": "ca218f22e32ad5ca602d6f1c4ff4821d8a824792",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/profiles/4719-process-ctx.md"
+    },
+    {
+      "bytes": 34474,
+      "git_blob_sha1": "8ba8274c6769f52864ab262de7457554aa83b1ae",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/profiles/4947-thread-ctx.md"
+    },
+    {
+      "bytes": 5220,
+      "git_blob_sha1": "75e5727cdd4737315517c76848b01cc12cb92c5c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0002-remove-spandata.md"
+    },
+    {
+      "bytes": 17693,
+      "git_blob_sha1": "6e695017b87dff61842a90160f13a8f5b39cb9b2",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0006-sampling.md"
+    },
+    {
+      "bytes": 16576,
+      "git_blob_sha1": "f838ac03c27f6c6565e868a40ee44e789a73988f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0059-otlp-trace-data-format.md"
+    },
+    {
+      "bytes": 9685,
+      "git_blob_sha1": "8ec5ae46c72dffacaf1137b080f79da68ecaf70d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0136-error_flagging.md"
+    },
+    {
+      "bytes": 21780,
+      "git_blob_sha1": "85444efbb09ff667351d878cb90f9e5cc7e2a358",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0168-sampling-propagation.md"
+    },
+    {
+      "bytes": 39713,
+      "git_blob_sha1": "5a9a5fcde699a492708ae9a433e0eece6267095d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0170-sampling-probability.md"
+    },
+    {
+      "bytes": 12474,
+      "git_blob_sha1": "d56b54edf1152d3ccdad6fce71f737d406831672",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0173-messaging-semantic-conventions.md"
+    },
+    {
+      "bytes": 8568,
+      "git_blob_sha1": "0166cbc9b644ae47ada776e5120136941774ce51",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0174-http-semantic-conventions.md"
+    },
+    {
+      "bytes": 8869,
+      "git_blob_sha1": "4a18ff9d5a9ba1d6ba90e4ac8593dde32bbb1493",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0205-messaging-semantic-conventions-context-propagation.md"
+    },
+    {
+      "bytes": 26252,
+      "git_blob_sha1": "533e6fa3039b70e9cdf81f0f78842654e01c2504",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0220-messaging-semantic-conventions-span-structure.md"
+    },
+    {
+      "bytes": 13124,
+      "git_blob_sha1": "d0ec2a840541463947931cd92153e634dafec727",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0235-sampling-threshold-in-trace-state.md"
+    },
+    {
+      "bytes": 21736,
+      "git_blob_sha1": "7b82a66ce695a404a8bcaa194f639db0ebee3742",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/0250-Composite_Samplers.md"
+    },
+    {
+      "bytes": 43626,
+      "git_blob_sha1": "07d5d483e6f1932f642c6456347463e86655b02f",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "oteps/trace/4673-experimental-probability-sampling.md"
+    },
+    {
+      "bytes": 42914,
+      "git_blob_sha1": "a09c7077112747dbdee8f0876f97727c4c0970fe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "spec-compliance-matrix.md"
+    },
+    {
+      "bytes": 3765,
+      "git_blob_sha1": "0e8c3560b8d398f1b0bc2a3b6981518cd7cbce3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/README.md"
+    },
+    {
+      "bytes": 193,
+      "git_blob_sha1": "4f32dc019de840204077d500a1be99bfea014f0d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/baggage/README.md"
+    },
+    {
+      "bytes": 8173,
+      "git_blob_sha1": "021af371caada0a2e43cd2328644160653faa112",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/baggage/api.md"
+    },
+    {
+      "bytes": 17523,
+      "git_blob_sha1": "94dcf74cd99e3f54473f7e645b8f540b523f0362",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/README.md"
+    },
+    {
+      "bytes": 246,
+      "git_blob_sha1": "05ffb4c28075cb42b3e64c8d9e9deab50888e363",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/attribute-naming.md"
+    },
+    {
+      "bytes": 387,
+      "git_blob_sha1": "ef7e1279f2146682a839f5c3772b93b75101911f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/attribute-requirement-level.md"
+    },
+    {
+      "bytes": 11822,
+      "git_blob_sha1": "e1c03746e6c99cbe5c2ecddb50b3b71fa89ae7db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/attribute-type-mapping.md"
+    },
+    {
+      "bytes": 2479,
+      "git_blob_sha1": "6427e70fe73a50c7eede0b030112fefa1a200d27",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/instrumentation-scope.md"
+    },
+    {
+      "bytes": 4434,
+      "git_blob_sha1": "ae14e87b1203d74eddbbd9779cf6f1bb508c50bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/common/mapping-to-non-otlp.md"
+    },
+    {
+      "bytes": 211,
+      "git_blob_sha1": "40e6460cc2f574787680956ab1284cf1b394c39a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/compatibility/README.md"
+    },
+    {
+      "bytes": 2048,
+      "git_blob_sha1": "a91dd0c737411cbde60af34ccce8d1ceb93f3ce3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/compatibility/logging_trace_context.md"
+    },
+    {
+      "bytes": 13683,
+      "git_blob_sha1": "ec1425ca9e5fb7ef339871e3ac9e9343f0f7c6dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/compatibility/opencensus.md"
+    },
+    {
+      "bytes": 21662,
+      "git_blob_sha1": "e4a51638ca5fab4a2e701638ff1cc5f458a8e785",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/compatibility/opentracing.md"
+    },
+    {
+      "bytes": 43973,
+      "git_blob_sha1": "3d866f947913c58dfb03cf9b7886248c4a460d1e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/compatibility/prometheus_and_openmetrics.md"
+    },
+    {
+      "bytes": 2825,
+      "git_blob_sha1": "ea22e6c1be3952ff82673226630ba76c8cdcd91f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/README.md"
+    },
+    {
+      "bytes": 3155,
+      "git_blob_sha1": "3369b5c700264d3f9730985b8659d589323e0a43",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/api.md"
+    },
+    {
+      "bytes": 4398,
+      "git_blob_sha1": "055d4e3233eea6e4fed126a52fa54b5d48e070d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/common.md"
+    },
+    {
+      "bytes": 16222,
+      "git_blob_sha1": "f8840d3d2455b8ae720a58fc1923f2db8e827a6f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/data-model.md"
+    },
+    {
+      "bytes": 28541,
+      "git_blob_sha1": "8b90ab6aa58d81f5d68b1602b75573a4546d94e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/sdk-environment-variables.md"
+    },
+    {
+      "bytes": 22554,
+      "git_blob_sha1": "c1386c41f4ec0112c4f01d8cc4e3170a900643ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/sdk.md"
+    },
+    {
+      "bytes": 4336,
+      "git_blob_sha1": "35b7e1101dabee8d86d3e913313dcb2efb2d7ae0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/configuration/supplementary-guidelines.md"
+    },
+    {
+      "bytes": 4772,
+      "git_blob_sha1": "1e4aece88b785031cfaf47de3dadc49975311e83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/context/README.md"
+    },
+    {
+      "bytes": 17997,
+      "git_blob_sha1": "ce895c1232866ddec2942fd9fbea42dd7061bd2b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/context/api-propagators.md"
+    },
+    {
+      "bytes": 8369,
+      "git_blob_sha1": "0bd10a63354e837a1dd430cf138af26bd4626603",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/context/env-carriers.md"
+    },
+    {
+      "bytes": 573,
+      "git_blob_sha1": "6506d8606f6784469dc93f29ff23f0fcd661693e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/document-status.md"
+    },
+    {
+      "bytes": 1328,
+      "git_blob_sha1": "d1d4444d22eebeca8ccfda9af4c5d6f66d48bbf7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/entities/README.md"
+    },
+    {
+      "bytes": 10689,
+      "git_blob_sha1": "104e474810b6aaf78b907dc7151bfe5dd0e43119",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/entities/data-model.md"
+    },
+    {
+      "bytes": 14798,
+      "git_blob_sha1": "e7865eb2775ef4bad69a317b526243890d7bbe87",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/entities/entity-events.md"
+    },
+    {
+      "bytes": 8304,
+      "git_blob_sha1": "42b65088e462bcbccedd2ea5869964499f6d43fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/entities/entity-propagation.md"
+    },
+    {
+      "bytes": 6750,
+      "git_blob_sha1": "659a47aa5bb075cd66e068c699841402b0d01daf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/error-handling.md"
+    },
+    {
+      "bytes": 10275,
+      "git_blob_sha1": "2272ef8657e349fb4def4172a14f8a56b6d4b2e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/glossary.md"
+    },
+    {
+      "bytes": 12236,
+      "git_blob_sha1": "5b9c445bfd6657768527269f22767760109bbac9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/library-guidelines.md"
+    },
+    {
+      "bytes": 2944,
+      "git_blob_sha1": "b9c3d26f3d8cd7ed71a5656e3321e9f22f99ce01",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/library-layout.md"
+    },
+    {
+      "bytes": 24495,
+      "git_blob_sha1": "bd335d379e3bb903ca50173958fb88a6461ec315",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/README.md"
+    },
+    {
+      "bytes": 7586,
+      "git_blob_sha1": "1a058d6d895fb3d58c75df095beb50c52150a6d7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/api.md"
+    },
+    {
+      "bytes": 29418,
+      "git_blob_sha1": "7df1b7f51fd69590ca57d339503dbe0eade28b64",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/data-model-appendix.md"
+    },
+    {
+      "bytes": 20155,
+      "git_blob_sha1": "1e58b7f18fb547f45132b185f241f3b097f76bb0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/data-model.md"
+    },
+    {
+      "bytes": 1929,
+      "git_blob_sha1": "e86ca2ccde9e5b0adc896030f2882e8d85aaf3a9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/noop.md"
+    },
+    {
+      "bytes": 30705,
+      "git_blob_sha1": "0a915515a70599c23be21e27f520a2ea37f81984",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/sdk.md"
+    },
+    {
+      "bytes": 243,
+      "git_blob_sha1": "5d2702ab05a76167a59ae2db4e3f11cf69d98044",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/sdk_exporters/README.md"
+    },
+    {
+      "bytes": 1512,
+      "git_blob_sha1": "a8e629e9f71fd9119250585fa7472073d05c9ade",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/sdk_exporters/stdout.md"
+    },
+    {
+      "bytes": 12806,
+      "git_blob_sha1": "7c326c018090e1d8b8833137f8d985676f051145",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/logs/supplementary-guidelines.md"
+    },
+    {
+      "bytes": 4946,
+      "git_blob_sha1": "8a7a3b1d6ff7c4c3e7d5ff7b8d877cf1e270d70b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/maturity-levels.md"
+    },
+    {
+      "bytes": 4375,
+      "git_blob_sha1": "7c20f3eef1de0ee0dde245161c325966c5db683b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/README.md"
+    },
+    {
+      "bytes": 55771,
+      "git_blob_sha1": "3b4ce7440a1c5665cc31b838cd73573cfae5deb6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/api.md"
+    },
+    {
+      "bytes": 62383,
+      "git_blob_sha1": "c574436dbf82a35b5afaf33ff4c222be7e72dd51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/data-model.md"
+    },
+    {
+      "bytes": 372,
+      "git_blob_sha1": "76fd104bee46df5ec72f5c341125f6e7e9967f15",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/metric-requirement-level.md"
+    },
+    {
+      "bytes": 9393,
+      "git_blob_sha1": "452f9bf865eb0524246b3780371519e52cc4e649",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/noop.md"
+    },
+    {
+      "bytes": 97172,
+      "git_blob_sha1": "4fa55d79def84b7bf965d2d3ca41b29f75e3030c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk.md"
+    },
+    {
+      "bytes": 252,
+      "git_blob_sha1": "7d4828f807af5449afec1e14002703160a0465df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk_exporters/README.md"
+    },
+    {
+      "bytes": 1341,
+      "git_blob_sha1": "6a17ea7a1cf0f59abfebd9c8816b2977b2196e91",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk_exporters/in-memory.md"
+    },
+    {
+      "bytes": 4411,
+      "git_blob_sha1": "5c6788ae7bb6ae050076307c3b0ffb32b457f57d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk_exporters/otlp.md"
+    },
+    {
+      "bytes": 8729,
+      "git_blob_sha1": "8e4bc5d70212ddfbb47670b62d3fcb080eba761b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk_exporters/prometheus.md"
+    },
+    {
+      "bytes": 2162,
+      "git_blob_sha1": "6c5315fceefbc3c771b4f4da4b8a6442cc2bb740",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/sdk_exporters/stdout.md"
+    },
+    {
+      "bytes": 32346,
+      "git_blob_sha1": "0e580b670188fbde0cb5bf78b0a56f3b773559f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/metrics/supplementary-guidelines.md"
+    },
+    {
+      "bytes": 21240,
+      "git_blob_sha1": "f3f57084c87cd4cc2ce7417da84a571891ad2bd5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/overview.md"
+    },
+    {
+      "bytes": 2870,
+      "git_blob_sha1": "c5886e6cca6ec77820be17808976afe9fa679084",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/performance-benchmark.md"
+    },
+    {
+      "bytes": 2894,
+      "git_blob_sha1": "ee3e9f17d4313a83c60239b07e0840eb9851a888",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/performance.md"
+    },
+    {
+      "bytes": 4244,
+      "git_blob_sha1": "2e853e1eaffae12867fa5de5adc80ab16d3c49ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/profiles/README.md"
+    },
+    {
+      "bytes": 20804,
+      "git_blob_sha1": "9e9bec8ff51531a228b4795ec701d1f4d092c60b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/profiles/data-format.md"
+    },
+    {
+      "bytes": 1815,
+      "git_blob_sha1": "ad9171b385e76ad87c3441d59882db3fe8f7f83b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/profiles/mappings.md"
+    },
+    {
+      "bytes": 728,
+      "git_blob_sha1": "71b46534ad3a55e715d2b93a07661c564b51dd91",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/profiles/pprof.md"
+    },
+    {
+      "bytes": 716,
+      "git_blob_sha1": "5620363a42c23e9a0ae060ab689d0be51577b0a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/README.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "749c6467f72140ea39e32fe4a8b84ffeb68c29ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/design-goals.md"
+    },
+    {
+      "bytes": 14899,
+      "git_blob_sha1": "948acea1615e0663e237419c6cd8fe679baae084",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/exporter.md"
+    },
+    {
+      "bytes": 15363,
+      "git_blob_sha1": "8d7a528599b5c7a3b5e7986f1923e43fbd24aba8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/file-exporter.md"
+    },
+    {
+      "bytes": 253,
+      "git_blob_sha1": "946b4df5301fd2a47b7f61dfee011c637e4afa77",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/otlp.md"
+    },
+    {
+      "bytes": 448,
+      "git_blob_sha1": "ae7ed095ac474e768024cd25a67f019aa4781ef9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/protocol/requirements.md"
+    },
+    {
+      "bytes": 4736,
+      "git_blob_sha1": "51f98fa204d447bacefab9b0fe7ebf123c285eab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/resource/README.md"
+    },
+    {
+      "bytes": 7342,
+      "git_blob_sha1": "1ff080efc176c19ab57234192580b0c51c82349a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/resource/data-model.md"
+    },
+    {
+      "bytes": 12840,
+      "git_blob_sha1": "39c3a724a09d8b23f782f73c1972b62a12bbe344",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/resource/sdk.md"
+    },
+    {
+      "bytes": 12412,
+      "git_blob_sha1": "c2ecd4b9f326c0b6e288a47cd10d6da0426932ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/schemas/README.md"
+    },
+    {
+      "bytes": 19908,
+      "git_blob_sha1": "ba1ed4f8713f83c96241a21baaf2e71f59ce4d89",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/schemas/file_format_v1.0.0.md"
+    },
+    {
+      "bytes": 21509,
+      "git_blob_sha1": "b334c5e90e5bffac5a9b3771b19bcf6ee0cc12c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/schemas/file_format_v1.1.0.md"
+    },
+    {
+      "bytes": 7796,
+      "git_blob_sha1": "f6ae44ef59e0617c87f3dc5ee330ee5e4e7ce8d3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/self-observability-supplementary-guidelines.md"
+    },
+    {
+      "bytes": 1145,
+      "git_blob_sha1": "3618c8d3764dc57247cc18ba804c14a282aa541d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/self-observability.md"
+    },
+    {
+      "bytes": 2592,
+      "git_blob_sha1": "80551ee9a6e4edb6d3096322fed685bb8a69446a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/semantic-conventions.md"
+    },
+    {
+      "bytes": 5144,
+      "git_blob_sha1": "017ca8b5cc326562c2927d7711defe9175227402",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/specification-principles.md"
+    },
+    {
+      "bytes": 4452,
+      "git_blob_sha1": "e6765905730bc596c5692684fc1e3677fdded857",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/telemetry-stability.md"
+    },
+    {
+      "bytes": 187,
+      "git_blob_sha1": "aff90f79a55bbb443a118b725e2ca95a28272880",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/README.md"
+    },
+    {
+      "bytes": 39607,
+      "git_blob_sha1": "46773ab44d73b034b2ed843c28f402e21096ab59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/api.md"
+    },
+    {
+      "bytes": 1765,
+      "git_blob_sha1": "8ce08583e14e082ef6bffd669843bd8034d6d1fe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/exceptions.md"
+    },
+    {
+      "bytes": 60046,
+      "git_blob_sha1": "a581dd5a058f38116e023f03c53133bbb9ff6802",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/sdk.md"
+    },
+    {
+      "bytes": 246,
+      "git_blob_sha1": "106d744d1303afa42853cc0f2e59a35e65b8c0cb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/sdk_exporters/README.md"
+    },
+    {
+      "bytes": 1511,
+      "git_blob_sha1": "ed488b2fe20961efc0a3f326e9073f7b7fa99552",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/sdk_exporters/stdout.md"
+    },
+    {
+      "bytes": 12311,
+      "git_blob_sha1": "b35f2813a27eb6470618ac964ca4118d79ddb011",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/sdk_exporters/zipkin.md"
+    },
+    {
+      "bytes": 7171,
+      "git_blob_sha1": "7f8e2dfc2e86a9b49815da49c0e868e88eb1beaf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/tracestate-handling.md"
+    },
+    {
+      "bytes": 27173,
+      "git_blob_sha1": "bc4bb728c5873950491655033b4dc0ebb796329d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/trace/tracestate-probability-sampling.md"
+    },
+    {
+      "bytes": 8740,
+      "git_blob_sha1": "0c024baa9524294d794abd96083a07a5def97cd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/upgrading.md"
+    },
+    {
+      "bytes": 2340,
+      "git_blob_sha1": "3ced45f82202c5fdc5ba184faa9872fa199d7531",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/vendors.md"
+    },
+    {
+      "bytes": 23346,
+      "git_blob_sha1": "94e1ee2a3623448c9d758fda4ef68b6f3aa9bf58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/specification/**/*.md",
+      "upstream_path": "specification/versioning-and-stability.md"
+    },
+    {
+      "bytes": 415,
+      "git_blob_sha1": "dd25a7799b549dd03d10c5882a1455666e52f45e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "supplementary-guidelines/compatibility/aws.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 2642417,
+  "repository_md_files": 195,
+  "repository_url": "https://github.com/open-telemetry/opentelemetry-specification",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 1324328,
+  "snapshot_md_files": 99,
+  "source_id": "opentelemetry-spec"
+}

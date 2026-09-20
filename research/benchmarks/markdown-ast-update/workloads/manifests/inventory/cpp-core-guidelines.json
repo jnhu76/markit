@@ -1,0 +1,64 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "33bcd015997f0d8e0fa0202eb66254a16f59ad8f",
+  "entries": [
+    {
+      "bytes": 6369,
+      "git_blob_sha1": "51fd0520510a43ce6543525c9762de3d984dd124",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 841419,
+      "git_blob_sha1": "34addb87fb77c3d55427ea19286f38db65cf2b22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/CppCoreGuidelines.md",
+      "upstream_path": "CppCoreGuidelines.md"
+    },
+    {
+      "bytes": 4135,
+      "git_blob_sha1": "96780fa1aa58fc1d3307e55b8ca4a55a3e235b5c",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 116,
+      "git_blob_sha1": "81c8b9d3177dec035005a9fe8bcee276e5f7d27d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "SECURITY.md"
+    },
+    {
+      "bytes": 4110,
+      "git_blob_sha1": "b56b4f3738776c2102b15b0af26d53e11dd2ed65",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "docs/dyn_array.md"
+    },
+    {
+      "bytes": 10017,
+      "git_blob_sha1": "f7bd835be853ebca2e116ff7252e02beaf6ca36d",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "docs/gsl-intro.md"
+    },
+    {
+      "bytes": 973,
+      "git_blob_sha1": "963f294c478e08f6d4160bcd1440bf407ae26193",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "talks/README.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 867139,
+  "repository_md_files": 7,
+  "repository_url": "https://github.com/isocpp/CppCoreGuidelines",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 841419,
+  "snapshot_md_files": 1,
+  "source_id": "cpp-core-guidelines"
+}

@@ -1,0 +1,1386 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "MATH_CODE_MIXED",
+  "commit_sha": "23d7a5aecceee57d1292c56e90cce307f183bb0a",
+  "commit_timestamp": "2024-03-16T23:46:02+01:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 191,
+  "files": [
+    {
+      "bytes": 27471,
+      "git_blob_sha1": "b8e6a29be713ad84087851cc554cbe14dcb1b72b",
+      "sha256": "173f8dd8c437560bae13e11c98bab081492e250fbf823340536a580fe4daaa75",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/distributions.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/distributions.md"
+    },
+    {
+      "bytes": 22254,
+      "git_blob_sha1": "39bcf70ae6d6c01349c06664f200b57612068e6a",
+      "sha256": "e04e5f08b40ba32a76054d6bcbc157467fb5935289e0734740109cc977a1ede3",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/eigendecomposition.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/eigendecomposition.md"
+    },
+    {
+      "bytes": 39590,
+      "git_blob_sha1": "312aaa58008f2aae8da37eed79202f0d6b6871b5",
+      "sha256": "066c856e5860ea00a7cd49542250e4c97dc810c0a9bfbe3c1e4bf2e66d7c356e",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.md"
+    },
+    {
+      "bytes": 3135,
+      "git_blob_sha1": "6ff0a367225b4438bb05c84483857d890cd41d9d",
+      "sha256": "f4085dc222bdfca8f0c44b0614c5788f300215493f44168507b4b179d5240cc9",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/index.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/index.md"
+    },
+    {
+      "bytes": 40937,
+      "git_blob_sha1": "50c4557a34176f84543812ab74024bdfb7198609",
+      "sha256": "6098f37c6262e5403a4c1241dc9fc551dc916629dd59ee8289ca0e1613b370f7",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/information-theory.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/information-theory.md"
+    },
+    {
+      "bytes": 21726,
+      "git_blob_sha1": "e6eebb35e88c0657ed2867369d6bcd611c435b5e",
+      "sha256": "521f0e799cf076be0c21ff25e53e8127f52202d6dbb9a332fb33feba52907100",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/integral-calculus.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/integral-calculus.md"
+    },
+    {
+      "bytes": 14955,
+      "git_blob_sha1": "92baae30e2f8b3a7852a9818807e3053a4c206b4",
+      "sha256": "d26ee1cf274e9eab38ffa567acb919155a7aec8692cec7ca3bfdfd66d95cef5a",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.md"
+    },
+    {
+      "bytes": 43692,
+      "git_blob_sha1": "1cfbefafa6d0ed2e9f54f88700979cb7d81e665a",
+      "sha256": "2064011aea85df2626ac6fba36db283b79c5d60ebdab1090cf62a76ecee8014d",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.md"
+    },
+    {
+      "bytes": 20126,
+      "git_blob_sha1": "346d6007eafe20a839345a4c7a468bf927fd3e6d",
+      "sha256": "b26ddcc560a344c99ba5ee5ae256b21fbcff66171ac3793f1228c43ad86a1e07",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/naive-bayes.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/naive-bayes.md"
+    },
+    {
+      "bytes": 44019,
+      "git_blob_sha1": "c6999b94331c1e845217b440a0645003a04ae95d",
+      "sha256": "506e48d177d6753b65a671702f4e85422d0501496a085728960799ec4bd1e43f",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/random-variables.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/random-variables.md"
+    },
+    {
+      "bytes": 26145,
+      "git_blob_sha1": "62727a4c0cd78b4e68100b4af02d2fa6baf541b5",
+      "sha256": "458a9927adffffc025be9046a3c7e397a9b5083d4e5479453949802c4781931d",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.md"
+    },
+    {
+      "bytes": 33008,
+      "git_blob_sha1": "db0b432ee91b0d31ddb7c111d2b93a4f385df665",
+      "sha256": "361491a4506c193d4da2f38a2e3a250c7bcb207140a108caf0f3470e6dc37c13",
+      "snapshot_path": "files/chapter_appendix-mathematics-for-deep-learning/statistics.md",
+      "upstream_path": "chapter_appendix-mathematics-for-deep-learning/statistics.md"
+    },
+    {
+      "bytes": 10659,
+      "git_blob_sha1": "3608921184d96479727b840e4e9c39010ab04c4b",
+      "sha256": "a2e963bf4416c283ffea9b9d211acb2c23c5ba57130729f133ef45deb944f945",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/aws.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/aws.md"
+    },
+    {
+      "bytes": 1271,
+      "git_blob_sha1": "6f0b0af8a07915becaa836db14c36f172731573f",
+      "sha256": "440b815c8b904413e00bd2d5deb6e8f2c861b4435376c2e0a85bf26f7b476813",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/colab.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/colab.md"
+    },
+    {
+      "bytes": 8157,
+      "git_blob_sha1": "46565f3c517d7f83881789ef3fb1943b13e8914c",
+      "sha256": "a968b67392e337db56ebd444d57fc5362cd14d9c3cf37bf4727ff9a0040e1c7d",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/contributing.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/contributing.md"
+    },
+    {
+      "bytes": 2863,
+      "git_blob_sha1": "97b275b276d6a4040e1f61401cc6669e3df55c94",
+      "sha256": "fe84a36ed875a99223d6c7040df197ecdd1d310cd5825f0904e05839441f4d52",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/d2l.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/d2l.md"
+    },
+    {
+      "bytes": 352,
+      "git_blob_sha1": "ce612e5c132c1a97c37e201e2b18d9eb855d2310",
+      "sha256": "631f36b2eefa4e1db66e8ed638ea915587f85d4e80203717efada981ff636e25",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/index.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/index.md"
+    },
+    {
+      "bytes": 6075,
+      "git_blob_sha1": "e105d93f578a5a92ba79cb5fad9cb6cd04ecae4e",
+      "sha256": "19a378e168cfe040b5e7e596a70052ea5f4add70f2561cf91dc3c4079d2c743b",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/jupyter.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/jupyter.md"
+    },
+    {
+      "bytes": 5394,
+      "git_blob_sha1": "3cb9afc513f84ee102939426032b91844ce52b5b",
+      "sha256": "dfa3bf1d2de8fa8bf02fc3d3cfe78491bd57d7306833d50c7ac80df80d6da70c",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/sagemaker.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/sagemaker.md"
+    },
+    {
+      "bytes": 9848,
+      "git_blob_sha1": "e91ffbc1662a6038f3ef83fa1b2eae5caa514387",
+      "sha256": "144af54a2d46794e072462b431eb82b66ee4d5755298067532a827a0fae103a1",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.md"
+    },
+    {
+      "bytes": 44914,
+      "git_blob_sha1": "1be0f4efd8111e33759ae86b070042b5880dc25f",
+      "sha256": "7a89a8fd5776513a3d2bd414e8ef58caa11bd35c8a144d41353395d55eac162c",
+      "snapshot_path": "files/chapter_appendix-tools-for-deep-learning/utils.md",
+      "upstream_path": "chapter_appendix-tools-for-deep-learning/utils.md"
+    },
+    {
+      "bytes": 12803,
+      "git_blob_sha1": "c2ba4dbb7e8c8880ad17988aa9db609fe1dd1d14",
+      "sha256": "e8701fde7ec437764fbb990c87999731a748ec014dd71366ad5d1bebcc0c9d2a",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/attention-pooling.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/attention-pooling.md"
+    },
+    {
+      "bytes": 29909,
+      "git_blob_sha1": "b2e05fb5bdd598e83ffa1ec8fbb5958bb5c692a0",
+      "sha256": "0ff7897c34919301660855ae6820173b657dd28926f7de4ae3ec527454c4285d",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/attention-scoring-functions.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/attention-scoring-functions.md"
+    },
+    {
+      "bytes": 23368,
+      "git_blob_sha1": "da6111469b829805bc7932a7622b796d7fcac57c",
+      "sha256": "8e4a4c470f0426475f4f0fc45821c52a0e244dd6171f439504084d2aa6013ab9",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/bahdanau-attention.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/bahdanau-attention.md"
+    },
+    {
+      "bytes": 7286,
+      "git_blob_sha1": "32513f9343a1ae726f9a64a24ed4448cc7594059",
+      "sha256": "16d46c0f77288b3a869bee02e368a0c7a15abe33dc86599b5bc2a7e4faef99b5",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/index.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/index.md"
+    },
+    {
+      "bytes": 26350,
+      "git_blob_sha1": "2c4e05f29cf97d2f08f705b3e0c4c4d0755d7f09",
+      "sha256": "814e0187a10e790822da4783a6d68efdaf58943f4f352788a2a410748347d419",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.md"
+    },
+    {
+      "bytes": 18404,
+      "git_blob_sha1": "3f254a843b30fbfa2c6733523b9fbdf839b8c6c3",
+      "sha256": "97404b61a99bcb29ae18ad64147562244f803ac6af2bd5b17b3e3cba8e80a108",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/multihead-attention.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/multihead-attention.md"
+    },
+    {
+      "bytes": 11243,
+      "git_blob_sha1": "9a96819b24e58aca6ae904ede67a3a647f408cf9",
+      "sha256": "880642f004c40c95fc5ecc0b6dee98aedb5fc014ab814bbff35838441de12c8d",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/queries-keys-values.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/queries-keys-values.md"
+    },
+    {
+      "bytes": 18450,
+      "git_blob_sha1": "6ed9dbfc385282ab65aca5e34d08ea717b3952a9",
+      "sha256": "8b6eeedba841fbd231edaa5f0f1524bf17c82449623bd2e46f8da21a0cead35f",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.md"
+    },
+    {
+      "bytes": 52625,
+      "git_blob_sha1": "8fd5e183a8dddadb0ae0c7168db384ff3ae85106",
+      "sha256": "085f66181f137620d27b61eabfeefe3927258abaabdf2693a8887bb186415c82",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/transformer.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/transformer.md"
+    },
+    {
+      "bytes": 16543,
+      "git_blob_sha1": "d1d8c8d9f4e78d81d01833a023183ed3abf51a91",
+      "sha256": "290574b82b91f9efca4f90bb56d29a76db2de85666db5d1e38850cdf32709e07",
+      "snapshot_path": "files/chapter_attention-mechanisms-and-transformers/vision-transformer.md",
+      "upstream_path": "chapter_attention-mechanisms-and-transformers/vision-transformer.md"
+    },
+    {
+      "bytes": 9173,
+      "git_blob_sha1": "135ddc0261ca553ee6bb64e0769ebe3e8fa5bb28",
+      "sha256": "9a24c84a2a3261a2b20f189271d0ac89fa54921e647108f63c308b333dc3eab2",
+      "snapshot_path": "files/chapter_builders-guide/custom-layer.md",
+      "upstream_path": "chapter_builders-guide/custom-layer.md"
+    },
+    {
+      "bytes": 2097,
+      "git_blob_sha1": "5bf9e1514c0e16f3d70947969a1d702a28e6cb20",
+      "sha256": "4e441000ea5cc21b0e6a21ba2f776999e7ea50002d7b8f8ddb7b859befca6a06",
+      "snapshot_path": "files/chapter_builders-guide/index.md",
+      "upstream_path": "chapter_builders-guide/index.md"
+    },
+    {
+      "bytes": 11650,
+      "git_blob_sha1": "5a2dfcd9a785015eaf08f21b8587e2b52f233004",
+      "sha256": "ec449d02827c83150da653afec85da3fb2cf625cbf27ead85d01c0a15c73ee47",
+      "snapshot_path": "files/chapter_builders-guide/init-param.md",
+      "upstream_path": "chapter_builders-guide/init-param.md"
+    },
+    {
+      "bytes": 7473,
+      "git_blob_sha1": "889a7e5792017f64f36555f08dafc0e4c8a7852f",
+      "sha256": "d36b8a49fda3bc02be155ef38d0af3abbadb181e96232fb911a389529383fdd5",
+      "snapshot_path": "files/chapter_builders-guide/lazy-init.md",
+      "upstream_path": "chapter_builders-guide/lazy-init.md"
+    },
+    {
+      "bytes": 25517,
+      "git_blob_sha1": "f4d0dfa2f387a83c5af5bf7ed34c112b62913b37",
+      "sha256": "c8a3c2c30707ba97aa63ef49bed73be88a684b651ac0f788e990834c4174e4ed",
+      "snapshot_path": "files/chapter_builders-guide/model-construction.md",
+      "upstream_path": "chapter_builders-guide/model-construction.md"
+    },
+    {
+      "bytes": 9578,
+      "git_blob_sha1": "05ad8dfa3a0b6ff28f71d412e5dbd52019505e82",
+      "sha256": "ddca72a9f4744289da465e449e80c05cb690c53b3603210f01d20094a715e493",
+      "snapshot_path": "files/chapter_builders-guide/parameters.md",
+      "upstream_path": "chapter_builders-guide/parameters.md"
+    },
+    {
+      "bytes": 8445,
+      "git_blob_sha1": "70c910135ff948d0586a9bdcdc0390de5b15a37f",
+      "sha256": "5f9b99a7c1cb8d5ebee6dd81e1b5b6ed3a6fb042f481b56c55dc63ad90a00212",
+      "snapshot_path": "files/chapter_builders-guide/read-write.md",
+      "upstream_path": "chapter_builders-guide/read-write.md"
+    },
+    {
+      "bytes": 18658,
+      "git_blob_sha1": "5c3c9e18dfd3b80688a50cbcbb3a1c0cf3d3f09e",
+      "sha256": "0375b07999c7c872e84aba0e9e43654f2b317c49589ffd529674fce70482be28",
+      "snapshot_path": "files/chapter_builders-guide/use-gpu.md",
+      "upstream_path": "chapter_builders-guide/use-gpu.md"
+    },
+    {
+      "bytes": 12411,
+      "git_blob_sha1": "9838bb3fee9fbce242a88256edcb5e04986636bc",
+      "sha256": "285c8c8d4a2a656a2f17bd7d56d3bbf54f2976ab2a143240514d47a97739bad6",
+      "snapshot_path": "files/chapter_computational-performance/async-computation.md",
+      "upstream_path": "chapter_computational-performance/async-computation.md"
+    },
+    {
+      "bytes": 9529,
+      "git_blob_sha1": "be5ee2aa5487c381d120a5f74bd3204dc76a6d03",
+      "sha256": "0a407cf55b8c3589c544c63f7006827a9c672c51c6bf22843cfdabe877bc2590",
+      "snapshot_path": "files/chapter_computational-performance/auto-parallelism.md",
+      "upstream_path": "chapter_computational-performance/auto-parallelism.md"
+    },
+    {
+      "bytes": 34823,
+      "git_blob_sha1": "9230261fbc3207f6a3d0758c0f0d325aa55b21e7",
+      "sha256": "8fbfb39756481c9f4e6f672f9f61c8449b687a8038d9a2597457611ba2905719",
+      "snapshot_path": "files/chapter_computational-performance/hardware.md",
+      "upstream_path": "chapter_computational-performance/hardware.md"
+    },
+    {
+      "bytes": 20583,
+      "git_blob_sha1": "579ace2bf562092c2aa2e18f6116eeff7b182bdc",
+      "sha256": "9108352a0582d5be03966b4d2a17d9040c8ce3c56e6a7087a84811940dda62ba",
+      "snapshot_path": "files/chapter_computational-performance/hybridize.md",
+      "upstream_path": "chapter_computational-performance/hybridize.md"
+    },
+    {
+      "bytes": 733,
+      "git_blob_sha1": "3ec523018dfac4f0c7ac0a4dd004046be4b25210",
+      "sha256": "a83233c68c47cd87fb825c99d020d9e06ea6ec1437dfe2bf0d2c7a6835e9dc0d",
+      "snapshot_path": "files/chapter_computational-performance/index.md",
+      "upstream_path": "chapter_computational-performance/index.md"
+    },
+    {
+      "bytes": 12142,
+      "git_blob_sha1": "0e471a8e31c0b31e6f9cd8e0c0f6a4aae33de452",
+      "sha256": "67c25adc5f3d858caa8dae38921948094be9b632264e7b751582598905f209b7",
+      "snapshot_path": "files/chapter_computational-performance/multiple-gpus-concise.md",
+      "upstream_path": "chapter_computational-performance/multiple-gpus-concise.md"
+    },
+    {
+      "bytes": 20644,
+      "git_blob_sha1": "4d7117a4b2413895d04ddf4d42128d78afb16383",
+      "sha256": "f7b0efc657dc905b3d8175e7d3120ffe5698ce96d4fc25b1495dc0ddfbdcefe1",
+      "snapshot_path": "files/chapter_computational-performance/multiple-gpus.md",
+      "upstream_path": "chapter_computational-performance/multiple-gpus.md"
+    },
+    {
+      "bytes": 13731,
+      "git_blob_sha1": "1136b8349d19ecb41b82013ab9551a1e01907d75",
+      "sha256": "fb7fbbe9a53981e2f74667c07282f6168a7b75e5ad61957e3a5e8e9d82a6bb19",
+      "snapshot_path": "files/chapter_computational-performance/parameterserver.md",
+      "upstream_path": "chapter_computational-performance/parameterserver.md"
+    },
+    {
+      "bytes": 42782,
+      "git_blob_sha1": "5ffc8e5b197d473580104cbdab43bfef9c4a1602",
+      "sha256": "91cf2b83e0bab337f35d2ff241bcfcda7047d0985dc5f2bd2bdfa879483cd42b",
+      "snapshot_path": "files/chapter_computer-vision/anchor.md",
+      "upstream_path": "chapter_computer-vision/anchor.md"
+    },
+    {
+      "bytes": 5907,
+      "git_blob_sha1": "c8ac497643d6f1b9bb3e27d54011d1b173c3a213",
+      "sha256": "a62be72e82f8e2ca2c3dfcc8589c5fb25a93d3978b37f9ced4d1c160163d7b62",
+      "snapshot_path": "files/chapter_computer-vision/bounding-box.md",
+      "upstream_path": "chapter_computer-vision/bounding-box.md"
+    },
+    {
+      "bytes": 15564,
+      "git_blob_sha1": "f40898c3c6d0505ba2fca9d977556d428d95eae5",
+      "sha256": "36089364fe1e1358003ad0e52af4ba6921ecbeaf8e2c5c10248e0e4d582a2507",
+      "snapshot_path": "files/chapter_computer-vision/fcn.md",
+      "upstream_path": "chapter_computer-vision/fcn.md"
+    },
+    {
+      "bytes": 15643,
+      "git_blob_sha1": "323ac59859a3612b95e002b2c9cb5d748b3dba65",
+      "sha256": "9d86a49a030d5a823cc5336f97aed9fcc1955ec84984484b33073b6b55051b28",
+      "snapshot_path": "files/chapter_computer-vision/fine-tuning.md",
+      "upstream_path": "chapter_computer-vision/fine-tuning.md"
+    },
+    {
+      "bytes": 18155,
+      "git_blob_sha1": "62af9817eb9a7895a87d3c7749eca053370913f7",
+      "sha256": "43a9ee3dafcaef44e3295ec81341529a2a1716d87fdcc0a548ecee91cc291357",
+      "snapshot_path": "files/chapter_computer-vision/image-augmentation.md",
+      "upstream_path": "chapter_computer-vision/image-augmentation.md"
+    },
+    {
+      "bytes": 2040,
+      "git_blob_sha1": "1eddc4893e1084a5e2c2ee7beaf575ab0e4e713b",
+      "sha256": "2c25477a9c0d7540b0d467211d9dd5377bd02dfddb7f6b6634aa02284cb1e5b2",
+      "snapshot_path": "files/chapter_computer-vision/index.md",
+      "upstream_path": "chapter_computer-vision/index.md"
+    },
+    {
+      "bytes": 22666,
+      "git_blob_sha1": "89441cbefe7fc521fb6669a7190765176280e668",
+      "sha256": "8aef74ffb42b53951df68c52be70e10faa6827f0aae3be02818fa64765da4a79",
+      "snapshot_path": "files/chapter_computer-vision/kaggle-cifar10.md",
+      "upstream_path": "chapter_computer-vision/kaggle-cifar10.md"
+    },
+    {
+      "bytes": 20355,
+      "git_blob_sha1": "eff891029e424fea94c856e86869b968fa29aa2b",
+      "sha256": "0c3375a1d08e0e30729176dc4132d0764d76c74127cfb03f984ca6497dbb8008",
+      "snapshot_path": "files/chapter_computer-vision/kaggle-dog.md",
+      "upstream_path": "chapter_computer-vision/kaggle-dog.md"
+    },
+    {
+      "bytes": 8984,
+      "git_blob_sha1": "64cf6d1cb313bb49fe0a306bc5578fb767140e31",
+      "sha256": "f0d5b37584f497a085715f0255efe6f8c8dfde08132be91eef82847f595ceade",
+      "snapshot_path": "files/chapter_computer-vision/multiscale-object-detection.md",
+      "upstream_path": "chapter_computer-vision/multiscale-object-detection.md"
+    },
+    {
+      "bytes": 21215,
+      "git_blob_sha1": "ffc83bf3bc0d53f64a1810ee39843352a484148e",
+      "sha256": "e0e7e3b53abc58f25a860290b4cd164dd29628a707a6b5e0bdb17aa00b3cfc25",
+      "snapshot_path": "files/chapter_computer-vision/neural-style.md",
+      "upstream_path": "chapter_computer-vision/neural-style.md"
+    },
+    {
+      "bytes": 8825,
+      "git_blob_sha1": "90fada8302d603071101a098aaefde5370d15139",
+      "sha256": "e86a7155b4dd0129e95dba6f2c115225b52008205dc40326f7a5643bd20e0243",
+      "snapshot_path": "files/chapter_computer-vision/object-detection-dataset.md",
+      "upstream_path": "chapter_computer-vision/object-detection-dataset.md"
+    },
+    {
+      "bytes": 12483,
+      "git_blob_sha1": "15f38bd87ff88da88e839dbb0b11ca27a4b677dd",
+      "sha256": "039e028b8d7e637dbeb304bca9b1db5a824b6762353c73aa589820ba51784755",
+      "snapshot_path": "files/chapter_computer-vision/rcnn.md",
+      "upstream_path": "chapter_computer-vision/rcnn.md"
+    },
+    {
+      "bytes": 17313,
+      "git_blob_sha1": "a0c761175251ebe1713d135fda0524504038b93f",
+      "sha256": "0bb3bb35d053e98e40440aa4c2af135c6815a2da2cfeb3a27d7817a5ed7a07b6",
+      "snapshot_path": "files/chapter_computer-vision/semantic-segmentation-and-dataset.md",
+      "upstream_path": "chapter_computer-vision/semantic-segmentation-and-dataset.md"
+    },
+    {
+      "bytes": 31950,
+      "git_blob_sha1": "d031708e25ef91e14d7cf41d74f06bfa13b79997",
+      "sha256": "1532abaa7871da715c9e8c958d47164bb9bba81895d82beb0f5fb35ae0f8a62d",
+      "snapshot_path": "files/chapter_computer-vision/ssd.md",
+      "upstream_path": "chapter_computer-vision/ssd.md"
+    },
+    {
+      "bytes": 10897,
+      "git_blob_sha1": "30dc29e950804dd5abe11c8f96c34a47126c1a61",
+      "sha256": "0a204b5a3274d390a3af1f1237fb1f965c6436d8f8729a5bc423adc7ac1bd041",
+      "snapshot_path": "files/chapter_computer-vision/transposed-conv.md",
+      "upstream_path": "chapter_computer-vision/transposed-conv.md"
+    },
+    {
+      "bytes": 28849,
+      "git_blob_sha1": "c0609eeefa207d81b52ab9366942c44b5db8c655",
+      "sha256": "41a541c64320fe9efc0371c0cde7f47242d8fb740a8d6facf7f47ee676146703",
+      "snapshot_path": "files/chapter_convolutional-modern/alexnet.md",
+      "upstream_path": "chapter_convolutional-modern/alexnet.md"
+    },
+    {
+      "bytes": 44655,
+      "git_blob_sha1": "aa52beaeef042f29e0fdc51e73a4efa06b5fdef8",
+      "sha256": "a82dc20e9a07dcee5e88ff4e094720bf524aab8ace7d9a6aca47f9827b4e9a33",
+      "snapshot_path": "files/chapter_convolutional-modern/batch-norm.md",
+      "upstream_path": "chapter_convolutional-modern/batch-norm.md"
+    },
+    {
+      "bytes": 25337,
+      "git_blob_sha1": "429f055c1764863f4ba8773c03f0f9b8efcb23fb",
+      "sha256": "d28aec8bde19f8e2f4333e4d621902a8dc1fab3df5b2a4da3c24b56339cbdf35",
+      "snapshot_path": "files/chapter_convolutional-modern/cnn-design.md",
+      "upstream_path": "chapter_convolutional-modern/cnn-design.md"
+    },
+    {
+      "bytes": 19471,
+      "git_blob_sha1": "4528824854aac2ee7ab5ced4f6de0ec217c05435",
+      "sha256": "cd099c68314e35fe4a7164ead9cc8c100f5791af42f4455558593385d35832e4",
+      "snapshot_path": "files/chapter_convolutional-modern/densenet.md",
+      "upstream_path": "chapter_convolutional-modern/densenet.md"
+    },
+    {
+      "bytes": 24316,
+      "git_blob_sha1": "926c1d5ac46580d95f0b150627643b98e89a1ee5",
+      "sha256": "6f945593007bc4f63979c554d6f2078b8b4b75782853e78aab3af732bf259f1d",
+      "snapshot_path": "files/chapter_convolutional-modern/googlenet.md",
+      "upstream_path": "chapter_convolutional-modern/googlenet.md"
+    },
+    {
+      "bytes": 4124,
+      "git_blob_sha1": "efdb36197deca7660d6466750b437f285c8cb28c",
+      "sha256": "0ecdce6d470d56280d931b6516ee15ddd1f8353f050dd678992677c85e9497d2",
+      "snapshot_path": "files/chapter_convolutional-modern/index.md",
+      "upstream_path": "chapter_convolutional-modern/index.md"
+    },
+    {
+      "bytes": 11968,
+      "git_blob_sha1": "23b23bfa175d234a7c685990eadf098b5061c7fb",
+      "sha256": "3a711ec1c5adfca2e0e8c448c0930998febc2e0d3381794843e6544046842475",
+      "snapshot_path": "files/chapter_convolutional-modern/nin.md",
+      "upstream_path": "chapter_convolutional-modern/nin.md"
+    },
+    {
+      "bytes": 36235,
+      "git_blob_sha1": "0879be814e0c6e055e6b624dba2e32742a398705",
+      "sha256": "64325be1880bac5ed388512412877b9fae653e4c967789c93319a4a91a316ed5",
+      "snapshot_path": "files/chapter_convolutional-modern/resnet.md",
+      "upstream_path": "chapter_convolutional-modern/resnet.md"
+    },
+    {
+      "bytes": 14235,
+      "git_blob_sha1": "90fdf97aee4a46729225b1d796143652f4aa08ca",
+      "sha256": "c27ef2b630bab632e4090da38f0377f26e5642ab686f4d3ba4b79a4b934d0bfa",
+      "snapshot_path": "files/chapter_convolutional-modern/vgg.md",
+      "upstream_path": "chapter_convolutional-modern/vgg.md"
+    },
+    {
+      "bytes": 14248,
+      "git_blob_sha1": "9904af2749ca6c00f1aa3ed9726d726a30427b18",
+      "sha256": "3c2cc261f2351a373861af2582104addb9013bb0d222013af6d16b0749fc49dc",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/channels.md",
+      "upstream_path": "chapter_convolutional-neural-networks/channels.md"
+    },
+    {
+      "bytes": 22563,
+      "git_blob_sha1": "a9f64544e2ef25b80850bfb78bcbf007f617941f",
+      "sha256": "5f41b0ebf6844a96372e103e3dd0efe0341ea959532896a340be13d0c8c23275",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/conv-layer.md",
+      "upstream_path": "chapter_convolutional-neural-networks/conv-layer.md"
+    },
+    {
+      "bytes": 3434,
+      "git_blob_sha1": "9121c1cf683a2474c88f4032529eeffa7e273a4e",
+      "sha256": "eae8032da8aeda80fe4ec249af66f75cbf70dbb18da67e8e88ef7500ec38844b",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/index.md",
+      "upstream_path": "chapter_convolutional-neural-networks/index.md"
+    },
+    {
+      "bytes": 15336,
+      "git_blob_sha1": "10a23912ab7af042ef6a7dafd515e707f7cdc649",
+      "sha256": "6dfaae50762199fa53bc5fac21ba72f53a69de576fd5bd38a93d3d3a5b7f6701",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/lenet.md",
+      "upstream_path": "chapter_convolutional-neural-networks/lenet.md"
+    },
+    {
+      "bytes": 15750,
+      "git_blob_sha1": "4a50b8eb31613dd13b9e044e3d701ea5b86827bf",
+      "sha256": "c0fec95a1a9e9e1b660f98f27b876e7caa3a53932601e5c5c9bb81be45b8e5d2",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/padding-and-strides.md",
+      "upstream_path": "chapter_convolutional-neural-networks/padding-and-strides.md"
+    },
+    {
+      "bytes": 14881,
+      "git_blob_sha1": "669efcb1c6b68d13b17703294d25ef2e0711829c",
+      "sha256": "57b031b5fe27e3b398ebc5857506e8034f2df2b47a8f2351a9e4ed22019d2d89",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/pooling.md",
+      "upstream_path": "chapter_convolutional-neural-networks/pooling.md"
+    },
+    {
+      "bytes": 17744,
+      "git_blob_sha1": "97f67d453ba6b80b69a1794ff780a1899f3236e3",
+      "sha256": "0fa140a9d25c984a7a41578dbd1a96a1aaa9ea0b35c297d581edff4a737e24ef",
+      "snapshot_path": "files/chapter_convolutional-neural-networks/why-conv.md",
+      "upstream_path": "chapter_convolutional-neural-networks/why-conv.md"
+    },
+    {
+      "bytes": 30260,
+      "git_blob_sha1": "cfccc3b01d07c6d9b97ba7826f3e75124faad84a",
+      "sha256": "f9398b166214b4625c16b03f18b9b39115c200aa59d27362b7fa29f85ba10749",
+      "snapshot_path": "files/chapter_gaussian-processes/gp-inference.md",
+      "upstream_path": "chapter_gaussian-processes/gp-inference.md"
+    },
+    {
+      "bytes": 17892,
+      "git_blob_sha1": "c7cd7ba942e0db8f04157b8e2b494cdd65499b3f",
+      "sha256": "e7df76e119b6c0786767de578fefb009c7284cc802dbdb73a5cd1a825f29a4d9",
+      "snapshot_path": "files/chapter_gaussian-processes/gp-intro.md",
+      "upstream_path": "chapter_gaussian-processes/gp-intro.md"
+    },
+    {
+      "bytes": 15626,
+      "git_blob_sha1": "f37b23a2c0420454a7bf8872aa7f2f06c6413aac",
+      "sha256": "b9713c62fe5d7c6db60e1304e7c3e76e669bc2ed13ee15d170a55550b0601179",
+      "snapshot_path": "files/chapter_gaussian-processes/gp-priors.md",
+      "upstream_path": "chapter_gaussian-processes/gp-priors.md"
+    },
+    {
+      "bytes": 3040,
+      "git_blob_sha1": "dee48362a724b4de343cf8b9a3673439be20ddbf",
+      "sha256": "0283f4cd4183252a3dedc7d5e76c28df7338e2ae4eac3e1b2146ba95bb808e8e",
+      "snapshot_path": "files/chapter_gaussian-processes/index.md",
+      "upstream_path": "chapter_gaussian-processes/index.md"
+    },
+    {
+      "bytes": 24371,
+      "git_blob_sha1": "96a9266191cfdddc2b5ec45db4c7fc3874c91443",
+      "sha256": "4288365b096d8a2713a89f79e3b6e57483f42c4684a0a97c902da27bb2b31a73",
+      "snapshot_path": "files/chapter_generative-adversarial-networks/dcgan.md",
+      "upstream_path": "chapter_generative-adversarial-networks/dcgan.md"
+    },
+    {
+      "bytes": 19898,
+      "git_blob_sha1": "27891520f91982cf0dca9a6305a0583adb2efa28",
+      "sha256": "b21af3c808d49ccd4ee184385d31e025b9d65249802c76905d6285d222acb9f6",
+      "snapshot_path": "files/chapter_generative-adversarial-networks/gan.md",
+      "upstream_path": "chapter_generative-adversarial-networks/gan.md"
+    },
+    {
+      "bytes": 89,
+      "git_blob_sha1": "9fbb0c13a69a0fa9976bdfb6ffcbd18e3bd3bb47",
+      "sha256": "84617c3489aa21204ea4bbaa91ca4ce6847718c2d5e83ef57672018b2c6c25ed",
+      "snapshot_path": "files/chapter_generative-adversarial-networks/index.md",
+      "upstream_path": "chapter_generative-adversarial-networks/index.md"
+    },
+    {
+      "bytes": 13156,
+      "git_blob_sha1": "8135aa94e4c7d9218c80ec0dd619a30a11f64341",
+      "sha256": "2929cde2ffb9441555d97e232bec9e82fcfc6158c398a27ef79eb64d4aa84897",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/hyperopt-api.md",
+      "upstream_path": "chapter_hyperparameter-optimization/hyperopt-api.md"
+    },
+    {
+      "bytes": 15439,
+      "git_blob_sha1": "64a453999b7a156f4a72fb15172614604d137977",
+      "sha256": "d3b4c18d2c2935aee639633f2d08248f88a9fefad953b2e039e1127d5f617c27",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/hyperopt-intro.md",
+      "upstream_path": "chapter_hyperparameter-optimization/hyperopt-intro.md"
+    },
+    {
+      "bytes": 1496,
+      "git_blob_sha1": "503f2f29f5322376ba354d553cf30275dd1a8548",
+      "sha256": "1fe59f1040c8dd15a8578e55cb749baccc9ebfd88de379c296e446432d40b6e6",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/index.md",
+      "upstream_path": "chapter_hyperparameter-optimization/index.md"
+    },
+    {
+      "bytes": 10884,
+      "git_blob_sha1": "d4a7bcaba34a4805dbc0a80eb4f06611941480a5",
+      "sha256": "c80ca11d0f965927555e56750ab636c2e9d58502e9fbda1977c18ff89fbd56c1",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/rs-async.md",
+      "upstream_path": "chapter_hyperparameter-optimization/rs-async.md"
+    },
+    {
+      "bytes": 9981,
+      "git_blob_sha1": "94e1635d8aab4742f432a0c15d5210ebc21aeab2",
+      "sha256": "eda76639c048ba10be4cd6d35bc344a9b39ab31852f080ca37bf671e9f0ed643",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/sh-async.md",
+      "upstream_path": "chapter_hyperparameter-optimization/sh-async.md"
+    },
+    {
+      "bytes": 12159,
+      "git_blob_sha1": "1974c846f6c7998326adf7524e9a4afd5210c1b6",
+      "sha256": "5e592092ef5b47c3a32c7386f2a9dedc26dc424e5c4f6f9207bfd58a4fc36e4d",
+      "snapshot_path": "files/chapter_hyperparameter-optimization/sh-intro.md",
+      "upstream_path": "chapter_hyperparameter-optimization/sh-intro.md"
+    },
+    {
+      "bytes": 6094,
+      "git_blob_sha1": "e7c6c4d3426d73a44891362054859031a83cf99c",
+      "sha256": "a18af20d0a4c1815a23c2e1ccab52c7f2e40a4fe66a6d31c9de1b7d2a58c0df7",
+      "snapshot_path": "files/chapter_installation/index.md",
+      "upstream_path": "chapter_installation/index.md"
+    },
+    {
+      "bytes": 83885,
+      "git_blob_sha1": "d842034cb1bad961718ba8d872536bd5cd8e6fe6",
+      "sha256": "fa8e9a8cbe58a2dcb2e7e8a45b86b05c3b45ee0ba370ea4777fbd8856c045db5",
+      "snapshot_path": "files/chapter_introduction/index.md",
+      "upstream_path": "chapter_introduction/index.md"
+    },
+    {
+      "bytes": 9372,
+      "git_blob_sha1": "8020d4627bd9e548830c21172302e9e0c9367f8c",
+      "sha256": "6c68e6eeaeee4b9994c9751ea667ab38cdb906cabf3de40195a0b37b7c5da305",
+      "snapshot_path": "files/chapter_linear-classification/classification.md",
+      "upstream_path": "chapter_linear-classification/classification.md"
+    },
+    {
+      "bytes": 32955,
+      "git_blob_sha1": "901fabb4d989cb5cd35ce4cc17533a6d1bde6ab4",
+      "sha256": "524c1ae014be3b2ba046eea1dd22cc180120dafed13285f0f5dd6f6223cb4e57",
+      "snapshot_path": "files/chapter_linear-classification/environment-and-distribution-shift.md",
+      "upstream_path": "chapter_linear-classification/environment-and-distribution-shift.md"
+    },
+    {
+      "bytes": 23818,
+      "git_blob_sha1": "a51214580ac1bc91ac8d5f93179e74e14efdd4bf",
+      "sha256": "e525245cc636ceb978f077ad289a5a5d4e4d8e1e0ae0b47a86ed5966f63432a3",
+      "snapshot_path": "files/chapter_linear-classification/generalization-classification.md",
+      "upstream_path": "chapter_linear-classification/generalization-classification.md"
+    },
+    {
+      "bytes": 12304,
+      "git_blob_sha1": "6efbf752089790daffe851d67bd6f369fd7ccf83",
+      "sha256": "207461b602cb42ea6aa4e99bf2e4945f62bf92575a2ca66699e2211da345f05d",
+      "snapshot_path": "files/chapter_linear-classification/image-classification-dataset.md",
+      "upstream_path": "chapter_linear-classification/image-classification-dataset.md"
+    },
+    {
+      "bytes": 814,
+      "git_blob_sha1": "9a27837da7cd15c8fa43b81a664f56e1fcdf4a0c",
+      "sha256": "6802b3b4eb38d5c993af2bf5f99771dc85425b3de485669c5580b49311bc3c6d",
+      "snapshot_path": "files/chapter_linear-classification/index.md",
+      "upstream_path": "chapter_linear-classification/index.md"
+    },
+    {
+      "bytes": 10092,
+      "git_blob_sha1": "e80b32568e05d1b0601c470c22b270c25981d121",
+      "sha256": "b5b574f09883a76050df8d72aba5ddcaa2617a2ad7fd64132f3dc97370ebfd44",
+      "snapshot_path": "files/chapter_linear-classification/softmax-regression-concise.md",
+      "upstream_path": "chapter_linear-classification/softmax-regression-concise.md"
+    },
+    {
+      "bytes": 13387,
+      "git_blob_sha1": "1a9b8170bd2a59f72b6d05a2fe239f2e84192a6f",
+      "sha256": "921835f318de0b8e2aa34ab181483251b114ea1367c46540b2faeeee9456b7bd",
+      "snapshot_path": "files/chapter_linear-classification/softmax-regression-scratch.md",
+      "upstream_path": "chapter_linear-classification/softmax-regression-scratch.md"
+    },
+    {
+      "bytes": 25348,
+      "git_blob_sha1": "08a3ec117bb917a07414dfee56a36de1f648e7d0",
+      "sha256": "82c997368fa3003b2d8e44742da8e3bf4459ee7f1d24caba4e358f95166366b7",
+      "snapshot_path": "files/chapter_linear-classification/softmax-regression.md",
+      "upstream_path": "chapter_linear-classification/softmax-regression.md"
+    },
+    {
+      "bytes": 19008,
+      "git_blob_sha1": "e438437c745427d775613d2bc5420a3658c261e7",
+      "sha256": "2090b8a2dc6a7b9d8d6f42f0aeaaad9ba76c59680ada6fb6ecef8160ac5122d6",
+      "snapshot_path": "files/chapter_linear-regression/generalization.md",
+      "upstream_path": "chapter_linear-regression/generalization.md"
+    },
+    {
+      "bytes": 1210,
+      "git_blob_sha1": "94192a92c019e819fac100a8b4b8dfd8184972d5",
+      "sha256": "ed9b1288eddfd50448a4c3097e1dcc0084dc320c29ffb1871e2330d5454db547",
+      "snapshot_path": "files/chapter_linear-regression/index.md",
+      "upstream_path": "chapter_linear-regression/index.md"
+    },
+    {
+      "bytes": 15497,
+      "git_blob_sha1": "4dcce41ac823670affe3b5f8f0facf595e1c1ba2",
+      "sha256": "f7e413bb31566176b315fbba4910d1b05fbb1a4f12ffe5c8e605071452539ecd",
+      "snapshot_path": "files/chapter_linear-regression/linear-regression-concise.md",
+      "upstream_path": "chapter_linear-regression/linear-regression-concise.md"
+    },
+    {
+      "bytes": 21393,
+      "git_blob_sha1": "dd1049e9215d0655dd733003ff6b5de16e56d6e3",
+      "sha256": "2a96d341e42068e121c0e6bdc0eed0e09e2606b3aa7d568b70cb25a0d0448157",
+      "snapshot_path": "files/chapter_linear-regression/linear-regression-scratch.md",
+      "upstream_path": "chapter_linear-regression/linear-regression-scratch.md"
+    },
+    {
+      "bytes": 32297,
+      "git_blob_sha1": "40a15a5b2d48283687aee8b1356dc3d7f360cdbc",
+      "sha256": "c854c09f327abfec72b1d34a3e3c53e507514b28113d9e5798e30f9f2195cb49",
+      "snapshot_path": "files/chapter_linear-regression/linear-regression.md",
+      "upstream_path": "chapter_linear-regression/linear-regression.md"
+    },
+    {
+      "bytes": 21376,
+      "git_blob_sha1": "e78786f0632bea850dfe3fae402a09e8a7d04187",
+      "sha256": "a908f1697bbc385b911689a734f7919229c3defd297e15ffb5699557996c41fc",
+      "snapshot_path": "files/chapter_linear-regression/oo-design.md",
+      "upstream_path": "chapter_linear-regression/oo-design.md"
+    },
+    {
+      "bytes": 11688,
+      "git_blob_sha1": "d005aed8874cffcd0d41f85c16e85341df92a451",
+      "sha256": "a066643434ed32763ee1268d84da38eadd2aaba1c5ceb092d9f8526b09449b83",
+      "snapshot_path": "files/chapter_linear-regression/synthetic-regression-data.md",
+      "upstream_path": "chapter_linear-regression/synthetic-regression-data.md"
+    },
+    {
+      "bytes": 18798,
+      "git_blob_sha1": "6af653a7a5556f9eb3ebff5a2909504987e89b2c",
+      "sha256": "081edd89fc50afb5049df925e82d7a33ea485f4cf1ee6ed28c78f30829b5f388",
+      "snapshot_path": "files/chapter_linear-regression/weight-decay.md",
+      "upstream_path": "chapter_linear-regression/weight-decay.md"
+    },
+    {
+      "bytes": 12039,
+      "git_blob_sha1": "f797a5c0e7ce18bbc559d0817221126deab87a1b",
+      "sha256": "665535325bff4f8ee3af5ac030388ccbbf7c4c95e56ef72a217b453bc9d72127",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/backprop.md",
+      "upstream_path": "chapter_multilayer-perceptrons/backprop.md"
+    },
+    {
+      "bytes": 17822,
+      "git_blob_sha1": "14befcafb389c2900cc320b35f17aa2a53516816",
+      "sha256": "e5fd93ac9cca9ad6a563f216df28af485ea885b07a4f8e0ce874c5045a619cd3",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/dropout.md",
+      "upstream_path": "chapter_multilayer-perceptrons/dropout.md"
+    },
+    {
+      "bytes": 16691,
+      "git_blob_sha1": "3256402b65c05beeffc8baea38b2a7616a95fbd7",
+      "sha256": "25463e3c34bcc764baf3f6f44a8ff98b638d2576be4e22761b4f3f7babe528a0",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/generalization-deep.md",
+      "upstream_path": "chapter_multilayer-perceptrons/generalization-deep.md"
+    },
+    {
+      "bytes": 1333,
+      "git_blob_sha1": "1ffc67ee49bc9a40d046f174d6d66c45f9bc8a1a",
+      "sha256": "9fd20a01e835290310e657601cafcbb23cf195a76e02ba60a864a54a2bda0cd1",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/index.md",
+      "upstream_path": "chapter_multilayer-perceptrons/index.md"
+    },
+    {
+      "bytes": 17574,
+      "git_blob_sha1": "d6836654a32bc0ba13feb4bea3fd074e019f56ae",
+      "sha256": "cd97e55d12bfab80d4ec185c1b719e7c87733954ed93ac0067be86c806d18caa",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/kaggle-house-price.md",
+      "upstream_path": "chapter_multilayer-perceptrons/kaggle-house-price.md"
+    },
+    {
+      "bytes": 11834,
+      "git_blob_sha1": "d64271648cf983de6ca220501b8ae7dc75179da8",
+      "sha256": "b9ef3697ad5d78b6212fc841ac5ecb54cdae8705b7f3a4ceb5cfa002161b6601",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/mlp-implementation.md",
+      "upstream_path": "chapter_multilayer-perceptrons/mlp-implementation.md"
+    },
+    {
+      "bytes": 23869,
+      "git_blob_sha1": "3c84a877546bb0c5bcaf73dd448b78b5807643fd",
+      "sha256": "e15c9e2ca430b549e506c1f53247eebd3f45f91681a68bd025721aebfd46ca6e",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/mlp.md",
+      "upstream_path": "chapter_multilayer-perceptrons/mlp.md"
+    },
+    {
+      "bytes": 15170,
+      "git_blob_sha1": "9cd39b8b8133b70b0b4df7264eca11b1139e892d",
+      "sha256": "0a53effb2fa59ca8b6edb6d3c46a7b35b40e5117ad96393f7ff84602342d9448",
+      "snapshot_path": "files/chapter_multilayer-perceptrons/numerical-stability-and-init.md",
+      "upstream_path": "chapter_multilayer-perceptrons/numerical-stability-and-init.md"
+    },
+    {
+      "bytes": 9710,
+      "git_blob_sha1": "e13fa323fac20fb6466d98c207853cf575e81f48",
+      "sha256": "00cb5309d2fc3453b9b29c79051f39e58895748f50fc1a11c1f61f44135d2eaa",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/finetuning-bert.md",
+      "upstream_path": "chapter_natural-language-processing-applications/finetuning-bert.md"
+    },
+    {
+      "bytes": 3308,
+      "git_blob_sha1": "fc9bf90d8af310ddab0ca1db64cbd8d0c8381ca1",
+      "sha256": "9a5d8dbb0898bca628fd6b92c6a0416818d2b3eda78628961413b36418a3d54e",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/index.md",
+      "upstream_path": "chapter_natural-language-processing-applications/index.md"
+    },
+    {
+      "bytes": 11796,
+      "git_blob_sha1": "b50283425f782f9aa15f7de5d864f52cec047500",
+      "sha256": "683180beb8589a5112330b4b2b1bb67ca54274f2733abf9a323f78aab0c171f1",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/natural-language-inference-and-dataset.md",
+      "upstream_path": "chapter_natural-language-processing-applications/natural-language-inference-and-dataset.md"
+    },
+    {
+      "bytes": 19208,
+      "git_blob_sha1": "9d9a3b5676161970cbf03f6e5b2694f982550450",
+      "sha256": "936f5fe0f9cedec0a7326cf948f552c38223af7633b258a1e222077242216d7b",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/natural-language-inference-attention.md",
+      "upstream_path": "chapter_natural-language-processing-applications/natural-language-inference-attention.md"
+    },
+    {
+      "bytes": 16754,
+      "git_blob_sha1": "d32f87ee8dd524df78e3dab06120468d4e1eeadd",
+      "sha256": "a75e1388fd20fad914063ab278e13ad063bcc90046a586655ad9ecf7d8ce0d21",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/natural-language-inference-bert.md",
+      "upstream_path": "chapter_natural-language-processing-applications/natural-language-inference-bert.md"
+    },
+    {
+      "bytes": 7441,
+      "git_blob_sha1": "8ebf23e865958e519fef29b59d2a33a65db98442",
+      "sha256": "68f6bf1f639477001bc53570fbe627a05357f10072373f38a3a90290e094067b",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.md",
+      "upstream_path": "chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.md"
+    },
+    {
+      "bytes": 15285,
+      "git_blob_sha1": "30569fc70c1c3e2b83a52548f58682104ab05302",
+      "sha256": "6111e44e7042dde9ab8a538d4e0d30e4f4723b4cb1fe207674ec76fe26f749a6",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/sentiment-analysis-cnn.md",
+      "upstream_path": "chapter_natural-language-processing-applications/sentiment-analysis-cnn.md"
+    },
+    {
+      "bytes": 9664,
+      "git_blob_sha1": "fe34b779917be94908280e292fdfe756fe333cea",
+      "sha256": "80df33accf850f03ced9aca39fa3455aa6137de2eccb8bdc6ccf3f3f01e50549",
+      "snapshot_path": "files/chapter_natural-language-processing-applications/sentiment-analysis-rnn.md",
+      "upstream_path": "chapter_natural-language-processing-applications/sentiment-analysis-rnn.md"
+    },
+    {
+      "bytes": 7797,
+      "git_blob_sha1": "812fe23afa8892b2285eb078dcd9356d918feb97",
+      "sha256": "ea2dd3bfa159d8f8bc8c57b426c7c2ba87def6f550ecec5af27d07a752e109ce",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/approx-training.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/approx-training.md"
+    },
+    {
+      "bytes": 18871,
+      "git_blob_sha1": "bcba16fd2b8769d10678c193d5fce76d8e5d869a",
+      "sha256": "e67cfac5fe81f09c562e1795d8ad8ce381d6c33fb1a857fd89427d0cf31be0e8",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/bert-dataset.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/bert-dataset.md"
+    },
+    {
+      "bytes": 13110,
+      "git_blob_sha1": "0e018bb0f16a0317ddacc759eb4cd440a0b520f2",
+      "sha256": "60931e8df98a4138b9f1b5544ef81fcb1ba6438a616e4cc6ff0c0f91f474366f",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/bert-pretraining.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/bert-pretraining.md"
+    },
+    {
+      "bytes": 27212,
+      "git_blob_sha1": "007e32e024c9c23e6fa8fe2bb51a0abdd47fa73b",
+      "sha256": "8b306fe4f290ff1a27deb4529a3f4e84f31612065feee0984a8e495a0e5200cc",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/bert.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/bert.md"
+    },
+    {
+      "bytes": 10302,
+      "git_blob_sha1": "eee831c6b5370e223458a539a132151f1df5624c",
+      "sha256": "e8f233edb9d048608b22646fcd3252731a2f37b872e236b8c043cffc7adbf6d1",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/glove.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/glove.md"
+    },
+    {
+      "bytes": 2781,
+      "git_blob_sha1": "16339e834e5b2204c6b0fe51e9b1045a90b4b97a",
+      "sha256": "d015676eeac2bebd0da48eca517a48a0c3a6ac6379f238ab48938612f3930dda",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/index.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/index.md"
+    },
+    {
+      "bytes": 8373,
+      "git_blob_sha1": "e5237337a19078927eb0e96f80604cbee0d85527",
+      "sha256": "a6d2ac7f3a182ddb85189e2d3842c8b57caf49be60fb1acb2b8bf29f854e3b98",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/similarity-analogy.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/similarity-analogy.md"
+    },
+    {
+      "bytes": 10007,
+      "git_blob_sha1": "41aa719479c4b142794472b6963840b8cd906c6a",
+      "sha256": "406257070e723702a904429b36e3d7413676c3c1b4993100c5a15d18f95683c0",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/subword-embedding.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/subword-embedding.md"
+    },
+    {
+      "bytes": 15659,
+      "git_blob_sha1": "e35d8b226789e564818def91be84a48eaeb3db87",
+      "sha256": "106fd54974ae5a9dc5d37d71aee1b01def9aee6b1168df74bd01cae11a053ec4",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/word-embedding-dataset.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/word-embedding-dataset.md"
+    },
+    {
+      "bytes": 11683,
+      "git_blob_sha1": "ef3899759e9d32dc26794d562a5a0bda484397da",
+      "sha256": "104bd943ff8db50f2762e47ed2d84a6254e5dc106cb9e839b86a5924bc0db965",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/word2vec-pretraining.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/word2vec-pretraining.md"
+    },
+    {
+      "bytes": 12558,
+      "git_blob_sha1": "547e2ef1d5a061a573ddd658a0b5806aab271b83",
+      "sha256": "4c9431d91063ebf2453528bfb9904b885d426bf6dde1c2a5c04cb1d1207fcf63",
+      "snapshot_path": "files/chapter_natural-language-processing-pretraining/word2vec.md",
+      "upstream_path": "chapter_natural-language-processing-pretraining/word2vec.md"
+    },
+    {
+      "bytes": 4320,
+      "git_blob_sha1": "bb27104595b05d32c3788d4e2189ba63cf94f4c9",
+      "sha256": "447c1ed7afdaab72ca7ccd1657c8437db6bfa512b8b9e0de02c6985fe03f203a",
+      "snapshot_path": "files/chapter_notation/index.md",
+      "upstream_path": "chapter_notation/index.md"
+    },
+    {
+      "bytes": 6474,
+      "git_blob_sha1": "25d2ea307e0cda18fdc46dde010736d8dcebc895",
+      "sha256": "36e02712eaf02276eb5b70fac4b9a0b287056a89f95777ff6feaecc7545847e5",
+      "snapshot_path": "files/chapter_optimization/adadelta.md",
+      "upstream_path": "chapter_optimization/adadelta.md"
+    },
+    {
+      "bytes": 15906,
+      "git_blob_sha1": "6ec493b7e9df47705577cee08e669b6054f12006",
+      "sha256": "54c865c81c417442458a6ec67b39ec2eb88219651d9121414ed9c9361cc9ffab",
+      "snapshot_path": "files/chapter_optimization/adagrad.md",
+      "upstream_path": "chapter_optimization/adagrad.md"
+    },
+    {
+      "bytes": 12276,
+      "git_blob_sha1": "ace4b5b7e9cf5cd9ebb86ca93790e9ff17819312",
+      "sha256": "b028c34fa6b0271df8f76311f255a9ca1cd213a9097d53e2e7c234b557c7ccb6",
+      "snapshot_path": "files/chapter_optimization/adam.md",
+      "upstream_path": "chapter_optimization/adam.md"
+    },
+    {
+      "bytes": 21010,
+      "git_blob_sha1": "050cd2a6393010d8244fbde5bb1ec96f6ce533d4",
+      "sha256": "947a80eabf6414b95160d0c364ed57263d97b9a2aabb12c6ca5b52f56e450d94",
+      "snapshot_path": "files/chapter_optimization/convexity.md",
+      "upstream_path": "chapter_optimization/convexity.md"
+    },
+    {
+      "bytes": 20277,
+      "git_blob_sha1": "ee9f187b3908a9b4c54692bdaab47e099bd990a1",
+      "sha256": "c614912211219b60e4cc91b1385b92ac5eb7cac77ca26b4e8c52fa02db810f76",
+      "snapshot_path": "files/chapter_optimization/gd.md",
+      "upstream_path": "chapter_optimization/gd.md"
+    },
+    {
+      "bytes": 1752,
+      "git_blob_sha1": "9cf440c918cb03b8114596ba96954726f6adae3f",
+      "sha256": "17890a44493033cb8b0362aa72950569723e378ae67471b1ddf28aacd73722d7",
+      "snapshot_path": "files/chapter_optimization/index.md",
+      "upstream_path": "chapter_optimization/index.md"
+    },
+    {
+      "bytes": 24125,
+      "git_blob_sha1": "55734acb7dc569f76f2d4b6b3c2f05995f80a44c",
+      "sha256": "2f030061c7b5941d93c9d8a7b40ab5245556eb0be4caea3ce5078439c7f5c7f4",
+      "snapshot_path": "files/chapter_optimization/lr-scheduler.md",
+      "upstream_path": "chapter_optimization/lr-scheduler.md"
+    },
+    {
+      "bytes": 28923,
+      "git_blob_sha1": "a452233213ec2680c9d4cdfc68034209976498e3",
+      "sha256": "5a7f74531bb28744080a5edc41e1435cfb5457cc5aab4bd71eb43e396acf86bb",
+      "snapshot_path": "files/chapter_optimization/minibatch-sgd.md",
+      "upstream_path": "chapter_optimization/minibatch-sgd.md"
+    },
+    {
+      "bytes": 19160,
+      "git_blob_sha1": "2d4fa240c445dbc75bc5f78b7b481f09af455639",
+      "sha256": "10a04b83ed4fc93a204c22b54a726cd7abb4ff3ef4c1a964490f94a7cc46c991",
+      "snapshot_path": "files/chapter_optimization/momentum.md",
+      "upstream_path": "chapter_optimization/momentum.md"
+    },
+    {
+      "bytes": 11394,
+      "git_blob_sha1": "b399a54bf6eddab03cb3412bdbd44b9a45f1e87a",
+      "sha256": "13d78f4761344fc8453edf76808cf959603c17bd896bb16a4d768f279e1312b8",
+      "snapshot_path": "files/chapter_optimization/optimization-intro.md",
+      "upstream_path": "chapter_optimization/optimization-intro.md"
+    },
+    {
+      "bytes": 7795,
+      "git_blob_sha1": "38d296b92e443f680d54c355c0a2729f518e0f8f",
+      "sha256": "07c0af37600cade8b86717bf454aa8a6961b5b9d478b8e93bc55193cc2598164",
+      "snapshot_path": "files/chapter_optimization/rmsprop.md",
+      "upstream_path": "chapter_optimization/rmsprop.md"
+    },
+    {
+      "bytes": 18062,
+      "git_blob_sha1": "f076516b71c66dbb71b5b3dd1971a1c996062a91",
+      "sha256": "b473add6ca7ddd7c46595bfa8f456f41870301b4f1ba8a718240b79f533cf952",
+      "snapshot_path": "files/chapter_optimization/sgd.md",
+      "upstream_path": "chapter_optimization/sgd.md"
+    },
+    {
+      "bytes": 26139,
+      "git_blob_sha1": "36deedbbb8c02c95f289fedd0040cf76362ed232",
+      "sha256": "723697899c0dee8debd2e68842060086df6aefddee1c6e7c201903ff69810528",
+      "snapshot_path": "files/chapter_preface/index.md",
+      "upstream_path": "chapter_preface/index.md"
+    },
+    {
+      "bytes": 17973,
+      "git_blob_sha1": "b2b1a3cf3af851a89971c4e8127c75f4e148a925",
+      "sha256": "8b27c572d217e118144fe8b52b336fbc4015cddfb7ac647e986407d115f54a91",
+      "snapshot_path": "files/chapter_preliminaries/autograd.md",
+      "upstream_path": "chapter_preliminaries/autograd.md"
+    },
+    {
+      "bytes": 15374,
+      "git_blob_sha1": "77281465ab4d1a8fc3bf95b2ffe929485f0db900",
+      "sha256": "a325c626fd77f5be37d32579cd0a5cf4a75c9179c995bce08baa487e05026419",
+      "snapshot_path": "files/chapter_preliminaries/calculus.md",
+      "upstream_path": "chapter_preliminaries/calculus.md"
+    },
+    {
+      "bytes": 1032,
+      "git_blob_sha1": "f8a997bdb6201fe22ffd9975a1ac9b6d0e009a5c",
+      "sha256": "c0351749ef2351a0a2966a3868b223452e8e8f6c240cadcf0b7093d21ea73dea",
+      "snapshot_path": "files/chapter_preliminaries/index.md",
+      "upstream_path": "chapter_preliminaries/index.md"
+    },
+    {
+      "bytes": 32964,
+      "git_blob_sha1": "d78e5dd2140ec2130de99c8dd94424056872df2e",
+      "sha256": "9da729424d50142267f032edee3d0ba0c117597be3692c366a78b58f1acf9a98",
+      "snapshot_path": "files/chapter_preliminaries/linear-algebra.md",
+      "upstream_path": "chapter_preliminaries/linear-algebra.md"
+    },
+    {
+      "bytes": 4562,
+      "git_blob_sha1": "7b2c1ed841b3a15da65a4d5aba7bf88461aaf0a0",
+      "sha256": "53ae38f6f8166b94108a7bb9ef9fc48d55f0186ba2d27df1634e117bf0d43b89",
+      "snapshot_path": "files/chapter_preliminaries/lookup-api.md",
+      "upstream_path": "chapter_preliminaries/lookup-api.md"
+    },
+    {
+      "bytes": 22564,
+      "git_blob_sha1": "6c1b06af73fd857466be596b58058435924087f2",
+      "sha256": "b4bd8750d81c202c85c01505cf393cc6e70f2ea1e671b82a8d9f8d35f44f5a15",
+      "snapshot_path": "files/chapter_preliminaries/ndarray.md",
+      "upstream_path": "chapter_preliminaries/ndarray.md"
+    },
+    {
+      "bytes": 7233,
+      "git_blob_sha1": "17986fc7bec76d7dedfd53e83e6fb0a86771edf7",
+      "sha256": "230318b507a258e3877a49c2abcecd3d69a109aab9f975294d868db6c24cb6b3",
+      "snapshot_path": "files/chapter_preliminaries/pandas.md",
+      "upstream_path": "chapter_preliminaries/pandas.md"
+    },
+    {
+      "bytes": 43921,
+      "git_blob_sha1": "4820f989918429ad4112bee883871c484dce7085",
+      "sha256": "02b59c319786641678fee4edaf61d8fd038523f9d6764159a03d570e380121f1",
+      "snapshot_path": "files/chapter_preliminaries/probability.md",
+      "upstream_path": "chapter_preliminaries/probability.md"
+    },
+    {
+      "bytes": 7437,
+      "git_blob_sha1": "4def72f7907eb2febf2b39fb0a5b961056e7b0d6",
+      "sha256": "f160f763045e81b5dae576e7fc87279a535f51cb4dfe79e7e479ab3f241cef29",
+      "snapshot_path": "files/chapter_recommender-systems/autorec.md",
+      "upstream_path": "chapter_recommender-systems/autorec.md"
+    },
+    {
+      "bytes": 7103,
+      "git_blob_sha1": "5a24693bea599cf7e60f30a5cbea0e27cda0ec15",
+      "sha256": "c6b9b965208b64026cd538d961329ac61280b23a0b40a20b0370488447dd287b",
+      "snapshot_path": "files/chapter_recommender-systems/ctr.md",
+      "upstream_path": "chapter_recommender-systems/ctr.md"
+    },
+    {
+      "bytes": 7022,
+      "git_blob_sha1": "a5145a077f4f454ce5fb8b0cb33e9255b94e78c6",
+      "sha256": "b3993cfc07604ac09ed185cc6b48ba15514701a4d458da392eb1894444766c00",
+      "snapshot_path": "files/chapter_recommender-systems/deepfm.md",
+      "upstream_path": "chapter_recommender-systems/deepfm.md"
+    },
+    {
+      "bytes": 7591,
+      "git_blob_sha1": "863e29c56e035a3906deb773b2ff538c41af281a",
+      "sha256": "7c5a2043946b5ea40575f164247f110049069f41625d15d4220986b3fd2e65a7",
+      "snapshot_path": "files/chapter_recommender-systems/fm.md",
+      "upstream_path": "chapter_recommender-systems/fm.md"
+    },
+    {
+      "bytes": 2035,
+      "git_blob_sha1": "e535d306fdb353d63489b2f1aca1edf709753f4d",
+      "sha256": "049b221b60c65ea1ad47ce26582c31d65f7653e09d7c1fd509b526166b3220f8",
+      "snapshot_path": "files/chapter_recommender-systems/index.md",
+      "upstream_path": "chapter_recommender-systems/index.md"
+    },
+    {
+      "bytes": 10653,
+      "git_blob_sha1": "419a63d20ddc670071cd6d178514ad6017dfff25",
+      "sha256": "e8ca4da25cfb70587ee68f25623764ca301a3ef353cd444ee32c4ae24781f397",
+      "snapshot_path": "files/chapter_recommender-systems/mf.md",
+      "upstream_path": "chapter_recommender-systems/mf.md"
+    },
+    {
+      "bytes": 9296,
+      "git_blob_sha1": "95d3e0fa8fdc048844a7f2304533c89d7e6f794b",
+      "sha256": "54a13bf73e33abb0df24010cf6b4abdf12046aca18527e984cfce18bd0dcfe56",
+      "snapshot_path": "files/chapter_recommender-systems/movielens.md",
+      "upstream_path": "chapter_recommender-systems/movielens.md"
+    },
+    {
+      "bytes": 14249,
+      "git_blob_sha1": "bbed759c1cf9409a0f423a11084e55e82a6581b3",
+      "sha256": "4643a7d2fe9391cc3bc68dcca8c7ff9b54aac90c4e58d96096c0f5c344a712b9",
+      "snapshot_path": "files/chapter_recommender-systems/neumf.md",
+      "upstream_path": "chapter_recommender-systems/neumf.md"
+    },
+    {
+      "bytes": 6791,
+      "git_blob_sha1": "fd4276a3fb5ca300195ff32837480f6cf2dd6e06",
+      "sha256": "786082c050d472221442db39d316e5ecf2e003b79f553b86c2c5603af79821ba",
+      "snapshot_path": "files/chapter_recommender-systems/ranking.md",
+      "upstream_path": "chapter_recommender-systems/ranking.md"
+    },
+    {
+      "bytes": 6179,
+      "git_blob_sha1": "ecf8a018fea17afcae4326428ef8fe7a2efb5db1",
+      "sha256": "1648bc094289e58c12b8bcfc0e92a63d03599e98635c2cc87ffc7a120f8e943b",
+      "snapshot_path": "files/chapter_recommender-systems/recsys-intro.md",
+      "upstream_path": "chapter_recommender-systems/recsys-intro.md"
+    },
+    {
+      "bytes": 13191,
+      "git_blob_sha1": "21250ca19cf88db9b0693eb024f11560305c20ee",
+      "sha256": "0bd6057f68d139b4595f822ab6a3399467df96947b014b7b087e0db6df3c0bed",
+      "snapshot_path": "files/chapter_recommender-systems/seqrec.md",
+      "upstream_path": "chapter_recommender-systems/seqrec.md"
+    },
+    {
+      "bytes": 10438,
+      "git_blob_sha1": "3d36e49af9f49dc3a954476fc33eca00b6ead994",
+      "sha256": "b71d99c04c00dc5393991c6df4d36971e6d54e39853b01b200d4a2f038a3a833",
+      "snapshot_path": "files/chapter_recurrent-modern/beam-search.md",
+      "upstream_path": "chapter_recurrent-modern/beam-search.md"
+    },
+    {
+      "bytes": 8478,
+      "git_blob_sha1": "6fcb60db4daf5962abbceb17786257466b33fb6a",
+      "sha256": "6de8c8124497b0c69703ba3805559d51eb57c96d93096b70e2d5b6e133373975",
+      "snapshot_path": "files/chapter_recurrent-modern/bi-rnn.md",
+      "upstream_path": "chapter_recurrent-modern/bi-rnn.md"
+    },
+    {
+      "bytes": 12800,
+      "git_blob_sha1": "12efffe3a52f351010c3d8fd61fc720399278477",
+      "sha256": "eac7791ce4773f0d822a5ab254bf1edf527143dc4b3bd88f2566d5b8c92a525e",
+      "snapshot_path": "files/chapter_recurrent-modern/deep-rnn.md",
+      "upstream_path": "chapter_recurrent-modern/deep-rnn.md"
+    },
+    {
+      "bytes": 8639,
+      "git_blob_sha1": "e714c8b9e4f01f9927456298d2d59783dd6df2ec",
+      "sha256": "ad89663c337fc3aed42c26fb53365bb249a33ac96e45828adfb9ae0072cd0b05",
+      "snapshot_path": "files/chapter_recurrent-modern/encoder-decoder.md",
+      "upstream_path": "chapter_recurrent-modern/encoder-decoder.md"
+    },
+    {
+      "bytes": 15340,
+      "git_blob_sha1": "89fc092ffe5a7617c3561e7f68d3a4d99f910927",
+      "sha256": "c7b6aaf75edac5e5d80dba8e77d482cf700b6ba3213427472871ea479c74465a",
+      "snapshot_path": "files/chapter_recurrent-modern/gru.md",
+      "upstream_path": "chapter_recurrent-modern/gru.md"
+    },
+    {
+      "bytes": 2895,
+      "git_blob_sha1": "f447e5831c01b91f67a14854faa94ee73a3c276c",
+      "sha256": "6d6cd27c68f02d2f0e6ab2d8642d36c532ad0ff4f2df6a9242377d7fd81b1314",
+      "snapshot_path": "files/chapter_recurrent-modern/index.md",
+      "upstream_path": "chapter_recurrent-modern/index.md"
+    },
+    {
+      "bytes": 21638,
+      "git_blob_sha1": "0bc8567a13fdb3bfdb1017fb8991ac6625aa6e4f",
+      "sha256": "66a0dc190a4641d4e17bb14f8ad57cb066a46f1ee4f472a45a3138c588008614",
+      "snapshot_path": "files/chapter_recurrent-modern/lstm.md",
+      "upstream_path": "chapter_recurrent-modern/lstm.md"
+    },
+    {
+      "bytes": 12662,
+      "git_blob_sha1": "8a4f3ae733857a3c27f8889347b81e6a0df94762",
+      "sha256": "f23f1cbc9bc70a27affe6e3aee611db3014c3767899c50c72c4b0ef50cd645f9",
+      "snapshot_path": "files/chapter_recurrent-modern/machine-translation-and-dataset.md",
+      "upstream_path": "chapter_recurrent-modern/machine-translation-and-dataset.md"
+    },
+    {
+      "bytes": 34485,
+      "git_blob_sha1": "0a91b15ff7a35b5f388b4c08f1a216ca606db718",
+      "sha256": "4a8968fc425166377153fd749b359411455918496498ab3c98374a7b367b6c04",
+      "snapshot_path": "files/chapter_recurrent-modern/seq2seq.md",
+      "upstream_path": "chapter_recurrent-modern/seq2seq.md"
+    },
+    {
+      "bytes": 19531,
+      "git_blob_sha1": "1a84779e8b6f7c2ba69471b05bc86b9f0146a66e",
+      "sha256": "fb24d5bc9a0f7a6847143f2e5af445bfa0acce2573a8d62bf981fc2986776448",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/bptt.md",
+      "upstream_path": "chapter_recurrent-neural-networks/bptt.md"
+    },
+    {
+      "bytes": 6441,
+      "git_blob_sha1": "22b3074da0f70f068645c37cc8877bca8ac9afdb",
+      "sha256": "aec3e63448c143a6c2498fb65d6b740b400fa0619fd9ad2c371330dfc7e4067a",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/index.md",
+      "upstream_path": "chapter_recurrent-neural-networks/index.md"
+    },
+    {
+      "bytes": 16332,
+      "git_blob_sha1": "7c9bf65fe774b229cb6e06d66d31c94c6f30c0c1",
+      "sha256": "19b60293fdc8f6546d24f53e528381ec0bdd99bce40ce118f2d5ac61a911e18f",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/language-model.md",
+      "upstream_path": "chapter_recurrent-neural-networks/language-model.md"
+    },
+    {
+      "bytes": 7591,
+      "git_blob_sha1": "80ac7da32131eb2ad3475c571381d91465aa0dba",
+      "sha256": "77647fac8fb81256ed106cc4e3eed679d58deb1cbc4b1bff19ccdaeb02b4db89",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/rnn-concise.md",
+      "upstream_path": "chapter_recurrent-neural-networks/rnn-concise.md"
+    },
+    {
+      "bytes": 26704,
+      "git_blob_sha1": "594eeb2ffc9d2f6fa5f181c9af7429b0d7ef2ebb",
+      "sha256": "efc5b49c9af5662d39499132e85ccbceb87ca70b0d6cd6dc492ccdce4741e4f9",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/rnn-scratch.md",
+      "upstream_path": "chapter_recurrent-neural-networks/rnn-scratch.md"
+    },
+    {
+      "bytes": 13252,
+      "git_blob_sha1": "550c6532d0133ccd3a07bebd03df509b79a34c3e",
+      "sha256": "cfa3068a1ff226b281c7743e7d852896486fcf797d4a9341f0dee70be92f161d",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/rnn.md",
+      "upstream_path": "chapter_recurrent-neural-networks/rnn.md"
+    },
+    {
+      "bytes": 24801,
+      "git_blob_sha1": "5cec459316570f1abcd4c6c4c9edb8d9e2308718",
+      "sha256": "081422a2ae56a90198f75a0798b1f61b2a71ab2a8c7d36902dc87872f0320cac",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/sequence.md",
+      "upstream_path": "chapter_recurrent-neural-networks/sequence.md"
+    },
+    {
+      "bytes": 12477,
+      "git_blob_sha1": "9b7b4c7cd797844b0eb50416db82043f899569a9",
+      "sha256": "0ca5946606545695c5fd1a89ad76b37bb6efa2f106dd745dccc35810094e2566",
+      "snapshot_path": "files/chapter_recurrent-neural-networks/text-sequence.md",
+      "upstream_path": "chapter_recurrent-neural-networks/text-sequence.md"
+    },
+    {
+      "bytes": 91,
+      "git_blob_sha1": "65be502c80aec74b904dae6969a162960428abed",
+      "sha256": "c0d91aa82b72aa3ce0fafdf49dee013c507126514c1e40cf32d3a3a433c2d677",
+      "snapshot_path": "files/chapter_references/zreferences.md",
+      "upstream_path": "chapter_references/zreferences.md"
+    },
+    {
+      "bytes": 3840,
+      "git_blob_sha1": "0d6a467f70f6f82322d17dc89bb21cca9fb0535a",
+      "sha256": "e9fb299b38f7e5f20ade5d2a9908c535f90722f3e535b659b11efef3ab4e97b4",
+      "snapshot_path": "files/chapter_reinforcement-learning/index.md",
+      "upstream_path": "chapter_reinforcement-learning/index.md"
+    },
+    {
+      "bytes": 7208,
+      "git_blob_sha1": "de0aa859909eec2280d38e713e2d95b125b168e3",
+      "sha256": "88b589c017776707148854c986bf16f36991e43e2137772a9bd2833f2d946565",
+      "snapshot_path": "files/chapter_reinforcement-learning/mdp.md",
+      "upstream_path": "chapter_reinforcement-learning/mdp.md"
+    },
+    {
+      "bytes": 13424,
+      "git_blob_sha1": "e9c4b0d4c1cde8b97a6c323da899140c6fad3dfe",
+      "sha256": "3e1c645a9dd9cb1d3f460c1b3d5318c07b1a96e2f84c243dbd9f35ff199bacb9",
+      "snapshot_path": "files/chapter_reinforcement-learning/qlearning.md",
+      "upstream_path": "chapter_reinforcement-learning/qlearning.md"
+    },
+    {
+      "bytes": 14712,
+      "git_blob_sha1": "eaecbccdca605a9ae916ce190812867ad427c32e",
+      "sha256": "934d893b5e8e9afa62b2206031cdd864ae67e342b8ce512d54dfa8df38a43837",
+      "snapshot_path": "files/chapter_reinforcement-learning/value-iter.md",
+      "upstream_path": "chapter_reinforcement-learning/value-iter.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "7785b9042bc90dad09ae994201568bbf395d8204",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/d2l-en/LICENSE",
+        "bytes": 14849,
+        "git_blob_sha1": "7785b9042bc90dad09ae994201568bbf395d8204",
+        "sha256": "a39a4b3d0f411a8217b7c6dd35dc8b06003784ce32d3593d0d2d780a7e9c2f8c",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "CC-BY-SA-4.0"
+  },
+  "repository_url": "https://github.com/d2l-ai/d2l-en",
+  "retrieved_at": "2026-09-20T04:02:31Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the chapter_*/*.md book chapters at the repository root (the book itself). Auxiliary Markdown (img/, CONTRIBUTING, README) is outside the frame and recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/chapter_*/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "d2l-en",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (CC-BY-SA-4.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 3058724
+}

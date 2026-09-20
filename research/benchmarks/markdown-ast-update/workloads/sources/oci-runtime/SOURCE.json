@@ -1,0 +1,202 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "FORMAL_SPEC",
+  "commit_sha": "6999a89a76a0329f440d5740497bedb9dd431297",
+  "commit_timestamp": "2026-04-25T03:48:18+09:00",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 21,
+  "files": [
+    {
+      "bytes": 362,
+      "git_blob_sha1": "0e234dad04c4f9397a01f53c38131bd70d143cf5",
+      "sha256": "28ae92e40c624ecbf80dad10df35cb1c16f8630a61939e1b2400036ee99f64a1",
+      "snapshot_path": "files/EMERITUS.md",
+      "upstream_path": "EMERITUS.md"
+    },
+    {
+      "bytes": 3876,
+      "git_blob_sha1": "c780b12efa15a997af8bf04d87c957a35c995c16",
+      "sha256": "a2937bd25f1c3ba8f49f448c797ea712f90a2f1e7488f69ceeccea6267b5ca08",
+      "snapshot_path": "files/GOVERNANCE.md",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 6933,
+      "git_blob_sha1": "2a7fa56860a6762ca1498afcbc3f86820b6a316e",
+      "sha256": "0777e4da8a4eeaebac3806dfbaef124f4e478b56a9ac6f3bc7de96d7dfc0e648",
+      "snapshot_path": "files/README.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 6212,
+      "git_blob_sha1": "071910aed4482e48c40f896e9070372dc31699fc",
+      "sha256": "e3660b97b937270c7ddc12eecaa71097469318d1cc4044f3ca740cb59196c0cb",
+      "snapshot_path": "files/RELEASES.md",
+      "upstream_path": "RELEASES.md"
+    },
+    {
+      "bytes": 1510,
+      "git_blob_sha1": "0924ad9fe7d6afabb3cd721423e961b3f4288c3b",
+      "sha256": "fcae697b88b84d8578aba9dafa6751b89b16efd891ac602306c7a3a794cb2066",
+      "snapshot_path": "files/bundle.md",
+      "upstream_path": "bundle.md"
+    },
+    {
+      "bytes": 10635,
+      "git_blob_sha1": "b61c9fd90456bbf3b38e59214fc977955f47d52a",
+      "sha256": "583c33cbd686e586a2f8f021aa13b61564b332890b9bf0f30b304b8853ddd15b",
+      "snapshot_path": "files/config-freebsd.md",
+      "upstream_path": "config-freebsd.md"
+    },
+    {
+      "bytes": 52544,
+      "git_blob_sha1": "c71757494ca743fd90692c25e4897bf74cf00388",
+      "sha256": "0b9bdad8c8b5ff0ef3e99ff4452c874d9d78a4af347dd145d2b6087e67ca1395",
+      "snapshot_path": "files/config-linux.md",
+      "upstream_path": "config-linux.md"
+    },
+    {
+      "bytes": 6107,
+      "git_blob_sha1": "f50fed98c3da61b2b4d03472b77a10bc26a7fe54",
+      "sha256": "37af60fd24e59770cea91e3e36e758be562b9f42639ee25e77d2c46f120fa7b5",
+      "snapshot_path": "files/config-solaris.md",
+      "upstream_path": "config-solaris.md"
+    },
+    {
+      "bytes": 5973,
+      "git_blob_sha1": "506f406000d3fc85bfdd7226bef2f94df9d8e45f",
+      "sha256": "869b23d6646837cee4ea7a7e508008026a037ee4f173427986dcbaf111caae05",
+      "snapshot_path": "files/config-vm.md",
+      "upstream_path": "config-vm.md"
+    },
+    {
+      "bytes": 8110,
+      "git_blob_sha1": "037321a61f4bfbd08b79827ff71a77294fa92fe2",
+      "sha256": "5b3006f2a8ba0901af649735741d25241824ff826f995d62f08808da87a5ca16",
+      "snapshot_path": "files/config-windows.md",
+      "upstream_path": "config-windows.md"
+    },
+    {
+      "bytes": 2796,
+      "git_blob_sha1": "a00e5a578e5bb0e9751e360c08e88a939d2723cb",
+      "sha256": "5c0d8e93547018b39959d32cc38f0cf905bf6f2c4763169700cd7e0c5528e085",
+      "snapshot_path": "files/config-zos.md",
+      "upstream_path": "config-zos.md"
+    },
+    {
+      "bytes": 57114,
+      "git_blob_sha1": "4ca7b120b42026b29d199987b75fc59364755c5f",
+      "sha256": "3d99d67f4e1a32c2581aee44cf3cbee51f5b335fa74af191d1f9df495f92ee0b",
+      "snapshot_path": "files/config.md",
+      "upstream_path": "config.md"
+    },
+    {
+      "bytes": 9229,
+      "git_blob_sha1": "3331266dd917c5c4910d547927d8358ebbe52e4c",
+      "sha256": "3a7a836e82fb331a40828e2286af9a1c156dbab9da83ea9addc4c4459482a09f",
+      "snapshot_path": "files/features-linux.md",
+      "upstream_path": "features-linux.md"
+    },
+    {
+      "bytes": 9654,
+      "git_blob_sha1": "9c729591ae7cac7387d965ce49754488c5277900",
+      "sha256": "875c9110de7103a3ee68a789d7cf6e34019d6b0659732f69b64ec8c09dc40bda",
+      "snapshot_path": "files/features.md",
+      "upstream_path": "features.md"
+    },
+    {
+      "bytes": 2542,
+      "git_blob_sha1": "845fd130bb794f5f938b7362ea65999de2a44cbb",
+      "sha256": "33428fda078ef264202515cecfd5f79e1516b878518489a7bc160fe2529e6caf",
+      "snapshot_path": "files/glossary.md",
+      "upstream_path": "glossary.md"
+    },
+    {
+      "bytes": 2644,
+      "git_blob_sha1": "51af41cb2fc2799ad23ab88b24a5c6c099d9e5fd",
+      "sha256": "d210c69ccc3b77d537e5f05d4705399bece85eb9d78388b53925dd9d78f78062",
+      "snapshot_path": "files/implementations.md",
+      "upstream_path": "implementations.md"
+    },
+    {
+      "bytes": 3678,
+      "git_blob_sha1": "a204f905eb2921a35dd84e98db6d5b40fe718dbc",
+      "sha256": "4eb91a4330f8b72c593de9cdbb3e4d96bea07a08e7d54edb89392af04c547ceb",
+      "snapshot_path": "files/principles.md",
+      "upstream_path": "principles.md"
+    },
+    {
+      "bytes": 1025,
+      "git_blob_sha1": "99c3b992a95a696e2f7bd25f51ca3d88a041b0f9",
+      "sha256": "a3d647928154026958b11dd57cf7e20816e1b98895d49dd0cbaf1482c9692947",
+      "snapshot_path": "files/runtime-linux.md",
+      "upstream_path": "runtime-linux.md"
+    },
+    {
+      "bytes": 10065,
+      "git_blob_sha1": "3e111c63bbe6c6cb72563f2e9497a8b1ebd5a005",
+      "sha256": "6236bfd0c5762cfcf1e86be084c07e767cb6dff35692959e6811cecf2d334d91",
+      "snapshot_path": "files/runtime.md",
+      "upstream_path": "runtime.md"
+    },
+    {
+      "bytes": 3535,
+      "git_blob_sha1": "95cfeda8d8b492321a3bd8b9a620e1de9c0178a4",
+      "sha256": "4ed9ac26066097eb9c0d434494aeaec081543b3af7c0b5495ee318c7b442c6dc",
+      "snapshot_path": "files/spec.md",
+      "upstream_path": "spec.md"
+    },
+    {
+      "bytes": 5391,
+      "git_blob_sha1": "1d42043e7c96f67c774a0a1befa8688bf5ffb6c3",
+      "sha256": "fa8c52a3ac741ea0e0ba5703881b26f93f5a9ea2a48031f794eab8ade2cfcc4a",
+      "snapshot_path": "files/style.md",
+      "upstream_path": "style.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "bdc403653e0a053959f28d1d83f72aab72ff20ac",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/oci-runtime/LICENSE",
+        "bytes": 10767,
+        "git_blob_sha1": "bdc403653e0a053959f28d1d83f72aab72ff20ac",
+        "sha256": "a964a27c435167bdd78827ff83e4bd4473eca53d583a39598d2f445894a9225d",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "Apache-2.0"
+  },
+  "repository_url": "https://github.com/opencontainers/runtime-spec",
+  "retrieved_at": "2026-09-20T04:02:21Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = root-level specification Markdown (the runtime specification lives at the repository root). License text is excluded by explicit mechanical rule; every other repository Markdown file is recorded in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [
+      "/COPYING.md",
+      "/LICENSE",
+      "/LICENSE.md",
+      "/LICENSE.rst",
+      "/LICENSE.txt"
+    ],
+    "include": [
+      "/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "oci-runtime",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (Apache-2.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 209935
+}

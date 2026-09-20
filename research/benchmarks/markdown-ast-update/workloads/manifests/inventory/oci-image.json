@@ -1,0 +1,148 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "ca68a05fad732be329ef67e713c3af60fb7d5f76",
+  "entries": [
+    {
+      "bytes": 586,
+      "git_blob_sha1": "bbf253f289ff6a0f7069e2f9788c65f607b8552a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE/maintainer_nomination.md"
+    },
+    {
+      "bytes": 392,
+      "git_blob_sha1": "66682f298ee79136ea34b1ef879271cd973082ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "EMERITUS.md"
+    },
+    {
+      "bytes": 3902,
+      "git_blob_sha1": "7fab7b36c9377d57b08814978723f2bc24ff8753",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "GOVERNANCE.md"
+    },
+    {
+      "bytes": 1857,
+      "git_blob_sha1": "63efe0b3019787fb5b620bce582058cca8c2b703",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "HACKING.md"
+    },
+    {
+      "bytes": 7169,
+      "git_blob_sha1": "abfeed59410aafff5633f87d459dfe8b489fc2c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 6423,
+      "git_blob_sha1": "53b3eac621ee7fab426ad5022f48d7e22c734a94",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "RELEASES.md"
+    },
+    {
+      "bytes": 6032,
+      "git_blob_sha1": "96f5abfd87a63dde371a6fc1a528cea53c54e805",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "annotations.md"
+    },
+    {
+      "bytes": 603,
+      "git_blob_sha1": "49b8c634ee026e027e503d884fe3afda34a83f05",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "artifacts-guidance.md"
+    },
+    {
+      "bytes": 15474,
+      "git_blob_sha1": "904d74912e2776faec37f9d8d9b68f86400c90fb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "config.md"
+    },
+    {
+      "bytes": 6288,
+      "git_blob_sha1": "1e069ba0649b6bd3d0e7a7610eb0ce798e69f05f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "considerations.md"
+    },
+    {
+      "bytes": 9623,
+      "git_blob_sha1": "3c707c8948560f284b6ad84dfd72a6880554bfcf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "conversion.md"
+    },
+    {
+      "bytes": 12950,
+      "git_blob_sha1": "56c76d6e4cd9f266f99c670ff29ccc6a4c313494",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "descriptor.md"
+    },
+    {
+      "bytes": 8287,
+      "git_blob_sha1": "7cd44ea2e3665482a20fe7e416e10d794f2f3412",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "image-index.md"
+    },
+    {
+      "bytes": 8790,
+      "git_blob_sha1": "026e71ecd03f780f635da0da9b2ed41da13d4fc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "image-layout.md"
+    },
+    {
+      "bytes": 2421,
+      "git_blob_sha1": "53957cb4559b7d1581131bd3ef3cc1ad5ab97f46",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "implementations.md"
+    },
+    {
+      "bytes": 15348,
+      "git_blob_sha1": "ce7bd560cd05d76a704818d3fd8f0335f184c313",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "layer.md"
+    },
+    {
+      "bytes": 14008,
+      "git_blob_sha1": "7a0ef73406543b15c1253d7f0c961b89158dea79",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "manifest.md"
+    },
+    {
+      "bytes": 5435,
+      "git_blob_sha1": "25a26fa2217c3451c8f57bfb8f8515c3605e72ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "media-types.md"
+    },
+    {
+      "bytes": 4247,
+      "git_blob_sha1": "162350c7e1a18212dbb345543e0435950c69c326",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "spec.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 129835,
+  "repository_md_files": 19,
+  "repository_url": "https://github.com/opencontainers/image-spec",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 129249,
+  "snapshot_md_files": 18,
+  "source_id": "oci-image"
+}

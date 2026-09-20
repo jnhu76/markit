@@ -1,0 +1,903 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "SECURITY_GUIDE",
+  "commit_sha": "ffa997b0ba0604176cba2bdba1a9563ae258329a",
+  "commit_timestamp": "2026-09-18T15:46:15+02:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 122,
+  "files": [
+    {
+      "bytes": 24401,
+      "git_blob_sha1": "7c21e1802da6686e1c11c2f9a959b8dfb3f9c674",
+      "sha256": "184f087f30dc63a8c49b656511467e930d026b5451b5c20fa42f0aa55108cf45",
+      "snapshot_path": "files/cheatsheets/AI-Powered_Advertising_Systems_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/AI-Powered_Advertising_Systems_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 30426,
+      "git_blob_sha1": "8040a11b744fef62c20d37c50eec534778117560",
+      "sha256": "cdab974f422c3cc3568d3c3e7364a98ab34fe965ce85aed3f4488c428eccfc6d",
+      "snapshot_path": "files/cheatsheets/AI_Agent_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/AI_Agent_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 8952,
+      "git_blob_sha1": "27fb12109294f2a50cf8cef3232268f4c094e3f7",
+      "sha256": "294940c5d8d9fae397b76e3476b590d3787486ca79c113fb23fb922a848c3317",
+      "snapshot_path": "files/cheatsheets/AJAX_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/AJAX_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24027,
+      "git_blob_sha1": "15074acf8c3368062001f6077e23a4a3ddfbb293",
+      "sha256": "0eed96530cc5623cdd5372dbaf7e6272fe17595feda4a92588e76113ef8fb9f6",
+      "snapshot_path": "files/cheatsheets/AML_Sanctions_AI_Agent_Payments_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/AML_Sanctions_AI_Agent_Payments_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 28006,
+      "git_blob_sha1": "28deee8d362fc46f479902344ebd2b86ec8471b3",
+      "sha256": "7d1d46f108573e27cc6aab7c239a917192ba5d336de17ec5c7c8f12aa31c1210",
+      "snapshot_path": "files/cheatsheets/Abuse_Case_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Abuse_Case_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 176,
+      "git_blob_sha1": "eebb0aff65c546613de0df8396260bd96faba29a",
+      "sha256": "4c3f631b959cb88c4aa5b040ec7a6da259fa5a0d01c03c9ce12f5df6face0de7",
+      "snapshot_path": "files/cheatsheets/Access_Control_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Access_Control_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 13518,
+      "git_blob_sha1": "084997d77fa73200d2bcfafc2b41db1e6eefe5db",
+      "sha256": "c8bde4a8ab46ed3523ff3aa5b864909e129c576ac5bcf3284cdc22cd24b8d70b",
+      "snapshot_path": "files/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 39072,
+      "git_blob_sha1": "176ca5c7cd87251903c4d32ec61a882d2d802fb6",
+      "sha256": "4844f1d380457e3ee43671b5df075617a177bf51ad7dc904627df50df26dfb81",
+      "snapshot_path": "files/cheatsheets/Authentication_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Authentication_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 32308,
+      "git_blob_sha1": "2a056661bf62a908708e9cb972daae611b10313c",
+      "sha256": "dd56db698a11513111fc0a8e99e4f0e2492c86a5d82528c5a1db35434ca18cfc",
+      "snapshot_path": "files/cheatsheets/Authorization_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Authorization_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12854,
+      "git_blob_sha1": "605438588f897152055eab79d70e02f947bf6cda",
+      "sha256": "04b2081609a37d42802ff32cb084d7421fec99d12a4c6083c14c9c31cfd6c1ba",
+      "snapshot_path": "files/cheatsheets/Authorization_Regression_Testing_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Authorization_Regression_Testing_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24488,
+      "git_blob_sha1": "9e2d9ab40916bcc5ab97a65d8e9dc4d34f5cfcdb",
+      "sha256": "1e3bd81d23865b1ec49134cd26e99d441ec43154aea2f9cfbd8328815b0a1a0f",
+      "snapshot_path": "files/cheatsheets/Authorization_Testing_Automation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Authorization_Testing_Automation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 4237,
+      "git_blob_sha1": "b5ac60986d64cc00d317a2895c48f45fd87e0cef",
+      "sha256": "462fab9875fc3d4e4e6368a753ce05d94b6ef7c2f13a4be71eefbd74eb313683",
+      "snapshot_path": "files/cheatsheets/Automotive_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Automotive_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12992,
+      "git_blob_sha1": "acf37298452e51038d7740ecef588e2c9380abd4",
+      "sha256": "4ab49a9f92c164773f609a2411207e1f9775c8f4809f86403cdc5906351829b7",
+      "snapshot_path": "files/cheatsheets/Bean_Validation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Bean_Validation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 16692,
+      "git_blob_sha1": "db5fa73624a91175341f3cc66344613541b233ea",
+      "sha256": "d4d25ebc42b3ab0222b30a1b06101b98120907b3bdc6f5afb3707d868e7417ce",
+      "snapshot_path": "files/cheatsheets/Bot_Management_and_Anti-Automation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Bot_Management_and_Anti-Automation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 14833,
+      "git_blob_sha1": "e194cd47dbf1b2d832f0a998483bed9abcbed1aa",
+      "sha256": "8f3a42563323fa751cc93792b6bbe33402bcec6c506eec9989d09b3681f09ac1",
+      "snapshot_path": "files/cheatsheets/Browser_Extension_Vulnerabilities_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Browser_Extension_Vulnerabilities_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 26497,
+      "git_blob_sha1": "ffb682c6512b618d547fbb055cb96be1334a90ac",
+      "sha256": "72c3b258f18362f740bd4ab00893e8b7d4fb61e97ddf2be26c1b0ee341f52ee4",
+      "snapshot_path": "files/cheatsheets/Business_Logic_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Business_Logic_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 55138,
+      "git_blob_sha1": "49dbc4ef35607f98e88ce17ac4981c1ab4891439",
+      "sha256": "bb9b2df039f53ff34f775699517004312426198b6568c0925625e0de5aabe6f5",
+      "snapshot_path": "files/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 26663,
+      "git_blob_sha1": "51a81eaefba15d827c1b9cfc23ed7a71a376e983",
+      "sha256": "935b4e2949ccd98d81bbd948a759fc9d3f56c9f9d26313ff7948f654606b7ef9",
+      "snapshot_path": "files/cheatsheets/CI_CD_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/CI_CD_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12224,
+      "git_blob_sha1": "d646e3c11eb61740615383b915b00ff156f3eb78",
+      "sha256": "4e184dad20bb9e1e461ecb89e6a6fd45a858021dbcca234b4fff4ab46cbdff62",
+      "snapshot_path": "files/cheatsheets/Choosing_and_Using_Security_Questions_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Choosing_and_Using_Security_Questions_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 15368,
+      "git_blob_sha1": "bec78b87aaae194fe2f96563ab77904aa3dbff54",
+      "sha256": "2331ef1ced95d52cca031d8603d00af281f8a8595b481176d92a49d658931bd2",
+      "snapshot_path": "files/cheatsheets/Clickjacking_Defense_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Clickjacking_Defense_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19428,
+      "git_blob_sha1": "2c81cba7ac281e0e1b9f3278e1d579dd0ead4804",
+      "sha256": "55e53aa24372fb179afa46dbb3e1a4f697e0f2011d7e17398c310a337390538f",
+      "snapshot_path": "files/cheatsheets/Content_Security_Policy_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Content_Security_Policy_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7344,
+      "git_blob_sha1": "f3888019150d0a114af07b616bf650a2afc2d047",
+      "sha256": "f02ae9e09dee0b4196969ecdbd94bf9267d50d7eaf5bb264cb7d702acea83d74",
+      "snapshot_path": "files/cheatsheets/Cookie_Theft_Mitigation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Cookie_Theft_Mitigation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 17596,
+      "git_blob_sha1": "b984d8521eed28243c04c8931edc13ff7e899878",
+      "sha256": "0b09e71e540a88457c3e29f43d5f5d23f6aabc30820ce7eac8bb1809a7982162",
+      "snapshot_path": "files/cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 73715,
+      "git_blob_sha1": "073cf826b65b216575a1be3ca3e657d3a76154de",
+      "sha256": "4097b110d112435d5c14443532b8b595ae2b8acd93c5330eea7d89f7b87c2115",
+      "snapshot_path": "files/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 28217,
+      "git_blob_sha1": "262fc3f69370a2dbe1dbc613084942cde252d467",
+      "sha256": "b6cfca5d70ccb0906372af03ca8473728aa1749a7efbb02f8fcdc70a68f0947e",
+      "snapshot_path": "files/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19919,
+      "git_blob_sha1": "bde9d457a5a9f6a7c9b1bd9998819ad2a43cadf7",
+      "sha256": "397ae43b78fa8d3c9ca21b8059a7415632f9b2f37b231c22db4e46980727e0f1",
+      "snapshot_path": "files/cheatsheets/Cryptographic_Storage_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Cryptographic_Storage_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 13161,
+      "git_blob_sha1": "c8c0aefb1debe1481c97732c8936a673ec38afa8",
+      "sha256": "0237e2ce1a92e683c21c28d50ce2a0734e0b4ea08816ddda654289ea5b26b871",
+      "snapshot_path": "files/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 29917,
+      "git_blob_sha1": "26dbdc22f215d9b4e3ab8c8957f7da55425be824",
+      "sha256": "7244e1cd39bccd8ef84fcd771d4fa8f5feabb2ddaf338e4b65baabab6d422d0c",
+      "snapshot_path": "files/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 9117,
+      "git_blob_sha1": "e213668ade5626c67ba8b00dc16a264b7e84a705",
+      "sha256": "2ac2bc9cdf558a9173c60b4dfd52ebd696c0b418be785c9bf0392249e107990b",
+      "snapshot_path": "files/cheatsheets/Database_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Database_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 14655,
+      "git_blob_sha1": "a966c9a398673ef7916e50dca546cb025229885b",
+      "sha256": "1d5e3eefddb17d3c6a7f73d2339b6711bb877e04aab5a266d917fa5b77478d85",
+      "snapshot_path": "files/cheatsheets/Denial_of_Service_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Denial_of_Service_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 8866,
+      "git_blob_sha1": "5d9fc8c0f489231b1471e07aa573b415b4e82f1e",
+      "sha256": "46edbd8974536a41b7b764b49490c965004e4d7bb021a5733f24f5f09c3e214c",
+      "snapshot_path": "files/cheatsheets/Dependency_Graph_SBOM_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Dependency_Graph_SBOM_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 23431,
+      "git_blob_sha1": "a38d0fb44c04735c511754b125834103bb3bdb14",
+      "sha256": "16b75d075f4c4ab19f1cb46763ec8697aeb24d7660cbcd6ebb5a1d6f15b3f0f4",
+      "snapshot_path": "files/cheatsheets/Deserialization_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Deserialization_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12023,
+      "git_blob_sha1": "b7727e168a72793b11187368b5651182f5a0e921",
+      "sha256": "5d80144fa9e02e138b3208dcebe3e985daf47b682c735f7f7b4b04739569984a",
+      "snapshot_path": "files/cheatsheets/Django_REST_Framework_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Django_REST_Framework_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12111,
+      "git_blob_sha1": "75f9f3578b93e62a4c8e2eef017761c98c26c8a8",
+      "sha256": "ebd8c53025c30cbf75ed671e44287b5b18d70acd808c8eb2ba2f15ef228484a7",
+      "snapshot_path": "files/cheatsheets/Django_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Django_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24968,
+      "git_blob_sha1": "676f91b9b1bb45b708d12026b8f093c88609faea",
+      "sha256": "d99b021376354c801d57abcba458f20fa5d931b21cf9b55b68d7a436bfd6cdd4",
+      "snapshot_path": "files/cheatsheets/Docker_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Docker_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 57764,
+      "git_blob_sha1": "098a4a747dda9cdb002a4057632fe3db5d54692b",
+      "sha256": "a46e0aa97ca51c8ba3d6e4c5fdf8aa1e3dc9826edc495f570aa7c21792c0e7f7",
+      "snapshot_path": "files/cheatsheets/DotNet_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/DotNet_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 14910,
+      "git_blob_sha1": "759cdb0c01e9ba0e0612a434e07a44edfe9678cc",
+      "sha256": "3108da88841cde5591605d1080b8811c0210cbaadeadcb3721c104ce204d86d9",
+      "snapshot_path": "files/cheatsheets/Drone_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Drone_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 5129,
+      "git_blob_sha1": "d99390c894bcb0365ec483e5652429b3cc1ee913",
+      "sha256": "2d32bce39f07c21dbc1571f19a56d2412bf868a21b1d4ae261c2a0101fdf9fa4",
+      "snapshot_path": "files/cheatsheets/Email_Validation_and_Verification_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Email_Validation_and_Verification_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 18059,
+      "git_blob_sha1": "7524ecc4757cc46ba09dbce6ead517d53f45fd1d",
+      "sha256": "97a57eb94a0355cf7e74646c1026ad60296e75eb076fe9fc365db4884d5f3691",
+      "snapshot_path": "files/cheatsheets/Error_Handling_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Error_Handling_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 14455,
+      "git_blob_sha1": "bfe1a084b1d5740658f632ae13c4f2f459dea7da",
+      "sha256": "7b50937907548d4a6f893940551114800e22f589cb00835f75143b2401a20faf",
+      "snapshot_path": "files/cheatsheets/File_Upload_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/File_Upload_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 9566,
+      "git_blob_sha1": "0ae5fb28f2d759123f7df2530c364678e813119a",
+      "sha256": "b10808d3a6653fc72f149d8b60a6f5bc1259575df8264cc34eb7d2ab3083ee47",
+      "snapshot_path": "files/cheatsheets/Forgot_Password_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Forgot_Password_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 20379,
+      "git_blob_sha1": "d653898028a02aa75773f8962ab42f4492dee164",
+      "sha256": "241c43a49aa6853f0a1688efb885f3ced52290771309a3ee403d612f47a81fda",
+      "snapshot_path": "files/cheatsheets/GitHub_Actions_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/GitHub_Actions_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 28323,
+      "git_blob_sha1": "ee8e8c628fc6d5e008e5f3af025ac967e6577840",
+      "sha256": "644ff319f6c2643cdf2dc33666951132904223e01ed69e627755c93288557114",
+      "snapshot_path": "files/cheatsheets/GraphQL_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/GraphQL_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 16118,
+      "git_blob_sha1": "845db95e2e28620b86e9b5fc2b60ec479e07dc88",
+      "sha256": "652acdef0041c56551a2c02dbc18ac53ae98cb72f3afbc0675c601365b012e75",
+      "snapshot_path": "files/cheatsheets/HTML5_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/HTML5_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 21499,
+      "git_blob_sha1": "f1a3307d00fc7ea23ad9841f0c59579282bb846d",
+      "sha256": "8543c26059c34fcf06c8de413aadeaecb90428e761348288e595309064be4a49",
+      "snapshot_path": "files/cheatsheets/HTTP_Headers_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/HTTP_Headers_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 4009,
+      "git_blob_sha1": "5ecf0abc0270eae82b3b8768c6e04d0e4a3f6365",
+      "sha256": "0e4f891dd6321c94c3a9f2ca50d5e739e43422e6053e7303b17ce0ffe9ec6cec",
+      "snapshot_path": "files/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7813,
+      "git_blob_sha1": "c008e721e22bf4be4e04503836f92938a9a52c81",
+      "sha256": "770141b32c3035f520b2ffe5a3100fccba09845d85e4f79e6ab69939a6006726",
+      "snapshot_path": "files/cheatsheets/Infrastructure_as_Code_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Infrastructure_as_Code_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 18117,
+      "git_blob_sha1": "bd2d135a1ab4add3164d849fb61719c263a4a81b",
+      "sha256": "e3469915fc93c77f2696148c4a1f4d635d83eb61d766d15690c5269f32337ac6",
+      "snapshot_path": "files/cheatsheets/Injection_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Injection_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 179,
+      "git_blob_sha1": "dc2bb830691f3878878d16b709c98d8905aaa1ec",
+      "sha256": "d3465ff3746d1a7bff24015cf03b8492868f8d8f9bef1249ea23434d8390d263",
+      "snapshot_path": "files/cheatsheets/Injection_Prevention_in_Java_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Injection_Prevention_in_Java_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19249,
+      "git_blob_sha1": "7535fa1f1656163a9891479845edfdf5bac2cacc",
+      "sha256": "474509f8bc6d06dab110bad0d0d5055cc9c6f2a63d2f464ce2966be634246772",
+      "snapshot_path": "files/cheatsheets/Input_Validation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Input_Validation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 5397,
+      "git_blob_sha1": "3201cb7d6c1f8490c2eda35e92e42188925c4d34",
+      "sha256": "0a0056b89acc452b4e4fece79511387406480e912f4fce8247b1381446fc4bda",
+      "snapshot_path": "files/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7976,
+      "git_blob_sha1": "ff959f0304993aa1baf622e40464a6ffee9f4109",
+      "sha256": "e20247c70d548e2760a71795267a06cfeddec4f82e14ecbad8210ffcc2741ed8",
+      "snapshot_path": "files/cheatsheets/JAAS_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/JAAS_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24956,
+      "git_blob_sha1": "107b0f8b628652c539ef088765fb0bc3dbdeddc4",
+      "sha256": "3b9cef36e27c71f06a755ff92bab3bcff75664e1dc64ea25628720635de927ca",
+      "snapshot_path": "files/cheatsheets/JSON_Web_Token_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/JSON_Web_Token_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 38828,
+      "git_blob_sha1": "7921532d20c5332fede72198523737bb33ac6775",
+      "sha256": "3db1ebe277f85867be60c84ab8e552b3f644766c2e0cf195bb4307b164840c32",
+      "snapshot_path": "files/cheatsheets/Java_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Java_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 23305,
+      "git_blob_sha1": "ff878f339eaa88da81c76e38febb098f28f85255",
+      "sha256": "b0044dc960b2347e9c5b64fa8c56fc70e773fc9b3daf1126ccf8d4698cabaaab",
+      "snapshot_path": "files/cheatsheets/Key_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Key_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 69794,
+      "git_blob_sha1": "df7e82f5332e4aad055faa1c9179856ad852f45a",
+      "sha256": "c8f1a573eac5aa88240b4550f4daf106591e6bef3e673ef51109ce28a4dcbc1c",
+      "snapshot_path": "files/cheatsheets/Kubernetes_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Kubernetes_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 9460,
+      "git_blob_sha1": "c297cfad1d891e54da042cdb5392de0e3cc6f99c",
+      "sha256": "603a3f65ca8b86101f9069728273ed62de5ed7513b1377238052b56b3828861d",
+      "snapshot_path": "files/cheatsheets/LDAP_Injection_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/LDAP_Injection_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 23486,
+      "git_blob_sha1": "22fd753a27c09b48dd31468a1f8582d34f0645e9",
+      "sha256": "581a9bb96bc934fa277fde7610b6e05fdd485d79ff617851de99fc1262f56f74",
+      "snapshot_path": "files/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 21900,
+      "git_blob_sha1": "2aada92e9eca9284d0830578d0921c49a4502ce3",
+      "sha256": "dfd6d4631634f2fd31967f1cdfbb4a1e459865d7bde8ad5d434efc72aca4d430",
+      "snapshot_path": "files/cheatsheets/Laravel_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Laravel_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 13565,
+      "git_blob_sha1": "5f897205ecc311135d311ceb16d503ac85092612",
+      "sha256": "9711f16fd37a0d97d738106447786ba2d6dcea34cf612061456fa3869ffa1e67",
+      "snapshot_path": "files/cheatsheets/Legacy_Application_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Legacy_Application_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 28060,
+      "git_blob_sha1": "55308d1ee82f22164d8ea6c07f6dd5ed9634ebd7",
+      "sha256": "7d069fc66af314b59e2b0729fa05ffd1973b12bcc43c857115adaa4acf1194a8",
+      "snapshot_path": "files/cheatsheets/Logging_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Logging_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 39117,
+      "git_blob_sha1": "26f70d8db01dd59d1d178e536f8d0fe474549f5e",
+      "sha256": "8c1929cdc2a7afafb8b1150ed72a6777cc8b4dd52b969468fb92479de55f4458",
+      "snapshot_path": "files/cheatsheets/Logging_Vocabulary_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Logging_Vocabulary_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 13021,
+      "git_blob_sha1": "6c854daf2514352a8df1756f1a2ded2d8d2d4c71",
+      "sha256": "480aac4cbfd3c6c05f02f6f9c936b5d34902e39700b0eb520a050de283e4da68",
+      "snapshot_path": "files/cheatsheets/MCP_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/MCP_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7752,
+      "git_blob_sha1": "51d4f8da97c1babe606a8c86759151dea06edb42",
+      "sha256": "d4e5bc6520ab51fc9c5f49a5dec6e316d16f3e8626db5a6220e3dda2ab58f7b3",
+      "snapshot_path": "files/cheatsheets/Mass_Assignment_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Mass_Assignment_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 22222,
+      "git_blob_sha1": "78ac6a3dd5cbc852a54b1cb0df680842a256230c",
+      "sha256": "2d1f46e36dcfcf357685ef667da902e45d879d983f33bd1f8abebe4884f99446",
+      "snapshot_path": "files/cheatsheets/Microservices_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Microservices_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 14709,
+      "git_blob_sha1": "5c051b920b4368e667158887f6dd355b5b07233d",
+      "sha256": "7bdf8380d36d4c9a49744aa8da35505594f984b017b6ab197f8371b054ebbe0d",
+      "snapshot_path": "files/cheatsheets/Microservices_based_Security_Arch_Doc_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Microservices_based_Security_Arch_Doc_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 16642,
+      "git_blob_sha1": "6805a230aedfac19ab7ef273da815b2d12908da6",
+      "sha256": "3d28c64baa3dbdc105854587af5a65bc11b610f8e3cf0f8f5a1a321cdc8e43ac",
+      "snapshot_path": "files/cheatsheets/Mobile_Application_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Mobile_Application_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 49689,
+      "git_blob_sha1": "cc13bc1adb0bfc6679c7410b591f8817df0e23e6",
+      "sha256": "c83d4aeb4d3bb92c85f4a5322cc40c69ea865e59a53842bf7f4ed49ddebc765d",
+      "snapshot_path": "files/cheatsheets/Multi_Tenant_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Multi_Tenant_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 36827,
+      "git_blob_sha1": "11f41503567337c13bb3af29c7bc2410790dd49f",
+      "sha256": "508dfbf842dc0b6a6cf007410e6b3d53978dfd677715648d124939a0de380f29",
+      "snapshot_path": "files/cheatsheets/Multifactor_Authentication_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Multifactor_Authentication_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 27356,
+      "git_blob_sha1": "1bdd580c684cc49e714fe6cd2f192b356bf57e23",
+      "sha256": "a345358b7bd85971da61471132981300f694b22ef88c190772a98798fa95ff48",
+      "snapshot_path": "files/cheatsheets/NPM_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/NPM_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 9249,
+      "git_blob_sha1": "b48baec5e29ed5225e63f49b3d1d8e52c71fce77",
+      "sha256": "f865408c63c2de14b626784400f46950ee5f88332999bff779b42a0ac3579704",
+      "snapshot_path": "files/cheatsheets/Network_Segmentation_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Network_Segmentation_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19384,
+      "git_blob_sha1": "4f6971110601d82728209b28447e32401d2638ba",
+      "sha256": "c1072732fb2535d0d9c34032f5103da17482915f0d8df285f722849f42145e44",
+      "snapshot_path": "files/cheatsheets/Nextjs_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Nextjs_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7279,
+      "git_blob_sha1": "418382479f9c0a76dc3eaeedaa4d4d162e82920d",
+      "sha256": "f853b952f9e71be15a862dde2332402aea7c8c5ae9107e2217a4e6fa35d13375",
+      "snapshot_path": "files/cheatsheets/NoSQL_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/NoSQL_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 31009,
+      "git_blob_sha1": "389e0f412d01ac60ab61006e821e0454185093c5",
+      "sha256": "c4b111b150de0503f9fd362ddb043aa8c39859b40f323e87c71dd0e41dcc0efb",
+      "snapshot_path": "files/cheatsheets/NodeJS_Docker_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/NodeJS_Docker_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 41311,
+      "git_blob_sha1": "ac4d386a271dc280f1ad556b2b0bb250c0c5baf4",
+      "sha256": "b73caa5ed04023e69d1a9ad4c62030bfae8b6937bda5843589fbf8e7880a3dcc",
+      "snapshot_path": "files/cheatsheets/Nodejs_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Nodejs_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 15197,
+      "git_blob_sha1": "9e59fa6f25d467db7e93e441c48193c2e45cbf23",
+      "sha256": "b7c2717110cd913ba5008a6b7aa825bdf8e04acd78378c18708c49c3d14fc8bb",
+      "snapshot_path": "files/cheatsheets/OAuth2_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/OAuth2_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 11615,
+      "git_blob_sha1": "e323002b97f47ad1ea58af973b099d6d97f4afd0",
+      "sha256": "050a5c1cbccfe2a72140f9f30916ab0a2e32f2657beda1c38e552b2a3d898068",
+      "snapshot_path": "files/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 5080,
+      "git_blob_sha1": "a87f2cffe35564494efefa79c7ed8cef36f06c57",
+      "sha256": "5f15cacb27da36da597288e37acf6116a9082bbb99a01d41456b444539ac6eeb",
+      "snapshot_path": "files/cheatsheets/PHP_Configuration_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/PHP_Configuration_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 20179,
+      "git_blob_sha1": "84f9d566527fee0fb10ec908b30fc3ab2a18453d",
+      "sha256": "b50179b7557bc1062ec79b01310fe9b32231aa5c5ba3b704b98f422e501f3683",
+      "snapshot_path": "files/cheatsheets/Password_Storage_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Password_Storage_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 16158,
+      "git_blob_sha1": "88ebcbffa67f8ab82491b6093d2ae19a605c721b",
+      "sha256": "dafef347fa3f09fe9f1ce6adf54f879f23da49bde832b955077256ce4137e542",
+      "snapshot_path": "files/cheatsheets/Pinning_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Pinning_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 2239,
+      "git_blob_sha1": "05be6684f65a171b7557c343c30447d600e7d4e7",
+      "sha256": "74d097113480d9c8ed9331a65a6ef003beab6f6bfe4ea04407b2f32c34a8b455",
+      "snapshot_path": "files/cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7780,
+      "git_blob_sha1": "13de172e8d24aa49f058241e98a2deaccae1b5ef",
+      "sha256": "c6fa676dac6a374813f5860bf141fadcbbabe6904f633d1d55aca8f8307f3fea",
+      "snapshot_path": "files/cheatsheets/Query_Parameterization_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Query_Parameterization_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 28096,
+      "git_blob_sha1": "5b4aeb7d949dadf907ec9fa5ff93b752f79bae58",
+      "sha256": "e48ca77c8cd69bc9a102facf64cc826a75c9f53253a3eda2e90d45d18ba07d72",
+      "snapshot_path": "files/cheatsheets/RAG_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/RAG_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 6239,
+      "git_blob_sha1": "d4f24d2e78dcb2d0d16bb244220985321bdbd9d7",
+      "sha256": "caf5611ea6c55c11b614dcd944b10b6f1f10dbf1be2ac80e293c9cac5c442beb",
+      "snapshot_path": "files/cheatsheets/REST_Assessment_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/REST_Assessment_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24846,
+      "git_blob_sha1": "cb297551e444eedb5816bee14b2e452d24b96246",
+      "sha256": "73185bf1a1163fb8b9cfcb7e034f84e32171289becc857f66947a61a87a4bb1d",
+      "snapshot_path": "files/cheatsheets/REST_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/REST_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 22903,
+      "git_blob_sha1": "d34a5eb6a648eb97029af117e52573a2c12fd545",
+      "sha256": "726b8688eac0bdd69fcc26eb20edfdac43616910512eba5014ec1bfc6410e01c",
+      "snapshot_path": "files/cheatsheets/Ruby_on_Rails_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Ruby_on_Rails_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 30436,
+      "git_blob_sha1": "f8afd92b3996550a5341cda53e2bf78427567baa",
+      "sha256": "181891d7a4b3f18d90a3f902c4b2ae00fb9255f5041427b018dd6002e1a626fc",
+      "snapshot_path": "files/cheatsheets/SAML_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/SAML_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19384,
+      "git_blob_sha1": "10c189fcf88c20b561d8fde3decabe05793125db",
+      "sha256": "77924b56a036b072bbc7a2b3bfc4f9f59fa5da92790c6690681574cb9457ec14",
+      "snapshot_path": "files/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 64979,
+      "git_blob_sha1": "3901ff24b5e24c94b71e9017c6e5ca52912bb0eb",
+      "sha256": "302a2e4cb2153616a3c41d8a79d7407f24c03207fe60752892b71ec2776bc60c",
+      "snapshot_path": "files/cheatsheets/Secrets_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secrets_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 8026,
+      "git_blob_sha1": "70696edc50fd212e85b357be291fb87d2f5882bb",
+      "sha256": "ea14f19e78e129efd82007c43cc9e68b3ed8f17cbbbfaac82b58562b69d18f49",
+      "snapshot_path": "files/cheatsheets/Secure_AI_Model_Ops_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secure_AI_Model_Ops_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 29991,
+      "git_blob_sha1": "48590dbdb4e154826b8468b0e7e3ba8c160248ad",
+      "sha256": "4ff8d09b970f5c6c9bbb12a7b4ec6f2d927ccde005a2297097fc7b834bdf7e6e",
+      "snapshot_path": "files/cheatsheets/Secure_Cloud_Architecture_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secure_Cloud_Architecture_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 20764,
+      "git_blob_sha1": "602331bbcf1f30207a644ca79b8fe8029dfc2505",
+      "sha256": "a3a2c91851dceaccff8ab684a56cdafa1006c9bb943c8d085622270f7872e34d",
+      "snapshot_path": "files/cheatsheets/Secure_Code_Review_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secure_Code_Review_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 26808,
+      "git_blob_sha1": "4d7208640a4238a8bff89e2992e5491e509ade14",
+      "sha256": "be07355a3bb0c077cea6ca6beef912b4abda712864e90645f46c29419e539505",
+      "snapshot_path": "files/cheatsheets/Secure_Coding_with_AI_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secure_Coding_with_AI_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 10848,
+      "git_blob_sha1": "e64903c79a83b6d56aad0e2a5d27e361bca5abbc",
+      "sha256": "a725b1092ac5b6bd33949bdf48983a026b1720c469192f0c48a93e1b31fe49da",
+      "snapshot_path": "files/cheatsheets/Secure_Product_Design_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Secure_Product_Design_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 6362,
+      "git_blob_sha1": "0cb6d5786e3fe17abff2ae1f5862646d797fa580",
+      "sha256": "d7dad2305d5eef9610a8111d93e3ab44ea106744a4355274c6fcf1c210f0f9fb",
+      "snapshot_path": "files/cheatsheets/Securing_Cascading_Style_Sheets_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Securing_Cascading_Style_Sheets_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 5701,
+      "git_blob_sha1": "b52b5b83db7491c28c7a954271a37d111aebe284",
+      "sha256": "37014b73e98f101c59f8c2724972817ce6fca9fef0f7ed9bad4e3d9930273630",
+      "snapshot_path": "files/cheatsheets/Security_Terminology_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Security_Terminology_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 29292,
+      "git_blob_sha1": "e5f585e771bce4a5e4ec1a66a5e2c0c9ca0346f2",
+      "sha256": "72ab3ed4f3e429e0e4a80acf21a7f01d6990b174d544be344d646a5393d2a226",
+      "snapshot_path": "files/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 7523,
+      "git_blob_sha1": "6ebdce6e93d3d6d7663bab8c98c3b2ffe7ecab97",
+      "sha256": "8abc3aa462a3e28cd5ad86c260cb03ac1b9b48f7fac5cc3b91fdb8601baefdd9",
+      "snapshot_path": "files/cheatsheets/Serverless_FaaS_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Serverless_FaaS_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 54326,
+      "git_blob_sha1": "1f3b397428bbe3e07b011af1c02094e921ff183f",
+      "sha256": "dd0f44ee671cea7be58ab51e045392e90a4d40509d6b540456dd952a0521e4e4",
+      "snapshot_path": "files/cheatsheets/Session_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Session_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 21523,
+      "git_blob_sha1": "62d5dfe7401b1b369ae4dcbe15c775f08ddd5777",
+      "sha256": "33716fb50209675933705e8945d606b5e73c17a6e8a3bb1e0090958bc3fa0786",
+      "snapshot_path": "files/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 21647,
+      "git_blob_sha1": "84d7be5ff33e5cfb6c4e7eb89a82620cc62ce9af",
+      "sha256": "b5fdd852ae037d9279a31b52b7914f600d1bc5f997026ab813329279481a6e6b",
+      "snapshot_path": "files/cheatsheets/Subdomain_Takeover_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Subdomain_Takeover_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24907,
+      "git_blob_sha1": "3f325eddfb52b691eda101f9898f5911d11dd3bd",
+      "sha256": "1357a85ad077bbbf76e6da01b8d0d45cb1998defad460840ac11e10e30ec2fc9",
+      "snapshot_path": "files/cheatsheets/Symfony_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Symfony_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 207,
+      "git_blob_sha1": "55e01a02c9acc4fbafc36b372319f4ff4c4e04ab",
+      "sha256": "7c18cf1cfdb38a87a14a9fc68523b060b76df18f925084dda1ddb112734226a5",
+      "snapshot_path": "files/cheatsheets/TLS_Cipher_String_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/TLS_Cipher_String_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24015,
+      "git_blob_sha1": "6aeb46f0c99f4451956ff6b56d29c230dcb64f10",
+      "sha256": "8f5fa0c34520a44a3df818440a715ed5caa2120672ce4ab8ef597565d8a5b8b3",
+      "snapshot_path": "files/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 4453,
+      "git_blob_sha1": "c229fca135640f518b857667d757d64c0bbda9b1",
+      "sha256": "b17db49f3b69a273625cc4c0cc91108a7236a481c6aada05107d61a0525d3de6",
+      "snapshot_path": "files/cheatsheets/Third_Party_Payment_Gateway_Integration_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Third_Party_Payment_Gateway_Integration_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19929,
+      "git_blob_sha1": "fa25835120bd64d31a18ad87f00ee15a6f626fdd",
+      "sha256": "2fbfffaa2b9d734271d7e84ccb550290858586171a5807db7b2bf13bf24aa093",
+      "snapshot_path": "files/cheatsheets/Threat_Modeling_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Threat_Modeling_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 18276,
+      "git_blob_sha1": "f4338acdbc266550deaa330e56c58a58a5b9d2da",
+      "sha256": "95518b7c4505b291db936a821dd5f521c98192250e9a6d32b182bccb8ec23dd8",
+      "snapshot_path": "files/cheatsheets/Transaction_Authorization_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Transaction_Authorization_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 225,
+      "git_blob_sha1": "779b0721e6b4e8596d1e2e9b4bdf12a933d09258",
+      "sha256": "86ddfbe1de52c3573d687a8fb0e5d3f72d034038c7650d46984e77d7bbff571d",
+      "snapshot_path": "files/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Transport_Layer_Protection_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 23872,
+      "git_blob_sha1": "437b30816c3a37821dff230be6d02990142d2b6c",
+      "sha256": "bba73b7235823959a0129c8a15bf06fb95c9211d5ec74d3d267c9ebc0ebd022b",
+      "snapshot_path": "files/cheatsheets/Transport_Layer_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Transport_Layer_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 8037,
+      "git_blob_sha1": "040f864a997544ccdc168fe848d237333ec6e07c",
+      "sha256": "0259662b798890092317cd558de1da1fe3a7270cc865260d1f8d0efe50d86fe9",
+      "snapshot_path": "files/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 11034,
+      "git_blob_sha1": "45be744193fe584b360703ff18d96bda3ef04a24",
+      "sha256": "1d826e16303f2a24a2a8534363411f0cb8daba122d3edc1f332964f733a4827f",
+      "snapshot_path": "files/cheatsheets/User_Privacy_Protection_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/User_Privacy_Protection_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 19650,
+      "git_blob_sha1": "7e4721a744af3b52480e01f7a5eb4780a243f557",
+      "sha256": "ea8959c9015f6caa9aa33bbd9cfb4840391d898f221f10df96e412a93c6160db",
+      "snapshot_path": "files/cheatsheets/Virtual_Patching_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Virtual_Patching_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 24962,
+      "git_blob_sha1": "5344194858d60c411c26c0867bb5cd92f293fde7",
+      "sha256": "818b07326b64a88edf269699776f35cd74ab7ba17d0d491abfe9ae226192fe12",
+      "snapshot_path": "files/cheatsheets/Vulnerability_Disclosure_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Vulnerability_Disclosure_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 23566,
+      "git_blob_sha1": "2be8ecebaf86c0bb40d3a9ba23ae3b828a6bbf5f",
+      "sha256": "f12d388a1dc3286a029928584a14c554f528beeec3067eb86839c838060f8c71",
+      "snapshot_path": "files/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 12527,
+      "git_blob_sha1": "c20aadacef1a35fe54e7a82a2ec8cb18dc2b7c9a",
+      "sha256": "c2eb30321fea9239bc4d7f3471a5a184e3066c18d7711bbcc592030ec694efa6",
+      "snapshot_path": "files/cheatsheets/WebSocket_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/WebSocket_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 9639,
+      "git_blob_sha1": "49537bacd86f44ebc7191ad24ae31d673a6f806f",
+      "sha256": "b137d5c2f742ce57d048322b32adf46918cba6b42186e2b29c9453f1754feb9a",
+      "snapshot_path": "files/cheatsheets/Web_Service_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Web_Service_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 49116,
+      "git_blob_sha1": "b84230d5c96a8e60f4aa30e663e98b15706e8590",
+      "sha256": "28850e80d4cc6a8ca11f47e11b239c2cc164425a95d65e56e5d2cdc27381cafb",
+      "snapshot_path": "files/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 43050,
+      "git_blob_sha1": "53bba42118278aaa15ba05771156abcfddd67761",
+      "sha256": "4e106d5e55f7e0e1659b10660d526c89b05427d413e1706dd2cdb5d26a04bc74",
+      "snapshot_path": "files/cheatsheets/XML_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/XML_Security_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 46454,
+      "git_blob_sha1": "d7615a283ddd8ed4b7bf5a28fb93f451772dbde7",
+      "sha256": "dac80a2c52ff9a4755f8530a756fe4c72eccd54c2897d6e4367d7e0f7cee905c",
+      "snapshot_path": "files/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 17217,
+      "git_blob_sha1": "5eae28b8d3dd3e5dd509f90e8a59f4337a1667f7",
+      "sha256": "fa8952a1e0ecb97d1005774f150e83059f9614013dfab84c25992d20b5a9e5b8",
+      "snapshot_path": "files/cheatsheets/XS_Leaks_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/XS_Leaks_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 30756,
+      "git_blob_sha1": "23af26d1ccc64668eac6e4caf1b8d8e48a8307cf",
+      "sha256": "f5fe6d1e1cfefc05da1b1b9773acee6b7e9d156f4aa69ab0a14a7a1adfd2a8ef",
+      "snapshot_path": "files/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.md"
+    },
+    {
+      "bytes": 13564,
+      "git_blob_sha1": "3e692fe94745d2a2986b4dfe42bcb8d3810e2aea",
+      "sha256": "c58529853b5a737e23fc29b9cc732425705328e6c2abb591f01ba700a5867420",
+      "snapshot_path": "files/cheatsheets/gRPC_Security_Cheat_Sheet.md",
+      "upstream_path": "cheatsheets/gRPC_Security_Cheat_Sheet.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "31f26300fe110a9d9df6d1f0e8a53dc41383b7a4",
+        "upstream_path": "LICENSE.md"
+      }
+    ],
+    "note": null,
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/owasp-cheatsheets/LICENSE.md",
+        "bytes": 18637,
+        "git_blob_sha1": "31f26300fe110a9d9df6d1f0e8a53dc41383b7a4",
+        "sha256": "2b47ecdd5078e948395bc5980226933854228ff688f10d1dd059208be4956084",
+        "upstream_path": "LICENSE.md"
+      }
+    ],
+    "redistribution_note": "Storage policy VENDORED: candidate snapshot bytes are not tracked in Git during the candidate stage; the later final-corpus freeze may vendor these bytes publicly under the license recorded here, with LICENSE/NOTICE/attribution artifacts preserved under licenses/ (hashes in this manifest).",
+    "spdx": "CC-BY-SA-4.0"
+  },
+  "repository_url": "https://github.com/OWASP/CheatSheetSeries",
+  "retrieved_at": "2026-09-20T04:02:26Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the cheatsheets/ tree (the cheat-sheet corpus). Repository plumbing Markdown is recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/cheatsheets/**/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "owasp-cheatsheets",
+  "storage_policy": "VENDORED",
+  "storage_policy_rationale": "Permissive/attribution license recorded from the upstream license material at the pinned commit (CC-BY-SA-4.0); LICENSE/NOTICE/attribution artifacts are preserved under licenses/ with hashes. Public vendoring of the FINAL frozen corpus remains a later, separately reviewed decision; this policy records no new legal claims and does not resolve license interpretation questions.",
+  "total_bytes": 2538601
+}

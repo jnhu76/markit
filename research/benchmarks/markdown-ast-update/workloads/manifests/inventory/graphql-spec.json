@@ -1,0 +1,162 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "59bc70ac974b0d5d1e00869f41c06bb3bfc756da",
+  "entries": [
+    {
+      "bytes": 566,
+      "git_blob_sha1": "0e99546f419124f382884bf87c4fbd72360ca14e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE.md"
+    },
+    {
+      "bytes": 131,
+      "git_blob_sha1": "c6056f36cc47d980eae6287fa873516ddc129196",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/PULL_REQUEST_TEMPLATE.md"
+    },
+    {
+      "bytes": 11603,
+      "git_blob_sha1": "6d1b284e24fdb61753dd96f3f378173d00db03b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 2391,
+      "git_blob_sha1": "4cf0a3e78df8455143b806511c209853347843d5",
+      "selected_for_snapshot": false,
+      "selection_reason": "excluded:/LICENSE.md (include:/*.md)",
+      "upstream_path": "LICENSE.md"
+    },
+    {
+      "bytes": 29093,
+      "git_blob_sha1": "d99a68545fb1905d79e6e3962948f0ac6fbcad08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 4551,
+      "git_blob_sha1": "ca68e0d16552dbb6d82ed3baaac1b859954bbe35",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "STYLE_GUIDE.md"
+    },
+    {
+      "bytes": 269920,
+      "git_blob_sha1": "b964fdc54ce7075636f33f5cb44b413c8f2b8cb1",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "changelogs/October2021.md"
+    },
+    {
+      "bytes": 44333,
+      "git_blob_sha1": "2968703fb86d100f497a6a4fc3438df934ce19a3",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "changelogs/September2025.md"
+    },
+    {
+      "bytes": 590,
+      "git_blob_sha1": "a7864919746a2dd8335de22d4fde3e7ea7ea9a45",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "signed-agreements/README.md"
+    },
+    {
+      "bytes": 2706,
+      "git_blob_sha1": "d975b024f8d89f2bb786555efa6a53070e5c739b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Appendix A -- Conformance.md"
+    },
+    {
+      "bytes": 8481,
+      "git_blob_sha1": "60a716dbc1bedf636ee8b596cd0f3cec8b5dd7d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Appendix B -- Notation Conventions.md"
+    },
+    {
+      "bytes": 8829,
+      "git_blob_sha1": "17e253e46ec9cd0f52db90a2b82ce4b8e478a3e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Appendix C -- Grammar Summary.md"
+    },
+    {
+      "bytes": 2376,
+      "git_blob_sha1": "e4a14986be1b1e4b284f6923fd444f19982eab0b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Appendix D -- Specified Definitions.md"
+    },
+    {
+      "bytes": 2624,
+      "git_blob_sha1": "7ac0717aca4eae005313c3088c0695a4fbdcff40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/GraphQL.md"
+    },
+    {
+      "bytes": 3995,
+      "git_blob_sha1": "c94c89a7bfb88df633ee2bfb17bd62eefb502302",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 1 -- Overview.md"
+    },
+    {
+      "bytes": 48614,
+      "git_blob_sha1": "f46372671c4ec8ffe11f5700618b63d20f3486f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 2 -- Language.md"
+    },
+    {
+      "bytes": 83820,
+      "git_blob_sha1": "a33f30f5d17a5a53bd7474b600c099f7eb7b0194",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 3 -- Type System.md"
+    },
+    {
+      "bytes": 16292,
+      "git_blob_sha1": "d8290091316ce04622df23f9d4b3205036fc54a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 4 -- Introspection.md"
+    },
+    {
+      "bytes": 56611,
+      "git_blob_sha1": "71127b3fc9915b0fa0cb8bf55c0f9861ad2bafdb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 5 -- Validation.md"
+    },
+    {
+      "bytes": 41538,
+      "git_blob_sha1": "89795c1af70eba327fcd038800c96bfe9bf6bcf7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 6 -- Execution.md"
+    },
+    {
+      "bytes": 15614,
+      "git_blob_sha1": "94ab487c2c4f61c2126a11718818c38c222d7044",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/spec/**/*.md",
+      "upstream_path": "spec/Section 7 -- Response.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 654678,
+  "repository_md_files": 21,
+  "repository_url": "https://github.com/graphql/graphql-spec",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 336747,
+  "snapshot_md_files": 15,
+  "source_id": "graphql-spec"
+}

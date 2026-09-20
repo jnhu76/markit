@@ -28,3 +28,7 @@ __pycache__/
 # Research experiment raw benchmark output stays local; curated summaries
 # under results/summary/ are the committed evidence.
 research/experiments/experiment-0-parser-survey/results/raw/
+
+# #33 real-workload acquisition cache: rebuildable upstream clones, not
+# benchmark authority (see workloads/README.md)
+research/benchmarks/markdown-ast-update/workloads/_cache/

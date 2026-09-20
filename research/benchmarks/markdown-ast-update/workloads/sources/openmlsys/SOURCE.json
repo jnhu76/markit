@@ -1,0 +1,1677 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "CJK_MATH_CODE_MIXED",
+  "commit_sha": "9c289782ccbb165ac8ad7c960ecffc12942a5560",
+  "commit_timestamp": "2026-03-15T21:51:18Z",
+  "default_branch": "main",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 234,
+  "files": [
+    {
+      "bytes": 1159,
+      "git_blob_sha1": "97f1716d799e7b54fd4fd3fcc2e0db6f5d7b8d66",
+      "sha256": "1bc8f731afa90a51d9ab22d33439d216df31853d8a04ced5467a9f503bca4d2b",
+      "snapshot_path": "files/v1/en_chapters/SUMMARY.md",
+      "upstream_path": "v1/en_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 6315,
+      "git_blob_sha1": "7dd4fe5d17382a97c8a8397c04a7ed1570539e8f",
+      "sha256": "ecde6bdc8d61fb4d38ade957ec309666529aa430a276484a2c4963daef864a2b",
+      "snapshot_path": "files/v1/en_chapters/appendix_machine_learning_introduction/classic_machine_learning.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/classic_machine_learning.md"
+    },
+    {
+      "bytes": 8074,
+      "git_blob_sha1": "7ef9f21e5fe54c299f7b4f184ae7ab64f15abbdb",
+      "sha256": "a2d459adb1f63394e58708d5bc2df6dbc17e96c5f71930a40433be707e2ffa08",
+      "snapshot_path": "files/v1/en_chapters/appendix_machine_learning_introduction/gradient_descent.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/gradient_descent.md"
+    },
+    {
+      "bytes": 457,
+      "git_blob_sha1": "0816c9d066170207368d3006387622be100908bd",
+      "sha256": "f8f6b7fc2903351f5482eed1742bad651164928af0516e97ccaed1e255649be3",
+      "snapshot_path": "files/v1/en_chapters/appendix_machine_learning_introduction/index.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/index.md"
+    },
+    {
+      "bytes": 12819,
+      "git_blob_sha1": "381b45b2b07a6172d2dfaf9c485060216c884975",
+      "sha256": "45e8d779eb6980edc4581c5d728c4d63c1e35c6c0060c8acb296b549bc145715",
+      "snapshot_path": "files/v1/en_chapters/appendix_machine_learning_introduction/neural_network.md",
+      "upstream_path": "v1/en_chapters/appendix_machine_learning_introduction/neural_network.md"
+    },
+    {
+      "bytes": 10372,
+      "git_blob_sha1": "06be343acfdcb31e1ef2040e4531c026789fc8d1",
+      "sha256": "e51aa6f7bc5f9ab4c6515f66685213991c50a892a09d20bcc0ce469bc3b9dc86",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/accelerator_architecture.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_architecture.md"
+    },
+    {
+      "bytes": 1903,
+      "git_blob_sha1": "363f658ca8fb48074980419691d2109e96760b33",
+      "sha256": "23806d88db79569d3a0afac5064cce3a99d9416fec71016a8b174a688300a4f5",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/accelerator_introduction.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_introduction.md"
+    },
+    {
+      "bytes": 20021,
+      "git_blob_sha1": "b1680de4a877e55eb4199e1a7fc9624458fc87fd",
+      "sha256": "c3dcde0cede37852d56a96d07e63babe057b9e40a810b07ba8c8e63dbbac1125",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/accelerator_practise.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_practise.md"
+    },
+    {
+      "bytes": 9391,
+      "git_blob_sha1": "7d3d4169a2bc8386cd6edbc9c1698a44730042c1",
+      "sha256": "86610669dae1420e7ef26c3ec2f16ffa6ea2275a65376e84873378b9a09dadcb",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/accelerator_programming.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/accelerator_programming.md"
+    },
+    {
+      "bytes": 728,
+      "git_blob_sha1": "7f93d79c3d8aef2f64c62d24a594c2fa77d86155",
+      "sha256": "534ad9ba24a14735db9e96fdec089c2e6672665a9547bb846ea8e57e8283c502",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/index.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 827,
+      "git_blob_sha1": "ddd105e17eebd4798c7ade76cd76ee67727e38f9",
+      "sha256": "277f43c765d3bf41aaad84a0ab608a8ba8c2dab528552d0006f98e68eb00de0b",
+      "snapshot_path": "files/v1/en_chapters/chapter_accelerator/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_accelerator/summary.md"
+    },
+    {
+      "bytes": 20829,
+      "git_blob_sha1": "6d7d3836bda8593aac066ad756dee1ddabcc4ef0",
+      "sha256": "5bdf5ff156e814f8dc65112569a7705851cd30da868c7352d900bb5afe9c9628",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md"
+    },
+    {
+      "bytes": 5484,
+      "git_blob_sha1": "d946090f6a8bda2e251467691da55ec433d98e1e",
+      "sha256": "8fae5021d88782de90086581029541c4c797fbb3477f18cafcf5a768a7e22943",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/graph_optimizer.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/graph_optimizer.md"
+    },
+    {
+      "bytes": 1328,
+      "git_blob_sha1": "6217342543fc615b49a0596327088adb51a79cf0",
+      "sha256": "5438bb9cc91eba0db0d39cc6737f25015e67745238439ac2e41722940dddf3e1",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/index.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/index.md"
+    },
+    {
+      "bytes": 10657,
+      "git_blob_sha1": "23d5b508eeeb191de43640ef265f135449886155",
+      "sha256": "9199065fb122b0e1d17e0a3d2f2d13fbd0cf9b9a7d13f31b1b38d3e982d6113b",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/kernel_selecter.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/kernel_selecter.md"
+    },
+    {
+      "bytes": 13737,
+      "git_blob_sha1": "575a7cecaf8112e87a292d1b177c824f729217d1",
+      "sha256": "d65bbaf8d4271ecd095fff26d3cb010ac33f9f19fa4eca33e8c471630d7c7cf3",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/memory_allocator.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/memory_allocator.md"
+    },
+    {
+      "bytes": 14080,
+      "git_blob_sha1": "3ae148606fc62ad1d77d26399346f227587fa5ac",
+      "sha256": "fd561bfc9a5764aa461fe46c7a17791e02514d46b559f07c90de0e9998ebfd1f",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/op_compiler.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/op_compiler.md"
+    },
+    {
+      "bytes": 2919,
+      "git_blob_sha1": "e8011d0cbb75da8f033fb7d2a778cf38bfb1a099",
+      "sha256": "29463ab02b4bf826815f5666b482534a83e4918462739218f801e00206c4b9e0",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/overview.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/overview.md"
+    },
+    {
+      "bytes": 1530,
+      "git_blob_sha1": "9b8b073d2bcc6c6bf7e18c9aba907d64436b307c",
+      "sha256": "ba2f74a93ba91a9fe4282f8e2eef67a7d98f891c4c5b89fbd63f03ab4d023e3c",
+      "snapshot_path": "files/v1/en_chapters/chapter_backend_and_runtime/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_backend_and_runtime/summary.md"
+    },
+    {
+      "bytes": 24008,
+      "git_blob_sha1": "3daaa5dcf34e668468e6413f626fec02cf9b4fac",
+      "sha256": "e771b6d1b9dad77f9dbc8721b7ff98d38ef8dfacb5732c0d09199159e4c6a227",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/background_and_functionality.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/background_and_functionality.md"
+    },
+    {
+      "bytes": 3747,
+      "git_blob_sha1": "823fe9c02e82ed0a4f229f4efbeb576815368086",
+      "sha256": "87c3b62d5e9b5fa9391bb5f18128cb64ced598d538ef409d5d35991e00671ad0",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/components_of_computational_graph.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/components_of_computational_graph.md"
+    },
+    {
+      "bytes": 23558,
+      "git_blob_sha1": "a750c1de0b54b1a840a9022f74d1e5f6990e555d",
+      "sha256": "7eea605ed46a66203eb66707652b0d358c282c975910c3f3abe1f624b0b021f9",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/generation_of_computational_graph.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/generation_of_computational_graph.md"
+    },
+    {
+      "bytes": 917,
+      "git_blob_sha1": "0bf2eaff7433aaf2a1611fa3066aa3d4b4ce916a",
+      "sha256": "b00ff692eee3ac8c823e0934d73db1f73e9b6e0307ff06c6f24817b1332cce6c",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/index.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/index.md"
+    },
+    {
+      "bytes": 12633,
+      "git_blob_sha1": "2eca7019c44912f7fc69b89a74cbaa0c58d46be1",
+      "sha256": "4f94e0e490a6c95233b0cb80422ca8591a5fbabba8b141abc21e8c0452db5436",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/schedule_of_computational_graph.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/schedule_of_computational_graph.md"
+    },
+    {
+      "bytes": 1744,
+      "git_blob_sha1": "2accc57abb894348a99985ac7a19e0cd044f2f3d",
+      "sha256": "3b47987cf6bcbea13729210d3d28c3f2e71efdb38dd52e038c0b260f7b3cb279",
+      "snapshot_path": "files/v1/en_chapters/chapter_computational_graph/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_computational_graph/summary.md"
+    },
+    {
+      "bytes": 3756,
+      "git_blob_sha1": "996341a7e1248b395b342afaa18b38b69f2657a9",
+      "sha256": "e95937e1179f30ecc9e5be80ed6f5304404f80bdd88d4dd18680ed2349ed3689",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/data_order.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/data_order.md"
+    },
+    {
+      "bytes": 8314,
+      "git_blob_sha1": "19ddb8d0c285d28afad53db11a781d852c8edb0f",
+      "sha256": "f600819982121c1930f7eeaa3af31ef02e69714cfc9399d362e6ae02bd452323",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/extension.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/extension.md"
+    },
+    {
+      "bytes": 3669,
+      "git_blob_sha1": "1e48730702ea2b664b9ba38405c60778118d2b78",
+      "sha256": "4296d4237eadd1e0454714cdd97a766be0b0dbafcc78986addde66b4fff90de4",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/index.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 21990,
+      "git_blob_sha1": "eddf54701edeb40335dc8f10140f800c7ed9ecbd",
+      "sha256": "52173664de1e624cdfefa328e05c805be2e993da612d0618e2a5297dcb554243",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/performance.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/performance.md"
+    },
+    {
+      "bytes": 14348,
+      "git_blob_sha1": "3d67bdfcf85b5a79ecf6c28f6dfbed52dfe33299",
+      "sha256": "c4d8ebd88c021f756751050220a5d903c06f8ec40bed0edcabc62711d061f89e",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/program_model.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/program_model.md"
+    },
+    {
+      "bytes": 5581,
+      "git_blob_sha1": "98469f83156b5d2551a1f96a2242230602d7767f",
+      "sha256": "b9d3c94a2936b4bace09fe756a516e3b1759798f096e67a91e5226b9ad640397",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/requirements.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/requirements.md"
+    },
+    {
+      "bytes": 2374,
+      "git_blob_sha1": "cd605f6c7bc90644b1227551a42b3d5f01910388",
+      "sha256": "3deff68909b1243ed1a7f80548e37b358447ed53e5a0a75367484f4d8e65b30e",
+      "snapshot_path": "files/v1/en_chapters/chapter_data_processing/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_data_processing/summary.md"
+    },
+    {
+      "bytes": 5766,
+      "git_blob_sha1": "03ec17e90186d210f68f0098907efcd86903c73c",
+      "sha256": "b2fc7c649ae7c2ea5fe7709e30ab3822c3eb2811732e6ec53cfc068a68b820ba",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/cluster.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/cluster.md"
+    },
+    {
+      "bytes": 15383,
+      "git_blob_sha1": "c163236a2762c3b4775412332a57799a8913c854",
+      "sha256": "35527e41ecfd1dde23c29b7692c3d0b8e2e3c7e353210553e1562f13dd7a1db0",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/collective.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/collective.md"
+    },
+    {
+      "bytes": 2137,
+      "git_blob_sha1": "c1a177a37416f65b337111156d514f1f92dadeae",
+      "sha256": "edd62f344610b37cea4414cbb10a8f4da428dc506bf8a28da29f36803a0c2957",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/index.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/index.md"
+    },
+    {
+      "bytes": 9766,
+      "git_blob_sha1": "8c490209c5a9ae12273e37fa27faf44d78b57ffc",
+      "sha256": "1057a4d3aff256558b10f86cf9e7bc2654624876b4171465c9aad9ecd8d088f8",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/methods.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/methods.md"
+    },
+    {
+      "bytes": 6786,
+      "git_blob_sha1": "a70dcba802681141d4de39099687f564487b2eaa",
+      "sha256": "56e5bcaed7928e6320a7297906185bf5701cb64054b181404075c0a68182794b",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/overview.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/overview.md"
+    },
+    {
+      "bytes": 9175,
+      "git_blob_sha1": "9459140cf5a492597224d5e30ea93ed031cdf975",
+      "sha256": "059a4c35f9db724488e235ad1d582d10098576461b531ec77a5864ebd5e97759",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/parameter_servers.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/parameter_servers.md"
+    },
+    {
+      "bytes": 1571,
+      "git_blob_sha1": "a6808c9ad7596c615669c3a8981a97a57dca748a",
+      "sha256": "2dcc3d892481b08845d28ac4c3e75a9f41326ed1cb3466b5aadaa1f55aae60d8",
+      "snapshot_path": "files/v1/en_chapters/chapter_distributed_training/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_distributed_training/summary.md"
+    },
+    {
+      "bytes": 32484,
+      "git_blob_sha1": "818eecd8d0dba5fc630f61c85bf2e9e5e45b8262",
+      "sha256": "a9681ca63b8661e4865b9ed785d80a144b97c0b64f02fd73e0016da9de28b603",
+      "snapshot_path": "files/v1/en_chapters/chapter_explainable_AI/explainable_ai.md",
+      "upstream_path": "v1/en_chapters/chapter_explainable_AI/explainable_ai.md"
+    },
+    {
+      "bytes": 2849,
+      "git_blob_sha1": "219c345dd33b92a6bc9233e7c163d1265b5df6a8",
+      "sha256": "5cb7f05b09e4c3a83afd2c6b88c00d53e3e992cf560c49568569d0f87233a8f1",
+      "snapshot_path": "files/v1/en_chapters/chapter_explainable_AI/index.md",
+      "upstream_path": "v1/en_chapters/chapter_explainable_AI/index.md"
+    },
+    {
+      "bytes": 6946,
+      "git_blob_sha1": "0de08eedbc9f43cb72fcd394cc1bda2a1b1bdbbc",
+      "sha256": "ab2965bf24ac42f36708bef8eb708c40d29ff00ae061da8739284664aa50f576",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/horizontal_fl.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/horizontal_fl.md"
+    },
+    {
+      "bytes": 702,
+      "git_blob_sha1": "77d0bc778a773f3801cf892e6b0c05c9d477e3e7",
+      "sha256": "aee75c762ed48d86094f71a58cea8e8453d3ced5d36887be3071284f60719099",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/index.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/index.md"
+    },
+    {
+      "bytes": 8362,
+      "git_blob_sha1": "4ea9c05a87245a64a9cf6586b391170b529488a6",
+      "sha256": "b4f73dc7aee7395f4ea6c5d331d3b30129f80b9a887cf0de56328b2475745814",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/outlook.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/outlook.md"
+    },
+    {
+      "bytes": 10015,
+      "git_blob_sha1": "5283202e692d1936f1715d9dc079f872c05d76a9",
+      "sha256": "507072934ffbaa2c066731f128fb65b6d1b9669344916a49fc4b3ed943ab5adc",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/overview.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/overview.md"
+    },
+    {
+      "bytes": 15064,
+      "git_blob_sha1": "7fde35446c13faa0c772183020543cb602df453c",
+      "sha256": "c02ced15f52843453c62c5a3901a05576e7d06da37a56042c832b7f864e6d3ed",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/privacy_encryption_algorithm.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/privacy_encryption_algorithm.md"
+    },
+    {
+      "bytes": 917,
+      "git_blob_sha1": "24a13e3f683dc75482e8ad3750c3706b3050fead",
+      "sha256": "840c08372489293413baf145599afdbb3627a05e4539b0ba42594f17af9584a1",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/summary.md"
+    },
+    {
+      "bytes": 8099,
+      "git_blob_sha1": "d2b046be936306ba5817709e9bfdc5b0acb02dca",
+      "sha256": "ce9c79450518cb4cfbde388fb0d6a9e55b83e483b7e05d9361c680c6c35e2db8",
+      "snapshot_path": "files/v1/en_chapters/chapter_federated_learning/vertical_fl.md",
+      "upstream_path": "v1/en_chapters/chapter_federated_learning/vertical_fl.md"
+    },
+    {
+      "bytes": 24545,
+      "git_blob_sha1": "fbf76007498497861ff6e54e28fd3e056cadf50d",
+      "sha256": "2e46223ad796b9e476c3a22c273322cb652b9cb89ed3010823def4733839b5bc",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/ad.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/ad.md"
+    },
+    {
+      "bytes": 4801,
+      "git_blob_sha1": "f7b3e5fda9066bd97e330e5a22bfac2a0fb0f7d8",
+      "sha256": "75783485ee62d6e98a165410ef55536b3ce25f39745ba165310bb6e5e1e4a85f",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md"
+    },
+    {
+      "bytes": 4811,
+      "git_blob_sha1": "769604a579afaaab5ffd215fb2add3be621f07b2",
+      "sha256": "c6afc0912a7c0f1fa6d62b6d75c4690b45542a3701b18e5d5e3293a1ef1c1cbd",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md"
+    },
+    {
+      "bytes": 1253,
+      "git_blob_sha1": "05f077d511bd486e3417235ab10d9d87a2ba87c6",
+      "sha256": "d2fd4540885b7c7111f9b334bc32f0a052d220e6f2f5dbfa78d76aea699cf88a",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/index.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/index.md"
+    },
+    {
+      "bytes": 23087,
+      "git_blob_sha1": "1922c08536e3456c9a672b81da2f753e9c72c84e",
+      "sha256": "ec091443a6700e7fe8694d54c739c57cbc7c98ec22ca7555854d408c2eea8cc5",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/intermediate_representation.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/intermediate_representation.md"
+    },
+    {
+      "bytes": 2875,
+      "git_blob_sha1": "12a55002a798697ec1388efd67e4ab2aba8dffea",
+      "sha256": "30979942c6f44c9bdf8d91cc7af2bd83e6333c88ded8088aa0ba0382d7333794",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/overview_of_frontend.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/overview_of_frontend.md"
+    },
+    {
+      "bytes": 2503,
+      "git_blob_sha1": "0fa2c045231d9f7ad2402202a05ad7115286f4a2",
+      "sha256": "7cc3ae34e376c7a007a7652db75f58e75d1f844761e5ba3088245fb2a0ce6bcc",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/summary.md"
+    },
+    {
+      "bytes": 7022,
+      "git_blob_sha1": "a3c2ce1ab7f14378c34f3cd66f6f394d76f41de7",
+      "sha256": "ebf50c76f096aae94c21734c9c2cbe0083b2109d84f7f7856d8f746dafa23883",
+      "snapshot_path": "files/v1/en_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md",
+      "upstream_path": "v1/en_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md"
+    },
+    {
+      "bytes": 2926,
+      "git_blob_sha1": "548b1854986594897342ecf807e02bb128d938f9",
+      "sha256": "6ebe551394d1b1a394995306e289ede50bb1ad9980d9e186d63c69f2c73615ab",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/applications.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/applications.md"
+    },
+    {
+      "bytes": 4084,
+      "git_blob_sha1": "36146794cb5d69a4377392df13541a36b86b0c09",
+      "sha256": "dd7911294adf8c9bbc56a4bf2722f1c27ffe21aae83ba50a6f8b4999ad6d9f70",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/architecture.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/architecture.md"
+    },
+    {
+      "bytes": 5201,
+      "git_blob_sha1": "7ede2a7fa38b885306c9b73efc6da2c633b90a96",
+      "sha256": "98a8c4c2eeceee6a599908b74fc8fabe8579d95d1d253fd63dc022d320585c46",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/design.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/design.md"
+    },
+    {
+      "bytes": 4378,
+      "git_blob_sha1": "f0185c9d71da4026cdf36a5f593e056faaef0fb2",
+      "sha256": "ec43175604974ab1ec7821f6a09fbcbf1e360952e1921d47ad5cff47e6d7c75b",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/ecosystem.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/ecosystem.md"
+    },
+    {
+      "bytes": 508,
+      "git_blob_sha1": "2a21f6a2a319585e15fa80fbe03902ad604b1533",
+      "sha256": "629445a83d8d44347d2532f717ef0ca4181ed6f2c5178ad99dc3b8921d062f0a",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/index.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/index.md"
+    },
+    {
+      "bytes": 1816,
+      "git_blob_sha1": "8c14166c0dbfbbbb0d49953ff8939c77ae23643e",
+      "sha256": "9938093e3482ae849e2155b90f0b10c44cea6118df42dad4bb8932b53f249260",
+      "snapshot_path": "files/v1/en_chapters/chapter_introduction/readers.md",
+      "upstream_path": "v1/en_chapters/chapter_introduction/readers.md"
+    },
+    {
+      "bytes": 1084,
+      "git_blob_sha1": "ec00ccc4f5b0c5c6f350e42b33e961d363cf68aa",
+      "sha256": "8b9d5b517255dbe4a1de0f7a31c92e81c2c8c095b9d3caaa150fa690bf6ab361",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/index.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/index.md"
+    },
+    {
+      "bytes": 19182,
+      "git_blob_sha1": "ad8131cfdc9609187883b9bf40e375633bdb7bb8",
+      "sha256": "d43c56dd830fe7ae8b8824f1dd2c4a2b0daaccc8c6062c7f7ce443c498a789dc",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/model_compression.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_compression.md"
+    },
+    {
+      "bytes": 11663,
+      "git_blob_sha1": "5ce3de2399779b3e477ae3a610233cbfb0ba99e5",
+      "sha256": "aed8bffaa49da48bcaa7d7b4d724a0c0c0bce78a76c3a6b319f5205cccfe9011",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/model_converter_and_optimizer.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_converter_and_optimizer.md"
+    },
+    {
+      "bytes": 3866,
+      "git_blob_sha1": "9561ac768272837724f26f9a1e030b3a82bf5dfb",
+      "sha256": "9ec17d653a126f6fca40eb52d3e91c8a8cd3bcc208bf95dcd7f41eba07c6e9d6",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/model_deployment_introduction.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_deployment_introduction.md"
+    },
+    {
+      "bytes": 17661,
+      "git_blob_sha1": "98ff81d521b7888ca849f0acdf88545214aeb427",
+      "sha256": "d4187e1e671c08e8d26f4e08d7af262db5034273b8d908a3e25394d6105b4386",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/model_inference.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_inference.md"
+    },
+    {
+      "bytes": 9727,
+      "git_blob_sha1": "58d7a9dd34f706e7980be22bbb13dbb652e25e37",
+      "sha256": "b356cc042b8cad53015467298cef0bddfb8d1236ac2a9af8a85ef0c56b0b14f3",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/model_security.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/model_security.md"
+    },
+    {
+      "bytes": 2031,
+      "git_blob_sha1": "b001e4669e59640da3747935fdc21c4a1bae05af",
+      "sha256": "574a1cc191ea327f5ed5d30341a0fe13cab1268a4bdd0a6e52b80e1a8fdfd47b",
+      "snapshot_path": "files/v1/en_chapters/chapter_model_deployment/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_model_deployment/summary.md"
+    },
+    {
+      "bytes": 13649,
+      "git_blob_sha1": "9d00b7fc7de7eb7c41b97daac61e810bd368ef19",
+      "sha256": "be8ddf2a44d0c28384dc8da475887471fae7ed5b2bf81c3a1dde2683061224d9",
+      "snapshot_path": "files/v1/en_chapters/chapter_preface/index.md",
+      "upstream_path": "v1/en_chapters/chapter_preface/index.md"
+    },
+    {
+      "bytes": 637,
+      "git_blob_sha1": "8e7aaaed449c8a706496ca718e33e4259448bb24",
+      "sha256": "e009a1d79a16bb6fa7b2d7fe2ac7885dc0654b05a2f0df856ad2a1418fd5c529",
+      "snapshot_path": "files/v1/en_chapters/chapter_preface_advanced/index.md",
+      "upstream_path": "v1/en_chapters/chapter_preface_advanced/index.md"
+    },
+    {
+      "bytes": 292,
+      "git_blob_sha1": "638f40b9785ec4e833e94f4c6cbc051031de3941",
+      "sha256": "bacf1f583f92f62bc5bf2cc3066afb1d1ddf95ba1beb9cf030ea4d6c00c01b8c",
+      "snapshot_path": "files/v1/en_chapters/chapter_preface_extension/index.md",
+      "upstream_path": "v1/en_chapters/chapter_preface_extension/index.md"
+    },
+    {
+      "bytes": 4195,
+      "git_blob_sha1": "43b25bfeba77333b89f489ab6bee1562db6e2ffa",
+      "sha256": "f38b52050b4457cb3ba8f6c94a59946b958e7806b35ca5c46b4f17419dfe1f80",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/c_python_interaction.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/c_python_interaction.md"
+    },
+    {
+      "bytes": 5165,
+      "git_blob_sha1": "5c60d67416ae7d52096b48467498ea0202117638",
+      "sha256": "ab7c2b79877c634c3b3dd24c5a24b870a49411015ae86f938fb4bc31e78e1e4e",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/development_history.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/development_history.md"
+    },
+    {
+      "bytes": 2035,
+      "git_blob_sha1": "11b7276db205831fb5fef44698841e427062b6f6",
+      "sha256": "3991d9145220a550aab449c3be2e0b7bca5c9bd884930e2a8f936766f58c879f",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/index.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/index.md"
+    },
+    {
+      "bytes": 6247,
+      "git_blob_sha1": "9e7bb8f516aa3e406cb6938bf4e264f85333d953",
+      "sha256": "54684147cde41f0c0884508fbc2bfc1f8cdd19a7769dc40175f0b1ccb1b0f798",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/ml_programming_paradigm.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/ml_programming_paradigm.md"
+    },
+    {
+      "bytes": 5313,
+      "git_blob_sha1": "8fc64f1fd9537b441e5f2eb44b0f08fdab67f85d",
+      "sha256": "7837171347cbb56cbdf8f10d29441399e9f8e3376a705762b3bd218f22f1b365",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/ml_workflow.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/ml_workflow.md"
+    },
+    {
+      "bytes": 8026,
+      "git_blob_sha1": "34e94126f5a587c846716e8a0d12fafd328bc2e8",
+      "sha256": "348c7862e29a1b25345692e5ef395884f2efc49304043d1ec8e10572cb1597f7",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/neural_network_layer.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/neural_network_layer.md"
+    },
+    {
+      "bytes": 1101,
+      "git_blob_sha1": "73e9db3bf52e320ed6f819f253cd0b33cbb9893d",
+      "sha256": "2e120e646d40f3c2a29b7247959f5acc6f517ad39c8415c627666c6a52080b46",
+      "snapshot_path": "files/v1/en_chapters/chapter_programming_interface/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_programming_interface/summary.md"
+    },
+    {
+      "bytes": 12430,
+      "git_blob_sha1": "2f03a44385704adf9dd33faab1f74e107e09d077",
+      "sha256": "547262fa8e281c486907c5d6398c6eae5c007cba4ef82bbf05acaff68d2b6f81",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/case_study.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/case_study.md"
+    },
+    {
+      "bytes": 1736,
+      "git_blob_sha1": "ebb6bd97640207900d6e565d65f33e8b1d3aa8a0",
+      "sha256": "d870a448c9c0ca1a05e052ca572558a0e2ad59539f5662d6d38b8d3f09416fc7",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/index.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/index.md"
+    },
+    {
+      "bytes": 5791,
+      "git_blob_sha1": "8270a30566708eea6e48c84b78c72b9c0305e82f",
+      "sha256": "5326a17d34522747253f53947a59c490c7234d3320de98ed210f65b2d0520a25",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/model_update.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/model_update.md"
+    },
+    {
+      "bytes": 12856,
+      "git_blob_sha1": "1b2bbef969a000f0b36d0674049494a38680926f",
+      "sha256": "52695f38cb68430b2d7e0747dfef7b34412bcf1703c884f9ac2d108b640142d2",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/multi_stage_recommender_system.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/multi_stage_recommender_system.md"
+    },
+    {
+      "bytes": 1205,
+      "git_blob_sha1": "2c87f4fd814d1e4f718bd19b76e1879355aa9502",
+      "sha256": "b3c368752481925dc0d36317d4a36235ff9db6ca1ac5971f4aa35ea843911cde",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/summary.md"
+    },
+    {
+      "bytes": 12829,
+      "git_blob_sha1": "3244ce5b154ce36991d877fefcc60f3d9c6f992a",
+      "sha256": "6ce9e74818c3dc185a7daa9243c666f30f085735c714bee6d0add8d5cb245c57",
+      "snapshot_path": "files/v1/en_chapters/chapter_recommender_system/system_architecture.md",
+      "upstream_path": "v1/en_chapters/chapter_recommender_system/system_architecture.md"
+    },
+    {
+      "bytes": 635,
+      "git_blob_sha1": "44ff5b6dcdb1710ec406d406938d030117e02296",
+      "sha256": "39d6c218788dea52445f3388e11b19311de56157f5f2ca609b2db25cf8746250",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/index.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/index.md"
+    },
+    {
+      "bytes": 8459,
+      "git_blob_sha1": "571d72b1f529da1af7e1aa26dd3d7e5709cf979f",
+      "sha256": "193d7470e4f4dc38587cfebfbb4a27637aefb038db15b6aeaca27e5f9deb95db",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/marl.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/marl.md"
+    },
+    {
+      "bytes": 11803,
+      "git_blob_sha1": "9bfa20ef728590be3ff4dbbae1f1817bfc56234d",
+      "sha256": "3aba68b43f33bcaeb5f386980439969baa8b5860eec0ab30fa76ab6b1dbf8e9f",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/marl_sys.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/marl_sys.md"
+    },
+    {
+      "bytes": 6930,
+      "git_blob_sha1": "24a8e7f2f13dd88a97b1c195e830f36c5bacfe79",
+      "sha256": "43af83c7fb70ff0ec1f49132678670ffa6c5e799c0d6b1ea8ae58e7d5b49c033",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/rl_introduction.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/rl_introduction.md"
+    },
+    {
+      "bytes": 8047,
+      "git_blob_sha1": "9fbd51384f3879c88e8391dc4bce347faaab2c82",
+      "sha256": "eda8158d332ebecdf415980774bf469de92a79e2b8602a2d4cf8589eb45c9c9e",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/single_node_rl.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/single_node_rl.md"
+    },
+    {
+      "bytes": 1326,
+      "git_blob_sha1": "5fd0d8dd09e8994999ae0dcc2fd23e4954fc91b6",
+      "sha256": "1e57e54b0b7c526c7f70200d3ff5bbc51dd11e6373115ac38c5b83a552b9d6a3",
+      "snapshot_path": "files/v1/en_chapters/chapter_reinforcement_learning/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_reinforcement_learning/summary.md"
+    },
+    {
+      "bytes": 2932,
+      "git_blob_sha1": "136d39b0aed0c12bb7ad2d781aac7fb6cb3e44bd",
+      "sha256": "8e0a0a465e88561db9581a171a74a0c290fc7e92165d81b3dfddc9996ef7f771",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/control.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/control.md"
+    },
+    {
+      "bytes": 7530,
+      "git_blob_sha1": "9ff52bc72f428ec2311c36163e1d7cd85f99d948",
+      "sha256": "deee8963c40d451aafedb459e190357b831e3d0a34ec339295f6d00bf6ad1844",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/control_code_ex.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/control_code_ex.md"
+    },
+    {
+      "bytes": 452,
+      "git_blob_sha1": "a452c90b9a6b59f13219ac0fc88340fcf606af4a",
+      "sha256": "6d00ef2383be6d746e1c2e3f2ae887a49e772579674232f7c02db6391e54b89c",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/index.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/index.md"
+    },
+    {
+      "bytes": 5863,
+      "git_blob_sha1": "97242ecdb248e33dad8f25e4921c6abf40b7e1da",
+      "sha256": "98e4f5a81dc1b9b72201f8e12d03bee2c9d1e2dd48dead7f094adbb25d80ae82",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/perception.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/perception.md"
+    },
+    {
+      "bytes": 13270,
+      "git_blob_sha1": "267885f3489d78309354aa5b136ad720da304dc9",
+      "sha256": "c9a1e1ff741541f66193e9532905714cdbb08298001675e17327112146b8b9d9",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/perception_code_ex.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/perception_code_ex.md"
+    },
+    {
+      "bytes": 2180,
+      "git_blob_sha1": "47d6c4b1c437ef857195757d98050d3b7c7c9a21",
+      "sha256": "01835ef49b81c924d42f2bb5d16b1b78e9a6f5368067bc391f2e87c5984cbbbf",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/planning.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/planning.md"
+    },
+    {
+      "bytes": 11370,
+      "git_blob_sha1": "a403d1c71f5d3a8f4ea0938c70242d52df60bab1",
+      "sha256": "c38519b9f9d0f89d52061e5cfa7f8c5fae46bc98c72620fc54fd1069d273629c",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/planning_code_ex.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/planning_code_ex.md"
+    },
+    {
+      "bytes": 16727,
+      "git_blob_sha1": "a59c1cbc7dc1346f32595f1e7c9e9e775f2abf5f",
+      "sha256": "a834b4fa77e37fb9068fef2db102e098b5cd055411a9ebdadb1bd3b19dd6dec9",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/rl_sys_intro.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/rl_sys_intro.md"
+    },
+    {
+      "bytes": 21775,
+      "git_blob_sha1": "0839f7ec1d7a88a727a89f135f1b7e1641476c60",
+      "sha256": "816172ff50ec400de1210e5cefdb5ac96825cf4c1ae4b4671c70ad0df80a2151",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/robot_learning.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/robot_learning.md"
+    },
+    {
+      "bytes": 7244,
+      "git_blob_sha1": "05a990cc98418fd983f29502fd2870b3cdf1831f",
+      "sha256": "14c050a83301657ddf7d1042a5d228a0d42319675d08c35f83fcd5b7d9b798ec",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/robot_safety.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/robot_safety.md"
+    },
+    {
+      "bytes": 8661,
+      "git_blob_sha1": "0ac04d2844ffd95010a5880c7f87d87152719877",
+      "sha256": "5f524acc830fd58ee37daf4b19e7a253dbaedd868e199ef6f6c9367f843b7caa",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/ros.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/ros.md"
+    },
+    {
+      "bytes": 46164,
+      "git_blob_sha1": "87642af796d7f522fdfcd5d499fa053d2b9d9afc",
+      "sha256": "a0c71f3702cdc43079377ed6350e164e4236a0666952189e56777f7f5aeebae2",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/ros_code_ex.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/ros_code_ex.md"
+    },
+    {
+      "bytes": 536,
+      "git_blob_sha1": "c2757c993585a74d9da197d26f92adad22a471db",
+      "sha256": "f4cfcacc1c14a51203af3be3da2c1d08a86238fb688ddfb3d8cc3899c7807c1f",
+      "snapshot_path": "files/v1/en_chapters/chapter_rl_sys/summary.md",
+      "upstream_path": "v1/en_chapters/chapter_rl_sys/summary.md"
+    },
+    {
+      "bytes": 822,
+      "git_blob_sha1": "1b9b862ee57ae19e3f39edba9fb090dba02b27bd",
+      "sha256": "8ff5268df2d095d20ab7ca8b5374cdcda4c69917b722013320b22acbc88b05a9",
+      "snapshot_path": "files/v1/en_chapters/index.md",
+      "upstream_path": "v1/en_chapters/index.md"
+    },
+    {
+      "bytes": 6625,
+      "git_blob_sha1": "e5dcd72acf6f8699a8f4fb6a5da30a1bd95b463e",
+      "sha256": "5cfdb40d7e769d419a62e1dff7a26b50a3c637ae872a108c39279308354b7c3f",
+      "snapshot_path": "files/v1/zh_chapters/SUMMARY.md",
+      "upstream_path": "v1/zh_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 5621,
+      "git_blob_sha1": "e573e1d8f2ae92b0f006ea446be1fd457847fa9d",
+      "sha256": "b40358ecfc72d82e5fad9c3354983bde02d4acfc2d7866cc421a89338afd099f",
+      "snapshot_path": "files/v1/zh_chapters/appendix_machine_learning_introduction/classic_machine_learning.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/classic_machine_learning.md"
+    },
+    {
+      "bytes": 7364,
+      "git_blob_sha1": "e7db43cf0cd07a83266cd05bcdfaaf7598a1335c",
+      "sha256": "1933fe4022e23526000fba91997383488ce3696f7f8fe6eede2b9ced64279a81",
+      "snapshot_path": "files/v1/zh_chapters/appendix_machine_learning_introduction/gradient_descent.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/gradient_descent.md"
+    },
+    {
+      "bytes": 338,
+      "git_blob_sha1": "680737bbc8be9d961831349f794944a1e161c088",
+      "sha256": "52130a24258b45f04d2fd9fa0bbeccf4e9a74e85180d0880b8af4baa40f96f31",
+      "snapshot_path": "files/v1/zh_chapters/appendix_machine_learning_introduction/index.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/index.md"
+    },
+    {
+      "bytes": 11221,
+      "git_blob_sha1": "f9ef31c6e001daf5146d361b79f503cdfb2f2843",
+      "sha256": "480ba9b340caaa854fd4a63a96d34c45143c10e1d0b398181e1c9ed00a468135",
+      "snapshot_path": "files/v1/zh_chapters/appendix_machine_learning_introduction/neural_network.md",
+      "upstream_path": "v1/zh_chapters/appendix_machine_learning_introduction/neural_network.md"
+    },
+    {
+      "bytes": 9613,
+      "git_blob_sha1": "dfdf33831d057bf871cff2960d1aa1bb1da1a945",
+      "sha256": "39a9b541d2f5962fbc06b3427117fbbf3090933d9804241fc2e39be739d736a7",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/accelerator_architecture.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_architecture.md"
+    },
+    {
+      "bytes": 2937,
+      "git_blob_sha1": "c24264259a76eada505177fdd4cbe4d85526df49",
+      "sha256": "e5008ae203736a2aff158084df15855d438461e903ac996129912b48f6cae4f6",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/accelerator_introduction.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_introduction.md"
+    },
+    {
+      "bytes": 21675,
+      "git_blob_sha1": "b7ea30652df39ed9a5811eea5547326650621fee",
+      "sha256": "9e27354f98eb1560bf93481804d15e8470aa83219d7430852cab5bf9819af461",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/accelerator_practise.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_practise.md"
+    },
+    {
+      "bytes": 16063,
+      "git_blob_sha1": "f8a1192910966696677791e1ba7fd0f8cb4fe75a",
+      "sha256": "f7dadaad1cf62e9c98d3be2e5febc72a3b9117eefada50872cc186d9e72f1ed6",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/accelerator_programming.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/accelerator_programming.md"
+    },
+    {
+      "bytes": 979,
+      "git_blob_sha1": "78dc4092147bfb401c0d1338650a2d8442446e7d",
+      "sha256": "77e57ca6c7faabe8dea0333a99f98f8367562f6d1645f21fdf01a4b367edf4e9",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 753,
+      "git_blob_sha1": "b752398e7a13394b10b95d8eeb24f30894960d7b",
+      "sha256": "b3eafbe72eef85b3ce3d2d0b38cf02b432ebe5f55da3ba1497f312ee8c1dcad3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_accelerator/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_accelerator/summary.md"
+    },
+    {
+      "bytes": 16310,
+      "git_blob_sha1": "3b3507f7ec276b61c50153a33cabb0e0768de55a",
+      "sha256": "a9e2ae2bce9cabebe1332b24636702b92e6f915e7609285760828b69108909aa",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/compute_schedule_and_execute.md"
+    },
+    {
+      "bytes": 5338,
+      "git_blob_sha1": "fb3df766b9f73b391377c23516386f1b83b11e30",
+      "sha256": "dfc3ae949e8658d089d85ff7aaa7dec5d2b970d28022e0f97848a052f93e858f",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/graph_optimizer.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/graph_optimizer.md"
+    },
+    {
+      "bytes": 1112,
+      "git_blob_sha1": "e995880a494f096338a17737448aa3b1406ad909",
+      "sha256": "c91898c03556054ee1a0a1c28833dfb11da47179f0cfb3b4484ffa364a420da4",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/index.md"
+    },
+    {
+      "bytes": 9263,
+      "git_blob_sha1": "cdeeddb8f77572fdd5a1931fd05599e679001f6f",
+      "sha256": "ea7244fad921ab8f3ba1f4cde5386cd4670f40938545f0284670670fdd2ab773",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/kernel_selecter.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/kernel_selecter.md"
+    },
+    {
+      "bytes": 9807,
+      "git_blob_sha1": "cab2825d8d6c3dbbb0fbb73b25b80e0b69d33a14",
+      "sha256": "6efbb5302b9e26078982f048fc6a91b2f6b7b8ae88a76c4558ebaca1982fe30c",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/memory_allocator.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/memory_allocator.md"
+    },
+    {
+      "bytes": 14435,
+      "git_blob_sha1": "b1e3fd899a0a4e538019cec6b7c94d996d7e1e03",
+      "sha256": "07b3ba39fc835f6f042df1aaf76d1600f383d91562e531bf9131e59505009d91",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/op_compiler.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/op_compiler.md"
+    },
+    {
+      "bytes": 5473,
+      "git_blob_sha1": "a56d7ebb4248f71afd5ad922e93a254bfc19c557",
+      "sha256": "2d4feed96e9fe00da8b2c7b97359dfadd7a8f7cdf75d5d418fb6148cc39b327f",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/overview.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/overview.md"
+    },
+    {
+      "bytes": 2767,
+      "git_blob_sha1": "139d78edc1c6c96ac31b23c848b50abd41866962",
+      "sha256": "04aacfd8752e25ec0a06fde63dec9c2dbc8265bd7144e28ef33a239a6317825e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_backend_and_runtime/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_backend_and_runtime/summary.md"
+    },
+    {
+      "bytes": 3058,
+      "git_blob_sha1": "64823c38cdb321de39a10af9ecafc0e20fc45a61",
+      "sha256": "487bf28627e219f2c5e73bce3945027cc6c43f686932682cf4bb548496b75e91",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/background_and_functionality.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/background_and_functionality.md"
+    },
+    {
+      "bytes": 21688,
+      "git_blob_sha1": "ff0cfc513c276d195a198b66719209c331412f54",
+      "sha256": "0e963286b56ae6ce2a519324521169159c7cd3b0e2b9e22f134a86e95a7aa7af",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/components_of_computational_graph.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/components_of_computational_graph.md"
+    },
+    {
+      "bytes": 21197,
+      "git_blob_sha1": "97cd79d46439314123632d45546ca40243151a51",
+      "sha256": "af81e785cad726464475bc91e53a54d4c795893211ba28f5c0cfb1fff8ffb65d",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/generation_of_computational_graph.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/generation_of_computational_graph.md"
+    },
+    {
+      "bytes": 902,
+      "git_blob_sha1": "b1e53a0f70bf40978d4aa36fa54f6b3781d5ddf9",
+      "sha256": "9c59c3617e481fc53f5e8f17b1d1cef0e19937e52145b0a7d39bde0cc8dd1acc",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/index.md"
+    },
+    {
+      "bytes": 7661,
+      "git_blob_sha1": "1d55ee0629cc8f33f7dbc9f9544cced0398c948f",
+      "sha256": "4ee9a070f0269b3e77a4f8eb6a85ddd1054edb0ff2b1c78d576c1b9d8f18c119",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/schedule_of_computational_graph.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/schedule_of_computational_graph.md"
+    },
+    {
+      "bytes": 2376,
+      "git_blob_sha1": "7e70fce4e52ee94a3977966ffb47f10065b72330",
+      "sha256": "3d3bf33098dc663a982320e54562c07704c3645905eba4b5b8e33a533eaf8bcf",
+      "snapshot_path": "files/v1/zh_chapters/chapter_computational_graph/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_computational_graph/summary.md"
+    },
+    {
+      "bytes": 3008,
+      "git_blob_sha1": "1e38a8dab363f3420c9bc4b1ec6f62574ffe0900",
+      "sha256": "39c2c93b582ac2a211f8eb55921e48707ee8f4284a875b27f36619a53ab1e631",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/data_order.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/data_order.md"
+    },
+    {
+      "bytes": 7158,
+      "git_blob_sha1": "89d7ac187d195fcc5af5694e4997de388fce22ed",
+      "sha256": "38f1f165d6c8dcd09b684c0c3a33f70db3ff484e1ad089e0c189a2287b29f3f4",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/extension.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/extension.md"
+    },
+    {
+      "bytes": 3095,
+      "git_blob_sha1": "594c073e7d14ca9f2ee2613f3d879e6fcea4f540",
+      "sha256": "8aa0f71a495b223a606f83d15c3351a31bc91dd65d6ebede0d9f0ab9855df8b3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 18577,
+      "git_blob_sha1": "13f48f2e845531ba851567f41f4165a4e9f18c5f",
+      "sha256": "7f1126b211fe0862f80d966aea5854436fbab2668d57b11d27b15a94ff6ea279",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/performance.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/performance.md"
+    },
+    {
+      "bytes": 12680,
+      "git_blob_sha1": "a528aa7077fda0f4aaf40b7f996dc70fc04db77e",
+      "sha256": "ddadc9e5be782ca2ae75d53f4b287ce2415253dc37e5e2861459ed0f31fc15c4",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/program_model.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/program_model.md"
+    },
+    {
+      "bytes": 4873,
+      "git_blob_sha1": "2c665b517547fbb15fd1ede2fc8ac27bffdd18cf",
+      "sha256": "e92ee3347341e17a86f12ac2e4f1cbad9479da467b7043bd1bcd9ef6adc1c9ef",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/requirements.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/requirements.md"
+    },
+    {
+      "bytes": 1829,
+      "git_blob_sha1": "83d3126c16077dfbf528bf013694266d7897f099",
+      "sha256": "3fea0ff9ba38a689826e7f396a5a43732eff13515dfb52fcf7236c7335e39124",
+      "snapshot_path": "files/v1/zh_chapters/chapter_data_processing/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_data_processing/summary.md"
+    },
+    {
+      "bytes": 5039,
+      "git_blob_sha1": "fb430e4cf6f9a3389ab422149a39f544ced12100",
+      "sha256": "b74dd80d086992ea3a383fa5f93d0cda596233042a69a08592a5f1cc2dbed26e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/cluster.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/cluster.md"
+    },
+    {
+      "bytes": 30613,
+      "git_blob_sha1": "16fc10bcb671d2ab1c3100d537d597a5bc1b3bd0",
+      "sha256": "ff9cb88bbde5d253fc2650840f68bc79f6b1e051a7192571a01ce60cd7df20c6",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/collective.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/collective.md"
+    },
+    {
+      "bytes": 1334,
+      "git_blob_sha1": "ef934338524e0be6279e33d321082f384f40b9cf",
+      "sha256": "6f59fcb0553bb3dbf2cc931054212467ed36b5e44584984bc820562ee15da510",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/index.md"
+    },
+    {
+      "bytes": 13348,
+      "git_blob_sha1": "77af30d774d3f40093190574510dd11144b93b91",
+      "sha256": "d66d93825808fe194082f31fe89cc257471ca3adc324d54368128dbcd9ae3b2a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/methods.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/methods.md"
+    },
+    {
+      "bytes": 5762,
+      "git_blob_sha1": "16f2947edd17518a2edb464582935a321d37d57a",
+      "sha256": "9a3cb65155911b910f064f7779ab727829c5884692c920cafc28efee35124eb3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/overview.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/overview.md"
+    },
+    {
+      "bytes": 5964,
+      "git_blob_sha1": "c46194f1e3082b065dd3c73d1cd4aac328f3c521",
+      "sha256": "9a039ba50eb22c033352eb1060f257fc59487778ce0af2320d6aea774424d8de",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/parameter_servers.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/parameter_servers.md"
+    },
+    {
+      "bytes": 1793,
+      "git_blob_sha1": "82c818aaa263fa82fc242a5012c2a77802875d7b",
+      "sha256": "98aab7dd667507ca91e8b19e954e0bd7b1c42b7826435c57d7d3b5d3eea0efe3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_distributed_training/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_distributed_training/summary.md"
+    },
+    {
+      "bytes": 26233,
+      "git_blob_sha1": "b638defdca8f47ebbca8a094e24c730ff9dc445c",
+      "sha256": "0216943d5a095c5b3663b2db44c062bda6e9d5c2695a6ee331546367a8f356fe",
+      "snapshot_path": "files/v1/zh_chapters/chapter_explainable_AI/explainable_ai.md",
+      "upstream_path": "v1/zh_chapters/chapter_explainable_AI/explainable_ai.md"
+    },
+    {
+      "bytes": 2203,
+      "git_blob_sha1": "c434bd749f6a97e4526bb148788f89c01e5ecf98",
+      "sha256": "cec2e1e00df03457dcadf6412997a9dd0aeba954f83d869b99e3f191324f0c37",
+      "snapshot_path": "files/v1/zh_chapters/chapter_explainable_AI/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_explainable_AI/index.md"
+    },
+    {
+      "bytes": 5443,
+      "git_blob_sha1": "63e7f0b1e2380316b67878714f5edebf44177b85",
+      "sha256": "b1e121cf1ea1251167c4019e020c4c1359c507501e907972969455cdd98c4cfa",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/horizontal_fl.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/horizontal_fl.md"
+    },
+    {
+      "bytes": 513,
+      "git_blob_sha1": "08d05a92d398b84595e7841936cde765321b5946",
+      "sha256": "885f1ee78133814864c4ece6a5edae3569e17a61a0ed22756008a6e2955c64b2",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/index.md"
+    },
+    {
+      "bytes": 6402,
+      "git_blob_sha1": "263933d05e676c1769b4db2086a580d945652843",
+      "sha256": "b76c650b4e8bd1672c41e7d588af046995b3793dcb81d53e94b1646d68acc757",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/outlook.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/outlook.md"
+    },
+    {
+      "bytes": 8286,
+      "git_blob_sha1": "4ad9ee372e8589cf1dfb3882fd1216102340164a",
+      "sha256": "74decb303b56c2e62e3d74934cbb7a93fa6717a37357579d88de6dc3f813a5f3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/overview.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/overview.md"
+    },
+    {
+      "bytes": 12689,
+      "git_blob_sha1": "641eb072bbe70434e21c1333287e8062e309f414",
+      "sha256": "87e89c58b7ad41255d12bc0fec7811ab2b20165704f6c0436f387abd63189199",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/privacy_encryption_algorithm.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/privacy_encryption_algorithm.md"
+    },
+    {
+      "bytes": 720,
+      "git_blob_sha1": "f1195c1e986cce8bb243e75763d7677281af6729",
+      "sha256": "fa9e30977a1bd9c50b4fbb57f6f4c37f6c607a26c1be3ebd787ee297970ef60e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/summary.md"
+    },
+    {
+      "bytes": 6336,
+      "git_blob_sha1": "bb18b03e22d84faefca3be1ab4088a7f49846c8f",
+      "sha256": "f9d96817bd1d49ee7484c6de5992366e316cf592e9bd2420991b2e347308b80d",
+      "snapshot_path": "files/v1/zh_chapters/chapter_federated_learning/vertical_fl.md",
+      "upstream_path": "v1/zh_chapters/chapter_federated_learning/vertical_fl.md"
+    },
+    {
+      "bytes": 21491,
+      "git_blob_sha1": "847bac9a504fecd63c158489705c0b68fa24e4b7",
+      "sha256": "fb5b0ae8ebb1731c531b4c3c24db92d2abf72c293909aef75d319b4cdce53de9",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/ad.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/ad.md"
+    },
+    {
+      "bytes": 3934,
+      "git_blob_sha1": "ae99470f0e19391da2e459e351d6d685ff20cafb",
+      "sha256": "28ae87f0921e6c2fe88cb20e70ae852a9faed640abe32d9112ee4f4bf1de3c03",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/ai_compiler_design_principle.md"
+    },
+    {
+      "bytes": 3234,
+      "git_blob_sha1": "130924b935b6daa0adb5fac2c7c48aa4002325f4",
+      "sha256": "3b7fe7612d271abcbf9c8eac8f36f833193571183252fb6144ac7459b4f3c85e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/common_frontend_optimization_pass.md"
+    },
+    {
+      "bytes": 1468,
+      "git_blob_sha1": "0e7d82a1b558eb3feccccb14e0813a66e58b917b",
+      "sha256": "4e5983cba95d498eb6c9422764f18f05a9b5e64298916932b7ffebd336559c42",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/index.md"
+    },
+    {
+      "bytes": 21740,
+      "git_blob_sha1": "c6ce462da4efaaf4f1df02bf870cc78b6dd1515f",
+      "sha256": "d180b4b53e47a1381b1b2d0b381addbe5d09496657eb76f0e7d2c51119c5106a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/intermediate_representation.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/intermediate_representation.md"
+    },
+    {
+      "bytes": 2630,
+      "git_blob_sha1": "63595ee7ed7e776e6b6786525380643032b96923",
+      "sha256": "bef585b16cd8f6c0faeac28159320b34c4ef339adad1b58bff60fd64416b0b6b",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/overview_of_frontend.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/overview_of_frontend.md"
+    },
+    {
+      "bytes": 2049,
+      "git_blob_sha1": "21c69cc731c37c00832c4331c8ac00b98dc75448",
+      "sha256": "aedbaacc09621486aa394bfa62b89c30b92f7c06f9b17fe3b5dee971e640d2af",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/summary.md"
+    },
+    {
+      "bytes": 5452,
+      "git_blob_sha1": "bd3403cc1363dc78c4387b86a2d49c07851c62ad",
+      "sha256": "275bf697dace541a076101ebac3839cc3950e5788cb734324cd322cfecfd6ac3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md",
+      "upstream_path": "v1/zh_chapters/chapter_frontend_and_ir/type_system_and_static_analysis.md"
+    },
+    {
+      "bytes": 2504,
+      "git_blob_sha1": "5233681e05fef44a15b16def932b6585017fbe82",
+      "sha256": "18a664bc5ab09f876b7223c7b2e510247f81fe0af215eca2a3fad8ce79264166",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/applications.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/applications.md"
+    },
+    {
+      "bytes": 3293,
+      "git_blob_sha1": "44404b6ca5faa52c4b69377fd900ca4ff0bc4b6d",
+      "sha256": "611fa1ab737d4a332158e64c0c80de9b8564fb98dded682ffeb8878c558774b3",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/architecture.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/architecture.md"
+    },
+    {
+      "bytes": 3850,
+      "git_blob_sha1": "b48a9e1159640b073e57b3e6d9bd627959c2efdb",
+      "sha256": "1650336ced4aaa70a884b4cd7a26cb9e1977819040c114b1595cf3659dad658d",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/design.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/design.md"
+    },
+    {
+      "bytes": 3222,
+      "git_blob_sha1": "41c87fabe81fd19a7990572d149355879e672449",
+      "sha256": "c3f7fd79c56e55ed706edc26144857e339dfbf3573750a1971e3ec8dd890257a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/ecosystem.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/ecosystem.md"
+    },
+    {
+      "bytes": 285,
+      "git_blob_sha1": "0c5fff391f0d9e82076de7f731f234485c3927f3",
+      "sha256": "f105e17dc4bf2bd7fc64e771ca7b6dc680320c4eee9e7168bbd8e54c14c8c6fe",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/index.md"
+    },
+    {
+      "bytes": 1165,
+      "git_blob_sha1": "e2a4475606ab00ef6d48644a49085e2c05de925b",
+      "sha256": "ceb78cd8cf0ed340d587b135fe3ceef37d9cb13502d0d548631bfc251fc5e230",
+      "snapshot_path": "files/v1/zh_chapters/chapter_introduction/readers.md",
+      "upstream_path": "v1/zh_chapters/chapter_introduction/readers.md"
+    },
+    {
+      "bytes": 1080,
+      "git_blob_sha1": "fab7c37cfff4537c9966f569d0a5eac5a1287786",
+      "sha256": "a99cf1c71c289c13f6b5ed03b2aaabce54bf5e6e177f5a0a79b23512b726c33e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/index.md"
+    },
+    {
+      "bytes": 16981,
+      "git_blob_sha1": "2d60952cf7f37f07338ef31019f0e0a13df675f3",
+      "sha256": "a1ebbbf6c6bf3a8ef480a42be946432696823d2c290e3ecd560420a5c209b80e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/model_compression.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_compression.md"
+    },
+    {
+      "bytes": 10692,
+      "git_blob_sha1": "f0d34c9b785a8ed023e5360c06621c4d7ec32441",
+      "sha256": "dbf66d90f405014ba400bd07a9f0c92591ad3e92a381b676567b0919d5569f68",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/model_converter_and_optimizer.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_converter_and_optimizer.md"
+    },
+    {
+      "bytes": 3365,
+      "git_blob_sha1": "84724c3be9ac274917ab35066239425af8186d77",
+      "sha256": "c48d6accf37d06742857cc697ef11e980e265429aa1684c8bd5a0e7af43faf99",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/model_deployment_introduction.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_deployment_introduction.md"
+    },
+    {
+      "bytes": 14070,
+      "git_blob_sha1": "53edaa052e4f0307d161203d0c7eb5b2e7fa24ed",
+      "sha256": "1ca85fbfe3add083e6ece389c3db71e954a7684f564dee8078a0b0a573f99e49",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/model_inference.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_inference.md"
+    },
+    {
+      "bytes": 7746,
+      "git_blob_sha1": "c71f53d8fdf1ce76d280c603cffb72fca5d94e0f",
+      "sha256": "7f2b26c2b2f9b4ebd554f411a14b0a4132cfda486bd9e9c61b0784cf288dd369",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/model_security.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/model_security.md"
+    },
+    {
+      "bytes": 2308,
+      "git_blob_sha1": "16cf61f9a19b4584c85070ca7df5366680771f12",
+      "sha256": "8d9e00794eb885a2e5acb028fd4fa9c647bdcea879093bf1149fab2f20727840",
+      "snapshot_path": "files/v1/zh_chapters/chapter_model_deployment/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_model_deployment/summary.md"
+    },
+    {
+      "bytes": 11601,
+      "git_blob_sha1": "7d6fa92220c2884a2ecaf5b5acce79f053790ee2",
+      "sha256": "b42199d7982c85a01e0021b218d2c77a3ba42e7cb909528ca9b33b6956e203a9",
+      "snapshot_path": "files/v1/zh_chapters/chapter_preface/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface/index.md"
+    },
+    {
+      "bytes": 361,
+      "git_blob_sha1": "4fc625558ca9f9241b01f32f47939035d5ea60a5",
+      "sha256": "320d66aabc6feb13fbbab06579a127725d753922efe9f834394ed29f2c4a4b98",
+      "snapshot_path": "files/v1/zh_chapters/chapter_preface_advanced/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface_advanced/index.md"
+    },
+    {
+      "bytes": 1037,
+      "git_blob_sha1": "c93ea16d1c90d55ac96c85b2ee064464256d8df0",
+      "sha256": "8cecf00fa7e0f0f048a96de01bc2ac486a41f35112476322514bebf0aacc83ee",
+      "snapshot_path": "files/v1/zh_chapters/chapter_preface_extension/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_preface_extension/index.md"
+    },
+    {
+      "bytes": 10260,
+      "git_blob_sha1": "47701bb280455ae1d112ff241e0cd12dbee3a09b",
+      "sha256": "ab03270b53fc1ce0af306779ef51eef552eaba1237c848e63bbb307a6762823e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/c_python_interaction.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/c_python_interaction.md"
+    },
+    {
+      "bytes": 4170,
+      "git_blob_sha1": "78c9afb29d878c69602642eccc42e26c9bc2e913",
+      "sha256": "66b84645058a44d7d7ffac34f3ce41d7cc3d3304e916bb9715c3890357dd8658",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/development_history.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/development_history.md"
+    },
+    {
+      "bytes": 2066,
+      "git_blob_sha1": "2daefd525cd40537cd860c6a0031ee035584bcce",
+      "sha256": "16f397dacbf8780c0f4aff4eecfbb6a8bbf2925fce26ec704460031915780d34",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/index.md"
+    },
+    {
+      "bytes": 6120,
+      "git_blob_sha1": "d59971d38fb3f304d2e42409231e7c60aa0cc16c",
+      "sha256": "7efde4ba9e6533d73e01b8aba026dc3c89b8349352744c0ffc0de50315f48398",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/ml_programming_paradigm.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/ml_programming_paradigm.md"
+    },
+    {
+      "bytes": 12452,
+      "git_blob_sha1": "799d0118bab50d8f9f6345802245bb012d944634",
+      "sha256": "4010a9b5c9869c76bdecaee6b907fc861f91e9409b7c2bed400b1955e307471f",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/ml_workflow.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/ml_workflow.md"
+    },
+    {
+      "bytes": 16107,
+      "git_blob_sha1": "2b93a1dcb78a3e29bd9141f30d5b55a4d798ed58",
+      "sha256": "ff47d0c93a379f18b6ca7b2a4f127e7a04000435c326bf8292b504b52e52d406",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/neural_network_layer.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/neural_network_layer.md"
+    },
+    {
+      "bytes": 1530,
+      "git_blob_sha1": "6a86d6f4e2c62f764e6e071f176158172af956f0",
+      "sha256": "3e86c3eb77a95ef1f78a3d799f53346b72ed28ab1a3867009c5353bf9f7e8fca",
+      "snapshot_path": "files/v1/zh_chapters/chapter_programming_interface/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_programming_interface/summary.md"
+    },
+    {
+      "bytes": 13229,
+      "git_blob_sha1": "8392ff0ebeb5499270eca7088ae6cae98bd41f6b",
+      "sha256": "c5279cbe1bcac5a18244e6edc8c3ddb2348f07a7a1379abc0cb6306a82b89b58",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/case_study.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/case_study.md"
+    },
+    {
+      "bytes": 1067,
+      "git_blob_sha1": "6bc0c5db82c13d64b70ea4aed65443de31f52428",
+      "sha256": "32383b23302406ae4942eff470be3c2e5bfea6068ec24f0571d6ca6f3065d603",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/index.md"
+    },
+    {
+      "bytes": 4709,
+      "git_blob_sha1": "922e39af5f604b772cc71670b7a300edf0470ee9",
+      "sha256": "2632e6f7328b7cf94b69fbfe15fb7c1229eb0f6c5d5f5968c1b05043bfb743a4",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/model_update.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/model_update.md"
+    },
+    {
+      "bytes": 10073,
+      "git_blob_sha1": "3d693f262f84b7c97b80ef6a9c4928fc882bb856",
+      "sha256": "e38b5ee32a871e4ed466f9cc636cc10861a9d6adabc53f45fb0eb5d96e516844",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/multi_stage_recommender_system.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/multi_stage_recommender_system.md"
+    },
+    {
+      "bytes": 1133,
+      "git_blob_sha1": "9502651b0438c9e1288781023260e5d9a11b45f8",
+      "sha256": "eef2a92e9a074116680a8bf8c18b2476fcb3389803145c69124187893fe98c4d",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/summary.md"
+    },
+    {
+      "bytes": 10539,
+      "git_blob_sha1": "058c4623c69c9ac707a5cf9844f03d90eebe3604",
+      "sha256": "6ab848ae49eb9a9fa9231a2e0907d6047cdc420172436bc4fd8611537ff6e56e",
+      "snapshot_path": "files/v1/zh_chapters/chapter_recommender_system/system_architecture.md",
+      "upstream_path": "v1/zh_chapters/chapter_recommender_system/system_architecture.md"
+    },
+    {
+      "bytes": 414,
+      "git_blob_sha1": "318893ab7ceda046afa00ca5b0a9e3c2af79de77",
+      "sha256": "f977528f0a0f2bdac705dc4aab551201c8b87b334d3c84534e70879f8aca457a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/index.md"
+    },
+    {
+      "bytes": 7890,
+      "git_blob_sha1": "d2741711e22198e616cc8c733cfe478e5b1c9d57",
+      "sha256": "3f15efa2f58ab42198e4d36f9ee1e24b1620dcd3159d94a210454ec448cfcfff",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/marl.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/marl.md"
+    },
+    {
+      "bytes": 10688,
+      "git_blob_sha1": "781444534ea9345a31ffc69315e552b9a049f1ef",
+      "sha256": "09e845a5b32c431757349ce27492f715f44c1eb472a9a910cfbb86e073187bfb",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/marl_sys.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/marl_sys.md"
+    },
+    {
+      "bytes": 5824,
+      "git_blob_sha1": "719921381e95c83555a4fc3522ae5dbfb082bd7d",
+      "sha256": "1fc87f643e6e9b735f54b1b532d201607a7e1db63c3880de6286c1019fbe1b6f",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/rl_introduction.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/rl_introduction.md"
+    },
+    {
+      "bytes": 7491,
+      "git_blob_sha1": "e14f7967d9d9ad3cbb8ab1fc2b96dfdac844096a",
+      "sha256": "0ae742883676ad1373a01cfdeaeba9a71d4e97b28153bf63e4312319f85903fc",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/single_node_rl.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/single_node_rl.md"
+    },
+    {
+      "bytes": 789,
+      "git_blob_sha1": "b5beb8653cc007b9d890c3ad0485e69783954352",
+      "sha256": "367e174c2980edabca0212c1196c5a792b8fb8a156804a0c51626ef4675a4097",
+      "snapshot_path": "files/v1/zh_chapters/chapter_reinforcement_learning/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_reinforcement_learning/summary.md"
+    },
+    {
+      "bytes": 2443,
+      "git_blob_sha1": "766e6c8a99e8f9dde77b291fc30e5e479dff0f9b",
+      "sha256": "ec3b8d55182f131ffb98791a58b33bcbc45d8ea7196ddf6c315d774a2425161a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/control.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/control.md"
+    },
+    {
+      "bytes": 6958,
+      "git_blob_sha1": "0565e017139b496046f9f30deab49e7a9e8b2fea",
+      "sha256": "f0b4645dcf430d2770ee819df5bed3d15039f0d41f3d39f40edb03261ce6abe8",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/control_code_ex.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/control_code_ex.md"
+    },
+    {
+      "bytes": 332,
+      "git_blob_sha1": "f982d7bc71cdf3dad470c3a1831681a17f8d8c8e",
+      "sha256": "d6bce3d2be379198c3fbe78b8fffca12567997016cda1bcd46c055cba272bed7",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/index.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/index.md"
+    },
+    {
+      "bytes": 4870,
+      "git_blob_sha1": "d8893b604473877e1e8dce2b7e22027b1405eeec",
+      "sha256": "502fe2199457c766376d9f77d14e3551be5aa913acf451f215daa73af51fb1ab",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/perception.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/perception.md"
+    },
+    {
+      "bytes": 12656,
+      "git_blob_sha1": "5c969d8aa010d5a692da76089c79329f2a786a0f",
+      "sha256": "51036dfbbf3df516e3e37df5abb457acc4c5c4ef001f5ea0d54c74d689836461",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/perception_code_ex.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/perception_code_ex.md"
+    },
+    {
+      "bytes": 1802,
+      "git_blob_sha1": "b016047f5a25d968fced6a9e8ef2a2a31614a950",
+      "sha256": "3163cf475e17b339d5d9b87c8bba6f5b5ce9a0af509a29f148bb04ba15b1cb56",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/planning.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/planning.md"
+    },
+    {
+      "bytes": 10850,
+      "git_blob_sha1": "2e3b8fb64fc2883aca532c81cb3855461b23f68a",
+      "sha256": "ff239b26099b33708f16a5d3549fc2b471eeae695c027272e1b7ec4774209c4a",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/planning_code_ex.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/planning_code_ex.md"
+    },
+    {
+      "bytes": 18103,
+      "git_blob_sha1": "781f6b59ce077d4b852c792a4c16266ef8e5e1ec",
+      "sha256": "e29a23089beadca849d5e08e29868191b64ff02384a1e26b9eab531721ae13da",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/rl_sys_intro.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/rl_sys_intro.md"
+    },
+    {
+      "bytes": 13557,
+      "git_blob_sha1": "93971e86bca9e1f959563890a16dceae35e0d7ae",
+      "sha256": "99e94d96721979809b81154e86e2d37ebb5abbf3e34c8093ea76d7848d5ad89d",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/robot_learning.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/robot_learning.md"
+    },
+    {
+      "bytes": 6510,
+      "git_blob_sha1": "39ac1e23147a7ef1114f9e501b4bdecc6d88feac",
+      "sha256": "5bf8f3c1a071cfc9fa09f0748581928e07923d544f3e59b40f07dd6752063578",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/robot_safety.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/robot_safety.md"
+    },
+    {
+      "bytes": 7915,
+      "git_blob_sha1": "d63311dd9428f21f2643c89719ddce1ff9b5c424",
+      "sha256": "f01c7674af7a375034ebf7579730a93c9fad8ad58f1c62de5274f966947076cf",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/ros.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/ros.md"
+    },
+    {
+      "bytes": 46006,
+      "git_blob_sha1": "38ff756de59ed59f8c59aa190c109004ebf8d4b6",
+      "sha256": "0e0fcd1f49d9ceeb39491783b28100a9795fc74702a7a7666b5ea30627c563ae",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/ros_code_ex.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/ros_code_ex.md"
+    },
+    {
+      "bytes": 561,
+      "git_blob_sha1": "101d2e4e65618fe7ebd538dcd979c951516ab004",
+      "sha256": "fcdbb966b63b2f8bf10798ace8da302ebd6d9794cf69b4cfd505f176de31c455",
+      "snapshot_path": "files/v1/zh_chapters/chapter_rl_sys/summary.md",
+      "upstream_path": "v1/zh_chapters/chapter_rl_sys/summary.md"
+    },
+    {
+      "bytes": 837,
+      "git_blob_sha1": "ca06ba1d4a5761628e6bdc1ebeee598f97b86196",
+      "sha256": "33692a9dfea63b671584e571d21c840895e424abade1aca504c810d907c3e6b8",
+      "snapshot_path": "files/v1/zh_chapters/index.md",
+      "upstream_path": "v1/zh_chapters/index.md"
+    },
+    {
+      "bytes": 128,
+      "git_blob_sha1": "ac441da1378cf28605ab08b7b813e44ac0f71b64",
+      "sha256": "5023376b6dbf859f67300ffd148058c687c15ecc87d256c9dcaa82b4db7111e8",
+      "snapshot_path": "files/v2/en_chapters/00_chapter_preface/index.md",
+      "upstream_path": "v2/en_chapters/00_chapter_preface/index.md"
+    },
+    {
+      "bytes": 127,
+      "git_blob_sha1": "659515e1ee8428a509fa0175143e322fdec2faf2",
+      "sha256": "8b916cf23bf434a0ac306ad2a16e04465aff015525d9464c4b0ffe2e73069506",
+      "snapshot_path": "files/v2/en_chapters/01_chapter_introduction/index.md",
+      "upstream_path": "v2/en_chapters/01_chapter_introduction/index.md"
+    },
+    {
+      "bytes": 171,
+      "git_blob_sha1": "e948cc100400105025a70008d6755b66db52c63a",
+      "sha256": "19f9900b5b17c32a79d9e5aee9875c98ac05ad576298b06f7e00ebaa04d0d206",
+      "snapshot_path": "files/v2/en_chapters/02_chapter_programming_and_graph/index.md",
+      "upstream_path": "v2/en_chapters/02_chapter_programming_and_graph/index.md"
+    },
+    {
+      "bytes": 137,
+      "git_blob_sha1": "debec6c9dc7eb9f3377c1ccd2bae954c02ce44f3",
+      "sha256": "6e53797cfd87a50bdcb3a6defb0a260475bde75a747e1af79c8c35af993e90be",
+      "snapshot_path": "files/v2/en_chapters/03_chapter_accelerator/index.md",
+      "upstream_path": "v2/en_chapters/03_chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 146,
+      "git_blob_sha1": "ed41c5f974eb89df126901a3e86bf5a8b35cb01b",
+      "sha256": "27519bde671225ac1ed686e11fbd930b87ca62c7e262d313fbefed84752f1322",
+      "snapshot_path": "files/v2/en_chapters/04_chapter_compiler_and_runtime/index.md",
+      "upstream_path": "v2/en_chapters/04_chapter_compiler_and_runtime/index.md"
+    },
+    {
+      "bytes": 127,
+      "git_blob_sha1": "c89939476c5c48a945abaa6e8bf75aabb4bb2011",
+      "sha256": "44bc64b954de2968a1c3ef524015dc08269269cd2e971d3625c608d170ef54e0",
+      "snapshot_path": "files/v2/en_chapters/05_chapter_data_processing/index.md",
+      "upstream_path": "v2/en_chapters/05_chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 146,
+      "git_blob_sha1": "e79a9f3df3bb2195eecf926fbe29ba0d4173b48f",
+      "sha256": "bebd55bfab0ecd73b1cc59e5ab1a897bf464e6a077b42eafcccc7aaf0d2eb9ae",
+      "snapshot_path": "files/v2/en_chapters/06_chapter_training_systems/index.md",
+      "upstream_path": "v2/en_chapters/06_chapter_training_systems/index.md"
+    },
+    {
+      "bytes": 116,
+      "git_blob_sha1": "4247aeed6a37c20f649ad3abb28400263b04d1fc",
+      "sha256": "47c77d4f18f9ec7bf877842cf3478f3c768e874a675882c50172a9fdc46589fe",
+      "snapshot_path": "files/v2/en_chapters/07_chapter_model_serving/index.md",
+      "upstream_path": "v2/en_chapters/07_chapter_model_serving/index.md"
+    },
+    {
+      "bytes": 132,
+      "git_blob_sha1": "88f23cb9616f33c3c9eb87efc46669b66d62f117",
+      "sha256": "7f3ab7ddf4b916ca392438deb32b97bd0128edbbadee1621ca141eca0ec56b57",
+      "snapshot_path": "files/v2/en_chapters/08_chapter_rl_systems/index.md",
+      "upstream_path": "v2/en_chapters/08_chapter_rl_systems/index.md"
+    },
+    {
+      "bytes": 153,
+      "git_blob_sha1": "89625695cd49adf158b0230de3e51daec85ed938",
+      "sha256": "d05e51fe593e55093825696fa4ecb2aec354dc57113fa6ec91231ae413071dd6",
+      "snapshot_path": "files/v2/en_chapters/09_chapter_gpu_cluster/index.md",
+      "upstream_path": "v2/en_chapters/09_chapter_gpu_cluster/index.md"
+    },
+    {
+      "bytes": 862,
+      "git_blob_sha1": "0a85f48676f19b126867fb3e30ffddee2ca250c0",
+      "sha256": "752ec8ae9df3294e3f8f592335d764082be78cb7acbae904db0827252fb49f48",
+      "snapshot_path": "files/v2/en_chapters/SUMMARY.md",
+      "upstream_path": "v2/en_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 952,
+      "git_blob_sha1": "64bce19a636f12a23a4382df2c876df691b033bb",
+      "sha256": "dfdff44288371656d925a2b71a8637cc0c95a03a207f6dde6e646ce707f2ae1a",
+      "snapshot_path": "files/v2/en_chapters/index.md",
+      "upstream_path": "v2/en_chapters/index.md"
+    },
+    {
+      "bytes": 89,
+      "git_blob_sha1": "4146dceeb0aa27e412fbf575874d3e65be8cf8f4",
+      "sha256": "aa94db9ee8833531f3392d651118bf89d8722b219c28e7df60293311519b86d9",
+      "snapshot_path": "files/v2/zh_chapters/00_chapter_preface/index.md",
+      "upstream_path": "v2/zh_chapters/00_chapter_preface/index.md"
+    },
+    {
+      "bytes": 82,
+      "git_blob_sha1": "65dc102f6a92ef5491dab3c9bc6710ac7bb589bb",
+      "sha256": "b4651ca62feb725592efd3a9fbac2f11e01794fd8e57bac15ebc5919d7931666",
+      "snapshot_path": "files/v2/zh_chapters/01_chapter_introduction/index.md",
+      "upstream_path": "v2/zh_chapters/01_chapter_introduction/index.md"
+    },
+    {
+      "bytes": 106,
+      "git_blob_sha1": "095cb740ac673b83b58facbeb355d3bdce58b965",
+      "sha256": "cd0adecdd2b18f647c53bd7eb8b12ddf7d77ef72ea17c4d514a6f619c7ce0bcb",
+      "snapshot_path": "files/v2/zh_chapters/02_chapter_programming_and_graph/index.md",
+      "upstream_path": "v2/zh_chapters/02_chapter_programming_and_graph/index.md"
+    },
+    {
+      "bytes": 101,
+      "git_blob_sha1": "681bff5752b5ab2843c23a06daae30b46e60b798",
+      "sha256": "622421336f56204fa86331df083a542714f24b5e7aaaa76cad585b659981fa3c",
+      "snapshot_path": "files/v2/zh_chapters/03_chapter_accelerator/index.md",
+      "upstream_path": "v2/zh_chapters/03_chapter_accelerator/index.md"
+    },
+    {
+      "bytes": 116,
+      "git_blob_sha1": "c76c71fcd4e535bef91d89ab2cfcfa58be9254f9",
+      "sha256": "97e9e91840be7248e4691582c34c19d0658673c3eaa330083a3f1e4ca226a41b",
+      "snapshot_path": "files/v2/zh_chapters/04_chapter_compiler_and_runtime/index.md",
+      "upstream_path": "v2/zh_chapters/04_chapter_compiler_and_runtime/index.md"
+    },
+    {
+      "bytes": 103,
+      "git_blob_sha1": "0593bb22bd9f6ae515ecf3ef7cb5788c8b014094",
+      "sha256": "cc6d740c40b327b4c3eb85fed189506e44e507be3c0e6038fdb137949f87452f",
+      "snapshot_path": "files/v2/zh_chapters/05_chapter_data_processing/index.md",
+      "upstream_path": "v2/zh_chapters/05_chapter_data_processing/index.md"
+    },
+    {
+      "bytes": 103,
+      "git_blob_sha1": "65396b7433059b10efb8b73632fec1dacde51f30",
+      "sha256": "14d87921a91c87ece4c94ecf933b5ff49632dd3a49cafdef725256e500ff343e",
+      "snapshot_path": "files/v2/zh_chapters/06_chapter_training_systems/index.md",
+      "upstream_path": "v2/zh_chapters/06_chapter_training_systems/index.md"
+    },
+    {
+      "bytes": 88,
+      "git_blob_sha1": "e88f8453bb3cb4d361cade77535c3c51ae99b48c",
+      "sha256": "a7d17fb14cfddb1beefc9867cfc1699c2221577d84a9e84e8daebe3071b01da2",
+      "snapshot_path": "files/v2/zh_chapters/07_chapter_model_serving/index.md",
+      "upstream_path": "v2/zh_chapters/07_chapter_model_serving/index.md"
+    },
+    {
+      "bytes": 102,
+      "git_blob_sha1": "abf52a748894ccf09312d0d49bdcdc5ab6322fe2",
+      "sha256": "6b98c52eaebdca933683b98bbab0d85a33df354f80da102fb95549b8555e01ae",
+      "snapshot_path": "files/v2/zh_chapters/08_chapter_rl_systems/index.md",
+      "upstream_path": "v2/zh_chapters/08_chapter_rl_systems/index.md"
+    },
+    {
+      "bytes": 112,
+      "git_blob_sha1": "bdc246ad2978ecfc9900107c732f0f82f84b732b",
+      "sha256": "1625f08617f9d2f2f9fbf7fb82c191b1c62ab351649134ff5d34aaf54d90587a",
+      "snapshot_path": "files/v2/zh_chapters/09_chapter_gpu_cluster/index.md",
+      "upstream_path": "v2/zh_chapters/09_chapter_gpu_cluster/index.md"
+    },
+    {
+      "bytes": 771,
+      "git_blob_sha1": "043fabe48be0e3878f7456b76066f27c6e49bf3b",
+      "sha256": "5bb1bcf17c8bd4159aa913759a2f9e572a9135193f068e48535b55ec171e0ae5",
+      "snapshot_path": "files/v2/zh_chapters/SUMMARY.md",
+      "upstream_path": "v2/zh_chapters/SUMMARY.md"
+    },
+    {
+      "bytes": 767,
+      "git_blob_sha1": "aac12c323c2050560599bd97ec0cb82e70e4d0d2",
+      "sha256": "b481ec91d6fe7b81662f2ad60b74e9b0af362ba454bfe234f8c61a9a83d63e3a",
+      "snapshot_path": "files/v2/zh_chapters/index.md",
+      "upstream_path": "v2/zh_chapters/index.md"
+    }
+  ],
+  "license": {
+    "files": [],
+    "note": "No dedicated LICENSE file exists in the repository at the pinned commit; README.md at that commit states the project is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.",
+    "preserved_artifacts": [],
+    "redistribution_note": "Storage policy MATERIALIZE_ONLY: these bytes must not be publicly vendored by default. They are materialized locally at the pinned commit for verification and characterization and are excluded from public Git storage; expected sha256/bytes/blob-id are recorded here so any local materialization is verifiable.",
+    "spdx": "CC-BY-NC-SA-4.0"
+  },
+  "repository_url": "https://github.com/openmlsys/openmlsys",
+  "retrieved_at": "2026-09-20T04:02:33Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = v1 AND v2 edition chapters (zh + en). Corrective 1 explicitly added v2 after round 1 had scoped v1 only; v2 was never excluded for redundancy or performance reasons (none were measured) but through an undocumented v1-only scope decision, now corrected. Other repository Markdown is administrative; recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/v1/zh_chapters/**/*.md",
+      "/v1/en_chapters/**/*.md",
+      "/v2/zh_chapters/**/*.md",
+      "/v2/en_chapters/**/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "openmlsys",
+  "storage_policy": "MATERIALIZE_ONLY",
+  "storage_policy_rationale": "CC BY-NC-SA 4.0 stated in README at the pinned commit (no dedicated LICENSE file exists there): NonCommercial + ShareAlike terms make public vendoring uncertain; the policy fails closed (MATERIALIZE_ONLY); uncertainty is recorded, not resolved.",
+  "total_bytes": 1636268
+}

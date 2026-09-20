@@ -1,0 +1,4229 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "5d88903d843f6f2babaf6d5e76b29dd58d9fcae8",
+  "entries": [
+    {
+      "bytes": 2274,
+      "git_blob_sha1": "dce8b59b25c403ae8b2b3a9ba275448135f24520",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 4058,
+      "git_blob_sha1": "2e192c48991bc4456bf647bc14e1edcabb9e2c40",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 9847,
+      "git_blob_sha1": "d2d2bdc8caec05c399f4eb2b52bd56627e453664",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "commonly_proposed.md"
+    },
+    {
+      "bytes": 13782,
+      "git_blob_sha1": "5ef70c75a84dcc336f2828c7bcc0f6330b2d9285",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "policies/0001-platform-support-tiers.md"
+    },
+    {
+      "bytes": 861,
+      "git_blob_sha1": "40575eaea2d42333398dccfc4483e5dfb89a8c93",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "policies/templates/xxxx-policy-template.md"
+    },
+    {
+      "bytes": 32089,
+      "git_blob_sha1": "754a5fdc7d4fba7f4d597431e048eab5c1956f79",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "process.md"
+    },
+    {
+      "bytes": 16693,
+      "git_blob_sha1": "221ecc9b47c553a74c5307fbdcf83ffb95b721d9",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposal-templates/0000-swift-template.md"
+    },
+    {
+      "bytes": 10223,
+      "git_blob_sha1": "642ac7bd53b3c180647fd32892fc66c3f2130146",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposal-templates/0000-swift-testing-template.md"
+    },
+    {
+      "bytes": 2586,
+      "git_blob_sha1": "bd65132b9eceaf5b90d2364136d9280ade7e51b0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "proposal-templates/0000-swiftpm-template.md"
+    },
+    {
+      "bytes": 3843,
+      "git_blob_sha1": "cd0c7279af644b38860afaa6e0dba74a1d82107a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0001-keywords-as-argument-labels.md"
+    },
+    {
+      "bytes": 4425,
+      "git_blob_sha1": "9761465a5ca6df727be91357c695152ed8e3361f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0002-remove-currying.md"
+    },
+    {
+      "bytes": 3939,
+      "git_blob_sha1": "a78dc80b0cedd7bfd8867228198484e33485df32",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0003-remove-var-parameters.md"
+    },
+    {
+      "bytes": 4314,
+      "git_blob_sha1": "c33507a66497d10d002c2b26fb33285da368e530",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0004-remove-pre-post-inc-decrement.md"
+    },
+    {
+      "bytes": 31078,
+      "git_blob_sha1": "9a494db4c343219dc589f79832d5dd95fa504d2c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0005-objective-c-name-translation.md"
+    },
+    {
+      "bytes": 52809,
+      "git_blob_sha1": "76349a22878793bc9ce8b8513bc1720b609b8079",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0006-apply-api-guidelines-to-the-standard-library.md"
+    },
+    {
+      "bytes": 5685,
+      "git_blob_sha1": "1bef3ab55a34b4a46ab5fabe7f2fa8b0a789e099",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0007-remove-c-style-for-loops.md"
+    },
+    {
+      "bytes": 5047,
+      "git_blob_sha1": "2abda3ceee0b3b46ead1246e27ada1dce702d342",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0008-lazy-flatmap-for-optionals.md"
+    },
+    {
+      "bytes": 7002,
+      "git_blob_sha1": "626f78665eb3c01fdae0ad243f585cab5f6a801b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0009-require-self-for-accessing-instance-members.md"
+    },
+    {
+      "bytes": 4062,
+      "git_blob_sha1": "ac3a7924449d81f0c5a1635500f0d477cd3e85ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0010-add-staticstring-unicodescalarview.md"
+    },
+    {
+      "bytes": 3680,
+      "git_blob_sha1": "89d7a3d25e5fcae120a78995e2e09b0cb65d9e38",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0011-replace-typealias-associated.md"
+    },
+    {
+      "bytes": 17965,
+      "git_blob_sha1": "9e9c0d95e6389478183b3863caef1581817d4ff3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0012-add-noescape-to-public-library-api.md"
+    },
+    {
+      "bytes": 4414,
+      "git_blob_sha1": "40cfaa459cab35007939643048585a53fed53baf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0013-remove-partial-application-super.md"
+    },
+    {
+      "bytes": 3176,
+      "git_blob_sha1": "48ddfbc8ed55e15a7e6f783ef2b7a2c43e3c8ac0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0014-constrained-AnySequence.md"
+    },
+    {
+      "bytes": 4234,
+      "git_blob_sha1": "9722ed2b76f1d9a16fee757a79bd29b9de84de6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0015-tuple-comparison-operators.md"
+    },
+    {
+      "bytes": 5254,
+      "git_blob_sha1": "ed282b7e1379a6c3a5440e20e2845c1e2b0ffb57",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0016-initializers-for-converting-unsafe-pointers-to-ints.md"
+    },
+    {
+      "bytes": 4355,
+      "git_blob_sha1": "cc2bb6886019af6d680adc31f72cc9a7053bf868",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0017-convert-unmanaged-to-use-unsafepointer.md"
+    },
+    {
+      "bytes": 36230,
+      "git_blob_sha1": "2bddbf171cd0fab04931922277b5440d0b72df36",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0018-flexible-memberwise-initialization.md"
+    },
+    {
+      "bytes": 9796,
+      "git_blob_sha1": "252c9bdaa05b36ab8f9aa4c6592d9f5a3bce37bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0019-package-manager-testing.md"
+    },
+    {
+      "bytes": 3256,
+      "git_blob_sha1": "a59e6ad4dcd24b9cfec286161e61daa3d3fd6116",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0020-if-swift-version.md"
+    },
+    {
+      "bytes": 6763,
+      "git_blob_sha1": "20256b9ba5c0fac9c2f77c98043328ed7b996c9a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0021-generalized-naming.md"
+    },
+    {
+      "bytes": 7526,
+      "git_blob_sha1": "05f5d73410112b690524e190a23cd17fa42c061f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0022-objc-selectors.md"
+    },
+    {
+      "bytes": 3215,
+      "git_blob_sha1": "e8e5c3fe02f7ed4d25d988231a2352fcb5981eb4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0023-api-guidelines.md"
+    },
+    {
+      "bytes": 2018,
+      "git_blob_sha1": "98f45801cc782d83cf2aea0a91f70cf893aaa96f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0024-optional-value-setter.md"
+    },
+    {
+      "bytes": 11150,
+      "git_blob_sha1": "470666dd8bd0b43bc0d698555579c15407ef8e60",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0025-scoped-access-level.md"
+    },
+    {
+      "bytes": 4870,
+      "git_blob_sha1": "24b89a5eb9b6977feabf3002719d289595c817db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0026-abstract-classes-and-methods.md"
+    },
+    {
+      "bytes": 6964,
+      "git_blob_sha1": "ddae996dba321ec860939f710e7b5e468e5950db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0027-string-from-code-units.md"
+    },
+    {
+      "bytes": 6779,
+      "git_blob_sha1": "9e51fb46f9572483aa40ee37a8969137e814de1e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0028-modernizing-debug-identifiers.md"
+    },
+    {
+      "bytes": 7459,
+      "git_blob_sha1": "e16653aef44bed7ed657a443de68da141892420c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0029-remove-implicit-tuple-splat.md"
+    },
+    {
+      "bytes": 34396,
+      "git_blob_sha1": "2a48404d780e92d2b52708fca6a1f4a846fd984b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0030-property-behavior-decls.md"
+    },
+    {
+      "bytes": 2472,
+      "git_blob_sha1": "a49eadb4eb5923bedc5c94d6d25dd519479d6b33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0031-adjusting-inout-declarations.md"
+    },
+    {
+      "bytes": 2801,
+      "git_blob_sha1": "7dd6b273970d67c2126ca11f25301e0249bec201",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0032-sequencetype-find.md"
+    },
+    {
+      "bytes": 8300,
+      "git_blob_sha1": "06e12fcb715a548bd8ca95db66032779af941c6b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0033-import-objc-constants.md"
+    },
+    {
+      "bytes": 3873,
+      "git_blob_sha1": "61b51ffe4723467bed6a9d5063c3482eb5676034",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0034-disambiguating-line.md"
+    },
+    {
+      "bytes": 6589,
+      "git_blob_sha1": "4a44fd09ff5eabec6f6ccd942abc73162e03508b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0035-limit-inout-capture.md"
+    },
+    {
+      "bytes": 3954,
+      "git_blob_sha1": "c9cd52fbcd113fa51c043f6707be7d9cdb67ac8a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0036-enum-dot.md"
+    },
+    {
+      "bytes": 5797,
+      "git_blob_sha1": "9866d04c29c70c647575c100df5c4ccc51401a2d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0037-clarify-comments-and-operators.md"
+    },
+    {
+      "bytes": 12685,
+      "git_blob_sha1": "d86482524e3380e4bb21758bb3cfa2a9aa019aac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0038-swiftpm-c-language-targets.md"
+    },
+    {
+      "bytes": 4451,
+      "git_blob_sha1": "c03981cf644e544d33335c0923b13b5b8432cedf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0039-playgroundliterals.md"
+    },
+    {
+      "bytes": 3671,
+      "git_blob_sha1": "17c49bbd262fbba502194cdbfbf6a01e093e8abe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0040-attributecolons.md"
+    },
+    {
+      "bytes": 11765,
+      "git_blob_sha1": "9b61c3cc3b33f9299d0e5f6553db9beb457dc3b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0041-conversion-protocol-conventions.md"
+    },
+    {
+      "bytes": 5251,
+      "git_blob_sha1": "3cd641166434b77711ff8279216c3b76168d6aba",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0042-flatten-method-types.md"
+    },
+    {
+      "bytes": 6018,
+      "git_blob_sha1": "abc9390c74f8400399fc4d609bba2a8d9246bb16",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0043-declare-variables-in-case-labels-with-multiple-patterns.md"
+    },
+    {
+      "bytes": 12036,
+      "git_blob_sha1": "a978919016aa99327a1b7b9bbf4deb50f3125009",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0044-import-as-member.md"
+    },
+    {
+      "bytes": 7193,
+      "git_blob_sha1": "c4f3a751c0eb422c9325f4bbc50f35f5d413e819",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0045-scan-takewhile-dropwhile.md"
+    },
+    {
+      "bytes": 6201,
+      "git_blob_sha1": "6b401da8aa203e5e849cfa7e514961b986f32e54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0046-first-label.md"
+    },
+    {
+      "bytes": 11214,
+      "git_blob_sha1": "ab940ba45684cc5c50c8e88d7c2f28a286ae34de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0047-nonvoid-warn.md"
+    },
+    {
+      "bytes": 2715,
+      "git_blob_sha1": "4f6efecb5ad078f9740a5be2e26b70ca6bf1274c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0048-generic-typealias.md"
+    },
+    {
+      "bytes": 4209,
+      "git_blob_sha1": "a6572f2c8293a7f0ab403d07bf89e0f8d29c971a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0049-noescape-autoclosure-type-attrs.md"
+    },
+    {
+      "bytes": 14189,
+      "git_blob_sha1": "63031b0f67820dd65bb07854a2801cdffa267022",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0050-floating-point-stride.md"
+    },
+    {
+      "bytes": 7968,
+      "git_blob_sha1": "aabe1b2cadfb0152a703015da29de94e6ceaaad0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0051-stride-semantics.md"
+    },
+    {
+      "bytes": 7365,
+      "git_blob_sha1": "7b9c287fe7cf4fc7168d4ed6f13ff23c0fe09c09",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0052-iterator-post-nil-guarantee.md"
+    },
+    {
+      "bytes": 3146,
+      "git_blob_sha1": "c3b22b490771fea66a28f7ae8e894ca093b6b108",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0053-remove-let-from-function-parameters.md"
+    },
+    {
+      "bytes": 8693,
+      "git_blob_sha1": "f8f12c9fe228885d10b1ae3eaa328124dfc8fbe6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0054-abolish-iuo.md"
+    },
+    {
+      "bytes": 13675,
+      "git_blob_sha1": "6c69e20408b1742140c32f93e3c38399805ca722",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0055-optional-unsafe-pointers.md"
+    },
+    {
+      "bytes": 4877,
+      "git_blob_sha1": "ee77c952feab0ecfc70abcbc690f451e14182286",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0056-trailing-closures-in-guard.md"
+    },
+    {
+      "bytes": 7768,
+      "git_blob_sha1": "7faf19fa4bdfdd2a726e3dde4d4484ae12d661bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0057-importing-objc-generics.md"
+    },
+    {
+      "bytes": 14777,
+      "git_blob_sha1": "478a23adf462a365fd0c232b054f70c7fb5b06eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0058-objectivecbridgeable.md"
+    },
+    {
+      "bytes": 9164,
+      "git_blob_sha1": "1d69edb0c48e31433bc7151ad84e53d9374d0d51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0059-updated-set-apis.md"
+    },
+    {
+      "bytes": 4429,
+      "git_blob_sha1": "f6cd8d01f87a30d985e514d87187cc3d95a29bc4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0060-defaulted-parameter-order.md"
+    },
+    {
+      "bytes": 5269,
+      "git_blob_sha1": "e9dc5a961c02e3f267e5852893572167d0cc96b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0061-autoreleasepool-signature.md"
+    },
+    {
+      "bytes": 4812,
+      "git_blob_sha1": "54fa946647ae22bc2fac780debf41a6a214b4fa2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0062-objc-keypaths.md"
+    },
+    {
+      "bytes": 8488,
+      "git_blob_sha1": "cb11562abf3e763cea948e456c5c6bde3b1d760d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0063-swiftpm-system-module-search-paths.md"
+    },
+    {
+      "bytes": 2823,
+      "git_blob_sha1": "e3e7b61e350a0fcbf16ae21ba233b78f4d1e51f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0064-property-selectors.md"
+    },
+    {
+      "bytes": 24791,
+      "git_blob_sha1": "2353847ca599ca23f413549cf8ed77ecce747b86",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0065-collections-move-indices.md"
+    },
+    {
+      "bytes": 7890,
+      "git_blob_sha1": "e5cd1c72a7456959c43bfb5e76400f4600b9988c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0066-standardize-function-type-syntax.md"
+    },
+    {
+      "bytes": 31646,
+      "git_blob_sha1": "b93f354014e9bfb8f7063c40bdb8bababa47db2b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0067-floating-point-protocols.md"
+    },
+    {
+      "bytes": 4761,
+      "git_blob_sha1": "f129386defe1c4de07862efedd203fe5429feeed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0068-universal-self.md"
+    },
+    {
+      "bytes": 35063,
+      "git_blob_sha1": "e16169cf97a2cfcf9a1da7ade8e9fbb1f688bb8e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0069-swift-mutability-for-foundation.md"
+    },
+    {
+      "bytes": 8415,
+      "git_blob_sha1": "0fa44d5c1438e676b1b04581cfbc8fe3619915bc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0070-optional-requirements.md"
+    },
+    {
+      "bytes": 3006,
+      "git_blob_sha1": "3ac330d7b07c534ebee3e3bd4b5504c617d3a4b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0071-member-keywords.md"
+    },
+    {
+      "bytes": 4614,
+      "git_blob_sha1": "47910a312acd4a2d46c68b276e6e596e84bf8701",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0072-eliminate-implicit-bridging-conversions.md"
+    },
+    {
+      "bytes": 7713,
+      "git_blob_sha1": "793f313095f77b8e49b5b9181cc56215e654d558",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0073-noescape-once.md"
+    },
+    {
+      "bytes": 13950,
+      "git_blob_sha1": "356615ad03ca58390715386ac6a4a86c13e0a6db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0074-binary-search.md"
+    },
+    {
+      "bytes": 5651,
+      "git_blob_sha1": "78442438322f0b2c3788a64f50a022f0ae1dc93e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0075-import-test.md"
+    },
+    {
+      "bytes": 4571,
+      "git_blob_sha1": "a84194e2f9d45aedee048443f6cdd3ef4b88dcf4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0076-copying-to-unsafe-mutable-pointer-with-unsafe-pointer-source.md"
+    },
+    {
+      "bytes": 17603,
+      "git_blob_sha1": "aaecb849556a46ce3bc81e5afbd1925cc498e757",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0077-operator-precedence.md"
+    },
+    {
+      "bytes": 14099,
+      "git_blob_sha1": "23a82ae469d6d74141151b8ad578b3badffc4b0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0078-rotate-algorithm.md"
+    },
+    {
+      "bytes": 8651,
+      "git_blob_sha1": "f5fb30488ace556b25b5ee34dde9eb216181fcca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0079-upgrade-self-from-weak-to-strong.md"
+    },
+    {
+      "bytes": 3151,
+      "git_blob_sha1": "f03aeec4418e4b5a6fe845b4ac34a0dd2b262751",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0080-failable-numeric-initializers.md"
+    },
+    {
+      "bytes": 5617,
+      "git_blob_sha1": "700590d4cb5cf693b915d3c4836340e07e9f3da5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0081-move-where-expression.md"
+    },
+    {
+      "bytes": 12197,
+      "git_blob_sha1": "5e3e24bfedff47d25feec2cc0bb2a4ffce9583ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0082-swiftpm-package-edit.md"
+    },
+    {
+      "bytes": 18186,
+      "git_blob_sha1": "eb64f9e2b171eae9e56db4cd224ed8044a32b8ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0083-remove-bridging-from-dynamic-casts.md"
+    },
+    {
+      "bytes": 5658,
+      "git_blob_sha1": "44b0d5d01b65b662e1a931fd89b883cf7002554e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0084-trailing-commas.md"
+    },
+    {
+      "bytes": 9457,
+      "git_blob_sha1": "44c299dbe5e988af515bc33626c9e703ca87b3cb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0085-package-manager-command-name.md"
+    },
+    {
+      "bytes": 23035,
+      "git_blob_sha1": "1fb18ea38a67557d0b8920a146ab1edc17093f80",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0086-drop-foundation-ns.md"
+    },
+    {
+      "bytes": 1606,
+      "git_blob_sha1": "161687367e91f0f0474e47a3804bf926dc32826f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0087-lazy-attribute.md"
+    },
+    {
+      "bytes": 31388,
+      "git_blob_sha1": "19bfd9d3bc36bb7d1cfba1c2b68b2af922bc5598",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0088-libdispatch-for-swift3.md"
+    },
+    {
+      "bytes": 6665,
+      "git_blob_sha1": "e6808a368336eb886d488358b4a20cb4cd9b3509",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0089-rename-string-reflection-init.md"
+    },
+    {
+      "bytes": 13604,
+      "git_blob_sha1": "c736c5069cafc93a6e62ec49b0ea053af95e291c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0090-remove-dot-self.md"
+    },
+    {
+      "bytes": 16960,
+      "git_blob_sha1": "940e84b6c21ef555c5e9a3769c92405881d02f94",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0091-improving-operators-in-protocols.md"
+    },
+    {
+      "bytes": 3112,
+      "git_blob_sha1": "d6d3912fc7991212a8417072566e7feb0593296a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0092-typealiases-in-protocols.md"
+    },
+    {
+      "bytes": 2496,
+      "git_blob_sha1": "361c42c159c65f9820d7d2413964605b3995ca32",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0093-slice-base.md"
+    },
+    {
+      "bytes": 5454,
+      "git_blob_sha1": "f96272e1da85ec1fd721c6e827a933216e8fc207",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0094-sequence-function.md"
+    },
+    {
+      "bytes": 3758,
+      "git_blob_sha1": "d8379f45f686284b93591a0f685e1b75b883d228",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0095-any-as-existential.md"
+    },
+    {
+      "bytes": 2197,
+      "git_blob_sha1": "bc7a45ba8d09d7e8480cdc910170b9de8e8fa5b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0096-dynamictype.md"
+    },
+    {
+      "bytes": 1501,
+      "git_blob_sha1": "6a902d535a76b8bfaaf4a9736f1e9d2056637a5c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0097-negative-attributes.md"
+    },
+    {
+      "bytes": 1624,
+      "git_blob_sha1": "52e9279924a463bf88ec8469b7e3135dd25d5b6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0098-didset-capitalization.md"
+    },
+    {
+      "bytes": 9210,
+      "git_blob_sha1": "95ca69435713364d64d1570c217b1ef44b9638cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0099-conditionclauses.md"
+    },
+    {
+      "bytes": 11135,
+      "git_blob_sha1": "441c7ca5330b679e719e4469a993b0a85f16b5e1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0100-add-sequence-based-init-and-merge-to-dictionary.md"
+    },
+    {
+      "bytes": 7576,
+      "git_blob_sha1": "ec656c098bc8c551e912dbdb8bfc7dd9f48683b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0101-standardizing-sizeof-naming.md"
+    },
+    {
+      "bytes": 9311,
+      "git_blob_sha1": "4a913444838ecde8abd6ce708f5d26848e7952da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0102-noreturn-bottom-type.md"
+    },
+    {
+      "bytes": 5830,
+      "git_blob_sha1": "1948030cd14ba40bb989dae8d67fbfa16f31f98d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0103-make-noescape-default.md"
+    },
+    {
+      "bytes": 41764,
+      "git_blob_sha1": "5dbf33b262f7cd16a490a2b443d54759d320c2ab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0104-improved-integers.md"
+    },
+    {
+      "bytes": 7221,
+      "git_blob_sha1": "3df0c2d63e5a6623e9ec6a4b60d97bb3c6f08f3e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0105-remove-where-from-forin-loops.md"
+    },
+    {
+      "bytes": 4039,
+      "git_blob_sha1": "e5f4714024bdd77a88871c89f3887ff15f08b21b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0106-rename-osx-to-macos.md"
+    },
+    {
+      "bytes": 63918,
+      "git_blob_sha1": "6acefab32f961b288b55ee053599c167f8cdb1c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0107-unsaferawpointer.md"
+    },
+    {
+      "bytes": 8458,
+      "git_blob_sha1": "b1373d8a757201fd2f83c41556dd43b1de02cb26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0108-remove-assoctype-inference.md"
+    },
+    {
+      "bytes": 2853,
+      "git_blob_sha1": "89a62aabd3baeac1bb1993f85442cd2c6e202bde",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0109-remove-boolean.md"
+    },
+    {
+      "bytes": 4217,
+      "git_blob_sha1": "be56d47d1c7097473148f442d0a1cf1de8b994d7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0110-distinguish-single-tuple-arg.md"
+    },
+    {
+      "bytes": 7040,
+      "git_blob_sha1": "0c6db853bd238fd0316de463613c8302e59bc65c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0111-remove-arg-label-type-significance.md"
+    },
+    {
+      "bytes": 29398,
+      "git_blob_sha1": "da41dc387f2eb85324105b3be8b75581e788dbe8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0112-nserror-bridging.md"
+    },
+    {
+      "bytes": 5014,
+      "git_blob_sha1": "d3d78f50363f1d4ead6ba0d0791c52c36a9e6439",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0113-rounding-functions-on-floatingpoint.md"
+    },
+    {
+      "bytes": 1802,
+      "git_blob_sha1": "1be984c287faf5ec316aa9ae8126d1db73e87d3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0114-buffer-naming.md"
+    },
+    {
+      "bytes": 9385,
+      "git_blob_sha1": "c5353edbdfdb46219df1e60cd74aba309dafe2de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0115-literal-syntax-protocols.md"
+    },
+    {
+      "bytes": 16173,
+      "git_blob_sha1": "f1cb4d528ec20903be04bd3c23465aa24aa1db31",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0116-id-as-any.md"
+    },
+    {
+      "bytes": 19372,
+      "git_blob_sha1": "50e2d07743257cb4af15332091808142c3d3dd08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0117-non-public-subclassable-by-default.md"
+    },
+    {
+      "bytes": 5039,
+      "git_blob_sha1": "2f89190564f9f26a72750f344e1097fb38063c12",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0118-closure-parameter-names-and-labels.md"
+    },
+    {
+      "bytes": 12441,
+      "git_blob_sha1": "9112147c9ad7c1af6ae3c1270715a1f982bcab9a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0119-extensions-access-modifiers.md"
+    },
+    {
+      "bytes": 6734,
+      "git_blob_sha1": "a222aaaa451ce9e6fe7aed7d3b8ec3643f93395d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0120-revise-partition-method.md"
+    },
+    {
+      "bytes": 6035,
+      "git_blob_sha1": "45073740df0a93f4560f69f78aeaba317a94a9ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0121-remove-optional-comparison-operators.md"
+    },
+    {
+      "bytes": 3470,
+      "git_blob_sha1": "cfabbd5dbde57d1e45f44306b5dc4de640a99685",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0122-use-colons-for-subscript-type-declarations.md"
+    },
+    {
+      "bytes": 8729,
+      "git_blob_sha1": "29ecfb322599c54a22a762d6b531f9a0e7240388",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0123-disallow-value-to-optional-coercion-in-operator-arguments.md"
+    },
+    {
+      "bytes": 3405,
+      "git_blob_sha1": "892a806a96386a72ff0fa919bb4a23f0a36eeed6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0124-bitpattern-label-for-int-initializer-objectidentfier.md"
+    },
+    {
+      "bytes": 13248,
+      "git_blob_sha1": "d9b887fed1defe03ed4ec6a14326655b6a58ebd7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0125-remove-nonobjectivecbase.md"
+    },
+    {
+      "bytes": 25330,
+      "git_blob_sha1": "6901aa0b6e6bd3829d89eb26e7d53f1ca46e9ab3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0126-refactor-metatypes-repurpose-t-dot-self-and-mirror.md"
+    },
+    {
+      "bytes": 4423,
+      "git_blob_sha1": "f00bb6631a7ecf2635daeb774ce823804fed7fa3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0127-cleaning-up-stdlib-ptr-buffer.md"
+    },
+    {
+      "bytes": 2259,
+      "git_blob_sha1": "29e75877b8c400c4c7d91e8bf954c63ecf2eb71e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0128-unicodescalar-failable-initializer.md"
+    },
+    {
+      "bytes": 5895,
+      "git_blob_sha1": "f3e218b70c63b0bda98063e72c059a96a3e50798",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0129-package-manager-test-naming-conventions.md"
+    },
+    {
+      "bytes": 2771,
+      "git_blob_sha1": "05a3e7f8217563615a138a22e78ffab612c68740",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0130-string-initializers-cleanup.md"
+    },
+    {
+      "bytes": 5032,
+      "git_blob_sha1": "aa7547d36770ff19e2619403e8da19d173f8f1e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0131-anyhashable.md"
+    },
+    {
+      "bytes": 54737,
+      "git_blob_sha1": "a9136f73e5f66d44d435bb50fb0d630e5dbcee22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0132-sequence-end-ops.md"
+    },
+    {
+      "bytes": 3836,
+      "git_blob_sha1": "4408b1a775818dce9b62c7edead8adaf06e26d4c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0133-rename-flatten-to-joined.md"
+    },
+    {
+      "bytes": 2943,
+      "git_blob_sha1": "6d9abf3cd976f7ae99412f3f5b74c3f3168a5958",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0134-rename-string-properties.md"
+    },
+    {
+      "bytes": 12379,
+      "git_blob_sha1": "ef8c7fbad46868dfb1f6e21b60a30e130fda068a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0135-package-manager-support-for-differentiating-packages-by-swift-version.md"
+    },
+    {
+      "bytes": 4234,
+      "git_blob_sha1": "9705baaa850bf1b3cfebb2012578b0ded2f58a13",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0136-memory-layout-of-values.md"
+    },
+    {
+      "bytes": 4005,
+      "git_blob_sha1": "43136b648add45eef0b50c5ce76db86dcbfff519",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0137-avoiding-lock-in.md"
+    },
+    {
+      "bytes": 41307,
+      "git_blob_sha1": "b425d8356ad78d96b138cdbf74233e0d2c866198",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0138-unsaferawbufferpointer.md"
+    },
+    {
+      "bytes": 6046,
+      "git_blob_sha1": "c6d3a65d1b0fa724c9574cb4d7b8c5ab73c85826",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0139-bridge-nsnumber-and-nsvalue.md"
+    },
+    {
+      "bytes": 9160,
+      "git_blob_sha1": "e5eca4d8a57caac20f073e11548a49803a24cd3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0140-bridge-optional-to-nsnull.md"
+    },
+    {
+      "bytes": 5004,
+      "git_blob_sha1": "b3bc4fda3e937aa46f37e0c435ea779627356e74",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0141-available-by-swift-version.md"
+    },
+    {
+      "bytes": 4108,
+      "git_blob_sha1": "2c561ef782f52645ff238f72372af419ffbd23c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0142-associated-types-constraints.md"
+    },
+    {
+      "bytes": 27763,
+      "git_blob_sha1": "f6cfaf5a66fdfd215a9bf0e0f91827b9d4db1639",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0143-conditional-conformances.md"
+    },
+    {
+      "bytes": 2720,
+      "git_blob_sha1": "3b5d3a9ea16ef97417040cfd082edfbc109063fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0144-allow-single-dollar-sign-as-valid-identifier.md"
+    },
+    {
+      "bytes": 19987,
+      "git_blob_sha1": "6900359fa2caf3d2aa5705b609705433b9d23693",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0145-package-manager-version-pinning.md"
+    },
+    {
+      "bytes": 17939,
+      "git_blob_sha1": "ce87eeb8feda08210c4844218de25d7816917739",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0146-package-manager-product-definitions.md"
+    },
+    {
+      "bytes": 11269,
+      "git_blob_sha1": "7964d5d408a4cac5cb30567d3ca7d45ac976962d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0147-move-unsafe-initialize-from.md"
+    },
+    {
+      "bytes": 3052,
+      "git_blob_sha1": "1eb2e0dae8a1dd1e1cc915cb0a6598657ac8a0e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0148-generic-subscripts.md"
+    },
+    {
+      "bytes": 3623,
+      "git_blob_sha1": "8b30f65cde10fed7e52c2093bb144f205af1635b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0149-package-manager-top-of-tree.md"
+    },
+    {
+      "bytes": 4851,
+      "git_blob_sha1": "6fa969c889096cd9e5ad382b20172d69066b10d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0150-package-manager-branch-support.md"
+    },
+    {
+      "bytes": 6032,
+      "git_blob_sha1": "e9421cf04b1a3225f4053ab08dac5ed79c63ba36",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0151-package-manager-swift-language-compatibility-version.md"
+    },
+    {
+      "bytes": 25663,
+      "git_blob_sha1": "92394f41569c9cb010e119858bf99aa66720bd2d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0152-package-manager-tools-version.md"
+    },
+    {
+      "bytes": 9467,
+      "git_blob_sha1": "f5005565bd6ca35db59a497a4e0ead863e447f64",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0153-compensate-for-the-inconsistency-of-nscopyings-behaviour.md"
+    },
+    {
+      "bytes": 7778,
+      "git_blob_sha1": "f5ad8d6d71c93b3900d1e9ceafeaf925e8c4bf8d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0154-dictionary-key-and-value-collections.md"
+    },
+    {
+      "bytes": 11886,
+      "git_blob_sha1": "8e0474d166081647b07c2eb6ec33d477286ab05d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0155-normalize-enum-case-representation.md"
+    },
+    {
+      "bytes": 8891,
+      "git_blob_sha1": "a3107aef798cfb6c252363ebe9b9d7dbb0f95d51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0156-subclass-existentials.md"
+    },
+    {
+      "bytes": 8494,
+      "git_blob_sha1": "81c1328494fff09d5e94a84625813f1420178896",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0157-recursive-protocol-constraints.md"
+    },
+    {
+      "bytes": 25187,
+      "git_blob_sha1": "adbe9332019481a2835425c11159f50bb3f80f15",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0158-package-manager-manifest-api-redesign.md"
+    },
+    {
+      "bytes": 3515,
+      "git_blob_sha1": "45660527a83e4c4be06310520d9801d56c176ec8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0159-fix-private-access-levels.md"
+    },
+    {
+      "bytes": 24214,
+      "git_blob_sha1": "8c595e53185bb2da5f513056a0074e64b6486c76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0160-objc-inference.md"
+    },
+    {
+      "bytes": 11670,
+      "git_blob_sha1": "b945854b41ccc8ad152d638971728eca2e4fadfb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0161-key-paths.md"
+    },
+    {
+      "bytes": 9577,
+      "git_blob_sha1": "78d428e350c82ecdd7ea4d9e43f48fa5ac92589b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0162-package-manager-custom-target-layouts.md"
+    },
+    {
+      "bytes": 18672,
+      "git_blob_sha1": "f584cc67f70e224caff18ae6c732f2b2c564edfb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0163-string-revision-1.md"
+    },
+    {
+      "bytes": 2131,
+      "git_blob_sha1": "5e807e4bd3fdcccfc768fd6e491510cd349fe8dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0164-remove-final-support-in-protocol-extensions.md"
+    },
+    {
+      "bytes": 24589,
+      "git_blob_sha1": "73897eccda8b8957692f1bba244040884b24083c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0165-dict.md"
+    },
+    {
+      "bytes": 115873,
+      "git_blob_sha1": "53a9a69229d5f987d32ee5350865565ff2f99f28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0166-swift-archival-serialization.md"
+    },
+    {
+      "bytes": 19996,
+      "git_blob_sha1": "223aa7f3909303bb43cf18c17f6238cbd484cf45",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0167-swift-encoders.md"
+    },
+    {
+      "bytes": 6181,
+      "git_blob_sha1": "bf8baa4a2a1dc47aae12d7d4284c0eccc7e71235",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0168-multi-line-string-literals.md"
+    },
+    {
+      "bytes": 7976,
+      "git_blob_sha1": "043f58d5b65cdcd6ad1c813044b7a0117b72b7c3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0169-improve-interaction-between-private-declarations-and-extensions.md"
+    },
+    {
+      "bytes": 11482,
+      "git_blob_sha1": "3dff41e9b77d93ffd8a3330e817fbe630ae3bc9b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0170-nsnumber_bridge.md"
+    },
+    {
+      "bytes": 4411,
+      "git_blob_sha1": "d1ab3d448c42864e55c60a7755952d085daf87ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0171-reduce-with-inout.md"
+    },
+    {
+      "bytes": 8691,
+      "git_blob_sha1": "0864e86a10858c611abff8acbc5cfe600f54144c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0172-one-sided-ranges.md"
+    },
+    {
+      "bytes": 4011,
+      "git_blob_sha1": "26055065f5ee92361f65c7138d48686ba4585067",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0173-swap-indices.md"
+    },
+    {
+      "bytes": 4548,
+      "git_blob_sha1": "ead1768f74dfa023fa9420a0d1c97ee6614282b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0174-filter-range-replaceable.md"
+    },
+    {
+      "bytes": 13738,
+      "git_blob_sha1": "9dbc7e116f220b281687290ecbd3f4b9fef2e03e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0175-package-manager-revised-dependency-resolution.md"
+    },
+    {
+      "bytes": 32566,
+      "git_blob_sha1": "f11512ff961e5fea75340674cc7d02ac219ea2da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0176-enforce-exclusive-access-to-memory.md"
+    },
+    {
+      "bytes": 4346,
+      "git_blob_sha1": "37d3dfafc35b6dbf8d93878e982f9669af7f4cb5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0177-add-clamped-to-method.md"
+    },
+    {
+      "bytes": 3142,
+      "git_blob_sha1": "64264a6e97f8c466e28228a80e1ba6b62b580126",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0178-character-unicode-view.md"
+    },
+    {
+      "bytes": 3553,
+      "git_blob_sha1": "f43b30b4734d74f47bff0db79e2c199486476f7a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0179-swift-run-command.md"
+    },
+    {
+      "bytes": 14386,
+      "git_blob_sha1": "abe8de6074febe621c2addaa54c22be3354f2c90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0180-string-index-overhaul.md"
+    },
+    {
+      "bytes": 2482,
+      "git_blob_sha1": "5fd52c8f02a4af59b04af43df51f7282327abfcd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0181-package-manager-cpp-language-version.md"
+    },
+    {
+      "bytes": 5286,
+      "git_blob_sha1": "6f3cfb9fc952c1bdf7188cdb4b656840dacf13cc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0182-newline-escape-in-strings.md"
+    },
+    {
+      "bytes": 3425,
+      "git_blob_sha1": "eb83064787baf4664744d1a2ab3018df71ab36eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0183-substring-affordances.md"
+    },
+    {
+      "bytes": 26695,
+      "git_blob_sha1": "a8cff99c6bd14fe782a3220e002f6c80e57857ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0184-unsafe-pointers-add-missing.md"
+    },
+    {
+      "bytes": 15291,
+      "git_blob_sha1": "40a20d97d88e984c0f9a7c822e2ff8ce21c97fd4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0185-synthesize-equatable-hashable.md"
+    },
+    {
+      "bytes": 3114,
+      "git_blob_sha1": "7ec3fa019402f92615d453b80c983e6840538f9f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0186-remove-ownership-keyword-support-in-protocols.md"
+    },
+    {
+      "bytes": 5206,
+      "git_blob_sha1": "a03909edc1999f91d76d5c8f8496d7a371f48498",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0187-introduce-filtermap.md"
+    },
+    {
+      "bytes": 2975,
+      "git_blob_sha1": "a1e2c5a83c3ad689fda554e64fe10a4df4670a48",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0188-stdlib-index-types-hashable.md"
+    },
+    {
+      "bytes": 7481,
+      "git_blob_sha1": "a587ec18c401d81c93eb70b5f30afe429e1fc2ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0189-restrict-cross-module-struct-initializers.md"
+    },
+    {
+      "bytes": 6596,
+      "git_blob_sha1": "8de170fe27b3ae36d8799544b54e4eb7b372d349",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0190-target-environment-platform-condition.md"
+    },
+    {
+      "bytes": 6412,
+      "git_blob_sha1": "73a23ed9d84858749859fa2aeae2a069b5b15510",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0191-eliminate-indexdistance.md"
+    },
+    {
+      "bytes": 40499,
+      "git_blob_sha1": "534cef4c91bd7b74120176ffe85900a85a645437",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0192-non-exhaustive-enums.md"
+    },
+    {
+      "bytes": 15323,
+      "git_blob_sha1": "bbdcc7305addfa08e004b1f5c16d7da7b760db99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0193-cross-module-inlining-and-specialization.md"
+    },
+    {
+      "bytes": 14549,
+      "git_blob_sha1": "ee60a8d2fb5af1d9e28d1085ac554f6fe19bd0dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0194-derived-collection-of-enum-cases.md"
+    },
+    {
+      "bytes": 35645,
+      "git_blob_sha1": "3989a15b50f0ec36d06b97c096ef6c24d015c553",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0195-dynamic-member-lookup.md"
+    },
+    {
+      "bytes": 6767,
+      "git_blob_sha1": "2b69a98991a8c8fe4aa456529f0f4fc955659447",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0196-diagnostic-directives.md"
+    },
+    {
+      "bytes": 5201,
+      "git_blob_sha1": "514aabc2cfb392885abf7c7d6a9dd55a5583931a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0197-remove-where.md"
+    },
+    {
+      "bytes": 20034,
+      "git_blob_sha1": "7b6608d542f584ef3c8360e132f7e2e424a2d415",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0198-playground-quicklook-api-revamp.md"
+    },
+    {
+      "bytes": 2230,
+      "git_blob_sha1": "b9a4c223846fc8092ef8aeaf46cb1a5e6f356880",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0199-bool-toggle.md"
+    },
+    {
+      "bytes": 29558,
+      "git_blob_sha1": "b08508ca0c230310fa1f3afa2e037e59b320d90f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0200-raw-string-escaping.md"
+    },
+    {
+      "bytes": 2903,
+      "git_blob_sha1": "de681db9e558dfabb833ecd3920cca7ffcf5bb45",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0201-package-manager-local-dependencies.md"
+    },
+    {
+      "bytes": 20390,
+      "git_blob_sha1": "48eeb31a90719e7e1e8a4bb9703514ed6ab4e2c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0202-random-unification.md"
+    },
+    {
+      "bytes": 10512,
+      "git_blob_sha1": "4d5391bee184d4bfd9f86792e45d5c612614ef63",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0203-rename-sequence-elements-equal.md"
+    },
+    {
+      "bytes": 6598,
+      "git_blob_sha1": "8726f9cadba91a33ff35ecdf9cd7b284a4ac9e7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0204-add-last-methods.md"
+    },
+    {
+      "bytes": 3773,
+      "git_blob_sha1": "f85cd48bcd738a135d6a82beb42354fb0f99c3d7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0205-withUnsafePointer-for-lets.md"
+    },
+    {
+      "bytes": 36819,
+      "git_blob_sha1": "289cb6d985a112df29624f060292c16065cf9edf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0206-hashable-enhancements.md"
+    },
+    {
+      "bytes": 3078,
+      "git_blob_sha1": "c82a4d6fa20ba3e82eeb30957d16b825d4bfe1c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0207-containsOnly.md"
+    },
+    {
+      "bytes": 4216,
+      "git_blob_sha1": "7c7d3226255846148054e2e4f9f077923426d874",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0208-package-manager-system-library-targets.md"
+    },
+    {
+      "bytes": 5112,
+      "git_blob_sha1": "78b2825f32270eabe15d402c7b33b2aa078c16b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0209-package-manager-swift-lang-version-update.md"
+    },
+    {
+      "bytes": 6587,
+      "git_blob_sha1": "1d7f606b679c8df7d9737d266942e64b0dcde550",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0210-key-path-offset.md"
+    },
+    {
+      "bytes": 18551,
+      "git_blob_sha1": "0da039fdf3aae687def47d67820fb0ada9fa5024",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0211-unicode-scalar-properties.md"
+    },
+    {
+      "bytes": 5431,
+      "git_blob_sha1": "a05a4e06a0a2ce015f578bc461727cc1214bacb2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0212-compiler-version-directive.md"
+    },
+    {
+      "bytes": 3637,
+      "git_blob_sha1": "9fe4ecbd980387bca929acf63ca00bef5305b17d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0213-literal-init-via-coercion.md"
+    },
+    {
+      "bytes": 6004,
+      "git_blob_sha1": "c5d06b0f9c12b74a30953c3e39c258f7d9f2c93d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0214-DictionaryLiteral.md"
+    },
+    {
+      "bytes": 3940,
+      "git_blob_sha1": "43828f15ba40eb2b7df60ee1e4308e92b3dd0214",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0215-conform-never-to-hashable-and-equatable.md"
+    },
+    {
+      "bytes": 20309,
+      "git_blob_sha1": "a407d18d972d6f95320beecec28ffa00f6599e14",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0216-dynamic-callable.md"
+    },
+    {
+      "bytes": 33280,
+      "git_blob_sha1": "9daf9bd7984ebafb9b933ea10955550e1ac597d0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0217-bangbang.md"
+    },
+    {
+      "bytes": 4075,
+      "git_blob_sha1": "66c3e2e8ce2f99c80b0e50bd8bb889c472a59c56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0218-introduce-compact-map-values.md"
+    },
+    {
+      "bytes": 5213,
+      "git_blob_sha1": "ecf960870f6bc7c6558bf302bacb33dbfaedbefa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0219-package-manager-dependency-mirroring.md"
+    },
+    {
+      "bytes": 3572,
+      "git_blob_sha1": "a723213269911b766fd7465b6af8d94759df92bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0220-count-where.md"
+    },
+    {
+      "bytes": 16937,
+      "git_blob_sha1": "d47a95842c9c5c714f3716f2fbd4110fcdf2c493",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0221-character-properties.md"
+    },
+    {
+      "bytes": 6462,
+      "git_blob_sha1": "c5cbcdb402101cd846cdafad99ccec17c480fbe1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0222-lazy-compactmap-sequence.md"
+    },
+    {
+      "bytes": 14547,
+      "git_blob_sha1": "cd78c92bc4869bbc69220cf879069dcb56a2dfe8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0223-array-uninitialized-initializer.md"
+    },
+    {
+      "bytes": 3509,
+      "git_blob_sha1": "7eb060f050c4683ff0e147ffc8a68c8f5177a49a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0224-ifswift-lessthan-operator.md"
+    },
+    {
+      "bytes": 13991,
+      "git_blob_sha1": "cdcb90b7e1bda68488fce36ef86b9161a67c93de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0225-binaryinteger-iseven-isodd-ismultiple.md"
+    },
+    {
+      "bytes": 10525,
+      "git_blob_sha1": "503b1a71cd7f8e0771a00b7c774be6501ca800e3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0226-package-manager-target-based-dep-resolution.md"
+    },
+    {
+      "bytes": 3574,
+      "git_blob_sha1": "1151ae35ab558b9d068de621409e3a4d4e5b88c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0227-identity-keypath.md"
+    },
+    {
+      "bytes": 32222,
+      "git_blob_sha1": "701036698b7d37946134f41e82479610554ab627",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0228-fix-expressiblebystringinterpolation.md"
+    },
+    {
+      "bytes": 28337,
+      "git_blob_sha1": "9be0cc1afea548350fee7ac3ade4e83a5b117889",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0229-simd.md"
+    },
+    {
+      "bytes": 13146,
+      "git_blob_sha1": "62d9faef581bfe9b73094211e0e4dbb401a6cb47",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0230-flatten-optional-try.md"
+    },
+    {
+      "bytes": 10365,
+      "git_blob_sha1": "ec8dd5f2274d88cfd0e0e60a46e04c5278e1c99f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0231-optional-iteration.md"
+    },
+    {
+      "bytes": 5986,
+      "git_blob_sha1": "a9fc872825c7a375d48cedd7ac2a039c19beec74",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0232-remove-customization-points.md"
+    },
+    {
+      "bytes": 10321,
+      "git_blob_sha1": "dca603f18c254f146ce1b7adc7dff1ac70ba2f03",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0233-additive-arithmetic-protocol.md"
+    },
+    {
+      "bytes": 15981,
+      "git_blob_sha1": "6cf850fccbadc41c802d036977fb33d2a4410213",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0234-remove-sequence-subsequence.md"
+    },
+    {
+      "bytes": 16938,
+      "git_blob_sha1": "e363c54de8e54d03f734856b39982bd54205c065",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0235-add-result.md"
+    },
+    {
+      "bytes": 9051,
+      "git_blob_sha1": "afde4c7e14c50ae099d83b10f3b679ae0e55d659",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0236-package-manager-platform-deployment-settings.md"
+    },
+    {
+      "bytes": 6599,
+      "git_blob_sha1": "4bd00aa47706ccfd9589d5a5297f63ad3f248544",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0237-contiguous-collection.md"
+    },
+    {
+      "bytes": 12012,
+      "git_blob_sha1": "721434b15e4efc6981bb3c0f57efc5fbfed86319",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0238-package-manager-build-settings.md"
+    },
+    {
+      "bytes": 4164,
+      "git_blob_sha1": "2acdb63d64f9d9b727a1c0971a72fb895ea151cb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0239-codable-range.md"
+    },
+    {
+      "bytes": 14321,
+      "git_blob_sha1": "b75c0a844886536ad8dabe261dee39549968d4c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0240-ordered-collection-diffing.md"
+    },
+    {
+      "bytes": 12078,
+      "git_blob_sha1": "bb0a8470806525095c215bde1e403a96776425eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0241-string-index-explicit-encoding-offset.md"
+    },
+    {
+      "bytes": 4684,
+      "git_blob_sha1": "4b6522f683640ca9e3d22541096a496724e8b055",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0242-default-values-memberwise.md"
+    },
+    {
+      "bytes": 13731,
+      "git_blob_sha1": "d99618859f11661a4d34ee9beef94aa4a07be5c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0243-codepoint-and-character-literals.md"
+    },
+    {
+      "bytes": 33064,
+      "git_blob_sha1": "a6404963e1c1f4c211a4a0c44047ffe08ba1f199",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0244-opaque-result-types.md"
+    },
+    {
+      "bytes": 12455,
+      "git_blob_sha1": "28c017a2b9731fd34bee048c9a81739070c59503",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0245-array-uninitialized-initializer.md"
+    },
+    {
+      "bytes": 20483,
+      "git_blob_sha1": "0a886c62eca54cdb906f5f3777d4a9e9d99e14ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0246-mathable.md"
+    },
+    {
+      "bytes": 11790,
+      "git_blob_sha1": "69527d9163714f5f8dab45f29180a552a08b575b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0247-contiguous-strings.md"
+    },
+    {
+      "bytes": 8638,
+      "git_blob_sha1": "75b250aa83e0b725b58688f7b3445c252ea6e805",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0248-string-gaps-missing-apis.md"
+    },
+    {
+      "bytes": 7217,
+      "git_blob_sha1": "2986b4b77290bcf1dc4157ad983f327dfa4e7360",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0249-key-path-literal-function-expressions.md"
+    },
+    {
+      "bytes": 9804,
+      "git_blob_sha1": "d73191a9fbd95ade6aba605657e9c2eec9286b98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0250-swift-style-guide-and-formatter.md"
+    },
+    {
+      "bytes": 13785,
+      "git_blob_sha1": "9b5e896eff783c80e6f07d0ee00ad6142396d11a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0251-simd-additions.md"
+    },
+    {
+      "bytes": 6677,
+      "git_blob_sha1": "b0ef216db582ff15084b4550e9bf7694df66556b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0252-keypath-dynamic-member-lookup.md"
+    },
+    {
+      "bytes": 26912,
+      "git_blob_sha1": "035161bc7b704c7832d567cadc00b06591643af1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0253-callable.md"
+    },
+    {
+      "bytes": 8962,
+      "git_blob_sha1": "fdc1935b81b6cbffcae3accde044bc6d4db193fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0254-static-subscripts.md"
+    },
+    {
+      "bytes": 14024,
+      "git_blob_sha1": "1392f5f4113beb45fa3a72f67f505b1289fd038a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0255-omit-return.md"
+    },
+    {
+      "bytes": 9890,
+      "git_blob_sha1": "5c60a8517b256e954556a0a1013ae123372556e8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0256-contiguous-collection.md"
+    },
+    {
+      "bytes": 23765,
+      "git_blob_sha1": "9f08aa63f16c1bb5cce71a36ca38ea9406f70b08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0257-elide-comma.md"
+    },
+    {
+      "bytes": 66753,
+      "git_blob_sha1": "68c8be7a777707ca0133373da4524f2367ec6375",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0258-property-wrappers.md"
+    },
+    {
+      "bytes": 12204,
+      "git_blob_sha1": "c8a1249e4faba3aace82bc508fd263de1763e489",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0259-approximately-equal.md"
+    },
+    {
+      "bytes": 28926,
+      "git_blob_sha1": "e14420908c99e6b9147b2f85c6cd81462eaf20c6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0260-library-evolution.md"
+    },
+    {
+      "bytes": 9077,
+      "git_blob_sha1": "c19eda84de6b27568ad317a4703c217cc7d75fe5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0261-identifiable.md"
+    },
+    {
+      "bytes": 6322,
+      "git_blob_sha1": "3b796c6a289826ce6dd540108634c813fc19dcf4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0262-demangle.md"
+    },
+    {
+      "bytes": 6446,
+      "git_blob_sha1": "826f27abe96b2ec03a990a7f5743d760f224f896",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0263-string-uninitialized-initializer.md"
+    },
+    {
+      "bytes": 21430,
+      "git_blob_sha1": "bb37b2d3d638260431227bcb4c7f55c4b2e6d9ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0264-stdlib-preview-package.md"
+    },
+    {
+      "bytes": 41449,
+      "git_blob_sha1": "bf63478f68cb3d27336d232809ac8e74bd29f84e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0265-offset-indexing-and-slicing.md"
+    },
+    {
+      "bytes": 6932,
+      "git_blob_sha1": "1c43e8389060e05d7f4171e98d981d9eb42a962f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0266-synthesized-comparable-for-enumerations.md"
+    },
+    {
+      "bytes": 4383,
+      "git_blob_sha1": "812fb39da50add238cde36eb4036bd7dc2603fd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0267-where-on-contextually-generic.md"
+    },
+    {
+      "bytes": 7232,
+      "git_blob_sha1": "782c01c1d9985cab5f2a48976eb02ae70ba5ce0e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0268-didset-semantics.md"
+    },
+    {
+      "bytes": 11992,
+      "git_blob_sha1": "272a4386ab14d7d1ebfb42c8df3f87938e19908d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0269-implicit-self-explicit-capture.md"
+    },
+    {
+      "bytes": 24625,
+      "git_blob_sha1": "f9c3e224f78289df064156bf5ec1573de3257165",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0270-rangeset-and-collection-operations.md"
+    },
+    {
+      "bytes": 21732,
+      "git_blob_sha1": "f83bbad6efcfdba7030dff660a4b283751a6fbb2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0271-package-manager-resources.md"
+    },
+    {
+      "bytes": 26610,
+      "git_blob_sha1": "993b70a5e694fef8abc211678c3cf2ca665cbcda",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0272-swiftpm-binary-dependencies.md"
+    },
+    {
+      "bytes": 6055,
+      "git_blob_sha1": "720d6bc9f6e36201709d46cefdabd4c007e82425",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0273-swiftpm-conditional-target-dependencies.md"
+    },
+    {
+      "bytes": 19009,
+      "git_blob_sha1": "68a70169514d73063bc175e4ac37d1fe6927b4c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0274-magic-file.md"
+    },
+    {
+      "bytes": 7975,
+      "git_blob_sha1": "c2423c71e434bba2ca9162976d918c143ba69292",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0275-allow-more-characters-like-whitespaces-and-punctuations-for-escaped-identifiers.md"
+    },
+    {
+      "bytes": 6951,
+      "git_blob_sha1": "48bb92369692e9d4f5634e943a6f023fd887f7a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0276-multi-pattern-catch-clauses.md"
+    },
+    {
+      "bytes": 6262,
+      "git_blob_sha1": "83e40bf265804296abd9b9fe1d7c5f5b8c293d7e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0277-float16.md"
+    },
+    {
+      "bytes": 15284,
+      "git_blob_sha1": "5f253cdbf3b488bc3cd3fdc0a72cfdb0af757229",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0278-package-manager-localized-resources.md"
+    },
+    {
+      "bytes": 16015,
+      "git_blob_sha1": "0f1b03e4f59810bfe371c60d9e9d44a3eca024ed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0279-multiple-trailing-closures.md"
+    },
+    {
+      "bytes": 9176,
+      "git_blob_sha1": "b837d99485ae365cb58b73cde43e2dd76744f8ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0280-enum-cases-as-protocol-witnesses.md"
+    },
+    {
+      "bytes": 12533,
+      "git_blob_sha1": "204ff7e2ba213a6bb590afaaa4c33d0f926fdeaf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0281-main-attribute.md"
+    },
+    {
+      "bytes": 22866,
+      "git_blob_sha1": "21419fbb3c727d2a6586cc554b7bd579124c460e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0282-atomics.md"
+    },
+    {
+      "bytes": 9622,
+      "git_blob_sha1": "0b5a65213745088218df35837872dfe9e0cd42ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0283-tuples-are-equatable-comparable-hashable.md"
+    },
+    {
+      "bytes": 8791,
+      "git_blob_sha1": "3ec42bab994c0139e0356a165ead5836af1a1d78",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0284-multiple-variadic-parameters.md"
+    },
+    {
+      "bytes": 11027,
+      "git_blob_sha1": "fd735192580c912b65d65f980ffee3cf049400bd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0285-ease-pound-file-transition.md"
+    },
+    {
+      "bytes": 19876,
+      "git_blob_sha1": "972038c5a6200b0e5f2b5d717f8e43ea0d16ebed",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0286-forward-scan-trailing-closures.md"
+    },
+    {
+      "bytes": 9180,
+      "git_blob_sha1": "27fd9da22c71185dfe649d0139ca632c231e1576",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0287-implicit-member-chains.md"
+    },
+    {
+      "bytes": 17851,
+      "git_blob_sha1": "b48fde326d52c13d84591f4353c40124cec43d59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0288-binaryinteger-ispower.md"
+    },
+    {
+      "bytes": 66721,
+      "git_blob_sha1": "2e6a4fdef67de13a953678b80b068aa612331f16",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0289-result-builders.md"
+    },
+    {
+      "bytes": 19566,
+      "git_blob_sha1": "2d43fdcce46463018fdf11d0e887b98e3e8e77b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0290-negative-availability.md"
+    },
+    {
+      "bytes": 19558,
+      "git_blob_sha1": "19635a6616778470263cd094cea3d2c9bdbbb4b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0291-package-collections.md"
+    },
+    {
+      "bytes": 49867,
+      "git_blob_sha1": "a981a2b4cf6ff92c43bba500be2e3c8614744dfa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0292-package-registry-service.md"
+    },
+    {
+      "bytes": 48564,
+      "git_blob_sha1": "cb28e27d6ce8dbbfe865accf234f09f990405379",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0293-extend-property-wrappers-to-function-and-closure-parameters.md"
+    },
+    {
+      "bytes": 9824,
+      "git_blob_sha1": "31aa5593b712e6d31901d5540bb84d7aed6b6378",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0294-package-executable-targets.md"
+    },
+    {
+      "bytes": 13118,
+      "git_blob_sha1": "599e2db5327204f05ce5943d595970365aab0742",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0295-codable-synthesis-for-enums-with-associated-values.md"
+    },
+    {
+      "bytes": 48993,
+      "git_blob_sha1": "35f2398da93425fd31310d807189c74509a76b08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0296-async-await.md"
+    },
+    {
+      "bytes": 25264,
+      "git_blob_sha1": "a0caa5de14189ec064f2c0bb6404af675374cb31",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0297-concurrency-objc.md"
+    },
+    {
+      "bytes": 18632,
+      "git_blob_sha1": "d0899264dfed133b550ee1599d7aee9ef12be42b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0298-asyncsequence.md"
+    },
+    {
+      "bytes": 14970,
+      "git_blob_sha1": "89813ef0b84e65351ebf58be861b7f8a9e03e99b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0299-extend-generic-static-member-lookup.md"
+    },
+    {
+      "bytes": 21385,
+      "git_blob_sha1": "e6574abde4f8cf4f1828fec084cdfa615aa13dfb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0300-continuation.md"
+    },
+    {
+      "bytes": 11080,
+      "git_blob_sha1": "9778c01f1ca9b88953bf81e544b0e04a07769fc8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0301-package-editing-commands.md"
+    },
+    {
+      "bytes": 44356,
+      "git_blob_sha1": "4012686d59d0f095b3d1b4130421b812fc1658bc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0302-concurrent-value-and-concurrent-closures.md"
+    },
+    {
+      "bytes": 70204,
+      "git_blob_sha1": "0ba09d1d5a22df2d4e9aa4a61bc76a8587dc8e28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0303-swiftpm-extensible-build-tools.md"
+    },
+    {
+      "bytes": 92410,
+      "git_blob_sha1": "f29c49d197eb9179f5de7f9d962e301a0c6684f5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0304-structured-concurrency.md"
+    },
+    {
+      "bytes": 18198,
+      "git_blob_sha1": "e525eeebb622eb3f09a55551ef20a30aba1bf313",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0305-swiftpm-binary-target-improvements.md"
+    },
+    {
+      "bytes": 62853,
+      "git_blob_sha1": "4a1d6d0ee04e76f42244edd8da95b46231f19f68",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0306-actors.md"
+    },
+    {
+      "bytes": 15151,
+      "git_blob_sha1": "1d58e9c5cb09893a4fb5626bd4a23bcc36e256b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0307-allow-interchangeable-use-of-double-cgfloat-types.md"
+    },
+    {
+      "bytes": 8079,
+      "git_blob_sha1": "c086807efba2785c27d74282ae5ded73cb7eff9a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0308-postfix-if-config-expressions.md"
+    },
+    {
+      "bytes": 24162,
+      "git_blob_sha1": "460d97f02d3d163528a65ef04fbac5bdac87be34",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0309-unlock-existential-types-for-all-protocols.md"
+    },
+    {
+      "bytes": 27718,
+      "git_blob_sha1": "af9dc2b7d8e6c84a3f33ddb7ee36eb06f2eea478",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0310-effectful-readonly-properties.md"
+    },
+    {
+      "bytes": 78494,
+      "git_blob_sha1": "d6f48593e5cd13e6885110cc1c98ee50163ce5fb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0311-task-locals.md"
+    },
+    {
+      "bytes": 16763,
+      "git_blob_sha1": "0ead03b3863fdf95ac8925ff4d87a809bd645344",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0312-indexed-and-enumerated-zip-collections.md"
+    },
+    {
+      "bytes": 18813,
+      "git_blob_sha1": "72f35a9d04e5e4df879f86ff36c66a547f84f577",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0313-actor-isolation-control.md"
+    },
+    {
+      "bytes": 27820,
+      "git_blob_sha1": "3abb7024f4da4299976e753a2f0770009f600ba3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0314-async-stream.md"
+    },
+    {
+      "bytes": 17679,
+      "git_blob_sha1": "a52173e1f424de9abbf74c390a937920341e2dd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0315-placeholder-types.md"
+    },
+    {
+      "bytes": 29054,
+      "git_blob_sha1": "79ba23067a058f2144c3925a235c07a69ffadbe8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0316-global-actors.md"
+    },
+    {
+      "bytes": 48085,
+      "git_blob_sha1": "113e762a6a938c63305922992b0d496179f06463",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0317-async-let.md"
+    },
+    {
+      "bytes": 13832,
+      "git_blob_sha1": "606cf9ad69ea631e53d1f74afd970b9b2c12d569",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0318-package-creation.md"
+    },
+    {
+      "bytes": 3057,
+      "git_blob_sha1": "e298dcc55ba1f0582261f6e83ee2d7f7b0cd41d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0319-never-identifiable.md"
+    },
+    {
+      "bytes": 23336,
+      "git_blob_sha1": "cc8d6f1191e4d46a31b698f9d88b8a1823140411",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0320-codingkeyrepresentable.md"
+    },
+    {
+      "bytes": 13141,
+      "git_blob_sha1": "06f714024b5e33b1eb7e39acf60e15b49018fa02",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0321-package-registry-publish.md"
+    },
+    {
+      "bytes": 21953,
+      "git_blob_sha1": "05be569820c8aa06867a90e25b7ce150c9cfd21e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0322-temporary-buffers.md"
+    },
+    {
+      "bytes": 10092,
+      "git_blob_sha1": "c3349c342401c79b144fe3c296c4e1eb0c667b59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0323-async-main-semantics.md"
+    },
+    {
+      "bytes": 13553,
+      "git_blob_sha1": "1c1834e9f82177f7023a2c2a5beab931e52f1ebe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0324-c-lang-pointer-arg-conversion.md"
+    },
+    {
+      "bytes": 25885,
+      "git_blob_sha1": "626710d8555b8f9d8f3582ac9e6f94a74a17ce6f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0325-swiftpm-additional-plugin-apis.md"
+    },
+    {
+      "bytes": 14711,
+      "git_blob_sha1": "0ed3efe8f0dbeae15294a6eb6bb5f210e42a6ccd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0326-extending-multi-statement-closure-inference.md"
+    },
+    {
+      "bytes": 52659,
+      "git_blob_sha1": "f5bfe3fedab19e19bcf1e27c3dfcf5d7ba271fd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0327-actor-initializers.md"
+    },
+    {
+      "bytes": 11058,
+      "git_blob_sha1": "ab57b9a36205f20233a10193312116864e402540",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0328-structural-opaque-result-types.md"
+    },
+    {
+      "bytes": 42987,
+      "git_blob_sha1": "743e21a61d34a7c6b240bc82418c7340ee269a9e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0329-clock-instant-duration.md"
+    },
+    {
+      "bytes": 3453,
+      "git_blob_sha1": "02cdfa76bf2f0daa72ade139e0428aa3de6e1ee0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0330-collection-conditionals.md"
+    },
+    {
+      "bytes": 4597,
+      "git_blob_sha1": "c392413e480d346e5ebca6f32684f5d75bdc26a9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0331-remove-sendable-from-unsafepointer.md"
+    },
+    {
+      "bytes": 46264,
+      "git_blob_sha1": "3e30dc8957a07d48545c0403d2a44b6cd17e7a29",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0332-swiftpm-command-plugins.md"
+    },
+    {
+      "bytes": 40696,
+      "git_blob_sha1": "2b6d305ed4a05738669266f39308a6495928d682",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0333-with-memory-rebound.md"
+    },
+    {
+      "bytes": 21112,
+      "git_blob_sha1": "ffae2587ad21b3d39b18abbf0baf5eb9f72a99f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0334-pointer-usability-improvements.md"
+    },
+    {
+      "bytes": 16552,
+      "git_blob_sha1": "eaf480380ec95568f6d5ecd0bfa092c94f99e19c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0335-existential-any.md"
+    },
+    {
+      "bytes": 112857,
+      "git_blob_sha1": "bc7b91c70448fcd59abb7b45f66bc735f009121e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0336-distributed-actor-isolation.md"
+    },
+    {
+      "bytes": 24339,
+      "git_blob_sha1": "5744b141417991260958912324e584ed2c814420",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0337-support-incremental-migration-to-concurrency-checking.md"
+    },
+    {
+      "bytes": 20161,
+      "git_blob_sha1": "6ce58f8e1345c6978fd2caabf850541e6bc0b4b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0338-clarify-execution-non-actor-async.md"
+    },
+    {
+      "bytes": 20615,
+      "git_blob_sha1": "a8e1dfdceedba536bbaa6fcc1db14621152389ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0339-module-aliasing-for-disambiguation.md"
+    },
+    {
+      "bytes": 14652,
+      "git_blob_sha1": "3a952297524195014ec177740fc48e4662c93640",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0340-swift-noasync.md"
+    },
+    {
+      "bytes": 13387,
+      "git_blob_sha1": "ad47cae7198fdbbb7c335df6d311aff1ac02ccb0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0341-opaque-parameters.md"
+    },
+    {
+      "bytes": 16703,
+      "git_blob_sha1": "c4b448b1d40e387505652ab32876794f1a54e8e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0342-static-link-runtime-libraries-by-default-on-supported-platforms.md"
+    },
+    {
+      "bytes": 9394,
+      "git_blob_sha1": "f47925077a4e16dfd75acbf4fca5af83ab53be54",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0343-top-level-concurrency.md"
+    },
+    {
+      "bytes": 125572,
+      "git_blob_sha1": "61d1091f8223fcdb0dce6d3ebd70766467ff38c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0344-distributed-actor-runtime.md"
+    },
+    {
+      "bytes": 17543,
+      "git_blob_sha1": "265d89d8737409ae76b6e1894c0ecfe7e410f5a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0345-if-let-shorthand.md"
+    },
+    {
+      "bytes": 23264,
+      "git_blob_sha1": "7199446d35bef262b7f60d192745edc954c82e19",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0346-light-weight-same-type-syntax.md"
+    },
+    {
+      "bytes": 14181,
+      "git_blob_sha1": "db105e1d92cabde3c7814f349c536b5fa6feddcf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0347-type-inference-from-default-exprs.md"
+    },
+    {
+      "bytes": 18991,
+      "git_blob_sha1": "b64c5d8660de229d2ca7bf1c3252fd3cfc933c4f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0348-buildpartialblock.md"
+    },
+    {
+      "bytes": 17867,
+      "git_blob_sha1": "b542077621759c573e7bfff77f39b75e44243ebf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0349-unaligned-loads-and-stores.md"
+    },
+    {
+      "bytes": 32649,
+      "git_blob_sha1": "2eef59ffb0af617dd0e0620736dc3ab1d0dedd99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0350-regex-type-overview.md"
+    },
+    {
+      "bytes": 75949,
+      "git_blob_sha1": "41a39eae1d1c7c65137ac181ace69daeef98298e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0351-regex-builder.md"
+    },
+    {
+      "bytes": 44344,
+      "git_blob_sha1": "603e368148d375b2c2b522cfb5b4913b04f9b2bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0352-implicit-open-existentials.md"
+    },
+    {
+      "bytes": 13877,
+      "git_blob_sha1": "44a784e86e1dc54979296c06b7645b07e909ca24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0353-constrained-existential-types.md"
+    },
+    {
+      "bytes": 42810,
+      "git_blob_sha1": "752e22f08511c2e1b9d558d3fa3311dd42cc5026",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0354-regex-literals.md"
+    },
+    {
+      "bytes": 63817,
+      "git_blob_sha1": "a3ed0c09ce61b988ef822f808435e9372c8efc88",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0355-regex-syntax-run-time-construction.md"
+    },
+    {
+      "bytes": 26544,
+      "git_blob_sha1": "a7b1f4dc0e71b22092c4a73cbc2f9266a66f5fd1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0356-swift-snippets.md"
+    },
+    {
+      "bytes": 59467,
+      "git_blob_sha1": "1cbd60d3f3ef839843044a020082f6c2e4a6c980",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0357-regex-string-processing-algorithms.md"
+    },
+    {
+      "bytes": 29356,
+      "git_blob_sha1": "a95f941c0977e90fb4244c3ba6924800289be162",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0358-primary-associated-types-in-stdlib.md"
+    },
+    {
+      "bytes": 22369,
+      "git_blob_sha1": "5778ef2da49ca901afd892625b87a8e75cbeec5c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0359-build-time-constant-values.md"
+    },
+    {
+      "bytes": 10413,
+      "git_blob_sha1": "d32695466236ed6a605296b7ef937fead0c514d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0360-opaque-result-types-with-availability.md"
+    },
+    {
+      "bytes": 8480,
+      "git_blob_sha1": "8b91826d085ebe526f94a63a655056a4836e79ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0361-bound-generic-extensions.md"
+    },
+    {
+      "bytes": 19166,
+      "git_blob_sha1": "d52071ddd2903a24d0aa30b83392206f87e39ec0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0362-piecemeal-future-features.md"
+    },
+    {
+      "bytes": 80245,
+      "git_blob_sha1": "a56e074ddfa0eb29364d8afd5cf5ee7411f88701",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0363-unicode-for-string-processing.md"
+    },
+    {
+      "bytes": 7386,
+      "git_blob_sha1": "6300d01b9e7a57f3d39d5ff6712d65a3938edbc1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0364-retroactive-conformance-warning.md"
+    },
+    {
+      "bytes": 7796,
+      "git_blob_sha1": "14387456c450e70e3819c59700514bb5af3e0f89",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0365-implicit-self-weak-capture.md"
+    },
+    {
+      "bytes": 30079,
+      "git_blob_sha1": "fa899f24c7d5fa638a3c4ddc638b84ba8affc5cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0366-move-function.md"
+    },
+    {
+      "bytes": 5317,
+      "git_blob_sha1": "09b915db610dc65711a8c93d84952a93f1258e6b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0367-conditional-attributes.md"
+    },
+    {
+      "bytes": 10449,
+      "git_blob_sha1": "4c86fb5ff01a590f7d45d7db24a0d89b9c0f80b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0368-staticbigint.md"
+    },
+    {
+      "bytes": 10577,
+      "git_blob_sha1": "6f58d7aff82458481497e2d1721863a293644d75",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0369-add-customdebugdescription-conformance-to-anykeypath.md"
+    },
+    {
+      "bytes": 91770,
+      "git_blob_sha1": "9786754117013a1a0c5b456b86ec4bdf87bdb6f0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0370-pointer-family-initialization-improvements.md"
+    },
+    {
+      "bytes": 25512,
+      "git_blob_sha1": "00b88aca31bcea660c8c4e15310dbbae72393ceb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0371-isolated-synchronous-deinit.md"
+    },
+    {
+      "bytes": 4876,
+      "git_blob_sha1": "2449d0ae3c037b6183d2aaf0a044bb792ef619a4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0372-document-sorting-as-stable.md"
+    },
+    {
+      "bytes": 5265,
+      "git_blob_sha1": "9beffe1bde05eae85dc9d790e9d79c635e12d6f6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0373-vars-without-limits-in-result-builders.md"
+    },
+    {
+      "bytes": 7342,
+      "git_blob_sha1": "f9653cc4e085f240cbb0918fb510a33ec0d9e746",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0374-clock-sleep-for.md"
+    },
+    {
+      "bytes": 3945,
+      "git_blob_sha1": "e2e5272d39d37e7bf6d91d928bb6b93bba80d285",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0375-opening-existential-optional.md"
+    },
+    {
+      "bytes": 15264,
+      "git_blob_sha1": "396dcc93da5aed5c8039eb54652eff74269f430d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0376-function-back-deployment.md"
+    },
+    {
+      "bytes": 31007,
+      "git_blob_sha1": "136860120ec934702bcccd2684e5823e11ddcc41",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0377-parameter-ownership-modifiers.md"
+    },
+    {
+      "bytes": 12903,
+      "git_blob_sha1": "7a9f9f825f33cc5f84e53fab94659af84d1245a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0378-package-registry-auth.md"
+    },
+    {
+      "bytes": 15324,
+      "git_blob_sha1": "ddbcb87a6caac053b4ebb0d86d18ddecedaf8a45",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0379-opt-in-reflection-metadata.md"
+    },
+    {
+      "bytes": 22250,
+      "git_blob_sha1": "a4ad2fd3db9d04abe674603484ba8227da1db9fe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0380-if-switch-expressions.md"
+    },
+    {
+      "bytes": 18039,
+      "git_blob_sha1": "27ec7607b04d134683fd1adae200b220972c39ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0381-task-group-discard-results.md"
+    },
+    {
+      "bytes": 48212,
+      "git_blob_sha1": "e3a33eb558e9439932f1d2c28c0d8a8cf16c206e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0382-expression-macros.md"
+    },
+    {
+      "bytes": 5677,
+      "git_blob_sha1": "a2ea5c6da794a05a9d6c3362df73511fb9311479",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0383-deprecate-uiapplicationmain-and-nsapplicationmain.md"
+    },
+    {
+      "bytes": 14568,
+      "git_blob_sha1": "e7da438da22557693147b4131e58e938b961e6c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md"
+    },
+    {
+      "bytes": 26011,
+      "git_blob_sha1": "6092f0f8c64c745a0743348bbcc98a0273e8bad1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0385-custom-reflection-metadata.md"
+    },
+    {
+      "bytes": 28165,
+      "git_blob_sha1": "da88d200163a4d000309324e21b4be072cc78afe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0386-package-access-modifier.md"
+    },
+    {
+      "bytes": 32134,
+      "git_blob_sha1": "40367a6464a96996e64617a9aeb740cf3d8d39a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0387-cross-compilation-destinations.md"
+    },
+    {
+      "bytes": 6919,
+      "git_blob_sha1": "cda799d45005898a124cd8a4186798bcfec66bf3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0388-async-stream-factory.md"
+    },
+    {
+      "bytes": 44809,
+      "git_blob_sha1": "fe01f3495fb3f1de0da3b3b1c51f9216443f7083",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0389-attached-macros.md"
+    },
+    {
+      "bytes": 74520,
+      "git_blob_sha1": "79549cd23040b0d6ccd9fb45d3ab804419bdff8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0390-noncopyable-structs-and-enums.md"
+    },
+    {
+      "bytes": 39019,
+      "git_blob_sha1": "6aba3942c2488ce4716740d46816c5c8e2e4137e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0391-package-registry-publish.md"
+    },
+    {
+      "bytes": 57735,
+      "git_blob_sha1": "57df10400adfc38a085502fad34e1da6db8e5053",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0392-custom-actor-executors.md"
+    },
+    {
+      "bytes": 57368,
+      "git_blob_sha1": "3102304563931498f87611ec40dbdc5b65a9f10c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0393-parameter-packs.md"
+    },
+    {
+      "bytes": 11887,
+      "git_blob_sha1": "169861184246a156a8fb1285be1f52456ca3ea6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0394-swiftpm-expression-macros.md"
+    },
+    {
+      "bytes": 27404,
+      "git_blob_sha1": "1a3acd1c9fc8dbfbe127da16c0afbe269365af32",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0395-observability.md"
+    },
+    {
+      "bytes": 3059,
+      "git_blob_sha1": "be3ecd86ea4f07b694c07c7aa47f40ce4fc5f3be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0396-never-codable.md"
+    },
+    {
+      "bytes": 15123,
+      "git_blob_sha1": "ab59886f02240bc177f3df97be9d371b106fcb1b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0397-freestanding-declaration-macros.md"
+    },
+    {
+      "bytes": 11555,
+      "git_blob_sha1": "a138841f25d5629e4965a267ff9e7141781f988b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0398-variadic-types.md"
+    },
+    {
+      "bytes": 7201,
+      "git_blob_sha1": "89182688258ef04e54c8c88d918fb151aba2c0ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0399-tuple-of-value-pack-expansion.md"
+    },
+    {
+      "bytes": 26546,
+      "git_blob_sha1": "852421b0fdcfde0f99e717cf46fe95dba9561d6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0400-init-accessors.md"
+    },
+    {
+      "bytes": 12336,
+      "git_blob_sha1": "48ba56235dcba77b4d5d6cc582d2bbcb638ebd46",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0401-remove-property-wrapper-isolation.md"
+    },
+    {
+      "bytes": 9428,
+      "git_blob_sha1": "80513bae902e0a53fac8d98c412b18e504af336d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0402-extension-macros.md"
+    },
+    {
+      "bytes": 25772,
+      "git_blob_sha1": "c339f2e42456714b63989e4d5bec6432f51e95f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0403-swiftpm-mixed-language-targets.md"
+    },
+    {
+      "bytes": 7333,
+      "git_blob_sha1": "9722c8b2809e6f05c650eb946242eaa9113ae9e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0404-nested-protocols.md"
+    },
+    {
+      "bytes": 11926,
+      "git_blob_sha1": "636b4092cc90a5366b2305c45dcb9e7d0fb25fee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0405-string-validating-initializers.md"
+    },
+    {
+      "bytes": 38849,
+      "git_blob_sha1": "58817b3ede4c030f8e44e3116aaff82fc06cdfce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0406-async-stream-backpressure.md"
+    },
+    {
+      "bytes": 10056,
+      "git_blob_sha1": "6e31c39d1f9be0be27a3bc5b9580eb53cf1481e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0407-member-macro-conformances.md"
+    },
+    {
+      "bytes": 8213,
+      "git_blob_sha1": "b625affbc96ed2ec78fe31b4d789228973f11c85",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0408-pack-iteration.md"
+    },
+    {
+      "bytes": 20656,
+      "git_blob_sha1": "4eec8c9df65c398be137e7a2c9117782f5a4030e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0409-access-level-on-imports.md"
+    },
+    {
+      "bytes": 91751,
+      "git_blob_sha1": "21d348b3a289004535e245ee7b114afd9146d3e3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0410-atomics.md"
+    },
+    {
+      "bytes": 16116,
+      "git_blob_sha1": "02280a41bed55c8f571e19ded7fee845d3a0de00",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0411-isolated-default-values.md"
+    },
+    {
+      "bytes": 8399,
+      "git_blob_sha1": "d045827598766aacb408346c7916e9367d89acc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0412-strict-concurrency-for-global-variables.md"
+    },
+    {
+      "bytes": 69238,
+      "git_blob_sha1": "5a40e6a1924b43bbd64cbc9e5ad71cecf8fb2eee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0413-typed-throws.md"
+    },
+    {
+      "bytes": 74735,
+      "git_blob_sha1": "062dd3dde756e155a407a8e2906054a1c57a5b60",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0414-region-based-isolation.md"
+    },
+    {
+      "bytes": 16621,
+      "git_blob_sha1": "12797b0a2fc424f3320e94e4f3ded20a7321fd95",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0415-function-body-macros.md"
+    },
+    {
+      "bytes": 4901,
+      "git_blob_sha1": "4816effb167263c438f8e8ff192b7ca2d54c49d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0416-keypath-function-subtyping.md"
+    },
+    {
+      "bytes": 42599,
+      "git_blob_sha1": "9f0d5848fdf7872aab06573b643e919d2ad11116",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0417-task-executor-preference.md"
+    },
+    {
+      "bytes": 20131,
+      "git_blob_sha1": "9e030a6872093a10b3337d61b80870707f988404",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0418-inferring-sendable-for-methods.md"
+    },
+    {
+      "bytes": 17712,
+      "git_blob_sha1": "996e045ba41388c8f9344f89127bdda7ddbc10ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0419-backtrace-api.md"
+    },
+    {
+      "bytes": 26973,
+      "git_blob_sha1": "14f83d2603d84e97f0a5eec81f0356fff681a572",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0420-inheritance-of-actor-isolation.md"
+    },
+    {
+      "bytes": 19247,
+      "git_blob_sha1": "c0c19c4550e710dba8ab0867846c292edaff1b98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0421-generalize-async-sequence.md"
+    },
+    {
+      "bytes": 8368,
+      "git_blob_sha1": "92b9f6f836633544c7740217ec7895ba641786e5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0422-caller-side-default-argument-macro-expression.md"
+    },
+    {
+      "bytes": 13092,
+      "git_blob_sha1": "fb7215418eb92212d59578be1e3bd20186e34cf3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0423-dynamic-actor-isolation.md"
+    },
+    {
+      "bytes": 12420,
+      "git_blob_sha1": "cc7a2d0d29382f8be205c480172daf9e7cae7e58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0424-custom-isolation-checking-for-serialexecutor.md"
+    },
+    {
+      "bytes": 8259,
+      "git_blob_sha1": "809464b3f8adec460216acc990395a2f2ee7ec9b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0425-int128.md"
+    },
+    {
+      "bytes": 22858,
+      "git_blob_sha1": "3a9073a788643380d354844223429c510061704c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0426-bitwise-copyable.md"
+    },
+    {
+      "bytes": 26361,
+      "git_blob_sha1": "321c9090e86f31f6141bfc8ee198079d17618178",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0427-noncopyable-generics.md"
+    },
+    {
+      "bytes": 30241,
+      "git_blob_sha1": "e7b4128e3d6833881833f47e32ffb28d1832cc91",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0428-resolve-distributed-actor-protocols.md"
+    },
+    {
+      "bytes": 10596,
+      "git_blob_sha1": "d760ce11b9df3b570ca16422a3e117d90d9948c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0429-partial-consumption.md"
+    },
+    {
+      "bytes": 21814,
+      "git_blob_sha1": "031685c0ee7f2001e3a2c178dcc36a5ab385ace5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0430-transferring-parameters-and-results.md"
+    },
+    {
+      "bytes": 40909,
+      "git_blob_sha1": "ee28df338692bb197e88f2f0222abaf4e958e27e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0431-isolated-any-functions.md"
+    },
+    {
+      "bytes": 14001,
+      "git_blob_sha1": "5eb6171845294adc3f4d366e742b56f64bb0aedf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0432-noncopyable-switch.md"
+    },
+    {
+      "bytes": 22709,
+      "git_blob_sha1": "cdb794657429bb4e85383439efccc8e47b428661",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0433-mutex.md"
+    },
+    {
+      "bytes": 14377,
+      "git_blob_sha1": "da254db685e81da79b85b6d28f8f389f55527b26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0434-global-actor-isolated-types-usability.md"
+    },
+    {
+      "bytes": 2858,
+      "git_blob_sha1": "c9c62e089a51c27691cbff673dd20065b2f39e5e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0435-swiftpm-per-target-swift-language-version-setting.md"
+    },
+    {
+      "bytes": 30633,
+      "git_blob_sha1": "517599b667a111bd86499c77b6070d9f96ab635c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0436-objc-implementation.md"
+    },
+    {
+      "bytes": 102584,
+      "git_blob_sha1": "ddef3d2c7c611e86ad16765f8ae9f1e3868d9159",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0437-noncopyable-stdlib-primitives.md"
+    },
+    {
+      "bytes": 6459,
+      "git_blob_sha1": "e12bd4afb6f52d9669ba7bba5406fd321576cfc0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0438-metatype-keypath.md"
+    },
+    {
+      "bytes": 9091,
+      "git_blob_sha1": "8dc2b4448b61c165a403e25a0e5b2bbe2c64b714",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0439-trailing-comma-lists.md"
+    },
+    {
+      "bytes": 18660,
+      "git_blob_sha1": "c421dbcfeff7ec128a467c439da4c2c11dd30a8c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0440-debug-description-macro.md"
+    },
+    {
+      "bytes": 14683,
+      "git_blob_sha1": "d34b6eeacf7ce23be2b694537f4c9a87a06cb1a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0441-formalize-language-mode-terminology.md"
+    },
+    {
+      "bytes": 9499,
+      "git_blob_sha1": "8d64c121347c8530f7b0d754261f6e63b3686f61",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0442-allow-taskgroup-childtaskresult-type-to-be-inferred.md"
+    },
+    {
+      "bytes": 18075,
+      "git_blob_sha1": "eb24169971c4fdb75544b22f997fd248e074309e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0443-warning-control-flags.md"
+    },
+    {
+      "bytes": 15300,
+      "git_blob_sha1": "67aeae6c49a3cf97a3091e8b02551293d56385d0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0444-member-import-visibility.md"
+    },
+    {
+      "bytes": 11091,
+      "git_blob_sha1": "f1c2beaa89388473b7d068caa4b888de16e001ab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0445-string-index-printing.md"
+    },
+    {
+      "bytes": 20747,
+      "git_blob_sha1": "6398ade7a629916afc92bbc0a719b13592312692",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0446-non-escapable.md"
+    },
+    {
+      "bytes": 49382,
+      "git_blob_sha1": "71b3ff8aa42d8f0174d160b7c8868d6659575316",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0447-span-access-shared-contiguous-storage.md"
+    },
+    {
+      "bytes": 4548,
+      "git_blob_sha1": "744bdbd85c0fe834478d094eb4eb8a68a0135c99",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0448-regex-lookbehind-assertions.md"
+    },
+    {
+      "bytes": 17195,
+      "git_blob_sha1": "92d4bf5217060e1ea5ba122b595410de26a9815d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0449-nonisolated-for-global-actor-cutoff.md"
+    },
+    {
+      "bytes": 26497,
+      "git_blob_sha1": "70950f32d4bd6f76fede46385cfd539ea58b71da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0450-swiftpm-package-traits.md"
+    },
+    {
+      "bytes": 33350,
+      "git_blob_sha1": "3105c9762609cc57f5e2714a9fb789422d717e28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0451-escaped-identifiers.md"
+    },
+    {
+      "bytes": 24688,
+      "git_blob_sha1": "b2ca7b2083ef17070d0251c073963f2ba12ba31b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0452-integer-generic-parameters.md"
+    },
+    {
+      "bytes": 31644,
+      "git_blob_sha1": "d755bf66f165284e09fc8f846849a912f1c95249",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0453-vector.md"
+    },
+    {
+      "bytes": 2411,
+      "git_blob_sha1": "c7c6f0d75589e9edfa5210ef2f8674f7d96698aa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0454-memory-allocator.md"
+    },
+    {
+      "bytes": 3309,
+      "git_blob_sha1": "186eb31892977a310e4806c7e01a71004f43262b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0455-swiftpm-testable-build-setting.md"
+    },
+    {
+      "bytes": 20530,
+      "git_blob_sha1": "bffb608e0053623fb78c7a50d8eddb0fcb40689e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0456-stdlib-span-properties.md"
+    },
+    {
+      "bytes": 6002,
+      "git_blob_sha1": "b88984362b7248306b57032ccc707a2f63547481",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0457-duration-attosecond-represenation.md"
+    },
+    {
+      "bytes": 61782,
+      "git_blob_sha1": "dce70053c2668be509ceb316c2568e4d17e18e22",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0458-strict-memory-safety.md"
+    },
+    {
+      "bytes": 9416,
+      "git_blob_sha1": "14071906cd05def45b94aa818b73d1be26642655",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0459-enumerated-collection.md"
+    },
+    {
+      "bytes": 17963,
+      "git_blob_sha1": "c9bd45603b34f73339ba2544d34136152c87701b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0460-specialized.md"
+    },
+    {
+      "bytes": 45500,
+      "git_blob_sha1": "1817266f66d378a59a0d43346360bddbbfdb68ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0461-async-function-isolation.md"
+    },
+    {
+      "bytes": 13030,
+      "git_blob_sha1": "2367e3899948242026753461f73f0acf22bb74b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0462-task-priority-escalation-apis.md"
+    },
+    {
+      "bytes": 7114,
+      "git_blob_sha1": "51e59d9d8886196a0df7cbc3230e039094c55bc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0463-sendable-completion-handlers.md"
+    },
+    {
+      "bytes": 41029,
+      "git_blob_sha1": "9d1c3f915760bc2a867b78fabb85898e8ac52cc1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0464-utf8span-safe-utf8-processing.md"
+    },
+    {
+      "bytes": 53053,
+      "git_blob_sha1": "798025fef9a4b15dfca27f746a93ddce555c93b2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0465-nonescapable-stdlib-primitives.md"
+    },
+    {
+      "bytes": 15919,
+      "git_blob_sha1": "77ce67a9f303436eff881ec51cfa814bd1c17c83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0466-control-default-actor-isolation.md"
+    },
+    {
+      "bytes": 36872,
+      "git_blob_sha1": "846697c393c12cee1a91e63437f2cb137e21d0f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0467-MutableSpan.md"
+    },
+    {
+      "bytes": 4860,
+      "git_blob_sha1": "5412d1734eb5257e7943909ea2f3df09ce7ff193",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0468-async-stream-continuation-hashable-conformance.md"
+    },
+    {
+      "bytes": 14365,
+      "git_blob_sha1": "24c466950138bc1194be179b7ea243169a104e56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0469-task-names.md"
+    },
+    {
+      "bytes": 39006,
+      "git_blob_sha1": "879bd8d05ef542ae9479ce2d5dc1ee6d51c95412",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0470-isolated-conformances.md"
+    },
+    {
+      "bytes": 14897,
+      "git_blob_sha1": "b91e3693ad6b2e4215f3372605d655865c053466",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0471-SerialExecutor-isIsolated.md"
+    },
+    {
+      "bytes": 26199,
+      "git_blob_sha1": "021c820e817f5d52ba7192ea2af5585d18402341",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0472-task-start-synchronously-on-caller-context.md"
+    },
+    {
+      "bytes": 4285,
+      "git_blob_sha1": "e4896dba5f1a703cf80d787018a1252334353abe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0473-clock-epochs.md"
+    },
+    {
+      "bytes": 36812,
+      "git_blob_sha1": "9596ee9bd04e3bfe4c1ef0254b5006ea7ac3259b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0474-yielding-accessors.md"
+    },
+    {
+      "bytes": 24390,
+      "git_blob_sha1": "cef9ae6e18641fbc43949c1c3e1da06f0f49724b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0475-observed.md"
+    },
+    {
+      "bytes": 41749,
+      "git_blob_sha1": "22caeee1a23ad687f9a2398a07e29dd8d9cf3d26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0476-abi-attr.md"
+    },
+    {
+      "bytes": 5952,
+      "git_blob_sha1": "fc024885c95bedf44177f09723c1ce9b19ce54d4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0477-default-interpolation-values.md"
+    },
+    {
+      "bytes": 33855,
+      "git_blob_sha1": "bf94160c4f896ab6fdddaf8789c30d83196a2026",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0478-default-isolation-typealias.md"
+    },
+    {
+      "bytes": 7485,
+      "git_blob_sha1": "153e85bf16a9266646402e325300d1bf8cbb7a08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0479-method-and-initializer-keypaths.md"
+    },
+    {
+      "bytes": 15029,
+      "git_blob_sha1": "c0faff43e7e395a8ff26c0b1984d026a2fdc94a8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0480-swiftpm-warning-control.md"
+    },
+    {
+      "bytes": 7067,
+      "git_blob_sha1": "ea4a8106aca77b20c42c42f8dddf6c1d093b6d4b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0481-weak-let.md"
+    },
+    {
+      "bytes": 11850,
+      "git_blob_sha1": "5c7d90c92c2524bf29019aeff269a98980f4e702",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0482-swiftpm-static-library-binary-target-non-apple-platforms.md"
+    },
+    {
+      "bytes": 14627,
+      "git_blob_sha1": "507605ec34cb193d6cd20781d0643bbb8c9012f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0483-inline-array-sugar.md"
+    },
+    {
+      "bytes": 11992,
+      "git_blob_sha1": "592fcf521f5581759c5af8867fb0bdff42e1b3da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0484-allow-additional-args-to-dynamicmemberlookup-subscripts.md"
+    },
+    {
+      "bytes": 41333,
+      "git_blob_sha1": "76f467f6fa733406498b7c824865997193ddd99c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0485-outputspan.md"
+    },
+    {
+      "bytes": 18473,
+      "git_blob_sha1": "81f3424f5e850ab13bdaed20409c12c72b362893",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0486-adoption-tooling-for-swift-features.md"
+    },
+    {
+      "bytes": 13719,
+      "git_blob_sha1": "290947cdcd6a546e1b46c91515dd9399794276dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0487-extensible-enums.md"
+    },
+    {
+      "bytes": 6828,
+      "git_blob_sha1": "89d25ee780a37d3189e1991318d0a7cd0cc0c66c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0488-extracting.md"
+    },
+    {
+      "bytes": 9357,
+      "git_blob_sha1": "1f767bfa0ae9b931baa72c06f1f9c66bee92b3b8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0489-codable-error-printing.md"
+    },
+    {
+      "bytes": 11289,
+      "git_blob_sha1": "130473fd0b500417c1f00ba7072d73079edf222b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0490-environment-constrained-shared-libraries.md"
+    },
+    {
+      "bytes": 32072,
+      "git_blob_sha1": "b5fef18abb95d733afeee8a5922534cabb269f45",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0491-module-selectors.md"
+    },
+    {
+      "bytes": 39771,
+      "git_blob_sha1": "830f31b3436fc0bbdad74738e46e3a5ab04755b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0492-section-control.md"
+    },
+    {
+      "bytes": 8957,
+      "git_blob_sha1": "2bfc15008ef02a617796ac234c99752c5ea56c94",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0493-defer-async.md"
+    },
+    {
+      "bytes": 37251,
+      "git_blob_sha1": "76957489815b39e25ace8148b430007c8630de14",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0494-add-is-identical-methods.md"
+    },
+    {
+      "bytes": 16074,
+      "git_blob_sha1": "291a306737f35cb2409c36de5b2753794804a48d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0495-cdecl.md"
+    },
+    {
+      "bytes": 17671,
+      "git_blob_sha1": "df997f0d2fec20c7e2f0c990bc161c163969e9ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0496-inline-always.md"
+    },
+    {
+      "bytes": 24675,
+      "git_blob_sha1": "b4eff36519bf01ddabb7b159becfd102d800ef41",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0497-definition-visibility.md"
+    },
+    {
+      "bytes": 9691,
+      "git_blob_sha1": "0818043e4d02a20fdc1cf803ef8b18b577e0ddf9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0498-runtime-demangle.md"
+    },
+    {
+      "bytes": 8877,
+      "git_blob_sha1": "dc54f73372ff8ede6ffe64891fb69b7b7b01faef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0499-support-non-copyable-simple-protocols.md"
+    },
+    {
+      "bytes": 37590,
+      "git_blob_sha1": "e82d359572f0593d468962001c55a2232dba9d28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0500-package-manager-templates.md"
+    },
+    {
+      "bytes": 13547,
+      "git_blob_sha1": "5432838dd4f8f7d67fca4a7292edeaaaa0a97c0e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0501-swiftpm-html-coverage-report.md"
+    },
+    {
+      "bytes": 14615,
+      "git_blob_sha1": "098091eaca0c20d1f9dae26b48b366fd286ba9da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0502-exclude-private-from-memberwise-init.md"
+    },
+    {
+      "bytes": 30994,
+      "git_blob_sha1": "a749198a5984ea0bc35b5838ea6682d521e4caa6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0503-suppressed-associated-types.md"
+    },
+    {
+      "bytes": 16459,
+      "git_blob_sha1": "6001bffaca40799a4b8853de1601c104c2308842",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0504-task-cancellation-shields.md"
+    },
+    {
+      "bytes": 11468,
+      "git_blob_sha1": "18f48bd94060d7b1a1f692c54b04dd3184bd507f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0505-delayed-enqueuing.md"
+    },
+    {
+      "bytes": 12133,
+      "git_blob_sha1": "c2e7ad45abadb5c8217ac08c7ab955aa06d5bbfa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0506-advanced-observation-tracking.md"
+    },
+    {
+      "bytes": 18784,
+      "git_blob_sha1": "163842bbcce18f9422f77efff79c1564797f0efa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0507-borrow-accessors.md"
+    },
+    {
+      "bytes": 13250,
+      "git_blob_sha1": "a9f83f751efaecd8d374cc63d3d321f9f5ad81a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0508-array-expression-trailing-closures.md"
+    },
+    {
+      "bytes": 29833,
+      "git_blob_sha1": "741ae8988849185c2105afad149e865e3961d819",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0509-swift-sboms-via-swiftpm.md"
+    },
+    {
+      "bytes": 5704,
+      "git_blob_sha1": "cc846a3dd29590145ae2640cf64e1ab9a796cf15",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0510-dictionary-mapvalues-with-keys.md"
+    },
+    {
+      "bytes": 5551,
+      "git_blob_sha1": "d6a69457fd0a3b214cc039277d5617fd633c8fb2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0511-swiftpm-add-target-plugin.md"
+    },
+    {
+      "bytes": 15110,
+      "git_blob_sha1": "d4c56cc91a7037522553f2a61386264eda971d4d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0512-withlockifavailable-cannot-spuriously-fail.md"
+    },
+    {
+      "bytes": 8557,
+      "git_blob_sha1": "bb3c04978558779e5d8fd751597cc12c579a52c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0513-commandline-executablepath.md"
+    },
+    {
+      "bytes": 7056,
+      "git_blob_sha1": "95b70b9d65baf8890e82459ba9e27c22786f61be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0514-hashable-conformance-for-dictionarykeys-collectionofone-emptycollection.md"
+    },
+    {
+      "bytes": 5988,
+      "git_blob_sha1": "2eb469d3852fa49a22057a19927e41327fdaae96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0515-noncopyable-reduce.md"
+    },
+    {
+      "bytes": 38594,
+      "git_blob_sha1": "6c24f1a6557cf60fec5b0aa541f5fd3bd834d5e7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0516-borrowing-sequence.md"
+    },
+    {
+      "bytes": 12737,
+      "git_blob_sha1": "c69df66efd11500469cfbec941bec354c36bfcf2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0517-uniquebox.md"
+    },
+    {
+      "bytes": 9473,
+      "git_blob_sha1": "459b91f95bb6d44b9aa3514a308b5c9f0ed55663",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0518-tilde-sendable.md"
+    },
+    {
+      "bytes": 178,
+      "git_blob_sha1": "ca76b50dc6309f7daca9ed515c4274e925142c7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0519-borrow-inout-types.md"
+    },
+    {
+      "bytes": 23842,
+      "git_blob_sha1": "4987e25e3ccec52c81e4a9b026ed40c073f7755a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0519-ref-mutableref-types.md"
+    },
+    {
+      "bytes": 5364,
+      "git_blob_sha1": "85d6c1fed3438c8c42d4ee61b14485d108c5cb35",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0520-discardableresult-task-initializers.md"
+    },
+    {
+      "bytes": 8869,
+      "git_blob_sha1": "5c05179a35c3c79b4ade2f0cdb71d8eb52943dcc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0521-improved-optional-opaque-and-any.md"
+    },
+    {
+      "bytes": 25624,
+      "git_blob_sha1": "e03bfc103e1b13d2a92b33049c81d79ecfc2fae2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0522-source-warning-control.md"
+    },
+    {
+      "bytes": 4149,
+      "git_blob_sha1": "891ce9129b22a78a55b124a2b1ef17629f9eca5e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0523-hashable-unownedtask-executor.md"
+    },
+    {
+      "bytes": 8051,
+      "git_blob_sha1": "a99f5b32fcb5273059dc519b529ab9e65d171ef5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0524-span-temporary-allocation.md"
+    },
+    {
+      "bytes": 37833,
+      "git_blob_sha1": "c957ab652d5838e8e4b05ce04c37983ec1847379",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0525-rawspan-safe-loading-api.md"
+    },
+    {
+      "bytes": 39413,
+      "git_blob_sha1": "53b7b346f16cdf1bbec099bbc5c524bb5db2e316",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0526-deadline.md"
+    },
+    {
+      "bytes": 78752,
+      "git_blob_sha1": "6c6fbd3933ba60254cc6654dce6240eb526b2557",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0527-rigidarray-uniquearray.md"
+    },
+    {
+      "bytes": 14502,
+      "git_blob_sha1": "b00f7da2324e8545ae4c110a2667dd1f60b21c8b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0528-noncopyable-continuation.md"
+    },
+    {
+      "bytes": 63362,
+      "git_blob_sha1": "03e2bb07479641e4b7ec207a18f16356ed8894b7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0529-filepath-in-stdlib.md"
+    },
+    {
+      "bytes": 2230,
+      "git_blob_sha1": "48be3123ea8deb094bd2d9ceea4174e259e01792",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0530-async-result-support.md"
+    },
+    {
+      "bytes": 26658,
+      "git_blob_sha1": "96eaa7f81f45c9939efcc9ebed8a3960787c70c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0531-literal-expressions.md"
+    },
+    {
+      "bytes": 14103,
+      "git_blob_sha1": "e2e4f504a1c7675b604ab8dac82464ccd05262d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0532-optional-noncopyable-improvements.md"
+    },
+    {
+      "bytes": 60891,
+      "git_blob_sha1": "e85932feb8a37b0ae3d3a6433e57a430e479081d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0533-reasync-macros.md"
+    },
+    {
+      "bytes": 6119,
+      "git_blob_sha1": "1a4e6078b339cf44cbb5d3311e2f5e9e8e93272f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0534-swiftpm-exact-literal-version-matching.md"
+    },
+    {
+      "bytes": 7266,
+      "git_blob_sha1": "4a16506c20c19465ed4a3acd9028d26a4c554a7f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0535-global-mirrors-configuration-cli.md"
+    },
+    {
+      "bytes": 27824,
+      "git_blob_sha1": "0016df038eadb5baa4b7c240a18ef09606fbd5eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0536-registry-search.md"
+    },
+    {
+      "bytes": 7502,
+      "git_blob_sha1": "6c0e101608022ab9e44dae1328753d66e9eb51a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0537-function-sections.md"
+    },
+    {
+      "bytes": 23213,
+      "git_blob_sha1": "1159858714efe580dcc4ecd1bfb19aad638288ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0538-disconnected.md"
+    },
+    {
+      "bytes": 15830,
+      "git_blob_sha1": "0b5acb1d16409c5c50c7b1492de10fa8be545c04",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0539-self-access-for-property-initializers.md"
+    },
+    {
+      "bytes": 12154,
+      "git_blob_sha1": "08ddd177a0561fd861e5d518e84c2a7bc800dc49",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0540-default-target-settings.md"
+    },
+    {
+      "bytes": 21603,
+      "git_blob_sha1": "4037072292c8dba548a258ecb98766825016fd81",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0541-flexible-swift-c-interoperability-for-packages.md"
+    },
+    {
+      "bytes": 18125,
+      "git_blob_sha1": "b71ca225d86a9c4ba01cb6b0a134fb49220f3fd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0542-package-manager-conditional-plugin.md"
+    },
+    {
+      "bytes": 2215,
+      "git_blob_sha1": "5e1c5c8a6de97a7d586ea7ae1bbd9ec169baa675",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0543-inline-array-hashable.md"
+    },
+    {
+      "bytes": 9152,
+      "git_blob_sha1": "583cc50db983471fa3abe1f8499a9c7323bbc37c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0544-mutate-or-consume-in-deinit.md"
+    },
+    {
+      "bytes": 7765,
+      "git_blob_sha1": "0be1b1d1fab73cdaf5522fe9e99467b1aa5fd83d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0545-build-debugging-options.md"
+    },
+    {
+      "bytes": 4743,
+      "git_blob_sha1": "2c04ea9183b34e647ccf307f22d7ba8960cc8010",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0546-memberwise-init-extensions.md"
+    },
+    {
+      "bytes": 8811,
+      "git_blob_sha1": "fa2f42f891214bd9cba3f0df00d3c3b1a0ef75a9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0547-swiftpm-compilation-caching.md"
+    },
+    {
+      "bytes": 6663,
+      "git_blob_sha1": "f22471ecab4ddc009695a3f01bf57a2733dec743",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0548-resign-remote-id.md"
+    },
+    {
+      "bytes": 22787,
+      "git_blob_sha1": "c738e87ac6d47d450d07e61aa1a2c4e1bff51b16",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0549-swiftpm-proxy-configuration.md"
+    },
+    {
+      "bytes": 5737,
+      "git_blob_sha1": "4f86de071b96cefe195f8318d341782821537d02",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/0550-nosanitize-attribute.md"
+    },
+    {
+      "bytes": 7748,
+      "git_blob_sha1": "4d9a77b5e7da8279bfeae4392afac746adc43f04",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0001-refactor-bug-inits.md"
+    },
+    {
+      "bytes": 19502,
+      "git_blob_sha1": "516b98683818aec82c1f9f7b03b16cddb9df8aa7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0002-json-abi.md"
+    },
+    {
+      "bytes": 6464,
+      "git_blob_sha1": "488035bedf78090726d6ec95748149e3740b689e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0003-make-serialized-trait-api.md"
+    },
+    {
+      "bytes": 8400,
+      "git_blob_sha1": "ea00728fcac28d0aa2648907d535e9fb1d64a4f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0004-constrain-the-granularity-of-test-time-limit-durations.md"
+    },
+    {
+      "bytes": 7744,
+      "git_blob_sha1": "7a53229ae245db71813d916c4302171bbfdc0569",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0005-ranged-confirmations.md"
+    },
+    {
+      "bytes": 10509,
+      "git_blob_sha1": "eee9037cd3658b9dcdb10ca0d7270a5fb76c59d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0006-return-errors-from-expect-throws.md"
+    },
+    {
+      "bytes": 23285,
+      "git_blob_sha1": "619d1f48c62c0913be9d3a7360552bd256ada864",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0007-test-scoping-traits.md"
+    },
+    {
+      "bytes": 39516,
+      "git_blob_sha1": "2a69716107b33b238571d76e02228de3997d377b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0008-exit-tests.md"
+    },
+    {
+      "bytes": 22458,
+      "git_blob_sha1": "e9e23102ee5bad4e78df8636c3cadc12e2045afc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0009-attachments.md"
+    },
+    {
+      "bytes": 2589,
+      "git_blob_sha1": "d6a7336ff1a0b2f54279d7bb16e90c542f69513e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0010-evaluate-condition.md"
+    },
+    {
+      "bytes": 25447,
+      "git_blob_sha1": "4d16da9c707a41ad330a41e3cb90d0cf3041eaa2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0011-issue-handling-traits.md"
+    },
+    {
+      "bytes": 11421,
+      "git_blob_sha1": "c31fd772ae296b785c5d5d85ed58b6f5b6ca0af3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0012-exit-test-value-capturing.md"
+    },
+    {
+      "bytes": 13235,
+      "git_blob_sha1": "ffa7c0451474b54a1f44c691b2880299b762e382",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0013-issue-severity-warning.md"
+    },
+    {
+      "bytes": 20515,
+      "git_blob_sha1": "3dcfcd8cf61f367bf8ae3080159a152ff2bdd870",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0014-image-attachments-in-swift-testing-apple-platforms.md"
+    },
+    {
+      "bytes": 21745,
+      "git_blob_sha1": "1b260560688252d0488824b233426f6ee00bd9e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0015-image-attachments-in-swift-testing-windows.md"
+    },
+    {
+      "bytes": 15000,
+      "git_blob_sha1": "7bf64c399edab0d1bafeb111b752a4961022709d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0016-test-cancellation.md"
+    },
+    {
+      "bytes": 6890,
+      "git_blob_sha1": "b0478de23294561d109ce4c35f0884433f371379",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0017-image-attachment-consolidation.md"
+    },
+    {
+      "bytes": 17282,
+      "git_blob_sha1": "65b43f188d3d91b2e85dae50a47af600107e0a2c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0018-conditionally-saving-attachments.md"
+    },
+    {
+      "bytes": 7408,
+      "git_blob_sha1": "9b663578c131e316768fbac96ba4bee805385ecc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0019-include-tags-bugs-and-timeline-in-event-stream.md"
+    },
+    {
+      "bytes": 5141,
+      "git_blob_sha1": "d52a2ec09ee0a0f80fcaf5f60b7aeb9a110deccd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0020-sourcelocation-filepath.md"
+    },
+    {
+      "bytes": 20279,
+      "git_blob_sha1": "d56d384662c271838ad783c732eb683683aa90d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0021-targeted-interoperability-swift-testing-and-xctest.md"
+    },
+    {
+      "bytes": 7711,
+      "git_blob_sha1": "6d29f7121c11decf1ca31e466e28e2c062d32674",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0022-customtestreflectable.md"
+    },
+    {
+      "bytes": 7498,
+      "git_blob_sha1": "a7743ad7ac9346216cf5e89aa43171b940557d66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0023-attachments-transferable.md"
+    },
+    {
+      "bytes": 7827,
+      "git_blob_sha1": "02dd9c2d80cc3ee315d132a52bd164b3b51d3787",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0024-per-test-case-repetitions.md"
+    },
+    {
+      "bytes": 9537,
+      "git_blob_sha1": "1afaba3491d1961c87b641a2847d7d7f96653484",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0025-tag-based-test-execution-filtering.md"
+    },
+    {
+      "bytes": 6298,
+      "git_blob_sha1": "906d55043001d89dc952690d5a80e5e9656e8c3d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0026-task-local-test-trait.md"
+    },
+    {
+      "bytes": 10281,
+      "git_blob_sha1": "3903255e1dc9b8d5c9b16d31dfd081bc662c9c82",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0027-sourcelocation-macro.md"
+    },
+    {
+      "bytes": 15086,
+      "git_blob_sha1": "471a9cdcb021ee9a2a3301f6887d748f8bcfd8b9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0028-revise-attachment-encodable-interfaces.md"
+    },
+    {
+      "bytes": 15703,
+      "git_blob_sha1": "517966eeb4ae64e7658bd2d191616a566f5526cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/proposals/**/*.md",
+      "upstream_path": "proposals/testing/0029-add-issue-metadata-event-stream.md"
+    },
+    {
+      "bytes": 1852,
+      "git_blob_sha1": "509795952a976292ebcf0981d20b5b88a9b5dc98",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "releases/swift-2_2.md"
+    },
+    {
+      "bytes": 17642,
+      "git_blob_sha1": "ece2b1d352ef7e2664859914e455bf52f596f918",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "releases/swift-3_0.md"
+    },
+    {
+      "bytes": 4963,
+      "git_blob_sha1": "a133a1160b6252e538bb8ed4fba1abf1314748ee",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "releases/swift-4_0.md"
+    },
+    {
+      "bytes": 7815,
+      "git_blob_sha1": "fdd12922e0de770ed4df552004003888d1a7e802",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "releases/swift-5_0.md"
+    },
+    {
+      "bytes": 33714,
+      "git_blob_sha1": "25e6e6b725bfe8b00292863603b89483f4bb8912",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/approachable-concurrency.md"
+    },
+    {
+      "bytes": 18013,
+      "git_blob_sha1": "58dd488e17f73d16b82002240da8a4aa822c5154",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/embedded-swift.md"
+    },
+    {
+      "bytes": 42123,
+      "git_blob_sha1": "90917903c91787b1e71b21d217ad748623dfed6b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/macros.md"
+    },
+    {
+      "bytes": 25438,
+      "git_blob_sha1": "69a206bc795d5a674ab93fb70ac67124b4333f7e",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/memory-safety.md"
+    },
+    {
+      "bytes": 14519,
+      "git_blob_sha1": "4b6e69df898487c97e6b389679759b4a8b7ce1fb",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/networking.md"
+    },
+    {
+      "bytes": 50723,
+      "git_blob_sha1": "5133114e93e342f2d08f78a059592e4e6f2d7840",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/swift-testing.md"
+    },
+    {
+      "bytes": 57188,
+      "git_blob_sha1": "4b43b13acc7832a40dfeb7d0468c4d9881ca7b4a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/using-c++-from-swift.md"
+    },
+    {
+      "bytes": 30922,
+      "git_blob_sha1": "65583f2ec5a7668837c14de25d12ec86e4ed9d4a",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/using-swift-from-c++.md"
+    },
+    {
+      "bytes": 13225,
+      "git_blob_sha1": "95aa29f88458e53d47fa00c5f989d628094fc343",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "visions/webassembly.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 10515445,
+  "repository_md_files": 602,
+  "repository_url": "https://github.com/swiftlang/swift-evolution",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 10104895,
+  "snapshot_md_files": 580,
+  "source_id": "swift-evolution"
+}

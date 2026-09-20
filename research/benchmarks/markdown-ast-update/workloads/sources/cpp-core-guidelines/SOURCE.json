@@ -1,0 +1,56 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "LARGE_TECHNICAL",
+  "commit_sha": "33bcd015997f0d8e0fa0202eb66254a16f59ad8f",
+  "commit_timestamp": "2026-08-06T08:54:10-07:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 1,
+  "files": [
+    {
+      "bytes": 841419,
+      "git_blob_sha1": "34addb87fb77c3d55427ea19286f38db65cf2b22",
+      "sha256": "27b53e7de83994ffe5c4e4c302a97a2fe83e48eccc7b09a0d734906609079ca7",
+      "snapshot_path": "files/CppCoreGuidelines.md",
+      "upstream_path": "CppCoreGuidelines.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "2427faf79c3e30b529bde2f003c05e3cb9afcd51",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": "LICENSE at the pinned commit is a custom Standard C++ Foundation license (copy/use/modify for personal or internal business use only); no SPDX identifier exists. Internal benchmark research use only; review before any wider redistribution.",
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/cpp-core-guidelines/LICENSE",
+        "bytes": 2451,
+        "git_blob_sha1": "2427faf79c3e30b529bde2f003c05e3cb9afcd51",
+        "sha256": "c76bbea54613e97b6ac12cc4227ac9009bd1318d9aa9d60709acd7a26c9b0113",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy MATERIALIZE_ONLY: these bytes must not be publicly vendored by default. They are materialized locally at the pinned commit for verification and characterization and are excluded from public Git storage; expected sha256/bytes/blob-id are recorded here so any local materialization is verifiable.",
+    "spdx": "NEEDS_REVIEW"
+  },
+  "repository_url": "https://github.com/isocpp/CppCoreGuidelines",
+  "retrieved_at": "2026-09-20T04:02:05Z",
+  "role_caveat": null,
+  "schema_version": "2",
+  "scope_rationale": "Scope = the single upstream document CppCoreGuidelines.md at the repository root; that document is the entire deliverable of the project, so the frame is the whole target text by construction. Any other repository Markdown is recorded as unselected in the complete inventory.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/CppCoreGuidelines.md"
+    ],
+    "mode": "A",
+    "mode_a_selected_files": true
+  },
+  "source_id": "cpp-core-guidelines",
+  "storage_policy": "MATERIALIZE_ONLY",
+  "storage_policy_rationale": "Custom Standard C++ Foundation license grants copy/use/modify for personal or internal business use only; license identity NEEDS_REVIEW. MATERIALIZE_ONLY is mandatory under the acquisition contract: a NEEDS_REVIEW license state must never permit public vendoring by default. Redistribution requires explicit upstream permission, which is not established; uncertainty is recorded, not resolved.",
+  "total_bytes": 841419
+}

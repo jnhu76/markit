@@ -1,0 +1,43 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "a013e3230a1207cfa5ae94d28ba7d2021063c337",
+  "entries": [
+    {
+      "bytes": 903,
+      "git_blob_sha1": "fde92545c9803470ae849e6bcbce134c37865979",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/pull_request_template.md"
+    },
+    {
+      "bytes": 2011,
+      "git_blob_sha1": "ba00b375ca782c54d04ec52bf635d952e793c9ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 245,
+      "git_blob_sha1": "f1ed9cb694dd52139348ac78f09a42f173f65520",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "SECURITY.md"
+    },
+    {
+      "bytes": 7034,
+      "git_blob_sha1": "1c8670925c699b09eedd162db680935807f9fb12",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/*.md",
+      "upstream_path": "TRANSLATING.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 10193,
+  "repository_md_files": 4,
+  "repository_url": "https://github.com/progit/progit2",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 9290,
+  "snapshot_md_files": 3,
+  "source_id": "progit"
+}

@@ -1,0 +1,4859 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "commit_sha": "0469acb1d9444635135faf5a6c6711486b1a9040",
+  "entries": [
+    {
+      "bytes": 1122,
+      "git_blob_sha1": "ca4439ab8c9c4b8f3829f735f7974edc26d1b44b",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/ISSUE_TEMPLATE/enhancement.md"
+    },
+    {
+      "bytes": 579,
+      "git_blob_sha1": "bd6f1293da17470f7fbe95f39f6460add2f6d073",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": ".github/pull_request_template.md"
+    },
+    {
+      "bytes": 1954,
+      "git_blob_sha1": "ac71caef45d6f4ee436c3f88c8b725bdb2848158",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "CONTRIBUTING.md"
+    },
+    {
+      "bytes": 133,
+      "git_blob_sha1": "7d2192a09baeae6cd16380f8109c80a65ef2ee99",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "EXCEPTIONS.md"
+    },
+    {
+      "bytes": 7245,
+      "git_blob_sha1": "40ed3bd37e096ad2f8e20513c440344da44720e5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "README.md"
+    },
+    {
+      "bytes": 1069,
+      "git_blob_sha1": "2083d44cdf90a849e64c5652a622b1194f05e2a0",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "SECURITY.md"
+    },
+    {
+      "bytes": 148,
+      "git_blob_sha1": "0d15c00cf32529a51f1db0697ab8b0b0669fdc13",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "code-of-conduct.md"
+    },
+    {
+      "bytes": 1000,
+      "git_blob_sha1": "3e8769952be246913ba1d2ac0de53bc86dc83647",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "docs/archived-tracking-sheets.md"
+    },
+    {
+      "bytes": 5141,
+      "git_blob_sha1": "a6f1a238ca03c6bc94c79284d64a32c39a39f089",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "docs/glossary.md"
+    },
+    {
+      "bytes": 1015,
+      "git_blob_sha1": "004ea44bec6d0ec4c3047584148718180ff70e97",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "docs/kepval.md"
+    },
+    {
+      "bytes": 32582,
+      "git_blob_sha1": "d7d230223518a9982a6d8f717b285d3e76a2c45b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/NNNN-kep-template/README.md"
+    },
+    {
+      "bytes": 3590,
+      "git_blob_sha1": "8b58e1eae2fee910a6807c45e87881e48fd12b08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/README.md"
+    },
+    {
+      "bytes": 1080,
+      "git_blob_sha1": "82e53d31642aa3c0971831007064828cc0418fcd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/prod-readiness/README.md"
+    },
+    {
+      "bytes": 8160,
+      "git_blob_sha1": "78ea1a5399584e308fdf9f3a69a631555f6404b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/2313-aws-k8s-tester/README.md"
+    },
+    {
+      "bytes": 1546,
+      "git_blob_sha1": "63be5d9e67f3980a57062449e440f382182907cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/2314-custom-endpoints-support-for-aws-cloud-provider/README.md"
+    },
+    {
+      "bytes": 2898,
+      "git_blob_sha1": "44a55dcd7f2b253453a6eb965a84505d0580ed0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/2315-aws-loadbalancer-prefix/README.md"
+    },
+    {
+      "bytes": 2589,
+      "git_blob_sha1": "018627add2aa056e06058726135ab1bdef58bc8a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/423-network-load-balancer/README.md"
+    },
+    {
+      "bytes": 3859,
+      "git_blob_sha1": "47ac6efa5c69fb7a7bd0c16eeda4cc89ef1991ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/629-alb-ingress-controller/README.md"
+    },
+    {
+      "bytes": 7485,
+      "git_blob_sha1": "a6cf4f52ee87d8322982cf6968051bb9bb1fb2df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/provider-aws/630-ebs-csi-driver/README.md"
+    },
+    {
+      "bytes": 45781,
+      "git_blob_sha1": "bc04280820fe3bb0bba909d7f770703b172749a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1027-api-unions/README.md"
+    },
+    {
+      "bytes": 153179,
+      "git_blob_sha1": "ad854f945f00a2cbf5e566fd7011f220d850a579",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1040-priority-and-fairness/README.md"
+    },
+    {
+      "bytes": 18830,
+      "git_blob_sha1": "c7f489f950157259adf7a352fffba62c99b008ba",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1101-immutable-fields/README.md"
+    },
+    {
+      "bytes": 12481,
+      "git_blob_sha1": "560d975cfb0f815d369e6507f35a76a5f244c741",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1152-less-object-serializations/README.md"
+    },
+    {
+      "bytes": 15072,
+      "git_blob_sha1": "821a4774d86eb0b353ce1ee8ab2bc6f8aa3fa27d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1164-remove-selflink/README.md"
+    },
+    {
+      "bytes": 21872,
+      "git_blob_sha1": "49df75840365f1f64a047b3f7fbdf3acbf96c6c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1281-network-proxy/README.md"
+    },
+    {
+      "bytes": 16695,
+      "git_blob_sha1": "0bc2dd84da20b64754cc5ece8fc1ab862f7693b0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1295-insecure-backend-proxy/README.md"
+    },
+    {
+      "bytes": 8651,
+      "git_blob_sha1": "866f5eeb50f7380d105232ccf8148513657b3f4e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1601-client-go-context/README.md"
+    },
+    {
+      "bytes": 8717,
+      "git_blob_sha1": "3096c8456f0075d4ccaeb82444eb891de366cb65",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1623-standardize-conditions/README.md"
+    },
+    {
+      "bytes": 21324,
+      "git_blob_sha1": "34419fca07aafca7803a4b4476549b8d9fc4f331",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1693-warnings/README.md"
+    },
+    {
+      "bytes": 16827,
+      "git_blob_sha1": "db8e0938f89ca6cd9bcc2ad6b8549d6423664af9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1872-manifest-based-admission-webhooks/README.md"
+    },
+    {
+      "bytes": 21653,
+      "git_blob_sha1": "f68f4ea6bf0cbe99958b55ee3c88d832904673cd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1904-efficient-watch-resumption/README.md"
+    },
+    {
+      "bytes": 26738,
+      "git_blob_sha1": "e6785d83f6f94617a929e871d5befdf6cae00dca",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1929-built-in-default/README.md"
+    },
+    {
+      "bytes": 19565,
+      "git_blob_sha1": "f727a8d2db981daae5b8d34d13bb83a14b94c9e8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/1965-kube-apiserver-identity/README.md"
+    },
+    {
+      "bytes": 26031,
+      "git_blob_sha1": "e8f67e7f2bbc9bf2810fa856bbdcda58ec242ab7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2155-clientgo-apply/README.md"
+    },
+    {
+      "bytes": 25797,
+      "git_blob_sha1": "021f98bc4b9b0e7e64fdde26e767c380ae8e5d26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2161-apiserver-default-labels/README.md"
+    },
+    {
+      "bytes": 11618,
+      "git_blob_sha1": "81cd87fb5c0cb99ff025806f1b7f6545b957cb08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2330-migrating-api-objects-to-latest-storage-version/README.md"
+    },
+    {
+      "bytes": 19555,
+      "git_blob_sha1": "9c5894010827fc8ff9d757f1dbf2077eb07ece84",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2332-pruning-for-custom-resources/README.md"
+    },
+    {
+      "bytes": 9174,
+      "git_blob_sha1": "f5ec67b198b3bf3d46a014cd10de87399dcfdd3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2333-legacyflags-kflag/README.md"
+    },
+    {
+      "bytes": 5078,
+      "git_blob_sha1": "c5e871aa5ec2eeab6d9abdea825ec7c52cfc6978",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2334-graduate-server-side-get-and-partial-objects-to-GA/README.md"
+    },
+    {
+      "bytes": 31803,
+      "git_blob_sha1": "bcd0eb3635634bd9e764a1b68afd08595eba3fae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2335-vanilla-crd-openapi-subset-structural-schemas/README.md"
+    },
+    {
+      "bytes": 6115,
+      "git_blob_sha1": "9fb91e137caec8b3004648b4fa62c59ae06be1c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2336-OwnerReference-resource-field/README.md"
+    },
+    {
+      "bytes": 6895,
+      "git_blob_sha1": "80280b229bb2afe13cb099818e32cc5b1b6a3a28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2337-k8s.io-group-protection/README.md"
+    },
+    {
+      "bytes": 7345,
+      "git_blob_sha1": "7914ca175e693f332d111353240d4a836494d113",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2338-graduate-API-gzip-compression-support-to-GA/README.md"
+    },
+    {
+      "bytes": 35592,
+      "git_blob_sha1": "9ee9b250a20512724d200e260970c370156f6a59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2339-storageversion-api-for-ha-api-servers/README.md"
+    },
+    {
+      "bytes": 35182,
+      "git_blob_sha1": "8726b52adce31147c6ee80863569023156dcb9fc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2340-Consistent-reads-from-cache/README.md"
+    },
+    {
+      "bytes": 7959,
+      "git_blob_sha1": "762afeaa6bc92ca6f5325c0b564867eb6969c269",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2341-enabling-clients-to-tell-if-resource-endpoints-serve-the-same-set-of-objects/README.md"
+    },
+    {
+      "bytes": 6790,
+      "git_blob_sha1": "25de3b087bb8194db3a053afefe2b063d7a20e79",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2342-exposing-hashed-storage-versions-via-the-discovery-API/README.md"
+    },
+    {
+      "bytes": 10942,
+      "git_blob_sha1": "7865f18603acd0b7ca91e2c8a6f838881420d3f7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2343-automated-storage-version-migration-with-storage-version-hash/README.md"
+    },
+    {
+      "bytes": 12618,
+      "git_blob_sha1": "e245dbb7727ab59ccc0e53d1fb70bc09c0f218cb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2523-consistent-resource-versions-semantics/README.md"
+    },
+    {
+      "bytes": 15155,
+      "git_blob_sha1": "7bb9fabf122eca3ead187bf66d31400151c0506b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2558-publish-version-openapi/README.md"
+    },
+    {
+      "bytes": 76604,
+      "git_blob_sha1": "a99cf069d007cdf442adc27dcc711aba8ff8aa23",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2876-crd-validation-expression-language/README.md"
+    },
+    {
+      "bytes": 49117,
+      "git_blob_sha1": "bf6399bfee29eff4f26c9edcce9382d47a1e847d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2885-server-side-unknown-field-validation/README.md"
+    },
+    {
+      "bytes": 33476,
+      "git_blob_sha1": "d785a60dbdfa742a2cb815d3d9ca893993a4eda8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2887-openapi-enum-types/README.md"
+    },
+    {
+      "bytes": 41168,
+      "git_blob_sha1": "ec2695068b89167187fd0d998f31927b9d78b8d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/2896-openapi-v3/README.md"
+    },
+    {
+      "bytes": 24399,
+      "git_blob_sha1": "9a4d26b02322a7e6579613e78988fb7ec2f64df6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3037-client-go-alternative-services/README.md"
+    },
+    {
+      "bytes": 9436,
+      "git_blob_sha1": "0746373e587be7dea76f26ba30f7b083185aaacc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3156-http3/README.md"
+    },
+    {
+      "bytes": 81142,
+      "git_blob_sha1": "1795847c8783525d3396324d697f88566332da44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3157-watch-list/README.md"
+    },
+    {
+      "bytes": 52526,
+      "git_blob_sha1": "d44b0276fe6be274883ea656dbd04951d0edd567",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3352-aggregated-discovery/README.md"
+    },
+    {
+      "bytes": 144260,
+      "git_blob_sha1": "13795355bae409a4f28c69269fd1f234e10c3ac6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3488-cel-admission-control/README.md"
+    },
+    {
+      "bytes": 33697,
+      "git_blob_sha1": "21c826985f518367eca72d2c1800c86998291308",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/365-paginated-lists/README.md"
+    },
+    {
+      "bytes": 36971,
+      "git_blob_sha1": "8fe22ad0d3e52d30b65193968a8017b79dc9a08e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3716-admission-webhook-match-conditions/README.md"
+    },
+    {
+      "bytes": 60807,
+      "git_blob_sha1": "4fe0482c32e5ddeaa7d078c3d1788a28f339930f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/3962-mutating-admission-policies/README.md"
+    },
+    {
+      "bytes": 89266,
+      "git_blob_sha1": "691b7f2ced79b5509213c37d43c7721b6cbd8784",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4006-transition-spdy-to-websockets/README.md"
+    },
+    {
+      "bytes": 67622,
+      "git_blob_sha1": "8510d1ad120f4d98e22804961cefa791b0840775",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4008-crd-ratcheting/README.md"
+    },
+    {
+      "bytes": 55501,
+      "git_blob_sha1": "e82e77a63288958596237a01e5751cf7c3405d41",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4020-unknown-version-interoperability-proxy/README.md"
+    },
+    {
+      "bytes": 30508,
+      "git_blob_sha1": "5c3e73f701a9fdb990659b57be6e37b4ccb42819",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4080-generic-controlplane/README.md"
+    },
+    {
+      "bytes": 80620,
+      "git_blob_sha1": "50ab35ff8240f82ea0c2909d010ff33ced82014c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4153-declarative-validation/README.md"
+    },
+    {
+      "bytes": 33595,
+      "git_blob_sha1": "b220284eea676542f6fbb5ea1aaf1a37c3060c66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4192-svm-in-tree/README.md"
+    },
+    {
+      "bytes": 78241,
+      "git_blob_sha1": "548effd481a4c77df13aafd906752748d997b598",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4222-cbor-serializer/README.md"
+    },
+    {
+      "bytes": 38661,
+      "git_blob_sha1": "94eec58ac1fc6d76d13e133144ad0df2754e42c6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4346-informer-metrics/README.md"
+    },
+    {
+      "bytes": 72274,
+      "git_blob_sha1": "30a5f6517747caaf0f0ade08ef17b760b3bde0f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4355-coordinated-leader-election/README.md"
+    },
+    {
+      "bytes": 52031,
+      "git_blob_sha1": "ca5e3ca04a46bf4e9184faddffe5c522ddd69747",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4358-custom-resource-field-selectors/README.md"
+    },
+    {
+      "bytes": 25534,
+      "git_blob_sha1": "884bae25cc035b950e7f532d0305e1066b1037b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4420-retry-generate-name/README.md"
+    },
+    {
+      "bytes": 53262,
+      "git_blob_sha1": "210d9a5d86b4d36cea60f9c2732d3beaece26b53",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4460-per-request-deadline/README.md"
+    },
+    {
+      "bytes": 21483,
+      "git_blob_sha1": "c1b18cd007dcc1395475c20a5a20ea8c03ef559a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4568-resilient-watchcache-initialization/README.md"
+    },
+    {
+      "bytes": 65822,
+      "git_blob_sha1": "4a5f387d9a9a1b95b7f81552095bbfc721cf5f29",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4595-cel-crd-additionalprintercolumns/README.md"
+    },
+    {
+      "bytes": 55272,
+      "git_blob_sha1": "a50c36646ab828f09e4bef29c25c5ba1ee0d4955",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/492-admission-webhooks/README.md"
+    },
+    {
+      "bytes": 21475,
+      "git_blob_sha1": "4cd03cf8b0bd567057929decdc5b54d53fd403de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/4988-snapshottable-api-server-cache/README.md"
+    },
+    {
+      "bytes": 35759,
+      "git_blob_sha1": "1dc0c89ded0e0dc33b5b33043003e23b0f81993a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5000-api-linting-crd-schema-tooling/README.md"
+    },
+    {
+      "bytes": 149533,
+      "git_blob_sha1": "aedacf42000eb15757ad6cd8298b7eb25762ef65",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5073-declarative-validation-with-validation-gen/README.md"
+    },
+    {
+      "bytes": 30748,
+      "git_blob_sha1": "b9249a94707c809c01849761cec08706bc18faae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5080-ordered-namespace-deletion/README.md"
+    },
+    {
+      "bytes": 17361,
+      "git_blob_sha1": "e98cc0fe8c3b03a03b852eb0effc5172387be70b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5116-streaming-response-encoding/README.md"
+    },
+    {
+      "bytes": 39390,
+      "git_blob_sha1": "06ef8343d203e22a7ac5a4f487c4bc013568c191",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5366-graceful-leader-transition/README.md"
+    },
+    {
+      "bytes": 20880,
+      "git_blob_sha1": "80f25a24b13ac4595438ba8d7f87c330e5a2a981",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5504-comparable-resource-version/README.md"
+    },
+    {
+      "bytes": 38927,
+      "git_blob_sha1": "1e5727c3c6740ee0496dbddbc3d90c1388be4a5f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/555-server-side-apply/README.md"
+    },
+    {
+      "bytes": 31500,
+      "git_blob_sha1": "9f91eb627bfdfbc5c2b0886509d7cb99ffd4f649",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5589-gogo-dependency/README.md"
+    },
+    {
+      "bytes": 38023,
+      "git_blob_sha1": "288d0f51f5c8afb7cd08fb5c8fdacacb82b445f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5647-stale-controller-handling/README.md"
+    },
+    {
+      "bytes": 15161,
+      "git_blob_sha1": "34b25ec8aec61348bce007172cede1e052d4f830",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/575-crd-defaulting/README.md"
+    },
+    {
+      "bytes": 11762,
+      "git_blob_sha1": "0f32c748a5bbce9872cff1df2ec565f05bd5565c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/576-dry-run/README.md"
+    },
+    {
+      "bytes": 52697,
+      "git_blob_sha1": "787377014951a139806173caf0aa07c0710d387a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5793-manifest-based-admission-control-config/README.md"
+    },
+    {
+      "bytes": 41723,
+      "git_blob_sha1": "2fb951952d605854346b7568900849508e260a9d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5866-server-side-sharded-list-and-watch/README.md"
+    },
+    {
+      "bytes": 26411,
+      "git_blob_sha1": "9c0e96a20b6764a7b8ed5fc94a891bbf9d298530",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5958-client-opt-out-managedfields/README.md"
+    },
+    {
+      "bytes": 19279,
+      "git_blob_sha1": "581c0e856bb9ad9e5ac2675b8e6ded4c621425be",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/5975-declarative-api-definitions/README.md"
+    },
+    {
+      "bytes": 30423,
+      "git_blob_sha1": "ac359b3c64c43063e38b9f03a41e25fe0d4d3b51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/598-crd-conversion-webhook/README.md"
+    },
+    {
+      "bytes": 23016,
+      "git_blob_sha1": "69fa97f5f3af22afe76214f5ef48542e40700de6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/6164-internal-type-elimination/README.md"
+    },
+    {
+      "bytes": 14991,
+      "git_blob_sha1": "b54936e65cb6323d95ab82242bca6eeebb55437a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/6178-concurrent-watch-object-decode/README.md"
+    },
+    {
+      "bytes": 7737,
+      "git_blob_sha1": "b739b6b4af66d7792aab1f8570921b4245abcb8a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/692-crd-openapi-schema/README.md"
+    },
+    {
+      "bytes": 15144,
+      "git_blob_sha1": "d00f3b42c519d27f42ab83c2c004beb0bd3a5e83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/95-custom-resource-definitions/README.md"
+    },
+    {
+      "bytes": 6551,
+      "git_blob_sha1": "7b763d05e6b2f2706ede35bd7e0837db001811dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-api-machinery/956-watch-bookmark/README.md"
+    },
+    {
+      "bytes": 25795,
+      "git_blob_sha1": "920b10c31d19402269b6b735d5d225bb9ac0fa0a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/1591-daemonset-surge/README.md"
+    },
+    {
+      "bytes": 36931,
+      "git_blob_sha1": "8ea33c3565432b35ae40ec25ee7e69d9b099f3c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/1847-autoremove-statefulset-pvcs/README.md"
+    },
+    {
+      "bytes": 32256,
+      "git_blob_sha1": "1e4340b9289a0d9261ae838d7dc0f92548a669d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/19-Graduate-CronJob-to-Stable/README.md"
+    },
+    {
+      "bytes": 17492,
+      "git_blob_sha1": "1f548d3ef35ef28bf0ccb1505ad62960436f1e90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2185-random-pod-select-on-replicaset-downscale/README.md"
+    },
+    {
+      "bytes": 29438,
+      "git_blob_sha1": "f96e4b38c353ebcbe80908781d24a52317050391",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2214-indexed-job/README.md"
+    },
+    {
+      "bytes": 23789,
+      "git_blob_sha1": "3597001cccf30982716e208fe70d179473dc4d61",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2232-suspend-jobs/README.md"
+    },
+    {
+      "bytes": 11480,
+      "git_blob_sha1": "4ae697dcad31cec4939e971c2e7b6f1c9300892f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2255-pod-cost/README.md"
+    },
+    {
+      "bytes": 34233,
+      "git_blob_sha1": "5c9f4207ac65d214f16e9cf4501105005c1f9eec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2307-job-tracking-without-lingering-pods/README.md"
+    },
+    {
+      "bytes": 4155,
+      "git_blob_sha1": "9ee06c8859b2dd4f2cfbcf1e4bb201f27f07abb1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2360-optional-service-environment-variables/README.md"
+    },
+    {
+      "bytes": 31665,
+      "git_blob_sha1": "3d5d6ea8012daf59217069c7cdaa72ad337de7af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2599-minreadyseconds-for-statefulsets/README.md"
+    },
+    {
+      "bytes": 21425,
+      "git_blob_sha1": "dd5d0015b52eeed2a878a206732f90909157f4d0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2804-consolidate-workload-controllers-status/README.md"
+    },
+    {
+      "bytes": 15557,
+      "git_blob_sha1": "a7e5aed5290040e65f8d2da36151265d9f04714a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/2879-ready-pods-job-status/README.md"
+    },
+    {
+      "bytes": 23678,
+      "git_blob_sha1": "f42703fd18c77ce39178e9ac1fa8095a516901fe",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3017-pod-healthy-policy-for-pdb/README.md"
+    },
+    {
+      "bytes": 16817,
+      "git_blob_sha1": "e36e532e49b6d5c3b12611f0ec77ffcc5e10b1e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3140-TimeZone-support-in-CronJob/README.md"
+    },
+    {
+      "bytes": 115892,
+      "git_blob_sha1": "03043b6dc8b2baa2d1a0464c769c73c013fbb82e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3329-retriable-and-non-retriable-failures/README.md"
+    },
+    {
+      "bytes": 54990,
+      "git_blob_sha1": "feb8f834755cbe1fcb71c6814b245e7434afd594",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3335-statefulset-slice/README.md"
+    },
+    {
+      "bytes": 51287,
+      "git_blob_sha1": "38f6344c0aad6af70df887a029103a3abe9746ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3541-add-recreate-strategy-to-statefulset/README.md"
+    },
+    {
+      "bytes": 38683,
+      "git_blob_sha1": "839c3f295636ffd9b3d8e41fbb8b7f5a2b57f614",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3715-elastic-indexed-job/README.md"
+    },
+    {
+      "bytes": 74358,
+      "git_blob_sha1": "589133ffd103838e01163578572d090c67888413",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3850-backoff-limits-per-index-for-indexed-jobs/README.md"
+    },
+    {
+      "bytes": 50241,
+      "git_blob_sha1": "bd697b3312bd0afc5506a1e563815c571b6a7d21",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3939-allow-replacement-when-fully-terminated/README.md"
+    },
+    {
+      "bytes": 30564,
+      "git_blob_sha1": "d33b92340a19b20f237e20904a0e1c4b4adaa438",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3973-consider-terminating-pods-deployment/README.md"
+    },
+    {
+      "bytes": 50838,
+      "git_blob_sha1": "9f4fc13d86ef29bf92aa4a5219bd4d807da10c75",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/3998-job-success-completion-policy/README.md"
+    },
+    {
+      "bytes": 48710,
+      "git_blob_sha1": "6b5300bace5d1d14faddca76bbcb8137df51e951",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/4017-pod-index-label/README.md"
+    },
+    {
+      "bytes": 13119,
+      "git_blob_sha1": "84fa14abdc0c2806aeab5387aaef2e1153f27697",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/4026-crojob-scheduled-timestamp-annotation/README.md"
+    },
+    {
+      "bytes": 70637,
+      "git_blob_sha1": "8382c1a5345b0673a41d8f14c7c21e59ae656052",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/4368-support-managed-by-for-batch-jobs/README.md"
+    },
+    {
+      "bytes": 42069,
+      "git_blob_sha1": "b5056f507993824945ac1364af6dcc2420f2e88b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/4443-configurable-pod-failure-policy-reasons/README.md"
+    },
+    {
+      "bytes": 27756,
+      "git_blob_sha1": "0de5304356acc41cfd2764d0c21cef172e4ff4cf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/5440-mutable-job-pod-resource-updates/README.md"
+    },
+    {
+      "bytes": 73166,
+      "git_blob_sha1": "295a25ea2f067a95690b48aa48660d2fd67d7366",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/5547-integrate-workload-with-job/README.md"
+    },
+    {
+      "bytes": 45369,
+      "git_blob_sha1": "f8224ba1899be335374d7a689250de507b9a8b31",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/5882-deployment-pod-replacement-policy/README.md"
+    },
+    {
+      "bytes": 17828,
+      "git_blob_sha1": "5b912d1d1080821b9b98f0fde56b22ad9601be85",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/592-ttl-after-finish/README.md"
+    },
+    {
+      "bytes": 9256,
+      "git_blob_sha1": "b6600ed19a7a9dd89f0b4905a67798993bd424a6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/706-portable-service-definitions/README.md"
+    },
+    {
+      "bytes": 21637,
+      "git_blob_sha1": "4103f1d1e279bfa56013fafea940a594bd3c1f8c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/85-Graduate-PDB-to-Stable/README.md"
+    },
+    {
+      "bytes": 51123,
+      "git_blob_sha1": "d83b8c49b035e4280c90fde712893130a7be0058",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/961-maxunavailable-for-statefulset/README.md"
+    },
+    {
+      "bytes": 5643,
+      "git_blob_sha1": "f75ae7ca5da31f3eb1992239b2ab3015c2ca2b76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-apps/981-poddisruptionbudget-for-custom-resources/README.md"
+    },
+    {
+      "bytes": 16526,
+      "git_blob_sha1": "a2c96acca87074f76d2e0be55db3f69d311b4310",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/0000-kep-process/README.md"
+    },
+    {
+      "bytes": 19309,
+      "git_blob_sha1": "69ab4d6bb898d69036dff89f40b84b777a46e378",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1143-node-role-labels/README.md"
+    },
+    {
+      "bytes": 8327,
+      "git_blob_sha1": "85cfb4f09fd359062f03355995b00d5d635e3b59",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1194-prod-readiness/README.md"
+    },
+    {
+      "bytes": 8112,
+      "git_blob_sha1": "63e5284f90195fcefae79d18a39245f393aeab30",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1333-conformance-without-beta/README.md"
+    },
+    {
+      "bytes": 19601,
+      "git_blob_sha1": "d11907b21ea75c04b1d6c6aad6299b5cc5a95dc9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1618-conformance-profiles/README.md"
+    },
+    {
+      "bytes": 8086,
+      "git_blob_sha1": "971c7f6a41d043f86be224c4f4f6f51affdf5ed7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1635-prevent-permabeta/README.md"
+    },
+    {
+      "bytes": 11989,
+      "git_blob_sha1": "4a9e14d2ac7a6da7159e26417795c8fe56666660",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/1659-standard-topology-labels/README.md"
+    },
+    {
+      "bytes": 29,
+      "git_blob_sha1": "4d2a29b6855ca407c51226afaee012dc7e531783",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/20190731-production-readiness-review-process.md"
+    },
+    {
+      "bytes": 11960,
+      "git_blob_sha1": "67566f380782612e4521a8b9e619a9f88c2e197c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/2527-clarify-status-observations-vs-rbac/README.md"
+    },
+    {
+      "bytes": 15019,
+      "git_blob_sha1": "c388fdc86e3c667ab9330acb74218694f0726f96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/3136-beta-apis-off-by-default/README.md"
+    },
+    {
+      "bytes": 34320,
+      "git_blob_sha1": "8af070f836a0a0f49498af3d45ff8ec75aa0354d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/3935-oldest-node-newest-control-plane/README.md"
+    },
+    {
+      "bytes": 67819,
+      "git_blob_sha1": "7c6c3e588b17242d24be6deff9b603be38c0a717",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/4330-compatibility-versions/README.md"
+    },
+    {
+      "bytes": 18215,
+      "git_blob_sha1": "2666b8f002f66e80766ff04ce8a38124fc3a7a17",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/4402-go-workspaces/README.md"
+    },
+    {
+      "bytes": 13147,
+      "git_blob_sha1": "332c501035ea7c6a12d70ab77a6ead1b0f715345",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/4402-go-workspaces/v2-experiment.md"
+    },
+    {
+      "bytes": 12312,
+      "git_blob_sha1": "ae9cfb35f966d8ecff5c365cff2515c004503e2c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/5241-beta-featuregate-promotion-requirements/README.md"
+    },
+    {
+      "bytes": 9617,
+      "git_blob_sha1": "1d78a95e3cd1531b5b6c4d090ff4344f4a684d89",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/617-improve-kep-implementation/README.md"
+    },
+    {
+      "bytes": 21098,
+      "git_blob_sha1": "270fed110b9c5eb31ec501b85f0f6a05a960e040",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/917-go-modules/README.md"
+    },
+    {
+      "bytes": 41270,
+      "git_blob_sha1": "f114b2157a3102da70e4913f7798630f6a8028d9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-architecture/960-conformance-behaviors/README.md"
+    },
+    {
+      "bytes": 30428,
+      "git_blob_sha1": "b1d2569c10c5636eeb69b0efa11fe9cf207b120b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/1205-bound-service-account-tokens/README.md"
+    },
+    {
+      "bytes": 20821,
+      "git_blob_sha1": "3fb934df4637facbfa73894ec1f4cf5e7e331ad0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/1314-node-restriction-pods/README.md"
+    },
+    {
+      "bytes": 24375,
+      "git_blob_sha1": "5da1eb855833c2f44e602c692b44dab3f17a36f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/1393-oidc-discovery/README.md"
+    },
+    {
+      "bytes": 28290,
+      "git_blob_sha1": "440aee3830a929b6d9e7a8dd4b8752c96e0cac94",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/1513-certificate-signing-request/README.md"
+    },
+    {
+      "bytes": 8852,
+      "git_blob_sha1": "dfa2a5cadfb1c10f14b11f5e372a39dacf6e52e2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/1687-hierarchical-namespaces-subproject/README.md"
+    },
+    {
+      "bytes": 43,
+      "git_blob_sha1": "27cff5648c8b675dfbff8cddfb50ce5b4219248a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/20190711-external-credential-providers.md"
+    },
+    {
+      "bytes": 55802,
+      "git_blob_sha1": "673ded82509c0a8bdff4dca71f2af194ed037a58",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/2579-psp-replacement/README.md"
+    },
+    {
+      "bytes": 20940,
+      "git_blob_sha1": "e1b09e8d28f5237be9bbe1181df0e70688a82744",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/266-kubelet-client-certificate-bootstrap-rotation/README.md"
+    },
+    {
+      "bytes": 40188,
+      "git_blob_sha1": "36e63e8dea4acefa30e93852f5c1b49ae298fe47",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/2718-20210511-client-exec-proxy/README.md"
+    },
+    {
+      "bytes": 26147,
+      "git_blob_sha1": "17fdfacdd90e7012c9aad5117f90b497f8f3b569",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/2784-csr-duration/README.md"
+    },
+    {
+      "bytes": 8952,
+      "git_blob_sha1": "67bfdb32e60030b2280222cdb79b6bb423228b35",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/279-limit-node-access/README.md"
+    },
+    {
+      "bytes": 19499,
+      "git_blob_sha1": "7b6d29ff09b4a386066dfcefedce2b8627adedbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/2799-reduction-of-secret-based-service-account-token/README.md"
+    },
+    {
+      "bytes": 18274,
+      "git_blob_sha1": "e73cae92a26ec9c2fea62fdac42b387fee23fc97",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/2907-secrets-store-csi-driver/README.md"
+    },
+    {
+      "bytes": 11236,
+      "git_blob_sha1": "bc52f371b822527b001541925e1c2f4e8bbccf51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3130-kms-observability/README.md"
+    },
+    {
+      "bytes": 36930,
+      "git_blob_sha1": "2567524e6b9489d0182c925f13a15fa049701fa9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3221-structured-authorization-configuration/README.md"
+    },
+    {
+      "bytes": 59272,
+      "git_blob_sha1": "514ecb821ca30b7f2a2bcc1ac4056224c91aa97b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3257-cluster-trust-bundles/README.md"
+    },
+    {
+      "bytes": 53591,
+      "git_blob_sha1": "004125981a808174f2df8893873c66417cda7254",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3299-kms-v2-improvements/README.md"
+    },
+    {
+      "bytes": 16226,
+      "git_blob_sha1": "ae5e5cfe469090f62cc9959f466b8c3cbd8054d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3325-self-subject-attributes-review-api/README.md"
+    },
+    {
+      "bytes": 47198,
+      "git_blob_sha1": "2ff79a4b3ff02ba05cea387a68b4eb4a765bd74c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3331-structured-authentication-configuration/README.md"
+    },
+    {
+      "bytes": 34982,
+      "git_blob_sha1": "073fad84678949da47dce36c87baec092b86907b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3766-referencegrant/README.md"
+    },
+    {
+      "bytes": 57117,
+      "git_blob_sha1": "bc159126122e74ef3af106380f1af99447a2ef28",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/3926-handling-undecryptable-resources/README.md"
+    },
+    {
+      "bytes": 40311,
+      "git_blob_sha1": "0fc15e63b9b7f0a861b5ba3abb81b3f52cc6e5d2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4193-bound-service-account-token-improvements/README.md"
+    },
+    {
+      "bytes": 71646,
+      "git_blob_sha1": "bfb9e96f52fec61e31cf2af70e2f75d284bc9d10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4317-pod-certificates/README.md"
+    },
+    {
+      "bytes": 70760,
+      "git_blob_sha1": "38a8d24e34f9e8249c5c8a99058a49cd8aee650e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4412-projected-service-account-tokens-for-kubelet-image-credential-providers/README.md"
+    },
+    {
+      "bytes": 46485,
+      "git_blob_sha1": "cbd910d679bf0c079ae06025fcbd34d38271a470",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4601-authorize-with-selectors/README.md"
+    },
+    {
+      "bytes": 44246,
+      "git_blob_sha1": "2928064f4a6ae5aa8fce066b7a6bbcdd396b949d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4633-anonymous-auth-configurable-endpoints/README.md"
+    },
+    {
+      "bytes": 19643,
+      "git_blob_sha1": "215d3f7e9a9f631d768136b752cd9bd2bbc3ed0b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4872-harden-kubelet-cert-validation/README.md"
+    },
+    {
+      "bytes": 16265,
+      "git_blob_sha1": "1b63796883b754070287d2c0e380a7b7d6f518b8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/4940-psa-block-host-field-in-probes/README.md"
+    },
+    {
+      "bytes": 37750,
+      "git_blob_sha1": "a3254dd57c2d4bcdb3dce51e5216890a8434c411",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/5018-dra-adminaccess/README.md"
+    },
+    {
+      "bytes": 61737,
+      "git_blob_sha1": "d995316257a9fbedd81a65de5b8a1daf6d49b6ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/5284-constrained-impersonation/README.md"
+    },
+    {
+      "bytes": 40907,
+      "git_blob_sha1": "31e3a6a12d432aad4a1e8b4bde6f859b992f3377",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/541-external-credential-providers/README.md"
+    },
+    {
+      "bytes": 136799,
+      "git_blob_sha1": "c035541018b7f2cda297a669056ed1125ddc2466",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/5681-conditional-authorization/README.md"
+    },
+    {
+      "bytes": 1950,
+      "git_blob_sha1": "a2d106bf1c48ceb3af6ac6e0def818aa5610f3af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/5681-conditional-authorization/images/authorizer-chain-computation.md"
+    },
+    {
+      "bytes": 13845,
+      "git_blob_sha1": "c937c965334d595f444b5b071a71045bb8c42837",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/600-dynamic-audit-configuration/README.md"
+    },
+    {
+      "bytes": 62396,
+      "git_blob_sha1": "dfbc5894977126592e39a651dfd352a72be6c6a3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/6060-api-server-authentication-to-webhooks/README.md"
+    },
+    {
+      "bytes": 35606,
+      "git_blob_sha1": "226266b2f0b6fa92ab537fb874cd6795ee43b633",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/740-service-account-external-signing/README.md"
+    },
+    {
+      "bytes": 7884,
+      "git_blob_sha1": "0dbb0cd143ffc6b346fc98d3359d33d735b1673c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-auth/789-harden-default-discover-bindings/README.md"
+    },
+    {
+      "bytes": 8883,
+      "git_blob_sha1": "723ea0c0041e994adade9281025e7ce2d0a03722",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/117-hpa-metrics-specificity/README.md"
+    },
+    {
+      "bytes": 45337,
+      "git_blob_sha1": "b16ad09fe7134fe80d27ece53bb3f378eba85e1d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/1610-container-resource-autoscaling/README.md"
+    },
+    {
+      "bytes": 47943,
+      "git_blob_sha1": "3039bdf78923b8a005cd73a23a920994ece0e623",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/2021-scale-from-zero/README.md"
+    },
+    {
+      "bytes": 22896,
+      "git_blob_sha1": "41459d5526eff7bfce9edb291af93aaecd9ac240",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/2702-graduate-hpa-api-to-GA/README.md"
+    },
+    {
+      "bytes": 24452,
+      "git_blob_sha1": "65f2886ae1a265f8ad6538f1215d7d46fefc6ba9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/4951-configurable-hpa-tolerance/README.md"
+    },
+    {
+      "bytes": 40678,
+      "git_blob_sha1": "0f031194f0cd26c9f6f4617c73f5b671b39247ba",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/5030-attach-limit-autoscaler/README.md"
+    },
+    {
+      "bytes": 49180,
+      "git_blob_sha1": "bf094d3c5cc15420a77e69f079cc244c3d78722e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/5325-hpa-pod-selection-accuracy/README.md"
+    },
+    {
+      "bytes": 49764,
+      "git_blob_sha1": "aa153da81b5debed7a72e81ba4d5a6e5e4349e7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/5679-external-metric-fallback/README.md"
+    },
+    {
+      "bytes": 22584,
+      "git_blob_sha1": "aee87158ee45ef36419952940c904c8557a18050",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-autoscaling/853-configurable-hpa-scale-velocity/README.md"
+    },
+    {
+      "bytes": 11857,
+      "git_blob_sha1": "b2a687069b192cfbfe682342613c9ef846f988b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/1020-kubectl-staging/README.md"
+    },
+    {
+      "bytes": 14889,
+      "git_blob_sha1": "5e46ba32fa249fce3e2d21d02a00031cc9244ea7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/1440-kubectl-events/README.md"
+    },
+    {
+      "bytes": 46045,
+      "git_blob_sha1": "cae78c81a161a5027261ca29c7195625a63a4451",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/1441-kubectl-debug/README.md"
+    },
+    {
+      "bytes": 22039,
+      "git_blob_sha1": "e8d792cd0fe50c0a3cf1820f0e3dbe14c2c93857",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/1802-kustomize-components/README.md"
+    },
+    {
+      "bytes": 16144,
+      "git_blob_sha1": "4719af0bb25fe27ec32379a62a1086f60e0cd517",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2206-openapi-features-in-kustomize/README.md"
+    },
+    {
+      "bytes": 17092,
+      "git_blob_sha1": "0055da193fb370fa8646647c4af82ef5e3bdd9d6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2227-kubectl-default-container/README.md"
+    },
+    {
+      "bytes": 13703,
+      "git_blob_sha1": "d7acb53a7b0893a6496c35a2df622d1526f19bc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2229-kubectl-xdg-base-dir/README.md"
+    },
+    {
+      "bytes": 5403,
+      "git_blob_sha1": "b401282f4b10f8e63f1199ce297fc659bb7385ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2257-kui/README.md"
+    },
+    {
+      "bytes": 26169,
+      "git_blob_sha1": "cb906fed7d04809505260dde97829483ad46557c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2299-kustomize-plugin-composition/README.md"
+    },
+    {
+      "bytes": 9800,
+      "git_blob_sha1": "789d38534d5c603af9106aa6e89fe47a064cb49e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2377-Kustomize/README.md"
+    },
+    {
+      "bytes": 12948,
+      "git_blob_sha1": "fe337cb0217a423ca3b4be69d837766a8903e7b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2379-kubectl-plugins/README.md"
+    },
+    {
+      "bytes": 13792,
+      "git_blob_sha1": "fa67494de4b52039862fc656b6ddff687db5db2d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2380-data-driven-commands-for-kubectl/README.md"
+    },
+    {
+      "bytes": 8725,
+      "git_blob_sha1": "79ae54420578246407a5606e5f1f9e8bae71280e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2381-future-of-kubectl-cp/README.md"
+    },
+    {
+      "bytes": 10432,
+      "git_blob_sha1": "45c2241cb7fdf669453a91d237886d0332e65af5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2382-kustomize-exec-secret-generator/README.md"
+    },
+    {
+      "bytes": 4692,
+      "git_blob_sha1": "3ca6e1148951d072a9dcb49443578a9ce2b589c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2383-extend-kustomize-patches-to-multiple-targets/README.md"
+    },
+    {
+      "bytes": 6849,
+      "git_blob_sha1": "7a4c14d3b1ba3ddc90776cbd09dc112f7fb3fc6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2384-kustomize-file-processing-integration/README.md"
+    },
+    {
+      "bytes": 12603,
+      "git_blob_sha1": "42cfc8bebf4e14e2285c02f0c99bf08a7694c0c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2385-kustomize-secret-generator-plugins/README.md"
+    },
+    {
+      "bytes": 16149,
+      "git_blob_sha1": "f049fa38abbbd3876bb411f00f4efaa7150a2b25",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2386-kustomize-subcommand-integration/README.md"
+    },
+    {
+      "bytes": 19771,
+      "git_blob_sha1": "f0b3391bfe47e578517c7b3bbefe5d00032e965f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2551-return-code-normalization/README.md"
+    },
+    {
+      "bytes": 18401,
+      "git_blob_sha1": "f21fb5b5a113332b0170eeb203709be2ddd1db61",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2590-kubectl-subresource/README.md"
+    },
+    {
+      "bytes": 49813,
+      "git_blob_sha1": "4ede98638a5f3eb3747435a8fcc952e6e9b0d1de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2906-kustomize-function-catalog/README.md"
+    },
+    {
+      "bytes": 52476,
+      "git_blob_sha1": "e6e7e8afe1cbee74a91b4eed3069640bc863d71b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2953-kustomize-plugin-graduation/README.md"
+    },
+    {
+      "bytes": 44473,
+      "git_blob_sha1": "11d8ba5219207c9ae3f6881b34fdbe281619b0f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/2985-public-krm-functions-registry/README.md"
+    },
+    {
+      "bytes": 49118,
+      "git_blob_sha1": "77ed57e53f6a5171f1e92c5a4dbf5977307c8802",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3104-introduce-kuberc/README.md"
+    },
+    {
+      "bytes": 40266,
+      "git_blob_sha1": "5df580e809c5b3d20c9e3159da3fe2a1f0708415",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3515-kubectl-explain-openapiv3/README.md"
+    },
+    {
+      "bytes": 27714,
+      "git_blob_sha1": "1cc24ae75ce454388ec8452a2c3079206f3417af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3638-kubectl-plugin-subcommands/README.md"
+    },
+    {
+      "bytes": 86898,
+      "git_blob_sha1": "f8f2ca69a8e7eac80a6fa7e55c4e162542a89048",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3659-kubectl-apply-prune/README.md"
+    },
+    {
+      "bytes": 24215,
+      "git_blob_sha1": "a8e586f466c4aacd69eac8ebf8166027559f24d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3805-ssa-default/README.md"
+    },
+    {
+      "bytes": 36889,
+      "git_blob_sha1": "26c8115af7ec24fd4c94259a1839fdbaa8e0fe79",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/3895-kubectl-delete-interactivity/README.md"
+    },
+    {
+      "bytes": 41867,
+      "git_blob_sha1": "55fde9c842f81683145bc44de87f720046e51d04",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/4292-kubectl-debug-custom-profile/README.md"
+    },
+    {
+      "bytes": 16103,
+      "git_blob_sha1": "f7ffe313ccf6ae74d8f8c3e23e4ef841ccc19584",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/4706-deprecate-and-remove-kustomize/README.md"
+    },
+    {
+      "bytes": 5962,
+      "git_blob_sha1": "8d3db9c6a1d7066243c148a3a16b009001b77946",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/491-kubectl-diff/README.md"
+    },
+    {
+      "bytes": 45101,
+      "git_blob_sha1": "c24086d0f399f285e906824b7179120b6dfef140",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/5295-kyaml/README.md"
+    },
+    {
+      "bytes": 15837,
+      "git_blob_sha1": "8a2cfa069cae48bc269a30692876e320cc951006",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/859-kubectl-headers/README.md"
+    },
+    {
+      "bytes": 16559,
+      "git_blob_sha1": "85e49254d94c51138242706062084bf0ad5ea464",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/993-kustomize-generators-transformers/README.md"
+    },
+    {
+      "bytes": 1632,
+      "git_blob_sha1": "fc29bf4cfeb66fdd2d3670deaa66c1ff22a9e5db",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cli/FAQ.md"
+    },
+    {
+      "bytes": 11113,
+      "git_blob_sha1": "d9bf6d0c79d3b3eabfcabc753d2a5b35eb7045ce",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/1179-building-without-in-tree-providers/README.md"
+    },
+    {
+      "bytes": 5735,
+      "git_blob_sha1": "6722cce3a511ac81b772781239087987e889ecbc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/1771-versioning-policy-for-external-cloud-providers/README.md"
+    },
+    {
+      "bytes": 17156,
+      "git_blob_sha1": "2cd418186a9de3a72a1c4b6af50b1db9d1115979",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/1959-service-lb-class-field/README.md"
+    },
+    {
+      "bytes": 24778,
+      "git_blob_sha1": "87b77d0fcccb85e6f648c78642a241c988e75909",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2025-extend-konnectivity-for-both-directions/README.md"
+    },
+    {
+      "bytes": 13409,
+      "git_blob_sha1": "4250366b849909d4ca9ddfb8725f6a4a3c64014b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2133-out-of-tree-credential-provider/README.md"
+    },
+    {
+      "bytes": 14118,
+      "git_blob_sha1": "80d96cfd8af3a458e6fc29a031cbc78d69ff8b4e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2390-reporting-conformance-test-results-to-testgrid/README.md"
+    },
+    {
+      "bytes": 25150,
+      "git_blob_sha1": "cad664ca24c6b374549bfdcc7ce760948f4b08a0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2392-cloud-controller-manager/README.md"
+    },
+    {
+      "bytes": 7406,
+      "git_blob_sha1": "4f9576af0ed570fc02664244bca0ed58740647e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2393-cloud-provider-documentation/README.md"
+    },
+    {
+      "bytes": 2538,
+      "git_blob_sha1": "5633b9340c485d5f85af6f4771e40ff0e2f6fa6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2394-support-out-of-tree-AWS-cloud-provider/README.md"
+    },
+    {
+      "bytes": 43368,
+      "git_blob_sha1": "e8e2d25a1c6c36f1a881f9f4092ac4d0ac2863c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2395-removing-in-tree-cloud-providers/README.md"
+    },
+    {
+      "bytes": 25398,
+      "git_blob_sha1": "01f67160abd39c8b8a102156fc4efa175c3edcc9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2436-controller-manager-leader-migration/README.md"
+    },
+    {
+      "bytes": 27054,
+      "git_blob_sha1": "4b189a8f8e966edd09dcf689828b60e4c70aa07d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/2699-add-webhook-hosting-to-ccm/README.md"
+    },
+    {
+      "bytes": 18822,
+      "git_blob_sha1": "7aee8d0c682e2012adad577e89fffec3239cb393",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/5237-watch-based-route-controller-reconciliation/README.md"
+    },
+    {
+      "bytes": 2541,
+      "git_blob_sha1": "d7ae4e857922b74c38a44050411787b2265c6300",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/668-out-of-tree-gce/README.md"
+    },
+    {
+      "bytes": 3940,
+      "git_blob_sha1": "9d03c99abe5184ade7b632c2635044f382c92663",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/669-out-of-tree-openstack/README.md"
+    },
+    {
+      "bytes": 4286,
+      "git_blob_sha1": "d012dedf8a437018a5c7e8e8235c585090064e3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/670-out-of-tree-vsphere/README.md"
+    },
+    {
+      "bytes": 2541,
+      "git_blob_sha1": "56d1afbce6abf5330581a7b3e2c4304bfa8268a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/671-out-of-tree-ibm/README.md"
+    },
+    {
+      "bytes": 7536,
+      "git_blob_sha1": "40bbc4d128fd6745259df5f0084450cd4e4a36d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/837-cloud-provider-labels/README.md"
+    },
+    {
+      "bytes": 13206,
+      "git_blob_sha1": "5e401f9272d61ee3c221723a91dd10c6baeff5f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/azure/2328-ccm-instance-metadata/README.md"
+    },
+    {
+      "bytes": 15773,
+      "git_blob_sha1": "1e77b128251219a35e718580306fc7e429ee8466",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/azure/586-azure-availability-zones/README.md"
+    },
+    {
+      "bytes": 9013,
+      "git_blob_sha1": "777d4339ac13e3b57133e503dd855d6ae1f8779a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/azure/604-cross-resource-group-nodes/README.md"
+    },
+    {
+      "bytes": 18233,
+      "git_blob_sha1": "e5d5d68a6100b7ded2d9076b3768745845eba02a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/azure/667-out-of-tree-azure/README.md"
+    },
+    {
+      "bytes": 4909,
+      "git_blob_sha1": "a35ab1c14899ba9a03b3bf463325c31cbe0d0280",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/providers/0000-cloud-provider-template/README.md"
+    },
+    {
+      "bytes": 5778,
+      "git_blob_sha1": "91cf97fe8b96973cfdb05c25439dcc5357587adf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/providers/2530-alibaba-cloud/README.md"
+    },
+    {
+      "bytes": 4214,
+      "git_blob_sha1": "5c0375b4a88f2c5896c3007de703b9d1f96064f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/providers/2531-baidu-cloud/README.md"
+    },
+    {
+      "bytes": 6438,
+      "git_blob_sha1": "2c212dfbce60bc404bbbcd990bfa6a20e271407f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cloud-provider/providers/2532-huawei-cloud/README.md"
+    },
+    {
+      "bytes": 9746,
+      "git_blob_sha1": "e5ada0f8cae1f1ea16804f51f3c905d588923b95",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/addons/2492-Addons-via-Operators/README.md"
+    },
+    {
+      "bytes": 9294,
+      "git_blob_sha1": "5986dce71479a104324b7080d12ad58eeb1a5fa9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/addons/2494-Manifest-Bundle/README.md"
+    },
+    {
+      "bytes": 19546,
+      "git_blob_sha1": "9db28993067e7de592604e6d45449450e7bc5c3f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/clusterapi/2495-Kubernetes-Cluster-Management-API/README.md"
+    },
+    {
+      "bytes": 318,
+      "git_blob_sha1": "5571eacb32b6b849609ed0b169396e14f14fc6ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/clusterapi/FAQ.md"
+    },
+    {
+      "bytes": 7749,
+      "git_blob_sha1": "1968ca2f3cc3c1b0432d1becddbf2ac12bfd30e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/etcdadm/2496-etcdadm/README.md"
+    },
+    {
+      "bytes": 29000,
+      "git_blob_sha1": "6c15d6d955db9d28c3bfbb9c1d7db9337357533a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry/README.md"
+    },
+    {
+      "bytes": 7350,
+      "git_blob_sha1": "becb2ba872856968e985de848697fc6d4f144f90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/image-builder/2497-Kubernetes-Image-Builder/README.md"
+    },
+    {
+      "bytes": 16312,
+      "git_blob_sha1": "5d6b363b384a96372c40506d4f1dc53b596b83c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/1177-kubeadm-with-kustomize/README.md"
+    },
+    {
+      "bytes": 16974,
+      "git_blob_sha1": "3aa3cce1a018f8dd8345a34d4c627f88ff766621",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/1381-component-config/README.md"
+    },
+    {
+      "bytes": 39081,
+      "git_blob_sha1": "e8eceb956d334defda7328a89cc53afba385bb1b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/1739-customization-with-patches/README.md"
+    },
+    {
+      "bytes": 12317,
+      "git_blob_sha1": "e05e8f0e808c740f36fe818fc80bb73c20fd89b5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2067-rename-master-label-taint/README.md"
+    },
+    {
+      "bytes": 6696,
+      "git_blob_sha1": "634a07792cf3d476edb26618ca629837e79f0f3b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2498-Kubeadm-Config-versioning/README.md"
+    },
+    {
+      "bytes": 20344,
+      "git_blob_sha1": "a6bf3506ec49edf9909d648d55d61255fa5fa20e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2500-kubeadm-join-control-plane-workflow/README.md"
+    },
+    {
+      "bytes": 6839,
+      "git_blob_sha1": "cbcb58e517a574db629e85a1bddbfd8472fe67dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2501-kubeadm-phases-to-beta/README.md"
+    },
+    {
+      "bytes": 14415,
+      "git_blob_sha1": "109089a49fc98f8088f3fef2d25f5300ece8dd2e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2502-Certificates-copy-for-join-control-plane/README.md"
+    },
+    {
+      "bytes": 6736,
+      "git_blob_sha1": "1c90ad69c05c9ee2fa6c717a9983649c14ddf54b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2503-Artifact-Generation/README.md"
+    },
+    {
+      "bytes": 14681,
+      "git_blob_sha1": "adf6c41a067d783d33bcb6b3a93f54f979623b17",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2504-kubeadm-machine-output/README.md"
+    },
+    {
+      "bytes": 7057,
+      "git_blob_sha1": "8a28a226eec14224c511c029d0aa788c201b3c6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2505-Kubeadm-operator/README.md"
+    },
+    {
+      "bytes": 7558,
+      "git_blob_sha1": "ac9ea42d7569fa673aa6f29cb9238c0f0fb04786",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2506-Remove-ClusterStatus-from-kubeadm-config/README.md"
+    },
+    {
+      "bytes": 49059,
+      "git_blob_sha1": "c88f2ebe87baed834fb2e0785ad0dca7e619071c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2568-kubeadm-non-root-control-plane/README.md"
+    },
+    {
+      "bytes": 27206,
+      "git_blob_sha1": "a32dd94157e08751ee58899d3c6903d0f4960b64",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/2915-kubeadm-replace-kubelet-config-x.y/README.md"
+    },
+    {
+      "bytes": 26202,
+      "git_blob_sha1": "d139e1d1c8272116c08e02c16b5d06c0125ff641",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/3614-etcd-learner-mode/README.md"
+    },
+    {
+      "bytes": 5088,
+      "git_blob_sha1": "a0ffe70b237322d5a694e1be5cc6e862804f5b56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/378-bootstrap-checkpointing/README.md"
+    },
+    {
+      "bytes": 32410,
+      "git_blob_sha1": "5ed145435ac2461fd14a4d07115421a2d98fc389",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/4214-separate-super-user-kubeconfig/README.md"
+    },
+    {
+      "bytes": 31523,
+      "git_blob_sha1": "2302aa541fdf9be92258ceedf614a3f8b9a79d7b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/4471-cp-join-kubelet-local-apiserver/README.md"
+    },
+    {
+      "bytes": 16090,
+      "git_blob_sha1": "a8686488a697dde3765b1de7b919a12c345f2c50",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/4656-add-kubelet-instance-configuration/README.md"
+    },
+    {
+      "bytes": 14755,
+      "git_blob_sha1": "a4a63be0dfd567e20d2b204c774470f6fabf2f61",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/970-kubeadm-config/README.md"
+    },
+    {
+      "bytes": 4663,
+      "git_blob_sha1": "60c546d804e8ba31ad24f091c7bf388c0c070b0e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/970-kubeadm-config/documentation-for-images.md"
+    },
+    {
+      "bytes": 15766,
+      "git_blob_sha1": "53b73127043ae9f96b2f1490447db6b48cdd1b07",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/kubeadm/995-kubeadm-windows/README.md"
+    },
+    {
+      "bytes": 21583,
+      "git_blob_sha1": "d4e189187025ad65f9da2bb654caa06c0d8ca210",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/wgs/115-componentconfig/README.md"
+    },
+    {
+      "bytes": 21288,
+      "git_blob_sha1": "2c768d6a80953aa31d5b00db1b27c512bd628426",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-cluster-lifecycle/wgs/783-component-base/README.md"
+    },
+    {
+      "bytes": 12206,
+      "git_blob_sha1": "176f3f45dc0f1e1b8ee931c6acd5198107913162",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-contributor-experience/0000-community-forum/README.md"
+    },
+    {
+      "bytes": 11011,
+      "git_blob_sha1": "5ed5fa70014823521da97c3358e2dd2a989cbefc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-contributor-experience/1553-issue-triage/README.md"
+    },
+    {
+      "bytes": 8774,
+      "git_blob_sha1": "8ef75cb990e1de2e052611b407584141c35c3969",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-contributor-experience/2225-contributor-site/README.md"
+    },
+    {
+      "bytes": 14878,
+      "git_blob_sha1": "c2e8b4f033c24e2056f7e616d9a8e70bd254faa7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-docs/1326-third-party-content-in-docs/README.md"
+    },
+    {
+      "bytes": 22491,
+      "git_blob_sha1": "df807ed4c0bfa540453a8267470684cc0de3c59e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-etcd/4326-downgrade/README.md"
+    },
+    {
+      "bytes": 8637,
+      "git_blob_sha1": "aaab705a14c74cc9e072ef3d2ce8dcedb010da90",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-etcd/4331-livez-readyz/README.md"
+    },
+    {
+      "bytes": 21128,
+      "git_blob_sha1": "b4097b17da364def82ef55f69b1addb2a4c8a005",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-etcd/4578-server-feature-gate/README.md"
+    },
+    {
+      "bytes": 16708,
+      "git_blob_sha1": "22cb4de36d18415d2cc89ac82f797c870d042e43",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-etcd/4743-kuberernetes-etcd-interface/README.md"
+    },
+    {
+      "bytes": 22836,
+      "git_blob_sha1": "68f73f1548be7ad55a070d7902b391ccb2911c97",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-etcd/5966-etcd-range-stream/README.md"
+    },
+    {
+      "bytes": 7044,
+      "git_blob_sha1": "89a334e7e5a7ad283b3b05175c8851d4c3ba7666",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1013-metrics-watch-api/README.md"
+    },
+    {
+      "bytes": 12934,
+      "git_blob_sha1": "d718cd27ef5fdbdb41598145af27ffc79d1a8e76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1206-metrics-overhaul/README.md"
+    },
+    {
+      "bytes": 12596,
+      "git_blob_sha1": "b06c6d6c6728cbd59d711016bd8bb54a83228aab",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1209-metrics-stability/README.md"
+    },
+    {
+      "bytes": 23423,
+      "git_blob_sha1": "2c5bdd083907911c94426a88c85a2b4215fb3c6f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1209-metrics-stability/kubernetes-control-plane-metrics-stability.md"
+    },
+    {
+      "bytes": 7733,
+      "git_blob_sha1": "35515c5281e63119b606efc2612406ac759695ae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1209-metrics-stability/metrics-stability-migration.md"
+    },
+    {
+      "bytes": 9669,
+      "git_blob_sha1": "e0339d85b243e740a8529e576a39f838a16f3987",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1209-metrics-stability/metrics-stability-to-beta.md"
+    },
+    {
+      "bytes": 9569,
+      "git_blob_sha1": "63133ab571f4418abc0a853ddaf72cebd7b94e0b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1209-metrics-stability/metrics-validation-and-verification.md"
+    },
+    {
+      "bytes": 34792,
+      "git_blob_sha1": "86b1d18e22b721de0732855e9496876b1e38966d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1602-structured-logging/README.md"
+    },
+    {
+      "bytes": 43396,
+      "git_blob_sha1": "2bd6cd42698fcca50bdbed34420f483b595cf0d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1748-pod-resource-metrics/README.md"
+    },
+    {
+      "bytes": 22313,
+      "git_blob_sha1": "9039352eab05c5ace2ee6f18019a3d834d9ae92b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/1753-logs-sanitization/README.md"
+    },
+    {
+      "bytes": 20078,
+      "git_blob_sha1": "4d8cc5501845dd98508566190242805cc5d4eba4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/2305-metrics-cardinality-enforcement/README.md"
+    },
+    {
+      "bytes": 28021,
+      "git_blob_sha1": "780d5718b957f2683405472bebe2b5e307b67233",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/2831-kubelet-tracing/README.md"
+    },
+    {
+      "bytes": 20845,
+      "git_blob_sha1": "b6ffc429cd14838eb8ac7ed4fb088111b2a0d21a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/2845-deprecate-klog-specific-flags-in-k8s-components/README.md"
+    },
+    {
+      "bytes": 50931,
+      "git_blob_sha1": "a66b5fd5d921e8d4d4f196ba22950ba2b682698b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/3077-contextual-logging/README.md"
+    },
+    {
+      "bytes": 21106,
+      "git_blob_sha1": "3d23462d278fdc2360707878f2028b1a61868e6b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/3466-kubernetes-component-health-slis/README.md"
+    },
+    {
+      "bytes": 20785,
+      "git_blob_sha1": "02bce914ab266554be54444bf5a95a44b001226d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/3498-extending-stability/README.md"
+    },
+    {
+      "bytes": 42196,
+      "git_blob_sha1": "7c39116979589f6cbbf16d472b98c36862fc68e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/383-new-event-api-ga-graduation/README.md"
+    },
+    {
+      "bytes": 55687,
+      "git_blob_sha1": "a4896f190f9e911af23fcafcae51209c7cac2f57",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/4785-resource-state-metrics/README.md"
+    },
+    {
+      "bytes": 28863,
+      "git_blob_sha1": "df31a669fb8b4e9694ff481e4927f34f6056f4fa",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/4827-component-statusz/README.md"
+    },
+    {
+      "bytes": 22866,
+      "git_blob_sha1": "b6484dfb87bed50d865d24be9c887ed3a3a483ee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/4828-component-flagz/README.md"
+    },
+    {
+      "bytes": 24558,
+      "git_blob_sha1": "721351d7dd77c4f6d83c5c64a77ff5d1c0de9605",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/5207-metrics-k8s-io-api-definition/README.md"
+    },
+    {
+      "bytes": 34317,
+      "git_blob_sha1": "87697014fb854a7b55ecf37d883b4ba8f385d770",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/5808-native-histogram-support/README.md"
+    },
+    {
+      "bytes": 27353,
+      "git_blob_sha1": "de25fc641ee4b3d2c587ab632fd38a0da5621b0d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/5905-mixins-migration/README.md"
+    },
+    {
+      "bytes": 25777,
+      "git_blob_sha1": "ce803070e770019366d552eebe2e80c0952ec9ad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-instrumentation/647-apiserver-tracing/README.md"
+    },
+    {
+      "bytes": 66000,
+      "git_blob_sha1": "daad8dff7d3276904df2309322c1e783ba00d10f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/1645-multi-cluster-services-api/README.md"
+    },
+    {
+      "bytes": 14602,
+      "git_blob_sha1": "f6edc3d65f7553392dbdc774ef666a8b5746afbb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/1645-multi-cluster-services-api/specification.md"
+    },
+    {
+      "bytes": 56672,
+      "git_blob_sha1": "9fa70aaa1ba66912f64c4c7635ae06d5bcdf2f1f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/2149-clusterid/README.md"
+    },
+    {
+      "bytes": 85098,
+      "git_blob_sha1": "7f8c174fbe18d1eecf53937d10af068efe5290fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/4322-cluster-inventory/README.md"
+    },
+    {
+      "bytes": 38068,
+      "git_blob_sha1": "85c8679d8a26f2a55fc3bf0ba85ccbd90322715c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/5313-placement-decision-api/README.md"
+    },
+    {
+      "bytes": 41764,
+      "git_blob_sha1": "a093b316e27f0b20a8df9896e301eb1b7615640f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-multicluster/5339-clusterprofile-plugin-credentials/README.md"
+    },
+    {
+      "bytes": 51743,
+      "git_blob_sha1": "1b9310dd21c33e3fc4984a838c3525370cacbd38",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/0752-endpointslices/README.md"
+    },
+    {
+      "bytes": 19449,
+      "git_blob_sha1": "2cc1d87b9bd388bb078a630cede4fc89930bb306",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1024-nodelocal-cache-dns/README.md"
+    },
+    {
+      "bytes": 3341,
+      "git_blob_sha1": "eee17615394abee03e6990939044fb58ff807a1e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1138-ipv6/README.md"
+    },
+    {
+      "bytes": 44564,
+      "git_blob_sha1": "06c1146aa601064c495323ff451a18ac8e1f0895",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1435-mixed-protocol-lb/README.md"
+    },
+    {
+      "bytes": 44789,
+      "git_blob_sha1": "261cf519b7515efefd79dbfa53d11cd9d473b13b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1453-ingress-api/README.md"
+    },
+    {
+      "bytes": 7876,
+      "git_blob_sha1": "2432f48a5408555a841ca4a01f5f4d985e5037ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1507-app-protocol/README.md"
+    },
+    {
+      "bytes": 46467,
+      "git_blob_sha1": "962609f12466bdbb860926485b18936fd26db1f2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1611-network-policy-validation/README.md"
+    },
+    {
+      "bytes": 24658,
+      "git_blob_sha1": "1f6253298554ac7876cf2656a89777dfe634f52e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1669-proxy-terminating-endpoints/README.md"
+    },
+    {
+      "bytes": 19372,
+      "git_blob_sha1": "272df398bc1668c0e2e7e34edd95c4b44ea87f26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1672-tracking-terminating-endpoints/README.md"
+    },
+    {
+      "bytes": 15721,
+      "git_blob_sha1": "d2925eeff451e31b4dd2eda7069e49df6767869d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1860-kube-proxy-IP-node-binding/README.md"
+    },
+    {
+      "bytes": 14034,
+      "git_blob_sha1": "46445c5a8bbe5f0531069094d54660419b1bdd51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1864-disable-lb-node-ports/README.md"
+    },
+    {
+      "bytes": 52978,
+      "git_blob_sha1": "d22622c39843d7376cad1adbf96b68025e077aad",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/1880-multiple-service-cidrs/README.md"
+    },
+    {
+      "bytes": 17477,
+      "git_blob_sha1": "7ea711c31f674af1db783e00105fe8bb035df790",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2079-network-policy-port-range/README.md"
+    },
+    {
+      "bytes": 24795,
+      "git_blob_sha1": "b76fe351b29a73078bb1992a743f79edeffe582b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2086-service-internal-traffic-policy/README.md"
+    },
+    {
+      "bytes": 73379,
+      "git_blob_sha1": "8f39ee792b5647afa6da1c5f2b1feef01b049b6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2091-admin-network-policy/README.md"
+    },
+    {
+      "bytes": 9164,
+      "git_blob_sha1": "9e5ab7f87cf97ff39af033491d51a1019b2d6a8f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2200-externalips-admission/README.md"
+    },
+    {
+      "bytes": 8369,
+      "git_blob_sha1": "c427f5b1e427690d8e1a328ead168acfd69d7b25",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2365-ingressclass-namespaced-params/README.md"
+    },
+    {
+      "bytes": 38287,
+      "git_blob_sha1": "f3ca5f5b17f2a75c4a1761470be5f6f048921df9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2433-topology-aware-hints/README.md"
+    },
+    {
+      "bytes": 23657,
+      "git_blob_sha1": "a0c0757b43a8a846d2284d4a7e4a8bcfb9f8231c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2438-dual-stack-apiserver/README.md"
+    },
+    {
+      "bytes": 6413,
+      "git_blob_sha1": "bd934de6de45271fecacf78dde82765e9bfc06f7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2447-Make-kube-proxy-service-abstraction-optional/README.md"
+    },
+    {
+      "bytes": 4978,
+      "git_blob_sha1": "dd8ec8c387ff8bdf017717e0f5d7925144198159",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2448-Remove-kube-proxy-automatic-clean-up-logic/README.md"
+    },
+    {
+      "bytes": 10280,
+      "git_blob_sha1": "c332db2361e8ac1b615dad1f4039e8255d662d15",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2449-move-externalDNS-out-of-kubernetes-incubator/README.md"
+    },
+    {
+      "bytes": 18034,
+      "git_blob_sha1": "e67488487a4fea67808ed6d88a7d7f6f997e91c9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2450-Remove-knowledge-of-pod-cluster-CIDR-from-iptables-rules/README.md"
+    },
+    {
+      "bytes": 44199,
+      "git_blob_sha1": "a8c55fd615674353892d12597e2a127ad8f9fc0c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2593-multiple-cluster-cidrs/README.md"
+    },
+    {
+      "bytes": 13259,
+      "git_blob_sha1": "43ca13f9b0c8bc7ab91736cec20b12cf509c5dea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2595-expanded-dns-config/README.md"
+    },
+    {
+      "bytes": 23735,
+      "git_blob_sha1": "91c28bc92fca0d1ab16f39e5a5dc49fb66fe9527",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/265-ipvs-based-load-balancing/README.md"
+    },
+    {
+      "bytes": 13968,
+      "git_blob_sha1": "7a30fc5220732f5474d011919372058379935395",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2681-pod-host-ip/README.md"
+    },
+    {
+      "bytes": 5148,
+      "git_blob_sha1": "5411544dda61193ea70372898316d083d170646b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2829-gateway-api-to-k8s-io/README.md"
+    },
+    {
+      "bytes": 16133,
+      "git_blob_sha1": "da4a36c83a9ee3c207755acb2ac7ceecd3bff28e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/2943-networkpolicy-status/README.md"
+    },
+    {
+      "bytes": 20038,
+      "git_blob_sha1": "c14304447323a83f0d6eb1e8e6a924261f058b51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3015-prefer-same-node/README.md"
+    },
+    {
+      "bytes": 19843,
+      "git_blob_sha1": "784fb5164bea8237d0006f9374fa0d2f39c2df66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3070-reserved-service-ip-range/README.md"
+    },
+    {
+      "bytes": 32685,
+      "git_blob_sha1": "2c7ecfc1cc7e5eca79066074dcc7aa14471d7984",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3178-iptables-cleanup/README.md"
+    },
+    {
+      "bytes": 19808,
+      "git_blob_sha1": "cfcf6ee66698703b47861a9f1f266675fa05fe75",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3453-minimize-iptables-restore/README.md"
+    },
+    {
+      "bytes": 17127,
+      "git_blob_sha1": "afd9a2b6a4dce7b47f3ac8385745f2af91eb1e3c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3458-remove-transient-node-predicates-from-service-controller/README.md"
+    },
+    {
+      "bytes": 20673,
+      "git_blob_sha1": "982a473fd01fe69f9489ab7cb957fe20db900294",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3668-reserved-service-nodeport-range/README.md"
+    },
+    {
+      "bytes": 5614,
+      "git_blob_sha1": "9093d101354c45b8116d081417f10f275bd8d511",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3685-endpointslice-reconciler-to-staging/README.md"
+    },
+    {
+      "bytes": 25649,
+      "git_blob_sha1": "72cdc05c2cf107d8fe646087dcea35dfc300a998",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3705-cloud-node-ips/README.md"
+    },
+    {
+      "bytes": 9105,
+      "git_blob_sha1": "f6d44fabcac93296af9f6ff2587d51a168fd3bd1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3726-standard-application-protocols/README.md"
+    },
+    {
+      "bytes": 18996,
+      "git_blob_sha1": "16b07a806006e1c0d899b48b2e6ad75a2c381799",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3836-kube-proxy-improved-ingress-connectivity-reliability/README.md"
+    },
+    {
+      "bytes": 78750,
+      "git_blob_sha1": "2ccded9da19a4829887f439423598dce21ad9057",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/3866-nftables-proxy/README.md"
+    },
+    {
+      "bytes": 12798,
+      "git_blob_sha1": "b6209770c5ad265d517e0651a97f7954e1e41868",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4004-deprecate-kube-proxy-version/README.md"
+    },
+    {
+      "bytes": 7005,
+      "git_blob_sha1": "4fc3126a459e5a09ba3a5eaaee14b9a1d25ae917",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/427-coredns/README.md"
+    },
+    {
+      "bytes": 15886,
+      "git_blob_sha1": "97912a5098c0ba64115850b02d1eb6f214b7cb4c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4427-relaxed-dns-search-validation/README.md"
+    },
+    {
+      "bytes": 50489,
+      "git_blob_sha1": "b062ad6c36af0c4c099f9700f5c240a2b26d7945",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4444-service-traffic-distribution/README.md"
+    },
+    {
+      "bytes": 32648,
+      "git_blob_sha1": "bf66b8733c7b2bad9c1b9c9756ae2f6332f08474",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4762-allow-arbitrary-fqdn-as-pod-hostname/README.md"
+    },
+    {
+      "bytes": 36273,
+      "git_blob_sha1": "53835bf19866b0d12bd43bb5510fd2a2dada2f87",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4858-ip-cidr-validation/README.md"
+    },
+    {
+      "bytes": 27790,
+      "git_blob_sha1": "b90ff8c6b83f8f56de6a79f9efe2cb50c4b62259",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/4974-deprecate-endpoints/README.md"
+    },
+    {
+      "bytes": 7409,
+      "git_blob_sha1": "98fa8d5edb55c922a3b43d595ee7322862337ba8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/504-configurable-pod-dns/README.md"
+    },
+    {
+      "bytes": 14357,
+      "git_blob_sha1": "af5ac5fd0da88aad940713b511aed5af35dda3a4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/5311-relaxed-validation-for-service-names/README.md"
+    },
+    {
+      "bytes": 18871,
+      "git_blob_sha1": "f685c6b59cd8735628a12ede937400cb67237708",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/5343-nftables-to-default/README.md"
+    },
+    {
+      "bytes": 13726,
+      "git_blob_sha1": "0cd436b769d8af3cd1a1b14fd6edcd357111c623",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/536-topology-aware-routing/README.md"
+    },
+    {
+      "bytes": 9487,
+      "git_blob_sha1": "5a4adcfe52f6f4142fcd86f8b8d11a33be1bee47",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/5495-deprecate-ipvs-mode-in-kube-proxy/README.md"
+    },
+    {
+      "bytes": 73562,
+      "git_blob_sha1": "b1ecce722de76312ae34e93514a87616848a959f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/563-dual-stack/README.md"
+    },
+    {
+      "bytes": 3618,
+      "git_blob_sha1": "c929fac1c3a593a995f57bbe73d6265d023f1af0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/566-coredns-default/README.md"
+    },
+    {
+      "bytes": 15761,
+      "git_blob_sha1": "e08dd6c456fe5fed0608f36ec49ec74d7f146904",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/5707-deprecate-service-externalips/README.md"
+    },
+    {
+      "bytes": 7532,
+      "git_blob_sha1": "0df4a775bb2c76365fe1f3acea75b563659f2439",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/580-pod-readiness-gates/README.md"
+    },
+    {
+      "bytes": 18127,
+      "git_blob_sha1": "7d5da07f781afc9c7714ec88ee463dc0acf71c6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/6032-nftables-localhost-nodeport-userspace-proxy/README.md"
+    },
+    {
+      "bytes": 24393,
+      "git_blob_sha1": "c3cb08d26e288ff08ec0a6153092258cbaee564c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/614-SCTP-support/README.md"
+    },
+    {
+      "bytes": 31955,
+      "git_blob_sha1": "52d85552f7a76af501207b11342d9570df8d3a6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/758-ingress-api-group/README.md"
+    },
+    {
+      "bytes": 18677,
+      "git_blob_sha1": "189c26588af3e8e9b3f3572b8afcfbb21d7a1ae2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/784-kube-proxy-component-config/README.md"
+    },
+    {
+      "bytes": 6606,
+      "git_blob_sha1": "bb0ad077457106243fb81fc5c054fffa8d3d209d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-network/980-load-balancer-finalizers/README.md"
+    },
+    {
+      "bytes": 57999,
+      "git_blob_sha1": "5f34854f957f7376022b0dd2874585d11ad98b1c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1029-ephemeral-storage-quotas/README.md"
+    },
+    {
+      "bytes": 63679,
+      "git_blob_sha1": "ae37c8d3b726b47547a682995d457e8a1c26b39e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/127-user-namespaces/README.md"
+    },
+    {
+      "bytes": 94808,
+      "git_blob_sha1": "13cb4a1506d6ee68718b344a9031b5fe0cdf657f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1287-in-place-update-pod-resources/README.md"
+    },
+    {
+      "bytes": 31598,
+      "git_blob_sha1": "f3817fd9a3f6a715d5636a6759b727806549e816",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/135-seccomp/README.md"
+    },
+    {
+      "bytes": 24270,
+      "git_blob_sha1": "9a03ec3f8667a293516b1dea9f79248cce6d539f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1539-hugepages/README.md"
+    },
+    {
+      "bytes": 12859,
+      "git_blob_sha1": "3c68a40cda8b9b5d9bbc0afd8997700e2e747b33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1547-building-kubelet-without-docker/README.md"
+    },
+    {
+      "bytes": 13303,
+      "git_blob_sha1": "b5e3c5d228a77afcaea8cd8e14221b34ac1e31a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1558-streaming-proxy-redirects/README.md"
+    },
+    {
+      "bytes": 3206,
+      "git_blob_sha1": "f545a6c5ffb2d0cf240d804d7819f42d3de062d8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/166-taint-based-eviction/README.md"
+    },
+    {
+      "bytes": 55445,
+      "git_blob_sha1": "9ece906cae19e4bfb59c9290c8ee55cd97323f8b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1769-memory-manager/README.md"
+    },
+    {
+      "bytes": 37353,
+      "git_blob_sha1": "e8fdc6a10d511bdd4d67dbc59e92241882beed40",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1797-configure-fqdn-as-hostname-for-pods/README.md"
+    },
+    {
+      "bytes": 9075,
+      "git_blob_sha1": "d93e70fc7c762a8fa576893fea2b27fbe9f8c3ea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1867-disable-accelerator-usage-metrics/README.md"
+    },
+    {
+      "bytes": 24986,
+      "git_blob_sha1": "161d620699aeee072efce5ac7b0567fcc712d892",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1898-hardened-exec/README.md"
+    },
+    {
+      "bytes": 17444,
+      "git_blob_sha1": "e72ed010f6f5f970283ac7435fc462264f396e9c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1967-size-memory-backed-volumes/README.md"
+    },
+    {
+      "bytes": 9382,
+      "git_blob_sha1": "4eac5415f3133ac886a5ca1faa619efbf0ca8fae",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/1972-kubelet-exec-probe-timeouts/README.md"
+    },
+    {
+      "bytes": 40895,
+      "git_blob_sha1": "fea95012593b921ce3b59917169422f53f5c638c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2000-graceful-node-shutdown/README.md"
+    },
+    {
+      "bytes": 33733,
+      "git_blob_sha1": "7d1e2b415fe769221ae58c8a122d6bf59c21e811",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2008-forensic-container-checkpointing/README.md"
+    },
+    {
+      "bytes": 56963,
+      "git_blob_sha1": "715df31302166748612cb8dea5eaa5ac95baf163",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2033-kubelet-in-userns-aka-rootless/README.md"
+    },
+    {
+      "bytes": 14245,
+      "git_blob_sha1": "47b8e34ef5c1652f7f24bf38f15c6f6efde39cd4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2040-kubelet-cri/README.md"
+    },
+    {
+      "bytes": 23495,
+      "git_blob_sha1": "9cadc50231daf94a7e921269bd1af998d97601bf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2043-pod-resource-concrete-assigments/README.md"
+    },
+    {
+      "bytes": 10797,
+      "git_blob_sha1": "8eb3685bbee2a067c7bd4d5070063f2445d3ce35",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2053-downward-api-hugepages/README.md"
+    },
+    {
+      "bytes": 10211,
+      "git_blob_sha1": "a0725a342476d7c0849853c3177441eaa2763bdd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2129-remove-cadvisor-json-metrics/README.md"
+    },
+    {
+      "bytes": 15798,
+      "git_blob_sha1": "ea1132bf264c8bd36a4ebe61df6e908fe12885d7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/213-run-as-group/README.md"
+    },
+    {
+      "bytes": 28805,
+      "git_blob_sha1": "3f7ac42d3a79e9b2c3429d12bb54e0c55f4cd482",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2133-kubelet-credential-providers/README.md"
+    },
+    {
+      "bytes": 12683,
+      "git_blob_sha1": "362b08930b89d1d7f34f35bf2ed8b3ea80411dc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2221-remove-dockershim/README.md"
+    },
+    {
+      "bytes": 28637,
+      "git_blob_sha1": "915ca4bb090c0669c53166e65bae61e42af69544",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2238-liveness-probe-grace-period/README.md"
+    },
+    {
+      "bytes": 16876,
+      "git_blob_sha1": "45645e4ab0beae5759b9eccc380e3aefbf2d46d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2254-cgroup-v2/README.md"
+    },
+    {
+      "bytes": 77894,
+      "git_blob_sha1": "4bf44dfdde9bc7a7798b10dd13ffa5df2780dbc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2371-cri-pod-container-stats/README.md"
+    },
+    {
+      "bytes": 30773,
+      "git_blob_sha1": "6d8c6bcb223dce2f96e790f36c96dc9b85927320",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/24-apparmor/README.md"
+    },
+    {
+      "bytes": 68152,
+      "git_blob_sha1": "e52d261cf7218fc932b8689c4d08c8cc0d650f6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2400-node-swap/README.md"
+    },
+    {
+      "bytes": 18614,
+      "git_blob_sha1": "1bb700b89fde6b75272bd88bb0ff28ed03e9778b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2403-pod-resources-allocatable-resources/README.md"
+    },
+    {
+      "bytes": 16184,
+      "git_blob_sha1": "22ca37af46d52fd236dbabc84605e308dc934635",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2411-cri-container-log-rotation/README.md"
+    },
+    {
+      "bytes": 19815,
+      "git_blob_sha1": "a9412d9dc3c23ae4aeabd72f3466667a50adead9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2413-seccomp-by-default/README.md"
+    },
+    {
+      "bytes": 44889,
+      "git_blob_sha1": "aca5c8ecc4f33123e764e78a6ceb17d267b16847",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2535-ensure-secret-pulled-images/README.md"
+    },
+    {
+      "bytes": 74465,
+      "git_blob_sha1": "23c0937fa73cb6258917131cbf8038b3174921f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2570-memory-qos/README.md"
+    },
+    {
+      "bytes": 32464,
+      "git_blob_sha1": "040eed4702306c5f843d0098241376d9d2ffb1df",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2625-cpumanager-policies-thread-placement/README.md"
+    },
+    {
+      "bytes": 22383,
+      "git_blob_sha1": "c9d17d7ffd38ad065ed9a8cc1545890bb12ce909",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2712-pod-priority-based-graceful-node-shutdown/README.md"
+    },
+    {
+      "bytes": 15832,
+      "git_blob_sha1": "6b48eb1dda9e76d7506769213eb07f7c151c2984",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2727-grpc-probe/README.md"
+    },
+    {
+      "bytes": 66649,
+      "git_blob_sha1": "5554e26d8766e3fb4dbb3dae33be50e788b6630a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/277-ephemeral-containers/README.md"
+    },
+    {
+      "bytes": 8523,
+      "git_blob_sha1": "c740b21ba896235a0396c99a833c62d6f6ee4f26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/281-dynamic-kubelet-configuration/README.md"
+    },
+    {
+      "bytes": 108173,
+      "git_blob_sha1": "1ddc14ffec7cdb9a0eb9fd6903546bfb23f0130d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2837-pod-level-resource-spec/README.md"
+    },
+    {
+      "bytes": 49410,
+      "git_blob_sha1": "1da84a7236ec840dbe038ecbe8e87ee8a6c6505a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2862-fine-grained-kubelet-authz/README.md"
+    },
+    {
+      "bytes": 18218,
+      "git_blob_sha1": "60956b7f271229970bed698e764c09a64823458d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/2902-cpumanager-distribute-cpus-policy-option/README.md"
+    },
+    {
+      "bytes": 55610,
+      "git_blob_sha1": "37eb4370a69cb2e5d3e429350e76487869b5d795",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3063-dynamic-resource-allocation/README.md"
+    },
+    {
+      "bytes": 89504,
+      "git_blob_sha1": "f602b69f7e345e0703e687c71890447eb21ebbee",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3085-pod-conditions-for-starting-completition-of-sandbox-creation/README.md"
+    },
+    {
+      "bytes": 33370,
+      "git_blob_sha1": "c3884df1a6ae024bdc37cc942b4f280f14dd3213",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3288-separate-stdout-from-stderr/README.md"
+    },
+    {
+      "bytes": 22557,
+      "git_blob_sha1": "800db1cdb2ecb2e42157488561b4768bd9f1dc6a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3327-align-by-socket/README.md"
+    },
+    {
+      "bytes": 42109,
+      "git_blob_sha1": "fc5e070e447fb70f2e2c0a84dbd09b316422e3d3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3386-kubelet-evented-pleg/README.md"
+    },
+    {
+      "bytes": 16551,
+      "git_blob_sha1": "a8f311daace5750436d11830bd8b023db66355a1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/34-sysctl-fields/README.md"
+    },
+    {
+      "bytes": 25092,
+      "git_blob_sha1": "6f3cde8914c8b652818c4e1ab6c8184f735b984e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3545-improved-multi-numa-alignment/README.md"
+    },
+    {
+      "bytes": 34888,
+      "git_blob_sha1": "affe54c7a981309a218aefebda0937cc835e4905",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3570-cpumanager/README.md"
+    },
+    {
+      "bytes": 36695,
+      "git_blob_sha1": "a271bd7ab4d39a30c40fc0b595aebb97201aacb3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3573-device-plugin/README.md"
+    },
+    {
+      "bytes": 63714,
+      "git_blob_sha1": "452fe45dadeed530db45237452c781295684ae68",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3619-supplemental-groups-policy/README.md"
+    },
+    {
+      "bytes": 40551,
+      "git_blob_sha1": "5db5b6579148c2cd8864e1fef7cbfad481909854",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3673-kubelet-parallel-image-pull-limit/README.md"
+    },
+    {
+      "bytes": 23514,
+      "git_blob_sha1": "e7b409b3866c049587718ab2e61a3e2c0a44fa21",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3695-pod-resources-for-dra/README.md"
+    },
+    {
+      "bytes": 29385,
+      "git_blob_sha1": "40addd70b737c5bf128645673871fda81767f481",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3721-support-for-env-files/README.md"
+    },
+    {
+      "bytes": 53692,
+      "git_blob_sha1": "9f003b6a58e64ca382ba8cb141af0cb9c2c826bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3857-rro-mounts/README.md"
+    },
+    {
+      "bytes": 20635,
+      "git_blob_sha1": "4f1e62590e17bbd5d2b67cf2d1efe0d3c6bc124a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3960-pod-lifecycle-sleep-action/README.md"
+    },
+    {
+      "bytes": 19331,
+      "git_blob_sha1": "978b2245c582265f3d3358dc85f55e4016def75a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/3983-drop-in-configuration/README.md"
+    },
+    {
+      "bytes": 14866,
+      "git_blob_sha1": "d9607ca713ba341e3be62ff9341a4fe8814868c7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4009-add-cdi-devices-to-device-plugin-api/README.md"
+    },
+    {
+      "bytes": 20005,
+      "git_blob_sha1": "e9af154adf2ee64053bc59cc9d7c09c5076bfd29",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4033-group-driver-detection-over-cri/README.md"
+    },
+    {
+      "bytes": 34902,
+      "git_blob_sha1": "fb115af290c32a2ecc0a067b620140159a6a68e4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4176-cpumanager-spread-cpus-preferred-policy/README.md"
+    },
+    {
+      "bytes": 29158,
+      "git_blob_sha1": "1c25d12dbc1ffc022139da6c40c84865a60f95f1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4188-kubelet-pod-readiness-api/README.md"
+    },
+    {
+      "bytes": 50040,
+      "git_blob_sha1": "eca1b87aeab333821cad6d5b73cfc89bb94788ea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4191-split-image-filesystem/README.md"
+    },
+    {
+      "bytes": 24628,
+      "git_blob_sha1": "3d3752a19f898db46489e7cacbe0c9009242bcbd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4205-psi-metric/README.md"
+    },
+    {
+      "bytes": 17365,
+      "git_blob_sha1": "dc271cd60661e9afc6438deb8cf7da7c708a18f3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4210-max-image-gc-age/README.md"
+    },
+    {
+      "bytes": 31182,
+      "git_blob_sha1": "8464fedbeeaa0fafd67a644b341ce54090682163",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4216-image-pull-per-runtime-class/README.md"
+    },
+    {
+      "bytes": 23636,
+      "git_blob_sha1": "8224b2d9cde9246755792b8d2f474aab07e8f324",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4265-proc-mount/README.md"
+    },
+    {
+      "bytes": 15323,
+      "git_blob_sha1": "0498ad5249e233d9c4d37e43c5101b2da86205a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4369-allow-special-characters-environment-variable/README.md"
+    },
+    {
+      "bytes": 144585,
+      "git_blob_sha1": "1248b7f5beb8dcd71ed860557e265831124f4544",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4381-dra-structured-parameters/README.md"
+    },
+    {
+      "bytes": 43226,
+      "git_blob_sha1": "88d057e7062b449a1bc16140eed8f68c357f0f30",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4438-container-restart-termination/README.md"
+    },
+    {
+      "bytes": 25712,
+      "git_blob_sha1": "7f131aca7622d68353869af6704a33df05a360c5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4540-strict-cpu-reservation/README.md"
+    },
+    {
+      "bytes": 145199,
+      "git_blob_sha1": "e5a8cdea42740880eb8c9cfa0d8164d803a6ce26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4563-eviction-request-api/README.md"
+    },
+    {
+      "bytes": 28972,
+      "git_blob_sha1": "252f74fc07b6725044a61ab4518f70255628c3c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4569-cgroup-v1-maintenance-mode/README.md"
+    },
+    {
+      "bytes": 14523,
+      "git_blob_sha1": "925c9473acd8c43824e796196df5f010898878c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4580-deprecate-kubelet-runonce/README.md"
+    },
+    {
+      "bytes": 99317,
+      "git_blob_sha1": "232c1ca01b6dbfe70e043bd1eb4385ab9cfc282f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4603-tune-crashloopbackoff/README.md"
+    },
+    {
+      "bytes": 16715,
+      "git_blob_sha1": "3c39731e19cd39cc220db04b59db19545e8313e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4622-topologymanager-max-allowable-numa-nodes/README.md"
+    },
+    {
+      "bytes": 65206,
+      "git_blob_sha1": "48ca8be68c5e8fcf41ea1e833067fd85b250db66",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4639-oci-volume-source/README.md"
+    },
+    {
+      "bytes": 32696,
+      "git_blob_sha1": "5905739b2a0bbdbb0a7ca52f74060e2e4235e82b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4680-add-resource-health-to-pod-status/README.md"
+    },
+    {
+      "bytes": 19248,
+      "git_blob_sha1": "a895cb6c94b287971238f608e7efaa953d2bae31",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4742-node-topology-downward-api/README.md"
+    },
+    {
+      "bytes": 20218,
+      "git_blob_sha1": "9ec6cabe1cdcd32725f0901e53aa97f7b3d8d81a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4781-kublet-restart-pod-status/README.md"
+    },
+    {
+      "bytes": 44608,
+      "git_blob_sha1": "c595b9e7eed874dcbb6efec76b022c3d3cdc925d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4800-cpumanager-split-uncorecache/README.md"
+    },
+    {
+      "bytes": 29646,
+      "git_blob_sha1": "0f1342bfbb894390aa67010d340a991171d6fdf1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4817-resource-claim-device-status/README.md"
+    },
+    {
+      "bytes": 22846,
+      "git_blob_sha1": "df9f46cc40b5509c8e1e1f1c4e9e32264a391218",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4818-allow-zero-value-for-sleep-action-of-prestop-hook/README.md"
+    },
+    {
+      "bytes": 21633,
+      "git_blob_sha1": "f5d3ab7c659f5c1f2d878229dbe02f80a2faac8c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4939-grpc-probe-with-tls/README.md"
+    },
+    {
+      "bytes": 17999,
+      "git_blob_sha1": "565e29004687c2e02524cbd1362037bc5b9577dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/495-pod-pid-namespace/README.md"
+    },
+    {
+      "bytes": 34265,
+      "git_blob_sha1": "1d591cabadb8de43f39810f16c065768747abcdc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/4960-container-stop-signals/README.md"
+    },
+    {
+      "bytes": 55906,
+      "git_blob_sha1": "e3675169836645cc5cd84601aaeca4629f930704",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5067-pod-generation/README.md"
+    },
+    {
+      "bytes": 74255,
+      "git_blob_sha1": "d294a9b5908277c78b4ac83e71da7adb69671d98",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5304-dra-attributes-downward-api/README.md"
+    },
+    {
+      "bytes": 47383,
+      "git_blob_sha1": "bfaedc484461e65d210e9552e871c036540c5e51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5307-container-restart-policy/README.md"
+    },
+    {
+      "bytes": 92872,
+      "git_blob_sha1": "479a215bee8ca390bc434a6ca127b6b875181587",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5328-node-declared-features/README.md"
+    },
+    {
+      "bytes": 42810,
+      "git_blob_sha1": "328d2cc02295f7aa22440fd6a323615e069caf9e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5365-ImageVolume-with-image-digest/README.md"
+    },
+    {
+      "bytes": 25626,
+      "git_blob_sha1": "fccf14c061c311fea34da0bf25c2fbc31dd45332",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5394-psi-node-conditions/README.md"
+    },
+    {
+      "bytes": 51302,
+      "git_blob_sha1": "7f7bd3bee082d2b5fcefa57ba9045328300e9729",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5419-pod-level-resources-in-place-resize/README.md"
+    },
+    {
+      "bytes": 41579,
+      "git_blob_sha1": "75dac02b5ddea49e0f2cb6d200172017eb112cdd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5474-enable-writable-cgroups/README.md"
+    },
+    {
+      "bytes": 116566,
+      "git_blob_sha1": "2327e0d1a840eb8c17f0e8005d10518fd0598c24",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5526-pod-level-resource-managers/README.md"
+    },
+    {
+      "bytes": 44694,
+      "git_blob_sha1": "2115a687250639d1d890609c482fed67c7f9c2dc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5532-restart-all-containers-on-container-exits/README.md"
+    },
+    {
+      "bytes": 138825,
+      "git_blob_sha1": "d6fea6956a7cff1f5910de90ae649dd36d9c1ca2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5554-in-place-update-pod-resources-alongside-static-cpu-manager-policy/README.md"
+    },
+    {
+      "bytes": 25547,
+      "git_blob_sha1": "8424604213be12578c568795570bfa9c21b75191",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5573-remove-cgroup-v1/README.md"
+    },
+    {
+      "bytes": 94734,
+      "git_blob_sha1": "35ad317460321b9c97a36a3a47eebb30bb837fd8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5593-configure-the-max-crashloopbackoff-delay/README.md"
+    },
+    {
+      "bytes": 22590,
+      "git_blob_sha1": "7413125a635666593a999544fe0e34ce3f3a8259",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5607-hostnetwork-userns/README.md"
+    },
+    {
+      "bytes": 95970,
+      "git_blob_sha1": "a48a9c6ed170faa53affb3668ad29cdf161a3dd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5677-dra-resource-availability-visibility/README.md"
+    },
+    {
+      "bytes": 29947,
+      "git_blob_sha1": "7fe0c26f66afeb0a93a5cc8d4690d45d8b06cb13",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5683-lifecycle-conditions/README.md"
+    },
+    {
+      "bytes": 31707,
+      "git_blob_sha1": "2e1313dfd6feb04f23a389d8d048d4e88ff491da",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5758-per-container-ulimits-configuration/README.md"
+    },
+    {
+      "bytes": 151056,
+      "git_blob_sha1": "9ceaeb9400e73b45632a57ceb2b064747e6cf42a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5823-pod-level-checkpoint-restore/README.md"
+    },
+    {
+      "bytes": 27314,
+      "git_blob_sha1": "ccd4c94df7f598914578e1b0cb8c968b24892c73",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5825-cri-pagination/README.md"
+    },
+    {
+      "bytes": 37351,
+      "git_blob_sha1": "7245ac8dc92d3cab7faff266a0b0c2528b7281c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/585-runtime-class/README.md"
+    },
+    {
+      "bytes": 37316,
+      "git_blob_sha1": "13b71a85e9e8e5cfb7793b3ed2f55a3e01337c69",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5855-noexec-emptyDir/README.md"
+    },
+    {
+      "bytes": 18741,
+      "git_blob_sha1": "71776bce4f1b476e20444c366020a8a9a7bb7a1e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/589-efficient-node-heartbeats/README.md"
+    },
+    {
+      "bytes": 35016,
+      "git_blob_sha1": "6b65f2be39110df7a9f65fd9284f72c7eb7079f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5894-node-system-partition/README.md"
+    },
+    {
+      "bytes": 48788,
+      "git_blob_sha1": "3d5853cf0596ec3b485d3b32e9a995e10cbcdb7d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5945-dra-optional-node-preparation/README.md"
+    },
+    {
+      "bytes": 48513,
+      "git_blob_sha1": "64a9c8dafbf0abad0688a9dc8480d6d1f0092f1d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5978-cluster-resource-claim-template/README.md"
+    },
+    {
+      "bytes": 44370,
+      "git_blob_sha1": "fdd5faccff0885701ca53625d2611bca621e6981",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5996-default-pod-sysctls/README.md"
+    },
+    {
+      "bytes": 24963,
+      "git_blob_sha1": "5be7e2b171e2d72e6170d086d4b0837ad3c1ca95",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/5999-h2c-container-probes/README.md"
+    },
+    {
+      "bytes": 70405,
+      "git_blob_sha1": "55ede2a738e52d3ab3cbab4144a624bd7bbfa155",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/6030-dynamic-resize-of-memory-backed-volumes/README.md"
+    },
+    {
+      "bytes": 44133,
+      "git_blob_sha1": "70795cf2ab2cf295d6180becc371b236cd629627",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/6035-exec-session-identity/README.md"
+    },
+    {
+      "bytes": 20465,
+      "git_blob_sha1": "a3819571f54094efbae1ee51576b6423bd2fbf56",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/606-compute-device-assignment/README.md"
+    },
+    {
+      "bytes": 37589,
+      "git_blob_sha1": "19d69d6d27107fbeb1959b40623e183593711669",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/6063-pod-pid-limit/README.md"
+    },
+    {
+      "bytes": 40846,
+      "git_blob_sha1": "6f301d81006b3d575f8d58c8442bf822d88b0e89",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/6072-dra-standard-numanode/README.md"
+    },
+    {
+      "bytes": 72803,
+      "git_blob_sha1": "5612e8b8a027ed3092466e7873b33412902a76bb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/6122-configurable-scaling-delay-with-pod-resource-exposure/README.md"
+    },
+    {
+      "bytes": 19280,
+      "git_blob_sha1": "cb374e9901d307f658e73787cac1ea4c6a4aab0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/688-pod-overhead/README.md"
+    },
+    {
+      "bytes": 43270,
+      "git_blob_sha1": "600342d7413c162f67a935a4e38a239632737db6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/693-topology-manager/README.md"
+    },
+    {
+      "bytes": 23993,
+      "git_blob_sha1": "679daf1fc0f288cafa0f78a1974a0bcb0e164488",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/727-resource-metrics-endpoint/README.md"
+    },
+    {
+      "bytes": 90893,
+      "git_blob_sha1": "73578573bcc4965f6e0e70c591e7df99634ed3c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/753-sidecar-containers/README.md"
+    },
+    {
+      "bytes": 6371,
+      "git_blob_sha1": "59b6f0c8377e0bbeaa069d3f9888a6becf85452d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/757-pid-limiting/README.md"
+    },
+    {
+      "bytes": 2982,
+      "git_blob_sha1": "09bd99a79f99ed1775d0569474971f6a21089ece",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/793-node-os-arch-labels/README.md"
+    },
+    {
+      "bytes": 9964,
+      "git_blob_sha1": "9daa927d1d64fdde1f4fd63e7a47dceaa631266f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-node/950-liveness-probe-holdoff/README.md"
+    },
+    {
+      "bytes": 4776,
+      "git_blob_sha1": "7e5cf1eb41bdcbc0bb4919e3d1fa0afedf5ddc9d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/0000-anago-to-krel-migration/README.md"
+    },
+    {
+      "bytes": 26292,
+      "git_blob_sha1": "c4aca39e069d4872a5d73152c12e90221eb9803e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1498-kubernetes-yearly-support-period/README.md"
+    },
+    {
+      "bytes": 19658,
+      "git_blob_sha1": "79e94d77faf568192cb1efa48b39478aab645c03",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1729-rebase-images-to-distroless/README.md"
+    },
+    {
+      "bytes": 42930,
+      "git_blob_sha1": "5f3b16737cf5d3c3ba3d77954635b3b0a34d121b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1731-publishing-packages/README.md"
+    },
+    {
+      "bytes": 7115,
+      "git_blob_sha1": "3d7881ea23442109e662e25d351dadb9e8b26d83",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1732-artifact-management/README.md"
+    },
+    {
+      "bytes": 6006,
+      "git_blob_sha1": "d392fc6b1b7f3b0527df9f407e3617987bfe5945",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1733-release-notes/README.md"
+    },
+    {
+      "bytes": 3898,
+      "git_blob_sha1": "4090ae1fb567b417991f0ca373ebaacb6085f5f8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/1734-k8s-image-promoter/README.md"
+    },
+    {
+      "bytes": 34,
+      "git_blob_sha1": "f2044ffba9cb6820bcd8ed6af158613090ec5b6c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/20190121-artifact-management.md"
+    },
+    {
+      "bytes": 34,
+      "git_blob_sha1": "edce300c420f727492e322907e59386029a2a879",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/20190219-publishing-packages.md"
+    },
+    {
+      "bytes": 42,
+      "git_blob_sha1": "b3b31925bea2786043e47a7b06a969a3f5c54603",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/20190316-rebase-images-to-distroless.md"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "ba1a7b11a394e4f89764df32df1248364579f2b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/20190331-release-notes.md"
+    },
+    {
+      "bytes": 47,
+      "git_blob_sha1": "60d6b047030f7c862b64d22983a13e4dd42ccef0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/20200122-kubernetes-yearly-support-period.md"
+    },
+    {
+      "bytes": 20391,
+      "git_blob_sha1": "472bc33ba040ef2b3de2543ce1f72d5c015d9f72",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/2572-release-cadence/README.md"
+    },
+    {
+      "bytes": 30087,
+      "git_blob_sha1": "79df29334d57513c4144cfb4815de252cacf46b4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/2818-reducing-build-maintenance/README.md"
+    },
+    {
+      "bytes": 23230,
+      "git_blob_sha1": "dda553f286db6b05029988e71e4df9a38b38f79f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/2853-k-core-branch-rename/README.md"
+    },
+    {
+      "bytes": 8813,
+      "git_blob_sha1": "a0afe0a0698be409b0de5240a10212e0d947ccaf",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/3000-artifact-distribution/README.md"
+    },
+    {
+      "bytes": 37155,
+      "git_blob_sha1": "b3cdf1c7aa7ce12793d537214ceba0d17ee98aa1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/3027-slsa-compliance/README.md"
+    },
+    {
+      "bytes": 9919,
+      "git_blob_sha1": "17e4a06edf06a7d06bf487d9c2047b405c7a6aff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/3031-signing-release-artifacts/README.md"
+    },
+    {
+      "bytes": 8224,
+      "git_blob_sha1": "4c9eec06dea2042801ed239b4a648fc9beaa5230",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/3720-freezing-k8s-gcr-io/README.md"
+    },
+    {
+      "bytes": 20615,
+      "git_blob_sha1": "fc5c5ab8116fd095e1ab7797e7c244cefcb3b41d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/3744-stay-on-supported-go-versions/README.md"
+    },
+    {
+      "bytes": 33,
+      "git_blob_sha1": "83251572220761df8c40ae6524438a4c1141f874",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-release/k8s-image-promoter.md"
+    },
+    {
+      "bytes": 20768,
+      "git_blob_sha1": "3a65cfaff70740f31cfd128ca2202f85ac7e5957",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/1258-default-pod-topology-spread/README.md"
+    },
+    {
+      "bytes": 17232,
+      "git_blob_sha1": "6b645ac0f893281bd65351124dad9a3163dcd4fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/1451-multi-scheduling-profiles/README.md"
+    },
+    {
+      "bytes": 13981,
+      "git_blob_sha1": "a430848db31ec983ad03df84f9b4aec4c8d63907",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/1819-scheduler-extender/README.md"
+    },
+    {
+      "bytes": 13799,
+      "git_blob_sha1": "4b61e2df9e1eee92b076d3a6fca6849880301d51",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/1923-prefer-nominated-node/README.md"
+    },
+    {
+      "bytes": 30381,
+      "git_blob_sha1": "769d8b028acfcb19763951247694228b2c9a2724",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/2249-pod-affinity-namespace-selector/README.md"
+    },
+    {
+      "bytes": 6046,
+      "git_blob_sha1": "a7d48c2097566d78ae04e2e4d0331db51b69cb8a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/2372-node-labels-quota/README.md"
+    },
+    {
+      "bytes": 26031,
+      "git_blob_sha1": "37848322e2fc9e317804b6d5da64e2a1a5b5e192",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/2458-node-resource-score-strategy/README.md"
+    },
+    {
+      "bytes": 3418,
+      "git_blob_sha1": "ec0d68c0be8d6eef2cf5d25e5ebae67e92c97545",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/268-priority-preemption/README.md"
+    },
+    {
+      "bytes": 24033,
+      "git_blob_sha1": "986d8ba233c371afe46c44392e2356314e542147",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/2891-simplified-config/README.md"
+    },
+    {
+      "bytes": 36013,
+      "git_blob_sha1": "3530023c18798f25531351c592246a828241ab6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/2926-job-mutable-scheduling-directives/README.md"
+    },
+    {
+      "bytes": 29690,
+      "git_blob_sha1": "6308a51dada49ab8fe2f8222aac1c500c8be87de",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3022-min-domains-in-pod-topology-spread/README.md"
+    },
+    {
+      "bytes": 38183,
+      "git_blob_sha1": "f53191aa99272b92933fd6b058344934b19315ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3094-pod-topology-spread-considering-taints/README.md"
+    },
+    {
+      "bytes": 49956,
+      "git_blob_sha1": "ee62056ebbb6b4c8eefd82c76337422f8dd6ea6e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3243-respect-pod-topology-spread-after-rolling-upgrades/README.md"
+    },
+    {
+      "bytes": 43433,
+      "git_blob_sha1": "18d2b25f9b81fa06cf91e6efa31c5303ed7aaffc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3280-guarantee-pdb-when-preemption-happens/README.md"
+    },
+    {
+      "bytes": 49285,
+      "git_blob_sha1": "b73c1a6105517bdc1a48aab191a51eaf7d1e50f7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3521-pod-scheduling-readiness/README.md"
+    },
+    {
+      "bytes": 46355,
+      "git_blob_sha1": "81e00285f5bedef5bb620ad383bafa50a0e58611",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3633-matchlabelkeys-to-podaffinity/README.md"
+    },
+    {
+      "bytes": 3518,
+      "git_blob_sha1": "9e1471cb26ead59b944e0a3831f113462ef4411f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/382-taint-node-by-condition/README.md"
+    },
+    {
+      "bytes": 39109,
+      "git_blob_sha1": "8b89e2555ec6329f17e58ba7827f24161bd980a2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3838-pod-mutable-scheduling-directives/README.md"
+    },
+    {
+      "bytes": 17927,
+      "git_blob_sha1": "72a247777444e4278edcfbcba26abf437c42d333",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/3902-decoupled-taint-manager/README.md"
+    },
+    {
+      "bytes": 52027,
+      "git_blob_sha1": "850b91a0814506493550e5bec2664fadaa097907",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/4247-queueinghint/README.md"
+    },
+    {
+      "bytes": 109724,
+      "git_blob_sha1": "ed382b0c738cd87073f14a49ae21064dbf792625",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/4671-gang-scheduling/README.md"
+    },
+    {
+      "bytes": 73539,
+      "git_blob_sha1": "00f4f95aad18ce075a251daf9972552fe30ea26b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/4815-dra-partitionable-devices/README.md"
+    },
+    {
+      "bytes": 62838,
+      "git_blob_sha1": "748cb687bb1ff12c8f6f370323ef221efce45cc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/4816-dra-prioritized-list/README.md"
+    },
+    {
+      "bytes": 20591,
+      "git_blob_sha1": "f40d4bd3872056968b944cd36b300be5a5c30946",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/4832-async-preemption/README.md"
+    },
+    {
+      "bytes": 63486,
+      "git_blob_sha1": "b66505125075bda9205955a2777d4f6df635d61f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5004-dra-extended-resource/README.md"
+    },
+    {
+      "bytes": 74865,
+      "git_blob_sha1": "a9e062590b0833e9285104f3b1c115992cc3ac33",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5007-device-attach-before-pod-scheduled/README.md"
+    },
+    {
+      "bytes": 33212,
+      "git_blob_sha1": "b645de7e1c4244ff6b06dc082b7a31578009e9fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5027-dra-admin-controlled-device-attributes/README.md"
+    },
+    {
+      "bytes": 49245,
+      "git_blob_sha1": "4d49d7225fb7a52ccbfcac293620c9b749b50d07",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5055-dra-device-taints-and-tolerations/README.md"
+    },
+    {
+      "bytes": 77640,
+      "git_blob_sha1": "1e6be3418f6cf407ac57daa278af8284a3f873eb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5075-dra-consumable-capacity/README.md"
+    },
+    {
+      "bytes": 21526,
+      "git_blob_sha1": "ce6c357c0837003ce9e32290c2585b3102930ec4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5142-pop-backoffq-when-activeq-empty/README.md"
+    },
+    {
+      "bytes": 54495,
+      "git_blob_sha1": "5de6f923789c250310e38d75bbc23c22b1816b6d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5229-asynchronous-api-calls-during-scheduling/README.md"
+    },
+    {
+      "bytes": 36930,
+      "git_blob_sha1": "f32d63f0259134fb3b4da06f7d5c32879d0e9b6d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5234-dra-resourceslice-mixins/README.md"
+    },
+    {
+      "bytes": 52414,
+      "git_blob_sha1": "0e36eb1306603fb333b2c641d8674a04bdb8d855",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5278-nominated-node-name-for-expectation/README.md"
+    },
+    {
+      "bytes": 42273,
+      "git_blob_sha1": "44d762cb4cfda0ee1c95700b9581451ce1678e96",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5471-enable-sla-based-scheduling/README.md"
+    },
+    {
+      "bytes": 3262,
+      "git_blob_sha1": "bd83536b96270b6a9f125800951c4c728cb846e0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/548-schedule-daemonset-pods/README.md"
+    },
+    {
+      "bytes": 53139,
+      "git_blob_sha1": "30da91d4e0dbc2072544a7686654e53844b0c1c4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5491-dra-list-types-for-attributes/README.md"
+    },
+    {
+      "bytes": 48184,
+      "git_blob_sha1": "c1bcfd1e94d2b86ff772f941be7fac8bc59a7fc5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5501-reflect-preenqueue-rejections-in-pod-status/README.md"
+    },
+    {
+      "bytes": 174550,
+      "git_blob_sha1": "bb36501c26cf1d8195a067aa48a4eeacfb19ec1b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5517-dra-node-allocatable-resources/README.md"
+    },
+    {
+      "bytes": 69957,
+      "git_blob_sha1": "0ce850a87cf7a58b863e4bc4559ebfdcbb3e9801",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5598-opportunistic-batching/README.md"
+    },
+    {
+      "bytes": 77397,
+      "git_blob_sha1": "b17c33d492e061752a32c18baa7692ef644cb7ef",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5710-workload-aware-preemption/README.md"
+    },
+    {
+      "bytes": 74710,
+      "git_blob_sha1": "474cdbbede03e21e9c04cc212d3e771a065b9406",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5729-resourceclaim-support-for-workloads/README.md"
+    },
+    {
+      "bytes": 46188,
+      "git_blob_sha1": "fdb09f2bbf637e9f242ca2963ed245850a0a5020",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5732-topology-aware-workload-scheduling/README.md"
+    },
+    {
+      "bytes": 12502,
+      "git_blob_sha1": "5a33e3f2d7d8c608585611019509ae588a727a7e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/583-coscheduling/README.md"
+    },
+    {
+      "bytes": 36148,
+      "git_blob_sha1": "5143ea402a524da338949d6f4999015128f1c771",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5832-decouple-podgroup-api/README.md"
+    },
+    {
+      "bytes": 91913,
+      "git_blob_sha1": "b563fdaa5aafc97bd696a6337d42b147499ee90f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5836-scheduler-preemption-for-ippr/README.md"
+    },
+    {
+      "bytes": 28903,
+      "git_blob_sha1": "44a2096658ab8c4599cee94f4a278d87f0ee05b1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5941-dra-shared-consumable-capacity/README.md"
+    },
+    {
+      "bytes": 45337,
+      "git_blob_sha1": "559bf4a29291063459732372d23e0343e38ed262",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/5963-device-compatibility-groups/README.md"
+    },
+    {
+      "bytes": 119550,
+      "git_blob_sha1": "a7c36e05885cb36b561902f03d9ee9aadb8fbbe8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/6012-composite-podgroup-api/README.md"
+    },
+    {
+      "bytes": 32010,
+      "git_blob_sha1": "9904222933f920f65b4aa48d328288fd7472d3d6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/6080-dra-derived-attributes/README.md"
+    },
+    {
+      "bytes": 78900,
+      "git_blob_sha1": "b820b1c8c45e36a64ea965b14cfc724f957e5427",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/6089-was-controller-apis/README.md"
+    },
+    {
+      "bytes": 17487,
+      "git_blob_sha1": "b774983878cd3ca2f7fee769c049951247a28913",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/6132-prequeueing-hints/README.md"
+    },
+    {
+      "bytes": 27679,
+      "git_blob_sha1": "d655a6f29dcb1c671c766f4e86d34c90c907cadd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/624-scheduling-framework/README.md"
+    },
+    {
+      "bytes": 15844,
+      "git_blob_sha1": "5cfb25200157be8ba6120ac2142134c5a3b26754",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/785-scheduler-component-config-api/README.md"
+    },
+    {
+      "bytes": 26007,
+      "git_blob_sha1": "50a49063183f985402d9b32dc7da9568b9e33a32",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/895-pod-topology-spread/README.md"
+    },
+    {
+      "bytes": 14176,
+      "git_blob_sha1": "f82d5cc916c91bb9b3ae49fb0c077e1909df7157",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/902-non-preempting-priorityclass/README.md"
+    },
+    {
+      "bytes": 6963,
+      "git_blob_sha1": "b0cb8cbd8c4f0628678d3dfc7670b6bab905acd3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/964-binpacking-priority/README.md"
+    },
+    {
+      "bytes": 3780,
+      "git_blob_sha1": "22a5bd72f62cc9ea7cd24e59007bc4f52bc11295",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-scheduling/986-resource-quota-scope-selectors/README.md"
+    },
+    {
+      "bytes": 28224,
+      "git_blob_sha1": "2b09ee64627d19ef65944d446ec100505d94a469",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-security/1933-secret-logging-static-analysis/README.md"
+    },
+    {
+      "bytes": 41023,
+      "git_blob_sha1": "fe5c47d77a8bf5d0473b93633574db2a61f1b021",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-security/2763-ambient-capabilities/README.md"
+    },
+    {
+      "bytes": 20859,
+      "git_blob_sha1": "1a5adc23d8bc00e87ac63cd4f50bd049d15e9f1a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-security/3203-auto-refreshing-official-cve-feed/README.md"
+    },
+    {
+      "bytes": 35353,
+      "git_blob_sha1": "ce512bdf30cd7f12e6a55125724381351a9d5acc",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/121-local-persistent-volumes/README.md"
+    },
+    {
+      "bytes": 14658,
+      "git_blob_sha1": "12271e0b6be92df00beca9276ed137571a1c94e6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1412-immutable-secrets-and-configmaps/README.md"
+    },
+    {
+      "bytes": 64209,
+      "git_blob_sha1": "1d3b5679c02f46482e0bb4c53976e4c903edd118",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1432-volume-health-monitor/README.md"
+    },
+    {
+      "bytes": 73693,
+      "git_blob_sha1": "f44628ddb3e15471888f766700c71f49b06bd57b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1472-storage-capacity-tracking/README.md"
+    },
+    {
+      "bytes": 3799,
+      "git_blob_sha1": "a9f167b1cc56e2a9a1dcd9bb8c9f6abd04c7d30c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1487-csi-migration-aws/README.md"
+    },
+    {
+      "bytes": 3780,
+      "git_blob_sha1": "141226aca38c2635b3caea6578cf571d1cac0c76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1488-csi-migration-gce-pd/README.md"
+    },
+    {
+      "bytes": 2626,
+      "git_blob_sha1": "dfd30d5766658c21afdf2e8d22c438b9ece5ad44",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1489-csi-migration-cinder/README.md"
+    },
+    {
+      "bytes": 2581,
+      "git_blob_sha1": "f1abcb0c03b43537dd658e8a8575d1057bb2960d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1490-csi-migration-azuredisk/README.md"
+    },
+    {
+      "bytes": 4460,
+      "git_blob_sha1": "9b94c071c579e399481897edc7e1238948bdfd08",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1491-csi-migration-vsphere/README.md"
+    },
+    {
+      "bytes": 34633,
+      "git_blob_sha1": "b5747502a9a6268416f8e327ed35447943e649b8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1495-volume-populators/README.md"
+    },
+    {
+      "bytes": 11781,
+      "git_blob_sha1": "db427758a39201c760b3f7b81f92325fb8ba34d1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1682-csi-driver-skip-permission/README.md"
+    },
+    {
+      "bytes": 30132,
+      "git_blob_sha1": "ffaf9b41cf360de5b52b590821e3bddd3c53d0d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1698-generic-ephemeral-volumes/README.md"
+    },
+    {
+      "bytes": 89200,
+      "git_blob_sha1": "e37edf820b46fc2e31fec5a8c5c2b62943b1c3a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1710-selinux-relabeling/README.md"
+    },
+    {
+      "bytes": 35659,
+      "git_blob_sha1": "945a531ff4856301e56a44d9751cd86e7a212968",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/177-volume-snapshot/README.md"
+    },
+    {
+      "bytes": 41422,
+      "git_blob_sha1": "c15e105178a68a692e1ca282dbea73fa4cd155ec",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1790-recover-resize-failure/README.md"
+    },
+    {
+      "bytes": 14781,
+      "git_blob_sha1": "b47a8efe8bc375ac81ca6df7dbe7bbf01d62aedb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1845-prioritization-on-volume-capacity/README.md"
+    },
+    {
+      "bytes": 12208,
+      "git_blob_sha1": "ad224547208e34db2180186b6d8fd14fab8cf6ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1855-csi-driver-service-account-token/README.md"
+    },
+    {
+      "bytes": 4243,
+      "git_blob_sha1": "c5e93405d828549fd1b7868b3b789c959ef9f6ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1885-csi-migration-azurefile/README.md"
+    },
+    {
+      "bytes": 48859,
+      "git_blob_sha1": "d10eb77aa13b5cbcc62de13f519ebc55a3a5a908",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1900-volume-snapshot-validation-webhook/README.md"
+    },
+    {
+      "bytes": 106602,
+      "git_blob_sha1": "8ba6884c483b31f4428c043b89cf040fe0b5e483",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/1979-object-storage-support/README.md"
+    },
+    {
+      "bytes": 3160,
+      "git_blob_sha1": "57b268dd838e93a4a6124089d8941ff66ad9b80a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2261-staging-mount-library/README.md"
+    },
+    {
+      "bytes": 8055,
+      "git_blob_sha1": "e92d0fc229eaeaf5c55b78c69d852284e77402b3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2263-volume-scale-testing/README.md"
+    },
+    {
+      "bytes": 12483,
+      "git_blob_sha1": "1917ac24b1b55c90230c6b739926f2dd76b33b14",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2264-csi-release-ci-process/README.md"
+    },
+    {
+      "bytes": 40218,
+      "git_blob_sha1": "b73f8dfa7af8881a74c0ca27672980aa3356f034",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2268-non-graceful-shutdown/README.md"
+    },
+    {
+      "bytes": 25258,
+      "git_blob_sha1": "3b60cb99eda3a3fb7ded24bf2760518898fc0f68",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2317-fsgroup-on-mount/README.md"
+    },
+    {
+      "bytes": 8904,
+      "git_blob_sha1": "efa680b4dad58bded1cf6f4c96d55eb2e9890c3a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2451-service-account-token-volumes/README.md"
+    },
+    {
+      "bytes": 59235,
+      "git_blob_sha1": "2b438182d7293ad7135f613c229ecc8dfcd298d5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2485-read-write-once-pod-pv-access-mode/README.md"
+    },
+    {
+      "bytes": 13912,
+      "git_blob_sha1": "3e08f058bc9806df7b0d0a81bfbef1e11be812e9",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2589-csi-migration-portworx/README.md"
+    },
+    {
+      "bytes": 31858,
+      "git_blob_sha1": "e53cacbf8d896bf1cd34ddb5e210c56bf8c52847",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2644-honor-pv-reclaim-policy/README.md"
+    },
+    {
+      "bytes": 31360,
+      "git_blob_sha1": "ea780d8f9b000fd6f453280dd9163d39a92ae9a7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/284-enable-volume-expansion/README.md"
+    },
+    {
+      "bytes": 3668,
+      "git_blob_sha1": "f1cac47ffb76d34dc59f22fe77d93af958de7dac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2923-csi-migration-ceph-rbd/README.md"
+    },
+    {
+      "bytes": 3616,
+      "git_blob_sha1": "556e96d7fcf9bdff34d8b8b72d86f8654728e77a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/2924-csi-migration-cephfs/README.md"
+    },
+    {
+      "bytes": 16245,
+      "git_blob_sha1": "86bbb6a7fcc36096f22d4128adfabc517d3c1fc7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3107-csi-nodeexpandsecret/README.md"
+    },
+    {
+      "bytes": 36083,
+      "git_blob_sha1": "9e9ae6952adee0d7c90dff16c4c749813045a9c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3141-prevent-volume-mode-conversion/README.md"
+    },
+    {
+      "bytes": 57872,
+      "git_blob_sha1": "5c8cf7dbcda0987734a0456220dbe0f8ba906f26",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3294-provision-volumes-from-cross-namespace-snapshots/README.md"
+    },
+    {
+      "bytes": 85436,
+      "git_blob_sha1": "93da4282d0b538ed1264a13e2456a4ed1672e3ff",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3314-csi-changed-block-tracking/README.md"
+    },
+    {
+      "bytes": 31191,
+      "git_blob_sha1": "c31f3fc040dac13d09dee205ad994d421f19fab5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3333-retroactive-default-storage-class/README.md"
+    },
+    {
+      "bytes": 57879,
+      "git_blob_sha1": "42f6fb5c3dc9b6f5a1a5eceb009bc79fe1b4e6af",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3476-volume-group-snapshot/README.md"
+    },
+    {
+      "bytes": 5926,
+      "git_blob_sha1": "3ac6ea90c08426b052bb9b61832ec8f9b1062ef3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/351-raw-block-support/README.md"
+    },
+    {
+      "bytes": 19629,
+      "git_blob_sha1": "ce04f67f5310b8944d39c81d59492e2fad01f82a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/361-local-ephemeral-storage-isolation/README.md"
+    },
+    {
+      "bytes": 71120,
+      "git_blob_sha1": "0f5739656b9a928ba7e92848641784f576b847e3",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3751-volume-attributes-class/README.md"
+    },
+    {
+      "bytes": 48426,
+      "git_blob_sha1": "d726ce12b31527d1fb1921c5bf390f496794dbe5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3756-volume-reconstruction/README.md"
+    },
+    {
+      "bytes": 45678,
+      "git_blob_sha1": "90dd9d3e5ed327d6aa03c81a7d372de3085a4f93",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/3762-persistent-volume-last-phase-transition-time/README.md"
+    },
+    {
+      "bytes": 59518,
+      "git_blob_sha1": "2d6cda832bf5cdf03fe59a752e1ca69b57aa93a5",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/4049-storage-capacity-scoring-of-nodes-for-dynamic-provisioning/README.md"
+    },
+    {
+      "bytes": 50163,
+      "git_blob_sha1": "f04e231bf17ae331b4490f540d9403fd7f83e110",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/4876-mutable-csinode-allocatable/README.md"
+    },
+    {
+      "bytes": 56842,
+      "git_blob_sha1": "cadedc801fd046d8cd4b488c1230fdfe82a0275a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/4958-csi-sidecars-all-in-one/README.md"
+    },
+    {
+      "bytes": 25477,
+      "git_blob_sha1": "73050aea87043b7f77f7935ace191af436c3fc80",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5040-remove-gitrepo-driver/README.md"
+    },
+    {
+      "bytes": 8693,
+      "git_blob_sha1": "fffdcccc18bfac01d43510b476326ddb42fbd90b",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/531-online-pv-resizing/README.md"
+    },
+    {
+      "bytes": 42544,
+      "git_blob_sha1": "6a314fa074c56a6b182047e95eb2dff4b4040cf1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5381-mutable-pv-affinity/README.md"
+    },
+    {
+      "bytes": 19597,
+      "git_blob_sha1": "d71484311943cd5ac02c72a267223e799b0cf599",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5502-emptydir-volume-mode/README.md"
+    },
+    {
+      "bytes": 25770,
+      "git_blob_sha1": "91e55e28836a33548b24b727bbe5581ae5685a76",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5538-csi-sa-tokens-secrets-field/README.md"
+    },
+    {
+      "bytes": 19433,
+      "git_blob_sha1": "dc4bfc2a922a310ed42b4052c69a5dabb0efcf2f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/554-maximum-volume-count/README.md"
+    },
+    {
+      "bytes": 23701,
+      "git_blob_sha1": "7c7decf146ed6f0ca0e2535ce29df6139cee25ea",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5541-pvc-last-used-time-status-field/README.md"
+    },
+    {
+      "bytes": 11345,
+      "git_blob_sha1": "1cdeee886f438bb4b3732b606706e17a2bc7e5b6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/556-csi-volume-resizing/README.md"
+    },
+    {
+      "bytes": 4890,
+      "git_blob_sha1": "86772ac8a362b1962204ea909682debb095428f4",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/557-csi-topology/README.md"
+    },
+    {
+      "bytes": 10123,
+      "git_blob_sha1": "b7bb5b23a72992f5434dfaeec0d93dfba9877836",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/559-volume-subpath-expansion/README.md"
+    },
+    {
+      "bytes": 5491,
+      "git_blob_sha1": "fa6dbdb312a82545ba5d553defb826bf3def7cc8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/565-csi-block-support/README.md"
+    },
+    {
+      "bytes": 27415,
+      "git_blob_sha1": "ff89e721d37f7fde970bc0a84c2eb709f088fd20",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5936-atomic-write-volume-user-fields/README.md"
+    },
+    {
+      "bytes": 68213,
+      "git_blob_sha1": "7f2048f06a36dd4a60165177b5f31be41e3ac7c0",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/5943-topology-for-volume-snapshot/README.md"
+    },
+    {
+      "bytes": 39642,
+      "git_blob_sha1": "fb83c15919964cf687ab6ade508e7f8182710e39",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/596-csi-inline-volumes/README.md"
+    },
+    {
+      "bytes": 1192,
+      "git_blob_sha1": "154929e778def9a5cabcbf47b0adbce43567d960",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/603-csi-pod-info/README.md"
+    },
+    {
+      "bytes": 43107,
+      "git_blob_sha1": "bb9e13d06ba8ce192c543e0397d225278beb82c2",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/625-csi-migration/README.md"
+    },
+    {
+      "bytes": 51105,
+      "git_blob_sha1": "2e69469febb8cb818e71056120db3b334562d6d7",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/625-csi-migration/csi-migration-design.md"
+    },
+    {
+      "bytes": 15321,
+      "git_blob_sha1": "df2c42fef1b1cb69fb3dd1d8548ddb50d6b10182",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/695-skip-permission-change/README.md"
+    },
+    {
+      "bytes": 1731,
+      "git_blob_sha1": "4b48434ad518588d218dc124cd732fb2f8822c7a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/770-csi-skip-attach/README.md"
+    },
+    {
+      "bytes": 22278,
+      "git_blob_sha1": "b6050d18aa2759254e0e05847ad746c8d8c6c00e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/962-execution-hook/README.md"
+    },
+    {
+      "bytes": 10501,
+      "git_blob_sha1": "dbf809e96b9c567a7b7f9cc9c1768bb3bfdb41c1",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-storage/989-extend-datasource/README.md"
+    },
+    {
+      "bytes": 5362,
+      "git_blob_sha1": "645b9c1af5417601f79bb8c4bfe1ae7ade15705a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/2290-new-label-for-trusted-PR-identification/README.md"
+    },
+    {
+      "bytes": 8032,
+      "git_blob_sha1": "9a55b4f0dc9f4cde89b92b682ce0c6ed43ceb969",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/2291-presubmit-config-inside-the-tested-repo/README.md"
+    },
+    {
+      "bytes": 29403,
+      "git_blob_sha1": "ae04ed808067a24c99c7c700d983160bc419cd10",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/2420-reducing-kubernetes-build-maintenance/README.md"
+    },
+    {
+      "bytes": 27196,
+      "git_blob_sha1": "3853c0d0165305d698ef1e95ce3b2431a0a0848d",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/2464-kubetest2-ci-migration/README.md"
+    },
+    {
+      "bytes": 8557,
+      "git_blob_sha1": "f4dd6665e26f6161ebf20043355a8d15aaf0a86a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/2539-continuously-deploy-k8s-prow/README.md"
+    },
+    {
+      "bytes": 34695,
+      "git_blob_sha1": "450d85e5e856c56cb81fcd3a600a64c4c4deafd6",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/3041-node-conformance-and-features/README.md"
+    },
+    {
+      "bytes": 38623,
+      "git_blob_sha1": "420528fdfb3ce7d3185117d49cc2adc895f2b317",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/5468-invariant-testing/README.md"
+    },
+    {
+      "bytes": 18406,
+      "git_blob_sha1": "c59e1fbc9fd8db67686352fbaff90c01553d73ac",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/6356-ktesting-publishing/README.md"
+    },
+    {
+      "bytes": 14071,
+      "git_blob_sha1": "57ae1998359347dca52c45ef185d334996459d42",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-testing/714-break-test-tarball/README.md"
+    },
+    {
+      "bytes": 34990,
+      "git_blob_sha1": "572c5f1a6b7612673fc83f65573f9ca773b3d611",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-ui/5008-headlamp/README.md"
+    },
+    {
+      "bytes": 26106,
+      "git_blob_sha1": "e9567a5b050d7556333e87733d6cb4a713c11a46",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/1001-windows-cri-containerd/README.md"
+    },
+    {
+      "bytes": 16761,
+      "git_blob_sha1": "d08cbb06f27e4d3ccd19462dd83d85b58ec2864f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/1043-windows-security-context/README.md"
+    },
+    {
+      "bytes": 73392,
+      "git_blob_sha1": "9f5905cb04d8303677fb09c8e068e7fcd67047dd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/1122-windows-csi-support/README.md"
+    },
+    {
+      "bytes": 40741,
+      "git_blob_sha1": "c3674fb246457f64b6510f8a3a5d23ea64db95fb",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/116-windows-node-support/README.md"
+    },
+    {
+      "bytes": 37898,
+      "git_blob_sha1": "1c8b190a97d8a00d9636037c0a09039b466fc6fd",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/1301-windows-runtime-class/README.md"
+    },
+    {
+      "bytes": 68156,
+      "git_blob_sha1": "e98e8a69f74d97597225c2530f56d97418e4331a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/1981-windows-privileged-container-support/README.md"
+    },
+    {
+      "bytes": 30787,
+      "git_blob_sha1": "174aa91af977e3acaf07d898502ab4d112b1544c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/2258-node-log-query/README.md"
+    },
+    {
+      "bytes": 31431,
+      "git_blob_sha1": "6f58f98c90ec1598ad8d27a802d296671232c955",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/2578-windows-conformance/README.md"
+    },
+    {
+      "bytes": 19571,
+      "git_blob_sha1": "fd6659a0b891ec85dfed1ffc213d98e5edfff58a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/2802-identify-windows-pods-apiserver-admission/README.md"
+    },
+    {
+      "bytes": 34591,
+      "git_blob_sha1": "02982d64abe3e06112f8c539b67cf4a48fd29c4a",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/3503-host-network-support-for-windows-pods/README.md"
+    },
+    {
+      "bytes": 22236,
+      "git_blob_sha1": "c61cd08243acfc5b81f0b4bc7c06d23a445bb49e",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/4802-windows-node-shutdown/README.md"
+    },
+    {
+      "bytes": 34359,
+      "git_blob_sha1": "5a12e0d281e6f189c913dce90278f5b09f16463c",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/4885-windows-cpu-and-memory-affinity/README.md"
+    },
+    {
+      "bytes": 47215,
+      "git_blob_sha1": "b5bd12ede37b24949b0e22831566154d8ff48ae8",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/5100-windows-dsr-and-overlay-support/README.md"
+    },
+    {
+      "bytes": 42327,
+      "git_blob_sha1": "f3237aaeac72e710606428dfc225963f7a7f5b0f",
+      "selected_for_snapshot": true,
+      "selection_reason": "included:/keps/**/*.md",
+      "upstream_path": "keps/sig-windows/689-windows-gmsa/README.md"
+    },
+    {
+      "bytes": 24678,
+      "git_blob_sha1": "54f41a8f835e001366b22d5d339b729efd14e2c5",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "pkg/repo/testdata/repos/valid/keps/NNNN-kep-template/README.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "pkg/repo/testdata/repos/valid/keps/README.md"
+    },
+    {
+      "bytes": 7,
+      "git_blob_sha1": "83c831f0b085c70509b1fbb0a0131a9a32e691ac",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "pkg/repo/testdata/repos/valid/keps/sig-architecture/123-newstyle/README.md"
+    },
+    {
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "selected_for_snapshot": false,
+      "selection_reason": "not matched by any include pattern",
+      "upstream_path": "pkg/repo/testdata/repos/valid/keps/sig-architecture/123-newstyle/some-file.md"
+    }
+  ],
+  "inventory_definition": "every blob in the pinned commit tree whose path ends in .md or .markdown (case-insensitive), enumerated via git ls-tree -r; byte sizes via git cat-file (object database, never the working tree); selection marking is purely mechanical (include/exclude globs) with the deciding rule recorded",
+  "repository_md_bytes": 20951724,
+  "repository_md_files": 692,
+  "repository_url": "https://github.com/kubernetes/enhancements",
+  "schema_version": "markdown-inventory-v1",
+  "snapshot_md_bytes": 20907633,
+  "snapshot_md_files": 678,
+  "source_id": "kubernetes-keps"
+}

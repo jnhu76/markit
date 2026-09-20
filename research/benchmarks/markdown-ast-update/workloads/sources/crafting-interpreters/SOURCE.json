@@ -1,0 +1,399 @@
+{
+  "authority_issue": "33",
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "candidate_role": "BOOK_TUTORIAL",
+  "commit_sha": "4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4",
+  "commit_timestamp": "2024-08-01T16:16:43-07:00",
+  "default_branch": "master",
+  "extraction_method": "git cat-file blob <commit_sha>:<upstream_path>, byte-exact, no eol/filter conversion; per-file integrity proven by git blob sha1 recomputation (git_blob_sha1) against the pinned commit tree",
+  "file_count": 50,
+  "files": [
+    {
+      "bytes": 416,
+      "git_blob_sha1": "6537d734f93078956a70fc8d4c160547441e5ce0",
+      "sha256": "c7ec57639d5129996611d03280df938fe9bd2256b3cccc3cff6bb02ec76d3787",
+      "snapshot_path": "files/note/answers/chapter01_introduction/1.md",
+      "upstream_path": "note/answers/chapter01_introduction/1.md"
+    },
+    {
+      "bytes": 1058,
+      "git_blob_sha1": "853ddb2ec333d06d36a5ee6ab664281d8480ac51",
+      "sha256": "58dfad181017775311c6aedaac61bc48f8b7a128850c95c3ac821d8ce87a5459",
+      "snapshot_path": "files/note/answers/chapter02_map.md",
+      "upstream_path": "note/answers/chapter02_map.md"
+    },
+    {
+      "bytes": 1696,
+      "git_blob_sha1": "8dbf5a1731180542670602d8054a2df63bc12495",
+      "sha256": "83577aabbc80724206dc98bde9dc58e7ab6389347c676017b37c363410ff6e6d",
+      "snapshot_path": "files/note/answers/chapter03_lox.md",
+      "upstream_path": "note/answers/chapter03_lox.md"
+    },
+    {
+      "bytes": 3111,
+      "git_blob_sha1": "eb4277ef65f1466d55429e0ff2368b78e95650d5",
+      "sha256": "b2603f8c76fc5231579a6afb8c94cdc1efc18110fe477bf00422884d2e82e667",
+      "snapshot_path": "files/note/answers/chapter04_scanning.md",
+      "upstream_path": "note/answers/chapter04_scanning.md"
+    },
+    {
+      "bytes": 2461,
+      "git_blob_sha1": "d2754c8281161527cdb0755a2973b0df995abfaf",
+      "sha256": "f6f868e84077a5616303ea8127754679412637d8eb876dc9facbc92aadaa3d1a",
+      "snapshot_path": "files/note/answers/chapter05_representing.md",
+      "upstream_path": "note/answers/chapter05_representing.md"
+    },
+    {
+      "bytes": 5888,
+      "git_blob_sha1": "4446d9a0e73a6cccc91fc02d982c8d18a4b4b419",
+      "sha256": "b13cf7ea8f9325ef10863d286a0ae17ea74fe257551a7736432c7ce89bb64839",
+      "snapshot_path": "files/note/answers/chapter06_parsing.md",
+      "upstream_path": "note/answers/chapter06_parsing.md"
+    },
+    {
+      "bytes": 1571,
+      "git_blob_sha1": "d034677e8a2f1132ea4d5542c11b35bf3cb15a84",
+      "sha256": "0e92eaf8fc4a157b187ceb87ab4c25bf0d407dd8a3dd292c746b5207b2d006c2",
+      "snapshot_path": "files/note/answers/chapter07_evaluating.md",
+      "upstream_path": "note/answers/chapter07_evaluating.md"
+    },
+    {
+      "bytes": 5497,
+      "git_blob_sha1": "87fe3f8403bf0c4487480ae6d5d0da40c0e22b8f",
+      "sha256": "4872c396ee2541375cbfe2aba713a1112a7078f373fd430328dc9d8f2e91add8",
+      "snapshot_path": "files/note/answers/chapter08_statements.md",
+      "upstream_path": "note/answers/chapter08_statements.md"
+    },
+    {
+      "bytes": 7030,
+      "git_blob_sha1": "60235995bbee05ae4e9a13d36cae08cd1de46b18",
+      "sha256": "a94e8b7be43b5c1324db4fae82e15ac022e37fe8db0fbc0185e416d320c45f42",
+      "snapshot_path": "files/note/answers/chapter09_control.md",
+      "upstream_path": "note/answers/chapter09_control.md"
+    },
+    {
+      "bytes": 6576,
+      "git_blob_sha1": "e74901040002180b6897e9ea0eb7202029d6b8ee",
+      "sha256": "be371979dd32ab9279dabd510755d490dc552efcf10b5fa2a511d08b8d4acf4b",
+      "snapshot_path": "files/note/answers/chapter10_functions.md",
+      "upstream_path": "note/answers/chapter10_functions.md"
+    },
+    {
+      "bytes": 5464,
+      "git_blob_sha1": "147c85b1f4dbb7b27c51dafdd5daec56f431a268",
+      "sha256": "df73e73f7ae51f09eddd7261a1adffb4d23bb7ce342bf2abf128e23205dd7131",
+      "snapshot_path": "files/note/answers/chapter11_resolving/chapter11_resolving.md",
+      "upstream_path": "note/answers/chapter11_resolving/chapter11_resolving.md"
+    },
+    {
+      "bytes": 11471,
+      "git_blob_sha1": "b9c38f1a0255adfc18140ac338e2049dd8df9ad7",
+      "sha256": "f34517b1d9a9059eff22b5369a3b466d82ad54215b5136896304327d4e7a99cf",
+      "snapshot_path": "files/note/answers/chapter12_classes.md",
+      "upstream_path": "note/answers/chapter12_classes.md"
+    },
+    {
+      "bytes": 9360,
+      "git_blob_sha1": "3bfa2f6fa9ef6e46a08b7566b7cc46047092d854",
+      "sha256": "8bec82571dd4fa0762b7b54d1635617b1c526c620b1bea052964e6925ba648e8",
+      "snapshot_path": "files/note/answers/chapter13_inheritance/1.md",
+      "upstream_path": "note/answers/chapter13_inheritance/1.md"
+    },
+    {
+      "bytes": 2829,
+      "git_blob_sha1": "88c961ebd4dd3c6eab619c45e3f552e194621acb",
+      "sha256": "e8b9f85870ed653f9ea0e7a7a054eda04bc7fd8ac3f21ee00e6db64a7688451c",
+      "snapshot_path": "files/note/answers/chapter13_inheritance/2.md",
+      "upstream_path": "note/answers/chapter13_inheritance/2.md"
+    },
+    {
+      "bytes": 4076,
+      "git_blob_sha1": "5ed9b2369a4acc479e478cc29ef568fff2f71cd7",
+      "sha256": "98ed30946a96bdc413ca5759cadb1e49018c656af9306d91f863816be4856661",
+      "snapshot_path": "files/note/answers/chapter13_inheritance/3.md",
+      "upstream_path": "note/answers/chapter13_inheritance/3.md"
+    },
+    {
+      "bytes": 4458,
+      "git_blob_sha1": "a208a22f49ca4bc350496113bd29ef78d292f937",
+      "sha256": "89f62a68a895ced923107d2d3cf80b4e61a5bd20e0afe7b5a061b33b632ae976",
+      "snapshot_path": "files/note/answers/chapter14_chunks/1.md",
+      "upstream_path": "note/answers/chapter14_chunks/1.md"
+    },
+    {
+      "bytes": 3154,
+      "git_blob_sha1": "f121ab5d610690779d8f7bf1d57b910ec2759fe1",
+      "sha256": "fb5bbcfb05b0c5ff9b0e7edba8faafecbb111f51d53d47ff110173103d7a81b8",
+      "snapshot_path": "files/note/answers/chapter14_chunks/2.md",
+      "upstream_path": "note/answers/chapter14_chunks/2.md"
+    },
+    {
+      "bytes": 663,
+      "git_blob_sha1": "61fdd1feaace911c001d032e5c44c74c00e33495",
+      "sha256": "141e7295de48df085f7e68067becc907ac36179f7023d80ae5f5eb8b0b3a6b5e",
+      "snapshot_path": "files/note/answers/chapter15_virtual/1.md",
+      "upstream_path": "note/answers/chapter15_virtual/1.md"
+    },
+    {
+      "bytes": 1176,
+      "git_blob_sha1": "ef4f66c779ec2f35746cc0a89781b2173c81a3c9",
+      "sha256": "0bf5590707d43a48e195b71aaf4cbfbce2846ecefab36b9f4d5ed08de2d0cbd5",
+      "snapshot_path": "files/note/answers/chapter15_virtual/2.md",
+      "upstream_path": "note/answers/chapter15_virtual/2.md"
+    },
+    {
+      "bytes": 2300,
+      "git_blob_sha1": "7d3391faef751674ea7451437c9f479672e3fa4e",
+      "sha256": "69ee2d90ba9a3b73d50a7db0ce2b8a58fe27eac05da98821e916214e198c3c66",
+      "snapshot_path": "files/note/answers/chapter15_virtual/3.md",
+      "upstream_path": "note/answers/chapter15_virtual/3.md"
+    },
+    {
+      "bytes": 4187,
+      "git_blob_sha1": "90637a2e4971e3a1e209e87ff4fd6df4dbb8565b",
+      "sha256": "3314fcb046cf01e6c85bb36fbffc1c3e46a023308204e2a144bc9e30112b93e0",
+      "snapshot_path": "files/note/answers/chapter16_scanning.md",
+      "upstream_path": "note/answers/chapter16_scanning.md"
+    },
+    {
+      "bytes": 2281,
+      "git_blob_sha1": "bd0a7c7ae0f8e7be1bd3380b6ee7fd1b72af194d",
+      "sha256": "a644cf9ece195855a36f44211ab55a323c2608f4de3b5c66bd79c960bbd2fdc9",
+      "snapshot_path": "files/note/answers/chapter17_compiling.md",
+      "upstream_path": "note/answers/chapter17_compiling.md"
+    },
+    {
+      "bytes": 1993,
+      "git_blob_sha1": "15c86886a76dc66fcdd300192afa860b69677da3",
+      "sha256": "14218c3fa26fa3dfd86dd3b23db108b4de5ddff17aed323465bbd57034b55798",
+      "snapshot_path": "files/note/answers/chapter18_types.md",
+      "upstream_path": "note/answers/chapter18_types.md"
+    },
+    {
+      "bytes": 6087,
+      "git_blob_sha1": "2328aa64456bd775b03bce661aeedccc7990b9b5",
+      "sha256": "504499dd464188ba47efa321899a05d6534d7598964c82c66bab21618092a71f",
+      "snapshot_path": "files/note/answers/chapter19_strings.md",
+      "upstream_path": "note/answers/chapter19_strings.md"
+    },
+    {
+      "bytes": 9634,
+      "git_blob_sha1": "7498cfa70fa0fcd4d593eac71b53b8b129a86888",
+      "sha256": "377a33222e585547ab6bbd257cf5a4c5145c47b8833cf6f0909542f34ad7543d",
+      "snapshot_path": "files/note/answers/chapter20_hash/1.md",
+      "upstream_path": "note/answers/chapter20_hash/1.md"
+    },
+    {
+      "bytes": 6901,
+      "git_blob_sha1": "b2bb3dfe01761a98e6292a33e2c7e38a79caa005",
+      "sha256": "697b28da7ab0262fbcc1d63cb59a5cd10e8afb93e57f834f16500929951c6cca",
+      "snapshot_path": "files/note/answers/chapter21_global.md",
+      "upstream_path": "note/answers/chapter21_global.md"
+    },
+    {
+      "bytes": 4969,
+      "git_blob_sha1": "796df9cdcabe29983eb2ddaf9a3fb4a6b7b229ed",
+      "sha256": "0ea6bef56865d1821dd38b6d2e9253601d43f6079cebac68a78e30957730defc",
+      "snapshot_path": "files/note/answers/chapter23_jumping/1.md",
+      "upstream_path": "note/answers/chapter23_jumping/1.md"
+    },
+    {
+      "bytes": 2561,
+      "git_blob_sha1": "2ec2031fa7f1d720f35aebdadb3bb76b94249007",
+      "sha256": "a74ce7e0d268c4c87bd62b8264acd1c44d80a0a38b54a7d5ec18ca07a2b4e12f",
+      "snapshot_path": "files/note/answers/chapter23_jumping/2.md",
+      "upstream_path": "note/answers/chapter23_jumping/2.md"
+    },
+    {
+      "bytes": 836,
+      "git_blob_sha1": "673d67c9bb4bd2342169c20bf4df238ddc9bfa8f",
+      "sha256": "37a45a6a9c154749c0a864a1ba51acc016f926cb6340c233809a48e52dd4e81b",
+      "snapshot_path": "files/note/answers/chapter23_jumping/3.md",
+      "upstream_path": "note/answers/chapter23_jumping/3.md"
+    },
+    {
+      "bytes": 4303,
+      "git_blob_sha1": "dfaa28353893404f7991f716403f80586cfe4a10",
+      "sha256": "063b151f151b1a7dd45a632771d1c9f528fb5d092baf49379900196c1179c886",
+      "snapshot_path": "files/note/answers/chapter24_calls/1.md",
+      "upstream_path": "note/answers/chapter24_calls/1.md"
+    },
+    {
+      "bytes": 2413,
+      "git_blob_sha1": "65e3f4e8614cb624828c7ac926d880fd2de2e254",
+      "sha256": "47163e136dce8e1a9b35843434d2c102a6a58461c2b15620b960e6c2e62d2767",
+      "snapshot_path": "files/note/answers/chapter24_calls/2.md",
+      "upstream_path": "note/answers/chapter24_calls/2.md"
+    },
+    {
+      "bytes": 4374,
+      "git_blob_sha1": "fcf6464abeefc4947e6fb4a129be4e72d8e1dc27",
+      "sha256": "b9aa4298b2ce8ccd87d5b2664ef6b434ac903a8c87e9ff692b89d7e788f8a5c3",
+      "snapshot_path": "files/note/answers/chapter25_closures/1.md",
+      "upstream_path": "note/answers/chapter25_closures/1.md"
+    },
+    {
+      "bytes": 3394,
+      "git_blob_sha1": "8e9b6e877c832bbc47119ddae0fd0ab2c76aec8a",
+      "sha256": "f6971be67c9c3a3ad6eab0a217abce27582ac61d166217ecde70c909c7eecb4a",
+      "snapshot_path": "files/note/answers/chapter25_closures/2.md",
+      "upstream_path": "note/answers/chapter25_closures/2.md"
+    },
+    {
+      "bytes": 4141,
+      "git_blob_sha1": "58a2413a15d52b3474fc3c1afb068e5ceaf256c4",
+      "sha256": "3e820fc3d795c93aa5d7aec157c70f26bbf72669d2901896fe0e813f1b526945",
+      "snapshot_path": "files/note/answers/chapter26_garbage/1.md",
+      "upstream_path": "note/answers/chapter26_garbage/1.md"
+    },
+    {
+      "bytes": 3144,
+      "git_blob_sha1": "12ab2acc55de709d598da62cad133f31881603e3",
+      "sha256": "c99c0d17da92e426ec304d68ea0fff10551b876d6bd5edabf6bf420d2a57dc25",
+      "snapshot_path": "files/note/answers/chapter26_garbage/2.md",
+      "upstream_path": "note/answers/chapter26_garbage/2.md"
+    },
+    {
+      "bytes": 3203,
+      "git_blob_sha1": "a564e7d6d9abf4b15db7252fdc8133b0c6c41c98",
+      "sha256": "4f9066a954cd423b867efb963a43a542a654c8b34065d5b6c639d56042915e25",
+      "snapshot_path": "files/note/answers/chapter27_classes/1.md",
+      "upstream_path": "note/answers/chapter27_classes/1.md"
+    },
+    {
+      "bytes": 2673,
+      "git_blob_sha1": "248bbc5eb00eb48dcef02da6da9a5d8b9ebb055c",
+      "sha256": "2a890dec776000651066b49b0047a019e5869e6b52b451e79f3c3dbe342ab287",
+      "snapshot_path": "files/note/answers/chapter27_classes/2.md",
+      "upstream_path": "note/answers/chapter27_classes/2.md"
+    },
+    {
+      "bytes": 2116,
+      "git_blob_sha1": "fe6d5f83b83e52a276c1e34a5da03dbc3286eeac",
+      "sha256": "df352efc92aa2c6aee782df3185ff288788a4712a16c71405e64e66ce63ffe11",
+      "snapshot_path": "files/note/answers/chapter27_classes/3.md",
+      "upstream_path": "note/answers/chapter27_classes/3.md"
+    },
+    {
+      "bytes": 159,
+      "git_blob_sha1": "92e0022ca21035556eddb63681cb8597bb5aade9",
+      "sha256": "6db5ba5a3a8f53b1d79f814bdbc896b8d60d3d000364875a59490cf2204f6d65",
+      "snapshot_path": "files/note/answers/chapter27_classes/4.md",
+      "upstream_path": "note/answers/chapter27_classes/4.md"
+    },
+    {
+      "bytes": 1850,
+      "git_blob_sha1": "ac706c6881c5888c6e32afedbe07849961f4f30e",
+      "sha256": "520a5d0c7d1a1d3ba76eb58b39f3745d94b63bfdf825c581f726226e3a7b8423",
+      "snapshot_path": "files/note/answers/chapter28_methods/1.md",
+      "upstream_path": "note/answers/chapter28_methods/1.md"
+    },
+    {
+      "bytes": 599,
+      "git_blob_sha1": "553ebc3006d78ae6dc65e2bf62b59de6fe6c3a60",
+      "sha256": "a4a489d6c19921717ea0e2ac023e8da4a293e3ded787145e60a826029bdb2641",
+      "snapshot_path": "files/note/answers/chapter28_methods/2.md",
+      "upstream_path": "note/answers/chapter28_methods/2.md"
+    },
+    {
+      "bytes": 976,
+      "git_blob_sha1": "7198c65024e72ec3ffd97d2a289cc722aba4dbc3",
+      "sha256": "6de356dfe09b855f399a70f5cf37f35266ae096708b618a1e0e3b7269ff7832f",
+      "snapshot_path": "files/note/answers/chapter28_methods/3.md",
+      "upstream_path": "note/answers/chapter28_methods/3.md"
+    },
+    {
+      "bytes": 1099,
+      "git_blob_sha1": "03a480398afc3453e19ff8232630308eeb9c5f6e",
+      "sha256": "75de11cf195b6ce630f560e0c0f8f5e2116cb3a5f4f55b9fa105f997f8eb3ab3",
+      "snapshot_path": "files/note/answers/chapter29_superclasses/1.md",
+      "upstream_path": "note/answers/chapter29_superclasses/1.md"
+    },
+    {
+      "bytes": 4196,
+      "git_blob_sha1": "997e93edf22c4be2e79694933abe93e6fe30621f",
+      "sha256": "0b7bceb5becf8ef713a78142d0a6f25c1e5c6dc69ef7707cd679da2c515fe7fb",
+      "snapshot_path": "files/note/answers/chapter29_superclasses/2.md",
+      "upstream_path": "note/answers/chapter29_superclasses/2.md"
+    },
+    {
+      "bytes": 3872,
+      "git_blob_sha1": "a688fa92573ec3abb50acc6541df23286e548166",
+      "sha256": "35486cf37e74b6155e4082c1ff482319d8da98a7d66c5810d7b16efec08c840d",
+      "snapshot_path": "files/note/answers/chapter29_superclasses/3.md",
+      "upstream_path": "note/answers/chapter29_superclasses/3.md"
+    },
+    {
+      "bytes": 3356,
+      "git_blob_sha1": "ab72797fc63638689a0f7f2299f5a66716a5c192",
+      "sha256": "ba92c86d40ba55f7835ba9dffb5a28b71c803df393dd11b79309d574686dd6f0",
+      "snapshot_path": "files/note/design breaks.md",
+      "upstream_path": "note/design breaks.md"
+    },
+    {
+      "bytes": 1506,
+      "git_blob_sha1": "49963f8fc6063cce2495e096b92ef707ae4e80c5",
+      "sha256": "03d72d5648fb92253c96638675e9dcc9948c72ac81e55efcb61dc199d7eec18f",
+      "snapshot_path": "files/note/images.md",
+      "upstream_path": "note/images.md"
+    },
+    {
+      "bytes": 2711,
+      "git_blob_sha1": "2241117696747a97fe8270403778a381a4fe6362",
+      "sha256": "2af3857707730606d43e4d10e792b1f9ce9d76b759e90698097502109027884e",
+      "snapshot_path": "files/note/indexing.md",
+      "upstream_path": "note/indexing.md"
+    },
+    {
+      "bytes": 6848,
+      "git_blob_sha1": "2bff84c716f404d852e67fc78338479239203826",
+      "sha256": "977d5af8bcf576ca46a150501d6b6cc794192dd05e9881858404a244cac03e6f",
+      "snapshot_path": "files/note/outline.md",
+      "upstream_path": "note/outline.md"
+    },
+    {
+      "bytes": 4490,
+      "git_blob_sha1": "37c452af9fa33497ce1b9069bbfe5057f9ee9da4",
+      "sha256": "b0bd71e97bef562edfe4bf9872ae196d469c5c54806b8e875896a445550c043a",
+      "snapshot_path": "files/note/style guide.md",
+      "upstream_path": "note/style guide.md"
+    }
+  ],
+  "license": {
+    "files": [
+      {
+        "git_blob_sha1": "a5ac940d047db3376c2428417d002ef103670d15",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "note": "LICENSE at the pinned commit applies MIT to code and CC BY-NC-ND 4.0 to all other files including .md; the snapshotted note/ materials are therefore CC BY-NC-ND 4.0.",
+    "preserved_artifacts": [
+      {
+        "artifact_path": "licenses/crafting-interpreters/LICENSE",
+        "bytes": 4394,
+        "git_blob_sha1": "a5ac940d047db3376c2428417d002ef103670d15",
+        "sha256": "a828cc050cf28cc9a019e70669aa9d129db08c5eaaf29b99dedf25d9aba6a598",
+        "upstream_path": "LICENSE"
+      }
+    ],
+    "redistribution_note": "Storage policy MATERIALIZE_ONLY: these bytes must not be publicly vendored by default. They are materialized locally at the pinned commit for verification and characterization and are excluded from public Git storage; expected sha256/bytes/blob-id are recorded here so any local materialization is verifiable.",
+    "spdx": "CC-BY-NC-ND-4.0"
+  },
+  "repository_url": "https://github.com/munificent/craftinginterpreters",
+  "retrieved_at": "2026-09-20T04:02:30Z",
+  "role_caveat": "INTENDED_BOOK_SOURCE_IS_HTML: the Crafting Interpreters book text (book/) is HTML, not Markdown, and is not snapshotted; note/*.md holds exercise notes only. This candidate must NOT be counted as BOOK_TUTORIAL Markdown workload coverage during the workload-selection stage.",
+  "schema_version": "2",
+  "scope_rationale": "Scope = the note/ exercise-notes Markdown. The intended book source is HTML (book/) and is NOT converted, so the book text is outside any Markdown frame by format; see role_caveat.",
+  "snapshot_policy": {
+    "exclude": [],
+    "include": [
+      "/note/**/*.md"
+    ],
+    "mode": "B",
+    "mode_a_selected_files": false
+  },
+  "source_id": "crafting-interpreters",
+  "storage_policy": "MATERIALIZE_ONLY",
+  "storage_policy_rationale": "CC BY-NC-ND 4.0 (NonCommercial + NoDerivatives, per the upstream LICENSE split between MIT code and CC-licensed other files) makes public vendoring uncertain; the policy fails closed (MATERIALIZE_ONLY); uncertainty is recorded, not resolved.",
+  "total_bytes": 181127
+}

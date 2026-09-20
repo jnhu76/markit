@@ -1,0 +1,30 @@
+{
+  "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
+  "duplicate_groups": [
+    {
+      "paths": [
+        "openapi/files/versions/3.0.2-editors.md",
+        "openapi/files/versions/3.0.3-editors.md",
+        "openapi/files/versions/3.1.0-editors.md"
+      ],
+      "sha256": "065c3bd87ee242ec438559e94de95eb1f578c6fcc5e26ff87c820ae09d840ed2"
+    },
+    {
+      "paths": [
+        "openapi/files/versions/3.0.4-editors.md",
+        "openapi/files/versions/3.1.1-editors.md"
+      ],
+      "sha256": "73cf20f00bed6f921324e25c87228d60e1ba424be339d2765a894ac933d7276f"
+    },
+    {
+      "paths": [
+        "openapi/files/versions/3.1.2-editors.md",
+        "openapi/files/versions/3.2.0-editors.md",
+        "openapi/files/versions/3.2.1-editors.md"
+      ],
+      "sha256": "fc88736c3288a82c795021872de3b91c55920e61e97c6be9e829d59712bb30f3"
+    }
+  ],
+  "note": "Exact byte-identical snapshot files across the candidate universe, recorded for later redundancy analysis. No copy is deleted during acquisition.",
+  "schema_version": "exact-duplicates-v1"
+}
