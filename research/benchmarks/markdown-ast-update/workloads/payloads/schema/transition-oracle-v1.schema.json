@@ -1,0 +1,534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TransitionReport",
+  "type": "object",
+  "properties": {
+    "change_class": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChangeClass"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "change_class_note": {
+      "description": "What `change_class` is and is not.",
+      "type": "string"
+    },
+    "failure_codes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FailureCode"
+      }
+    },
+    "grammar_id": {
+      "type": "string"
+    },
+    "oracle_version": {
+      "type": "string"
+    },
+    "post": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SourceOracleCheck"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pre": {
+      "$ref": "#/$defs/SourceOracleCheck"
+    },
+    "predicate_version": {
+      "type": "string"
+    },
+    "strict_comparison_eligible": {
+      "description": "True only when both sources are lane-valid AND strictly inside the\nlane's construct scope.",
+      "type": "boolean"
+    },
+    "verdict": {
+      "$ref": "#/$defs/TransitionVerdict"
+    }
+  },
+  "required": [
+    "oracle_version",
+    "predicate_version",
+    "grammar_id",
+    "verdict",
+    "failure_codes",
+    "pre",
+    "strict_comparison_eligible",
+    "change_class_note"
+  ],
+  "$defs": {
+    "ChangeClass": {
+      "description": "The change classification vocabulary (CORRECTIVE-A §G). Only\n`ContentChange` and `StructureChange` are derivable in this corrective;\nthe other two are reserved for the later attribution contract.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "content_change",
+            "structure_change"
+          ]
+        },
+        {
+          "description": "RESERVED — not derivable in CORRECTIVE-A.",
+          "type": "string",
+          "const": "dependency_resolution_change"
+        },
+        {
+          "description": "RESERVED — not derivable in CORRECTIVE-A.",
+          "type": "string",
+          "const": "position_shift_only"
+        }
+      ]
+    },
+    "CmpOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "le",
+        "gt",
+        "ge"
+      ]
+    },
+    "EligibilityFacts": {
+      "description": "ELIGIBILITY_FACT record for one grammar lane (#35 §3's third class).",
+      "type": "object",
+      "properties": {
+        "grammar_id": {
+          "type": "string"
+        },
+        "lane_valid": {
+          "description": "The source has a defined interpretation under this lane.",
+          "type": "boolean"
+        },
+        "scope_blockers": {
+          "description": "Host-context candidates that block strict scope cleanliness.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyntaxFact"
+          }
+        },
+        "strict_scope_clean": {
+          "description": "No host-context candidate outside the lane's construct set.",
+          "type": "boolean"
+        },
+        "strict_scope_clean_rule": {
+          "description": "Frozen statement of what `strict_scope_clean` means for this lane.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "lane_valid",
+        "strict_scope_clean",
+        "scope_blockers",
+        "strict_scope_clean_rule"
+      ]
+    },
+    "FactReason": {
+      "description": "Machine-readable reason attached to every non-recognized fact.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "recognized_under_lane_oracle"
+          ]
+        },
+        {
+          "description": "Candidate present; the lane's rules make it ordinary text.",
+          "type": "string",
+          "const": "interprets_as_text_under_lane"
+        },
+        {
+          "description": "Candidate looks like the construct but fails a frozen lane rule.",
+          "type": "string",
+          "const": "candidate_rejected_by_lane_rule"
+        },
+        {
+          "description": "The construct is outside this lane's construct set entirely.",
+          "type": "string",
+          "const": "outside_lane_construct_set"
+        },
+        {
+          "description": "Candidate bytes are inside a code/fence/raw region: not host syntax.",
+          "type": "string",
+          "const": "non_host_context"
+        },
+        {
+          "description": "The owning lane is deferred (no frozen semantics/oracle).",
+          "type": "string",
+          "const": "lane_semantics_deferred"
+        },
+        {
+          "description": "Two declared lanes disagree; recorded instead of resolved.",
+          "type": "string",
+          "const": "ambiguous_across_declared_lanes"
+        }
+      ]
+    },
+    "FailureCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "unknown_grammar_lane",
+            "predicate_grammar_mismatch",
+            "missing_post_source",
+            "edit_start_after_end",
+            "edit_out_of_range",
+            "edit_not_char_boundary",
+            "post_hash_mismatch",
+            "pre_predicate_failed",
+            "post_predicate_failed",
+            "pre_lane_invalid",
+            "post_lane_invalid"
+          ]
+        },
+        {
+          "description": "The edit reproduces the pre bytes exactly: there is no transition.",
+          "type": "string",
+          "const": "no_source_change"
+        },
+        {
+          "description": "The declared assertion set holds identically on both sides and\ncontains no satisfied cross-source predicate, so it describes\nnothing the edit did.",
+          "type": "string",
+          "const": "transition_not_exercised"
+        }
+      ]
+    },
+    "LaneScopeGrade": {
+      "description": "Evidence grade of a fact. Only `StrictLaneCoverage` may be counted as\nstrict lane coverage or as strict H0-H4 comparison evidence.",
+      "oneOf": [
+        {
+          "description": "Semantically qualified lane scope with a frozen oracle.",
+          "type": "string",
+          "const": "strict_lane_coverage"
+        },
+        {
+          "description": "The lane declares the construct (spec text frozen) but this\ncorrective does not qualify oracle/coverage evidence for it.",
+          "type": "string",
+          "const": "contract_declared_not_qualified"
+        },
+        {
+          "description": "The candidate belongs to a construct set this lane does not enable.",
+          "type": "string",
+          "const": "out_of_lane_candidate"
+        },
+        {
+          "description": "The owning lane has no frozen semantics yet (G2 math).",
+          "type": "string",
+          "const": "lane_deferred"
+        }
+      ]
+    },
+    "PredicateResult": {
+      "type": "object",
+      "properties": {
+        "observed": {
+          "description": "What was actually observed (predicate-specific rendering).",
+          "type": "string"
+        },
+        "predicate": {
+          "$ref": "#/$defs/PredicateV1"
+        },
+        "satisfied": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "predicate",
+        "satisfied",
+        "observed"
+      ]
+    },
+    "PredicateV1": {
+      "description": "The closed predicate vocabulary (CORRECTIVE-A keeps it minimal).",
+      "oneOf": [
+        {
+          "description": "A recognized node of this kind exists in the lane parse.",
+          "type": "object",
+          "properties": {
+            "grammar_id": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_present"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind"
+          ]
+        },
+        {
+          "description": "No recognized node of this kind exists in the lane parse.",
+          "type": "object",
+          "properties": {
+            "grammar_id": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_absent"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind"
+          ]
+        },
+        {
+          "description": "Recognized-node count for this kind satisfies `op count`.",
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "grammar_id": {
+              "type": "string"
+            },
+            "op": {
+              "$ref": "#/$defs/CmpOp"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_count"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind",
+            "op",
+            "count"
+          ]
+        },
+        {
+          "description": "Cross-source predicate: the lane topology (kind sequence, nesting\nand kind details, ignoring offsets) is identical for pre and post.\nEvaluated only on the post side.",
+          "type": "object",
+          "properties": {
+            "predicate": {
+              "type": "string",
+              "const": "topology_equal"
+            }
+          },
+          "required": [
+            "predicate"
+          ]
+        },
+        {
+          "description": "Cross-source predicate: at least one text/code span differs between\npre and post. Evaluated only on the post side.",
+          "type": "object",
+          "properties": {
+            "predicate": {
+              "type": "string",
+              "const": "text_content_differs"
+            }
+          },
+          "required": [
+            "predicate"
+          ]
+        }
+      ]
+    },
+    "RecognitionStatus": {
+      "description": "Recognition status (CORRECTIVE-A §C2). `NotRecognized` requires\ncandidate evidence; it never means \"absent, we did not look\".",
+      "oneOf": [
+        {
+          "description": "The lane's reference oracle produced a node of this kind.",
+          "type": "string",
+          "const": "recognized"
+        },
+        {
+          "description": "The lane's rules interpret this candidate as ordinary text, or the\ncandidate fails a frozen lane rule.",
+          "type": "string",
+          "const": "not_recognized"
+        },
+        {
+          "description": "Two declared lanes disagree about the candidate (e.g. `$…$` under\nG1 text semantics vs the deferred G2 math lane) and this\ncorrective does not silently pick one.",
+          "type": "string",
+          "const": "ambiguous"
+        },
+        {
+          "description": "The construct belongs to a lane whose semantics are not frozen yet.",
+          "type": "string",
+          "const": "unknown"
+        }
+      ]
+    },
+    "SourceOracleCheck": {
+      "description": "Per-source oracle report: eligibility facts plus predicate outcomes.",
+      "type": "object",
+      "properties": {
+        "eligibility": {
+          "$ref": "#/$defs/EligibilityFacts"
+        },
+        "file_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "grammar_id": {
+          "type": "string"
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PredicateResult"
+          }
+        },
+        "source_sha256": {
+          "type": "string"
+        },
+        "text_fingerprint_sha256": {
+          "type": "string"
+        },
+        "topology_sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "source_sha256",
+        "file_bytes",
+        "eligibility",
+        "predicates",
+        "topology_sha256",
+        "text_fingerprint_sha256"
+      ]
+    },
+    "SyntaxFact": {
+      "description": "One syntax occurrence fact. `host_context == false` facts are recorded\nfor transparency (candidate bytes inside code/fence/raw regions) and\nmust never be counted as host syntax or as coverage.",
+      "type": "object",
+      "properties": {
+        "detail": {
+          "description": "Kind-specific frozen detail (e.g. fence character for\n`code_block_fenced`, delimiter row text for `table`).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "grammar_id": {
+          "type": "string"
+        },
+        "host_context": {
+          "type": "boolean"
+        },
+        "lane_scope_grade": {
+          "$ref": "#/$defs/LaneScopeGrade"
+        },
+        "occurrence": {
+          "description": "Stable source-order occurrence index among facts with the same\n`grammar_id` + `syntax_kind` + `recognition_status` in this\nprofile. Serves as the frozen anchor identity for §11.1 tie-breaks.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "reason": {
+          "$ref": "#/$defs/FactReason"
+        },
+        "recognition_status": {
+          "$ref": "#/$defs/RecognitionStatus"
+        },
+        "source_end": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "source_start": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "syntax_kind": {
+          "$ref": "#/$defs/SyntaxKind"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "syntax_kind",
+        "source_start",
+        "source_end",
+        "recognition_status",
+        "lane_scope_grade",
+        "host_context",
+        "reason",
+        "occurrence"
+      ]
+    },
+    "SyntaxKind": {
+      "description": "The closed syntax vocabulary shared by every lane. A lane declares\nwhich kinds it can recognize (`lanes::LaneSpecV1::recognized_kinds`);\nkinds outside that set can still appear as *candidate* facts with a\nnon-`Recognized` status.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "paragraph",
+            "heading_atx",
+            "heading_setext",
+            "block_quote",
+            "list",
+            "list_item",
+            "code_block_fenced",
+            "code_block_indented",
+            "html_block",
+            "thematic_break",
+            "reference_definition",
+            "table",
+            "table_header_row",
+            "table_row",
+            "table_cell",
+            "text",
+            "emphasis",
+            "strong",
+            "code_span",
+            "link_inline",
+            "link_reference",
+            "link_autolink",
+            "image",
+            "raw_html_inline",
+            "hard_break",
+            "soft_break",
+            "inline_math",
+            "display_math",
+            "strikethrough",
+            "task_list_item",
+            "front_matter",
+            "directive"
+          ]
+        },
+        {
+          "description": "Synthetic root of a lane parse; never emitted as a syntax fact.",
+          "type": "string",
+          "const": "document"
+        }
+      ]
+    },
+    "TransitionVerdict": {
+      "type": "string",
+      "enum": [
+        "transition_valid",
+        "invalid_payload"
+      ]
+    }
+  }
+}

@@ -1,0 +1,79 @@
+# SEMANTIC_PILOT_SET — P02
+#
+# G1 table pilot (#35 §4.2 first-class extension): a valid GFM table whose
+# delimiter row stops being a delimiter row. The transition is proven by the
+# lane oracle: Table -> non-Table, then RESTORE back to the exact original
+# bytes.
+# Span convention: G1 spans are the oracle's byte ranges, which include the
+# final line terminator of a block; G0 spans follow NORMALIZED-RESULT-v1 and
+# exclude it. The two conventions are lane-scoped and are never compared
+# across lanes.
+schema = "semantic-pilot-fixture-v1"
+id = "P02"
+name = "G1 table delimiter break/restore"
+role = "transition"
+lanes = ["G1"]
+source = '''| a | b |
+| --- | --- |
+| 1 | 2 |
+'''
+source_sha256 = "2fd6b622957d919cf19e072ef449c07b9a0579395fd0a840133a026549cce59f"
+post_source = '''| a | b |
+| abc | --- |
+| 1 | 2 |
+'''
+post_source_sha256 = "b2b7769ea873ddb06b617d98ef18dcb16bb8788561ee5dcd8a64b0e61f9f1ff1"
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = true
+table_count = 1
+block_count = 1
+max_container_depth = 0
+facts = [
+  { kind = "table", status = "recognized", span = [0, 34], grade = "strict_lane_coverage" },
+  { kind = "table_header_row", status = "recognized" },
+]
+absent_kinds = ["inline_math", "display_math", "front_matter", "strikethrough"]
+
+[transition]
+syntax_target = "table"
+expected_transition = "table_valid_to_non_table"
+edit_family = "TABLE_DELIMITER_EDIT"
+operation_variant = "break"
+break_edit = { edit_start = 12, edit_end = 15, inserted_text = "abc" }
+restore_edit = { edit_start = 12, edit_end = 15, inserted_text = "---" }
+restore_exact = true
+post_strict_comparison_eligible = true
+
+[[transition.pre]]
+predicate = "kind_present"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "table"
+
+[[transition.pre]]
+predicate = "kind_count"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "table"
+op = "eq"
+count = 1
+
+[[transition.post]]
+predicate = "kind_absent"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "table"
+
+[[transition.post]]
+predicate = "kind_present"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "paragraph"
+
+[[transition.restore_pre]]
+predicate = "kind_absent"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "table"
+
+[[transition.restore_post]]
+predicate = "kind_present"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "table"

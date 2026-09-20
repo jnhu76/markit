@@ -12,7 +12,9 @@ R3  grammar/corpus/mutation freeze     PASS
 R4  H0 reference full rebuild          PASS
 R5  H1-H4 correctness/parity           PASS — PR #30 merged
 
-ACTIVE: #31 project-driven performance evaluation under #22
+ACTIVE: #35 Stage A real-workload construction
+        CORRECTIVE-A semantic substrate (lanes/profiler/oracle/lifecycle)
+        — no freeze granted, no H0-H4 timing authorized
 ```
 
 R5 established that H0-H4 solve the same BENCH-GRAMMAR-v1 problem under the
@@ -38,17 +40,27 @@ H4 RESTART_CONVERGENCE
 - umbrella issue: **#22 MARKIT-MARKDOWN-BENCHMARK-1**
 - baseline methodology: `protocol/R0-METHODOLOGY.md`
 - post-R5 execution amendment: `protocol/R6-PROJECT-PERFORMANCE-EXECUTION-AMENDMENT.md`
-- active execution issue: **#31 project-driven performance evaluation**
+- real-workload authority amendment: `protocol/R6-REAL-WORKLOAD-AUTHORITY-AMENDMENT.md`
+- Stage A workload construction: **#35** + `workloads/`
+- post-freeze performance execution: **#31** (not started)
 - harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 - grammar: `grammar/BENCH-GRAMMAR-v1.md`
 - normalized result: `grammar/NORMALIZED-RESULT-v1.md`
+- grammar lanes (G0/G1/G2): `grammar/GRAMMAR-LANES-v1.md`
+- transition oracle: `grammar/TRANSITION-ORACLE-v1.md`
+- profiler contract: `workloads/profiles/PROFILER-CONTRACT-v1.md`
+- payload lifecycle: `workloads/payloads/PAYLOAD-LIFECYCLE-v1.md`
+- semantic pilot: `workloads/pilots/README.md`
+- CORRECTIVE-A adversarial review record:
+  `workloads/REVIEW-CORRECTIVE-A-ADVERSARIAL-v1.md`
 - R5 mechanism freeze: `protocol/R5-HORSE-CORRECTNESS-PARITY.md`
 - R5 evidence: `protocol/R5-HORSES-STAGE-RECORD.md`
 - repository ownership map: `STRUCTURE.md`
 
 #31 is an execution refinement under #22; it does not independently override
-frozen R0 contracts. The explicit R6 amendment changes only the post-R5 role
-and ordering of real-project versus synthetic performance surfaces.
+frozen R0 contracts. The explicit R6 amendments change only the post-R5 role
+and ordering of real-project versus synthetic performance surfaces, and the
+Stage A workload-construction gates.
 
 Frozen R0-R5 paths are intentionally retained. Do not reorganize historical
 protocol/corpus/case files merely for aesthetics: citations and gate records
@@ -74,7 +86,14 @@ runner/             measurement process / lanes / isolation
 corpusgen/          deterministic synthetic corpus construction
 shared-grammar/     common BENCH-GRAMMAR-v1 parser primitives
 mechanisms/         H0-H4 + null R1 mechanism crates
+semantics/          Stage A semantic substrate: grammar lanes, profiler,
+                    transition oracle, payload lifecycle, semantic pilot
 scripts/            verification and campaign scripts
+
+# #35 Stage A workload construction
+workloads/          acquisition provenance/lock/inventory (PR #34), profiler
+                    contract + schemas, payload lifecycle + schemas, semantic
+                    pilot, deferred attribution contracts
 
 # #31 project-driven measurement lifecycle
 projects/           pinned project manifests, eligibility, profiles
@@ -152,13 +171,27 @@ trace identity.
 
 ## Current next gate
 
-#31 starts with project reconnaissance and eligibility/trace freeze under the
-R6 execution amendment:
+Stage A runs as three correctives under #35; no H0-H4 research timing is
+authorized during any of them.
 
 ```text
-PROJECT_CORPUS_FREEZE_PASS
+CORRECTIVE-A  semantic substrate          lanes / profiler / oracle / lifecycle
+              -> closes G2, G3, G5, G6 substrate contracts
+CORRECTIVE-B  profile + select            all candidates, bias, four sets
+              -> G1, G4
+CORRECTIVE-C  payload freeze              anchors, edits, BREAK/RESTORE, traces
+              -> G6, G7
+
+then G1..G8 -> REAL_WORKLOAD_FREEZE_PASS
+              (or CORE_REAL_WORKLOAD_FREEZE_PASS for a named core lane only)
 ```
 
-No H0-H4 project timing is primary evidence before the project set, immutable
-SHAs, BENCH-GRAMMAR-v1 eligibility policy, workload-profile schema,
-deterministic trace-selection rules, and campaign identity are frozen.
+`PROJECT_CORPUS_FREEZE_PASS` is superseded as a Stage A execution gate by the
+#35 gate set (`protocol/R6-REAL-WORKLOAD-AUTHORITY-AMENDMENT.md` §2).
+
+CORRECTIVE-A grants none of these freezes. It freezes grammar-lane identity
+and eligibility, the profiler fact classes and definitions, the reference
+oracle and transition predicates, and the payload lifecycle — and validates
+them on a small semantic pilot. Representative/extremal/syntax-coverage/
+full-document selection, the 3,970-file profiling run, and every performance
+measurement remain outstanding.

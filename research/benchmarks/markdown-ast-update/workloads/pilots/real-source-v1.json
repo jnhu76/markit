@@ -1,0 +1,8 @@
+{
+  "source_id": "oci-runtime",
+  "path": "workloads/sources/oci-runtime/files/config.md",
+  "source_sha256": "3d99d67f4e1a32c2581aee44cf3cbee51f5b335fa74af191d1f9df495f92ee0b",
+  "acquisition_commit_sha": "6999a89a76a0329f440d5740497bedb9dd431297",
+  "lanes": ["G0", "G1"],
+  "why": "Complete real technical Markdown document from the PR #34 acquisition universe (VENDORED source, 57 KiB) that exercises the pilot's qualified G1 construct (three real GFM tables) together with fenced code, inline raw HTML anchors and reference-free inline links. It is used byte-for-byte, as materialized; it is a pilot fixture, not a workload-selection member."
+}

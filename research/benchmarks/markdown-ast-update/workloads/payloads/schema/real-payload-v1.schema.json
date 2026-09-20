@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PayloadRecord",
+  "description": "A frozen real-workload payload record.",
+  "type": "object",
+  "properties": {
+    "acquisition_commit_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "base_source_sha256": {
+      "type": "string"
+    },
+    "edit": {
+      "$ref": "#/$defs/EditSpec"
+    },
+    "edit_family": {
+      "type": "string"
+    },
+    "expected_post": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PredicateV1"
+      }
+    },
+    "expected_pre": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PredicateV1"
+      }
+    },
+    "expected_transition": {
+      "type": "string"
+    },
+    "grammar_id": {
+      "type": "string"
+    },
+    "inserted_sha256": {
+      "type": "string"
+    },
+    "lifecycle_version": {
+      "type": "string"
+    },
+    "memberships": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operation_variant": {
+      "type": "string"
+    },
+    "payload_id": {
+      "type": "string"
+    },
+    "position": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PayloadPosition"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "post_source_sha256": {
+      "type": "string"
+    },
+    "pre_source_sha256": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "source_kind": {
+      "$ref": "#/$defs/SourceKind"
+    },
+    "source_path": {
+      "type": "string"
+    },
+    "step": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "syntax_target": {
+      "$ref": "#/$defs/SyntaxKind"
+    },
+    "trace_form": {
+      "$ref": "#/$defs/TraceForm"
+    },
+    "trace_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "lifecycle_version",
+    "payload_id",
+    "source_id",
+    "source_path",
+    "source_kind",
+    "grammar_id",
+    "base_source_sha256",
+    "pre_source_sha256",
+    "post_source_sha256",
+    "syntax_target",
+    "edit_family",
+    "operation_variant",
+    "expected_transition",
+    "expected_pre",
+    "expected_post",
+    "trace_id",
+    "trace_form",
+    "step",
+    "edit",
+    "inserted_sha256",
+    "memberships"
+  ],
+  "$defs": {
+    "CmpOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "le",
+        "gt",
+        "ge"
+      ]
+    },
+    "EditSpec": {
+      "description": "One canonical edit as it appears in a transition request.",
+      "type": "object",
+      "properties": {
+        "edit_end": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "edit_start": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "inserted_text": {
+          "description": "The inserted bytes are carried verbatim: a digest alone cannot\nreconstruct them (`#35` §8, amendment §8).",
+          "type": "string"
+        }
+      },
+      "required": [
+        "edit_start",
+        "edit_end",
+        "inserted_text"
+      ]
+    },
+    "PayloadPosition": {
+      "description": "Payload position record (present for anchored edit payloads).",
+      "type": "object",
+      "properties": {
+        "actual_anchor_byte": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "actual_relative_position": {
+          "type": "number",
+          "format": "double"
+        },
+        "dedup_identity": {
+          "type": "string"
+        },
+        "deduplicated": {
+          "type": "boolean"
+        },
+        "distance_from_target": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TargetDistance"
+          }
+        },
+        "requested_positions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RequestedPosition"
+          }
+        }
+      },
+      "required": [
+        "requested_positions",
+        "actual_anchor_byte",
+        "actual_relative_position",
+        "distance_from_target",
+        "dedup_identity",
+        "deduplicated"
+      ]
+    },
+    "PredicateV1": {
+      "description": "The closed predicate vocabulary (CORRECTIVE-A keeps it minimal).",
+      "oneOf": [
+        {
+          "description": "A recognized node of this kind exists in the lane parse.",
+          "type": "object",
+          "properties": {
+            "grammar_id": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_present"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind"
+          ]
+        },
+        {
+          "description": "No recognized node of this kind exists in the lane parse.",
+          "type": "object",
+          "properties": {
+            "grammar_id": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_absent"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind"
+          ]
+        },
+        {
+          "description": "Recognized-node count for this kind satisfies `op count`.",
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "grammar_id": {
+              "type": "string"
+            },
+            "op": {
+              "$ref": "#/$defs/CmpOp"
+            },
+            "predicate": {
+              "type": "string",
+              "const": "kind_count"
+            },
+            "syntax_kind": {
+              "$ref": "#/$defs/SyntaxKind"
+            }
+          },
+          "required": [
+            "predicate",
+            "grammar_id",
+            "syntax_kind",
+            "op",
+            "count"
+          ]
+        },
+        {
+          "description": "Cross-source predicate: the lane topology (kind sequence, nesting\nand kind details, ignoring offsets) is identical for pre and post.\nEvaluated only on the post side.",
+          "type": "object",
+          "properties": {
+            "predicate": {
+              "type": "string",
+              "const": "topology_equal"
+            }
+          },
+          "required": [
+            "predicate"
+          ]
+        },
+        {
+          "description": "Cross-source predicate: at least one text/code span differs between\npre and post. Evaluated only on the post side.",
+          "type": "object",
+          "properties": {
+            "predicate": {
+              "type": "string",
+              "const": "text_content_differs"
+            }
+          },
+          "required": [
+            "predicate"
+          ]
+        }
+      ]
+    },
+    "RequestedPosition": {
+      "type": "string",
+      "enum": [
+        "early",
+        "middle",
+        "late"
+      ]
+    },
+    "SourceKind": {
+      "type": "string",
+      "enum": [
+        "real_acquisition",
+        "synthetic_fixture"
+      ]
+    },
+    "SyntaxKind": {
+      "description": "The closed syntax vocabulary shared by every lane. A lane declares\nwhich kinds it can recognize (`lanes::LaneSpecV1::recognized_kinds`);\nkinds outside that set can still appear as *candidate* facts with a\nnon-`Recognized` status.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "paragraph",
+            "heading_atx",
+            "heading_setext",
+            "block_quote",
+            "list",
+            "list_item",
+            "code_block_fenced",
+            "code_block_indented",
+            "html_block",
+            "thematic_break",
+            "reference_definition",
+            "table",
+            "table_header_row",
+            "table_row",
+            "table_cell",
+            "text",
+            "emphasis",
+            "strong",
+            "code_span",
+            "link_inline",
+            "link_reference",
+            "link_autolink",
+            "image",
+            "raw_html_inline",
+            "hard_break",
+            "soft_break",
+            "inline_math",
+            "display_math",
+            "strikethrough",
+            "task_list_item",
+            "front_matter",
+            "directive"
+          ]
+        },
+        {
+          "description": "Synthetic root of a lane parse; never emitted as a syntax fact.",
+          "type": "string",
+          "const": "document"
+        }
+      ]
+    },
+    "TargetDistance": {
+      "type": "object",
+      "properties": {
+        "distance": {
+          "type": "number",
+          "format": "double"
+        },
+        "requested": {
+          "$ref": "#/$defs/RequestedPosition"
+        },
+        "target_fraction": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "required": [
+        "requested",
+        "target_fraction",
+        "distance"
+      ]
+    },
+    "TraceForm": {
+      "type": "string",
+      "enum": [
+        "single_reset",
+        "local_burst",
+        "document_session"
+      ]
+    }
+  }
+}

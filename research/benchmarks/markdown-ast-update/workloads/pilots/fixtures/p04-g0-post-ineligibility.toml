@@ -1,0 +1,54 @@
+# SEMANTIC_PILOT_SET — P04
+#
+# Independent pre/post grammar eligibility (CORRECTIVE-A §E1, test 8). The pre
+# source is a clean G0 paragraph; the edit inserts GFM table-shaped host
+# syntax. Under G0 those bytes are still ordinary paragraph text, so the
+# declared predicates hold - but the post source is no longer strictly inside
+# the G0 construct set, and the payload must therefore never be counted as
+# strict G0 coverage. The record must show it, not hide it.
+schema = "semantic-pilot-fixture-v1"
+id = "P04"
+name = "G0 post-ineligibility: edit exposes out-of-lane host syntax"
+role = "transition"
+lanes = ["G0"]
+source = '''Just text.
+'''
+source_sha256 = "72d71b1d5b4da465644264f3430701df58b2a66fd2fb4bbc1f1ecd58a4fe34de"
+post_source = '''Just text.
+| a | b |
+| --- | --- |
+'''
+post_source_sha256 = "952a0b69b2e8e5d3b56f127b6c9c204629d076c9efb53ef3d02677e7d04a8cf6"
+
+[[expect]]
+lane = "G0"
+strict_scope_clean = true
+block_count = 1
+max_container_depth = 0
+facts = [
+  { kind = "paragraph", status = "recognized", span = [0, 10] },
+]
+
+[transition]
+syntax_target = "paragraph"
+expected_transition = "g0_content_change_exposing_out_of_lane_syntax"
+edit_family = "CONTAINER_STATE"
+operation_variant = "insert"
+break_edit = { edit_start = 10, edit_end = 10, inserted_text = "\n| a | b |\n| --- | --- |" }
+post_strict_comparison_eligible = false
+
+[[transition.pre]]
+predicate = "kind_present"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "paragraph"
+
+[[transition.post]]
+predicate = "kind_present"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "paragraph"
+
+[[transition.post]]
+predicate = "topology_equal"
+
+[[transition.post]]
+predicate = "text_content_differs"
