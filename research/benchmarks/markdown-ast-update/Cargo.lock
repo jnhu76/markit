@@ -923,6 +923,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-profile-select"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-semantics",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "markit-mdbench-restart-convergence"
 version = "0.1.0"
 dependencies = [

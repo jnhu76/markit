@@ -1,0 +1,127 @@
+{
+  "schema": "domain-strata-v1",
+  "sources": [
+    {
+      "source_id": "cpp-core-guidelines",
+      "stratum": "LARGE_GUIDE_REFERENCE",
+      "rationale": "Single very large authoritative coding-guidelines reference document (841 KiB); project purpose is a maintained guide, not a book tutorial or an API reference.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "crafting-interpreters",
+      "stratum": "OTHER_DECLARED",
+      "rationale": "Snapshot is administrative Markdown and exercise notes; the authoritative upstream book text is HTML, not Markdown. Must not be counted as BOOK_TUTORIAL Markdown coverage (acquisition role_caveat, counts_as_role_coverage=false).",
+      "counts_as_role_coverage": false,
+      "role_caveat": "INTENDED_BOOK_SOURCE_IS_HTML"
+    },
+    {
+      "source_id": "cs231n",
+      "stratum": "ML_SCIENTIFIC_TECHNICAL",
+      "rationale": "University course notes for a deep-learning course; math-heavy Markdown with code cells.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "d2l-en",
+      "stratum": "ML_SCIENTIFIC_TECHNICAL",
+      "rationale": "Dive into Deep Learning interactive ML book chapters in Markdown (MyST-flavored with math).",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "ethereum-eips",
+      "stratum": "RFC_PROPOSAL_DESIGN",
+      "rationale": "Ethereum Improvement Proposals: numbered proposal/design documents with required sections.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "graphql-spec",
+      "stratum": "STANDARD_SPECIFICATION",
+      "rationale": "Formal GraphQL specification drafts in Markdown.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "kubernetes-keps",
+      "stratum": "RFC_PROPOSAL_DESIGN",
+      "rationale": "Kubernetes Enhancement Proposals: design documents with structured metadata headers and tables.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "myst-parser",
+      "stratum": "API_TECHNICAL_DOC",
+      "rationale": "Documentation of the MyST parser tool itself; math-dialect boundary material, but the project purpose is tool documentation.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "mystmd",
+      "stratum": "API_TECHNICAL_DOC",
+      "rationale": "Documentation of the MyST markdown compiler/engine tool; extended-dialect documentation.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "node",
+      "stratum": "API_TECHNICAL_DOC",
+      "rationale": "Node.js doc/api Markdown reference for core modules.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "oci-image",
+      "stratum": "STANDARD_SPECIFICATION",
+      "rationale": "Open Container Initiative image specification in Markdown.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "oci-runtime",
+      "stratum": "STANDARD_SPECIFICATION",
+      "rationale": "Open Container Initiative runtime specification in Markdown.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "openapi",
+      "stratum": "STANDARD_SPECIFICATION",
+      "rationale": "OpenAPI specification versions and editors documents in Markdown.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "openmlsys",
+      "stratum": "ML_SCIENTIFIC_TECHNICAL",
+      "rationale": "OpenMLSys ML-systems book with bilingual (en/zh) chapter sources; CJK presence is recorded per file by CJK_byte_share facts, the stratum reflects the ML-systems purpose, not language.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "opentelemetry-spec",
+      "stratum": "STANDARD_SPECIFICATION",
+      "rationale": "OpenTelemetry specification in Markdown.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "owasp-cheatsheets",
+      "stratum": "SECURITY_OPERATIONAL_DOC",
+      "rationale": "OWASP cheat sheets: operational security guidance documents.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "progit",
+      "stratum": "OTHER_DECLARED",
+      "rationale": "Snapshot is administrative Markdown only; the authoritative Pro Git book text is AsciiDoc, not Markdown. Must not be counted as BOOK_TUTORIAL Markdown coverage (acquisition role_caveat, counts_as_role_coverage=false).",
+      "counts_as_role_coverage": false,
+      "role_caveat": "INTENDED_BOOK_SOURCE_IS_ASCIIDOC"
+    },
+    {
+      "source_id": "rust-book",
+      "stratum": "BOOK_TUTORIAL",
+      "rationale": "The Rust Programming Language, authored in Markdown via mdBook; Markdown is the authoritative source form.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "rust-rfcs",
+      "stratum": "RFC_PROPOSAL_DESIGN",
+      "rationale": "Rust RFCs: reference-heavy numbered design proposals.",
+      "counts_as_role_coverage": true
+    },
+    {
+      "source_id": "swift-evolution",
+      "stratum": "RFC_PROPOSAL_DESIGN",
+      "rationale": "Swift Evolution proposals: numbered design/proposal documents.",
+      "counts_as_role_coverage": true
+    }
+  ]
+}

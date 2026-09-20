@@ -239,6 +239,14 @@ pub fn ratio(numerator: f64, denominator: f64) -> f64 {
 ///
 /// This is a byte rule applied *inside* an oracle-recognized span, not a
 /// second parser: it never decides whether the construct exists.
+///
+/// Closing-line rule (mirrors the oracle state machines): the span's last
+/// line closes the fence when it ends in a run of `fence_char` of length
+/// >= max(3, opener run), preceded only by container-prefix bytes (space,
+/// tab, `>`, `-`, `+`, `*`, `.`, `)`, digits) and followed only by spaces.
+/// The prefix allowance is what makes a quoted closer (`> ```` `) close
+/// the fence exactly as the oracle's per-line container stripping does;
+/// ordinary body text before the run (`x```` `) never qualifies.
 pub fn fenced_content_interval(source: &str, span: Span, fence_char: char) -> Span {
     let opener_end = match source[span.start..span.end].find('\n') {
         Some(offset) => span.start + offset + 1,
@@ -247,28 +255,39 @@ pub fn fenced_content_interval(source: &str, span: Span, fence_char: char) -> Sp
     if opener_end >= span.end {
         return Span::new(span.end, span.end);
     }
-    // Last line of the span; it closes the fence only if it is a run of
-    // the fence character (>= 1, matching or longer runs are the caller's
-    // business: the oracle already decided this block is closed).
+    // Opener run length: skip to the opener's first fence char (the span
+    // starts there in both oracle configurations; tolerating a small lead
+    // keeps the rule total), then count the run.
+    let opener_head = &source[span.start..opener_end];
+    let opener_run = match opener_head.find(fence_char) {
+        Some(first) => opener_head[first..].chars().take_while(|c| *c == fence_char).count(),
+        None => 3,
+    };
+    // Last line of the span; it closes the fence only if it is a valid
+    // closing fence line under the rule above.
     let body = &source[opener_end..span.end];
     let last_line_start = match body.rfind('\n') {
         Some(offset) => opener_end + offset + 1,
         None => opener_end,
     };
-    let last_line = source[last_line_start..span.end].trim_end_matches('\n');
-    if is_closing_fence_line(last_line, fence_char) {
+    let last_line = source[last_line_start..span.end].trim_end_matches(['\n', ' ']);
+    if is_closing_fence_line(last_line, fence_char, opener_run.max(3)) {
         Span::new(opener_end, last_line_start)
     } else {
         Span::new(opener_end, span.end)
     }
 }
 
-fn is_closing_fence_line(line: &str, fence_char: char) -> bool {
-    let trimmed = line.trim_matches(' ');
-    if trimmed.len() < 3 {
+fn is_closing_fence_line(line: &str, fence_char: char, min_run: usize) -> bool {
+    let line = line.trim_end_matches(' ');
+    let run_len = line.chars().rev().take_while(|c| *c == fence_char).count();
+    if run_len < min_run {
         return false;
     }
-    trimmed.chars().all(|c| c == fence_char)
+    let prefix = &line[..line.len() - run_len];
+    prefix
+        .chars()
+        .all(|c| matches!(c, ' ' | '\t' | '>' | '-' | '+' | '*' | '.' | ')' | '0'..='9'))
 }
 
 /// The fence character of a fenced block at `span.start`, derived from the

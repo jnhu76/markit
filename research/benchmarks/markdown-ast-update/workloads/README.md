@@ -102,7 +102,18 @@ workloads/
 ├── licenses/<source_id>/         upstream LICENSE/NOTICE/attribution files,
 │                                 byte-exact at the pin, hashed in SOURCE.json
 │
-├── profiles/                     RESERVED: later static characterization.
+├── profiles/                     CORRECTIVE-A profiler contract + schema;
+│                                 CORRECTIVE-B generated distributions
+│                                 (distributions-v1.json/.md) plus
+│                                 universe-scale derived data
+│                                 (real-profile-v1.jsonl, candidate-rows-v1.jsonl
+│                                 — gitignored, hash-bound in distributions)
+├── analysis/                     CORRECTIVE-B: DOMAIN-STRATA input,
+│                                 materialization verification, eligibility
+│                                 bias, redundancy, uncovered space
+├── selections/                   CORRECTIVE-B: frozen selection contract +
+│                                 config, four logical sets, selection trace,
+│                                 selected files, coverage report
 ├── traces/                       RESERVED: later canonical edit traces.
 ├── cases/                        RESERVED: later frozen CaseId materialization.
 │
