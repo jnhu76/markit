@@ -8,3 +8,10 @@
 # storage_policy in acquisition-config.json.
 _cache/
 sources/*/files/
+
+# CORRECTIVE-B derived data at candidate-universe scale (same storage
+# model as the acquisition bytes): regenerated deterministically with
+#   cargo run -p markit-mdbench-profile-select --bin mdbench-corrective-b -- run
+# and byte-bound by the sha256 recorded in profiles/distributions-v1.json.
+profiles/real-profile-v1.jsonl
+profiles/candidate-rows-v1.jsonl

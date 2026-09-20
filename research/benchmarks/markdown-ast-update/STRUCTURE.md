@@ -52,13 +52,19 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   payload lifecycle contract and schemas (`payloads/`);
   contract-validation pilot (`pilots/`); deferred attribution contracts
   (`attribution/`); the CORRECTIVE-A adversarial review record
-  (`REVIEW-CORRECTIVE-A-ADVERSARIAL-v1.md`). `sources/` stores byte-exact
-  upstream Markdown snapshots pinned by immutable commit SHAs with per-file
-  hashes; `manifests/` records candidate-universe membership and provenance;
-  `_cache/` is a rebuildable, gitignored acquisition cache that is not
-  benchmark authority. No timing, no selection, and no mechanism facts
-  belong here. See `workloads/README.md` and
-  `workloads/ACQUISITION-REPORT-1.md`.
+  (`REVIEW-CORRECTIVE-A-ADVERSARIAL-v1.md`); CORRECTIVE-B analysis
+  artifacts (`analysis/`: domain strata input, materialization
+  verification, eligibility bias, redundancy, uncovered space) and
+  selection artifacts (`selections/`: frozen contract + config, the four
+  logical sets, selection trace, selected files, coverage report).
+  `sources/` stores byte-exact upstream Markdown snapshots pinned by
+  immutable commit SHAs with per-file hashes; `manifests/` records
+  candidate-universe membership and provenance; `_cache/` is a
+  rebuildable, gitignored acquisition cache that is not benchmark
+  authority; universe-scale derived data (`real-profile-v1.jsonl`,
+  `candidate-rows-v1.jsonl`) is gitignored and hash-bound the same way.
+  No timing, no final edit payloads, and no mechanism facts belong here.
+  See `workloads/README.md` and `workloads/ACQUISITION-REPORT-1.md`.
 
 `corpus/`
 : Frozen synthetic corpus definitions and receipts. Under the R6 execution
@@ -105,6 +111,16 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   driver. Depends on `common/`, `oracle/`, and `shared-grammar/`; it must not
   depend on `mechanisms/`, `instrumentation/`, or `runner/`, and it contains
   no mechanism, timing, or selection policy.
+
+`profile-select/`
+: CORRECTIVE-B candidate-universe profiling and deterministic workload
+  selection: materialization verification, universe profiling under the
+  frozen lanes, distributions/eligibility-bias/redundancy analysis, the
+  four logical set selectors with a complete trace, coverage retention
+  and validation spot checks. Depends on `semantics/` only (plus
+  serde/sha2); it must never depend on `mechanisms/`, `instrumentation/`,
+  or `runner/`, emits no timing/work/reuse fact, and produces no final
+  edit payloads (CORRECTIVE-C owns those).
 
 `scripts/`
 : Verification, campaign orchestration, and reproducibility entrypoints.

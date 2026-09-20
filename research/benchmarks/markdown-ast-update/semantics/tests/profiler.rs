@@ -444,3 +444,33 @@ fn the_empty_source_profiles_under_both_lanes() {
     assert!(g1.eligibility.lane_valid);
     assert!(g1.eligibility.strict_scope_clean);
 }
+
+#[test]
+fn fenced_content_interval_handles_container_prefixed_closers() {
+    use markit_mdbench_semantics::facts::Span;
+    use markit_mdbench_semantics::fenced_content_interval;
+
+    fn content(source: &str) -> &str {
+        let span = Span::new(0, source.len());
+        let interval = fenced_content_interval(source, span, '`');
+        &source[interval.start..interval.end]
+    }
+
+    // Oracle spans end at the closer's backtick run (no trailing LF).
+    // Top-level closer: content excludes the closing fence line.
+    assert_eq!(content("```rust\nfn main() {}\n```"), "fn main() {}\n");
+    // Quoted closer (container prefix on the closing fence line): the
+    // rule must recognize it, exactly like the oracle state machines.
+    assert_eq!(content("> ```\n> a : b\n> ```"), "> a : b\n");
+    // List-indented quoted closer.
+    assert_eq!(content("- > ```toml\n  > k = 1\n  > ```"), "  > k = 1\n");
+    // Closer run may exceed the opener run.
+    assert_eq!(content("```\na\n`````"), "a\n");
+    // Digits/dots list prefixes count as container prefixes.
+    assert_eq!(content("1. ```\n   k\n   ```"), "   k\n");
+    // Unclosed fences (span may carry a final LF) keep all body bytes,
+    // including body lines that merely contain or end in backticks.
+    assert_eq!(content("```\nx = a```b"), "x = a```b");
+    assert_eq!(content("```\na\nsee note``` more"), "a\nsee note``` more");
+    assert_eq!(content("```\na\n"), "a\n");
+}
