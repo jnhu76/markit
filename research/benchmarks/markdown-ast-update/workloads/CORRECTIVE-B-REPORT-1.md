@@ -369,7 +369,8 @@ for 7 of 8 dimensions (distinct project in the top 1%); `cjk_byte_share`
 replicate is `NONE_AVAILABLE` (reported as an uncovered-space entry).
 Interpretation caveat (recorded, not hidden): the per-KiB density maxima
 (`fence_density`, and code-occupancy tails) sit on small genuine MyST
-`{include}` stub files (76–89 bytes) — real bytes, contract-frozen rules;
+directive stub files (76–89 bytes: one `{include}` stub, one ```-fenced
+`toc` directive stub) — real bytes, contract-frozen rules;
 they are extremal facts about the corpus, not about typical documents.
 
 Remaining uncovered space (`UNCOVERED-WORKLOAD-SPACE-v1.md`) — reported as
@@ -492,9 +493,10 @@ FULL_DOCUMENT_SET (7)    total 1,573,676 B (1,536.8 KiB)
 
 The aggregate is small by real-population fact, not by design intent; per
 the boundary contract it establishes nothing about scaling or asymptotic
-behavior. Small files in the selection (e.g. the 76–89 B MyST include
-stubs, the 416 B exercise note) remain valid evidence of observed real
-structural regimes.
+behavior. Small files in the selection (e.g. the 76 B MyST `{include}`
+stub and the 89 B MyST-style `toc` directive stub, both genuine files) and
+the 416 B exercise note remain valid evidence of observed real structural
+regimes.
 
 ## Adversarial review (§48)
 

@@ -152,7 +152,8 @@ F = number of semantic consumers/dependents affected by one
     dependency source
 ```
 
-Example: one reference definition → N reference uses. Measures semantic
+Example: one reference definition consumed by many reference uses
+(F = the count of dependent uses). Measures semantic
 dependency maintenance scaling.
 
 ## 4. Small real files — explicit misinterpretation warning
@@ -212,8 +213,10 @@ controlled dimension
 frozen sweep
 ```
 
-Illustrative examples only — **not** a frozen final matrix, because
-CORRECTIVE-C has not yet frozen the real transition taxonomy:
+Illustrative examples only — **not** a frozen final matrix, and not
+proposed vocabulary: the transition names below are placeholders carried
+from the settlement task; CORRECTIVE-C owns the taxonomy and may name
+transitions differently.
 
 ```text
 LOCAL_TEXT                    → N / B sweep
