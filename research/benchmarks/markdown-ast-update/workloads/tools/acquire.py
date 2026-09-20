@@ -1092,6 +1092,12 @@ def check_inventory_closure(inv: dict, o: dict) -> None:
 
 
 def verify(cfg: dict, full: bool) -> None:
+    """Offline verification, bound to the frozen lock (same authority as
+    acquire/materialize): every SOURCE.json must match its lock entry
+    (repository_url, commit_sha, storage_policy, source_manifest_identity)
+    and every derived manifest must match the hash recorded IN the lock —
+    not merely recompute from current inputs. Structural closure, config
+    correspondence, inventory closure, and local byte checks run on top."""
     lock = load_lock()
     if lock is None:
         fail("source-lock.json does not exist — nothing to verify")
@@ -1113,6 +1119,7 @@ def verify(cfg: dict, full: bool) -> None:
     for sid in sorted(objs):
         o = objs[sid]
         c = cfg_by_id[sid]
+        e = lock_by_id[sid]
         check_source_closure(o)
         source_dir = SOURCES_DIR / sid
         actual = sorted(
@@ -1120,6 +1127,25 @@ def verify(cfg: dict, full: bool) -> None:
             if p.is_file())
         expected = sorted(f["snapshot_path"] for f in o["files"])
         extra = [p for p in actual if p not in set(expected)]
+        # FROZEN LOCK AUTHORITY: the SOURCE manifest must be the one the lock
+        # pinned — identity drift fails even with no local bytes to check
+        if o.get("source_id") != sid:
+            fail(f"[{sid}] SOURCE.json source_id mismatch (lock authority)")
+        if o["repository_url"] != e["repository_url"]:
+            fail(f"[{sid}] SOURCE.json repository_url does not match the frozen "
+                 "lock — SOURCE identity drift rejected by verify")
+        if o["commit_sha"] != e["commit_sha"]:
+            fail(f"[{sid}] SOURCE.json commit_sha does not match the frozen "
+                 "lock pin — SOURCE identity drift rejected by verify")
+        if o["storage_policy"] != e["storage_policy"]:
+            fail(f"[{sid}] SOURCE.json storage_policy does not match the frozen "
+                 "lock — policy drift rejected by verify")
+        identity = source_manifest_identity(o)
+        if identity != e["source_manifest_hash"]:
+            fail(f"[{sid}] SOURCE.json identity {identity[:12]} != frozen lock "
+                 f"{e['source_manifest_hash'][:12]} — manifest drift rejected "
+                 "by verify (any field change, including per-file sha256, is "
+                 "authority drift; 'relock' is the only legitimate path)")
         # policy/config correspondence (SOURCE must mirror the frozen config)
         if o["snapshot_policy"]["include"] != c["include"] or \
                 o["snapshot_policy"]["exclude"] != c["exclude"] or \
@@ -1170,6 +1196,17 @@ def verify(cfg: dict, full: bool) -> None:
         p = INVENTORY_DIR / sid
         if not p.exists() or sha256_hex(p.read_bytes()) != h:
             fail(f"inventory manifest {sid} missing or does not match the lock")
+    # FROZEN LOCK AUTHORITY for derived state: the on-disk derived manifests
+    # must be byte-identical to what the lock recorded — recomputing from the
+    # current (possibly tampered) inputs is NOT authority
+    for name, key in ((UNIVERSE_PATH.name, "candidate_universe_manifest_sha256"),
+                      (DUPLICATES_PATH.name, "exact_duplicates_manifest_sha256"),
+                      (INVENTORY_SUMMARY_PATH.name,
+                       "inventory_summary_manifest_sha256")):
+        p = MANIFESTS_DIR / name
+        if not p.exists() or sha256_hex(p.read_bytes()) != lock[key]:
+            fail(f"derived manifest {name} does not match the hash recorded in "
+                 "the frozen lock — derived state drift rejected by verify")
     expected_derived = {
         UNIVERSE_PATH.name: sha256_hex(manifest_bytes(
             render_universe_manifest(cfg, objs, invs))),

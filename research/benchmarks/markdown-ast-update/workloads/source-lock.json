@@ -2,7 +2,7 @@
   "acquisition_config": "acquisition-config.json",
   "acquisition_config_sha256": "a79acde88fec5ae7cf97a9241a273f3348342b88946918f29b0341ff0ec8c594",
   "acquisition_tool": "tools/acquire.py",
-  "acquisition_tool_sha256": "c728430b18952cd5344618715257930780248ae2e8be36c90898c35611830270",
+  "acquisition_tool_sha256": "afd36a485998cf37bec426d591d72b84914a4701c785afa30df65ba074a38063",
   "authority_issue": "33",
   "campaign_id": "MARKIT-REAL-WORKLOAD-ACQUISITION-1",
   "candidate_universe_manifest": "candidate-universe-v1.json",

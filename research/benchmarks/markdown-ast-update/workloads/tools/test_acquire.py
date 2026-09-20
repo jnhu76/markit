@@ -146,14 +146,14 @@ class WorkspaceTest(AcquireTestCase):
             },
             "extraction_method": "test",
             "file_count": 2,
-            "total_bytes": 14,
+            "total_bytes": 13,
             "files": [
                 {"upstream_path": "README.md", "snapshot_path": "files/README.md",
-                 "sha256": sha256_hex(b"# hi\n"), "bytes": 6,
-                 "git_blob_sha1": "b" * 40},
+                 "sha256": sha256_hex(b"# hi\n"), "bytes": 5,
+                 "git_blob_sha1": acquire.git_blob_id(b"# hi\n")},
                 {"upstream_path": "docs/a.md", "snapshot_path": "files/docs/a.md",
                  "sha256": sha256_hex(b"hello md"), "bytes": 8,
-                 "git_blob_sha1": "c" * 40},
+                 "git_blob_sha1": acquire.git_blob_id(b"hello md")},
             ],
             "retrieved_at": "2026-01-01T00:00:00Z",
         }
@@ -172,19 +172,19 @@ class WorkspaceTest(AcquireTestCase):
             "commit_sha": PIN,
             "inventory_definition": "test",
             "repository_md_files": 3,
-            "repository_md_bytes": 19,
+            "repository_md_bytes": 18,
             "snapshot_md_files": 2,
-            "snapshot_md_bytes": 14,
+            "snapshot_md_bytes": 13,
             "entries": [
                 {"upstream_path": "README.md", "git_blob_sha1": "b" * 40,
-                 "bytes": 6, "selected_for_snapshot": True,
+                 "bytes": 5, "selected_for_snapshot": True,
                  "selection_reason": "included:/*.md"},
-                {"upstream_path": "guides/contributing.md", "git_blob_sha1": "d" * 40,
-                 "bytes": 5, "selected_for_snapshot": False,
-                 "selection_reason": "not matched by any include pattern"},
                 {"upstream_path": "docs/a.md", "git_blob_sha1": "c" * 40,
                  "bytes": 8, "selected_for_snapshot": True,
                  "selection_reason": "included:/docs/**/*.md"},
+                {"upstream_path": "guides/contributing.md", "git_blob_sha1": "d" * 40,
+                 "bytes": 5, "selected_for_snapshot": False,
+                 "selection_reason": "not matched by any include pattern"},
             ],
         }
         acquire.write_json_deterministic(acquire.INVENTORY_DIR / "test-src.json", inv)
@@ -483,7 +483,7 @@ class ManifestOrdering(WorkspaceTest):
         s = acquire.render_inventory_summary({"test-src": inv})
         self.assertEqual([r["source_id"] for r in s["sources"]], ["test-src"])
         self.assertEqual(s["totals"]["repository_md_files"], 3)
-        self.assertEqual(s["totals"]["snapshot_md_bytes"], 14)
+        self.assertEqual(s["totals"]["snapshot_md_bytes"], 13)
 
 
 class ConfigValidation(AcquireTestCase):
@@ -649,6 +649,84 @@ class LockReplayStateMachine(WorkspaceTest):
         acquire.acquire(self.cfg)
         self.assertEqual(workspace_digest(self.tmp), before,
                          "strict replay mutated derived manifests or anything else")
+
+
+class VerifyLockAuthority(WorkspaceTest):
+    """Corrective 2: verify is bound to the frozen lock — the SAME authority
+    as acquire/materialize. A SOURCE.json that passes structural closure but
+    drifts from the lock must fail verify even with no local bytes."""
+
+    def tamper_source_sha256(self) -> None:
+        sj = acquire.SOURCES_DIR / "test-src" / "SOURCE.json"
+        obj = json.loads(sj.read_text())
+        obj["files"][0]["sha256"] = "e" * 64  # structurally valid 64-hex
+        acquire.write_json_deterministic(sj, obj)
+
+    def test_source_sha256_drift_fails_verify_without_local_bytes(self):
+        # the exact review scenario: fresh clone, no materialized bytes,
+        # structurally-consistent SOURCE with a swapped per-file sha256
+        shutil.rmtree(acquire.SOURCES_DIR / "test-src" / "files")
+        self.tamper_source_sha256()
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.ToolExit):
+            acquire.verify(self.cfg, full=False)
+        self.assertIn("frozen lock", buf.getvalue())
+        # and the acquire/materialize authority rejects the same state
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.PreflightError):
+            acquire.preflight_replay(self.cfg)
+        self.assertIn("may never be rewritten", buf.getvalue())
+
+    def test_source_sha256_drift_fails_verify_with_local_bytes(self):
+        self.tamper_source_sha256()
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.ToolExit):
+            acquire.verify(self.cfg, full=False)
+        # the lock-identity gate fires before any per-file byte check
+        self.assertIn("frozen lock", buf.getvalue())
+
+    def test_source_and_derived_coordinated_drift_fails_verify(self):
+        # attacker regenerates ALL derived manifests from the tampered state;
+        # the drift is coordinated, so every self-consistency check passes —
+        # verify must still fail via the lock-pinned SOURCE identity
+        shutil.rmtree(acquire.SOURCES_DIR / "test-src" / "files")
+        self.tamper_source_sha256()
+        objs = acquire.load_all_source_objs()
+        invs = acquire.load_inventories()
+        acquire.write_json_deterministic(
+            acquire.UNIVERSE_PATH,
+            acquire.render_universe_manifest(self.cfg, objs, invs))
+        acquire.write_json_deterministic(
+            acquire.DUPLICATES_PATH, acquire.render_duplicates_manifest(objs))
+        acquire.write_json_deterministic(
+            acquire.INVENTORY_SUMMARY_PATH,
+            acquire.render_inventory_summary(invs))
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.ToolExit):
+            acquire.verify(self.cfg, full=False)
+        self.assertIn("frozen lock", buf.getvalue())
+
+    def test_derived_manifest_only_drift_fails_verify(self):
+        u = json.loads(acquire.UNIVERSE_PATH.read_text())
+        u["note"] = "tampered note"
+        acquire.write_json_deterministic(acquire.UNIVERSE_PATH, u)
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.ToolExit):
+            acquire.verify(self.cfg, full=False)
+        self.assertIn("candidate-universe-v1.json does not match the hash "
+                      "recorded in the frozen lock", buf.getvalue())
+
+    def test_verify_passes_untouched_and_full_requires_bytes(self):
+        # positive control: untouched state passes plain verify...
+        acquire.verify(self.cfg, full=False)
+        # ...even in a fresh-clone state with no materialized bytes...
+        shutil.rmtree(acquire.SOURCES_DIR / "test-src" / "files")
+        acquire.verify(self.cfg, full=False)
+        # ...but --full demands the bytes
+        buf = io.StringIO()
+        with redirect_stderr(buf), self.assertRaises(acquire.ToolExit):
+            acquire.verify(self.cfg, full=True)
+        self.assertIn("materialize", buf.getvalue())
 
 
 if __name__ == "__main__":

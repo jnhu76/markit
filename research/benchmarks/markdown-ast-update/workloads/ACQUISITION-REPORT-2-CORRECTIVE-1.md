@@ -1,5 +1,13 @@
 # ACQUISITION REPORT 2 — CORRECTIVE 1 (MARKIT-REAL-WORKLOAD-ACQUISITION-1)
 
+> **STATUS (CORRECTIVE-2):** one MAJOR remained after this corrective —
+> `verify` did not bind to the frozen lock (it checked structural closure
+> and recomputed derived manifests from current inputs, without enforcing
+> lock-pinned SOURCE identity or lock-recorded derived hashes). Fixed in
+> `ACQUISITION-REPORT-3-CORRECTIVE-2.md`, which also supersedes this
+> report's determinism digest (`b7d7c044…` → `042c98ac…`, re-locked tool
+> hash) and adds the verify negative tests. Everything else below stands.
+
 Corrective round addressing the fresh-context human adversarial review of
 PR #34 (verdict `CORRECTIVE_REQUIRED / DO NOT MERGE YET`). This campaign
 remains **acquisition only**: no H0-H4, no eligibility scanning, no static

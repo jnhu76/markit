@@ -57,6 +57,16 @@ REPLAY          (acquire / materialize / verify — never write the lock)
         (rejects SOURCE identity changes / manifest drift)
       - storage-policy correspondence
     Any mismatch = FAIL with a nonzero exit BEFORE a single byte is written.
+
+verify is bound to the SAME frozen authority: every SOURCE.json must match
+its lock entry (repository_url, commit_sha, storage_policy,
+source_manifest_hash) and the on-disk derived manifests
+(candidate-universe / exact-duplicates / inventory-summary) must match the
+hashes recorded IN the lock — recomputing from current inputs is not
+authority. SOURCE drift therefore fails verify even on a fresh clone with
+no materialized bytes; structural closure, config correspondence, inventory
+closure, and local byte checks run on top (--full additionally requires
+100% materialization and inventory-vs-tree closure).
 ```
 
 Ordinary `acquire`/`materialize` therefore never re-pin, never refresh, and
@@ -100,7 +110,8 @@ workloads/
 ├── tools/test_acquire.py         offline unit suite (glob semantics, lock
 │                                 state machine, closures, ordering)
 ├── ACQUISITION-REPORT-1.md       round-1 acquisition report (as executed)
-├── ACQUISITION-REPORT-2-CORRECTIVE-1.md  corrective report + evidence
+├── ACQUISITION-REPORT-2-CORRECTIVE-1.md  corrective-1 report + evidence
+└── ACQUISITION-REPORT-3-CORRECTIVE-2.md  corrective-2 report + evidence
 └── _cache/repos/                 rebuildable partial clones (gitignored)
 ```
 
@@ -188,7 +199,7 @@ only). Network is needed by `init`/`relock`/`materialize` only.
 ```bash
 cd research/benchmarks/markdown-ast-update/workloads
 
-python3 tools/test_acquire.py          # offline unit suite (45 tests)
+python3 tools/test_acquire.py          # offline unit suite (50 tests)
 python3 tools/acquire.py plan          # offline frozen-frame enumeration
 python3 tools/acquire.py acquire       # strict replay: preflight + manifest closure
 python3 tools/acquire.py materialize   # fetch pinned bytes locally + verify
