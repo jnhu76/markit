@@ -267,6 +267,16 @@ UNIQUE PHYSICAL      36 files
 Cross-set physical overlap (logical memberships may share a file):
 REPRESENTATIVE∩EXTREMAL 1 · EXTREMAL∩FULL_DOCUMENT 2 · all other pairs 0.
 
+**FULL_DOCUMENT_SET role.** This is the complete-real-document macro
+surface. It may later support full parse/state construction, real
+incremental edits, and macro sanity checks. It is not the scaling surface,
+not the asymptotic surface, and not the worst-case surface: full-document
+selection maximizes realism and structural diversity within the frozen
+real acquisition universe; it is not designed to manufacture large inputs
+for complexity analysis. See
+`workloads/PERFORMANCE-SURFACE-BOUNDARY-v1.md` for the frozen
+real-vs-scaling workload boundary.
+
 Mechanical-relaxation events: **none** (`cap_relaxations = []`; no project
 or domain cap ever needed relaxation). Full-document rejections: **none**.
 Seventh full document: mechanical rule triggered by the uncovered
@@ -430,6 +440,61 @@ deterministically with a complete selection trace. Everything downstream —
 transition taxonomy, canonical edits, BREAK/RESTORE pairs, payload
 identity, runner load, and the workload freeze review — belongs to
 CORRECTIVE-C and the final G1–G8 review.
+
+## Settlement (PR #38, post-review corrective)
+
+Human review of the Draft PR found one methodological ambiguity, now
+closed — not a selection defect. The real complete-file workload and the
+controlled scaling workload are two different workloads with two different
+roles; conflating them would let a small-corpus fact be read as a scaling
+conclusion. The boundary is frozen in
+`workloads/PERFORMANCE-SURFACE-BOUNDARY-v1.md`:
+
+```text
+SURFACE R — REAL      complete selected real files: realism, regime
+                      reproduction, external validity
+SURFACE S — SCALE     controlled synthetic sweeps: N/B/L/K/F scaling,
+                      crossover, cliffs, causal attribution
+SURFACE X — BOUNDARY  grammar/state edge cases: failure regimes
+```
+
+R does not replace S; S does not establish prevalence; X does not establish
+frequency. Controlled dimensions N (source bytes), B (affected region),
+L (propagation distance — a design variable, explicitly NOT H4's
+horse-specific `convergence_distance`), K (structural cardinality), and
+F (dependency fanout) are frozen as definitions only. The frozen #22 scale
+points (64 KiB / 1 MiB / 16 MiB) are unchanged; intermediate points remain
+subject to the existing observed-crossover rule. The future
+PERFORMANCE_MATRIX_FREEZE gate (between CORRECTIVE-C and #31 timing) is
+reserved, not granted. The 36-file selection membership is unchanged.
+
+Selected-source size facts (recomputed at settlement from the selected
+artifacts and verified byte-for-byte against the materialized sources):
+
+```text
+ALL 36 UNIQUE PHYSICAL   total 2,053,393 B (2,005.3 KiB)
+                         min 76 · p25 2,314 · p50 6,575 ·
+                         p75 41,027 · p95 206,953 · max 841,419 B
+
+REPRESENTATIVE_SET (18)  total 115,086 B (112.4 KiB)
+                         min 416 · p25 1,890 · p50 3,253 ·
+                         p75 6,718 · p95 14,926 · max 44,914 B
+
+FULL_DOCUMENT_SET (7)    total 1,573,676 B (1,536.8 KiB)
+  841,419 B   (821.7 KiB)  cpp-core-guidelines CppCoreGuidelines.md
+  312,155 B   (304.8 KiB)  node doc/api/fs.md
+  171,886 B   (167.9 KiB)  rust-rfcs 3935-Project-Goals-2026.md
+  153,179 B   (149.6 KiB)  kubernetes-keps 1040-…/README.md
+   40,398 B    (39.5 KiB)  rust-book ch02-00-guessing-game-tutorial.md
+   32,964 B    (32.2 KiB)  d2l-en linear-algebra.md
+   21,675 B    (21.2 KiB)  openmlsys accelerator_practise.md
+```
+
+The aggregate is small by real-population fact, not by design intent; per
+the boundary contract it establishes nothing about scaling or asymptotic
+behavior. Small files in the selection (e.g. the 76–89 B MyST include
+stubs, the 416 B exercise note) remain valid evidence of observed real
+structural regimes.
 
 ## Adversarial review (§48)
 

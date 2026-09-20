@@ -56,7 +56,10 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   artifacts (`analysis/`: domain strata input, materialization
   verification, eligibility bias, redundancy, uncovered space) and
   selection artifacts (`selections/`: frozen contract + config, the four
-  logical sets, selection trace, selected files, coverage report).
+  logical sets, selection trace, selected files, coverage report); the
+  real-vs-scaling workload boundary contract
+  (`PERFORMANCE-SURFACE-BOUNDARY-v1.md`: surfaces R/S/X, N/B/L/K/F
+  definitions, PERFORMANCE_MATRIX_FREEZE reservation).
   `sources/` stores byte-exact upstream Markdown snapshots pinned by
   immutable commit SHAs with per-file hashes; `manifests/` records
   candidate-universe membership and provenance; `_cache/` is a
