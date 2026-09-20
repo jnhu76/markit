@@ -39,7 +39,26 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 : Source/provenance/fidelity records for mechanism extraction.
 
 `grammar/`
-: BENCH-GRAMMAR-v1 and normalized-result semantics.
+: BENCH-GRAMMAR-v1 and normalized-result semantics, plus the CORRECTIVE-A
+  grammar-lane registry (`GRAMMAR-LANES-v1.md`, generated
+  `grammar-lanes-v1.json`) and the transition-oracle contract
+  (`TRANSITION-ORACLE-v1.md`).
+
+`workloads/`
+: Stage-A real-Markdown workload construction substrate (#35). Owned layers:
+  acquisition provenance/lock/inventory (`sources/`, `licenses/`,
+  `acquisition-config.json`, `tools/`, `manifests/` — merged acquisition
+  authority from PR #34); profiler contract and schemas (`profiles/`);
+  payload lifecycle contract and schemas (`payloads/`);
+  contract-validation pilot (`pilots/`); deferred attribution contracts
+  (`attribution/`); the CORRECTIVE-A adversarial review record
+  (`REVIEW-CORRECTIVE-A-ADVERSARIAL-v1.md`). `sources/` stores byte-exact
+  upstream Markdown snapshots pinned by immutable commit SHAs with per-file
+  hashes; `manifests/` records candidate-universe membership and provenance;
+  `_cache/` is a rebuildable, gitignored acquisition cache that is not
+  benchmark authority. No timing, no selection, and no mechanism facts
+  belong here. See `workloads/README.md` and
+  `workloads/ACQUISITION-REPORT-1.md`.
 
 `corpus/`
 : Frozen synthetic corpus definitions and receipts. Under the R6 execution
@@ -80,21 +99,15 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 `mechanisms/`
 : H0-H4 mechanism-owned state and policy plus the R1 null mechanism.
 
+`semantics/`
+: CORRECTIVE-A semantic substrate: grammar-lane registry, REAL-MARKDOWN
+  profiler, transition oracle, payload lifecycle, and the semantic pilot
+  driver. Depends on `common/`, `oracle/`, and `shared-grammar/`; it must not
+  depend on `mechanisms/`, `instrumentation/`, or `runner/`, and it contains
+  no mechanism, timing, or selection policy.
+
 `scripts/`
 : Verification, campaign orchestration, and reproducibility entrypoints.
-
-### #33 real-workload acquisition substrate
-
-`workloads/`
-: Real Markdown workload acquisition substrate for the #33 real-first
-  Stage A pipeline. `sources/` stores byte-exact upstream Markdown
-  snapshots pinned by immutable commit SHAs with per-file hashes;
-  `manifests/` records candidate-universe membership and provenance;
-  `_cache/` is a rebuildable, gitignored acquisition cache that is not
-  benchmark authority. Acquisition is the only phase allowed here: no
-  eligibility filtering, no workload selection, no edit traces, and no
-  H0-H4 execution. See `workloads/README.md` and
-  `workloads/ACQUISITION-REPORT-1.md`.
 
 ### #31 real-project performance lifecycle
 
@@ -166,6 +179,9 @@ analysis command.
 ## Current execution order
 
 ```text
+#35 CORRECTIVE-A  semantic substrate (lanes/profiler/oracle/lifecycle)  <- NOW
+#35 CORRECTIVE-B  profile all candidates, publish bias, select sets
+#35 CORRECTIVE-C  payload freeze, BREAK/RESTORE, traces, harness dry-run
 #31 P0  project reconnaissance + eligibility/trace policy freeze
 #31 P1  R6 full parse/state construction -> results/
 #31 P2  R7/R8 real-project edit measurements -> results/
@@ -173,6 +189,10 @@ analysis command.
 #31 P4  R10 targeted synthetic scaling explanations -> analysis/
 #31 P5  R11 optimization-sensitivity / residual attribution -> analysis/
 ```
+
+CORRECTIVE-A grants no freeze: `REAL_WORKLOAD_FREEZE_PASS`,
+`CORE_REAL_WORKLOAD_FREEZE_PASS`, and `PROJECT_CORPUS_FREEZE_PASS` remain
+ungranted, and no H0-H4 timing may run before the #35 §10 gates pass.
 
 R9 representation/query remains a required orthogonal surface as specified by
 the ROADMAP. Final report/Weakness Map authority remains with the later final

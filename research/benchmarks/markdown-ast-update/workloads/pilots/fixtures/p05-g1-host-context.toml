@@ -1,0 +1,39 @@
+# SEMANTIC_PILOT_SET — P05
+#
+# Host-context rule (CORRECTIVE-A §C2, test 2 / Q2). Markdown-looking bytes
+# inside a fence body or a code span are content, never host syntax: the G1
+# oracle cannot produce a Table or a math construct there, and the profiler
+# may only report them as non-host candidates.
+schema = "semantic-pilot-fixture-v1"
+id = "P05"
+name = "G1 host-context exclusion: table/math-looking bytes inside fence and code span"
+role = "profiler_validation"
+lanes = ["G1"]
+source = '''Text before.
+
+```text
+| a | b |
+| --- | --- |
+$not math$
+```
+
+`$inline$` stays code.
+
+After.
+'''
+source_sha256 = "b906b9ca03f052500c999d2b59313b32a1eee94dba4e921af5dcd515032c858d"
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = true
+block_count = 4
+max_container_depth = 0
+table_count = 0
+facts = [
+  { kind = "code_block_fenced", status = "recognized", span = [14, 60] },
+  { kind = "code_span", status = "recognized", span = [62, 72] },
+  { kind = "table", status = "not_recognized", span = [22, 45], host_context = false, reason = "non_host_context" },
+  { kind = "inline_math", status = "not_recognized", span = [46, 56], host_context = false, reason = "non_host_context" },
+  { kind = "inline_math", status = "not_recognized", span = [63, 71], host_context = false, reason = "non_host_context" },
+]
+absent_kinds = ["table"]

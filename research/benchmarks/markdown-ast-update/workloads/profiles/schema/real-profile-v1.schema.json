@@ -1,0 +1,581 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Profile",
+  "description": "A complete profile of one source.",
+  "type": "object",
+  "properties": {
+    "lanes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LaneProfile"
+      }
+    },
+    "profiler_version": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceFacts"
+    }
+  },
+  "required": [
+    "schema",
+    "profiler_version",
+    "source",
+    "lanes"
+  ],
+  "$defs": {
+    "EligibilityFacts": {
+      "description": "ELIGIBILITY_FACT record for one grammar lane (#35 §3's third class).",
+      "type": "object",
+      "properties": {
+        "grammar_id": {
+          "type": "string"
+        },
+        "lane_valid": {
+          "description": "The source has a defined interpretation under this lane.",
+          "type": "boolean"
+        },
+        "scope_blockers": {
+          "description": "Host-context candidates that block strict scope cleanliness.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyntaxFact"
+          }
+        },
+        "strict_scope_clean": {
+          "description": "No host-context candidate outside the lane's construct set.",
+          "type": "boolean"
+        },
+        "strict_scope_clean_rule": {
+          "description": "Frozen statement of what `strict_scope_clean` means for this lane.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "lane_valid",
+        "strict_scope_clean",
+        "scope_blockers",
+        "strict_scope_clean_rule"
+      ]
+    },
+    "FactReason": {
+      "description": "Machine-readable reason attached to every non-recognized fact.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "recognized_under_lane_oracle"
+          ]
+        },
+        {
+          "description": "Candidate present; the lane's rules make it ordinary text.",
+          "type": "string",
+          "const": "interprets_as_text_under_lane"
+        },
+        {
+          "description": "Candidate looks like the construct but fails a frozen lane rule.",
+          "type": "string",
+          "const": "candidate_rejected_by_lane_rule"
+        },
+        {
+          "description": "The construct is outside this lane's construct set entirely.",
+          "type": "string",
+          "const": "outside_lane_construct_set"
+        },
+        {
+          "description": "Candidate bytes are inside a code/fence/raw region: not host syntax.",
+          "type": "string",
+          "const": "non_host_context"
+        },
+        {
+          "description": "The owning lane is deferred (no frozen semantics/oracle).",
+          "type": "string",
+          "const": "lane_semantics_deferred"
+        },
+        {
+          "description": "Two declared lanes disagree; recorded instead of resolved.",
+          "type": "string",
+          "const": "ambiguous_across_declared_lanes"
+        }
+      ]
+    },
+    "LaneProfile": {
+      "description": "Per-lane profile record.",
+      "type": "object",
+      "properties": {
+        "configuration": {
+          "type": "string"
+        },
+        "consistency_warnings": {
+          "description": "Registry/parse inconsistencies observed while assembling facts.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "eligibility": {
+          "$ref": "#/$defs/EligibilityFacts"
+        },
+        "grammar_id": {
+          "type": "string"
+        },
+        "lane_id": {
+          "type": "string"
+        },
+        "lane_version": {
+          "type": "string"
+        },
+        "structural": {
+          "$ref": "#/$defs/StructuralFacts"
+        },
+        "syntax_facts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyntaxFact"
+          }
+        },
+        "unexpected_oracle_tags": {
+          "description": "Constructs the lane oracle emitted that the frozen configuration\ncannot produce (recorded, never silently relabeled).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "lane_id",
+        "grammar_id",
+        "lane_version",
+        "configuration",
+        "eligibility",
+        "syntax_facts",
+        "structural"
+      ]
+    },
+    "LaneScopeGrade": {
+      "description": "Evidence grade of a fact. Only `StrictLaneCoverage` may be counted as\nstrict lane coverage or as strict H0-H4 comparison evidence.",
+      "oneOf": [
+        {
+          "description": "Semantically qualified lane scope with a frozen oracle.",
+          "type": "string",
+          "const": "strict_lane_coverage"
+        },
+        {
+          "description": "The lane declares the construct (spec text frozen) but this\ncorrective does not qualify oracle/coverage evidence for it.",
+          "type": "string",
+          "const": "contract_declared_not_qualified"
+        },
+        {
+          "description": "The candidate belongs to a construct set this lane does not enable.",
+          "type": "string",
+          "const": "out_of_lane_candidate"
+        },
+        {
+          "description": "The owning lane has no frozen semantics yet (G2 math).",
+          "type": "string",
+          "const": "lane_deferred"
+        }
+      ]
+    },
+    "NewlineForm": {
+      "type": "string",
+      "enum": [
+        "none",
+        "lf",
+        "crlf",
+        "mixed",
+        "cr"
+      ]
+    },
+    "RecognitionStatus": {
+      "description": "Recognition status (CORRECTIVE-A §C2). `NotRecognized` requires\ncandidate evidence; it never means \"absent, we did not look\".",
+      "oneOf": [
+        {
+          "description": "The lane's reference oracle produced a node of this kind.",
+          "type": "string",
+          "const": "recognized"
+        },
+        {
+          "description": "The lane's rules interpret this candidate as ordinary text, or the\ncandidate fails a frozen lane rule.",
+          "type": "string",
+          "const": "not_recognized"
+        },
+        {
+          "description": "Two declared lanes disagree about the candidate (e.g. `$…$` under\nG1 text semantics vs the deferred G2 math lane) and this\ncorrective does not silently pick one.",
+          "type": "string",
+          "const": "ambiguous"
+        },
+        {
+          "description": "The construct belongs to a lane whose semantics are not frozen yet.",
+          "type": "string",
+          "const": "unknown"
+        }
+      ]
+    },
+    "SourceFacts": {
+      "description": "SOURCE_FACT record (parser-independent).",
+      "type": "object",
+      "properties": {
+        "ascii_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "cjk_byte_share": {
+          "type": "number",
+          "format": "double"
+        },
+        "cjk_bytes": {
+          "description": "UTF-8 bytes that decode to code points in the CJK blocks the\nprofiler contract enumerates; the byte share is over `file_bytes`.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "cr_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "crlf_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "file_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "final_line_terminated": {
+          "type": "boolean"
+        },
+        "lf_count": {
+          "description": "LF-terminated lines; the counts make the newline form explicit\nwithout rewriting any byte.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "newline_form": {
+          "$ref": "#/$defs/NewlineForm"
+        },
+        "non_ascii_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "source_sha256": {
+          "type": "string"
+        },
+        "utf8_valid": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source_sha256",
+        "file_bytes",
+        "line_count",
+        "lf_count",
+        "cr_count",
+        "crlf_count",
+        "final_line_terminated",
+        "newline_form",
+        "ascii_bytes",
+        "non_ascii_bytes",
+        "cjk_bytes",
+        "cjk_byte_share",
+        "utf8_valid"
+      ]
+    },
+    "Span": {
+      "description": "Half-open UTF-8 byte span, relative to the complete document.",
+      "type": "object",
+      "properties": {
+        "end": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "start": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ]
+    },
+    "StructuralFacts": {
+      "description": "STRUCTURAL_FACT record for one grammar lane (CORRECTIVE-A §C3).",
+      "type": "object",
+      "properties": {
+        "block_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "block_kinds": {
+          "description": "Echoed counting rule: the exact kinds counted as blocks.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyntaxKind"
+          }
+        },
+        "code_occupancy": {
+          "type": "number",
+          "format": "double"
+        },
+        "container_depth_convention": {
+          "type": "string"
+        },
+        "container_kinds": {
+          "description": "Echoed counting rule: the exact kinds that contribute depth.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyntaxKind"
+          }
+        },
+        "fence_density_per_kib": {
+          "type": "number",
+          "format": "double"
+        },
+        "fenced_code_content_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "grammar_id": {
+          "type": "string"
+        },
+        "largest_block_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "largest_block_rule": {
+          "type": "string"
+        },
+        "largest_block_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Span"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "math_occupancy": {
+          "description": "`None` when the metric is not applicable to this lane (\"math\noccupancy where applicable\").",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "math_occupancy_note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "max_container_depth": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "reference_definition_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reference_definition_counting": {
+          "type": "string"
+        },
+        "reference_density_per_kib": {
+          "type": "number",
+          "format": "double"
+        },
+        "reference_use_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "table": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TableFacts"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "zero_denominator_rule": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "block_kinds",
+        "container_kinds",
+        "block_count",
+        "largest_block_bytes",
+        "max_container_depth",
+        "container_depth_convention",
+        "largest_block_rule",
+        "zero_denominator_rule",
+        "fence_density_per_kib",
+        "code_occupancy",
+        "fenced_code_content_bytes",
+        "reference_definition_count",
+        "reference_definition_counting",
+        "reference_use_count",
+        "reference_density_per_kib"
+      ]
+    },
+    "SyntaxFact": {
+      "description": "One syntax occurrence fact. `host_context == false` facts are recorded\nfor transparency (candidate bytes inside code/fence/raw regions) and\nmust never be counted as host syntax or as coverage.",
+      "type": "object",
+      "properties": {
+        "detail": {
+          "description": "Kind-specific frozen detail (e.g. fence character for\n`code_block_fenced`, delimiter row text for `table`).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "grammar_id": {
+          "type": "string"
+        },
+        "host_context": {
+          "type": "boolean"
+        },
+        "lane_scope_grade": {
+          "$ref": "#/$defs/LaneScopeGrade"
+        },
+        "occurrence": {
+          "description": "Stable source-order occurrence index among facts with the same\n`grammar_id` + `syntax_kind` + `recognition_status` in this\nprofile. Serves as the frozen anchor identity for §11.1 tie-breaks.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "reason": {
+          "$ref": "#/$defs/FactReason"
+        },
+        "recognition_status": {
+          "$ref": "#/$defs/RecognitionStatus"
+        },
+        "source_end": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "source_start": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "syntax_kind": {
+          "$ref": "#/$defs/SyntaxKind"
+        }
+      },
+      "required": [
+        "grammar_id",
+        "syntax_kind",
+        "source_start",
+        "source_end",
+        "recognition_status",
+        "lane_scope_grade",
+        "host_context",
+        "reason",
+        "occurrence"
+      ]
+    },
+    "SyntaxKind": {
+      "description": "The closed syntax vocabulary shared by every lane. A lane declares\nwhich kinds it can recognize (`lanes::LaneSpecV1::recognized_kinds`);\nkinds outside that set can still appear as *candidate* facts with a\nnon-`Recognized` status.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "paragraph",
+            "heading_atx",
+            "heading_setext",
+            "block_quote",
+            "list",
+            "list_item",
+            "code_block_fenced",
+            "code_block_indented",
+            "html_block",
+            "thematic_break",
+            "reference_definition",
+            "table",
+            "table_header_row",
+            "table_row",
+            "table_cell",
+            "text",
+            "emphasis",
+            "strong",
+            "code_span",
+            "link_inline",
+            "link_reference",
+            "link_autolink",
+            "image",
+            "raw_html_inline",
+            "hard_break",
+            "soft_break",
+            "inline_math",
+            "display_math",
+            "strikethrough",
+            "task_list_item",
+            "front_matter",
+            "directive"
+          ]
+        },
+        {
+          "description": "Synthetic root of a lane parse; never emitted as a syntax fact.",
+          "type": "string",
+          "const": "document"
+        }
+      ]
+    },
+    "TableFacts": {
+      "description": "Syntax-specific table facts (#35 §4.2). Present only for lanes that\nrecognize the table extension.",
+      "type": "object",
+      "properties": {
+        "max_table_columns": {
+          "description": "Cells in the widest header row.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "max_table_rows_including_header": {
+          "description": "Largest row count including the header row.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "table_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "table_count",
+        "max_table_columns",
+        "max_table_rows_including_header"
+      ]
+    }
+  }
+}

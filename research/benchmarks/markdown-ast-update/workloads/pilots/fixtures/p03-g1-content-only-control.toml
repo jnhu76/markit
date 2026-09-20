@@ -1,0 +1,67 @@
+# SEMANTIC_PILOT_SET — P03
+#
+# Content-only control (CORRECTIVE-A §F3): the bytes change, the topology does
+# not. This exists so the transition framework can distinguish a content
+# change from a structural change without pretending they are the same
+# phenomenon. It also carries the chained-trace semantics case: every step's
+# coordinates belong to that step's pre-source.
+schema = "semantic-pilot-fixture-v1"
+id = "P03"
+name = "G1 content-only control + chained trace semantics"
+role = "transition"
+lanes = ["G1"]
+source = '''alpha
+'''
+source_sha256 = "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060"
+post_source = '''alphb
+'''
+post_source_sha256 = "85f03290ae89e66d38551781c74b1eb56bb14c9230110c48b54aa1e5c60237bb"
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = true
+block_count = 1
+max_container_depth = 0
+facts = [
+  { kind = "paragraph", status = "recognized", span = [0, 6] },
+]
+
+[transition]
+syntax_target = "text"
+expected_transition = "content_only_text_change"
+edit_family = "E1_LOCAL_TEXT"
+operation_variant = "replace_eq"
+break_edit = { edit_start = 0, edit_end = 5, inserted_text = "alphb" }
+post_strict_comparison_eligible = true
+
+[[transition.pre]]
+predicate = "kind_present"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "paragraph"
+
+[[transition.post]]
+predicate = "topology_equal"
+
+[[transition.post]]
+predicate = "text_content_differs"
+
+[[transition.post]]
+predicate = "kind_present"
+grammar_id = "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1"
+syntax_kind = "paragraph"
+
+[trace]
+trace_id = "P03-content-burst"
+form = "local_burst"
+
+[[trace.steps]]
+edit = { edit_start = 5, edit_end = 5, inserted_text = " beta" }
+expected_transition = "text_insert"
+
+[[trace.steps]]
+edit = { edit_start = 0, edit_end = 5, inserted_text = "gamma" }
+expected_transition = "content_replace"
+
+[[trace.steps]]
+edit = { edit_start = 5, edit_end = 10, inserted_text = "" }
+expected_transition = "text_delete"

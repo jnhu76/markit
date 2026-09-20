@@ -1,0 +1,55 @@
+# SEMANTIC_PILOT_SET — P06
+#
+# A known G0-vs-G1 semantic difference (CORRECTIVE-A §D). The same bytes are
+# two Setext headings under G1 and three paragraphs under G0. Lanes are not
+# interchangeable, and the profiler must say so lane by lane instead of
+# producing one ambiguous "Markdown profile".
+#
+# Also carries the partial position-dedup case: two heading anchors at
+# relative offsets 0.00 and 0.76 against targets 0.10/0.50/0.90 resolve to
+# EARLY -> anchor 1 and MIDDLE,LATE -> anchor 2, so one anchor is covered
+# once and the other is a deduplicated pair.
+schema = "semantic-pilot-fixture-v1"
+id = "P06"
+name = "G0 vs G1 Setext divergence + partial position dedup"
+role = "profiler_validation"
+lanes = ["G0", "G1"]
+source = '''Title
+=====
+
+Body text.
+
+End
+===
+'''
+source_sha256 = "0b76d414c7c0ede4174c6e5fdc7cfc5d4cb84f349496891357f9fef44e3666d2"
+
+[[expect]]
+lane = "G0"
+strict_scope_clean = false
+block_count = 3
+max_container_depth = 0
+facts = [
+  { kind = "paragraph", status = "recognized", span = [0, 11] },
+  { kind = "paragraph", status = "recognized", span = [13, 23] },
+  { kind = "heading_setext", status = "not_recognized", span = [0, 11], host_context = true, reason = "outside_lane_construct_set" },
+]
+absent_kinds = ["heading_setext", "heading_atx"]
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = true
+block_count = 3
+max_container_depth = 0
+facts = [
+  { kind = "heading_setext", status = "recognized", span = [0, 12] },
+  { kind = "heading_setext", status = "recognized", span = [25, 33] },
+  { kind = "paragraph", status = "recognized", span = [13, 24] },
+]
+absent_kinds = ["heading_atx", "table"]
+
+[position]
+lane = "G1"
+anchor_kind = "heading_setext"
+expected_resolutions = 2
+expected_deduplicated = true

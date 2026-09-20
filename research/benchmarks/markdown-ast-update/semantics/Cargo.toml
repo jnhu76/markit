@@ -1,0 +1,29 @@
+[package]
+name = "markit-mdbench-semantics"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# CORRECTIVE-A semantic substrate (#35): grammar lanes, profiler facts,
+# transition oracle, payload lifecycle, semantic pilot. This crate is
+# measurement-free by construction: it never names a clock and no H0-H4
+# mechanism depends on it.
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-shared-grammar = { workspace = true }
+pulldown-cmark = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+schemars = { workspace = true }
+toml = { workspace = true }
+
+[[bin]]
+name = "mdbench-semantic-pilot"
+path = "src/bin/mdbench-semantic-pilot.rs"
+
+[[bin]]
+name = "mdbench-gen-semantic-schema"
+path = "src/bin/mdbench-gen-semantic-schema.rs"

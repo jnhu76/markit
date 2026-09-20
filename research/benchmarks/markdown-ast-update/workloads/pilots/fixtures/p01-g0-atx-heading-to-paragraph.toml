@@ -1,0 +1,73 @@
+# SEMANTIC_PILOT_SET — P01
+#
+# G0 core transition: ATX heading -> paragraph by removing the real `# `
+# marker, plus the RESTORE leg. Also carries the position-dedup case: this
+# source has exactly one heading anchor, so EARLY/MIDDLE/LATE must collapse
+# onto it instead of being counted as three positions.
+schema = "semantic-pilot-fixture-v1"
+id = "P01"
+name = "G0 ATX heading to paragraph (BREAK/RESTORE)"
+role = "transition"
+lanes = ["G0"]
+source = '''# Title
+
+Body.
+'''
+source_sha256 = "22e4e5179a8a13b1b016a3bc9ab6e1c6e1c2eb9fc0215785ba75323fb5b4addc"
+post_source = '''Title
+
+Body.
+'''
+post_source_sha256 = "b652c7755cf5787e5d297aee464ca6984f9c7c3126de9f484fdc87a63500b6b0"
+
+[[expect]]
+lane = "G0"
+strict_scope_clean = true
+block_count = 2
+max_container_depth = 0
+facts = [
+  { kind = "heading_atx", status = "recognized", span = [0, 7] },
+  { kind = "paragraph", status = "recognized", span = [9, 14] },
+]
+absent_kinds = ["table", "heading_setext", "inline_math"]
+
+[transition]
+syntax_target = "heading_atx"
+expected_transition = "heading_atx_to_paragraph"
+edit_family = "ATX_HEADING_TOGGLE"
+operation_variant = "break"
+break_edit = { edit_start = 0, edit_end = 2, inserted_text = "" }
+restore_edit = { edit_start = 0, edit_end = 0, inserted_text = "# " }
+restore_exact = true
+post_strict_comparison_eligible = true
+
+[[transition.pre]]
+predicate = "kind_present"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "heading_atx"
+
+[[transition.post]]
+predicate = "kind_absent"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "heading_atx"
+
+[[transition.post]]
+predicate = "kind_present"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "paragraph"
+
+[[transition.restore_pre]]
+predicate = "kind_absent"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "heading_atx"
+
+[[transition.restore_post]]
+predicate = "kind_present"
+grammar_id = "BENCH-GRAMMAR-v1"
+syntax_kind = "heading_atx"
+
+[position]
+lane = "G0"
+anchor_kind = "heading_atx"
+expected_resolutions = 1
+expected_deduplicated = true

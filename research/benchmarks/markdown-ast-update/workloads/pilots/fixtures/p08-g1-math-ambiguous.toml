@@ -1,0 +1,41 @@
+# SEMANTIC_PILOT_SET — P08
+#
+# Ambiguous / unknown policy (CORRECTIVE-A §C2, test 4 / Q1). Math is owned by
+# the reserved G2 lane, whose semantics are deferred. Under G1 the same bytes
+# are ordinary text, so nothing may be classified silently: a complete
+# `$...$` / `$$...$$` candidate is reported `ambiguous` between the two
+# declared lanes, and a candidate that never closes stays `unknown`. Both
+# block strict scope cleanliness and both are visible as evidence.
+schema = "semantic-pilot-fixture-v1"
+id = "P08"
+name = "G1 math candidates: ambiguous (complete) and unknown (unterminated)"
+role = "profiler_validation"
+lanes = ["G0", "G1"]
+source = '''Inline $x + y$ math.
+
+$$
+a = b
+$$
+
+Unterminated $$ here.
+'''
+source_sha256 = "d10bc526d5d51ae92c77a2cf9f5b83b8b91a064b6d06bd111a077eb4a478151a"
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = false
+max_container_depth = 0
+facts = [
+  { kind = "inline_math", status = "ambiguous", span = [7, 14], host_context = true, grade = "lane_deferred", reason = "ambiguous_across_declared_lanes" },
+  { kind = "display_math", status = "ambiguous", span = [22, 33], host_context = true, grade = "lane_deferred", reason = "ambiguous_across_declared_lanes" },
+  { kind = "display_math", status = "unknown", span = [48, 56], host_context = true, grade = "lane_deferred", reason = "lane_semantics_deferred" },
+]
+
+[[expect]]
+lane = "G0"
+strict_scope_clean = false
+max_container_depth = 0
+facts = [
+  { kind = "inline_math", status = "not_recognized", span = [7, 14], host_context = true, grade = "out_of_lane_candidate", reason = "outside_lane_construct_set" },
+  { kind = "display_math", status = "not_recognized", span = [22, 33], host_context = true, grade = "out_of_lane_candidate", reason = "outside_lane_construct_set" },
+]

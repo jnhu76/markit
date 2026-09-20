@@ -1,0 +1,46 @@
+# SEMANTIC_PILOT_SET — P07
+#
+# UTF-8 / CJK case (CORRECTIVE-A §D). Every span is a UTF-8 byte span on
+# character boundaries; a profiler that counts characters, UTF-16 units or
+# graphemes instead of bytes fails here. The source also contains an emoji in
+# a table cell (that is outside the Basic Multilingual Plane).
+schema = "semantic-pilot-fixture-v1"
+id = "P07"
+name = "UTF-8/CJK spans: heading, emphasis, code span, table with emoji cell"
+role = "profiler_validation"
+lanes = ["G0", "G1"]
+source = '''# 中文标题
+
+混合 *强调* 与 `代码` text.
+
+| 列一 | 列二 |
+| --- | --- |
+| 值 | 🐉 |
+'''
+source_sha256 = "2e6edb45e084e255c836fb978bb2956dd2a345c8d8f0c2e3b2da3461f5c54eab"
+
+[[expect]]
+lane = "G1"
+strict_scope_clean = true
+block_count = 3
+max_container_depth = 0
+table_count = 1
+facts = [
+  { kind = "heading_atx", status = "recognized", span = [0, 15] },
+  { kind = "emphasis", status = "recognized", span = [23, 31] },
+  { kind = "code_span", status = "recognized", span = [36, 44] },
+  { kind = "table", status = "recognized", span = [52, 101], grade = "strict_lane_coverage" },
+]
+absent_kinds = ["inline_math", "display_math"]
+
+[[expect]]
+lane = "G0"
+strict_scope_clean = false
+max_container_depth = 0
+facts = [
+  { kind = "heading_atx", status = "recognized", span = [0, 14] },
+  { kind = "emphasis", status = "recognized", span = [23, 31] },
+  { kind = "code_span", status = "recognized", span = [36, 44] },
+  { kind = "paragraph", status = "recognized", span = [16, 50] },
+]
+absent_kinds = ["table"]
