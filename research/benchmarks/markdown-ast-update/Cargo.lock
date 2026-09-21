@@ -982,6 +982,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-workload-freeze"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-block-local",
+ "markit-mdbench-common",
+ "markit-mdbench-fragment-reuse",
+ "markit-mdbench-full-rebuild",
+ "markit-mdbench-old-tree-subtree-reuse",
+ "markit-mdbench-oracle",
+ "markit-mdbench-restart-convergence",
+ "markit-mdbench-runner",
+ "markit-mdbench-semantics",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "memchr"
 version = "2.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

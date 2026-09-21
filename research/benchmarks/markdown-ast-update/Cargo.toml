@@ -9,6 +9,7 @@ members = [
     "shared-grammar",
     "semantics",
     "profile-select",
+    "workload-freeze",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
     "mechanisms/block-local",

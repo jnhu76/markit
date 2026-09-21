@@ -73,6 +73,111 @@ fn catch_phase<T>(phase: impl FnOnce() -> Result<T, FailureStatus>) -> Result<T,
     }
 }
 
+// ---------------------------------------------------------------------------
+// Correctness-only (dry-run) lane — CORRECTIVE-C A8
+// ---------------------------------------------------------------------------
+
+/// Result of one correctness-only case run: execution + correctness facts,
+/// and deliberately NOTHING else.
+///
+/// This is the harness's explicit correctness-only/dry-run mode (issue #35
+/// CORRECTIVE-C §A8 / G7): the same mechanism phases and the same oracle
+/// authority as the measured lanes, with no clock call and no
+/// `LaneMeasurement` of any kind — not timing, not work counters, not
+/// memory. Dry-run evidence therefore cannot be mistaken for (or converted
+/// into) performance evidence.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CorrectnessReport {
+    pub execution_status: ExecutionStatus,
+    pub correctness_status: CorrectnessStatus,
+    /// Deterministic checksum of the completed result, when the run
+    /// completed. Verified outside every timer — there are no timers here.
+    pub result_checksum: Option<u64>,
+    /// Mechanism failure, when any. `None` on pass.
+    pub failure: Option<FailureStatus>,
+}
+
+fn finish_correctness<S>(
+    outcome: Result<Completed<S>, FailureStatus>,
+    hook: &dyn CorrectnessHook<S>,
+) -> CorrectnessReport {
+    match outcome {
+        Ok(done) => CorrectnessReport {
+            execution_status: ExecutionStatus::Pass,
+            correctness_status: hook.verify(&done),
+            result_checksum: Some(done.result_checksum),
+            failure: None,
+        },
+        Err(failure) => CorrectnessReport {
+            execution_status: failure.into(),
+            correctness_status: CorrectnessStatus::NotChecked,
+            result_checksum: None,
+            failure: Some(failure),
+        },
+    }
+}
+
+/// UPDATE case, correctness-only: run the mechanism's update path once and
+/// verify it against the hook. No clock is constructed or consulted; no
+/// measurement value exists.
+pub fn run_update_correctness<M>(
+    mechanism: &M,
+    old_source: &Source,
+    post_source: &Source,
+    edit: &CanonicalEdit,
+    old_state: M::State,
+    hook: &dyn CorrectnessHook<M::State>,
+) -> CorrectnessReport
+where
+    M: Mechanism,
+{
+    let (old, post, edit) = (
+        black_box(old_source),
+        black_box(post_source),
+        black_box(edit),
+    );
+    let outcome = {
+        let mut sink = NoopWorkSink;
+        let mut cx = MechanismContext::new(&mut sink);
+        catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state, &mut cx)).and_then(
+            |prep| {
+                catch_phase(|| {
+                    let pending =
+                        mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
+                    let done = mechanism.complete(pending)?;
+                    black_box(&done);
+                    Ok(done)
+                })
+            },
+        )
+    };
+    finish_correctness(outcome, hook)
+}
+
+/// FULL_PARSE case, correctness-only: clean parse + complete + verify. No
+/// clock, no measurement value.
+pub fn run_full_parse_correctness<M>(
+    mechanism: &M,
+    source: &Source,
+    hook: &dyn CorrectnessHook<M::State>,
+) -> CorrectnessReport
+where
+    M: Mechanism,
+{
+    let source = black_box(source);
+    let outcome = {
+        let mut sink = NoopWorkSink;
+        let mut cx = MechanismContext::new(&mut sink);
+        catch_phase(|| {
+            let pending = mechanism.full_parse::<NoopWorkSink>(source, &mut cx)?;
+            let done = mechanism.complete(pending)?;
+            black_box(&done);
+            Ok(done)
+        })
+    };
+    finish_correctness(outcome, hook)
+}
+
 /// Successful/failed execution + materialized timing record -> report.
 /// The oracle hook (called here for completed runs) runs strictly AFTER
 /// all timers stopped.
