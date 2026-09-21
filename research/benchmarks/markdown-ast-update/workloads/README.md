@@ -113,7 +113,18 @@ workloads/
 │                                 bias, redundancy, uncovered space
 ├── selections/                   CORRECTIVE-B: frozen selection contract +
 │                                 config, four logical sets, selection trace,
-│                                 selected files, coverage report
+│                                 selected files, coverage report; plus the
+│                                 CORRECTIVE-C deterministic SYNTAX_COVERAGE_SET
+│                                 repair overlay (syntax-coverage-repair-v1.json)
+├── payloads/                     CORRECTIVE-C frozen workload artifacts
+│                                 (transition registry, applicability matrix,
+│                                 FULL_READ / EDIT_WRITE / trace manifests,
+│                                 final coverage report, freeze receipt,
+│                                 dry-run report) — digest-bound by
+│                                 freeze-receipt-v1.json; correctness
+│                                 evidence only, never measurement input
+├── CORRECTIVE-C-REPORT-1.md      CORRECTIVE-C report + G1-G8 audit + verdicts
+├── TRANSITION-REGISTRY-v1.md     human authority for the frozen registry
 ├── traces/                       RESERVED: later canonical edit traces.
 ├── cases/                        RESERVED: later frozen CaseId materialization.
 │
@@ -225,6 +236,25 @@ python3 tools/acquire.py determinism-check
 A fresh clone contains no snapshot bytes: `verify` (without `--full`)
 checks all manifest closure offline and reports materialization coverage;
 `--full` demands the bytes and verifies every one.
+
+### Frozen workload artifacts (CORRECTIVE-C, PR #39)
+
+After acquisition is verified, the frozen workload is regenerated and
+checked from the benchmark root (never timed; correctness only):
+
+```bash
+cd research/benchmarks/markdown-ast-update
+
+cargo run -q -p markit-mdbench-workload-freeze --bin mdbench-corrective-c -- generate .      # rebuild all frozen artifacts
+cargo run -q -p markit-mdbench-workload-freeze --bin mdbench-corrective-c -- verify .        # re-validate payloads + digests
+cargo run -q -p markit-mdbench-workload-freeze --bin mdbench-corrective-c -- determinism .   # two runs, byte-identical
+cargo run -q -p markit-mdbench-workload-freeze --bin mdbench-corrective-c -- dry-run .       # A8 correctness-only dispatch
+./scripts/corrective-c-negative-tests.sh                                                     # tamper paths fail closed
+```
+
+`generate` applies the committed SYNTAX_COVERAGE_SET repair overlay
+fail-closed; a changed base selection, drifted universe hash, or tampered
+receipt is a hard error, not a warning.
 
 ### Determinism / timestamp semantics
 
