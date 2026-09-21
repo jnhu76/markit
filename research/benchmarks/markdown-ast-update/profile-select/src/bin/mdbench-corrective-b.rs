@@ -36,9 +36,15 @@ fn main() -> ExitCode {
 
     let result = match command {
         "verify" => cmd_verify(&workloads_root),
-        "run" => cmd_run(&workloads_root, &manifest_dir, args.iter().any(|arg| arg == "--dry")),
+        "run" => cmd_run(
+            &workloads_root,
+            &manifest_dir,
+            args.iter().any(|arg| arg == "--dry"),
+        ),
         "determinism" => cmd_determinism(&workloads_root, &manifest_dir),
-        other => Err(format!("unknown command {other} (verify | run | determinism)")),
+        other => Err(format!(
+            "unknown command {other} (verify | run | determinism)"
+        )),
     };
     match result {
         Ok(message) => {
@@ -70,15 +76,9 @@ fn cmd_verify(workloads_root: &Path) -> Result<String, String> {
 }
 
 fn cmd_run(workloads_root: &Path, manifest_dir: &Path, dry: bool) -> Result<String, String> {
-    let scratch = std::env::temp_dir().join(format!(
-        "corrective-b-scratch-{}",
-        std::process::id()
-    ));
-    let artifacts = markit_mdbench_profile_select::artifacts::run_all(
-        workloads_root,
-        manifest_dir,
-        &scratch,
-    )?;
+    let scratch = std::env::temp_dir().join(format!("corrective-b-scratch-{}", std::process::id()));
+    let artifacts =
+        markit_mdbench_profile_select::artifacts::run_all(workloads_root, manifest_dir, &scratch)?;
     print_summary(&artifacts);
     if dry {
         let _ = std::fs::remove_dir_all(&scratch);
@@ -105,16 +105,26 @@ fn cmd_determinism(workloads_root: &Path, manifest_dir: &Path) -> Result<String,
     let _ = std::fs::remove_dir_all(&out_b);
 
     let artifacts_a = markit_mdbench_profile_select::artifacts::run_all(
-        workloads_root, manifest_dir, &scratch_a,
+        workloads_root,
+        manifest_dir,
+        &scratch_a,
     )?;
     let mut written_a = markit_mdbench_profile_select::artifacts::write_all(
-        &out_a, &artifacts_a, true, &scratch_a.join("real-profile-v1.jsonl"),
+        &out_a,
+        &artifacts_a,
+        true,
+        &scratch_a.join("real-profile-v1.jsonl"),
     )?;
     let artifacts_b = markit_mdbench_profile_select::artifacts::run_all(
-        workloads_root, manifest_dir, &scratch_b,
+        workloads_root,
+        manifest_dir,
+        &scratch_b,
     )?;
     let written_b = markit_mdbench_profile_select::artifacts::write_all(
-        &out_b, &artifacts_b, true, &scratch_b.join("real-profile-v1.jsonl"),
+        &out_b,
+        &artifacts_b,
+        true,
+        &scratch_b.join("real-profile-v1.jsonl"),
     )?;
 
     if written_a != written_b {
@@ -142,7 +152,9 @@ fn cmd_determinism(workloads_root: &Path, manifest_dir: &Path) -> Result<String,
             written_a.len()
         ))
     } else {
-        Err(format!("DETERMINISM FAIL: differing artifacts: {mismatches:?}"))
+        Err(format!(
+            "DETERMINISM FAIL: differing artifacts: {mismatches:?}"
+        ))
     }
 }
 
@@ -150,7 +162,10 @@ fn print_summary(artifacts: &markit_mdbench_profile_select::artifacts::Artifacts
     let summary = &artifacts.verification.summary;
     println!(
         "verification: {} expected / {} materialized / {} missing / {} mismatches",
-        summary.expected_files, summary.materialized_files, summary.missing_files, summary.hash_mismatches
+        summary.expected_files,
+        summary.materialized_files,
+        summary.missing_files,
+        summary.hash_mismatches
     );
     println!(
         "profiles: {} rows, {} failures, {} ambiguous + {} unknown facts; profile jsonl {} bytes sha256 {}…",
@@ -164,7 +179,10 @@ fn print_summary(artifacts: &markit_mdbench_profile_select::artifacts::Artifacts
     for class in &artifacts.bias.classes {
         println!(
             "eligibility {}: strict {}/{} blocker-bearing {}",
-            class.grammar_id, class.strict_scope_clean, class.all_candidates, class.realism_only_blocker_bearing
+            class.grammar_id,
+            class.strict_scope_clean,
+            class.all_candidates,
+            class.realism_only_blocker_bearing
         );
     }
     println!(

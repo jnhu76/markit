@@ -24,9 +24,9 @@ use std::collections::BTreeMap;
 use markit_mdbench_block_local::BlockLocalMechanism;
 use markit_mdbench_common::case::{CaseId, CaseKeyV1};
 use markit_mdbench_common::payload::PayloadShape;
-use markit_mdbench_common::{ExecutionStatus, CorrectnessStatus, Source, SourceId};
-use markit_mdbench_full_rebuild::FullRebuildMechanism;
+use markit_mdbench_common::{CorrectnessStatus, ExecutionStatus, Source, SourceId};
 use markit_mdbench_fragment_reuse::FragmentReuseMechanism;
+use markit_mdbench_full_rebuild::FullRebuildMechanism;
 use markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism;
 use markit_mdbench_oracle::{validate_normalized, ReferenceOracle};
 use markit_mdbench_restart_convergence::RestartConvergenceMechanism;
@@ -37,7 +37,7 @@ use markit_mdbench_semantics::payload::{validate_payload, PayloadRecord};
 use serde::{Deserialize, Serialize};
 
 use crate::fullread::FullReadRecord;
-use crate::{DRY_RUN_SCHEMA, CASE_GENERATOR_ID, MEMBERSHIP_G0_PRIMARY};
+use crate::{CASE_GENERATOR_ID, DRY_RUN_SCHEMA, MEMBERSHIP_G0_PRIMARY};
 
 /// One per-case dry-run row (JSONL).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -95,7 +95,9 @@ pub struct DryRunReport {
 }
 
 /// Load JSONL records.
-pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Result<Vec<T>, String> {
+pub fn read_jsonl<T: serde::de::DeserializeOwned>(
+    path: &std::path::Path,
+) -> Result<Vec<T>, String> {
     let raw = std::fs::read_to_string(path)
         .map_err(|error| format!("read {}: {error}", path.display()))?;
     let mut records = Vec::new();
@@ -103,11 +105,10 @@ pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Res
         if line.trim().is_empty() {
             continue;
         }
-        records.push(
-            serde_json::from_str(line).map_err(|error| {
+        records
+            .push(serde_json::from_str(line).map_err(|error| {
                 format!("parse {} line {}: {error}", path.display(), index + 1)
-            })?,
-        );
+            })?);
     }
     Ok(records)
 }
@@ -117,22 +118,16 @@ pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Res
 pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<String, String> {
     let old_source_sha256: [u8; 32] = (0..32)
         .map(|index| {
-            u8::from_str_radix(
-                &payload.pre_source_sha256[index * 2..index * 2 + 2],
-                16,
-            )
-            .map_err(|error| format!("pre sha hex: {error}"))
+            u8::from_str_radix(&payload.pre_source_sha256[index * 2..index * 2 + 2], 16)
+                .map_err(|error| format!("pre sha hex: {error}"))
         })
         .collect::<Result<Vec<_>, _>>()?
         .try_into()
         .map_err(|_| "pre sha length")?;
     let inserted: [u8; 32] = (0..32)
         .map(|index| {
-            u8::from_str_radix(
-                &payload.inserted_sha256[index * 2..index * 2 + 2],
-                16,
-            )
-            .map_err(|error| format!("inserted sha hex: {error}"))
+            u8::from_str_radix(&payload.inserted_sha256[index * 2..index * 2 + 2], 16)
+                .map_err(|error| format!("inserted sha hex: {error}"))
         })
         .collect::<Result<Vec<_>, _>>()?
         .try_into()
@@ -149,9 +144,7 @@ pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<Stri
         operation,
         edit_start_byte: has_edit.then_some(payload.edit.edit_start),
         edit_end_byte: has_edit.then_some(payload.edit.edit_end),
-        inserted_text_sha256: operation
-            .has_inserted_text()
-            .then_some(inserted),
+        inserted_text_sha256: operation.has_inserted_text().then_some(inserted),
         generator_id: Some(CASE_GENERATOR_ID.to_string()),
         generator_seed: None,
     }
@@ -213,13 +206,11 @@ fn dispatch_full_read(
                     execution_status: format!("{:?}", report.execution_status),
                     correctness_status: format!("{:?}", report.correctness_status),
                 });
-                let entry = per_horse
-                    .entry($horse.to_string())
-                    .or_insert(HorseCounts {
-                        pass: 0,
-                        wrong_result: 0,
-                        execution_failed: 0,
-                    });
+                let entry = per_horse.entry($horse.to_string()).or_insert(HorseCounts {
+                    pass: 0,
+                    wrong_result: 0,
+                    execution_failed: 0,
+                });
                 if ok {
                     pass += 1;
                     entry.pass += 1;
@@ -330,7 +321,10 @@ pub fn run_dry_run(
     // the step-0 post source).
     let mut by_trace: BTreeMap<&str, Vec<&PayloadRecord>> = BTreeMap::new();
     for payload in &payloads {
-        by_trace.entry(payload.trace_id.as_str()).or_default().push(payload);
+        by_trace
+            .entry(payload.trace_id.as_str())
+            .or_default()
+            .push(payload);
     }
     let mut per_horse: BTreeMap<String, HorseCounts> = BTreeMap::new();
     let mut g0_cases = 0u64;
@@ -407,8 +401,7 @@ pub fn run_dry_run(
         generator_version: crate::CORRECTIVE_C_VERSION.to_string(),
         mode: "correctness_only_dry_run".to_string(),
         correctness_authority:
-            "normalize(Hx update result) == normalize(H0 clean full parse(post source))"
-                .to_string(),
+            "normalize(Hx update result) == normalize(H0 clean full parse(post source))".to_string(),
         full_read: full_read_section,
         edit_write: DryRunEditWriteSection {
             g0_cases,

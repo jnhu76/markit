@@ -66,7 +66,10 @@ pub fn build_full_read(
                 (false, false)
             } else if let Some(profile) = profiles.get(&(file.key.clone(), grammar_id.to_string()))
             {
-                (profile.eligibility.lane_valid, profile.eligibility.strict_scope_clean)
+                (
+                    profile.eligibility.lane_valid,
+                    profile.eligibility.strict_scope_clean,
+                )
             } else {
                 (false, false)
             };

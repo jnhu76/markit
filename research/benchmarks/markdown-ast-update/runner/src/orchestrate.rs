@@ -158,8 +158,7 @@ where
         catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state, &mut cx)).and_then(
             |prep| {
                 catch_phase(|| {
-                    let pending =
-                        mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
+                    let pending = mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
                     let done = mechanism.complete(pending)?;
                     black_box(&done);
                     Ok(done)
@@ -229,8 +228,13 @@ fn finish_timed<S: ResultChecksum>(
 /// Timing arithmetic overflow poisons the run even if the work
 /// completed: the number cannot be represented honestly, so the row
 /// records `InstrumentationUnavailable` with `Unknown` timing.
-fn finish_timing_overflow<S: ResultChecksum>(outcome: Result<Completed<S>, FailureStatus>) -> RunReport {
-    let checksum = outcome.as_ref().ok().map(|done| done.state.result_checksum());
+fn finish_timing_overflow<S: ResultChecksum>(
+    outcome: Result<Completed<S>, FailureStatus>,
+) -> RunReport {
+    let checksum = outcome
+        .as_ref()
+        .ok()
+        .map(|done| done.state.result_checksum());
     RunReport {
         execution_status: ExecutionStatus::InstrumentationUnavailable,
         correctness_status: CorrectnessStatus::NotChecked,

@@ -31,8 +31,8 @@ use markit_mdbench_common::{
     WorkCounters,
 };
 use markit_mdbench_full_rebuild::parse_document;
-use markit_mdbench_oracle::{Node, NodeKind};
 use markit_mdbench_oracle::ReferenceOracle;
+use markit_mdbench_oracle::{Node, NodeKind};
 use markit_mdbench_runner::orchestrate::{build_initial_state, run_update_attributed};
 use markit_mdbench_shared_grammar as sg;
 
@@ -79,8 +79,7 @@ fn count_blocks_and_nodes(root: &Node) -> (u64, u64) {
 fn region_range(state: &H1State, edit: &CanonicalEdit, post_len: usize) -> (usize, usize) {
     let es = edit.start_byte() as usize;
     let ee = edit.end_byte() as usize;
-    let delta =
-        edit.inserted_text_len_bytes() as isize - edit.removed_len_bytes() as isize;
+    let delta = edit.inserted_text_len_bytes() as isize - edit.removed_len_bytes() as isize;
     let old_len = state.source_len_bytes();
     let mut first = None;
     let mut last = 0usize;
@@ -95,10 +94,7 @@ fn region_range(state: &H1State, edit: &CanonicalEdit, post_len: usize) -> (usiz
     }
     let (rs, re_old) = match first {
         Some(f) => (
-            state.entries()[..f]
-                .last()
-                .map(|e| e.span().1)
-                .unwrap_or(0),
+            state.entries()[..f].last().map(|e| e.span().1).unwrap_or(0),
             state
                 .entries()
                 .get(last + 1)
@@ -158,7 +154,14 @@ fn raw_update(
         .prepare_update(&old_source, &post_source, edit, &old_state, &mut cx)
         .expect("prepare_update");
     mechanism
-        .update(&old_source, &post_source, edit, old_state, prepared, &mut cx)
+        .update(
+            &old_source,
+            &post_source,
+            edit,
+            old_state,
+            prepared,
+            &mut cx,
+        )
         .expect("update");
     sink.finalize_derived();
     (sink.inspections().to_vec(), counters.clone())
@@ -213,8 +216,7 @@ fn h1_metadata_scan_is_charged_exactly_once() {
     let post_bytes = post.as_bytes();
 
     let mechanism = BlockLocalMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     // The fixture really carries a retained definition (F1's trigger).
     assert_eq!(old_state.definitions().len(), 1);
     // Derivation check: the retained tiling really has 6 entries — the
@@ -241,7 +243,10 @@ fn h1_metadata_scan_is_charged_exactly_once() {
         &mut counters,
         &hook,
     );
-    assert_eq!(report.execution_status, markit_mdbench_common::ExecutionStatus::Pass);
+    assert_eq!(
+        report.execution_status,
+        markit_mdbench_common::ExecutionStatus::Pass
+    );
     assert_eq!(
         report.correctness_status,
         markit_mdbench_common::CorrectnessStatus::Pass
@@ -259,8 +264,14 @@ fn h1_metadata_scan_is_charged_exactly_once() {
     let (h0_blocks, h0_nodes) = count_blocks_and_nodes(&parse_document(post_bytes).root);
     assert_eq!(h0_blocks, 3, "derivation check: Def + Para + Para");
     assert_eq!(h0_nodes, 5, "derivation check: + 2 paragraph Text runs");
-    assert_eq!(counters.blocks_reparsed, Observed::Known(discarded + h0_blocks));
-    assert_eq!(counters.nodes_rebuilt, Observed::Known(discarded + h0_nodes));
+    assert_eq!(
+        counters.blocks_reparsed,
+        Observed::Known(discarded + h0_blocks)
+    );
+    assert_eq!(
+        counters.nodes_rebuilt,
+        Observed::Known(discarded + h0_nodes)
+    );
     assert_eq!(counters.nodes_reused, Observed::Known(0));
 }
 
@@ -309,16 +320,21 @@ fn h1_fallback_keeps_discarded_region_work() {
     let post_bytes = post.as_bytes();
 
     let mechanism = BlockLocalMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
 
     let (h0_blocks, h0_nodes) = count_blocks_and_nodes(&parse_document(post_bytes).root);
-    assert_eq!(h0_blocks, 2, "derivation check: para + unclosed fence to EOF");
+    assert_eq!(
+        h0_blocks, 2,
+        "derivation check: para + unclosed fence to EOF"
+    );
     assert_eq!(h0_nodes, 3, "derivation check: Para + Text + Fence");
 
     // The discarded region's own count, from the frozen rules.
     let discarded = discarded_region_blocks(&old_state, post_bytes, &edit);
-    assert_eq!(discarded, 1, "derivation check: the region is one open fence");
+    assert_eq!(
+        discarded, 1,
+        "derivation check: the region is one open fence"
+    );
 
     let (_, counters) = raw_update(&mechanism, old, post_bytes, &edit, old_state);
     assert_eq!(
@@ -374,8 +390,7 @@ fn h1_fallback_repeated_inspection_effort() {
     let post_bytes = post.as_bytes();
 
     let mechanism = BlockLocalMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     let (events, counters) = raw_update(&mechanism, old, post_bytes, &edit, old_state);
 
     assert_eq!(
@@ -386,8 +401,14 @@ fn h1_fallback_repeated_inspection_effort() {
     // Cumulative effort IS the raw event sum (never a union, never a
     // deduplicated count).
     let raw_total: u64 = events.iter().map(|&(_, s, e)| e - s).sum();
-    assert_eq!(counters.source_bytes_inspected_total, Observed::Known(raw_total));
-    assert_eq!(raw_total, 73, "derivation check: 15 (region) + 35 (lines) + 23 (inline)");
+    assert_eq!(
+        counters.source_bytes_inspected_total,
+        Observed::Known(raw_total)
+    );
+    assert_eq!(
+        raw_total, 73,
+        "derivation check: 15 (region) + 35 (lines) + 23 (inline)"
+    );
 
     let post_union = match counters.unique_post_source_bytes {
         Observed::Known(v) => v,
@@ -401,8 +422,11 @@ fn h1_fallback_repeated_inspection_effort() {
     );
     // Repetition, precisely located: the discarded region [rs, re_new) is
     // read by the region parse AND by the delivered full parse.
-    let (rs, re_new) = region_range(&build_initial_state(&mechanism, &source_of(old, 1))
-        .expect("re-derived old state"), &edit, post_bytes.len());
+    let (rs, re_new) = region_range(
+        &build_initial_state(&mechanism, &source_of(old, 1)).expect("re-derived old state"),
+        &edit,
+        post_bytes.len(),
+    );
     assert!(
         min_post_coverage(&events, rs as u64, re_new as u64) >= 2,
         "every byte of the discarded region [{rs}, {re_new}) is inspected \
@@ -443,8 +467,7 @@ fn h1_length_shrinking_old_post_inspections() {
     assert!(post_bytes.len() < old.len());
 
     let mechanism = BlockLocalMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     let (events, counters) = raw_update(&mechanism, old, post_bytes, &edit, old_state);
 
     assert!(

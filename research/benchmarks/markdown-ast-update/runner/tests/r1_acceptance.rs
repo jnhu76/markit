@@ -22,8 +22,10 @@ use markit_mdbench_common::MechanismId;
 use markit_mdbench_common::Observed;
 use markit_mdbench_common::OperationKind;
 use markit_mdbench_common::PayloadShape;
+use markit_mdbench_common::ResultChecksum;
 use markit_mdbench_common::Seed;
 use markit_mdbench_common::Source;
+use markit_mdbench_common::SourceVersion;
 use markit_mdbench_common::WorkCounters;
 use markit_mdbench_common::WorkSink;
 use markit_mdbench_instrumentation::CaseMemoryProbe;
@@ -38,8 +40,6 @@ use markit_mdbench_null_r1::fixture::{
     smoke_fixture, smoke_payload_id, smoke_payload_shape, smoke_payload_size_bytes,
     R1_SMOKE_ONLY_GENERATOR_ID, SMOKE_EDIT_OPERATION,
 };
-use markit_mdbench_common::ResultChecksum;
-use markit_mdbench_common::SourceVersion;
 use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullState, NULL_R1_MECHANISM_ID};
 use markit_mdbench_oracle::CorrectnessHook;
 use markit_mdbench_oracle::ScalarChecksumHook;
@@ -902,8 +902,7 @@ impl Mechanism for InspectionProbe {
         // Prepare-phase work MUST be attributable (R1-CORRECTIVE-1).
         // Prepare consults the OLD source: `Old` version events
         // (MEASUREMENT-CORRECTIVE-1 §18).
-        cx.sink
-            .record_source_inspection(SourceVersion::Old, 0, 10);
+        cx.sink.record_source_inspection(SourceVersion::Old, 0, 10);
         cx.sink
             .record_source_inspection(SourceVersion::Old, 100, 200);
         Ok(*old_state)
@@ -921,10 +920,8 @@ impl Mechanism for InspectionProbe {
         // Update reads the POST source: `Post` version events. The two
         // union to [0, 20); duplicates never double-count unique
         // coverage.
-        cx.sink
-            .record_source_inspection(SourceVersion::Post, 5, 20);
-        cx.sink
-            .record_source_inspection(SourceVersion::Post, 0, 10);
+        cx.sink.record_source_inspection(SourceVersion::Post, 5, 20);
+        cx.sink.record_source_inspection(SourceVersion::Post, 0, 10);
         if self.fail_update {
             Err(FailureStatus::Unsupported)
         } else {

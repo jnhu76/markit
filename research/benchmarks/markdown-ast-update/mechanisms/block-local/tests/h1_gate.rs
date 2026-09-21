@@ -27,8 +27,8 @@ use gen::{PayloadShape, ALL_SHAPES, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_block_local::{BlockLocalMechanism, H1State};
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, Source, SourceVersion,
-    WorkCounters, ResultChecksum,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, ResultChecksum, Source,
+    SourceVersion, WorkCounters,
 };
 use markit_mdbench_corpusgen as gen;
 use markit_mdbench_corpusgen::mutations::{
@@ -878,8 +878,7 @@ fn h1_fallback_counters_are_full_reconstruction_plus_discarded_region() {
     let entries: Vec<(usize, usize)> = old_state.entries().iter().map(|e| e.span()).collect();
     let es = edit.start_byte() as usize;
     let ee = edit.end_byte() as usize;
-    let delta =
-        edit.inserted_text_len_bytes() as isize - edit.removed_len_bytes() as isize;
+    let delta = edit.inserted_text_len_bytes() as isize - edit.removed_len_bytes() as isize;
     let mut first = None;
     let mut last = 0usize;
     for (i, &(s, en)) in entries.iter().enumerate() {
@@ -892,21 +891,13 @@ fn h1_fallback_counters_are_full_reconstruction_plus_discarded_region() {
     }
     let f = first.expect("the edit overlaps a retained entry");
     let rs = entries[..f].last().map(|&(_, en)| en).unwrap_or(0);
-    let re_old = entries
-        .get(last + 1)
-        .map(|&(s, _)| s)
-        .unwrap_or(old.len());
+    let re_old = entries.get(last + 1).map(|&(s, _)| s).unwrap_or(old.len());
     let re_new = ((re_old as isize + delta).max(rs as isize) as usize).min(post_b.len());
     let discarded = {
         let mut noop = markit_mdbench_common::NoopWorkSink;
         markit_mdbench_block_local::count_blocks(
-            &markit_mdbench_shared_grammar::parser::parse_region(
-                post_b,
-                rs,
-                re_new,
-                &mut noop,
-            )
-            .blocks,
+            &markit_mdbench_shared_grammar::parser::parse_region(post_b, rs, re_new, &mut noop)
+                .blocks,
         )
     };
 
@@ -1163,7 +1154,10 @@ fn h1_updates_are_deterministic() {
             )
             .expect("update");
         let done = mech.complete(pending).expect("complete");
-        (done.state.result_checksum(), counters.fallback_to_full_count)
+        (
+            done.state.result_checksum(),
+            counters.fallback_to_full_count,
+        )
     };
     assert_eq!(run(), run(), "two identical runs must agree");
 }

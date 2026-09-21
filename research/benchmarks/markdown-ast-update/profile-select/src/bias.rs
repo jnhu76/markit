@@ -101,11 +101,7 @@ pub fn analyze(rows: &[CandidateRow], selected_core: &[&CandidateRow]) -> BiasAr
     ] {
         let lane_rows: Vec<&CandidateRow> = rows
             .iter()
-            .filter(|row| {
-                row.lanes
-                    .iter()
-                    .any(|lane| lane.grammar_id == grammar_id)
-            })
+            .filter(|row| row.lanes.iter().any(|lane| lane.grammar_id == grammar_id))
             .collect();
         let strict: Vec<&CandidateRow> = lane_rows
             .iter()
@@ -132,9 +128,7 @@ pub fn analyze(rows: &[CandidateRow], selected_core: &[&CandidateRow]) -> BiasAr
                 .iter()
                 .filter(|row| {
                     row.lanes.iter().any(|lane| {
-                        lane.grammar_id == grammar_id
-                            && lane.lane_valid
-                            && !lane.strict_scope_clean
+                        lane.grammar_id == grammar_id && lane.lane_valid && !lane.strict_scope_clean
                     })
                 })
                 .count() as u64,
@@ -148,10 +142,8 @@ pub fn analyze(rows: &[CandidateRow], selected_core: &[&CandidateRow]) -> BiasAr
         });
     }
 
-    let g0_strict_rows: Vec<&CandidateRow> = rows
-        .iter()
-        .filter(|row| row.g0_strict_eligible())
-        .collect();
+    let g0_strict_rows: Vec<&CandidateRow> =
+        rows.iter().filter(|row| row.g0_strict_eligible()).collect();
 
     let dimensions = BIAS_DIMENSIONS
         .iter()
@@ -274,15 +266,14 @@ pub fn analyze(rows: &[CandidateRow], selected_core: &[&CandidateRow]) -> BiasAr
             candidate_files: proposal_files,
             candidate_bytes: proposal_bytes,
             file_share: proposal_files as f64 / rows.len() as f64,
-            byte_share: proposal_bytes as f64 / rows.iter().map(|row| row.file_bytes).sum::<u64>() as f64,
+            byte_share: proposal_bytes as f64
+                / rows.iter().map(|row| row.file_bytes).sum::<u64>() as f64,
             selected_core_share: if selected_core.is_empty() {
                 None
             } else {
                 let selected_proposal = selected_core
                     .iter()
-                    .filter(|row| {
-                        proposal_sources.contains(&row.identity.source_id.as_str())
-                    })
+                    .filter(|row| proposal_sources.contains(&row.identity.source_id.as_str()))
                     .count() as f64;
                 Some(selected_proposal / selected_core.len() as f64)
             },
@@ -298,10 +289,7 @@ fn universe_value(row: &CandidateRow, feature: &str) -> f64 {
         // Structural features under G0 even for non-strict files: the G0
         // parse is total over UTF-8, so its structural record is defined
         // for every profiled candidate.
-        _ => row
-            .g0()
-            .map(|_| strict_value(row, feature))
-            .unwrap_or(0.0),
+        _ => row.g0().map(|_| strict_value(row, feature)).unwrap_or(0.0),
     }
 }
 

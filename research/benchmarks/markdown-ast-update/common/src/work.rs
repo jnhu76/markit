@@ -257,7 +257,12 @@ pub trait WorkSink {
     /// unioned by the common collector within one version — they never
     /// double-count unique coverage; the cumulative-effort total counts
     /// every event (MEASUREMENT-CORRECTIVE-1 §18/§19).
-    fn record_source_inspection(&mut self, _version: SourceVersion, _start_byte: u64, _end_byte: u64) {
+    fn record_source_inspection(
+        &mut self,
+        _version: SourceVersion,
+        _start_byte: u64,
+        _end_byte: u64,
+    ) {
     }
 }
 
@@ -307,32 +312,33 @@ impl<'a> CounterSink<'a> {
     /// empty event stream IS the measured zero of an event counter.
     pub fn finalize_derived(&mut self) {
         let mut total: Option<u64> = Some(0);
-        let derived_per_version = |events: Vec<(u64, u64)>, total: &mut Option<u64>| -> (u64, u64) {
-            let mut events = events;
-            events.sort_unstable();
-            let mut merged: Vec<(u64, u64)> = Vec::with_capacity(events.len());
-            for &(start, end) in &events {
-                match merged.last_mut() {
-                    // `start <= last.end` merges overlaps AND touching ranges:
-                    // the union of the inspected byte SET, never a double count.
-                    Some(last) if start <= last.1 => {
-                        last.1 = last.1.max(end);
+        let derived_per_version =
+            |events: Vec<(u64, u64)>, total: &mut Option<u64>| -> (u64, u64) {
+                let mut events = events;
+                events.sort_unstable();
+                let mut merged: Vec<(u64, u64)> = Vec::with_capacity(events.len());
+                for &(start, end) in &events {
+                    match merged.last_mut() {
+                        // `start <= last.end` merges overlaps AND touching ranges:
+                        // the union of the inspected byte SET, never a double count.
+                        Some(last) if start <= last.1 => {
+                            last.1 = last.1.max(end);
+                        }
+                        _ => merged.push((start, end)),
                     }
-                    _ => merged.push((start, end)),
                 }
-            }
-            let mut bytes: u64 = 0;
-            for &(start, end) in &merged {
-                bytes += end - start;
-            }
-            for &(start, end) in &events {
-                // Cumulative effort: every event counts, repeats included.
-                if let Some(t) = *total {
-                    *total = t.checked_add(end - start);
+                let mut bytes: u64 = 0;
+                for &(start, end) in &merged {
+                    bytes += end - start;
                 }
-            }
-            (merged.len() as u64, bytes)
-        };
+                for &(start, end) in &events {
+                    // Cumulative effort: every event counts, repeats included.
+                    if let Some(t) = *total {
+                        *total = t.checked_add(end - start);
+                    }
+                }
+                (merged.len() as u64, bytes)
+            };
 
         let mut old_events = Vec::new();
         let mut post_events = Vec::new();
@@ -614,6 +620,9 @@ mod tests {
             "fallback_to_full_count": 0
         });
         let res: Result<WorkCounters, _> = serde_json::from_value(v1);
-        assert!(res.is_err(), "v1 attribution payloads must not deserialize as v2");
+        assert!(
+            res.is_err(),
+            "v1 attribution payloads must not deserialize as v2"
+        );
     }
 }

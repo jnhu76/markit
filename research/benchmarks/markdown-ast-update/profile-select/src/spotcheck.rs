@@ -106,14 +106,21 @@ fn g0(row: &CandidateRow) -> &crate::LaneRow {
 }
 
 /// Run the frozen spot-check suite (§45 categories).
-pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::redundancy::RedundancyArtifact) -> Result<SpotCheckArtifact, String> {
+pub fn run(
+    workloads_root: &Path,
+    rows: &[CandidateRow],
+    redundancy: &crate::redundancy::RedundancyArtifact,
+) -> Result<SpotCheckArtifact, String> {
     let usable: Vec<&CandidateRow> = rows
         .iter()
         .filter(|row| row.materialized && row.hash_match && row.profile_failure.is_none())
         .collect();
     let strict: Vec<&CandidateRow> = rows.iter().filter(|row| row.g0_strict_eligible()).collect();
 
-    fn best_by<'r>(pool: &[&'r CandidateRow], rule: &dyn Fn(&CandidateRow) -> f64) -> &'r CandidateRow {
+    fn best_by<'r>(
+        pool: &[&'r CandidateRow],
+        rule: &dyn Fn(&CandidateRow) -> f64,
+    ) -> &'r CandidateRow {
         let mut sorted: Vec<&&'r CandidateRow> = pool.iter().collect();
         sorted.sort_by(|a, b| {
             rule(b)
@@ -133,7 +140,12 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         rule_text: &str,
         row: &CandidateRow,
     ) -> Result<(), String> {
-        checks.push(make_check(workloads_root, category, rule_text, &row.identity)?);
+        checks.push(make_check(
+            workloads_root,
+            category,
+            rule_text,
+            &row.identity,
+        )?);
         Ok(())
     }
 
@@ -145,32 +157,42 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         .filter(|row| g0(row).fence_density_per_kib == 0.0 && row.cjk_byte_share == 0.0)
         .collect();
     if !prose_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "ordinary_g0_strict_prose_doc",
             "max block_count among G0-strict, fence-free, CJK-free",
             best_by(&prose_pool, &|row| g0(row).block_count as f64),
         )?;
     }
     // 2. fence-heavy technical doc.
-    pick(workloads_root, &mut checks,
+    pick(
+        workloads_root,
+        &mut checks,
         "fence_heavy_doc",
         "max G0 fence_density over usable rows",
         best_by(&usable, &|row| g0(row).fence_density_per_kib),
     )?;
     // 3. reference-heavy doc.
-    pick(workloads_root, &mut checks,
+    pick(
+        workloads_root,
+        &mut checks,
         "reference_heavy_doc",
         "max G0 reference_density over usable rows",
         best_by(&usable, &|row| g0(row).reference_density_per_kib),
     )?;
     // 4. deep container doc.
-    pick(workloads_root, &mut checks,
+    pick(
+        workloads_root,
+        &mut checks,
         "deep_container_doc",
         "max G0 max_container_depth over usable rows",
         best_by(&usable, &|row| g0(row).max_container_depth as f64),
     )?;
     // 5. CJK doc.
-    pick(workloads_root, &mut checks,
+    pick(
+        workloads_root,
+        &mut checks,
         "cjk_doc",
         "max cjk_byte_share over usable rows",
         best_by(&usable, &|row| row.cjk_byte_share),
@@ -182,7 +204,9 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         .filter(|row| row.g1().map(|lane| lane.table_count > 0).unwrap_or(false))
         .collect();
     if !table_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "recognized_g1_table_doc",
             "max G1 table_count over usable rows",
             best_by(&table_pool, &|row| {
@@ -205,7 +229,9 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         })
         .collect();
     if !fenced_table_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "table_looking_text_inside_fence",
             "max G1 non-host table candidates among rows with zero host tables",
             best_by(&fenced_table_pool, &|row| {
@@ -226,7 +252,9 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         })
         .collect();
     if !html_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "raw_html_bearing_doc",
             "max G1 recognized html_block count over usable rows",
             best_by(&html_pool, &|row| {
@@ -244,22 +272,31 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
             row.g1()
                 .map(|lane| {
                     lane.declared_kinds.get("image").copied().unwrap_or(0)
-                        + lane.declared_kinds.get("link_autolink").copied().unwrap_or(0)
+                        + lane
+                            .declared_kinds
+                            .get("link_autolink")
+                            .copied()
+                            .unwrap_or(0)
                         > 0
                 })
                 .unwrap_or(false)
         })
         .collect();
     if !link_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "image_autolink_bearing_doc",
             "max G1 image+autolink count over usable rows",
             best_by(&link_pool, &|row| {
                 row.g1()
                     .map(|lane| {
                         (lane.declared_kinds.get("image").copied().unwrap_or(0)
-                            + lane.declared_kinds.get("link_autolink").copied().unwrap_or(0))
-                            as f64
+                            + lane
+                                .declared_kinds
+                                .get("link_autolink")
+                                .copied()
+                                .unwrap_or(0)) as f64
                     })
                     .unwrap_or(0.0)
             }),
@@ -282,16 +319,21 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         })
         .collect();
     if !math_pool.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "math_candidate_doc",
             "max G1 ambiguous/unknown math candidates over usable rows",
             best_by(&math_pool, &|row| {
                 row.g1()
                     .map(|lane| {
-                        ["inline_math", "display_math"].iter().map(|kind| {
-                            lane.ambiguous_kinds.get(*kind).copied().unwrap_or(0)
-                                + lane.unknown_kinds.get(*kind).copied().unwrap_or(0)
-                        }).sum::<u64>() as f64
+                        ["inline_math", "display_math"]
+                            .iter()
+                            .map(|kind| {
+                                lane.ambiguous_kinds.get(*kind).copied().unwrap_or(0)
+                                    + lane.unknown_kinds.get(*kind).copied().unwrap_or(0)
+                            })
+                            .sum::<u64>() as f64
                     })
                     .unwrap_or(0.0)
             }),
@@ -304,7 +346,9 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
         .filter(|row| !row.g0_strict_eligible())
         .collect();
     if !ineligible.is_empty() {
-        pick(workloads_root, &mut checks,
+        pick(
+            workloads_root,
+            &mut checks,
             "g0_ineligible_large_doc",
             "max file_bytes among G0-ineligible usable rows",
             best_by(&ineligible, &|row| row.file_bytes as f64),
@@ -319,7 +363,11 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
             checks.push(make_check(
                 workloads_root,
                 "exact_duplicate_group",
-                &format!("first exact-duplicate group ({}, {} members)", group.sha256[..12].to_string(), group.members.len()),
+                &format!(
+                    "first exact-duplicate group ({}, {} members)",
+                    group.sha256[..12].to_string(),
+                    group.members.len()
+                ),
                 &row.identity,
             )?);
         }
@@ -333,7 +381,10 @@ pub fn run(workloads_root: &Path, rows: &[CandidateRow], redundancy: &crate::red
             checks.push(make_check(
                 workloads_root,
                 "near_duplicate_group",
-                &format!("first near-duplicate group (estimated Jaccard {:.3})", group.estimated_jaccard),
+                &format!(
+                    "first near-duplicate group (estimated Jaccard {:.3})",
+                    group.estimated_jaccard
+                ),
                 &row.identity,
             )?);
         }

@@ -340,12 +340,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             }
             let line_start = pos;
             let line_lf = memchr_lf(self.src, line_start);
-            self.sink
-                .record_source_inspection(
-                    markit_mdbench_common::SourceVersion::Post,
-                    line_start as u64,
-                    (line_lf + 1).min(self.end) as u64,
-                );
+            self.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                line_start as u64,
+                (line_lf + 1).min(self.end) as u64,
+            );
             // 1. consume container prefixes (§6/§7); may close frames.
             let col = self.strip_prefixes(line_start, line_lf);
             // 2. classify the remainder at the (possibly new) innermost
@@ -383,8 +382,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
         self.push_into_innermost(spliced);
         let prev = new_pos.saturating_sub(1);
         let carried = if new_pos > 0 {
-            self.sink
-                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, prev as u64, new_pos as u64);
+            self.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                prev as u64,
+                new_pos as u64,
+            );
             self.src.get(prev) == Some(&b'\n')
         } else {
             false

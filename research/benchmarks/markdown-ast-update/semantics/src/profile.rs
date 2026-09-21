@@ -16,22 +16,24 @@ use crate::facts::{
     EligibilityFacts, FactReason, LaneScopeGrade, NewlineForm, RecognitionStatus, SourceFacts,
     Span, StructuralFacts, SyntaxFact, SyntaxKind, PROFILER_VERSION, PROFILE_SCHEMA,
 };
-use crate::lanes::{g0_lane, g1_lane, lane_spec, ConstructStatus, LaneSpec, G0_GRAMMAR_ID, G1_GRAMMAR_ID};
-use crate::parse::LaneParse;
-use crate::probes::{probe_candidates, RawCandidate};
 use crate::g0::parse_g0;
 use crate::g1::parse_g1;
+use crate::lanes::{
+    g0_lane, g1_lane, lane_spec, ConstructStatus, LaneSpec, G0_GRAMMAR_ID, G1_GRAMMAR_ID,
+};
+use crate::parse::LaneParse;
+use crate::probes::{probe_candidates, RawCandidate};
 
 /// CJK byte-share ranges, frozen by the profiler contract.
 pub const CJK_RANGES: &[(char, char)] = &[
-    ('\u{3000}', '\u{303F}'), // CJK symbols and punctuation
-    ('\u{3040}', '\u{309F}'), // Hiragana
-    ('\u{30A0}', '\u{30FF}'), // Katakana
-    ('\u{3400}', '\u{4DBF}'), // CJK unified ideographs extension A
-    ('\u{4E00}', '\u{9FFF}'), // CJK unified ideographs
-    ('\u{AC00}', '\u{D7AF}'), // Hangul syllables
-    ('\u{F900}', '\u{FAFF}'), // CJK compatibility ideographs
-    ('\u{FF00}', '\u{FFEF}'), // halfwidth and fullwidth forms
+    ('\u{3000}', '\u{303F}'),   // CJK symbols and punctuation
+    ('\u{3040}', '\u{309F}'),   // Hiragana
+    ('\u{30A0}', '\u{30FF}'),   // Katakana
+    ('\u{3400}', '\u{4DBF}'),   // CJK unified ideographs extension A
+    ('\u{4E00}', '\u{9FFF}'),   // CJK unified ideographs
+    ('\u{AC00}', '\u{D7AF}'),   // Hangul syllables
+    ('\u{F900}', '\u{FAFF}'),   // CJK compatibility ideographs
+    ('\u{FF00}', '\u{FFEF}'),   // halfwidth and fullwidth forms
     ('\u{20000}', '\u{2FFFF}'), // CJK unified ideographs extension B and beyond
 ];
 
@@ -219,7 +221,12 @@ pub fn lane_profile_with(source: &str, lane: &LaneSpec) -> LaneProfile {
     }
 
     facts.sort_by(|a, b| {
-        (a.source_start, a.source_end, a.syntax_kind.name(), a.recognition_status as u8)
+        (
+            a.source_start,
+            a.source_end,
+            a.syntax_kind.name(),
+            a.recognition_status as u8,
+        )
             .cmp(&(
                 b.source_start,
                 b.source_end,

@@ -20,8 +20,8 @@ use std::path::{Path, PathBuf};
 
 use markit_mdbench_semantics::{canonical_json_line, lane_profile};
 use markit_mdbench_workload_freeze::{
-    applicability, artifacts, coverage, dryrun, fullread, registry, repair, traces,
-    load_selected_files, acquisition_commit_sha, write_jsonl,
+    acquisition_commit_sha, applicability, artifacts, coverage, dryrun, fullread,
+    load_selected_files, registry, repair, traces, write_jsonl,
 };
 
 fn main() {
@@ -105,7 +105,8 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
     if !uncovered.is_empty() {
         if std::env::var("C3_DEBUG_UNCOVERED").is_ok() {
             for row in &workload.rows {
-                if uncovered.contains(&row.transition_id) && row.source_key.ends_with("0404-change-prefer-dynamic.md")
+                if uncovered.contains(&row.transition_id)
+                    && row.source_key.ends_with("0404-change-prefer-dynamic.md")
                     || row.status != applicability::STATUS_APPLICABLE
                         && uncovered.contains(&row.transition_id)
                 {
@@ -168,7 +169,11 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
         .collect::<String>();
     digests.push((
         "full-read-manifest-v1.jsonl".to_string(),
-        artifacts::write_artifact(&payloads_dir, "full-read-manifest-v1.jsonl", &full_read_text)?,
+        artifacts::write_artifact(
+            &payloads_dir,
+            "full-read-manifest-v1.jsonl",
+            &full_read_text,
+        )?,
     ));
     let payloads_text = workload
         .payloads
@@ -177,7 +182,11 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
         .collect::<String>();
     digests.push((
         "edit-write-manifest-v1.jsonl".to_string(),
-        artifacts::write_artifact(&payloads_dir, "edit-write-manifest-v1.jsonl", &payloads_text)?,
+        artifacts::write_artifact(
+            &payloads_dir,
+            "edit-write-manifest-v1.jsonl",
+            &payloads_text,
+        )?,
     ));
     let trace_text = trace_records
         .iter()
@@ -249,24 +258,20 @@ fn verify_inner(root: &Path) -> Result<String, String> {
         } else {
             let step0 = payloads
                 .iter()
-                .find(|candidate| {
-                    candidate.trace_id == payload.trace_id && candidate.step == 0
-                })
-                .ok_or_else(|| {
-                    format!("payload {}: trace has no step 0", payload.payload_id)
-                })?;
+                .find(|candidate| candidate.trace_id == payload.trace_id && candidate.step == 0)
+                .ok_or_else(|| format!("payload {}: trace has no step 0", payload.payload_id))?;
             if step0.base_source_sha256 != source.sha256 {
                 return Err(format!(
                     "payload {}: trace base disagrees with source identity",
                     payload.payload_id
                 ));
             }
-            step0
-                .edit
-                .apply(&source.text)
-                .map_err(|error| format!("payload {}: broken state: {error:?}", payload.payload_id))?
+            step0.edit.apply(&source.text).map_err(|error| {
+                format!("payload {}: broken state: {error:?}", payload.payload_id)
+            })?
         };
-        let validation = markit_mdbench_semantics::validate_payload(payload, &pre_source, &source.text);
+        let validation =
+            markit_mdbench_semantics::validate_payload(payload, &pre_source, &source.text);
         if !validation.valid {
             return Err(format!(
                 "payload {}: {:?}",
@@ -334,7 +339,10 @@ fn verify_inner(root: &Path) -> Result<String, String> {
     Ok(format!(
         "VERIFY_OK payloads={verified} full_read_records={full_read_verified} \
          receipt_artifacts={}",
-        receipt["artifact_sha256"].as_array().map(Vec::len).unwrap_or(0)
+        receipt["artifact_sha256"]
+            .as_array()
+            .map(Vec::len)
+            .unwrap_or(0)
     ))
 }
 
@@ -386,9 +394,7 @@ fn dry_run(root: &Path) -> i32 {
                 .iter()
                 .map(|row| markit_mdbench_semantics::canonical_json_line(row))
                 .collect::<String>();
-            if write_jsonl(&payloads_dir.join("dry-run-cases-v1.jsonl"), &[])
-                .is_err()
-            {
+            if write_jsonl(&payloads_dir.join("dry-run-cases-v1.jsonl"), &[]).is_err() {
                 return 1;
             }
             std::fs::write(payloads_dir.join("dry-run-cases-v1.jsonl"), lines)
@@ -397,7 +403,11 @@ fn dry_run(root: &Path) -> i32 {
             std::fs::write(payloads_dir.join("dry-run-report-v1.json"), report_text)
                 .expect("write dry-run report");
             println!("{summary_text}", summary_text = summarize(&summary));
-            if summary.edit_write.per_horse.values().any(|counts| counts.wrong_result > 0 || counts.execution_failed > 0)
+            if summary
+                .edit_write
+                .per_horse
+                .values()
+                .any(|counts| counts.wrong_result > 0 || counts.execution_failed > 0)
                 || summary.full_read.failed > 0
             {
                 eprintln!("DRY_RUN_CORRECTNESS_FAILURES_PRESENT");
@@ -449,7 +459,9 @@ fn summarize(report: &dryrun::DryRunReport) -> String {
     text
 }
 
-fn dry_run_inner(root: &Path) -> Result<(dryrun::DryRunReport, Vec<dryrun::DryRunCaseRow>), String> {
+fn dry_run_inner(
+    root: &Path,
+) -> Result<(dryrun::DryRunReport, Vec<dryrun::DryRunCaseRow>), String> {
     let files = load_selected_files(root)?;
     dryrun::run_dry_run(root, &files)
 }
@@ -536,15 +548,13 @@ fn profile_export_inner(root: &Path) -> Result<String, String> {
         });
     }
     let out_dir = root.join("workloads/profiles");
-    std::fs::create_dir_all(&out_dir)
-        .map_err(|e| format!("create {}: {e}", out_dir.display()))?;
+    std::fs::create_dir_all(&out_dir).map_err(|e| format!("create {}: {e}", out_dir.display()))?;
     let lines = rows
         .iter()
         .map(|row| canonical_json_line(row))
         .collect::<String>();
     let out_path = out_dir.join("strict-surface-profile-v1.jsonl");
-    std::fs::write(&out_path, lines)
-        .map_err(|e| format!("write {}: {e}", out_path.display()))?;
+    std::fs::write(&out_path, lines).map_err(|e| format!("write {}: {e}", out_path.display()))?;
     Ok(format!(
         "PROFILE_EXPORT_OK strict_files={} rows={} path=workloads/profiles/strict-surface-profile-v1.jsonl (mechanism-neutral facts; the strict surface was NOT reselected)",
         strict_keys.len(),

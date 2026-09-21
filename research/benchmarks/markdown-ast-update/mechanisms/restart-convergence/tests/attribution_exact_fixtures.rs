@@ -70,7 +70,10 @@ fn run_attributed(
     post: &[u8],
     edit: CanonicalEdit,
     old_state: H4State,
-) -> (WorkCounters, Vec<(markit_mdbench_common::SourceVersion, u64, u64)>) {
+) -> (
+    WorkCounters,
+    Vec<(markit_mdbench_common::SourceVersion, u64, u64)>,
+) {
     let mut counters = WorkCounters::all_unknown();
     let hook = ReferenceOracle::new(parse_document(post).clone());
     let mechanism = RestartConvergenceMechanism::new();
@@ -83,7 +86,10 @@ fn run_attributed(
         &mut counters,
         &hook,
     );
-    assert_eq!(report.execution_status, markit_mdbench_common::ExecutionStatus::Pass);
+    assert_eq!(
+        report.execution_status,
+        markit_mdbench_common::ExecutionStatus::Pass
+    );
     assert_eq!(
         report.correctness_status,
         markit_mdbench_common::CorrectnessStatus::Pass
@@ -109,8 +115,15 @@ fn raw_inspections(
     let prepared = mech
         .prepare_update(&old_source, &post_source, edit, &old_state, &mut cx)
         .expect("prepare_update");
-    mech.update(&old_source, &post_source, edit, old_state, prepared, &mut cx)
-        .expect("update");
+    mech.update(
+        &old_source,
+        &post_source,
+        edit,
+        old_state,
+        prepared,
+        &mut cx,
+    )
+    .expect("update");
     sink.inspections().to_vec()
 }
 
@@ -150,8 +163,7 @@ fn h4_prefix_fresh_region_reused_suffix() {
     let post_bytes = post.as_bytes();
 
     let mechanism = RestartConvergenceMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     let (counters, _) = run_attributed(old, post_bytes, edit, old_state);
 
     // Derived expectation (see the fixture comment):
@@ -229,8 +241,7 @@ fn h4_discarded_forward_pass_then_restart_at_zero() {
     let post_bytes = post.as_bytes();
 
     let mechanism = RestartConvergenceMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     // The old state really retained a definition, and the edit sits far
     // from it — the fast path cannot have fired.
     assert_eq!(old_state.defs().len(), 1, "derivation check: one refdef");
@@ -314,8 +325,7 @@ fn h4_length_growing_old_post_inspections() {
     assert!(post_bytes.len() > old.len(), "length-growing edit");
 
     let mechanism = RestartConvergenceMechanism::new();
-    let old_state =
-        build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
+    let old_state = build_initial_state(&mechanism, &source_of(old, 1)).expect("initial state");
     let events = raw_inspections(old, post_bytes, &edit, old_state.clone());
 
     // Provenance is explicit: BOTH versions appear, and every event is
@@ -340,7 +350,10 @@ fn h4_length_growing_old_post_inspections() {
         assert!(e > s && *e <= old.len() as u64, "OLD event in range");
     }
     for &(_, s, e) in &post_events {
-        assert!(e > s && *e <= post_bytes.len() as u64, "POST event in range");
+        assert!(
+            e > s && *e <= post_bytes.len() as u64,
+            "POST event in range"
+        );
     }
 
     // Exact derived quantities over the raw event stream.
@@ -376,7 +389,10 @@ fn h4_length_growing_old_post_inspections() {
     );
 
     let (counters, _) = run_attributed(old, post_bytes, edit, old_state);
-    assert_eq!(counters.source_bytes_inspected_total, Observed::Known(raw_total));
+    assert_eq!(
+        counters.source_bytes_inspected_total,
+        Observed::Known(raw_total)
+    );
     assert_eq!(counters.unique_old_source_bytes, Observed::Known(old_union));
     assert_eq!(
         counters.unique_post_source_bytes,

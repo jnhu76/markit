@@ -11,7 +11,7 @@ use crate::applicability::{FrozenWorkload, MatrixRow};
 use crate::coverage::CoverageReport;
 use crate::fullread::FullReadRecord;
 use crate::traces::TraceRecord;
-use crate::{FREEZE_RECEIPT_SCHEMA, CORRECTIVE_C_VERSION};
+use crate::{CORRECTIVE_C_VERSION, FREEZE_RECEIPT_SCHEMA};
 
 /// Canonical JSONL lines for the applicability matrix.
 pub fn matrix_lines(rows: &[MatrixRow]) -> Vec<String> {
@@ -102,7 +102,6 @@ pub fn freeze_receipt(
 pub fn write_artifact(dir: &Path, name: &str, content: &str) -> Result<String, String> {
     std::fs::create_dir_all(dir).map_err(|error| format!("mkdir {}: {error}", dir.display()))?;
     let path = dir.join(name);
-    std::fs::write(&path, content)
-        .map_err(|error| format!("write {}: {error}", path.display()))?;
+    std::fs::write(&path, content).map_err(|error| format!("write {}: {error}", path.display()))?;
     Ok(markit_mdbench_semantics::sha256_hex(content.as_bytes()))
 }

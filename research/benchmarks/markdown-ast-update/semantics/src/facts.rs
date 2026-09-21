@@ -48,7 +48,17 @@ pub const LARGEST_BLOCK_RULE: &str =
 /// kinds outside that set can still appear as *candidate* facts with a
 /// non-`Recognized` status.
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, schemars::JsonSchema,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    Serialize,
+    Deserialize,
+    schemars::JsonSchema,
 )]
 #[serde(rename_all = "snake_case")]
 pub enum SyntaxKind {

@@ -107,7 +107,9 @@ fn transition_rejects_post_source_that_does_not_match_the_edit() {
     };
     let report = validate_transition(&request);
     assert_eq!(report.verdict, TransitionVerdict::InvalidPayload);
-    assert!(report.failure_codes.contains(&FailureCode::PostHashMismatch));
+    assert!(report
+        .failure_codes
+        .contains(&FailureCode::PostHashMismatch));
 }
 
 /// Family 5/8 — a non-UTF-8-safe edit range is rejected, not clamped.
@@ -175,7 +177,10 @@ fn table_delimiter_break_and_restore_are_proven_by_the_oracle() {
         .topology_sha256
         .clone();
     assert_ne!(pre_topology, post_topology);
-    assert_eq!(break_report.change_class, Some(ChangeClass::StructureChange));
+    assert_eq!(
+        break_report.change_class,
+        Some(ChangeClass::StructureChange)
+    );
 
     // A byte change that leaves both sides as tables is NOT a Table ->
     // non-Table case: the declared predicates must reject it, so a
@@ -236,7 +241,10 @@ fn content_only_edit_is_a_content_change_not_a_structure_change() {
     assert_eq!(report.change_class, Some(ChangeClass::ContentChange));
     let pre = &report.pre;
     let post = report.post.as_ref().expect("post side");
-    assert_eq!(pre.topology_sha256, post.topology_sha256, "topology must hold");
+    assert_eq!(
+        pre.topology_sha256, post.topology_sha256,
+        "topology must hold"
+    );
     assert_ne!(
         pre.text_fingerprint_sha256, post.text_fingerprint_sha256,
         "content must differ"
@@ -362,7 +370,8 @@ fn kind_predicates_see_out_of_band_recognized_facts() {
             .syntax_facts
             .iter()
             .any(|fact| fact.syntax_kind == SyntaxKind::ReferenceDefinition
-                && fact.recognition_status == markit_mdbench_semantics::RecognitionStatus::Recognized),
+                && fact.recognition_status
+                    == markit_mdbench_semantics::RecognitionStatus::Recognized),
         "the fixture must produce a recognized out-of-band reference definition"
     );
 
@@ -417,9 +426,7 @@ fn a_no_op_edit_is_rejected() {
     };
     let report = validate_transition(&request);
     assert_eq!(report.verdict, TransitionVerdict::InvalidPayload);
-    assert!(report
-        .failure_codes
-        .contains(&FailureCode::NoSourceChange));
+    assert!(report.failure_codes.contains(&FailureCode::NoSourceChange));
     assert!(report
         .failure_codes
         .contains(&FailureCode::TransitionNotExercised));

@@ -18,9 +18,7 @@ use crate::facts::{
     FactReason, LaneScopeGrade, RecognitionStatus, Span, SyntaxFact, SyntaxKind, TableFacts,
 };
 use crate::lanes::{G1_GRAMMAR_ID, G1_ORACLE_VERSION};
-use crate::parse::{
-    fence_char_at, fenced_content_interval, LaneExtras, LaneNode, LaneParse,
-};
+use crate::parse::{fence_char_at, fenced_content_interval, LaneExtras, LaneNode, LaneParse};
 
 /// Frozen G1 leaf-block counting rule (`block_kinds`).
 pub const G1_BLOCK_KINDS: &[SyntaxKind] = &[
@@ -270,11 +268,7 @@ impl<'a> Builder<'a> {
             children: std::mem::take(&mut self.root_children),
         };
 
-        let reference_use_count = root
-            .children
-            .iter()
-            .map(count_reference_links)
-            .sum::<u64>();
+        let reference_use_count = root.children.iter().map(count_reference_links).sum::<u64>();
 
         let mut table = TableFacts {
             table_count: 0,
@@ -317,7 +311,11 @@ impl<'a> Builder<'a> {
                     "REFERENCE_LINK_EVENTS: links the oracle resolved through a reference form \
                      (reference/collapsed/shortcut)"
                         .to_string(),
-                table: if table.table_count > 0 { Some(table) } else { None },
+                table: if table.table_count > 0 {
+                    Some(table)
+                } else {
+                    None
+                },
                 math_occupancy_note:
                     "not applicable: no math semantics are enabled in G1; math-looking bytes are \
                      ordinary text and are reported as ambiguous candidates owned by the deferred \

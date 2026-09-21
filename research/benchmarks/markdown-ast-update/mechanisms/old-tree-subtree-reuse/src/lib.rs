@@ -552,7 +552,11 @@ fn patch_tree<W: WorkSink>(
         // when the range is empty.
         let (a, b) = (prev_end.unwrap_or(0), es);
         if a < b {
-            sink.record_source_inspection(markit_mdbench_common::SourceVersion::Old, a as u64, b as u64);
+            sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Old,
+                a as u64,
+                b as u64,
+            );
         }
         let sep_lfs = lfs(old, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, prev_idx) {
@@ -567,7 +571,11 @@ fn patch_tree<W: WorkSink>(
         let next_line_new = (line_aligned(ni, &tree.entries) as isize + delta).max(0) as usize;
         let (a, b) = (ee_new.min(post.len()), next_line_new.min(post.len()));
         if a < b {
-            sink.record_source_inspection(markit_mdbench_common::SourceVersion::Post, a as u64, b as u64);
+            sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                a as u64,
+                b as u64,
+            );
         }
         let sep_lfs = lfs(post, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, next_idx) {
@@ -1111,7 +1119,11 @@ fn mentions_reference<W: WorkSink>(node: &TNode, post: &[u8], base: usize, sink:
     if base >= end {
         return false;
     }
-    sink.record_source_inspection(markit_mdbench_common::SourceVersion::Post, base as u64, end as u64);
+    sink.record_source_inspection(
+        markit_mdbench_common::SourceVersion::Post,
+        base as u64,
+        end as u64,
+    );
     post[base..end].contains(&b'[')
 }
 

@@ -15,9 +15,7 @@ use markit_mdbench_shared_grammar::parse_full;
 
 use crate::facts::{Span, SyntaxKind, TableFacts};
 use crate::lanes::G0_GRAMMAR_ID;
-use crate::parse::{
-    fenced_content_interval, LaneExtras, LaneNode, LaneParse,
-};
+use crate::parse::{fenced_content_interval, LaneExtras, LaneNode, LaneParse};
 
 /// Frozen G0 leaf-block counting rule (`block_kinds`).
 pub const G0_BLOCK_KINDS: &[SyntaxKind] = &[

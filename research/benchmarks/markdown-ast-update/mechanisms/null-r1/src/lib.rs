@@ -221,8 +221,8 @@ impl Mechanism for NullMechanism {
 mod tests {
     use super::*;
     use crate::fixture;
-    use markit_mdbench_common::ResultChecksum as _;
     use markit_mdbench_common::OperationKind;
+    use markit_mdbench_common::ResultChecksum as _;
     use markit_mdbench_common::SourceId;
 
     #[test]

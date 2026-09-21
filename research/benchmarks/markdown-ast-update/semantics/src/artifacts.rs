@@ -9,10 +9,10 @@ use std::path::Path;
 
 use crate::canonical::canonical_json_line;
 use crate::lanes::lane_registry_v1;
+use crate::payload::PayloadRecord;
 use crate::pilot::{
     load_fixtures, real_source_spec, run_pilot, PilotManifest, PILOT_MANIFEST_SCHEMA, PILOT_SET_ID,
 };
-use crate::payload::PayloadRecord;
 use crate::profile::Profile;
 use crate::transition::TransitionReport;
 

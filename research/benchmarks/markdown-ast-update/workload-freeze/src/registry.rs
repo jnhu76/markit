@@ -130,10 +130,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "E1_LOCAL_TEXT".into(),
             operation_variant: "replace_eq".into(),
             expected_pre: vec![g0(SyntaxKind::Text)],
-            expected_post: vec![
-                PredicateV1::TopologyEqual,
-                PredicateV1::TextContentDiffers,
-            ],
+            expected_post: vec![PredicateV1::TopologyEqual, PredicateV1::TextContentDiffers],
             restore_policy: RestorePolicy::None,
             restore_transition_id: None,
             qualification: RegistryQualification::G0Strict,
@@ -198,10 +195,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "ATX_HEADING_TOGGLE".into(),
             operation_variant: "marker_remove".into(),
             expected_pre: vec![g0(SyntaxKind::HeadingAtx)],
-            expected_post: vec![
-                g0(SyntaxKind::Paragraph),
-                PredicateV1::TextContentDiffers,
-            ],
+            expected_post: vec![g0(SyntaxKind::Paragraph), PredicateV1::TextContentDiffers],
             restore_policy: RestorePolicy::PairedTransition,
             restore_transition_id: Some("G0-PARAGRAPH-TO-ATX".into()),
             qualification: RegistryQualification::G0Strict,
@@ -221,10 +215,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "ATX_HEADING_TOGGLE".into(),
             operation_variant: "marker_insert".into(),
             expected_pre: vec![g0(SyntaxKind::Paragraph)],
-            expected_post: vec![
-                g0(SyntaxKind::HeadingAtx),
-                PredicateV1::TextContentDiffers,
-            ],
+            expected_post: vec![g0(SyntaxKind::HeadingAtx), PredicateV1::TextContentDiffers],
             restore_policy: RestorePolicy::ExactRestoreLeg,
             restore_transition_id: None,
             qualification: RegistryQualification::G0Strict,
@@ -243,7 +234,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "E3_CONTAINER_DEPTH".into(),
             operation_variant: "indent_deepen".into(),
             expected_pre: vec![g0(SyntaxKind::ListItem)],
-                        // Pure container-prefix bytes change here (indent spaces, '>'):
+            // Pure container-prefix bytes change here (indent spaces, '>'):
             // they are trivia, so the text fingerprint does not move and the
             // proof is the derived container kind-count change, not text.
             expected_post: vec![],
@@ -265,7 +256,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "E3_CONTAINER_DEPTH".into(),
             operation_variant: "indent_restore".into(),
             expected_pre: vec![g0(SyntaxKind::ListItem)],
-                        // Pure container-prefix bytes change here (indent spaces, '>'):
+            // Pure container-prefix bytes change here (indent spaces, '>'):
             // they are trivia, so the text fingerprint does not move and the
             // proof is the derived container kind-count change, not text.
             expected_post: vec![],
@@ -287,7 +278,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "E3_CONTAINER_DEPTH".into(),
             operation_variant: "nest_deepen".into(),
             expected_pre: vec![g0(SyntaxKind::BlockQuote)],
-                        // Pure container-prefix bytes change here (indent spaces, '>'):
+            // Pure container-prefix bytes change here (indent spaces, '>'):
             // they are trivia, so the text fingerprint does not move and the
             // proof is the derived container kind-count change, not text.
             expected_post: vec![],
@@ -309,7 +300,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "E3_CONTAINER_DEPTH".into(),
             operation_variant: "nest_restore".into(),
             expected_pre: vec![g0(SyntaxKind::BlockQuote)],
-                        // Pure container-prefix bytes change here (indent spaces, '>'):
+            // Pure container-prefix bytes change here (indent spaces, '>'):
             // they are trivia, so the text fingerprint does not move and the
             // proof is the derived container kind-count change, not text.
             expected_post: vec![],
@@ -549,16 +540,12 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             edit_family_label: "TABLE_SEMANTIC".into(),
             operation_variant: "cell_content_edit".into(),
             expected_pre: vec![g1(SyntaxKind::Table)],
-            expected_post: vec![
-                PredicateV1::TopologyEqual,
-                PredicateV1::TextContentDiffers,
-            ],
+            expected_post: vec![PredicateV1::TopologyEqual, PredicateV1::TextContentDiffers],
             restore_policy: RestorePolicy::None,
             restore_transition_id: None,
             qualification: RegistryQualification::G1SemanticOnly,
             coverage_status: RegistryCoverageStatus::ActiveEditCovered,
-            description: "Table -> Table local content edit inside one real cell."
-                .into(),
+            description: "Table -> Table local content edit inside one real cell.".into(),
             boundary_note: g1_boundary.into(),
         },
         TransitionEntry {
@@ -575,8 +562,7 @@ pub fn transition_registry_v1() -> Vec<TransitionEntry> {
             restore_transition_id: None,
             qualification: RegistryQualification::G1SemanticOnly,
             coverage_status: RegistryCoverageStatus::ActiveEditCovered,
-            description: "Table -> Table row edit: one real body row line is removed."
-                .into(),
+            description: "Table -> Table row edit: one real body row line is removed.".into(),
             boundary_note: g1_boundary.into(),
         },
         TransitionEntry {
@@ -622,9 +608,7 @@ pub fn registry_entry<'a>(
 /// payload's predicate list (exact `PartialEq` match). Payload-specific
 /// additional predicates are allowed — the oracle re-proves all of them.
 fn predicate_set_covers(registry: &[PredicateV1], payload: &[PredicateV1]) -> bool {
-    registry
-        .iter()
-        .all(|rp| payload.iter().any(|pp| pp == rp))
+    registry.iter().all(|rp| payload.iter().any(|pp| pp == rp))
 }
 
 /// The registry agreement rule (task §39.8): a payload referencing a

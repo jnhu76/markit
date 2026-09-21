@@ -15,7 +15,7 @@ use gen::{PayloadShape, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_block_local::{BlockLocalMechanism, H1State};
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Source, WorkCounters, ResultChecksum,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, ResultChecksum, Source, WorkCounters,
 };
 use markit_mdbench_corpusgen as gen;
 use markit_mdbench_corpusgen::mutations::{

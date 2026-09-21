@@ -20,9 +20,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::canonical::{canonical_json, sha256_hex};
 use crate::facts::{Span, SyntaxKind};
-use crate::transition::{
-    validate_transition, EditSpec, PredicateV1, TransitionReport,
-};
+use crate::transition::{validate_transition, EditSpec, PredicateV1, TransitionReport};
 
 /// Frozen payload schema tag.
 pub const PAYLOAD_SCHEMA: &str = "real-payload-v1";
@@ -33,7 +31,9 @@ pub const PAYLOAD_LIFECYCLE_VERSION: &str = "PAYLOAD-LIFECYCLE-v1";
 /// the synthetic identity space (`#35` §7).
 pub const PAYLOAD_ID_NAMESPACE: &str = "rp1:";
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, schemars::JsonSchema)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, schemars::JsonSchema,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum RequestedPosition {
     Early,
@@ -348,7 +348,11 @@ pub struct PayloadValidation {
 /// Validate a payload against its pre-source bytes: identity determinism,
 /// inserted-byte digest, edit validity, hash reproduction and the declared
 /// syntax transition (via TRANSITION-ORACLE-v1).
-pub fn validate_payload(record: &PayloadRecord, pre_source: &str, base_source: &str) -> PayloadValidation {
+pub fn validate_payload(
+    record: &PayloadRecord,
+    pre_source: &str,
+    base_source: &str,
+) -> PayloadValidation {
     let mut failure_codes = Vec::new();
 
     if record.payload_id != record.identity() {
@@ -722,8 +726,7 @@ pub fn validate_trace(request: &TraceRequest) -> TraceReport {
     if crate::lanes::lane_spec(&request.grammar_id).is_none() {
         failure_codes.push(TraceFailureCode::UnknownGrammarLane);
     }
-    let declared_steps_sha256 =
-        sha256_hex(canonical_json(&request.steps).as_bytes());
+    let declared_steps_sha256 = sha256_hex(canonical_json(&request.steps).as_bytes());
 
     let mut source = request.base_source.clone();
     let mut step_reports = Vec::new();

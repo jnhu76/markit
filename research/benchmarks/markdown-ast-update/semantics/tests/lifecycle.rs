@@ -343,7 +343,10 @@ fn payload_identity_is_deterministic_and_inserted_bytes_are_reconstructable() {
     let record = build("abc");
     assert_eq!(record.payload_id, record.identity());
     assert!(record.payload_id.starts_with("rp1:"));
-    assert_eq!(record.post_source_sha256, markit_mdbench_semantics::sha256_hex(TABLE_POST.as_bytes()));
+    assert_eq!(
+        record.post_source_sha256,
+        markit_mdbench_semantics::sha256_hex(TABLE_POST.as_bytes())
+    );
 
     let validation = validate_payload(&record, TABLE_SOURCE, TABLE_SOURCE);
     assert!(validation.valid, "failures: {:?}", validation.failure_codes);

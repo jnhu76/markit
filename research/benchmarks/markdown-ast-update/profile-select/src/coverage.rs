@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 
 use serde::Serialize;
 
-use crate::selection::{syntax_cell, SelectionOutcome, SYNTAX_CELLS, FEATURES};
+use crate::selection::{syntax_cell, SelectionOutcome, FEATURES, SYNTAX_CELLS};
 use crate::stats::{bin_of, feature_stats, FeatureBins};
 use crate::{CandidateRow, COVERAGE_SCHEMA};
 
@@ -113,7 +113,10 @@ pub fn build(
         let bin = bins.iter().find(|bin| bin.feature == feature).expect("bin");
         let candidate_count = rows
             .iter()
-            .filter(|row| row.g0().is_some() && bin_of(bin, crate::selection::feature_value(row, feature)) == label)
+            .filter(|row| {
+                row.g0().is_some()
+                    && bin_of(bin, crate::selection::feature_value(row, feature)) == label
+            })
             .count() as u64;
         let eligible_count = eligible
             .iter()
@@ -173,7 +176,10 @@ pub fn build(
         } else {
             None
         };
-        let required = if cell.starts_with("core:") || cell.starts_with("syntax:") || cell.starts_with("table:") {
+        let required = if cell.starts_with("core:")
+            || cell.starts_with("syntax:")
+            || cell.starts_with("table:")
+        {
             "required"
         } else {
             "observed_extra"
@@ -255,7 +261,10 @@ pub fn build(
     let mut project_share_table = Vec::new();
     let mut by_project: BTreeMap<&str, Vec<&CandidateRow>> = BTreeMap::new();
     for row in rows {
-        by_project.entry(row.identity.source_id.as_str()).or_default().push(row);
+        by_project
+            .entry(row.identity.source_id.as_str())
+            .or_default()
+            .push(row);
     }
     for (source_id, project_rows) in &by_project {
         project_share_table.push(ProjectShare {
@@ -281,7 +290,10 @@ pub fn build(
     let mut domain_share_table = Vec::new();
     let mut by_domain: BTreeMap<&str, Vec<&CandidateRow>> = BTreeMap::new();
     for row in rows {
-        by_domain.entry(row.identity.domain.as_str()).or_default().push(row);
+        by_domain
+            .entry(row.identity.domain.as_str())
+            .or_default()
+            .push(row);
     }
     for (domain, domain_rows) in &by_domain {
         domain_share_table.push(DomainShare {
@@ -406,7 +418,10 @@ pub fn build(
             selected_core_representative_files: selected_core.len() as u64,
             selected_core_bytes: selected_core.iter().map(|row| row.file_bytes).sum(),
             selected_realism_syntax_full_files: selected_realism.len() as u64,
-            selected_realism_syntax_full_bytes: selected_realism.iter().map(|row| row.file_bytes).sum(),
+            selected_realism_syntax_full_bytes: selected_realism
+                .iter()
+                .map(|row| row.file_bytes)
+                .sum(),
             project_share_table,
             domain_share_table,
         },
@@ -462,7 +477,9 @@ pub fn distributions(rows: &[CandidateRow]) -> DistributionsArtifact {
         .collect();
     let mut per_project = BTreeMap::new();
     for row in rows {
-        *per_project.entry(row.identity.source_id.clone()).or_insert(0) += 1;
+        *per_project
+            .entry(row.identity.source_id.clone())
+            .or_insert(0) += 1;
     }
     let mut per_domain = BTreeMap::new();
     for row in rows {
@@ -477,15 +494,14 @@ pub fn distributions(rows: &[CandidateRow]) -> DistributionsArtifact {
         .or_insert(0) += eligible.len() as u64;
     *per_eligibility_class
         .entry("g1_strict_scope_clean".to_string())
-        .or_insert(0)
-        += rows
-            .iter()
-            .filter(|row| {
-                row.g1()
-                    .map(|lane| lane.lane_valid && lane.strict_scope_clean)
-                    .unwrap_or(false)
-            })
-            .count() as u64;
+        .or_insert(0) += rows
+        .iter()
+        .filter(|row| {
+            row.g1()
+                .map(|lane| lane.lane_valid && lane.strict_scope_clean)
+                .unwrap_or(false)
+        })
+        .count() as u64;
     *per_eligibility_class
         .entry("g2_deferred".to_string())
         .or_insert(0) += rows.len() as u64;

@@ -101,11 +101,8 @@ pub struct SelectedFile {
 /// deterministic SYNTAX_COVERAGE_SET repair (see [`repair`]) is applied on
 /// top, fail-closed; generate / verify / dry-run therefore all observe the
 /// same effective file list.
-pub fn load_selected_files(
-    benchmark_root: &std::path::Path,
-) -> Result<Vec<SelectedFile>, String> {
-    let selection_path = benchmark_root
-        .join("workloads/selections/selected-files-v1.json");
+pub fn load_selected_files(benchmark_root: &std::path::Path) -> Result<Vec<SelectedFile>, String> {
+    let selection_path = benchmark_root.join("workloads/selections/selected-files-v1.json");
     let raw = std::fs::read_to_string(&selection_path)
         .map_err(|e| format!("read {}: {e}", selection_path.display()))?;
     #[derive(Deserialize)]
@@ -122,14 +119,14 @@ pub fn load_selected_files(
         g0_strict_eligible: bool,
         g1_strict_eligible: bool,
     }
-    let artifact: SelectionArtifact = serde_json::from_str(&raw)
-        .map_err(|e| format!("parse selected-files-v1.json: {e}"))?;
+    let artifact: SelectionArtifact =
+        serde_json::from_str(&raw).map_err(|e| format!("parse selected-files-v1.json: {e}"))?;
 
     let mut files = Vec::new();
     for (key, member) in artifact.members {
-        let (source_id, _rest) = key.split_once('/').ok_or_else(|| {
-            format!("selected key {key:?} does not start with `<source_id>/`")
-        })?;
+        let (source_id, _rest) = key
+            .split_once('/')
+            .ok_or_else(|| format!("selected key {key:?} does not start with `<source_id>/`"))?;
         // The key IS the path below workloads/sources/: `<source_id>/files/...`
         let path = benchmark_root.join("workloads/sources").join(&key);
         let text = std::fs::read_to_string(&path)
@@ -197,8 +194,7 @@ pub fn acquisition_commit_sha(
 /// Small deterministic JSONL writer helper (canonical JSON per line).
 pub fn write_jsonl(path: &std::path::Path, lines: &[String]) -> Result<(), String> {
     if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
+        std::fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
     }
     let mut out = String::new();
     for line in lines {

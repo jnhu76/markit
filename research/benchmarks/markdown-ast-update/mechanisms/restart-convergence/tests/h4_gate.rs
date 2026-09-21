@@ -29,8 +29,8 @@
 use gen::{PayloadShape, ALL_SHAPES, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, Source, SourceVersion,
-    WorkCounters, ResultChecksum,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, ResultChecksum, Source,
+    SourceVersion, WorkCounters,
 };
 use markit_mdbench_corpusgen as gen;
 use markit_mdbench_corpusgen::mutations::{

@@ -381,8 +381,11 @@ impl Mechanism for FragmentReuseMechanism {
         // sequence at any container depth.) The probe reads the edited
         // span: report the scan (R5-CORRECTIVE-2).
         let damaged_has_def = any_def_in_range(&old_state.tree, es, ee);
-        cx.sink
-            .record_source_inspection(markit_mdbench_common::SourceVersion::Post, es as u64, ee_new as u64);
+        cx.sink.record_source_inspection(
+            markit_mdbench_common::SourceVersion::Post,
+            es as u64,
+            ee_new as u64,
+        );
         let region_may_create_def = post[es..ee_new].windows(3).any(|w| w == b"]: ");
         let definition_changing = damaged_has_def || region_may_create_def;
 
@@ -1056,7 +1059,11 @@ fn mentions_reference<W: WorkSink>(node: &FNode, post: &[u8], base: usize, sink:
     if base >= end {
         return false;
     }
-    sink.record_source_inspection(markit_mdbench_common::SourceVersion::Post, base as u64, end as u64);
+    sink.record_source_inspection(
+        markit_mdbench_common::SourceVersion::Post,
+        base as u64,
+        end as u64,
+    );
     post[base..end].contains(&b'[')
 }
 

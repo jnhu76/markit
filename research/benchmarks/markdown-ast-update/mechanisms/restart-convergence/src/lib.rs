@@ -450,8 +450,11 @@ impl Mechanism for RestartConvergenceMechanism {
         // occurrence inside the edited span's post bytes (source-derived,
         // pre-computable).
         let definition_changing = prepared.damaged_has_def || {
-            cx.sink
-                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, es as u64, ee_new as u64);
+            cx.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                es as u64,
+                ee_new as u64,
+            );
             post[es..ee_new].windows(3).any(|w| w == b"]: ")
         };
 

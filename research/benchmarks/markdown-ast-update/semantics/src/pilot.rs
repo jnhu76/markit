@@ -378,7 +378,17 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
                 gating: true,
                 detail: "a transition fixture must declare post_source".to_string(),
             });
-            return finish(fixture, checks, profiles, facts, transitions, break_restore, payload_validation, position_outcome, trace_report);
+            return finish(
+                fixture,
+                checks,
+                profiles,
+                facts,
+                transitions,
+                break_restore,
+                payload_validation,
+                position_outcome,
+                trace_report,
+            );
         };
         if let Some(declared) = &fixture.post_source_sha256 {
             checks.push(CheckOutcome {
@@ -445,7 +455,11 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
         }
 
         if let Some(restore_edit) = &transition.restore_edit {
-            let lane_id = fixture.lanes.first().cloned().unwrap_or_else(|| "G1".into());
+            let lane_id = fixture
+                .lanes
+                .first()
+                .cloned()
+                .unwrap_or_else(|| "G1".into());
             let lane = lane_for_id(&lane_id).expect("checked above");
             let chain = validate_break_restore(&BreakRestoreRequest {
                 grammar_id: lane.grammar_id.clone(),
@@ -479,7 +493,11 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
         }
 
         // Payload lifecycle over the declared BREAK edit.
-        let lane_id = fixture.lanes.first().cloned().unwrap_or_else(|| "G1".into());
+        let lane_id = fixture
+            .lanes
+            .first()
+            .cloned()
+            .unwrap_or_else(|| "G1".into());
         let lane = lane_for_id(&lane_id).expect("checked above");
         let record = build_payload(
             &fixture.id,
@@ -533,11 +551,7 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
                 occurrence: fact.occurrence,
             })
             .collect();
-        let outcome = resolve_positions(
-            &anchors,
-            fixture.source.len(),
-            &RequestedPosition::all(),
-        );
+        let outcome = resolve_positions(&anchors, fixture.source.len(), &RequestedPosition::all());
         checks.push(CheckOutcome {
             check: "position_resolution".to_string(),
             passed: outcome.resolutions.len() == position.expected_resolutions,
@@ -547,7 +561,10 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
                 anchors.len(),
                 outcome.resolutions.len(),
                 position.expected_resolutions,
-                outcome.resolutions.iter().any(|resolution| resolution.deduplicated),
+                outcome
+                    .resolutions
+                    .iter()
+                    .any(|resolution| resolution.deduplicated),
                 outcome.uncovered_requests
             ),
         });
@@ -571,7 +588,11 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
             .and_then(|outcome| outcome.resolutions.first())
         {
             if let Some(transition) = &fixture.transition {
-                let lane_id = fixture.lanes.first().cloned().unwrap_or_else(|| "G1".into());
+                let lane_id = fixture
+                    .lanes
+                    .first()
+                    .cloned()
+                    .unwrap_or_else(|| "G1".into());
                 let lane = lane_for_id(&lane_id).expect("checked above");
                 let record = build_payload(
                     &fixture.id,
@@ -599,17 +620,13 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
                 checks.push(CheckOutcome {
                     check: "position_payload_lifecycle".to_string(),
                     passed: validation.valid
-                        && resolution
-                            .requested_positions
-                            .len()
+                        && resolution.requested_positions.len()
                             == usize::from(position.expected_deduplicated) * 3
-                            + usize::from(!position.expected_deduplicated),
+                                + usize::from(!position.expected_deduplicated),
                     gating: true,
                     detail: format!(
                         "requested_positions={:?} valid={} failures={:?}",
-                        resolution.requested_positions,
-                        validation.valid,
-                        validation.failure_codes
+                        resolution.requested_positions, validation.valid, validation.failure_codes
                     ),
                 });
             }
@@ -618,12 +635,19 @@ pub fn run_fixture(fixture: &PilotFixture) -> FixtureResult {
 
     // Chained trace semantics (coordinates belong to each step's pre-source).
     if let Some(trace) = &fixture.trace {
-        let lane_id = fixture.lanes.first().cloned().unwrap_or_else(|| "G1".into());
+        let lane_id = fixture
+            .lanes
+            .first()
+            .cloned()
+            .unwrap_or_else(|| "G1".into());
         let lane = lane_for_id(&lane_id).expect("checked above");
         let mut source = fixture.source.clone();
         let mut steps = Vec::new();
         for (index, step) in trace.steps.iter().enumerate() {
-            let post = step.edit.apply(&source).expect("fixture trace edit is valid");
+            let post = step
+                .edit
+                .apply(&source)
+                .expect("fixture trace edit is valid");
             steps.push(crate::payload::TraceStep {
                 step: index as u32,
                 edit: step.edit.clone(),
@@ -729,7 +753,9 @@ fn check_lane_expectations(
         let found = profile.syntax_facts.iter().find(|fact| {
             fact.syntax_kind == expected.kind
                 && fact.recognition_status == expected.status
-                && declared_span.map(|span| fact.span() == span).unwrap_or(true)
+                && declared_span
+                    .map(|span| fact.span() == span)
+                    .unwrap_or(true)
                 && expected
                     .host_context
                     .map(|host| host == fact.host_context)
@@ -904,7 +930,11 @@ pub fn summarize(profile: &LaneProfile) -> LaneSummary {
 }
 
 /// Run the pilot: fixtures plus the optional real-source case.
-pub fn run_pilot(bench_root: &Path, fixtures: &[PilotFixture], real_source: Option<&RealSourceSpec>) -> PilotResults {
+pub fn run_pilot(
+    bench_root: &Path,
+    fixtures: &[PilotFixture],
+    real_source: Option<&RealSourceSpec>,
+) -> PilotResults {
     let fixtures_results: Vec<FixtureResult> = fixtures.iter().map(run_fixture).collect();
     let real_result = real_source.map(|spec| run_real_source(bench_root, spec));
 

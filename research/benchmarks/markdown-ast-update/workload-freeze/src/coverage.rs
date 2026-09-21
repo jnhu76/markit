@@ -163,11 +163,7 @@ const EXTENSIONS: &[&str] = &[
 /// else that was observed).
 const OTHER_OBSERVED: &[&str] = &["strong", "hard_break", "soft_break"];
 
-fn parse_evidence_for(
-    kind: &str,
-    observed: &[ObservedSyntax],
-    grammar_id: &str,
-) -> (u64, u64) {
+fn parse_evidence_for(kind: &str, observed: &[ObservedSyntax], grammar_id: &str) -> (u64, u64) {
     let mut recognized = 0;
     let mut candidates: BTreeMap<String, u64> = BTreeMap::new();
     for record in observed {
@@ -231,7 +227,10 @@ pub fn build_coverage(
     // ---- full read --------------------------------------------------------
     let full_read = FullReadSection {
         files: full_read.len() as u64,
-        lane_records: full_read.iter().map(|record| record.lanes.len() as u64).sum(),
+        lane_records: full_read
+            .iter()
+            .map(|record| record.lanes.len() as u64)
+            .sum(),
         g0_strict: full_read
             .iter()
             .filter(|record| {
@@ -295,14 +294,32 @@ pub fn build_coverage(
     };
     let mut families: Vec<FamilyStatus> = Vec::new();
     for (family, description) in [
-        ("E1_LOCAL_TEXT", "local text content edits on real text/link syntax"),
+        (
+            "E1_LOCAL_TEXT",
+            "local text content edits on real text/link syntax",
+        ),
         ("E2_PARAGRAPH_SPLIT_MERGE", "real paragraph boundary edits"),
-        ("E3_CONTAINER_DEPTH", "list and blockquote container-state changes"),
-        ("E4_FENCE_OPEN_CLOSE", "real fence open/close state transitions"),
-        ("E5_INLINE_DELIMITER", "emphasis and code-span delimiter states"),
-        ("E6_REFERENCE_DEFINITION", "reference definition dependency states"),
+        (
+            "E3_CONTAINER_DEPTH",
+            "list and blockquote container-state changes",
+        ),
+        (
+            "E4_FENCE_OPEN_CLOSE",
+            "real fence open/close state transitions",
+        ),
+        (
+            "E5_INLINE_DELIMITER",
+            "emphasis and code-span delimiter states",
+        ),
+        (
+            "E6_REFERENCE_DEFINITION",
+            "reference definition dependency states",
+        ),
         ("ATX_HEADING_TOGGLE", "ATX heading <-> paragraph toggles"),
-        ("TABLE_SEMANTIC", "G1 table transitions (SEMANTIC_ONLY, never horse-dispatched)"),
+        (
+            "TABLE_SEMANTIC",
+            "G1 table transitions (SEMANTIC_ONLY, never horse-dispatched)",
+        ),
     ] {
         let mut payload_count = 0u64;
         let mut files_set = std::collections::BTreeSet::new();
@@ -354,7 +371,8 @@ pub fn build_coverage(
     // ---- G0 core syntax -----------------------------------------------------
     let mut g0_syntax = Vec::new();
     for (kind_name, label) in G0_CORE {
-        let (recognized, _candidate) = parse_evidence_for(kind_name, &workload.observed, crate::G0_GRAMMAR_ID);
+        let (recognized, _candidate) =
+            parse_evidence_for(kind_name, &workload.observed, crate::G0_GRAMMAR_ID);
         let mut active = Vec::new();
         let mut payload_count = 0u64;
         for row in &applicable {
@@ -425,14 +443,19 @@ pub fn build_coverage(
         status: ST_ACTIVE_EDIT_COVERED.to_string(),
         parse_evidence: BTreeMap::new(),
         candidate_evidence: BTreeMap::new(),
-        active_transitions: vec!["G0-PARAGRAPH-SPLIT".to_string(), "G0-PARAGRAPH-MERGE".to_string()],
+        active_transitions: vec![
+            "G0-PARAGRAPH-SPLIT".to_string(),
+            "G0-PARAGRAPH-MERGE".to_string(),
+        ],
         payload_count: payloads_per_transition
             .get("G0-PARAGRAPH-SPLIT")
             .copied()
             .unwrap_or(0)
-            + payloads_per_transition.get("G0-PARAGRAPH-MERGE").copied().unwrap_or(0),
-        note: "blank-line block boundary exercised by the paragraph split/merge pair"
-            .to_string(),
+            + payloads_per_transition
+                .get("G0-PARAGRAPH-MERGE")
+                .copied()
+                .unwrap_or(0),
+        note: "blank-line block boundary exercised by the paragraph split/merge pair".to_string(),
     });
 
     // ---- required extensions -------------------------------------------------
@@ -496,7 +519,10 @@ pub fn build_coverage(
         extensions.push(SyntaxStatus {
             syntax_target: kind_name.to_string(),
             status: status.to_string(),
-            parse_evidence: BTreeMap::from([("COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1".to_string(), g1_recognized)]),
+            parse_evidence: BTreeMap::from([(
+                "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1".to_string(),
+                g1_recognized,
+            )]),
             candidate_evidence: BTreeMap::new(),
             active_transitions: active,
             payload_count,
@@ -531,7 +557,10 @@ pub fn build_coverage(
             status: status.to_string(),
             parse_evidence: BTreeMap::from([
                 ("BENCH-GRAMMAR-v1".to_string(), g0_recognized),
-                ("COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1".to_string(), g1_recognized),
+                (
+                    "COMMONMARK-0.31.2+GFM-TABLES-0.29-gfm-v1".to_string(),
+                    g1_recognized,
+                ),
             ]),
             candidate_evidence: BTreeMap::new(),
             active_transitions: Vec::new(),
@@ -553,10 +582,22 @@ pub fn build_coverage(
     });
     // Task lists / strikethrough / front matter / directives (G1-disabled).
     for (kind_name, note) in [
-        ("strikethrough", "GFM strikethrough is disabled in the frozen G1 configuration"),
-        ("task_list_item", "GFM task lists are disabled in the frozen G1 configuration"),
-        ("front_matter", "YAML/+++ metadata blocks are disabled in the frozen G1 configuration"),
-        ("directive", "MyST/project directives are disabled in the frozen G1 configuration"),
+        (
+            "strikethrough",
+            "GFM strikethrough is disabled in the frozen G1 configuration",
+        ),
+        (
+            "task_list_item",
+            "GFM task lists are disabled in the frozen G1 configuration",
+        ),
+        (
+            "front_matter",
+            "YAML/+++ metadata blocks are disabled in the frozen G1 configuration",
+        ),
+        (
+            "directive",
+            "MyST/project directives are disabled in the frozen G1 configuration",
+        ),
     ] {
         let candidates = workload
             .observed
@@ -660,10 +701,7 @@ pub fn build_coverage(
             .filter(|payload| payload.step == 1)
             .count() as u64,
         exact_restore_count: workload.break_restore_reports.len() as u64,
-        deferred_trace_forms: vec![
-            "local_burst".to_string(),
-            "document_session".to_string(),
-        ],
+        deferred_trace_forms: vec!["local_burst".to_string(), "document_session".to_string()],
     };
 
     // ---- failures ---------------------------------------------------------------
@@ -679,21 +717,19 @@ pub fn build_coverage(
                 .rejections
                 .iter()
                 .map(|record| format!("{}: {}", record.anchor_identity, record.reason))
-                .chain(
-                    row.rejections.is_empty().then(|| {
-                        match row.status.as_str() {
-                            crate::applicability::STATUS_NO_TARGET_SYNTAX => {
-                                format!("no {} anchor exists in this file", row.syntax_target)
-                            }
-                            crate::applicability::STATUS_GRAMMAR_INELIGIBLE => {
-                                "file is not G0 strict-scope-clean; no strict payload may be \
-                                 generated from it"
-                                    .to_string()
-                            }
-                            other => format!("cell status {other}"),
+                .chain(row.rejections.is_empty().then(|| {
+                    match row.status.as_str() {
+                        crate::applicability::STATUS_NO_TARGET_SYNTAX => {
+                            format!("no {} anchor exists in this file", row.syntax_target)
                         }
-                    }),
-                )
+                        crate::applicability::STATUS_GRAMMAR_INELIGIBLE => {
+                            "file is not G0 strict-scope-clean; no strict payload may be \
+                                 generated from it"
+                                .to_string()
+                        }
+                        other => format!("cell status {other}"),
+                    }
+                }))
                 .collect(),
         })
         .collect();

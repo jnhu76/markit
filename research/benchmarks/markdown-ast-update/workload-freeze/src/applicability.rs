@@ -228,7 +228,8 @@ impl FileLaneContext {
             .iter()
             .filter(|fact| {
                 fact.syntax_kind == kind
-                    && fact.recognition_status == markit_mdbench_semantics::RecognitionStatus::Recognized
+                    && fact.recognition_status
+                        == markit_mdbench_semantics::RecognitionStatus::Recognized
                     && fact.host_context
                     && fact.is_strict_coverage()
             })
@@ -249,8 +250,10 @@ fn anchor_identity(anchor: &Anchor) -> String {
 /// ordinary/container text, recorded without exploding the matrix.
 fn inline_context(anchor: &Anchor, profile: &LaneProfile) -> String {
     let inside_link = profile.syntax_facts.iter().any(|other| {
-        matches!(other.syntax_kind, SyntaxKind::LinkInline | SyntaxKind::LinkReference)
-            && other.recognition_status == markit_mdbench_semantics::RecognitionStatus::Recognized
+        matches!(
+            other.syntax_kind,
+            SyntaxKind::LinkInline | SyntaxKind::LinkReference
+        ) && other.recognition_status == markit_mdbench_semantics::RecognitionStatus::Recognized
             && other.span().contains(&anchor.span)
     });
     let inside_container = profile.syntax_facts.iter().any(|other| {
@@ -477,8 +480,7 @@ fn try_leg(
         });
     }
 
-    let restore =
-        build_restore_leg(entry, file, anchor, &constructed, needs_strict)?;
+    let restore = build_restore_leg(entry, file, anchor, &constructed, needs_strict)?;
 
     Ok(CachedLeg {
         context,
@@ -590,7 +592,14 @@ fn window_container_depth(
     end: usize,
     container_kinds: &[SyntaxKind],
 ) -> u32 {
-    fn walk(node: &markit_mdbench_semantics::LaneNode, depth: u32, best: &mut u32, kinds: &[SyntaxKind], start: usize, end: usize) {
+    fn walk(
+        node: &markit_mdbench_semantics::LaneNode,
+        depth: u32,
+        best: &mut u32,
+        kinds: &[SyntaxKind],
+        start: usize,
+        end: usize,
+    ) {
         if node.span.start < end && start < node.span.end && kinds.contains(&node.kind) {
             *best = (*best).max(depth);
         }
@@ -633,12 +642,17 @@ fn assemble_payloads(
     commit_sha: Option<String>,
     resolution: &Resolution,
     membership_label: &str,
-) -> (Vec<PayloadRecord>, Option<markit_mdbench_semantics::payload::BreakRestoreReport>) {
+) -> (
+    Vec<PayloadRecord>,
+    Option<markit_mdbench_semantics::payload::BreakRestoreReport>,
+) {
     let source = &file.text;
     let target_kind = kind_from_name(&entry.syntax_target).expect("registry kind");
     let trace_id = format!(
         "{}|{}|{}",
-        entry.transition_id, file.key, resolution.anchor.identity()
+        entry.transition_id,
+        file.key,
+        resolution.anchor.identity()
     );
     let mut memberships = file.memberships.clone();
     memberships.push("EDIT_WRITE".to_string());
@@ -670,11 +684,13 @@ fn assemble_payloads(
         distance_from_target: resolution
             .requested_positions
             .iter()
-            .map(|requested| markit_mdbench_semantics::payload::TargetDistance {
-                requested: *requested,
-                target_fraction: requested.target_fraction(),
-                distance: (relative - requested.target_fraction()).abs(),
-            })
+            .map(
+                |requested| markit_mdbench_semantics::payload::TargetDistance {
+                    requested: *requested,
+                    target_fraction: requested.target_fraction(),
+                    distance: (relative - requested.target_fraction()).abs(),
+                },
+            )
             .collect(),
         dedup_identity: resolution.anchor.identity(),
         deduplicated: resolution.requested_positions.len() > 1,
@@ -707,7 +723,11 @@ fn assemble_payloads(
     let mut report = None;
 
     if let Some(restore) = &resolution.restore {
-        let s1 = resolution.constructed.edit.apply(source).expect("break applies");
+        let s1 = resolution
+            .constructed
+            .edit
+            .apply(source)
+            .expect("break applies");
         let full_registry = transition_registry_v1();
         let restore_entry = entry
             .restore_transition_id
@@ -971,7 +991,8 @@ fn resolve_cell(
         if let Some(report) = report {
             chain_reports.push(report);
         }
-        row.payload_ids.extend(payloads.iter().map(|p| p.payload_id.clone()));
+        row.payload_ids
+            .extend(payloads.iter().map(|p| p.payload_id.clone()));
         cell_payloads.append(&mut payloads);
         row.contexts_observed.push(resolution.context.clone());
     }
@@ -1095,7 +1116,9 @@ pub fn build_frozen_workload(
                 if !fact.host_context {
                     continue;
                 }
-                if fact.recognition_status == markit_mdbench_semantics::RecognitionStatus::Recognized {
+                if fact.recognition_status
+                    == markit_mdbench_semantics::RecognitionStatus::Recognized
+                {
                     *record
                         .recognized
                         .entry(fact.syntax_kind.name().to_string())
@@ -1105,10 +1128,12 @@ pub fn build_frozen_workload(
                         "{}:{}",
                         fact.syntax_kind.name(),
                         match fact.recognition_status {
-                            markit_mdbench_semantics::RecognitionStatus::NotRecognized => "not_recognized",
+                            markit_mdbench_semantics::RecognitionStatus::NotRecognized =>
+                                "not_recognized",
                             markit_mdbench_semantics::RecognitionStatus::Ambiguous => "ambiguous",
                             markit_mdbench_semantics::RecognitionStatus::Unknown => "unknown",
-                            markit_mdbench_semantics::RecognitionStatus::Recognized => unreachable!(),
+                            markit_mdbench_semantics::RecognitionStatus::Recognized =>
+                                unreachable!(),
                         }
                     );
                     *record.candidates.entry(key).or_default() += 1;

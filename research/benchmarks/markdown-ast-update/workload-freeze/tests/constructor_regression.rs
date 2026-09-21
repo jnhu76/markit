@@ -121,13 +121,22 @@ fn list_indent_requires_adjacent_sibling() {
     let facts = profile_g0(adjacent)
         .syntax_facts
         .iter()
-        .filter(|f| f.syntax_kind == SyntaxKind::ListItem && f.recognition_status == RecognitionStatus::Recognized)
+        .filter(|f| {
+            f.syntax_kind == SyntaxKind::ListItem
+                && f.recognition_status == RecognitionStatus::Recognized
+        })
         .cloned()
         .collect::<Vec<_>>();
     // First item has no preceding sibling; second item does.
-    let first = facts.iter().find(|f| f.occurrence == 0).expect("first item");
+    let first = facts
+        .iter()
+        .find(|f| f.occurrence == 0)
+        .expect("first item");
     assert!(editors::construct_list_item_indent(adjacent, first).is_err());
-    let second = facts.iter().find(|f| f.occurrence == 1).expect("second item");
+    let second = facts
+        .iter()
+        .find(|f| f.occurrence == 1)
+        .expect("second item");
     assert!(editors::construct_list_item_indent(adjacent, second).is_ok());
 
     // Blank line between items ends the list (tight-only): never nests.
@@ -135,10 +144,16 @@ fn list_indent_requires_adjacent_sibling() {
     let facts = profile_g0(blank_separated)
         .syntax_facts
         .iter()
-        .filter(|f| f.syntax_kind == SyntaxKind::ListItem && f.recognition_status == RecognitionStatus::Recognized)
+        .filter(|f| {
+            f.syntax_kind == SyntaxKind::ListItem
+                && f.recognition_status == RecognitionStatus::Recognized
+        })
         .cloned()
         .collect::<Vec<_>>();
-    let second = facts.iter().find(|f| f.occurrence == 1).expect("second item");
+    let second = facts
+        .iter()
+        .find(|f| f.occurrence == 1)
+        .expect("second item");
     assert!(editors::construct_list_item_indent(blank_separated, second).is_err());
 }
 

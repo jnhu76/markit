@@ -62,8 +62,7 @@ pub fn tool_source_sha256(manifest_dir: &Path) -> Result<String, String> {
         let relative = path
             .strip_prefix(manifest_dir)
             .map_err(|error| format!("{}: {error}", path.display()))?;
-        let bytes =
-            fs::read(&path).map_err(|error| format!("{}: {error}", path.display()))?;
+        let bytes = fs::read(&path).map_err(|error| format!("{}: {error}", path.display()))?;
         hasher.update(relative.to_string_lossy().as_bytes());
         hasher.update(&bytes);
     }
@@ -111,13 +110,11 @@ pub fn run_all(
 
     // §10-§13: profile the universe (single pass, streaming jsonl into
     // scratch so the hash can be recorded).
-    fs::create_dir_all(scratch_dir).map_err(|error| format!("{}: {error}", scratch_dir.display()))?;
+    fs::create_dir_all(scratch_dir)
+        .map_err(|error| format!("{}: {error}", scratch_dir.display()))?;
     let profile_jsonl_path = scratch_dir.join("real-profile-v1.jsonl");
-    let outcome_profile = crate::rows::profile_universe(
-        workloads_root,
-        &identities,
-        Some(&profile_jsonl_path),
-    )?;
+    let outcome_profile =
+        crate::rows::profile_universe(workloads_root, &identities, Some(&profile_jsonl_path))?;
     let profile_jsonl_bytes = fs::metadata(&profile_jsonl_path)
         .map(|metadata| metadata.len())
         .unwrap_or(outcome_profile.profile_jsonl_bytes);
@@ -181,7 +178,9 @@ pub fn run_all(
     let identity = ArtifactIdentity {
         generator_version: crate::CORRECTIVE_B_VERSION.to_string(),
         generator_tool_sha256: tool_source_sha256(manifest_dir)?,
-        candidate_manifest_sha256: file_sha256(&workloads_root.join("manifests/candidate-universe-v1.json"))?,
+        candidate_manifest_sha256: file_sha256(
+            &workloads_root.join("manifests/candidate-universe-v1.json"),
+        )?,
         source_lock_sha256: file_sha256(&workloads_root.join("source-lock.json"))?,
         profiler_version: markit_mdbench_semantics::PROFILER_VERSION.to_string(),
         lane_registry_version: markit_mdbench_semantics::LANE_REGISTRY_VERSION.to_string(),
@@ -278,7 +277,9 @@ pub fn syntax_inventory(rows: &[CandidateRow]) -> Vec<SyntaxTarget> {
         let mut projects: std::collections::BTreeSet<&str> = Default::default();
         let mut domains: std::collections::BTreeSet<&str> = Default::default();
         for row in rows {
-            let Some(lane) = lane_of(row, grammar_id) else { continue };
+            let Some(lane) = lane_of(row, grammar_id) else {
+                continue;
+            };
             let strict = lane.strict_kinds.get(kind).copied().unwrap_or(0);
             let declared = lane.declared_kinds.get(kind).copied().unwrap_or(0);
             let cand = lane.candidate_kinds.get(kind).copied().unwrap_or(0);
@@ -302,27 +303,24 @@ pub fn syntax_inventory(rows: &[CandidateRow]) -> Vec<SyntaxTarget> {
         // items, front matter and directives are out_of_lane under both G0
         // and G1 and must never be labeled strict.
         let grade = match lane_id {
-            "G0"
-                if matches!(
-                    kind,
-                    "paragraph"
-                        | "heading_atx"
-                        | "list"
-                        | "block_quote"
-                        | "code_block_fenced"
-                        | "emphasis"
-                        | "code_span"
-                        | "link_inline"
-                        | "link_reference"
-                        | "reference_definition"
-                ) =>
+            "G0" if matches!(
+                kind,
+                "paragraph"
+                    | "heading_atx"
+                    | "list"
+                    | "block_quote"
+                    | "code_block_fenced"
+                    | "emphasis"
+                    | "code_span"
+                    | "link_inline"
+                    | "link_reference"
+                    | "reference_definition"
+            ) =>
             {
                 "strict_lane_coverage".to_string()
             }
             "G1" if kind == "table" => "strict_lane_coverage".to_string(),
-            "G1" if matches!(kind, "inline_math" | "display_math") => {
-                "lane_deferred".to_string()
-            }
+            "G1" if matches!(kind, "inline_math" | "display_math") => "lane_deferred".to_string(),
             "G1" => "contract_declared_not_qualified".to_string(),
             _ => "out_of_lane_candidate".to_string(),
         };
@@ -364,14 +362,12 @@ pub fn write_all(
     };
 
     let identity_json = crate::canonical_json(&artifacts.identity);
-    let identity_value: serde_json::Value = serde_json::from_str(&identity_json)
-        .map_err(|error| error.to_string())?;
+    let identity_value: serde_json::Value =
+        serde_json::from_str(&identity_json).map_err(|error| error.to_string())?;
 
     // verification (§9)
     let mut verification = crate::canonical_json(&artifacts.verification);
-    verification.push_str(&format!(
-        "\n{{\"artifact_identity\":{identity_json}}}\n"
-    ));
+    verification.push_str(&format!("\n{{\"artifact_identity\":{identity_json}}}\n"));
     write(
         "analysis/candidate-universe-verification-v1.json",
         &verification,
@@ -395,7 +391,11 @@ pub fn write_all(
         "feature_list": artifacts.distributions.feature_list,
     }));
     distributions_json.push('\n');
-    write("profiles/distributions-v1.json", &distributions_json, &mut written)?;
+    write(
+        "profiles/distributions-v1.json",
+        &distributions_json,
+        &mut written,
+    )?;
     write(
         "profiles/distributions-v1.md",
         &render_distributions_md(artifacts),
@@ -414,7 +414,11 @@ pub fn write_all(
         "notes": artifacts.bias.notes,
     }));
     bias_json.push('\n');
-    write("analysis/eligibility-bias-v1.json", &bias_json, &mut written)?;
+    write(
+        "analysis/eligibility-bias-v1.json",
+        &bias_json,
+        &mut written,
+    )?;
     write(
         "analysis/ELIGIBILITY-BIAS-REPORT-v1.md",
         &render_bias_md(artifacts),
@@ -434,7 +438,11 @@ pub fn write_all(
         "notes": artifacts.redundancy.notes,
     }));
     redundancy_json.push('\n');
-    write("analysis/redundancy-v1.json", &redundancy_json, &mut written)?;
+    write(
+        "analysis/redundancy-v1.json",
+        &redundancy_json,
+        &mut written,
+    )?;
     write(
         "analysis/redundancy-v1.md",
         &render_redundancy_md(artifacts),
@@ -491,7 +499,11 @@ pub fn write_all(
         .collect::<Vec<String>>()
         .join("\n")
         + "\n";
-    write("selections/selection-trace-v1.jsonl", &trace_jsonl, &mut written)?;
+    write(
+        "selections/selection-trace-v1.jsonl",
+        &trace_jsonl,
+        &mut written,
+    )?;
 
     let selected_files = serde_json::json!({
         "schema": crate::SELECTED_FILES_SCHEMA,
@@ -543,10 +555,8 @@ pub fn write_all(
     )?;
 
     if include_large {
-        let profile_contents =
-            fs::read_to_string(profile_jsonl_source).map_err(|error| {
-                format!("{}: {error}", profile_jsonl_source.display())
-            })?;
+        let profile_contents = fs::read_to_string(profile_jsonl_source)
+            .map_err(|error| format!("{}: {error}", profile_jsonl_source.display()))?;
         write(
             "profiles/real-profile-v1.jsonl",
             &profile_contents,
@@ -590,7 +600,16 @@ fn render_distributions_md(artifacts: &Artifacts) -> String {
     for (feature, stats) in &artifacts.distributions.universe {
         out.push_str(&format!(
             "| {} | {} | {} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} |\n",
-            feature, stats.count, stats.zero_count, stats.min, stats.p25, stats.p50, stats.p75, stats.p95, stats.p99, stats.max
+            feature,
+            stats.count,
+            stats.zero_count,
+            stats.min,
+            stats.p25,
+            stats.p50,
+            stats.p75,
+            stats.p95,
+            stats.p99,
+            stats.max
         ));
     }
     out.push_str("\n## G0 strict-scope-clean subset\n\n");
@@ -599,7 +618,16 @@ fn render_distributions_md(artifacts: &Artifacts) -> String {
     for (feature, stats) in &artifacts.distributions.g0_strict {
         out.push_str(&format!(
             "| {} | {} | {} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} |\n",
-            feature, stats.count, stats.zero_count, stats.min, stats.p25, stats.p50, stats.p75, stats.p95, stats.p99, stats.max
+            feature,
+            stats.count,
+            stats.zero_count,
+            stats.min,
+            stats.p25,
+            stats.p50,
+            stats.p75,
+            stats.p95,
+            stats.p99,
+            stats.max
         ));
     }
     out.push_str("\n## Per project / per domain / eligibility classes\n\n");
@@ -611,13 +639,20 @@ fn render_bias_md(artifacts: &Artifacts) -> String {
     let mut out = String::new();
     out.push_str("# ELIGIBILITY-BIAS-REPORT-v1 (CORRECTIVE-B §19-§20)\n\n");
     out.push_str("## Eligibility classes per lane\n\n");
-    out.push_str("| lane | all | lane_valid | strict | blocker-bearing | deferred | strict bytes |\n");
+    out.push_str(
+        "| lane | all | lane_valid | strict | blocker-bearing | deferred | strict bytes |\n",
+    );
     out.push_str("|---|---|---|---|---|---|---|\n");
     for class in &artifacts.bias.classes {
         out.push_str(&format!(
             "| {} | {} | {} | {} | {} | {} | {} |\n",
-            class.grammar_id, class.all_candidates, class.lane_valid, class.strict_scope_clean,
-            class.realism_only_blocker_bearing, class.deferred_or_unknown, class.strict_bytes
+            class.grammar_id,
+            class.all_candidates,
+            class.lane_valid,
+            class.strict_scope_clean,
+            class.realism_only_blocker_bearing,
+            class.deferred_or_unknown,
+            class.strict_bytes
         ));
     }
     out.push_str("\n## Universe vs G0-strict subset, per dimension\n\n");
@@ -627,9 +662,12 @@ fn render_bias_md(artifacts: &Artifacts) -> String {
         out.push_str(&format!(
             "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} | {:.3} |\n",
             dimension.feature,
-            dimension.universe.p50, dimension.strict.p50,
-            dimension.universe.p95, dimension.strict.p95,
-            dimension.universe.max, dimension.strict.max
+            dimension.universe.p50,
+            dimension.strict.p50,
+            dimension.universe.p95,
+            dimension.strict.p95,
+            dimension.universe.max,
+            dimension.strict.max
         ));
     }
     let proposal = &artifacts.bias.proposal_concentration;
@@ -657,7 +695,12 @@ fn render_bias_md(artifacts: &Artifacts) -> String {
             .join(", ");
         out.push_str(&format!(
             "| {} | {} | {} | {} | {} | {} |\n",
-            project.source_id, project.domain, project.candidates, project.g0_strict, project.g1_strict, blockers
+            project.source_id,
+            project.domain,
+            project.candidates,
+            project.g0_strict,
+            project.g1_strict,
+            blockers
         ));
     }
     out.push_str("\nNotes:\n");
@@ -683,7 +726,13 @@ fn render_redundancy_md(artifacts: &Artifacts) -> String {
             "- `{}` ({} members: {})\n",
             group.sha256[..12].to_string(),
             group.members.len(),
-            group.members.iter().take(4).cloned().collect::<Vec<String>>().join(", ")
+            group
+                .members
+                .iter()
+                .take(4)
+                .cloned()
+                .collect::<Vec<String>>()
+                .join(", ")
         ));
     }
     if artifacts.redundancy.exact_groups.len() > 20 {
@@ -727,7 +776,10 @@ fn render_coverage_md(artifacts: &Artifacts) -> String {
     out.push_str("| cell | candidates | eligible | selected |\n");
     out.push_str("|---|---|---|---|\n");
     for cell in &artifacts.coverage.feature_cells {
-        out.push_str(&format!("| {} | {} | {} | {} |\n", cell.cell, cell.candidate_count, cell.eligible_count, cell.selected_count));
+        out.push_str(&format!(
+            "| {} | {} | {} | {} |\n",
+            cell.cell, cell.candidate_count, cell.eligible_count, cell.selected_count
+        ));
     }
     out.push_str("\n## Syntax/context cell coverage\n\n");
     out.push_str("| cell | required | candidate evidence | selected | best grade | gap |\n");
@@ -753,7 +805,10 @@ fn render_coverage_md(artifacts: &Artifacts) -> String {
             extreme.observed_max,
             extreme.observed_max_file,
             extreme.selected_max,
-            extreme.tail_replicate.as_deref().unwrap_or("NONE_AVAILABLE")
+            extreme
+                .tail_replicate
+                .as_deref()
+                .unwrap_or("NONE_AVAILABLE")
         ));
     }
     out.push_str(&format!(
@@ -762,10 +817,17 @@ fn render_coverage_md(artifacts: &Artifacts) -> String {
     for target in &artifacts.syntax_inventory {
         out.push_str(&format!(
             "| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |\n",
-            target.target, target.owning_lane, target.evidence_grade,
-            target.files_with_recognized_host_syntax, target.recognized_occurrences,
-            target.candidate_occurrences, target.ambiguous_occurrences, target.unknown_occurrences,
-            target.non_host_context_occurrences, target.project_count, target.domain_count
+            target.target,
+            target.owning_lane,
+            target.evidence_grade,
+            target.files_with_recognized_host_syntax,
+            target.recognized_occurrences,
+            target.candidate_occurrences,
+            target.ambiguous_occurrences,
+            target.unknown_occurrences,
+            target.non_host_context_occurrences,
+            target.project_count,
+            target.domain_count
         ));
     }
     out.push_str(&format!(
@@ -779,7 +841,9 @@ fn render_coverage_md(artifacts: &Artifacts) -> String {
 fn render_uncovered_md(artifacts: &Artifacts) -> String {
     let mut out = String::new();
     out.push_str("# UNCOVERED-WORKLOAD-SPACE-v1 (CORRECTIVE-B §39)\n\n");
-    out.push_str("Uncovered space is a result, not a defect to fix by adding files in this task.\n\n");
+    out.push_str(
+        "Uncovered space is a result, not a defect to fix by adding files in this task.\n\n",
+    );
     for fact in &artifacts.coverage.uncovered_space {
         out.push_str(&format!("- **{}**: {}\n", fact.kind, fact.detail));
     }
