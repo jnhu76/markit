@@ -59,7 +59,7 @@ fn bins_split_zero_and_tertiles_deterministically() {
     assert!(bins.bins.contains(&"LOW".to_string()));
     assert!(bins.bins.contains(&"MEDIUM".to_string()));
     assert!(bins.bins.contains(&"HIGH".to_string()));
-    assert_eq!(bins.zero_meaningful, true);
+    assert!(bins.zero_meaningful);
     // Deterministic across calls.
     assert_eq!(derive_bins("test_feature", true, &values), bins);
     // ZERO assignment.

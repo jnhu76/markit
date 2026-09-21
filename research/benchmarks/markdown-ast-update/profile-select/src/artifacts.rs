@@ -170,7 +170,7 @@ pub fn run_all(
     let candidate_rows_jsonl = outcome_profile
         .rows
         .iter()
-        .map(|row| crate::canonical_json(row))
+        .map(crate::canonical_json)
         .collect::<Vec<String>>()
         .join("\n")
         + "\n";
@@ -495,7 +495,7 @@ pub fn write_all(
         .outcome
         .trace
         .iter()
-        .map(|record| crate::canonical_json(record))
+        .map(crate::canonical_json)
         .collect::<Vec<String>>()
         .join("\n")
         + "\n";
@@ -591,7 +591,7 @@ fn render_distributions_md(artifacts: &Artifacts) -> String {
     out.push_str("# Distributions-v1 — candidate universe (CORRECTIVE-B)\n\n");
     out.push_str(&format!(
         "Derived data binding: `real-profile-v1.jsonl` sha256 `{}` ({} bytes, gitignored local regeneration).\n\n",
-        artifacts.profile_jsonl_sha256[..16].to_string(),
+        &artifacts.profile_jsonl_sha256[..16],
         artifacts.profile_jsonl_bytes
     ));
     out.push_str("## Universe (all 3,970 candidates unless verification says otherwise)\n\n");
@@ -724,7 +724,7 @@ fn render_redundancy_md(artifacts: &Artifacts) -> String {
     for group in artifacts.redundancy.exact_groups.iter().take(20) {
         out.push_str(&format!(
             "- `{}` ({} members: {})\n",
-            group.sha256[..12].to_string(),
+            &group.sha256[..12],
             group.members.len(),
             group
                 .members
@@ -811,9 +811,7 @@ fn render_coverage_md(artifacts: &Artifacts) -> String {
                 .unwrap_or("NONE_AVAILABLE")
         ));
     }
-    out.push_str(&format!(
-        "\n## Syntax inventory (§14)\n\n| target | lane | grade | files | recognized | candidate | ambiguous | unknown | non-host | projects | domains |\n|---|---|---|---|---|---|---|---|---|---|---|\n"
-    ));
+    out.push_str("\n## Syntax inventory (§14)\n\n| target | lane | grade | files | recognized | candidate | ambiguous | unknown | non-host | projects | domains |\n|---|---|---|---|---|---|---|---|---|---|---|\n");
     for target in &artifacts.syntax_inventory {
         out.push_str(&format!(
             "| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |\n",

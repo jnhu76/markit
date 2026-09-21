@@ -86,7 +86,7 @@ pub fn derive_bins(feature: &str, zero_meaningful: bool, values: &[f64]) -> Feat
     let mut low_max: Option<f64> = None;
     let mut medium_max: Option<f64> = None;
 
-    let has_zero = values.iter().any(|value| *value == 0.0);
+    let has_zero = values.contains(&0.0);
     if zero_meaningful && has_zero {
         labels.push("ZERO".to_string());
     }

@@ -150,7 +150,7 @@ pub fn apply_repair(
         ));
     }
 
-    let file_bytes = text.as_bytes().len() as u64;
+    let file_bytes = text.len() as u64;
     files.push(SelectedFile {
         key: repair.selected_key.clone(),
         source_id: source_id.to_string(),

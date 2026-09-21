@@ -613,6 +613,8 @@ fn predicate_set_covers(registry: &[PredicateV1], payload: &[PredicateV1]) -> bo
 
 /// The registry agreement rule (task §39.8): a payload referencing a
 /// transition must satisfy the registry entry, else `INVALID_PAYLOAD`.
+// The frozen registry-entry shape fixes this parameter list.
+#[allow(clippy::too_many_arguments)]
 pub fn payload_agrees_with_registry(
     payload_grammar_id: &str,
     payload_syntax_target: &str,

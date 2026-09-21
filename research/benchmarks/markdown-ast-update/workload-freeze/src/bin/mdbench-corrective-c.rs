@@ -165,7 +165,7 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
     ));
     let full_read_text = full_read
         .iter()
-        .map(|record| markit_mdbench_semantics::canonical_json_line(record))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect::<String>();
     digests.push((
         "full-read-manifest-v1.jsonl".to_string(),
@@ -178,7 +178,7 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
     let payloads_text = workload
         .payloads
         .iter()
-        .map(|payload| markit_mdbench_semantics::canonical_json_line(payload))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect::<String>();
     digests.push((
         "edit-write-manifest-v1.jsonl".to_string(),
@@ -190,7 +190,7 @@ fn generate_inner(root: &Path, out_dir: Option<&Path>) -> Result<String, String>
     ));
     let trace_text = trace_records
         .iter()
-        .map(|record| markit_mdbench_semantics::canonical_json_line(record))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect::<String>();
     digests.push((
         "trace-manifest-v1.jsonl".to_string(),
@@ -392,7 +392,7 @@ fn dry_run(root: &Path) -> i32 {
             let payloads_dir = root.join("workloads/payloads");
             let lines = rows
                 .iter()
-                .map(|row| markit_mdbench_semantics::canonical_json_line(row))
+                .map(markit_mdbench_semantics::canonical_json_line)
                 .collect::<String>();
             if write_jsonl(&payloads_dir.join("dry-run-cases-v1.jsonl"), &[]).is_err() {
                 return 1;
@@ -549,10 +549,7 @@ fn profile_export_inner(root: &Path) -> Result<String, String> {
     }
     let out_dir = root.join("workloads/profiles");
     std::fs::create_dir_all(&out_dir).map_err(|e| format!("create {}: {e}", out_dir.display()))?;
-    let lines = rows
-        .iter()
-        .map(|row| canonical_json_line(row))
-        .collect::<String>();
+    let lines = rows.iter().map(canonical_json_line).collect::<String>();
     let out_path = out_dir.join("strict-surface-profile-v1.jsonl");
     std::fs::write(&out_path, lines).map_err(|e| format!("write {}: {e}", out_path.display()))?;
     Ok(format!(

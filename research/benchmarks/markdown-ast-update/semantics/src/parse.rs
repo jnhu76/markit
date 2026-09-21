@@ -241,12 +241,12 @@ pub fn ratio(numerator: f64, denominator: f64) -> f64 {
 /// second parser: it never decides whether the construct exists.
 ///
 /// Closing-line rule (mirrors the oracle state machines): the span's last
-/// line closes the fence when it ends in a run of `fence_char` of length
-/// >= max(3, opener run), preceded only by container-prefix bytes (space,
-/// tab, `>`, `-`, `+`, `*`, `.`, `)`, digits) and followed only by spaces.
-/// The prefix allowance is what makes a quoted closer (`> ```` `) close
-/// the fence exactly as the oracle's per-line container stripping does;
-/// ordinary body text before the run (`x```` `) never qualifies.
+/// line closes the fence when it ends in a run of `fence_char` of at
+/// least max(3, opener run) characters, preceded only by container-prefix
+/// bytes (space, tab, `>`, `-`, `+`, `*`, `.`, `)`, digits) and followed
+/// only by spaces. The prefix allowance is what makes a blockquote-prefixed
+/// closer line close the fence exactly as the oracle's per-line container
+/// stripping does; ordinary body text before the run never qualifies.
 pub fn fenced_content_interval(source: &str, span: Span, fence_char: char) -> Span {
     let opener_end = match source[span.start..span.end].find('\n') {
         Some(offset) => span.start + offset + 1,

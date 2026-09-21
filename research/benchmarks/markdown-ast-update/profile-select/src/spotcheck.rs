@@ -365,7 +365,7 @@ pub fn run(
                 "exact_duplicate_group",
                 &format!(
                     "first exact-duplicate group ({}, {} members)",
-                    group.sha256[..12].to_string(),
+                    &group.sha256[..12],
                     group.members.len()
                 ),
                 &row.identity,

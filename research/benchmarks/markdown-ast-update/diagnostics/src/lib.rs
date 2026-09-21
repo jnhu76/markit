@@ -271,11 +271,11 @@ pub fn excerpt(source: &[u8], span: Option<(usize, usize)>) -> String {
     text.push_str(&String::from_utf8_lossy(
         &source[window_start..start.min(source.len())],
     ));
-    text.push_str("【");
+    text.push('【');
     text.push_str(&String::from_utf8_lossy(
         &source[start.min(source.len())..end.min(source.len())],
     ));
-    text.push_str("】");
+    text.push('】');
     text.push_str(&String::from_utf8_lossy(
         &source[end.min(source.len())..window_end],
     ));

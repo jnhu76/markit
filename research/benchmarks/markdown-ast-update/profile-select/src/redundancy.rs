@@ -102,11 +102,8 @@ fn normalize(text: &str) -> Vec<String> {
     let mut current = String::new();
     for ch in text.chars() {
         let lower = ch.to_lowercase().next().unwrap_or(ch);
-        if ch.is_whitespace() {
-            if !current.is_empty() {
-                tokens.push(std::mem::take(&mut current));
-            }
-        } else if "*_`[]()#>+-|~<!.".contains(lower) {
+        let is_separator = ch.is_whitespace() || "*_`[]()#>+-|~<!.".contains(lower);
+        if is_separator {
             if !current.is_empty() {
                 tokens.push(std::mem::take(&mut current));
             }
@@ -350,7 +347,7 @@ pub fn near_conflict_count(
     artifact
         .near_groups
         .iter()
-        .filter(|group| group.members.iter().any(|member| *member == key))
+        .filter(|group| group.members.contains(&key))
         .filter(|group| {
             group
                 .members

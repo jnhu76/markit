@@ -794,8 +794,7 @@ fn probe_raw_html_inline(source: &str) -> Vec<RawCandidate> {
         }
         let after = inner.trim_start_matches('/');
         let plausible = after.starts_with(&name)
-            && (after.len() == name.len()
-                || after[name.len()..].starts_with(|c: char| c == ' ' || c == '/' || c == '\t'));
+            && (after.len() == name.len() || after[name.len()..].starts_with([' ', '/', '\t']));
         if plausible {
             out.push(RawCandidate {
                 kind: SyntaxKind::RawHtmlInline,

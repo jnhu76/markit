@@ -996,7 +996,7 @@ fn run_real_source(bench_root: &Path, spec: &RealSourceSpec) -> RealSourceResult
         ),
     });
 
-    if let Some(bytes) = fs::read(&path).ok() {
+    if let Ok(bytes) = fs::read(&path) {
         if let Ok(text) = String::from_utf8(bytes) {
             for lane_id in &spec.lanes {
                 if let Some(lane) = lane_for_id(lane_id) {

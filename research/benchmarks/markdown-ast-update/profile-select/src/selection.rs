@@ -350,6 +350,9 @@ struct CellState {
 }
 
 /// Run the full four-set selection over the profiled universe (§25-§36).
+// The ranking bookkeeping tuples are local to this frozen algorithm;
+// factoring them out would churn the selection code for lint aesthetics.
+#[allow(clippy::type_complexity)]
 pub fn select(
     rows: &[CandidateRow],
     redundancy: &RedundancyArtifact,
@@ -489,11 +492,10 @@ pub fn select(
         };
         let mut best_compliant: Option<(RepKey, usize, Vec<String>)> = None;
         let mut best_violating: Option<(RepKey, usize, Vec<String>, String)> = None;
-        for index in 0..eligible.len() {
+        for (index, row) in eligible.iter().enumerate() {
             if selected_rep.contains(&index) {
                 continue;
             }
-            let row = eligible[index];
             let cells = cells_of(index);
             let new_cells: Vec<String> = cells
                 .iter()
@@ -1293,10 +1295,10 @@ pub fn select(
                 !grades.is_empty() && grades.iter().all(|grade| *grade != "strict");
             if non_strict_only {
                 member.evidence_labels.push("REALISM_ONLY".to_string());
-                if grades.iter().any(|grade| *grade == "ambiguous_or_unknown") {
+                if grades.contains(&"ambiguous_or_unknown") {
                     member.evidence_labels.push("LANE_DEFERRED".to_string());
                 }
-                if grades.iter().any(|grade| *grade == "candidate") {
+                if grades.contains(&"candidate") {
                     member
                         .evidence_labels
                         .push("GRAMMAR_EXTENSION_REQUIRED".to_string());

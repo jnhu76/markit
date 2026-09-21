@@ -138,10 +138,10 @@ pub fn load_selected_files(benchmark_root: &std::path::Path) -> Result<Vec<Selec
                 member.sha256
             ));
         }
-        if text.as_bytes().len() as u64 != member.file_bytes {
+        if text.len() as u64 != member.file_bytes {
             return Err(format!(
                 "SOURCE_AUTHORITY failure: {key} bytes {} != frozen {}",
-                text.as_bytes().len(),
+                text.len(),
                 member.file_bytes
             ));
         }

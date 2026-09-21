@@ -616,11 +616,11 @@ fn window_container_depth(
 
 /// Ordered candidate anchors for one requested position (frozen rule:
 /// distance, then byte offset, then occurrence).
-fn ordered_anchors<'a>(
-    anchors: &'a [Anchor],
+fn ordered_anchors(
+    anchors: &[Anchor],
     source_len: usize,
     requested: RequestedPosition,
-) -> Vec<&'a Anchor> {
+) -> Vec<&Anchor> {
     let target = requested.target_fraction();
     let mut ordered: Vec<&Anchor> = anchors.iter().collect();
     ordered.sort_by(|a, b| {

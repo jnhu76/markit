@@ -102,6 +102,9 @@ pub struct Derivation {
 /// Derive the payload predicate set for one edit. The registry floors are
 /// carried verbatim into their sides; every derived predicate is proven
 /// independently by the oracle at validation time.
+// The frozen payload-construction contract fixes this parameter list;
+// grouping it would churn the frozen editors for lint aesthetics.
+#[allow(clippy::too_many_arguments)]
 pub fn derive_predicates(
     grammar_id: &str,
     pre_parse: &LaneParse,
@@ -654,9 +657,9 @@ pub fn construct_table_header_pipe_remove(
             header_end_inclusive
         };
     let mut pipes: Vec<usize> = Vec::new();
-    for pos in header_start..header_end {
-        if bytes[pos] == b'|' {
-            pipes.push(pos);
+    for (offset, &byte) in bytes[header_start..header_end].iter().enumerate() {
+        if byte == b'|' {
+            pipes.push(header_start + offset);
         }
     }
     if pipes.is_empty() {
