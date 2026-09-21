@@ -1035,6 +1035,8 @@ H4 (§9)  the definition-environment GENERATION already exists in H4's
 
 ```text
 protocol/R5-REAL-WORKLOAD-CORRECTNESS-CLOSURE-v1.md   closure report
+                                                      (BASE 83d535e, verified
+                                                      head 890f63f, PR #40)
 mechanisms/*/tests/reference_environment.rs           level-1 fixtures
 diagnostics/tests/frozen_correctness_closure.rs       level-2 + level-3
 diagnostics/tests/anti_cheat.rs                       static guards
