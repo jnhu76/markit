@@ -1,12 +1,15 @@
-# Result Schema v1 — MARKIT-MARKDOWN-BENCHMARK-1
+# Result Row Schema (v2) — MARKIT-MARKDOWN-BENCHMARK-1
 
-Status: **R1 MATERIALIZED**
-Source of truth: `runner/src/result.rs` (`ResultRowV1`).
-Generated artifact: `protocol/result-schema-v1.json` (JSON Schema 2020-12,
+Status: **R1 MATERIALIZED / SCHEMA v2 (MEASUREMENT-CORRECTIVE-1)**
+Source of truth: `runner/src/result.rs` (the row type keeps its historical
+`ResultRowV1` name; it stamps `RESULT_SCHEMA_VERSION_V2 = 2`).
+Generated artifact: `protocol/result-schema-v2.json` (JSON Schema 2020-12,
 produced by `cargo run -p markit-mdbench-runner --bin mdbench-gen-schema --
-protocol/result-schema-v1.json`). A test in the runner fails if the
+protocol/result-schema-v2.json`). A test in the runner fails if the
 checked-in JSON drifts from the Rust model — there are not two
-independently maintained authorities.
+independently maintained authorities. v1
+(`protocol/result-schema-v1.json`) is retired and removed; v1 payloads do
+not deserialize as v2 (the version field is checked).
 
 Rows are emitted as JSONL (one JSON object per line).
 

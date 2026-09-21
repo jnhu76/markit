@@ -145,7 +145,7 @@ fn raw_inspections(
 /// suffix is blocks 3-4 (`gamma`). Derivation:
 ///
 /// ```text
-/// h0(post)           = 3 paragraphs, 3 text nodes  => (3 blocks, 3 nodes)
+/// h0(post)           = 3 paragraphs + 3 text nodes => (3 blocks, 6 nodes)
 /// fresh region       = the BETA paragraph          => 1 block + 1 text
 /// nodes_reused       = prefix(alpha: 1 para + 1 text = 2)
 ///                      + suffix(gamma: 2)          = 4   [EXACT]

@@ -188,10 +188,11 @@ only where evidenced:
   `unique_source_intervals/bytes` (SUM of the per-version unions, never a
   cross-version merge), and cumulative `source_bytes_inspected_total`
   (every event counts, duplicates included).
-- **Parse Amplification (PA)** is defined explicitly: the combined primary
-  quantity is the sum of the per-version unique unions, divided by the post
-  source bytes; PA is never computed from cumulative effort and never
-  merges the Old and Post coordinate spaces.
+- **Parse Amplification (PA)** is defined explicitly on the numerator: the
+  combined primary quantity is the SUM of the per-version unique unions
+  (Old union + Post union), never a cross-version merge. The denominator is
+  R0 §10's frozen one: the logical edited bytes. PA is never computed from
+  cumulative effort.
 - The result schema is versioned: `RESULT_SCHEMA_VERSION = 2`
   (`protocol/result-schema-v2.json`; v1 removed). Workload CaseId/payload
   identity is untouched.

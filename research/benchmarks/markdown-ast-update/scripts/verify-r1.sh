@@ -72,11 +72,11 @@ done < "$SMOKE_OUT"
 [ "$ROW_COUNT" -eq 2 ] || { echo "expected exactly 2 smoke rows, got $ROW_COUNT"; exit 1; }
 rm -f "$SMOKE_OUT"
 
-step "result-schema-v1.json matches the Rust model (drift guard)"
+step "result-schema-v2.json matches the Rust model (drift guard)"
 GENERATED="$(mktemp -t mdbench-schema.XXXXXX.json)"
 cargo run -q -p markit-mdbench-runner --bin mdbench-gen-schema -- "$GENERATED" >/dev/null
-if ! diff -q "$GENERATED" protocol/result-schema-v1.json >/dev/null; then
-    echo "protocol/result-schema-v1.json has drifted from ResultRowV1; regenerate it" >&2
+if ! diff -q "$GENERATED" protocol/result-schema-v2.json >/dev/null; then
+    echo "protocol/result-schema-v2.json has drifted from the row model; regenerate it" >&2
     exit 1
 fi
 rm -f "$GENERATED"

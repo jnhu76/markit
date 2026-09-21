@@ -133,8 +133,10 @@ execution issue they protect:
    (`workloads/` — selections, sources, manifests, payloads, receipts) is
    the authority for WHAT is measured. No #31 phase may reselect, extend, or
    regenerate the strict surface; the G0-strict file list lives in the
-   frozen `full-read-manifest-v1.jsonl`, and its mechanism-neutral facts are
-   exported, not recomputed (`mdbench-corrective-c profile-export`).
+   frozen `full-read-manifest-v1.jsonl`, and its mechanism-neutral facts
+   are re-derived only by the frozen profiler from hash-verified source
+   bytes (`mdbench-corrective-c profile-export`) — the strict SET itself is
+   never reselected.
 2. **Timer boundary.** `T_native` contains update + native-sealing
    `complete()` only. Normalize/validate/checksum/oracle work is a
    post-timer export via `ResultChecksum`. Any #31 measurement that times
@@ -143,9 +145,10 @@ execution issue they protect:
    discarded fallback/restart work. Never subtract discarded work; never
    present the incremental happy path without its fallback-inclusive
    cumulative counterpart (DQ3).
-4. **Parse Amplification.** PA derives from the per-version unique unions
-   (sum of Old union + Post union) over post source bytes — never from
-   cumulative effort, never across coordinate spaces.
+4. **Parse Amplification.** PA's numerator is the per-version unique unions
+   (sum of Old union + Post union); its denominator is the logical edited
+   bytes (R0 §10, unchanged). PA never derives from cumulative effort and
+   never merges the Old and Post coordinate spaces.
 5. **Qualification gate.** A promoted conclusion names its DQ(s)
    (R0 §0.1), its evidence class (#33 §1), and its metric families, each
    QUALIFIED under MEASUREMENT-CORRECTIVE-1 §9. Until a CPU/memory
