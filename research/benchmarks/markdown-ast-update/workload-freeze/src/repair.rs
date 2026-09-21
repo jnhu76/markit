@@ -118,6 +118,17 @@ pub fn apply_repair(
             repair.selected_key
         ));
     }
+    // The repair may ONLY extend SYNTAX_COVERAGE_SET. A tampered or
+    // mis-recorded membership label that would silently re-label the
+    // added file into any other logical set is a hard error (review
+    // Q29: this value is otherwise applied verbatim).
+    if repair.membership_added != "syntax_coverage" {
+        return Err(format!(
+            "REPAIR_AUTHORITY failure: membership_added {:?} != \"syntax_coverage\"; \
+             the repair may only extend SYNTAX_COVERAGE_SET",
+            repair.membership_added
+        ));
+    }
     let candidate = repair
         .evaluated_candidates
         .iter()

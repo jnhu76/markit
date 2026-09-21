@@ -99,6 +99,17 @@ json.dump(repair, open(path, "w"), indent=1, sort_keys=True)
 EOF
 expect_fail "repair candidate hash drift" $BIN generate "$TMP/root"
 
+# 6. Repair membership relabel: a tampered membership_added that would
+#    silently move the added file into another logical set must fail.
+python3 - "$TMP/root" <<'EOF'
+import json, sys
+path = sys.argv[1] + "/workloads/selections/syntax-coverage-repair-v1.json"
+repair = json.load(open(path))
+repair["membership_added"] = "representative"
+json.dump(repair, open(path, "w"), indent=1, sort_keys=True)
+EOF
+expect_fail "repair membership relabel (set boundary)" $BIN generate "$TMP/root"
+
 if [ "$fails" -eq 0 ]; then
     echo "NEGATIVE_TESTS_OK all failure-closed paths held"
     exit 0

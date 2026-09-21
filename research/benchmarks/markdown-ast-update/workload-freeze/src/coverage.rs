@@ -291,7 +291,7 @@ pub fn build_coverage(
         entry
             .baseline_edit_family
             .clone()
-            .or_else(|| None)
+            .or_else(|| Some(entry.edit_family_label.clone()))
     };
     let mut families: Vec<FamilyStatus> = Vec::new();
     for (family, description) in [
@@ -301,6 +301,8 @@ pub fn build_coverage(
         ("E4_FENCE_OPEN_CLOSE", "real fence open/close state transitions"),
         ("E5_INLINE_DELIMITER", "emphasis and code-span delimiter states"),
         ("E6_REFERENCE_DEFINITION", "reference definition dependency states"),
+        ("ATX_HEADING_TOGGLE", "ATX heading <-> paragraph toggles"),
+        ("TABLE_SEMANTIC", "G1 table transitions (SEMANTIC_ONLY, never horse-dispatched)"),
     ] {
         let mut payload_count = 0u64;
         let mut files_set = std::collections::BTreeSet::new();

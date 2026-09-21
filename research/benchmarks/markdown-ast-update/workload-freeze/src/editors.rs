@@ -217,8 +217,9 @@ fn reject<T>(reason: &str) -> Result<T, String> {
 }
 
 /// G0-LOCAL-TEXT-REPLACE-EQ: same-length ASCII replacement inside one
-/// real Text run. Chooses the longest ASCII-letter run in the span (ties:
-/// earliest), replaces its middle `min(8, len)` bytes with `z`×L.
+/// real Text run. Chooses the longest ASCII-letter run in the span
+/// (`max_by_key`, so on equal lengths the LATEST such run wins), then
+/// replaces its middle `min(8, len)` bytes with `z`×L.
 pub fn construct_local_text_replace_eq(
     source: &str,
     fact: &SyntaxFact,
@@ -257,8 +258,10 @@ pub fn construct_local_text_replace_eq(
 }
 
 /// G0-PARAGRAPH-SPLIT: replace one interior space of the real paragraph
-/// with a blank line. The space nearest the paragraph's middle wins
-/// (ties: earliest). Interior = both neighbors exist on the same line and
+/// with a blank line. Ranking key = distance to the paragraph midpoint
+/// quantized to 1/1000 of a byte, with the byte offset as a secondary
+/// term (`min_by_key`, so within one quantized bucket the EARLIEST
+/// position wins). Interior = both neighbors exist on the same line and
 /// are non-space bytes.
 pub fn construct_paragraph_split(
     source: &str,

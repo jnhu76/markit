@@ -93,7 +93,8 @@ cell (restore legs are reached through their BREAK entries).
 | E4_FENCE_OPEN_CLOSE | 44 | 10 | 6 |
 | E5_INLINE_DELIMITER | 102 | 17 | 9 |
 | E6_REFERENCE_DEFINITION | 20 | 8 | 4 |
-| G1 TABLE_SEMANTIC | 87 | 7 | 6 (SEMANTIC_ONLY, never horse-dispatched) |
+| ATX_HEADING_TOGGLE | 12 | 4 | 2 |
+| TABLE_SEMANTIC (G1) | 87 | 7 | 6 (SEMANTIC_ONLY, never horse-dispatched) |
 
 ### G0 syntax coverage — all 12 core kinds ACTIVE_EDIT_COVERED
 
@@ -108,8 +109,8 @@ construct's count-flip and the report says so explicitly:
 Every observed non-core syntax carries an explicit status
 (`coverage-final-v1.json §extensions/§other_observed`): G1 table
 ACTIVE (semantic-only), G2 math LANE_DEFERRED with zero executable
-payloads, eight G1-declared kinds PARSE_COVERAGE_ONLY, four candidate-only
-REALISM_ONLY-level, four GRAMMAR_EXTENSION_REQUIRED, four
+payloads, seven G1-declared kinds PARSE_COVERAGE_ONLY, four
+GRAMMAR_EXTENSION_REQUIRED (each with recorded candidate evidence), four
 OUT_OF_SCOPE_WITH_REASON. **No observed syntax silently disappears.**
 
 ## 3. TRANSITION-REGISTRY-v1
@@ -156,8 +157,11 @@ deterministic repair), the repair:
   universe evidence);
 - is recorded fail-closed in
   `workloads/selections/syntax-coverage-repair-v1.json` (identity-bound
-  to the frozen selection; any drift is a hard error; tamper-tested in
-  §7).
+  to the frozen selection; enforced fields: every selection-identity
+  digest, the selected key's universe sha256, already-selected
+  rejection, and `membership_added == "syntax_coverage"` so the repair
+  cannot silently re-label the added file into another logical set;
+  any drift is a hard error; tamper-tested 6 ways in §7).
 
 Result: **37 physical files, 40 logical memberships**
 (REP 18 / EXT 12 / SYN 3 / FULL 7), 15 projects. No other set changed;
@@ -207,7 +211,7 @@ does not diagnose them further here.
 | `generate` | OK — 37 files, 555 rows, 37 FULL_READ, 449 payloads, 120 pairs |
 | `verify` (re-validate payloads + registry agreement + FULL_READ identity + receipt digests) | OK |
 | `determinism` (two full runs, byte-compare) | OK — 7 artifacts byte-identical |
-| negative tests (§53) `scripts/corrective-c-negative-tests.sh` | 5/5 fail closed (source byte, payload coordinate, receipt digest, repair identity, repair candidate hash) |
+| negative tests (§53) `scripts/corrective-c-negative-tests.sh` | 6/6 fail closed (source byte, payload coordinate, receipt digest, repair identity, repair candidate hash, repair membership relabel) |
 | no benchmark timing anywhere in the pipeline | asserted by construction (correctness-only runner lane; no clock exists on the path) |
 
 ## 7. G1–G8 audit (§54–55)
@@ -250,14 +254,25 @@ Deferred-lane reasons, explicitly:
 
 ## 9. Residual risks / honest unknowns
 
-1. The §58 adversarial review of this freeze is dispatched as
-   `workloads/REVIEW-CORRECTIVE-C-ADVERSARIAL-v1.md`; its verdicts are
-   part of the human-review input.
+1. The §58 adversarial review of this freeze is recorded as
+   `workloads/REVIEW-CORRECTIVE-C-ADVERSARIAL-v1.md` (verdict
+   ACCEPT_WITH_CHANGES; both blocking items and all non-blocking notes
+   were applied in this same PR before the freeze was offered for human
+   review).
 2. The repair's tie-break reading (lexical key decides after
    diversity ties) is recorded in the repair artifact; a human reviewer
    may prefer a different tie-break and should say so at review.
 3. H2/H3/H4 wrong results are recorded but not root-caused (out of
    scope); their case rows are the input to the Weakness Map.
+4. The E3 `DEPTH_NOT_INCREASED` gate is code-verified and covered by
+   regression tests but never fired on THIS corpus (the
+   adjacent-sibling pre-filter rejects non-nesting anchors earlier as
+   `NO_PROVABLE_TRANSITION`); its data-level exercise awaits a corpus
+   where such anchors exist.
+5. `generator_tool_sha256` (91426def…) in the selection identity is
+   inherited from the PR #38 settlement convention (canonical-struct
+   hash, not the raw file hash); it was not recomputed by this
+   corrective and matches every settlement artifact.
 
 ## 10. Verdicts
 

@@ -17,7 +17,7 @@
   },
   "uncovered_cell": {
    "edit_family_label": "E3_CONTAINER_DEPTH",
-   "finding": "every G0-strict-eligible selected file lacks real blockquote anchors; the only selected file containing \">\" lines carries them inside fenced code bodies (shell prompts), which are raw bytes, not blockquotes",
+   "finding": "no G0-STRICT-ELIGIBLE selected file contains real blockquote anchors; the only G0-eligible selected file whose lines start with \">\" carries them inside fenced code bodies (shell prompts \u2014 raw bytes, not blockquotes); four G0-INELIGIBLE selected files do contain real (outside-fence) blockquotes but cannot serve G0-strict payloads",
    "grammar_id": "BENCH-GRAMMAR-v1",
    "transition_id": "G0-BQ-NEST-LINE"
   }
@@ -255,7 +255,7 @@
  "tie_break_trace": [
   "cell coverage: every evaluated candidate satisfies the uncovered precondition cell G0-BQ-NEST-LINE (1 new required cell each) -> tie",
   "rarity: single-cell tie -> tie",
-  "project/domain diversity: both source_ids (opentelemetry-spec, rust-rfcs, rust-book, openmlsys) already appear in the selection -> tie",
+  "project/domain diversity: every candidate source_id (opentelemetry-spec, rust-book, rust-rfcs) already appears in the selection -> tie",
   "lexical source/path: lowest key wins -> opentelemetry-spec/files/specification/library-layout.md"
  ],
  "universe_counts": {
