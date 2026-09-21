@@ -50,7 +50,9 @@ correctness path. No new benchmark engine; no measurement.
 ### A6 — applicability matrix
 
 `workloads/payloads/applicability-matrix-v1.jsonl` — **555 rows** = every
-physical file × every registry transition × requested positions
+physical file × every BREAK-side registry transition (15 of the 23
+entries; the 8 `exact_restore_leg` entries are reached through their
+BREAK entries, never as independent cells) × requested positions
 (EARLY/MIDDLE/LATE), each row an explicit closed-vocabulary status:
 APPLICABLE / NO_TARGET_SYNTAX / GRAMMAR_INELIGIBLE /
 POST_GRAMMAR_INELIGIBLE / NO_PROVABLE_TRANSITION / NO_VALID_REAL_ANCHOR

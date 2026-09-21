@@ -16,7 +16,9 @@ frozen real-file workload exercises. It exists so that:
   with it (field equality + floor-containment; disagreement is
   `INVALID_PAYLOAD`);
 - the A6 applicability matrix has a finite, predeclared cell set
-  (file × entry × requested position) with no silent gaps;
+  (file × BREAK-side entry × requested position; `exact_restore_leg`
+  entries are realized through their BREAK entries, not as cells) with
+  no silent gaps;
 - workload extension is a REVIEWED registry change, never an ad-hoc
   payload.
 
