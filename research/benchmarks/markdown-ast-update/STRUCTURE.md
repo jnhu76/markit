@@ -49,24 +49,32 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   acquisition provenance/lock/inventory (`sources/`, `licenses/`,
   `acquisition-config.json`, `tools/`, `manifests/` — merged acquisition
   authority from PR #34); profiler contract and schemas (`profiles/`);
-  payload lifecycle contract and schemas (`payloads/`);
+  payload lifecycle contract and schemas (`payloads/`); CORRECTIVE-C frozen
+  workload artifacts (`payloads/`: transition registry, applicability
+  matrix, FULL_READ / EDIT_WRITE / trace manifests, final coverage report,
+  freeze receipt, dry-run report — digest-bound by `freeze-receipt-v1.json`);
   contract-validation pilot (`pilots/`); deferred attribution contracts
   (`attribution/`); the CORRECTIVE-A adversarial review record
   (`REVIEW-CORRECTIVE-A-ADVERSARIAL-v1.md`); CORRECTIVE-B analysis
   artifacts (`analysis/`: domain strata input, materialization
   verification, eligibility bias, redundancy, uncovered space) and
   selection artifacts (`selections/`: frozen contract + config, the four
-  logical sets, selection trace, selected files, coverage report); the
+  logical sets, selection trace, selected files, coverage report, plus the
+  CORRECTIVE-C deterministic SYNTAX_COVERAGE_SET repair overlay
+  `syntax-coverage-repair-v1.json`); the CORRECTIVE-C report and registry
+  documents (`CORRECTIVE-C-REPORT-1.md`, `TRANSITION-REGISTRY-v1.md`); the
   real-vs-scaling workload boundary contract
   (`PERFORMANCE-SURFACE-BOUNDARY-v1.md`: surfaces R/S/X, N/B/L/K/F
-  definitions, PERFORMANCE_MATRIX_FREEZE reservation).
+  definitions; the pre-performance gate wording is retired — no gate sits
+  between the real-workload freeze and #31).
   `sources/` stores byte-exact upstream Markdown snapshots pinned by
   immutable commit SHAs with per-file hashes; `manifests/` records
   candidate-universe membership and provenance; `_cache/` is a
   rebuildable, gitignored acquisition cache that is not benchmark
   authority; universe-scale derived data (`real-profile-v1.jsonl`,
   `candidate-rows-v1.jsonl`) is gitignored and hash-bound the same way.
-  No timing, no final edit payloads, and no mechanism facts belong here.
+  No timing and no mechanism facts belong here; the frozen edit payloads
+  in `payloads/` are correctness evidence, never measurement input.
   See `workloads/README.md` and `workloads/ACQUISITION-REPORT-1.md`.
 
 `corpus/`
@@ -97,6 +105,10 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 
 `runner/`
 : Process isolation, timer lanes, sampling/order execution, result emission.
+  Also carries the CORRECTIVE-C correctness-only lane
+  (`run_update_correctness` / `run_full_parse_correctness`): the same
+  dispatch contracts with no clock and no counters, so workload validation
+  can run through the real harness without creating a measurement fact.
 
 `corpusgen/`
 : Deterministic synthetic corpus generation.
@@ -125,8 +137,23 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   or `runner/`, emits no timing/work/reuse fact, and produces no final
   edit payloads (CORRECTIVE-C owns those).
 
+`workload-freeze/`
+: CORRECTIVE-C real-workload payload freeze: TRANSITION-REGISTRY-v1, the
+  A6 applicability matrix (every file x transition x position cell has an
+  explicit closed-vocabulary status), the A7 FULL_READ / EDIT_WRITE /
+  trace manifests with BREAK/RESTORE chains, the deterministic
+  SYNTAX_COVERAGE_SET repair loader, and the A8 correctness-only dry-run
+  adapter that dispatches frozen G0 payloads through the EXISTING runner
+  correctness path. Depends on `common/`, `semantics/`, `oracle/`,
+  `runner/` (correctness-only mode) and the five mechanism crates
+  (initial-state construction only). It emits no timing, allocation, or
+  reuse fact anywhere, and after the freeze the workload membership,
+  edits, anchors and identities are closed against silent mutation.
+
 `scripts/`
-: Verification, campaign orchestration, and reproducibility entrypoints.
+: Verification, campaign orchestration, and reproducibility entrypoints
+  (including `corrective-c-negative-tests.sh`: every freeze
+  failure-closed path must fail under tampering).
 
 ### #31 real-project performance lifecycle
 
