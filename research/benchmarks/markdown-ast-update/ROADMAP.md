@@ -42,6 +42,23 @@ protocol
 
 禁止：看到单点 timing 差异就直接提出 Markit algorithm。
 
+## Current checkpoint (2026-09-21)
+
+```text
+#35 Stage A workload construction      COMPLETE
+PR #39 merged
+
+#22 real-workload correctness closure  PR #40
+  362 x H0-H4 = 1810/1810 correctness dispatches PASS (0 wrong_result,
+  0 execution failures) on the frozen G0 real workload
+  -> candidate for human review (CORE_REAL_WORKLOAD_FREEZE_PASS)
+
+#31 timing                             NOT STARTED
+```
+
+Workload definition and usage: `WORKLOAD.md`. Everything below this line is
+historical stage evidence and keeps its original text.
+
 ## R0 — Protocol Freeze — PASS
 
 Frozen horses:
