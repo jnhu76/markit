@@ -865,6 +865,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-diagnostics"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-block-local",
+ "markit-mdbench-common",
+ "markit-mdbench-fragment-reuse",
+ "markit-mdbench-full-rebuild",
+ "markit-mdbench-old-tree-subtree-reuse",
+ "markit-mdbench-oracle",
+ "markit-mdbench-restart-convergence",
+ "markit-mdbench-semantics",
+ "markit-mdbench-workload-freeze",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "markit-mdbench-fragment-reuse"
 version = "0.1.0"
 dependencies = [
