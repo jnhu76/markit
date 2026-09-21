@@ -1,27 +1,33 @@
 # CORRECTIVE-C-REPORT-1 — real Markdown workload payload freeze (#35, PR #39)
 
-Status: **FREEZE CANDIDATE — awaiting human workload-freeze review.**
-This report is the §49/§54–§60 record of MARKIT-WORKLOAD-CORRECTIVE-C.
+Status: **WORKLOAD CONSTRUCTION COMPLETE — core performance freeze blocked on horse correctness.**
+This report is the final Stage-A record of MARKIT-WORKLOAD-CORRECTIVE-C.
 The machine artifacts it cites live under `workloads/payloads/` and are
 digest-bound by `workloads/payloads/freeze-receipt-v1.json`.
 
 ```text
 BASE_SHA   3a7d24e1ecffbe3f21c8091ed6dcdb6a5fa22473  (settled master, PR #38)
-HEAD_SHA   b4ad4b3fa3320e53999b2643d6b66ced6673f311 (+ this report commit)
+REPORT_GENERATION_SHA   b4ad4b3fa3320e53999b2643d6b66ced6673f311
 BRANCH     research/35-corrective-c-payload-freeze-1
-PR         jnhu76/markit#39 (DRAFT — do not merge automatically)
-WORKTREE   clean at report time
+PR         jnhu76/markit#39
+WORKTREE   clean at report generation time
 ```
 
 ## 0. What this corrective claims — and what it does not
 
-It freezes the **workload construction** for the primary G0 campaign:
+It completes the **workload construction** for the primary G0 campaign:
 sources, anchors, edits, transitions, payload identities, and the
 correctness evidence for all of them. It does **not** claim any
 performance fact: no H0–H4 timing, allocation, reuse counter, or scaling
 workload exists anywhere in this pipeline (checked: G8 below). It does
 not start #31, does not change the 3970-file acquisition universe, and
-does not replace any selected file.
+does not replace any representative/extremal/full-document member.
+
+The workload itself is frozen by this corrective. The correctness-only A8
+dry-run exposed H2/H3/H4 wrong-result cases on the frozen G0 workload.
+Those are horse implementation correctness failures under #22 authority,
+not a reason to mutate the workload. Therefore primary performance remains
+blocked until the same frozen cases pass the #22 correctness contract.
 
 ## 1. Authority chain (verified at start)
 
@@ -139,9 +145,7 @@ re-inserting the replaced one — byte-exactness restored).
 
 The A6 matrix found exactly one required transition with no applicable
 cell anywhere: **G0-BQ-NEST-LINE** (E3_CONTAINER_DEPTH). Root cause: no
-G0-strict-eligible selected file contains a real blockquote (the only
-selected file with `>` lines carries them as shell prompts inside fenced
-bodies — raw bytes, not blockquotes).
+G0-strict-eligible selected file contains a real blockquote anchor.
 
 Under the Stage-A §8.2 stop rule (issue #35 comment) and the
 CORRECTIVE-C authorization (only SYNTAX_COVERAGE_SET may change, via the
@@ -186,20 +190,34 @@ H3          346 pass / 16 wrong_result
 H4          354 pass /  8 wrong_result
 ```
 
-**Finding (recorded, not fixed — fixing mechanisms is #31/Weakness-Map
-work):** all 35 wrong results are H2/H3/H4 reuse mechanisms on
-document-global-propagation edits — G0-FENCE-CLOSER-REMOVE/RESTORE
-(forward state runs to EOF) and G0-REFDEF-RESTORE (position-independent
-reference resolution). H0/H1 are clean, which also validates the
-adapter's reconstruction of broken states and post sources (a
-reconstruction bug could not pass H0 and fail only H2–H4).
-`workloads/payloads/dry-run-cases-v1.jsonl` carries every per-case row.
+**Finding:** all 35 wrong results are H2/H3/H4 reuse mechanisms on
+G0-FENCE-CLOSER-REMOVE/RESTORE and G0-REFDEF-RESTORE cases.
+The frozen correctness authority remains:
 
-Interpretation boundary: the correctness authority for the FREEZE is
-payload-level (oracle-validated payloads, H0 reference agreement).
-Mechanism wrong-results are expected Weakness-Map evidence, not a
-workload defect; they are inputs to #31, and this report deliberately
-does not diagnose them further here.
+```text
+normalize(Hx update result)
+==
+normalize(H0 clean full parse(post-edit source))
+```
+
+Therefore these rows are **correctness failures**, not timing/performance
+weaknesses. They must not enter strict H0-H4 performance comparison while
+wrong. Root-cause and repair ownership moves back to #22, which owns horse
+correctness/parity. The exact frozen workload cases are retained unchanged
+for that closure. `workloads/payloads/dry-run-cases-v1.jsonl` carries every
+per-case row.
+
+Interpretation boundary:
+
+```text
+workload/payload construction       PASS
+horse implementation correctness   H0/H1 PASS; H2/H3/H4 FAIL
+primary H0-H4 performance start    BLOCKED
+```
+
+A8 succeeded as a workload-validation stage precisely because it exposed
+these failures. The workload must not be edited, deleted, or reweighted to
+make the horses pass.
 
 ## 6. Verification evidence (§59)
 
@@ -214,29 +232,44 @@ does not diagnose them further here.
 | negative tests (§53) `scripts/corrective-c-negative-tests.sh` | 6/6 fail closed (source byte, payload coordinate, receipt digest, repair identity, repair candidate hash, repair membership relabel) |
 | no benchmark timing anywhere in the pipeline | asserted by construction (correctness-only runner lane; no clock exists on the path) |
 
-## 7. G1–G8 audit (§54–55)
+## 7. G1–G8 workload audit + horse qualification boundary
 
-- **G1 SOURCE_AUTHORITY** — every artifact binds to sha256-verified
-  source bytes; tamper → fail closed (negative tests 1, 4, 5). PASS.
-- **G2 GRAMMAR/LANE boundaries** — every payload carries grammar_id +
-  qualification; G1 payloads are semantic-only and are never dispatched
-  to horses; G2 has zero payloads. PASS.
-- **G3 TRANSITION truth** — every payload's predicates are re-proven by
-  TRANSITION-ORACLE-v1 at generation, verify, and dry-run time. PASS.
-- **G4 LIFECYCLE** — RESTORE starts from S1, exact restoration is
-  byte-enforced (120/120), chained traces carry declared-step digests.
-  PASS.
-- **G5 COVERAGE completeness** — every observed syntax has an explicit
-  status; every BREAK-side transition has an applicable cell; the one
-  unsatisfiable cell was repaired deterministically (§4) and the repair
-  is surfaced in the coverage report. PASS.
-- **G6 HORSE boundary** — dry-run dispatches G0 only; G1 skipped with
-  count; no horse-qualification claim anywhere. PASS.
-- **G7 HARNESS reuse** — Source/CanonicalEdit/CaseId/runner/oracle are
-  the existing frozen contracts; the new runner surface is
-  correctness-only (no measurement value exists on it). PASS.
-- **G8 NO-PERFORMANCE** — no timing/allocation/reuse/scale fact is
-  produced, stored, or derivable from any artifact here. PASS.
+The #35 Stage-A workload gates themselves are closed:
+
+- **G1 SOURCE_AUTHORITY** — every artifact binds to sha256-verified source
+  bytes; tamper → fail closed. PASS.
+- **G2 GRAMMAR_ELIGIBILITY** — every payload carries grammar_id + lane
+  qualification; G1 payloads are semantic-only and G2 has zero executable
+  payloads. PASS.
+- **G3 PROFILER_CONTRACT** — frozen profiler/span/host-context authority used
+  for anchors and coverage. PASS.
+- **G4 SELECTION_VALIDITY** — CORRECTIVE-B selection preserved; the single
+  authorized syntax-coverage repair is deterministic and receipt-bound. PASS.
+- **G5 SYNTAX_TRANSITION_COVERAGE** — every observed syntax has an explicit
+  status and every active transition is oracle-proven. PASS.
+- **G6 PAYLOAD_LIFECYCLE** — RESTORE starts from S1, exact restoration is
+  byte-enforced (120/120), chained traces carry declared-step digests. PASS.
+- **G7 HARNESS_ADAPTER** — Source/CanonicalEdit/CaseId/runner/oracle are the
+  existing frozen contracts; the new path is correctness-only. PASS.
+- **G8 CLAIM_BOUNDARY** — no timing/allocation/reuse/scale fact is produced;
+  G1/G2 and REAL/SCALE boundaries remain explicit. PASS.
+
+Independent of those workload gates, R6 §3 requires horse implementation
+qualification for every horse entering a strict comparison lane. Current
+G0 qualification on the frozen real workload is:
+
+```text
+H0  PASS  362/362
+H1  PASS  362/362
+H2  FAIL  351/362  (11 wrong_result)
+H3  FAIL  346/362  (16 wrong_result)
+H4  FAIL  354/362  ( 8 wrong_result)
+```
+
+This implementation-qualification failure blocks
+`CORE_REAL_WORKLOAD_FREEZE_PASS` as an authorization to start the strict
+five-horse performance campaign, even though workload construction itself
+is complete.
 
 ## 8. REAL_WORKLOAD_FREEZE_PASS (broader lanes): NOT_GRANTED
 
@@ -252,35 +285,45 @@ Deferred-lane reasons, explicitly:
 - Broader lanes become eligible only through a reviewed grammar-extension
   decision; this corrective intentionally does not make one.
 
-## 9. Residual risks / honest unknowns
+## 9. Residual risks / next ownership
 
-1. The §58 adversarial review of this freeze is recorded as
-   `workloads/REVIEW-CORRECTIVE-C-ADVERSARIAL-v1.md` (verdict
-   ACCEPT_WITH_CHANGES; both blocking items and all non-blocking notes
-   were applied in this same PR before the freeze was offered for human
-   review).
-2. The repair's tie-break reading (lexical key decides after
-   diversity ties) is recorded in the repair artifact; a human reviewer
-   may prefer a different tie-break and should say so at review.
-3. H2/H3/H4 wrong results are recorded but not root-caused (out of
-   scope); their case rows are the input to the Weakness Map.
-4. The E3 `DEPTH_NOT_INCREASED` gate is code-verified and covered by
-   regression tests but never fired on THIS corpus (the
-   adjacent-sibling pre-filter rejects non-nesting anchors earlier as
-   `NO_PROVABLE_TRANSITION`); its data-level exercise awaits a corpus
-   where such anchors exist.
-5. `generator_tool_sha256` (91426def…) in the selection identity is
-   inherited from the PR #38 settlement convention (canonical-struct
-   hash, not the raw file hash); it was not recomputed by this
-   corrective and matches every settlement artifact.
+1. The §58 adversarial review is recorded as
+   `workloads/REVIEW-CORRECTIVE-C-ADVERSARIAL-v1.md`; all construction-side
+   blocking findings were fixed in this PR.
+2. Workload membership, anchors, edits, payload ids and transition registry
+   are now frozen for the primary G0 campaign. Do not mutate them to address
+   horse failures.
+3. H2/H3/H4 wrong results are not root-caused here. They transfer to #22 as
+   correctness-closure work. Their exact frozen case rows are the regression
+   authority.
+4. #31 remains blocked until the same frozen 362 G0 EDIT_WRITE cases pass for
+   all H0-H4 participants.
+5. G1 non-table semantics and G2 math remain explicit deferred lanes and do
+   not keep #35 primary workload construction open.
 
 ## 10. Verdicts
 
 ```text
-CORRECTIVE_C_PASS                = YES (pipeline A6-A8 complete, verified)
-CORE_REAL_WORKLOAD_FREEZE_PASS   = CANDIDATE (all G1-G8 gates pass; human review owns the freeze)
-REAL_WORKLOAD_FREEZE_PASS        = NOT_GRANTED (G1 non-table + G2 deferred, per §8)
-NEXT                             = human workload-freeze review of PR #39
+CORRECTIVE_C_PASS                         = YES
+#35 PRIMARY WORKLOAD CONSTRUCTION         = COMPLETE
+WORKLOAD MEMBERSHIP / PAYLOAD IDENTITY    = FROZEN — DO NOT CHANGE
+
+CORE_REAL_WORKLOAD_FREEZE_PASS             = BLOCKED_ON_HORSE_CORRECTNESS
+  H0                                       = PASS 362/362
+  H1                                       = PASS 362/362
+  H2                                       = FAIL 351/362 (11 wrong)
+  H3                                       = FAIL 346/362 (16 wrong)
+  H4                                       = FAIL 354/362 (8 wrong)
+
+PERFORMANCE_START                          = BLOCKED
+REAL_WORKLOAD_FREEZE_PASS                  = NOT_GRANTED
+  reason                                   = broader G1/G2 lanes deferred
+
+NEXT                                       = #22 REAL-WORKLOAD CORRECTNESS CLOSURE
 ```
 
-**READY_FOR_HUMAN_WORKLOAD_FREEZE_REVIEW**
+**READY_TO_MERGE_AS_WORKLOAD_CONSTRUCTION_COMPLETION.**
+
+This merge does not authorize #31 timing. Once #22 makes the frozen G0
+correctness matrix all-green, `CORE_REAL_WORKLOAD_FREEZE_PASS` can be
+recorded without changing the workload.
