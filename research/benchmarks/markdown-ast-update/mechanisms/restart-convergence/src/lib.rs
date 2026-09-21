@@ -546,10 +546,15 @@ impl Mechanism for RestartConvergenceMechanism {
         // stale: H4's frozen response to definition-changing damage
         // applies — RESTART AT ZERO at the next generation.
         if table.entries() != old_state.defs.as_slice() {
-            // The discarded forward pass read source bytes (reported
-            // through the sink as it scanned) and built no nodes; the
-            // delivered result is the restart's, and its counters are the
-            // restart's.
+            // The discarded forward pass really did its work: it scanned
+            // source (reported through the sink as it went), consulted
+            // checkpoints and registered slots. Its metadata work is
+            // reported here too — hiding it would under-report H4 on
+            // exactly the rows this clause fires on.
+            cx.sink
+                .add_metadata_records_touched(consultations + slot_count as u64);
+            // The delivered result is the restart's, and its counters are
+            // the restart's.
             return Ok(restart_at_zero(post, old_state.gen, es, cx));
         }
 
