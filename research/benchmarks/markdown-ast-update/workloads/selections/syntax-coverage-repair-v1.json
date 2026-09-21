@@ -1,0 +1,265 @@
+{
+ "basis": {
+  "authorization": "CORRECTIVE-C (PR #39): the applicability matrix (A6) found a required BREAK-side transition with no applicable cell in any of the 36 selected files; the task authorizes exactly one remediation: a deterministic SYNTAX_COVERAGE_SET repair. No other set, no candidate-universe change, no selected-file replacement.",
+  "evidence_artifact": "workloads/profiles/candidate-rows-v1.jsonl",
+  "evidence_rule": "candidates = universe rows whose committed BENCH-GRAMMAR-v1 lane has strict_kinds.block_quote > 0 and strict_scope_clean = true",
+  "rule": "Workload Construction Algorithm v1 Stage-A section 8.2: greedy set-cover with frozen tie-breaks; stop when every required syntax cell has a valid real anchor or no candidate can satisfy the remaining cell. Uncovered required cells must not be fabricated; a deterministic repair may extend SYNTAX_COVERAGE_SET only.",
+  "selection_identity": {
+   "candidate_manifest_sha256": "f8a9917b8e45736ea728cc4d997822aa2689ce05dd1b46847bfe114ce2d7a19a",
+   "domain_strata_sha256": "814c17be7154107a18d2e0ae1c892fb1a649f6438b5adbbebae2a461153bfd51",
+   "generator_tool_sha256": "91426defcb42e61407d4c3e9d9142080d6d4a0070e5201a722164db54f171ecb",
+   "generator_version": "CORRECTIVE-B-PROFILE-SELECT-v1",
+   "lane_registry_version": "GRAMMAR-LANES-v1",
+   "profiler_version": "REAL-MARKDOWN-PROFILER-v1",
+   "selection_config_sha256": "259f0cb3151ec16529284a49b7d031169b3084ae313bbff8f6846c2a3e447df9",
+   "selection_contract_version": "SELECTION-CONTRACT-v1",
+   "source_lock_sha256": "7884c61b2919420df52413326f2d163bca38d7d52590d0b7978dda9a4eab24a1"
+  },
+  "uncovered_cell": {
+   "edit_family_label": "E3_CONTAINER_DEPTH",
+   "finding": "every G0-strict-eligible selected file lacks real blockquote anchors; the only selected file containing \">\" lines carries them inside fenced code bodies (shell prompts), which are raw bytes, not blockquotes",
+   "grammar_id": "BENCH-GRAMMAR-v1",
+   "transition_id": "G0-BQ-NEST-LINE"
+  }
+ },
+ "evaluated_candidates": [
+  {
+   "domain": "STANDARD_SPECIFICATION",
+   "file_bytes": 2944,
+   "g0_block_quote_anchors": 5,
+   "key": "opentelemetry-spec/files/specification/library-layout.md",
+   "sha256": "dc02c576a6701721c0b31618d649c26d7e86d9683110752fd63d9eb333d6da8a",
+   "source_id": "opentelemetry-spec"
+  },
+  {
+   "domain": "BOOK_TUTORIAL",
+   "file_bytes": 3010,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-book/files/src/ch16-00-concurrency.md",
+   "sha256": "0101c582d4410d0136c4ef46195c3fa382438dc1a667cbe5d754605e2aa89fb2",
+   "source_id": "rust-book"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 3529,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/0086-plugin-registrar.md",
+   "sha256": "262e0c8d04cee17eadbf24ef1a43273747667b3144ecbd4e0ea5899f492f9bb1",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 12405,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/0141-lifetime-elision.md",
+   "sha256": "18df20b917c0dfcb88d78c6276b3f5dbcc4527d9c8a4728b2cfde6744b197395",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 7620,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/0240-unsafe-api-location.md",
+   "sha256": "35a9bb11125eca938716baa50db715875fdc4f73ea68adb9067180471d22d38f",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 15018,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/0369-num-reform.md",
+   "sha256": "2efe52efa38fd2a57d3bf04438633a9a08c4d74a0a19bd2007a59c362dbd1385",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 9984,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/1048-rename-soft-link-to-symlink.md",
+   "sha256": "de37993d299b81dd76a4b8d333339bee37214cdc3dabb5581769bed5d662950d",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 2840,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/1054-str-words.md",
+   "sha256": "ef3e17b90343657164c7ffad0b72a74b2cbba145d364cc1a97aa147cc46ca723",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 2252,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/1096-remove-static-assert.md",
+   "sha256": "55edf018ed95406671aa6034af2a35402bddc7bc9c6cecea83f1abc7046bee46",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 5242,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/1683-docs-team.md",
+   "sha256": "f4ca28e9e3c2234f4088d910422c4678e7bce28af71e9430e792ee9084a1f3dc",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 4852,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/1925-optional-match-vert.md",
+   "sha256": "e839d7e7dea88fd943bf4374f2d9e5cb01ec976b8fc5170a212995f8dba02a44",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 3402,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/2057-refcell-replace.md",
+   "sha256": "52312beeb7958cb76b1b24415b21251b1c87fe23792f44bbc63d13bb80055e4d",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 6818,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/2124-option-filter.md",
+   "sha256": "82841e4e403d92bf13f02d6030e2153417c83e6053f482c563cd5da5543f0c90",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 9844,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/2396-target-feature-1.1.md",
+   "sha256": "565f45d6eff3ef915d9492fdbfe37a9f5b7c58049d0289b37441ca2dac73c848",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 6438,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/2539-cfg_attr-multiple-attrs.md",
+   "sha256": "52fefbb52f8ab5ea3aec9c789e8bb1f8c46fc927b45ced35d575813225b3d845",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 8107,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/2561-future-possibilities.md",
+   "sha256": "3976cd0b6602fd36d29385e9d56c4f71b6dc023189c5c636687f0a75ac81739a",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 12751,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/2570-linked-list-cursors.md",
+   "sha256": "5cb174ff225835f2e1541ce0a28f0b58a6ce2786e3634cc50931025ded1dc070",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 17860,
+   "g0_block_quote_anchors": 4,
+   "key": "rust-rfcs/files/text/2700-associated-constants-on-ints.md",
+   "sha256": "03abc7b5a63756911c62b7c4f401e0ded009772978afafbac6a8fbc05ca7813a",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 10827,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/3114-prelude-2021.md",
+   "sha256": "cc23032a5dfb0d75b9fde7d69cfbc4db30b33adaf511108232ee43cfb76fce74",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 13907,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/3173-float-next-up-down.md",
+   "sha256": "14430034918c655fe42e80f8cc34f28678b7bba73352968d1516e5273a65d536",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 34274,
+   "g0_block_quote_anchors": 7,
+   "key": "rust-rfcs/files/text/3231-cargo-asymmetric-tokens.md",
+   "sha256": "6c967fbd8166165a3b3c4e5f965411fb2fdac3dcd016dcbdc541bc04f59439d2",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 9960,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/3531-macro-fragment-policy.md",
+   "sha256": "ab4f8ecdc9cb31887086085a2e0345a29e7e7da4e549ca594559daa2e056d20e",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 12037,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/3591-import-trait-associated-functions.md",
+   "sha256": "e9b26f447bd5019ae221728455c9cffbb2b2863f702524bdfe713fc88019c7b8",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 33935,
+   "g0_block_quote_anchors": 1,
+   "key": "rust-rfcs/files/text/3621-derive-smart-pointer.md",
+   "sha256": "c1927f4ef766d35ba0f9edb2e3f35334c681689243bbe53a3856aaae72c24582",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 4138,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/3646-remove-crate-transfer-mediation-policy.md",
+   "sha256": "dbfe123e041715a201998f3b6f34e5713e2a968748b12dcbf3b73b67fd69eef5",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 8166,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/3772-build-target-edition.md",
+   "sha256": "788a45037d6fab85231300e2db30bb8ebcf177ee92e5d99b127e7a332a76e924",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 8057,
+   "g0_block_quote_anchors": 2,
+   "key": "rust-rfcs/files/text/3872-crates-io-security.md",
+   "sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+   "source_id": "rust-rfcs"
+  },
+  {
+   "domain": "RFC_PROPOSAL_DESIGN",
+   "file_bytes": 39660,
+   "g0_block_quote_anchors": 3,
+   "key": "rust-rfcs/files/text/3946-crates-io-username-identity.md",
+   "sha256": "df6c71496c8810fef3a3a779af8023e3288a2bd045f613b8c5bc79604a7d003e",
+   "source_id": "rust-rfcs"
+  }
+ ],
+ "generator_version": "CORRECTIVE-C-WORKLOAD-FREEZE-v1",
+ "membership_added": "syntax_coverage",
+ "schema": "syntax-coverage-repair-v1",
+ "selected_key": "opentelemetry-spec/files/specification/library-layout.md",
+ "tie_break_trace": [
+  "cell coverage: every evaluated candidate satisfies the uncovered precondition cell G0-BQ-NEST-LINE (1 new required cell each) -> tie",
+  "rarity: single-cell tie -> tie",
+  "project/domain diversity: both source_ids (opentelemetry-spec, rust-rfcs, rust-book, openmlsys) already appear in the selection -> tie",
+  "lexical source/path: lowest key wins -> opentelemetry-spec/files/specification/library-layout.md"
+ ],
+ "universe_counts": {
+  "G0_strict_clean_candidates_total": 530,
+  "candidates_with_g0_blockquote_anchors": 28
+ }
+}
