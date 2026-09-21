@@ -29,6 +29,62 @@ prior-art/source reconnaissance
 
 Evidence that cannot advance this chain remains `INCONCLUSIVE`.
 
+### 0.1 Canonical research question and operational decision questions (MEASUREMENT-CORRECTIVE-1 §2, frozen)
+
+The canonical research question this benchmark ultimately serves is the #33
+question, unchanged:
+
+> **Under the same grammar, result contract, Rust substrate, machine/profile, project/file set, and edit workload, how do different Markdown AST update mechanisms differ in performance, behavior, resource cost, and failure/degradation regime; and under what concrete conditions does each mechanism work best or worst, and why?**
+
+The R0 question above is this question's measurement-phase form. The
+benchmark exists to answer **operational decision questions** — questions
+whose answers change what Markit does next. A measurement that cannot move
+one of these decisions is bookkeeping, not evidence. The decision questions
+are frozen here so that later stages cannot quietly re-scope them:
+
+```text
+DQ1  Does any incremental mechanism (H1-H4) deliver a measured end-to-end
+     update win over H0 full rebuild on the primary real workload at
+     realistic file scales — or is H0 already adequate for Markit's
+     document sizes?            (decides: whether Markit needs an
+                                 incremental algorithm at all)
+DQ2  Which mechanism family's avoided work (blocks reparsed, nodes
+     rebuilt/reused, metadata touched) explains its wins, and is that
+     avoided work stable across regimes rather than timing noise?
+                                 (decides: which design Markit's algorithm
+                                 should learn from)
+DQ3  How often do conservative soundness fallbacks fire on real edits, and
+     what does fallback-inclusive cumulative work look like compared with
+     the incremental happy path?
+                                 (decides: whether fallback-heavy designs
+                                 are honest competitors)
+DQ4  Which structural regimes (file size, block count, largest block,
+     container depth, fence density, reference density) flip the ranking —
+     where are the crossovers and cliffs?
+                                 (decides: the axes of the regime map)
+DQ5  Is the measured source-inspection effort (unique vs cumulative, Old vs
+     Post) consistent with each mechanism's claimed locality — does the
+     counter evidence survive attribution audit?
+                                 (decides: whether a claimed local edit
+                                 actually is local)
+DQ6  How much of each mechanism's measured time and counters is spent
+     producing the usable native state, versus proving the result equals
+     the normalized oracle?
+                                 (decides: whether verification can stay
+                                 outside the mechanism's hot path)
+DQ7  Which metric families are QUALIFIED for decision-making under the
+     current substrate, and can a candidate conclusion be stated without
+     leaning on UNAVAILABLE metrics?
+                                 (decides: which conclusions are allowed to
+                                 be written at all)
+```
+
+Result contract for the decision questions: every promoted benchmark
+conclusion must name the DQ(s) it advances, the evidence class supporting
+it (#33 §1), and the metric families it relies on, each QUALIFIED under
+`protocol/MEASUREMENT-CORRECTIVE-1.md` §9. A conclusion requiring an
+UNAVAILABLE family is not writable in this environment.
+
 ---
 
 ## 1. Primary experiment: one Rust substrate

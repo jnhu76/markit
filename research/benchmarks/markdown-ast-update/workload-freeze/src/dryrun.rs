@@ -24,11 +24,11 @@ use std::collections::BTreeMap;
 use markit_mdbench_block_local::BlockLocalMechanism;
 use markit_mdbench_common::case::{CaseId, CaseKeyV1};
 use markit_mdbench_common::payload::PayloadShape;
-use markit_mdbench_common::{Source, SourceId};
+use markit_mdbench_common::{ExecutionStatus, CorrectnessStatus, Source, SourceId};
 use markit_mdbench_full_rebuild::FullRebuildMechanism;
 use markit_mdbench_fragment_reuse::FragmentReuseMechanism;
 use markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism;
-use markit_mdbench_oracle::{validate_normalized, NormalizeV1, ReferenceOracle};
+use markit_mdbench_oracle::{validate_normalized, ReferenceOracle};
 use markit_mdbench_restart_convergence::RestartConvergenceMechanism;
 use markit_mdbench_runner::orchestrate::{
     build_initial_state, run_full_parse_correctness, run_update_correctness,
@@ -65,8 +65,13 @@ pub struct HorseCounts {
 pub struct DryRunFullReadSection {
     pub files: u64,
     pub g0_strict_cases: u64,
+    /// Total H0-H4 clean-construction dispatches (files x 5 horses).
+    pub horse_dispatches: u64,
     pub pass: u64,
     pub failed: u64,
+    /// Per-horse clean-state construction counts (BLOCKER B parity:
+    /// every G0-strict file must pass on every horse -> 110/110).
+    pub per_horse: BTreeMap<String, HorseCounts>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -155,15 +160,20 @@ pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<Stri
     Ok(CaseId::from_key(&key).hex())
 }
 
+/// One clean-state construction dispatch (Horse, full parse) against the
+/// H0 reference. The reference is computed ONCE per file from H0's clean
+/// parse (the correctness authority); every horse normalizes its
+/// completed state OUTSIDE any measurement and is compared structurally.
 fn dispatch_full_read(
     sources: &BTreeMap<String, &str>,
     full_read: &[FullReadRecord],
-) -> (DryRunFullReadSection, Vec<DryRunCaseRow>) {
-    let mechanism = FullRebuildMechanism::new();
+) -> Result<(DryRunFullReadSection, Vec<DryRunCaseRow>), String> {
     let mut rows = Vec::new();
     let mut pass = 0u64;
     let mut failed = 0u64;
     let mut g0_strict = 0u64;
+    let mut horse_dispatches = 0u64;
+    let mut per_horse: BTreeMap<String, HorseCounts> = BTreeMap::new();
     for record in full_read {
         let Some(_lane) = record
             .lanes
@@ -177,56 +187,68 @@ fn dispatch_full_read(
             .get(record.source_key.as_str())
             .expect("FULL_READ source is materialized");
         let source = Source::new(SourceId(0), (*source_text).to_string());
-        // One H0 clean parse through the runner's correctness-only path;
-        // the hook verifies the clean-parse result contract (the frozen
-        // NORMALIZED-RESULT-v1 gate) on the completed state.
-        let hook = NormalizeContractHook;
-        let report = run_full_parse_correctness(&mechanism, &source, &hook);
-        let ok = report.execution_status == markit_mdbench_common::ExecutionStatus::Pass
-            && report.correctness_status == markit_mdbench_common::CorrectnessStatus::Pass;
-        if ok {
-            pass += 1;
-        } else {
-            failed += 1;
+        let payload_id = format!("full-read:{}", record.source_key);
+
+        // The reference: H0 clean parse (the correctness authority, built
+        // outside every measurement; parse_document keeps the frozen
+        // NORMALIZED-RESULT-v1 conformance gate on the reference).
+        let reference = markit_mdbench_full_rebuild::parse_document(source.as_bytes());
+        validate_normalized(&reference, None)
+            .map_err(|error| format!("full-read reference gate: {error:?}"))?;
+
+        macro_rules! full_read_dispatch {
+            ($horse:expr, $mechanism:expr) => {{
+                let mechanism = $mechanism;
+                let hook = ReferenceOracle::new(reference.clone());
+                let report = run_full_parse_correctness(&mechanism, &source, &hook);
+                let ok = report.execution_status == ExecutionStatus::Pass
+                    && report.correctness_status == CorrectnessStatus::Pass;
+                horse_dispatches += 1;
+                rows.push(DryRunCaseRow {
+                    kind: "full_read".to_string(),
+                    horse: $horse.to_string(),
+                    payload_id: payload_id.clone(),
+                    case_id: String::new(),
+                    source_key: record.source_key.clone(),
+                    execution_status: format!("{:?}", report.execution_status),
+                    correctness_status: format!("{:?}", report.correctness_status),
+                });
+                let entry = per_horse
+                    .entry($horse.to_string())
+                    .or_insert(HorseCounts {
+                        pass: 0,
+                        wrong_result: 0,
+                        execution_failed: 0,
+                    });
+                if ok {
+                    pass += 1;
+                    entry.pass += 1;
+                } else {
+                    failed += 1;
+                    entry.wrong_result += 1;
+                }
+            }};
         }
-        rows.push(DryRunCaseRow {
-            kind: "full_read".to_string(),
-            horse: "H0".to_string(),
-            payload_id: format!("full-read:{}", record.source_key),
-            case_id: String::new(),
-            source_key: record.source_key.clone(),
-            execution_status: format!("{:?}", report.execution_status),
-            correctness_status: format!("{:?}", report.correctness_status),
-        });
+        // BLOCKER B (MEASUREMENT-CORRECTIVE-1 §12): every G0-strict file
+        // is correctness-qualified on ALL FIVE horses — clean parse +
+        // native-state construction, 22 x 5 = 110 dispatches, no timing.
+        full_read_dispatch!("H0", FullRebuildMechanism::new());
+        full_read_dispatch!("H1", BlockLocalMechanism::new());
+        full_read_dispatch!("H2", FragmentReuseMechanism::new());
+        full_read_dispatch!("H3", OldTreeSubtreeReuseMechanism::new());
+        full_read_dispatch!("H4", RestartConvergenceMechanism::new());
     }
-    (
+    Ok((
         DryRunFullReadSection {
             files: full_read.len() as u64,
             g0_strict_cases: g0_strict,
+            horse_dispatches,
             pass,
             failed,
+            per_horse,
         },
         rows,
-    )
-}
-
-/// Hook verifying the clean-parse result contract: the completed H0 state
-/// must satisfy the frozen NORMALIZED-RESULT-v1 conformance gate.
-struct NormalizeContractHook;
-impl markit_mdbench_oracle::CorrectnessHook<markit_mdbench_full_rebuild::H0State>
-    for NormalizeContractHook
-{
-    fn verify(
-        &self,
-        completed: &markit_mdbench_common::Completed<markit_mdbench_full_rebuild::H0State>,
-    ) -> markit_mdbench_common::CorrectnessStatus {
-        let document = completed.state.normalize_v1();
-        if validate_normalized(&document, None).is_ok() {
-            markit_mdbench_common::CorrectnessStatus::Pass
-        } else {
-            markit_mdbench_common::CorrectnessStatus::WrongResult
-        }
-    }
+    ))
 }
 
 /// Dispatch one G0 EDIT_WRITE case through all five horses.
@@ -300,7 +322,7 @@ pub fn run_dry_run(
     }
 
     // ---- FULL_READ -----------------------------------------------------
-    let (full_read_section, mut rows) = dispatch_full_read(&sources, &full_read);
+    let (full_read_section, mut rows) = dispatch_full_read(&sources, &full_read)?;
 
     // ---- EDIT_WRITE ------------------------------------------------------
     // Reconstruct each trace's pre sources from the frozen base + step-0

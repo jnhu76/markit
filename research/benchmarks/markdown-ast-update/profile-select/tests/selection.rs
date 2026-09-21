@@ -5,7 +5,7 @@
 
 use markit_mdbench_profile_select::redundancy::{signature, RedundancyArtifact};
 use markit_mdbench_profile_select::selection::{
-    feature_value, key, select, syntax_cell, MATH_CANDIDATE_FEATURE, PROJECT_CAP,
+    feature_value, select, syntax_cell, MATH_CANDIDATE_FEATURE, PROJECT_CAP,
 };
 use markit_mdbench_profile_select::stats::{bin_of, derive_bins, percentile_rank};
 use markit_mdbench_profile_select::{CandidateIdentity, CandidateRow};

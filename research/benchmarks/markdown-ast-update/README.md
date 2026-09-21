@@ -14,6 +14,7 @@ R5  H1-H4 correctness/parity           PASS — PR #30 merged
 
 #35 workload construction              COMPLETE — PR #39 merged
 #22 real-workload correctness closure  PR #40 current review
+#22 measurement substrate corrective   COMPLETE on PR #40 head (this branch)
 #31 performance                        NOT STARTED
 ```
 
@@ -26,6 +27,21 @@ and implementation parity are trustworthy.
 
 **R5 did not produce a performance ranking.** Formal timing begins only after
 the #31 project/eligibility/trace freeze gate.
+
+MEASUREMENT-CORRECTIVE-1 (`protocol/MEASUREMENT-CORRECTIVE-1.md`) then
+repaired the measurement substrate itself: the timer boundary (native-sealing
+`complete()` inside timing; normalize/validate/checksum strictly post-timer
+via `ResultChecksum`), attribution schema v2 (Old/Post source-inspection
+coordinate spaces, unique-vs-cumulative effort, explicit PA definition),
+cumulative counter authority including discarded fallback/restart work, the
+H1/H4 counter repairs with H2/H3 audits, and FULL_READ extended to
+**clean parse + native-state construction parity on all five horses
+(110/110)**. The canonical research question and the operational decision
+questions DQ1-DQ7 are frozen in `protocol/R0-METHODOLOGY.md` §0.1; the
+metric qualification table (what may and may not be concluded in this
+environment) is in `protocol/MEASUREMENT-CORRECTIVE-1.md` §9. No formal
+timing, no ranking, and no primary measurement were produced by the
+corrective.
 
 ## Mechanisms
 
@@ -43,6 +59,7 @@ H4 RESTART_CONVERGENCE
 - baseline methodology: `protocol/R0-METHODOLOGY.md`
 - post-R5 execution amendment: `protocol/R6-PROJECT-PERFORMANCE-EXECUTION-AMENDMENT.md`
 - real-workload authority amendment: `protocol/R6-REAL-WORKLOAD-AUTHORITY-AMENDMENT.md`
+- measurement substrate corrective: `protocol/MEASUREMENT-CORRECTIVE-1.md`
 - Stage A workload construction: **#35** + `workloads/`
 - post-freeze performance execution: **#31** (not started)
 - harness contract: `protocol/R1-HARNESS-CONTRACT.md`

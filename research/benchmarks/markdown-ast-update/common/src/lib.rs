@@ -26,9 +26,11 @@ pub mod work;
 
 pub use case::{CaseId, CaseKeyV1, Seed, CASE_ID_ALGORITHM_ID, CASE_KEY_VERSION_V1};
 pub use edit::{CanonicalEdit, EditError, OperationKind};
-pub use mechanism::{Completed, Mechanism, MechanismContext, MechanismId};
+pub use mechanism::{Completed, Mechanism, MechanismContext, MechanismId, ResultChecksum};
 pub use observed::Observed;
 pub use payload::{PayloadId, PayloadShape, PayloadSize};
 pub use source::{to_lower_hex, Source, SourceId};
 pub use status::{CorrectnessStatus, ExecutionStatus, FailureStatus};
-pub use work::{CounterSink, NoopWorkSink, NotApplicableSlot, WorkCounters, WorkSink};
+pub use work::{
+    CounterSink, NoopWorkSink, NotApplicableSlot, SourceVersion, WorkCounters, WorkSink,
+};

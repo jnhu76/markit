@@ -412,8 +412,23 @@ fn full_frozen_matrix_is_1810_of_1810() {
     let (report, rows) = markit_mdbench_workload_freeze::dryrun::run_dry_run(&root(), &files)
         .expect("frozen dry-run");
     assert_eq!(report.full_read.g0_strict_cases, 22);
-    assert_eq!(report.full_read.pass, 22, "FULL_READ 22/22");
+    // BLOCKER B parity: clean parse + native-state construction must pass
+    // on EVERY horse for EVERY G0-strict file -> 22 x 5 = 110/110.
+    assert_eq!(report.full_read.horse_dispatches, 110);
+    assert_eq!(report.full_read.pass, 110, "FULL_READ 110/110");
     assert_eq!(report.full_read.failed, 0);
+    for horse in ["H0", "H1", "H2", "H3", "H4"] {
+        let counts = report
+            .full_read
+            .per_horse
+            .get(horse)
+            .unwrap_or_else(|| panic!("{horse} missing from the FULL_READ report"));
+        assert_eq!(
+            (counts.pass, counts.wrong_result, counts.execution_failed),
+            (22, 0, 0),
+            "{horse} must be 22 pass / 0 wrong / 0 execution failure"
+        );
+    }
     assert_eq!(report.edit_write.g0_cases, 362);
     assert_eq!(report.edit_write.horse_dispatches, 1810);
     for horse in ["H0", "H1", "H2", "H3", "H4"] {
@@ -430,7 +445,7 @@ fn full_frozen_matrix_is_1810_of_1810() {
     }
     assert_eq!(
         rows.len(),
-        1810 + 22,
-        "one row per EDIT_WRITE dispatch plus one per G0-strict FULL_READ case"
+        1810 + 110,
+        "one row per EDIT_WRITE dispatch plus one per FULL_READ horse dispatch"
     );
 }

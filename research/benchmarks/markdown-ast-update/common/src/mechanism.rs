@@ -1,4 +1,5 @@
-//! The frozen mechanism phase boundary (R1 harness contract §4).
+//! The frozen mechanism phase boundary (R1 harness contract §4, as
+//! corrected by MEASUREMENT-CORRECTIVE-1).
 //!
 //! Authority boundary (must not drift):
 //!
@@ -7,14 +8,28 @@
 //! ```
 //!
 //! `complete()` is the explicit completion AUTHORITY boundary: the runner
-//! requires the mechanism to hand over a fully consumed
-//! [`Completed`] state inside `T_native` and `black_box`es it. This is an
-//! authority requirement, NOT a mechanical proof that lazily deferred
-//! work (iterators, closures, `OnceCell`s, interior mutability, lazy
-//! indexes/trees) has been forced — `black_box` cannot look through such
-//! structures. Before formal horse measurement, R4/R5 must additionally
-//! prove eager normalized-result/state materialization for real horses
-//! (gate: `EAGER_COMPLETION_VALIDATION_PASS`).
+//! requires the mechanism to hand over a fully consumed, fully EAGER
+//! native [`Completed`] state inside `T_native` and `black_box`es it.
+//! This is an authority requirement, NOT a mechanical proof that lazily
+//! deferred work (iterators, closures, `OnceCell`s, interior mutability,
+//! lazy indexes/trees) has been forced — `black_box` cannot look through
+//! such structures. The R4/R5 eager-completion gates prove that the
+//! completed state is complete without reservation.
+//!
+//! MEASUREMENT-CORRECTIVE-1 timing-boundary rule (frozen):
+//!
+//! > Work required for the mechanism's usable native state stays inside
+//! > timing. Work required only to prove equality to the experiment's
+//! > normalized oracle stays outside timing.
+//!
+//! `complete()` therefore SEALS the native state only. The normalized
+//! projection, its validation, and the deterministic result checksum are
+//! experiment EXPORT work: the runner derives them strictly AFTER every
+//! timer has stopped, through the state's frozen pure
+//! [`ResultChecksum`] export (for the real horses: `NormalizeV1` +
+//! `normalized_checksum`). No parsing may be deferred past the timer
+//! stop, and no mechanism-required state/index construction may move
+//! outside timing.
 //!
 //! Every mechanism phase that can do mechanism-owned work — including
 //! `prepare_update` — receives a [`MechanismContext`], so attribution
@@ -58,15 +73,36 @@ impl<'a, W: WorkSink> MechanismContext<'a, W> {
 }
 
 /// The completed result of a mechanism run: the mechanism's new retained
-/// state plus a deterministic scalar checksum of the produced result.
+/// native state, sealed at the explicit completion boundary.
 ///
-/// R1's oracle hook compares checksums; the real normalized-result
-/// oracle arrives with H0 (R4). The checksum is a fact for correctness
-/// checking, never a performance claim.
+/// MEASUREMENT-CORRECTIVE-1: `Completed` carries NO result checksum.
+/// Deriving a checksum means serializing + hashing the normalized result
+/// — verification/export work, not native mechanism completion — so the
+/// runner computes it strictly AFTER every timer has stopped, via the
+/// state's frozen [`ResultChecksum`] export.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Completed<State> {
     pub state: State,
-    pub result_checksum: u64,
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the frozen,
+/// PURE derivation of the deterministic result checksum from a sealed
+/// native state.
+///
+/// Contract:
+///
+/// - the runner calls this strictly AFTER every timer has stopped; it is
+///   experiment verification/export work and never mechanism timing;
+/// - implementations are pure functions of already-complete state: no
+///   source input, no parsing, no reparsing, no dependency repair, no
+///   index update, no restart/reuse decision, no interior mutability;
+/// - the derivation is deterministic and stable across runs.
+///
+/// The five real horses implement this over their frozen
+/// `NormalizeV1` projection + the oracle's `normalized_checksum`. The R1
+/// null mechanism implements it over its own documented scalar mix.
+pub trait ResultChecksum {
+    fn result_checksum(&self) -> u64;
 }
 
 /// Phase boundary every mechanism (future horses and the R1 null
@@ -123,8 +159,10 @@ pub trait Mechanism {
         cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus>;
 
-    /// Explicit completion boundary: consumes all pending work and
-    /// produces the new retained state plus the result checksum. The
-    /// runner calls this inside `T_native`.
+    /// Explicit completion boundary: consumes all pending work and seals
+    /// the new retained native state. Native-sealing ONLY — no export,
+    /// no checksum, no validation (MEASUREMENT-CORRECTIVE-1). The runner
+    /// calls this inside `T_native` and derives the result checksum
+    /// strictly after every timer has stopped.
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus>;
 }

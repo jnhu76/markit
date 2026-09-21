@@ -29,42 +29,15 @@ use markit_mdbench_semantics::canonical_json;
 
 pub use markit_mdbench_oracle::divergence::{is_equal, DivergenceKind};
 
-/// Every horse's pending exposes its already-materialized normalized
-/// result under a mechanism-specific method name; this local trait gives
-/// the diagnostic one name for all of them. Implemented ONLY here, for
-/// the five frozen horses.
-pub trait PendingDocument {
-    fn pending_document(&self) -> NormalizedDocument;
-}
-
-impl PendingDocument for markit_mdbench_full_rebuild::H0Pending {
-    fn pending_document(&self) -> NormalizedDocument {
-        self.document().clone()
-    }
-}
-
-impl PendingDocument for markit_mdbench_block_local::H1Pending {
-    fn pending_document(&self) -> NormalizedDocument {
-        self.result().clone()
-    }
-}
-
-impl PendingDocument for markit_mdbench_fragment_reuse::H2Pending {
-    fn pending_document(&self) -> NormalizedDocument {
-        self.result().clone()
-    }
-}
-
-impl PendingDocument for markit_mdbench_old_tree_subtree_reuse::H3Pending {
-    fn pending_document(&self) -> NormalizedDocument {
-        self.result().clone()
-    }
-}
-
-impl PendingDocument for markit_mdbench_restart_convergence::H4Pending {
-    fn pending_document(&self) -> NormalizedDocument {
-        self.result().clone()
-    }
+/// MEASUREMENT-CORRECTIVE-1: the H1-H4 pendings no longer carry a
+/// materialized normalized result (the projection is experiment export,
+/// derived from the sealed state after `complete()`), so the old
+/// pending/state agreement witness is retired. The diagnostic's purity
+/// witness is now EXPORT STABILITY: the completed state's `NormalizeV1`
+/// projection is a pure function, so two consecutive calls must agree
+/// exactly — any lazily-repaired state would show up as instability.
+fn export_is_stable<S: NormalizeV1>(state: &S) -> bool {
+    state.normalize_v1() == state.normalize_v1()
 }
 
 /// The §7 classification of one wrong dispatch.
@@ -109,9 +82,10 @@ pub struct Isolation {
     pub hx_full_pre: Option<Divergence>,
     /// D: the horse's update(pre_state, edit) vs A.
     pub hx_update: Option<Divergence>,
-    /// The horse's pending result and completed-state projection agree
-    /// (they must: the harness oracle reads the completed state).
-    pub pending_matches_state: bool,
+    /// The completed state's pure export is stable (two consecutive
+    /// `normalize_v1` calls agree exactly; MEASUREMENT-CORRECTIVE-1 —
+    /// replaces the retired pending/state agreement witness).
+    pub export_stable: bool,
     /// Set when a phase failed outright; both sides are then absent.
     pub execution_failure: Option<String>,
 }
@@ -127,7 +101,7 @@ impl Isolation {
         if self.hx_full_post.is_some() {
             return IsolationClass::FullParseWrong;
         }
-        if self.hx_update.is_some() || !self.pending_matches_state {
+        if self.hx_update.is_some() || !self.export_stable {
             return IsolationClass::UpdateWrong;
         }
         IsolationClass::Pass
@@ -135,15 +109,11 @@ impl Isolation {
 }
 
 /// Clean full parse of `bytes` through `mech`, returning the completed
-/// state's projection and the pending's already-materialized result.
-fn clean_parse<M>(
-    mech: &M,
-    bytes: &[u8],
-) -> Result<(NormalizedDocument, NormalizedDocument), String>
+/// state's projection plus the export-stability witness.
+fn clean_parse<M>(mech: &M, bytes: &[u8]) -> Result<(NormalizedDocument, bool), String>
 where
     M: Mechanism,
     M::State: NormalizeV1,
-    M::Pending: PendingDocument,
 {
     let mut sink = NoopWorkSink;
     let mut cx = MechanismContext::new(&mut sink);
@@ -151,11 +121,11 @@ where
     let pending = mech
         .full_parse(&source, &mut cx)
         .map_err(|failure| format!("{failure:?}"))?;
-    let pending_doc = pending.pending_document();
     let completed = mech
         .complete(pending)
         .map_err(|failure| format!("{failure:?}"))?;
-    Ok((completed.state.normalize_v1(), pending_doc))
+    let stable = export_is_stable(&completed.state);
+    Ok((completed.state.normalize_v1(), stable))
 }
 
 /// The A/B/C/D isolation for one (case, horse).
@@ -173,22 +143,21 @@ pub fn isolate<M>(
 where
     M: Mechanism,
     M::State: NormalizeV1,
-    M::Pending: PendingDocument,
 {
     let mut out = Isolation {
         reference: reference.clone(),
         hx_full_post: None,
         hx_full_pre: None,
         hx_update: None,
-        pending_matches_state: true,
+        export_stable: true,
         execution_failure: None,
     };
 
     // C: does the horse's own clean parse of PRE agree with H0's?
     match clean_parse(mech, pre.as_bytes()) {
-        Ok((state_doc, pending_doc)) => {
-            if pending_doc != state_doc {
-                out.pending_matches_state = false;
+        Ok((state_doc, stable)) => {
+            if !stable {
+                out.export_stable = false;
             }
             out.hx_full_pre = first_divergence(h0_pre, &state_doc);
         }
@@ -200,9 +169,9 @@ where
 
     // B: does the horse's own clean parse of POST agree with H0's?
     match clean_parse(mech, post.as_bytes()) {
-        Ok((state_doc, pending_doc)) => {
-            if pending_doc != state_doc {
-                out.pending_matches_state = false;
+        Ok((state_doc, stable)) => {
+            if !stable {
+                out.export_stable = false;
             }
             out.hx_full_post = first_divergence(reference, &state_doc);
         }
@@ -244,7 +213,6 @@ where
             return out;
         }
     };
-    let pending_doc = pending.pending_document();
     let completed = match mech.complete(pending) {
         Ok(completed) => completed,
         Err(failure) => {
@@ -252,10 +220,10 @@ where
             return out;
         }
     };
-    let state_doc = completed.state.normalize_v1();
-    if pending_doc != state_doc {
-        out.pending_matches_state = false;
+    if !export_is_stable(&completed.state) {
+        out.export_stable = false;
     }
+    let state_doc = completed.state.normalize_v1();
     out.hx_update = first_divergence(reference, &state_doc);
     out
 }
@@ -347,8 +315,8 @@ pub fn render(
             ));
         }
     }
-    if !isolation.pending_matches_state {
-        text.push_str("  NOTE: pending result != completed-state projection\n");
+    if !isolation.export_stable {
+        text.push_str("  NOTE: completed-state export is not stable (impure projection)\n");
     }
     text
 }

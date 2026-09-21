@@ -121,3 +121,55 @@ PROJECT_CORPUS_FREEZE_PASS
 
 Until that gate, project discovery/profile work is setup evidence only, not a
 performance result.
+
+## MEASUREMENT-CORRECTIVE-1 constraints on #31 execution
+
+`protocol/MEASUREMENT-CORRECTIVE-1.md` repairs the measurement substrate
+(timer boundary, attribution schema v2, counter authority, FULL_READ parity).
+Its rules bind every #31 phase and are restated here because #31 is the
+execution issue they protect:
+
+1. **Frozen workload primacy.** The materialized real workload
+   (`workloads/` — selections, sources, manifests, payloads, receipts) is
+   the authority for WHAT is measured. No #31 phase may reselect, extend, or
+   regenerate the strict surface; the G0-strict file list lives in the
+   frozen `full-read-manifest-v1.jsonl`, and its mechanism-neutral facts are
+   exported, not recomputed (`mdbench-corrective-c profile-export`).
+2. **Timer boundary.** `T_native` contains update + native-sealing
+   `complete()` only. Normalize/validate/checksum/oracle work is a
+   post-timer export via `ResultChecksum`. Any #31 measurement that times
+   oracle work is invalid and must be re-run.
+3. **Counter authority.** Counters are cumulative actual work including
+   discarded fallback/restart work. Never subtract discarded work; never
+   present the incremental happy path without its fallback-inclusive
+   cumulative counterpart (DQ3).
+4. **Parse Amplification.** PA derives from the per-version unique unions
+   (sum of Old union + Post union) over post source bytes — never from
+   cumulative effort, never across coordinate spaces.
+5. **Qualification gate.** A promoted conclusion names its DQ(s)
+   (R0 §0.1), its evidence class (#33 §1), and its metric families, each
+   QUALIFIED under MEASUREMENT-CORRECTIVE-1 §9. Until a CPU/memory
+   instrumentor exists, conclusions must not lean on CPU_TIME, ALLOC_*,
+   PEAK, or RETAINED (DQ7).
+6. **Crossover discipline.** Crossover points (DQ4) are located by
+   observation first, then confirmed by controlled sweeps; intermediate
+   scale points may be added only to resolve an observed crossover and are
+   recorded as follow-up points, never silently.
+7. **Clean parse + native-state construction parity.** Every horse must
+   pass the 110/110 FULL_READ surface before any timing lane includes it;
+   a horse that fails clean construction is not a performance subject.
+
+### DQ mapping for the #31 phases
+
+```text
+DQ1 -> P1/P2 (full parse + update latency, vs H0)
+DQ2 -> P2/P3 (View E attribution; work counters vs timing)
+DQ3 -> P2 (fallback-inclusive cumulative counters per edit family)
+DQ4 -> P2/P4 (View D crossover plots + controlled sweeps)
+DQ5 -> P2/P3 (unique vs cumulative inspection audit per horse)
+DQ6 -> P1/P2 (in-timer vs post-timer split, enforced by the runner)
+DQ7 -> every phase (qualification table is a precondition of writing)
+```
+
+These constraints amend #31's execution text where the two disagree; the
+corrective file is the authority for the measurement substrate.

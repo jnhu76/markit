@@ -23,8 +23,18 @@
 //!   runner-owned and this crate never names a clock;
 //! - work facts are reported only through `MechanismContext`'s sink;
 //! - the normalized result is the oracle crate's frozen
-//!   NORMALIZED-RESULT-v1 vocabulary — gated by the shared
-//!   `validate_normalized` before any result leaves this crate.
+//!   NORMALIZED-RESULT-v1 vocabulary.
+//!
+//! MEASUREMENT-CORRECTIVE-1 timing boundary: H0's native representation
+//! IS the normalized tree — building it is intrinsic mechanism work and
+//! stays inside `T_native`. The shared `validate_normalized` conformance
+//! gate is NOT part of that work: it is experiment verification, so the
+//! timed parse path no longer runs it (the old in-path gate charged H0
+//! alone an oracle-validation cost inside timing — an asymmetric
+//! contamination). Validation happens post-timer like every other
+//! horse, through the runner's export boundary and the reference
+//! authority [`parse_document`] (which keeps the gate: it is the
+//! correctness-lane entry point, never a timed path).
 
 use markit_mdbench_common::CanonicalEdit;
 use markit_mdbench_common::Completed;
@@ -153,14 +163,18 @@ fn report_attribution<W: WorkSink>(cx: &mut MechanismContext<'_, W>, blocks: u64
 }
 
 /// Parse `src` with attribution events; returns the document plus the
-/// measured block/node counts. The result passes the shared
-/// NORMALIZED-RESULT-v1 conformance gate like every other H0 result.
+/// measured block/node counts.
+///
+/// MEASUREMENT-CORRECTIVE-1: NO timed `validate_normalized` call here.
+/// The conformance gate is experiment verification; it runs at the
+/// post-timer experiment boundary (runner export + reference oracle),
+/// exactly like the other horses' validation — H0 is never uniquely
+/// charged an oracle validator inside timing.
 fn parse_with_attribution<W: WorkSink>(
     src: &[u8],
     cx: &mut MechanismContext<'_, W>,
 ) -> (NormalizedDocument, u64, u64) {
     let document = markit_mdbench_shared_grammar::parse_full(src, cx.sink);
-    validate_normalized(&document, Some(src)).expect("H0 result violates NORMALIZED-RESULT-v1");
     let (blocks, nodes) = count_blocks_nodes(&document.root);
     (document, blocks, nodes)
 }
@@ -248,16 +262,26 @@ impl Mechanism for FullRebuildMechanism {
     }
 
     /// Explicit completion boundary: the pending document is already
-    /// fully materialized; this seals the new state and derives the
-    /// deterministic checksum from the normalized semantic content.
+    /// fully materialized; this seals the new state. Native-sealing ONLY
+    /// (MEASUREMENT-CORRECTIVE-1) — the result checksum is derived by
+    /// the runner strictly after every timer has stopped, via
+    /// `H0State`'s `ResultChecksum` export.
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        let checksum = normalized_checksum(&pending.document);
         Ok(Completed {
             state: H0State {
                 source_len_bytes: pending.document.len_bytes(),
                 document: pending.document,
             },
-            result_checksum: checksum,
         })
+    }
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the H0
+/// checksum is the deterministic checksum of the retained normalized
+/// document itself — the state IS the document, so no projection pass
+/// is needed.
+impl markit_mdbench_common::ResultChecksum for H0State {
+    fn result_checksum(&self) -> u64 {
+        normalized_checksum(&self.document)
     }
 }

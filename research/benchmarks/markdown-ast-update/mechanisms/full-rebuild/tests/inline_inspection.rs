@@ -9,7 +9,7 @@
 //! expected content segment must appear verbatim in the event list.
 //! Correctness only — no timing, no benchmark data.
 
-use markit_mdbench_common::WorkSink;
+use markit_mdbench_common::{SourceVersion, WorkSink};
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_oracle::normalized::{Node, NodeKind};
 use markit_mdbench_shared_grammar as sg;
@@ -24,7 +24,8 @@ struct EventSink {
 }
 
 impl WorkSink for EventSink {
-    fn record_source_inspection(&mut self, start_byte: u64, end_byte: u64) {
+    fn record_source_inspection(&mut self, version: SourceVersion, start_byte: u64, end_byte: u64) {
+        debug_assert!(matches!(version, SourceVersion::Post));
         if end_byte > start_byte {
             self.events.push((start_byte, end_byte));
         }

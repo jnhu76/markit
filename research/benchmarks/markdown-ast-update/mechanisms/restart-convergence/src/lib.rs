@@ -174,17 +174,17 @@ impl NormalizeV1 for H4State {
     }
 }
 
-/// Pending work handed to `complete()` — already fully materialized
-/// (eager completion boundary, R5 freeze §4).
+/// Pending work handed to `complete()` — the complete new blocks,
+/// checkpoints, and definition facts (eager completion boundary, R5
+/// freeze §4).
+///
+/// MEASUREMENT-CORRECTIVE-1 §9: the normalized projection (`project`, a
+/// pure retargeting of retained semantic subtrees) is experiment/oracle
+/// EXPORT, not H4 mechanism state — it is derived at the runner's
+/// post-timer export boundary via `NormalizeV1`, never inside the timed
+/// update.
 pub struct H4Pending {
     state: H4State,
-    result: NormalizedDocument,
-}
-
-impl H4Pending {
-    pub fn result(&self) -> &NormalizedDocument {
-        &self.result
-    }
 }
 
 /// `prepare_update` product: edit coordinates, the selected restart
@@ -244,7 +244,6 @@ impl RestartConvergenceMechanism {
         cx.sink.add_nodes_reused(0);
         cx.sink
             .add_metadata_records_touched(checkpoints.len() as u64);
-        let result = project(&slots, src.len());
         declare_gauges_not_applicable(cx);
         H4Pending {
             state: H4State {
@@ -254,7 +253,6 @@ impl RestartConvergenceMechanism {
                 defs,
                 src_len: src.len(),
             },
-            result,
         }
     }
 }
@@ -291,7 +289,6 @@ fn restart_at_zero<W: WorkSink>(
     cx.sink.set_restart_distance(Observed::Known(es as u64));
     cx.sink
         .set_convergence_distance(Observed::Known(post.len() as u64));
-    let result = project(&slots, post.len());
     H4Pending {
         state: H4State {
             blocks: slots,
@@ -300,7 +297,6 @@ fn restart_at_zero<W: WorkSink>(
             defs,
             src_len: post.len(),
         },
-        result,
     }
 }
 
@@ -368,15 +364,23 @@ impl Mechanism for RestartConvergenceMechanism {
                 // work on the old source: report the exact scanned
                 // ranges (R5-CORRECTIVE-2, source-inspection closure).
                 let (sep_lo, sep_hi) = (prev.abs_end(), boundary);
-                cx.sink
-                    .record_source_inspection(sep_lo as u64, sep_hi as u64);
+                cx.sink.record_source_inspection(
+                    markit_mdbench_common::SourceVersion::Old,
+                    sep_lo as u64,
+                    sep_hi as u64,
+                );
                 let sep_lfs = old[sep_lo..sep_hi].iter().filter(|&&b| b == b'\n').count();
                 if sep_lfs >= 2 {
                     break; // blank line terminates every continuation
                 }
                 let k = &old_state.blocks[s];
                 let k_start = k.abs_start();
-                let k_line_end = sg::parser::memchr_lf_reported(old, k_start, cx.sink);
+                let k_line_end = sg::parser::memchr_lf_reported_in(
+                    markit_mdbench_common::SourceVersion::Old,
+                    old,
+                    k_start,
+                    cx.sink,
+                );
                 if es >= k_line_end {
                     break; // the boundary line is intact
                 }
@@ -446,7 +450,8 @@ impl Mechanism for RestartConvergenceMechanism {
         // occurrence inside the edited span's post bytes (source-derived,
         // pre-computable).
         let definition_changing = prepared.damaged_has_def || {
-            cx.sink.record_source_inspection(es as u64, ee_new as u64);
+            cx.sink
+                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, es as u64, ee_new as u64);
             post[es..ee_new].windows(3).any(|w| w == b"]: ")
         };
 
@@ -476,7 +481,8 @@ impl Mechanism for RestartConvergenceMechanism {
             (cursor.take, cursor.consultations, cursor.blank_checks)
         };
         for (a, b) in &blank_checks {
-            cx.sink.record_source_inspection(*a, *b);
+            cx.sink
+                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, *a, *b);
         }
 
         // Assemble: retained prefix + fresh region blocks + (at the splice)
@@ -489,10 +495,17 @@ impl Mechanism for RestartConvergenceMechanism {
         // re-reads or re-scans a single byte of inline content.
         let gen = old_state.gen;
         let mut pairs: Vec<(BlockSlot, Option<Checkpoint>)> = Vec::new();
+        // Retained-prefix reuse is REAL reuse and is counted (H4-A,
+        // MEASUREMENT-CORRECTIVE-1 §16): the prefix moves in by shared
+        // `Arc<RetainedBlock>` identity — zero parser source reads, zero
+        // reconstruction — exactly like the converged suffix. The old
+        // suffix-only accumulator silently omitted this reuse.
+        let mut prefix_reused = 0u64;
         for (s, cp) in old_state.blocks[..prepared.restart_slot]
             .iter()
             .zip(&old_state.checkpoints[..prepared.restart_slot])
         {
+            prefix_reused += retained_block_nodes(&s.block);
             pairs.push((
                 BlockSlot {
                     base_shift: s.base_shift,
@@ -546,15 +559,30 @@ impl Mechanism for RestartConvergenceMechanism {
         // stale: H4's frozen response to definition-changing damage
         // applies — RESTART AT ZERO at the next generation.
         if table.entries() != old_state.defs.as_slice() {
-            // The discarded forward pass really did its work: it scanned
-            // source (reported through the sink as it went), consulted
-            // checkpoints and registered slots. Its metadata work is
-            // reported here too — hiding it would under-report H4 on
-            // exactly the rows this clause fires on.
+            // The discarded forward pass really did its work, and
+            // cumulative attribution reports ACTUAL work including work
+            // later discarded by a restart (MEASUREMENT-CORRECTIVE-1
+            // §14/§16 H4-B). Reported here:
+            // - metadata/consultation work (checkpoints consulted, live
+            //   slots registered);
+            // - the region's skeleton parse: every non-spliced block
+            //   unit was actually reparsed and its skeleton actually
+            //   constructed (skeleton-only — the discarded attempt never
+            //   reached inline materialization);
+            // - source inspection and the consult-time margin reads were
+            //   already reported through the sink as the pass ran.
+            // The delivered result is the restart's, and ITS counters
+            // accumulate on top of this.
+            let discarded_fnodes: u64 = rp
+                .blocks
+                .iter()
+                .filter(|sk| !matches!(sk, Skel::Spliced { .. }))
+                .map(skel_count)
+                .sum();
             cx.sink
                 .add_metadata_records_touched(consultations + slot_count as u64);
-            // The delivered result is the restart's, and its counters are
-            // the restart's.
+            cx.sink.add_blocks_reparsed(discarded_fnodes);
+            cx.sink.add_nodes_rebuilt(discarded_fnodes);
             return Ok(restart_at_zero(post, old_state.gen, es, cx));
         }
 
@@ -634,7 +662,7 @@ impl Mechanism for RestartConvergenceMechanism {
         let convergence_pos = take.map_or(post.len(), |(_, p)| p);
         cx.sink.add_blocks_reparsed(built.fnodes);
         cx.sink.add_nodes_rebuilt(built.nodes);
-        cx.sink.add_nodes_reused(reused);
+        cx.sink.add_nodes_reused(prefix_reused + reused);
         cx.sink.add_metadata_records_touched(
             consultations + slot_count as u64 + checkpoints.len() as u64 + rebased,
         );
@@ -643,7 +671,6 @@ impl Mechanism for RestartConvergenceMechanism {
         cx.sink
             .set_convergence_distance(Observed::Known((convergence_pos - r) as u64));
 
-        let result = project(&slots, post.len());
         Ok(H4Pending {
             state: H4State {
                 blocks: slots,
@@ -652,17 +679,25 @@ impl Mechanism for RestartConvergenceMechanism {
                 defs,
                 src_len: post.len(),
             },
-            result,
         })
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        // Sealing only (eager completion boundary, R5 freeze §4).
-        let checksum = normalized_checksum(&pending.result);
+        // Native-sealing ONLY (eager completion boundary, R5 freeze §4):
+        // the projection + checksum are the runner's post-timer export
+        // (MEASUREMENT-CORRECTIVE-1).
         Ok(Completed {
             state: pending.state,
-            result_checksum: checksum,
         })
+    }
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the H4
+/// checksum is the checksum of the pure `NormalizeV1` projection over
+/// the retained blocks.
+impl markit_mdbench_common::ResultChecksum for H4State {
+    fn result_checksum(&self) -> u64 {
+        normalized_checksum(&self.normalize_v1())
     }
 }
 

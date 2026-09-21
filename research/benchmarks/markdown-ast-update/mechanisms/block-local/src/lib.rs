@@ -142,21 +142,18 @@ fn document_from_entries(entries: &[TopEntry], src_len: usize) -> NormalizedDocu
     NormalizedDocument::new(root)
 }
 
-/// Pending work handed to `complete()`. Per the eager-completion boundary
-/// (R5 freeze §4) it ALREADY holds the complete new tiling, definition
-/// array, and the fully materialized normalized result; `complete()`
-/// seals and checksums only.
+/// Pending work handed to `complete()`: the COMPLETE new tiling and
+/// definition array (eager completion boundary, R5 freeze §4).
+///
+/// MEASUREMENT-CORRECTIVE-1 §9: the Pending deliberately carries NO
+/// materialized `NormalizedDocument`. The normalized projection is
+/// experiment/oracle EXPORT, not mechanism state — H1's retained
+/// subtrees carry every syntax fact, and the projection
+/// (`NormalizeV1`, a pure traversal + clone) runs at the runner's
+/// post-timer export boundary. Constructing it inside the timed update
+/// charged H1 for verification work it does not need.
 pub struct H1Pending {
     state: H1State,
-    result: NormalizedDocument,
-}
-
-impl H1Pending {
-    /// The already-materialized normalized result (eager-completion
-    /// inspection hook; no parse work happens here).
-    pub fn result(&self) -> &NormalizedDocument {
-        &self.result
-    }
 }
 
 /// H1's `prepare_update` product: pure edit coordinates (R1 phase
@@ -197,14 +194,12 @@ impl BlockLocalMechanism {
         cx.sink.add_blocks_reparsed(blocks_total);
         cx.sink.add_nodes_rebuilt(nodes_total);
         cx.sink.add_metadata_records_touched(entries.len() as u64);
-        let result = document_from_entries(&entries, src.len());
         H1Pending {
             state: H1State {
                 entries,
                 defs,
                 src_len: src.len(),
             },
-            result,
         }
     }
 
@@ -212,17 +207,32 @@ impl BlockLocalMechanism {
     /// the ordinary block + inline pipeline and rebuild the tiling.
     /// Reported counters are the full scan + full reconstruction counts
     /// (they happened); nodes_reused is the measured zero.
+    ///
+    /// Counter semantics (MEASUREMENT-CORRECTIVE-1 §14/§15):
+    ///
+    /// - H1-A: the damage scan is charged EXACTLY ONCE, at the scan site
+    ///   in `update`. The fallback does not re-charge it — one scan, one
+    ///   count;
+    /// - H1-B: `discarded_region_blocks` is the block count the region
+    ///   reparse ACTUALLY parsed before the fallback fired. That work
+    ///   happened and is never discarded from attribution: the region's
+    ///   skeleton units count into `blocks_reparsed` AND
+    ///   `nodes_rebuilt` (skeleton-only — the discarded attempt did not
+    ///   reach inline materialization). The full parse's own counts
+    ///   accumulate on top.
     fn total_fallback<W: WorkSink>(
         &self,
         post: &[u8],
-        scanned_old_entries: u64,
+        discarded_region_blocks: u64,
         cx: &mut MechanismContext<'_, W>,
     ) -> H1Pending {
         cx.sink.record_fallback_to_full();
-        let mut pending = self.parse_into_pending(post, cx);
+        if discarded_region_blocks > 0 {
+            cx.sink.add_blocks_reparsed(discarded_region_blocks);
+            cx.sink.add_nodes_rebuilt(discarded_region_blocks);
+        }
+        let pending = self.parse_into_pending(post, cx);
         cx.sink.add_nodes_reused(0);
-        cx.sink.add_metadata_records_touched(scanned_old_entries);
-        pending.state.src_len = post.len();
         pending
     }
 }
@@ -354,7 +364,7 @@ impl Mechanism for BlockLocalMechanism {
         // definitions are empty, so prefix/suffix contain no Def entries
         // and the new table is exactly the region's table.)
         if !old_defs.is_empty() || !rp.defs.is_empty() {
-            return Ok(self.total_fallback(post, scanned, cx));
+            return Ok(self.total_fallback(post, count_blocks(&rp.blocks), cx));
         }
 
         // Soundness guards F2–F6 (left/right edge continuation + fence
@@ -371,7 +381,7 @@ impl Mechanism for BlockLocalMechanism {
             delta,
             cx,
         ) {
-            return Ok(self.total_fallback(post, scanned, cx));
+            return Ok(self.total_fallback(post, count_blocks(&rp.blocks), cx));
         }
 
         // MAJOR-1 (R5-CORRECTIVE-1): CONSUME the old tiling. Prefix
@@ -442,25 +452,32 @@ impl Mechanism for BlockLocalMechanism {
         // No fallback happened: the measured zero (Known(0) != Unknown).
         cx.sink.add_fallback_to_full(0);
 
-        let result = document_from_entries(&new_entries, post.len());
         Ok(H1Pending {
             state: H1State {
                 entries: new_entries,
                 defs: rp.defs.entries().to_vec(),
                 src_len: post.len(),
             },
-            result,
         })
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        // Sealing only: the pending already holds the complete state and
-        // the materialized result (eager completion boundary, R5 §4).
-        let checksum = normalized_checksum(&pending.result);
+        // Native-sealing ONLY: the pending already holds the complete
+        // state (eager completion boundary, R5 §4). The normalized
+        // projection and its checksum are the runner's post-timer export
+        // (MEASUREMENT-CORRECTIVE-1).
         Ok(Completed {
             state: pending.state,
-            result_checksum: checksum,
         })
+    }
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the H1
+/// checksum is the checksum of the pure `NormalizeV1` projection over
+/// the retained tiling — export work, never mechanism timing.
+impl markit_mdbench_common::ResultChecksum for H1State {
+    fn result_checksum(&self) -> u64 {
+        normalized_checksum(&self.normalize_v1())
     }
 }
 
@@ -596,8 +613,11 @@ fn guards_fire<W: WorkSink>(
     // report both exactly (R5-CORRECTIVE-2).
     if rs < re_new {
         let rscan = post[rs..re_new].iter().rposition(|&b| b == b'\n');
-        cx.sink
-            .record_source_inspection(rscan.map_or(rs, |p| rs + p) as u64, re_new as u64);
+        cx.sink.record_source_inspection(
+            markit_mdbench_common::SourceVersion::Post,
+            rscan.map_or(rs, |p| rs + p) as u64,
+            re_new as u64,
+        );
         let cut = rscan.map_or(rs, |p| rs + p + 1);
         if cut < re_new && sg::parser::memchr_lf_reported(post, cut, cx.sink) > re_new {
             return true;
@@ -655,8 +675,11 @@ fn continuation_pair<W: WorkSink>(
         return true;
     }
     // The guard read these bytes: report the inspection honestly.
-    cx.sink
-        .record_source_inspection(a_end as u64, b_start as u64);
+    cx.sink.record_source_inspection(
+        markit_mdbench_common::SourceVersion::Post,
+        a_end as u64,
+        b_start as u64,
+    );
     let lfs = post[a_end..b_start].iter().filter(|&&b| b == b'\n').count();
     if lfs >= 2 {
         return false; // a blank line separates: no continuation is possible

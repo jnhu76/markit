@@ -15,7 +15,7 @@ use gen::{PayloadShape, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_block_local::{BlockLocalMechanism, H1State};
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Source, WorkCounters,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Source, WorkCounters, ResultChecksum,
 };
 use markit_mdbench_corpusgen as gen;
 use markit_mdbench_corpusgen::mutations::{
@@ -55,18 +55,14 @@ fn completed_doc(
     let pending = mech
         .full_parse(&source_of(bytes, 2), &mut cx)
         .unwrap_or_else(|e| panic!("{context}: full_parse failed: {e:?}"));
-    let eager = pending.result().clone();
     let done = mech.complete(pending).expect("complete");
-    // MAJOR-3 (R5-CORRECTIVE-1): the QUERY authority is the COMPLETED
-    // state's pure projection — never the Pending's eager result.
+    // MAJOR-3 (R5-CORRECTIVE-1) + MEASUREMENT-CORRECTIVE-1: the QUERY
+    // authority is the COMPLETED state's pure projection — complete()
+    // seals the state; the checksum is the post-timer export of it.
     let doc = done.state.normalize_v1();
     assert_eq!(
-        doc, eager,
-        "{context}: completed-state projection == eager pending result"
-    );
-    assert_eq!(
         normalized_checksum(&doc),
-        done.result_checksum,
+        done.state.result_checksum(),
         "{context}: checksum law"
     );
     doc
@@ -139,33 +135,20 @@ fn run_update_case(old: &[u8], edit: &PlannedEdit, context: &str) {
             )
             .unwrap_or_else(|e| panic!("{context}: update failed: {e:?}"));
         let clean = parse_document(&post);
+        let done = mech.complete(pending).expect("complete");
+        // MEASUREMENT-CORRECTIVE-1: complete() seals the state; the
+        // normalized projection is a post-complete pure export of that
+        // state, so the comparisons below cover both the former
+        // eager-pending checks and the completed-state projection check.
+        let doc = done.state.normalize_v1();
+        assert_eq!(doc, clean, "{context}: structural mismatch vs H0");
         assert_eq!(
-            pending.result(),
-            &clean,
-            "{context}: structural mismatch vs H0"
-        );
-        assert_eq!(
-            normalized_checksum(pending.result()),
+            done.state.result_checksum(),
             normalized_checksum(&clean),
             "{context}: checksum mismatch vs H0"
         );
-        validate_root(&pending.result().root, Some(&post))
+        validate_root(&doc.root, Some(&post))
             .unwrap_or_else(|e| panic!("{context}: NORMALIZED-RESULT-v1 violation: {e}"));
-        let done = mech.complete(pending).expect("complete");
-        assert_eq!(
-            done.result_checksum,
-            normalized_checksum(&clean),
-            "{context}"
-        );
-        // MAJOR-3 (R5-CORRECTIVE-1): the COMPLETED state must project
-        // purely to exactly the H0 result.
-        let doc = done.state.normalize_v1();
-        assert_eq!(doc, clean, "{context}: completed-state projection vs H0");
-        assert_eq!(
-            normalized_checksum(&doc),
-            done.result_checksum,
-            "{context}: checksum(normalize_v1) == completed checksum"
-        );
         new_state = done.state;
     }
     // The new retained state must be a usable input for a follow-up
@@ -200,11 +183,6 @@ fn run_update_case(old: &[u8], edit: &PlannedEdit, context: &str) {
             )
             .unwrap_or_else(|e| panic!("{context}: chained update failed: {e:?}"));
         let clean = parse_document(&post2);
-        assert_eq!(
-            pending.result(),
-            &clean,
-            "{context}: chained mismatch vs H0"
-        );
         let done2 = mech.complete(pending).expect("complete");
         assert_eq!(
             done2.state.normalize_v1(),

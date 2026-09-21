@@ -206,17 +206,15 @@ impl NormalizeV1 for H3State {
     }
 }
 
-/// Pending work handed to `complete()` — already fully materialized
+/// Pending work handed to `complete()` — the complete patched tree
 /// (eager completion boundary, R5 freeze §4).
+///
+/// MEASUREMENT-CORRECTIVE-1 §9: the normalized projection (`project`, a
+/// pure traversal over retained payloads) is experiment/oracle EXPORT,
+/// not H3 mechanism state — it is derived at the runner's post-timer
+/// export boundary via `NormalizeV1`, never inside the timed update.
 pub struct H3Pending {
     state: H3State,
-    result: NormalizedDocument,
-}
-
-impl H3Pending {
-    pub fn result(&self) -> &NormalizedDocument {
-        &self.result
-    }
 }
 
 /// `prepare_update` product: the PATCHED tree (edit metadata — the
@@ -264,10 +262,8 @@ impl OldTreeSubtreeReuseMechanism {
             defs,
             src_len: src.len(),
         };
-        let result = project(&tree);
         H3Pending {
             state: H3State { tree },
-            result,
         }
     }
 }
@@ -358,8 +354,11 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         // region's post bytes (any `]: ` occurrence). The probe reads the
         // edited span when it runs: report the scan (R5-CORRECTIVE-2).
         let definition_changing = prepared.definition_changing || {
-            cx.sink
-                .record_source_inspection(es as u64, ee_new.min(post.len()) as u64);
+            cx.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                es as u64,
+                ee_new.min(post.len()) as u64,
+            );
             post[es..ee_new.min(post.len())]
                 .windows(3)
                 .any(|w| w == b"]: ")
@@ -390,7 +389,8 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
             )
         };
         for (a, b) in &margin_checks {
-            cx.sink.record_source_inspection(*a, *b);
+            cx.sink
+                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, *a, *b);
         }
 
         // Rebuild the document-global first-wins table from the assembled
@@ -444,20 +444,27 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
             defs: table.entries().to_vec(),
             src_len: post.len(),
         };
-        let result = project(&tree);
         Ok(H3Pending {
             state: H3State { tree },
-            result,
         })
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        // Sealing only (eager completion boundary, R5 freeze §4).
-        let checksum = normalized_checksum(&pending.result);
+        // Native-sealing ONLY (eager completion boundary, R5 freeze §4):
+        // the projection + checksum are the runner's post-timer export
+        // (MEASUREMENT-CORRECTIVE-1).
         Ok(Completed {
             state: pending.state,
-            result_checksum: checksum,
         })
+    }
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the H3
+/// checksum is the checksum of the pure `NormalizeV1` projection over
+/// the retained tree.
+impl markit_mdbench_common::ResultChecksum for H3State {
+    fn result_checksum(&self) -> u64 {
+        normalized_checksum(&self.normalize_v1())
     }
 }
 
@@ -545,7 +552,7 @@ fn patch_tree<W: WorkSink>(
         // when the range is empty.
         let (a, b) = (prev_end.unwrap_or(0), es);
         if a < b {
-            sink.record_source_inspection(a as u64, b as u64);
+            sink.record_source_inspection(markit_mdbench_common::SourceVersion::Old, a as u64, b as u64);
         }
         let sep_lfs = lfs(old, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, prev_idx) {
@@ -560,7 +567,7 @@ fn patch_tree<W: WorkSink>(
         let next_line_new = (line_aligned(ni, &tree.entries) as isize + delta).max(0) as usize;
         let (a, b) = (ee_new.min(post.len()), next_line_new.min(post.len()));
         if a < b {
-            sink.record_source_inspection(a as u64, b as u64);
+            sink.record_source_inspection(markit_mdbench_common::SourceVersion::Post, a as u64, b as u64);
         }
         let sep_lfs = lfs(post, a, b);
         if sep_lfs < 2 && !hit_index(first_hit, next_idx) {
@@ -1104,7 +1111,7 @@ fn mentions_reference<W: WorkSink>(node: &TNode, post: &[u8], base: usize, sink:
     if base >= end {
         return false;
     }
-    sink.record_source_inspection(base as u64, end as u64);
+    sink.record_source_inspection(markit_mdbench_common::SourceVersion::Post, base as u64, end as u64);
     post[base..end].contains(&b'[')
 }
 

@@ -38,7 +38,9 @@ use markit_mdbench_null_r1::fixture::{
     smoke_fixture, smoke_payload_id, smoke_payload_shape, smoke_payload_size_bytes,
     R1_SMOKE_ONLY_GENERATOR_ID, SMOKE_EDIT_OPERATION,
 };
-use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullPending, NULL_R1_MECHANISM_ID};
+use markit_mdbench_common::ResultChecksum;
+use markit_mdbench_common::SourceVersion;
+use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullState, NULL_R1_MECHANISM_ID};
 use markit_mdbench_oracle::CorrectnessHook;
 use markit_mdbench_oracle::ScalarChecksumHook;
 use markit_mdbench_runner::assemble_row;
@@ -106,13 +108,12 @@ fn facts_for(case_id: CaseId, operation: OperationKind, edit: Option<&CanonicalE
     }
 }
 
-fn expected_null_checksum(old: &Source, post: &Source, edit: &CanonicalEdit, revision: u64) -> u64 {
-    null_checksum(&NullPending {
-        old_len_bytes: old.len_bytes() as u64,
-        post_len_bytes: post.len_bytes() as u64,
-        edit_start_byte: edit.start_byte(),
-        edit_end_byte: edit.end_byte(),
-        inserted_len_bytes: edit.inserted_text_len_bytes(),
+/// The null mechanism's expected checksum (MEASUREMENT-CORRECTIVE-1): a
+/// POST-TIMER export of the sealed `NullState` — no longer a function of
+/// the consumed pending scalars.
+fn expected_null_checksum(post: &Source, revision: u64) -> u64 {
+    null_checksum(&NullState {
+        source_len_bytes: post.len_bytes() as u64,
         revision,
     })
 }
@@ -125,15 +126,27 @@ struct ClockAdvancingHook {
     ran: Cell<bool>,
 }
 
-impl<S> CorrectnessHook<S> for ClockAdvancingHook {
+impl<S: ResultChecksum> CorrectnessHook<S> for ClockAdvancingHook {
     fn verify(&self, completed: &Completed<S>) -> CorrectnessStatus {
         self.ran.set(true);
         self.clock.advance_nanos(1000);
-        if completed.result_checksum == self.expected {
+        if completed.state.result_checksum() == self.expected {
             CorrectnessStatus::Pass
         } else {
             CorrectnessStatus::WrongResult
         }
+    }
+}
+
+/// Local state newtype for the test mechanisms (a foreign trait cannot
+/// be implemented on a primitive). The export checksum is the state
+/// value itself.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct ProbeState(u64);
+
+impl ResultChecksum for ProbeState {
+    fn result_checksum(&self) -> u64 {
+        self.0
     }
 }
 
@@ -171,9 +184,9 @@ impl ClockProbe {
 }
 
 impl Mechanism for ClockProbe {
-    type State = u64;
-    type Prepared = u64;
-    type Pending = u64;
+    type State = ProbeState;
+    type Prepared = ProbeState;
+    type Pending = ProbeState;
 
     fn id(&self) -> MechanismId {
         MechanismId("__r1_clock_probe_test_only__".to_string())
@@ -186,7 +199,7 @@ impl Mechanism for ClockProbe {
     ) -> Result<Self::Pending, FailureStatus> {
         self.clock.advance_nanos(self.advance_full_parse);
         self.full_parse_read.set(self.clock.now_nanos());
-        Ok(source.len_bytes() as u64)
+        Ok(ProbeState(source.len_bytes() as u64))
     }
 
     fn prepare_update<W: WorkSink>(
@@ -213,15 +226,12 @@ impl Mechanism for ClockProbe {
     ) -> Result<Self::Pending, FailureStatus> {
         self.clock.advance_nanos(self.advance_native);
         self.update_read.set(self.clock.now_nanos());
-        Ok(old_state + 1)
+        Ok(ProbeState(old_state.0 + 1))
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
         self.complete_read.set(self.clock.now_nanos());
-        Ok(Completed {
-            state: pending,
-            result_checksum: pending,
-        })
+        Ok(Completed { state: pending })
     }
 }
 
@@ -229,9 +239,9 @@ impl Mechanism for ClockProbe {
 struct PanicsInUpdateMechanism;
 
 impl Mechanism for PanicsInUpdateMechanism {
-    type State = u64;
-    type Prepared = u64;
-    type Pending = u64;
+    type State = ProbeState;
+    type Prepared = ProbeState;
+    type Pending = ProbeState;
 
     fn id(&self) -> MechanismId {
         MechanismId("__r1_panic_probe_test_only__".to_string())
@@ -242,7 +252,7 @@ impl Mechanism for PanicsInUpdateMechanism {
         source: &Source,
         _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
-        Ok(source.len_bytes() as u64)
+        Ok(ProbeState(source.len_bytes() as u64))
     }
 
     fn prepare_update<W: WorkSink>(
@@ -269,10 +279,7 @@ impl Mechanism for PanicsInUpdateMechanism {
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        Ok(Completed {
-            state: pending,
-            result_checksum: pending,
-        })
+        Ok(Completed { state: pending })
     }
 }
 
@@ -305,7 +312,7 @@ fn null_mechanism_end_to_end_pass_through_real_runner() {
         &edit,
         old_state,
         &clock,
-        &ScalarChecksumHook::new(expected_null_checksum(&old, &post, &edit, 1)),
+        &ScalarChecksumHook::new(expected_null_checksum(&post, 1)),
     );
 
     assert_eq!(report.execution_status, ExecutionStatus::Pass);
@@ -350,7 +357,7 @@ fn update_timing_boundaries_are_exact_and_complete_runs_inside_t_native() {
         &edit,
         old_state,
         clock.as_ref(),
-        &ScalarChecksumHook::new(old_state + 1),
+        &ScalarChecksumHook::new(old_state.0 + 1),
     );
 
     assert_eq!(report.execution_status, ExecutionStatus::Pass);
@@ -390,7 +397,7 @@ fn update_timing_boundaries_are_exact_and_complete_runs_inside_t_native() {
     let state = build_initial_state(&oracle_probe, &old).expect("initial state");
     let hook = ClockAdvancingHook {
         clock: oracle_clock.clone(),
-        expected: state + 1,
+        expected: ProbeState(state.0 + 1).result_checksum(),
         ran: Cell::new(false),
     };
     let report = run_update_timed(
@@ -472,7 +479,7 @@ fn lanes_are_structurally_exclusive_in_reports_and_rows() {
     let (key, edit, old, post) = smoke_case_key_and_edit();
     let mechanism = NullMechanism::new();
     let old_state = build_initial_state(&mechanism, &old).expect("initial state");
-    let hook = ScalarChecksumHook::new(expected_null_checksum(&old, &post, &edit, 1));
+    let hook = ScalarChecksumHook::new(expected_null_checksum(&post, 1));
 
     let timed = run_update_timed(
         &mechanism,
@@ -544,7 +551,13 @@ fn lanes_are_structurally_exclusive_in_reports_and_rows() {
     // is Unknown — three distinct states, all visible in the row.
     let metrics = &attributed_json["measurement"]["metrics"];
     assert_eq!(metrics["blocks_reparsed"], 0);
-    assert_eq!(metrics["unique_source_bytes_inspected"], 0);
+    // ATTRIBUTION-SCHEMA-v2 derived slots: the null mechanism records no
+    // inspection events, so the finalized derivation is the measured
+    // zero on every derived slot (per version, combined, and effort).
+    assert_eq!(metrics["unique_old_source_bytes"], 0);
+    assert_eq!(metrics["unique_post_source_bytes"], 0);
+    assert_eq!(metrics["unique_source_bytes"], 0);
+    assert_eq!(metrics["source_bytes_inspected_total"], 0);
     assert_eq!(metrics["restart_distance"], "NOT_APPLICABLE");
     assert_eq!(metrics["nodes_rebuilt"], "UNKNOWN");
 }
@@ -554,7 +567,7 @@ fn case_id_is_identical_across_lanes_and_mechanisms() {
     let (key, edit, old, post) = smoke_case_key_and_edit();
     let mechanism = NullMechanism::new();
     let old_state = build_initial_state(&mechanism, &old).expect("initial state");
-    let hook = ScalarChecksumHook::new(expected_null_checksum(&old, &post, &edit, 1));
+    let hook = ScalarChecksumHook::new(expected_null_checksum(&post, 1));
 
     let timed = run_update_timed(
         &mechanism,
@@ -584,7 +597,7 @@ fn case_id_is_identical_across_lanes_and_mechanisms() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         probe_clock.as_ref(),
         &ScalarChecksumHook::new(1),
     );
@@ -652,7 +665,7 @@ fn injected_failures_are_preserved_and_never_dropped() {
         &old,
         &post,
         &edit,
-        0,
+        ProbeState(0),
         &ManualClock::new(),
         &ScalarChecksumHook::new(0),
     );
@@ -673,7 +686,7 @@ fn injected_failures_are_preserved_and_never_dropped() {
         &edit,
         state,
         &ManualClock::new(),
-        &ScalarChecksumHook::new(expected_null_checksum(&old, &post, &edit, 1)),
+        &ScalarChecksumHook::new(expected_null_checksum(&post, 1)),
     );
     let rows = [
         assemble_row(&facts, &report_pass, &build, "env", "r1-test"),
@@ -699,14 +712,14 @@ fn injected_failures_are_preserved_and_never_dropped() {
 fn schema_path() -> PathBuf {
     workspace_root()
         .join("protocol")
-        .join("result-schema-v1.json")
+        .join("result-schema-v2.json")
 }
 
 fn sample_rows() -> Vec<ResultRowV1> {
     let (key, edit, old, post) = smoke_case_key_and_edit();
     let mechanism = NullMechanism::new();
     let old_state = build_initial_state(&mechanism, &old).expect("initial state");
-    let hook = ScalarChecksumHook::new(expected_null_checksum(&old, &post, &edit, 1));
+    let hook = ScalarChecksumHook::new(expected_null_checksum(&post, 1));
     let build = current_build_identity();
     let env = "manifest/environment.toml#r1-test";
     let provenance = "R1_SMOKE_ONLY/NON_RESEARCH_RESULT";
@@ -742,12 +755,8 @@ fn sample_rows() -> Vec<ResultRowV1> {
     );
 
     let key_full = key_for(OperationKind::FullParse, &old, None);
-    let expected_full = null_checksum(&NullPending {
-        old_len_bytes: old.len_bytes() as u64,
-        post_len_bytes: old.len_bytes() as u64,
-        edit_start_byte: 0,
-        edit_end_byte: 0,
-        inserted_len_bytes: 0,
+    let expected_full = null_checksum(&NullState {
+        source_len_bytes: old.len_bytes() as u64,
         revision: 0,
     });
     let report_full = run_full_parse_timed(
@@ -801,15 +810,15 @@ fn rows_round_trip_through_jsonl() {
 fn rows_validate_against_generated_schema_and_schema_has_not_drifted() {
     let schema_text = fs::read_to_string(schema_path()).unwrap_or_else(|err| {
         panic!(
-            "protocol/result-schema-v1.json missing ({err}); regenerate with \
-             `cargo run -p markit-mdbench-runner --bin mdbench-gen-schema -- protocol/result-schema-v1.json`"
+            "protocol/result-schema-v2.json missing ({err}); regenerate with \
+             `cargo run -p markit-mdbench-runner --bin mdbench-gen-schema -- protocol/result-schema-v2.json`"
         )
     });
     let checked_in: serde_json::Value = serde_json::from_str(&schema_text).expect("schema parses");
     let fresh = serde_json::to_value(schemars::schema_for!(ResultRowV1)).expect("schema generates");
     assert_eq!(
         checked_in, fresh,
-        "checked-in result-schema-v1.json drifted from the Rust ResultRowV1 model; regenerate it"
+        "checked-in result-schema-v2.json drifted from the Rust ResultRowV1 model; regenerate it"
     );
 
     let validator = jsonschema::validator_for(&checked_in).expect("schema compiles");
@@ -866,9 +875,9 @@ struct InspectionProbe {
 }
 
 impl Mechanism for InspectionProbe {
-    type State = u64;
-    type Prepared = u64;
-    type Pending = u64;
+    type State = ProbeState;
+    type Prepared = ProbeState;
+    type Pending = ProbeState;
 
     fn id(&self) -> MechanismId {
         MechanismId("__r1_inspection_probe_test_only__".to_string())
@@ -879,7 +888,7 @@ impl Mechanism for InspectionProbe {
         source: &Source,
         _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
-        Ok(source.len_bytes() as u64)
+        Ok(ProbeState(source.len_bytes() as u64))
     }
 
     fn prepare_update<W: WorkSink>(
@@ -891,8 +900,12 @@ impl Mechanism for InspectionProbe {
         cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Prepared, FailureStatus> {
         // Prepare-phase work MUST be attributable (R1-CORRECTIVE-1).
-        cx.sink.record_source_inspection(0, 10);
-        cx.sink.record_source_inspection(100, 200);
+        // Prepare consults the OLD source: `Old` version events
+        // (MEASUREMENT-CORRECTIVE-1 §18).
+        cx.sink
+            .record_source_inspection(SourceVersion::Old, 0, 10);
+        cx.sink
+            .record_source_inspection(SourceVersion::Old, 100, 200);
         Ok(*old_state)
     }
 
@@ -905,20 +918,22 @@ impl Mechanism for InspectionProbe {
         _prepared: Self::Prepared,
         cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
-        cx.sink.record_source_inspection(5, 20); // overlaps prepare [0,10)
-        cx.sink.record_source_inspection(0, 10); // duplicate of prepare
+        // Update reads the POST source: `Post` version events. The two
+        // union to [0, 20); duplicates never double-count unique
+        // coverage.
+        cx.sink
+            .record_source_inspection(SourceVersion::Post, 5, 20);
+        cx.sink
+            .record_source_inspection(SourceVersion::Post, 0, 10);
         if self.fail_update {
             Err(FailureStatus::Unsupported)
         } else {
-            Ok(old_state + 1)
+            Ok(ProbeState(old_state.0 + 1))
         }
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        Ok(Completed {
-            state: pending,
-            result_checksum: pending,
-        })
+        Ok(Completed { state: pending })
     }
 }
 
@@ -934,17 +949,29 @@ fn attribution_covers_prepare_and_unions_overlapping_inspections() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &mut counters,
         &ScalarChecksumHook::new(1),
     );
     assert_eq!(report.execution_status, ExecutionStatus::Pass);
+    // Per-version derivation (ATTRIBUTION-SCHEMA-v2): the OLD and POST
+    // unions are kept APART, the combined primary quantity is their SUM,
+    // and the cumulative total counts every event (repeats included).
+    assert_eq!(counters.unique_old_source_intervals, Observed::Known(2));
+    assert_eq!(counters.unique_old_source_bytes, Observed::Known(110));
+    assert_eq!(counters.unique_post_source_intervals, Observed::Known(1));
+    assert_eq!(counters.unique_post_source_bytes, Observed::Known(20));
     assert_eq!(
-        counters.unique_source_intervals_inspected,
-        Observed::Known(2),
-        "union of [0,20) and [100,200), not the four raw events"
+        counters.unique_source_intervals,
+        Observed::Known(3),
+        "combined = old union + post union, never a cross-version union"
     );
-    assert_eq!(counters.unique_source_bytes_inspected, Observed::Known(120));
+    assert_eq!(counters.unique_source_bytes, Observed::Known(130));
+    assert_eq!(
+        counters.source_bytes_inspected_total,
+        Observed::Known(135),
+        "cumulative effort: all four events count, overlaps/duplicates included"
+    );
 
     // The same mechanism runs in the T-LANE with the no-op sink: the
     // inspection events cost nothing and the run still passes.
@@ -953,7 +980,7 @@ fn attribution_covers_prepare_and_unions_overlapping_inspections() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &ManualClock::new(),
         &ScalarChecksumHook::new(1),
     );
@@ -968,16 +995,17 @@ fn attribution_covers_prepare_and_unions_overlapping_inspections() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &mut counters,
         &ScalarChecksumHook::new(0),
     );
     assert_eq!(failed.execution_status, ExecutionStatus::Unsupported);
     assert_eq!(
-        counters.unique_source_bytes_inspected,
+        counters.unique_source_bytes,
         Observed::Unknown,
         "underived slots must stay Unknown on failed runs"
     );
+    assert_eq!(counters.source_bytes_inspected_total, Observed::Unknown);
 }
 
 // ---------------------------------------------------------------------------
@@ -1007,9 +1035,9 @@ struct OrderProbe<'a> {
 }
 
 impl Mechanism for OrderProbe<'_> {
-    type State = u64;
-    type Prepared = u64;
-    type Pending = u64;
+    type State = ProbeState;
+    type Prepared = ProbeState;
+    type Pending = ProbeState;
 
     fn id(&self) -> MechanismId {
         MechanismId("__r1_order_probe_test_only__".to_string())
@@ -1020,7 +1048,7 @@ impl Mechanism for OrderProbe<'_> {
         source: &Source,
         _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
-        Ok(source.len_bytes() as u64)
+        Ok(ProbeState(source.len_bytes() as u64))
     }
 
     fn prepare_update<W: WorkSink>(
@@ -1044,14 +1072,11 @@ impl Mechanism for OrderProbe<'_> {
         _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
         self.events.borrow_mut().push("mechanism");
-        Ok(old_state + 1)
+        Ok(ProbeState(old_state.0 + 1))
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        Ok(Completed {
-            state: pending,
-            result_checksum: pending,
-        })
+        Ok(Completed { state: pending })
     }
 }
 
@@ -1069,7 +1094,7 @@ fn memory_lane_opens_and_closes_one_window_around_the_mechanism() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &reporter,
         &ScalarChecksumHook::new(1),
     );
@@ -1089,9 +1114,9 @@ struct MemoryObservingProbe<'a> {
 }
 
 impl Mechanism for MemoryObservingProbe<'_> {
-    type State = u64;
-    type Prepared = u64;
-    type Pending = u64;
+    type State = ProbeState;
+    type Prepared = ProbeState;
+    type Pending = ProbeState;
 
     fn id(&self) -> MechanismId {
         MechanismId("__r1_memory_probe_test_only__".to_string())
@@ -1102,7 +1127,7 @@ impl Mechanism for MemoryObservingProbe<'_> {
         source: &Source,
         _cx: &mut MechanismContext<'_, W>,
     ) -> Result<Self::Pending, FailureStatus> {
-        Ok(source.len_bytes() as u64)
+        Ok(ProbeState(source.len_bytes() as u64))
     }
 
     fn prepare_update<W: WorkSink>(
@@ -1128,14 +1153,11 @@ impl Mechanism for MemoryObservingProbe<'_> {
         self.reporter.observe_allocation(self.bytes);
         self.reporter.observe_peak(self.bytes);
         self.reporter.observe_retained(self.bytes);
-        Ok(old_state + 1)
+        Ok(ProbeState(old_state.0 + 1))
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        Ok(Completed {
-            state: pending,
-            result_checksum: pending,
-        })
+        Ok(Completed { state: pending })
     }
 }
 
@@ -1152,7 +1174,7 @@ fn memory_lane_values_are_per_case_and_never_leak_across_cases() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &reporter,
         &ScalarChecksumHook::new(1),
     );
@@ -1164,7 +1186,7 @@ fn memory_lane_values_are_per_case_and_never_leak_across_cases() {
         &old,
         &post,
         &edit,
-        0u64,
+        ProbeState(0),
         &reporter,
         &ScalarChecksumHook::new(1),
     );

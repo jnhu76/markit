@@ -843,6 +843,7 @@ dependencies = [
  "markit-mdbench-corpusgen",
  "markit-mdbench-full-rebuild",
  "markit-mdbench-oracle",
+ "markit-mdbench-runner",
  "markit-mdbench-shared-grammar",
 ]
 
@@ -957,6 +958,7 @@ dependencies = [
  "markit-mdbench-corpusgen",
  "markit-mdbench-full-rebuild",
  "markit-mdbench-oracle",
+ "markit-mdbench-runner",
  "markit-mdbench-shared-grammar",
 ]
 
