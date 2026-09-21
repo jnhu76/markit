@@ -55,7 +55,7 @@ while IFS= read -r line; do
     printf '%s' "$line" | python3 -c '
 import json, sys
 row = json.load(sys.stdin)
-assert row["schema_version"] == 1, row
+assert row["schema_version"] == 2, row  # RESULT_SCHEMA_VERSION_V2
 assert row["protocol_version"] == "R0-FROZEN-V1", row
 assert row["provenance_ref"] == "R1_SMOKE_ONLY/NON_RESEARCH_RESULT", row
 assert row["execution_status"] == "pass", row
