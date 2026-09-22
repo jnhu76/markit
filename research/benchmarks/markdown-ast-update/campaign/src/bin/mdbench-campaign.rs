@@ -478,14 +478,15 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
 fn write_run_receipt(raw_path: &Path) -> Result<(), String> {
     let bytes = std::fs::read(raw_path).map_err(|e| format!("read {}: {e}", raw_path.display()))?;
     let text = String::from_utf8_lossy(&bytes);
-    let mut ids: Vec<&str> = Vec::new();
+    let mut ids: Vec<String> = Vec::new();
     for line in text.lines().filter(|line| !line.trim().is_empty()) {
         let value: serde_json::Value = serde_json::from_str(line)
             .map_err(|e| format!("parse raw row in {}: {e}", raw_path.display()))?;
         ids.push(
             value["observation_id"]
                 .as_str()
-                .ok_or_else(|| "raw row missing observation_id".to_string())?,
+                .ok_or_else(|| "raw row missing observation_id".to_string())?
+                .to_string(),
         );
     }
     let receipt = serde_json::json!({
@@ -493,8 +494,8 @@ fn write_run_receipt(raw_path: &Path) -> Result<(), String> {
         "file": raw_path.file_name().and_then(|n| n.to_str()).unwrap_or(""),
         "sha256": markit_mdbench_campaign::sha256_hex(&bytes),
         "row_count": ids.len(),
-        "first_observation_id": ids.first().copied().unwrap_or(""),
-        "last_observation_id": ids.last().copied().unwrap_or(""),
+        "first_observation_id": ids.first().cloned().unwrap_or_default(),
+        "last_observation_id": ids.last().cloned().unwrap_or_default(),
     });
     let receipt_path = raw_path.with_extension("jsonl.receipt.json");
     if receipt_path.exists() {
