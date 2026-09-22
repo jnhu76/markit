@@ -4,7 +4,10 @@
 //!
 //! ```text
 //! campaign receipt valid           (artifact hashes + spec recompute)
-//! machine matches frozen manifest  (exact stable-field equality)
+//! machine matches frozen manifest  (exact equality on every HARD
+//!                                   host-binding field; MemTotal is a
+//!                                   recorded observation, reported as a
+//!                                   non-blocking diagnostic)
 //! binary/build identity matches    (profile, rustc, Cargo.lock digest)
 //! runner commit available          (never "unknown")
 //! Cargo.lock matches
@@ -99,13 +102,17 @@ pub fn preflight(
     scope: PreflightScope,
 ) -> PreflightReport {
     let mut blockers: Vec<String> = Vec::new();
+    // Memory binding diagnostic (MARKIT-31-MACHINE-BINDING-CORRECTIVE-1):
+    // MemTotal frozen-vs-current is REPORTED under the Enforce path even
+    // when other checks block — visible, auditable, non-blocking.
+    let mut machine_memory = serde_json::Value::Null;
 
     // 1. Campaign manifest verifies against live state.
     let manifest = match CampaignManifest::load(benchmark_root) {
         Ok(manifest) => manifest,
         Err(error) => {
             blockers.push(format!("campaign manifest: {error}"));
-            return report(blockers, scope, serde_json::Value::Null);
+            return report(blockers, serde_json::Value::Null);
         }
     };
     if let Err(mut manifest_blockers) = manifest.verify(benchmark_root) {
@@ -158,7 +165,7 @@ pub fn preflight(
         Ok(workload) => workload,
         Err(error) => {
             blockers.push(format!("source materialization: {error}"));
-            return report(blockers, scope, serde_json::Value::Null);
+            return report(blockers, serde_json::Value::Null);
         }
     };
     let enumeration = check_observation_uniqueness(&manifest, &workload, scope, &mut blockers);
@@ -182,11 +189,14 @@ pub fn preflight(
             }
             match crate::manifest::MachineManifest::load(benchmark_root) {
                 Ok(machine) => {
-                    if let Err(mut machine_blockers) =
-                        crate::machine::match_current_host(&machine, benchmark_root)
-                    {
-                        blockers.append(&mut machine_blockers);
-                    }
+                    let (observed, mut capture_blockers) =
+                        crate::machine::observe_host_for_binding(&machine, benchmark_root);
+                    blockers.append(&mut capture_blockers);
+                    blockers.extend(crate::machine::compare_host_binding(&machine, &observed));
+                    machine_memory = crate::machine::memory_binding_diagnostic(
+                        machine.total_ram_bytes,
+                        observed.mem_total_bytes,
+                    );
                 }
                 Err(error) => blockers.push(format!("machine manifest: {error}")),
             }
@@ -198,26 +208,20 @@ pub fn preflight(
         }
     }
 
-    report(
-        blockers,
-        scope,
-        serde_json::to_value(&enumeration).unwrap_or(serde_json::Value::Null),
-    )
+    let diagnostics = json!({
+        "transient": crate::machine::transient_diagnostics(),
+        "machine_memory": machine_memory,
+        "scope": scope.label(),
+        "observation_enumeration": enumeration,
+    });
+    report(blockers, diagnostics)
 }
 
-fn report(
-    blockers: Vec<String>,
-    scope: PreflightScope,
-    enumeration: serde_json::Value,
-) -> PreflightReport {
+fn report(blockers: Vec<String>, diagnostics: serde_json::Value) -> PreflightReport {
     PreflightReport {
         pass: blockers.is_empty(),
         blockers,
-        diagnostics: json!({
-            "transient": crate::machine::transient_diagnostics(),
-            "scope": scope.label(),
-            "observation_enumeration": enumeration,
-        }),
+        diagnostics,
     }
 }
 

@@ -6,6 +6,10 @@ Base authority: PR #41 MEASUREMENT-SUBSTRATE-CORRECTIVE merge
 Workload authority: #35 frozen real workload (unchanged; `WORKLOAD_IDENTITY_CHANGED = NO`).
 Measurement substrate: #41 (timer boundary, attribution schema v2,
 FULL_READ 110/110 + EDIT_WRITE 1810/1810 parity).
+Machine-binding amendment: MARKIT-31-MACHINE-BINDING-CORRECTIVE-1
+(`protocol/R7-MACHINE-BINDING-CORRECTIVE-1.md`) — `total_ram_bytes`
+is a recorded host observation, not a hard binding field; §12/§13
+wording corrected accordingly, no frozen value changed.
 
 This document freezes the **campaign execution contract**: what runs,
 how sessions and iterations run, how case and horse order are
@@ -279,13 +283,28 @@ function the #35 dry-run used, asserted equal by construction.
 ## 12. Machine and profile
 
 The machine manifest (`results/manifests/primary-machine-v1.toml`)
-records STABLE identity of the actual primary benchmark machine:
-architecture, distribution/kernel, CPU vendor/model/microcode, cores,
-SMT, NUMA topology, the selected CPU affinity with its core/sibling
-relationship, governor + turbo policy, RAM, rustc/cargo/LLVM/target,
-allocator policy, release profile id, RUSTFLAGS, Cargo.lock digest.
-Transient values (current frequency, load, temperature, uptime) are
-per-session preflight diagnostics, never machine identity.
+records the actual primary benchmark machine in three tiers (tier
+wording corrected by MARKIT-31-MACHINE-BINDING-CORRECTIVE-1; the
+recorded values are unchanged):
+
+- **Hard host-binding fields** — every mismatch blocks the preflight,
+  with no fuzzy matching: architecture, distribution/kernel, CPU
+  vendor/model/microcode, cores, SMT, NUMA topology, the selected CPU
+  affinity with its core/sibling relationship, governor + turbo
+  policy, rustc/cargo/LLVM/target, allocator policy, release profile
+  id, RUSTFLAGS, Cargo.lock digest.
+- **Recorded host observations** — captured once, still reported,
+  never byte-exact matched: `total_ram_bytes` is
+  `/proc/meminfo:MemTotal` at capture time. Linux defines MemTotal as
+  usable RAM (installed capacity minus firmware/kernel reservations),
+  not immutable installed capacity, so it legitimately moves between
+  boots; the frozen value stays exactly as recorded, and a
+  current-vs-frozen delta is a visible, auditable, non-blocking
+  preflight diagnostic. It was not measured from SMBIOS/DMTF physical
+  capacity and must not be re-described as such.
+- **Transient diagnostics** — per-session preflight values that never
+  enter machine identity: current frequency, load, temperature,
+  uptime, MemAvailable.
 
 CPU affinity: single-worker horse execution is pinned to ONE frozen
 logical CPU (selection rule: lowest logical CPU ≠ 0, benchmark-free,
@@ -316,8 +335,10 @@ points also refuse non-release builds.
 ## 13. Preflight (non-measuring, fail-closed)
 
 Every session runs a non-timed preflight verifying: campaign receipt
-valid, machine matches the frozen manifest (exact stable-field
-equality), binary/build identity matches, runner commit available,
+valid, machine matches the frozen manifest (exact equality on every
+hard host-binding field of §12; recorded observations such as
+`total_ram_bytes`/MemTotal are reported as non-blocking diagnostics),
+binary/build identity matches, runner commit available,
 Cargo.lock matches, CPU affinity applicable, sources materialized,
 workload receipt valid, schedule valid, schema v2 + envelope schema
 un-drifted, no duplicate ObservationIds, expected cardinalities.

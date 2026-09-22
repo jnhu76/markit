@@ -432,9 +432,12 @@ impl CampaignManifest {
     }
 }
 
-/// The machine manifest model (task §24). Stable identity fields only —
-/// transient values (current frequency, load average, temperature,
-/// uptime) belong to per-session preflight diagnostics, never here.
+/// The machine manifest model (task §24). Hard host-binding fields plus
+/// recorded host observations — transient values (current frequency,
+/// load average, temperature, uptime) belong to per-session preflight
+/// diagnostics, never here. The tier of each field is defined in
+/// `machine.rs` (MARKIT-31-MACHINE-BINDING-CORRECTIVE-1): only hard
+/// binding fields are matched byte-exact at preflight.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct MachineManifest {
@@ -463,6 +466,11 @@ pub struct MachineManifest {
     /// Honest record of turbo/boost controllability (task §26: what is
     /// controlled vs merely recorded).
     pub turbo_boost_policy: String,
+    /// `/proc/meminfo:MemTotal` at capture time — a RECORDED host
+    /// observation, not a hard binding field: MemTotal is usable RAM
+    /// (it moves with firmware/kernel reservations between boots), so
+    /// preflight reports a frozen-vs-current delta as a diagnostic and
+    /// never blocks on it (MARKIT-31-MACHINE-BINDING-CORRECTIVE-1).
     pub total_ram_bytes: u64,
     pub rustc: String,
     pub cargo: String,
