@@ -259,6 +259,51 @@ impl RestartConvergenceMechanism {
     }
 }
 
+/// RESTART AT ZERO — the frozen H4 response to definition-changing
+/// damage: parse everything fresh through the same forward machinery (not
+/// a fallback — H4 has no degraded mode), re-register every checkpoint at
+/// the next generation, and retain nothing from the old state.
+///
+/// Used by BOTH sound detection paths: the pre-parse source-local fast
+/// path (`damaged_has_def` / `]: ` in the edited span) and the assembled
+/// definition-environment comparison after the forward pass.
+fn restart_at_zero<W: WorkSink>(
+    post: &[u8],
+    old_gen: u64,
+    es: usize,
+    cx: &mut MechanismContext<'_, W>,
+) -> H4Pending {
+    let rp = sg::parse_region(post, 0, post.len(), cx.sink);
+    let mut defs = Vec::new();
+    for sk in &rp.blocks {
+        collect_defs_skel(sk, &mut defs);
+    }
+    let table = ref_table(&defs);
+    let mut built = Built::default();
+    let slots = fresh_slots(&rp.blocks, post, &table, &mut built, cx.sink);
+    let gen = old_gen + 1;
+    let checkpoints = registers(&slots, gen);
+    cx.sink.add_blocks_reparsed(built.fnodes);
+    cx.sink.add_nodes_rebuilt(built.nodes);
+    cx.sink.add_nodes_reused(0);
+    cx.sink
+        .add_metadata_records_touched(checkpoints.len() as u64);
+    cx.sink.set_restart_distance(Observed::Known(es as u64));
+    cx.sink
+        .set_convergence_distance(Observed::Known(post.len() as u64));
+    let result = project(&slots, post.len());
+    H4Pending {
+        state: H4State {
+            blocks: slots,
+            checkpoints,
+            gen,
+            defs,
+            src_len: post.len(),
+        },
+        result,
+    }
+}
+
 impl Mechanism for RestartConvergenceMechanism {
     type State = H4State;
     type Prepared = H4Prepared;
@@ -406,39 +451,7 @@ impl Mechanism for RestartConvergenceMechanism {
         };
 
         if definition_changing {
-            // RESTART AT ZERO: reference resolution is document-global.
-            // Parse everything fresh (NOT a fallback — a planned restart
-            // through the same forward machinery), re-register every
-            // checkpoint at the next generation.
-            let rp = sg::parse_region(post, 0, post.len(), cx.sink);
-            let mut defs = Vec::new();
-            for sk in &rp.blocks {
-                collect_defs_skel(sk, &mut defs);
-            }
-            let table = ref_table(&defs);
-            let mut built = Built::default();
-            let slots = fresh_slots(&rp.blocks, post, &table, &mut built, cx.sink);
-            let gen = old_state.gen + 1;
-            let checkpoints = registers(&slots, gen);
-            cx.sink.add_blocks_reparsed(built.fnodes);
-            cx.sink.add_nodes_rebuilt(built.nodes);
-            cx.sink.add_nodes_reused(0);
-            cx.sink
-                .add_metadata_records_touched(checkpoints.len() as u64);
-            cx.sink.set_restart_distance(Observed::Known(es as u64));
-            cx.sink
-                .set_convergence_distance(Observed::Known(post.len() as u64));
-            let result = project(&slots, post.len());
-            return Ok(H4Pending {
-                state: H4State {
-                    blocks: slots,
-                    checkpoints,
-                    gen,
-                    defs,
-                    src_len: post.len(),
-                },
-                result,
-            });
+            return Ok(restart_at_zero(post, old_state.gen, es, cx));
         }
 
         // FORWARD PASS from the restart checkpoint. The prefix before it
@@ -516,6 +529,34 @@ impl Mechanism for RestartConvergenceMechanism {
         }
         debug_assert!(suffix_defs_done || take.is_none());
         let table = ref_table(&defs);
+
+        // SOUND DEFINITION-ENVIRONMENT CHECK (the detection the frozen
+        // model always required). The pre-parse probe above is a
+        // source-local FAST PATH, not a proof: an edit whose own bytes
+        // look definition-free can still change whether OTHER bytes are
+        // definitions at all — deleting a fence closer turns the rest of
+        // the document into fence content, so the reference definitions
+        // inside it leave the table without a single definition byte
+        // changing. The assembled table (retained prefix facts + the
+        // region's fresh facts + the retained suffix's facts, in
+        // document order) is exactly the environment the retained
+        // semantic subtrees would be reinterpreted under, and it is
+        // complete BEFORE any materialization happens. If it differs
+        // from the retained one, the retained prefix/suffix semantics are
+        // stale: H4's frozen response to definition-changing damage
+        // applies — RESTART AT ZERO at the next generation.
+        if table.entries() != old_state.defs.as_slice() {
+            // The discarded forward pass really did its work: it scanned
+            // source (reported through the sink as it went), consulted
+            // checkpoints and registered slots. Its metadata work is
+            // reported here too — hiding it would under-report H4 on
+            // exactly the rows this clause fires on.
+            cx.sink
+                .add_metadata_records_touched(consultations + slot_count as u64);
+            // The delivered result is the restart's, and its counters are
+            // the restart's.
+            return Ok(restart_at_zero(post, old_state.gen, es, cx));
+        }
 
         let mut built = Built::default();
         let mut reused = 0u64;

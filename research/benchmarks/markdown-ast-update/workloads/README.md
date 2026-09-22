@@ -1,12 +1,34 @@
-# Real Markdown workload substrate (#33 round 1, corrective 1)
+# Real Markdown workload substrate
 
-This directory is the **acquisition substrate** for the real Markdown
-workload universe of #33 (Stage A1, `REAL_CANDIDATE_UNIVERSE_FREEZE`
-candidate material). Campaign: `MARKIT-REAL-WORKLOAD-ACQUISITION-1`.
+This directory is the **frozen real-workload provenance and artifact tree**
+of #22 / #35 (Stage A), starting from the #33 round-1 acquisition substrate
+(campaign `MARKIT-REAL-WORKLOAD-ACQUISITION-1`).
 
-It contains **immutable source provenance, a frozen lock, a complete
-Markdown inventory, and hashes — nothing else**. No parser runs here. No
-benchmark executes here. No workload selection happens here.
+```text
+workloads/
+= frozen real-workload provenance and artifact tree
+
+acquisition            sources/, source-lock.json, manifests/, licenses/
+-> profiles / selection evidence   profiles/, analysis/, selections/
+-> frozen workload manifests       payloads/ (registry, applicability matrix,
+                                   FULL_READ / EDIT_WRITE / trace manifests,
+                                   coverage, freeze receipt)
+-> derived correctness evidence    payloads/dry-run-*.json{,l}
+```
+
+No parser runs here and no benchmark executes here: `tools/acquire.py` is
+acquisition and verification only, and the frozen payloads are correctness
+evidence, never measurement input. Selection happens one layer up
+(`profile-select/`), and the frozen artifacts are produced by
+`workload-freeze/`.
+
+For what the workload is and how to use it, see `../WORKLOAD.md` — that is the
+single workload-facing entrypoint; this file documents the acquisition
+substrate beneath it.
+
+## Acquisition layer
+
+The acquisition layer remains strict replay over a frozen lock:
 
 ```text
 acquisition ONLY:
@@ -294,8 +316,9 @@ coverage** during the later selection stage
 (`counts_as_role_coverage: false` in the candidate-universe manifest). No
 replacement candidates were added in corrective 1.
 
-No performance selection occurs here because **no performance exists
-here yet**: this campaign must not (and does not) run H0-H4, measure
-latency, profile parsers, rank files, select sets, or generate edits.
-Selection blind to horse performance is a #33 freeze-discipline
-requirement, and this substrate is built to keep that boundary.
+No performance selection occurs here because **no performance exists here
+yet**: this substrate must not (and does not) run H0-H4, measure latency or
+profile parsers. Selection, set freezing and edit generation have since
+happened in the sibling layers above (`profiles/`, `analysis/`,
+`selections/`, `payloads/`) — all of them blind to horse performance, which is
+the #33 freeze-discipline requirement this substrate is built to keep.

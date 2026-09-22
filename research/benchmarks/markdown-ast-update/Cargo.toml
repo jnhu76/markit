@@ -10,6 +10,7 @@ members = [
     "semantics",
     "profile-select",
     "workload-freeze",
+    "diagnostics",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
     "mechanisms/block-local",

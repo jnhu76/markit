@@ -386,6 +386,12 @@ SEMANTIC-DEPENDENCY HANDLING
   bearing subtrees may be reused: their resolved destinations are still
   valid because every definition in the document lives in unchanged
   bytes. No horse-only dependency index.
+  (AMENDED by §12, R5-CORRECTIVE-3: the clause above is TOO WEAK and was
+  falsified by the frozen real workload. Unchanged definition BYTES are
+  not sufficient — a fence-closer edit changes whether those bytes are
+  definitions at all. Reuse validity is now checked against the
+  mechanism's own rebuilt table, and a changed environment
+  re-materializes the affected retained payloads.)
 
 COUNTER APPLICABILITY
   Per §3 (fallback_to_full_count NotApplicable — H2 has no fallback
@@ -525,6 +531,9 @@ SEMANTIC-DEPENDENCY HANDLING
   Same conservative rule as H2 (definition change -> refuse has_ref
   candidates; reparsed inline resolved against the rebuilt table). No
   hidden global dependency index.
+  (AMENDED by §12, R5-CORRECTIVE-3: as H2 — the rule is checked against
+  the patched tree's own rebuilt table, and a changed definition
+  environment re-materializes the affected retained payloads.)
 
 COUNTER APPLICABILITY
   Per §3 (restart/convergence NotApplicable — the forward cursor is not
@@ -685,6 +694,11 @@ CONVERGENCE RULE (frozen definition)
   runs to EOF and convergence is recorded AT EOF with an empty suffix.
 
 SEMANTIC-DEPENDENCY HANDLING
+  (AMENDED by §12, R5-CORRECTIVE-3: the two triggers below are a
+  source-local FAST PATH, not a sound proof — a fence-closer edit changes
+  whether untouched bytes are definitions at all. The assembled
+  definition table is compared against the retained one before any
+  materialization, and a difference takes the same restart-at-zero path.)
   If the damaged old entries contain a ReferenceDefinition, or the fresh
   parse creates one, the reference-environment generation changes: the
   convergence clause (c) then fails everywhere, so H4 restarts at the
@@ -919,3 +933,117 @@ one stored syntax node =
 Physical object layouts stay horse-specific (no forced uniformity); the
 counter describes actual native representation work, never normalized
 temporary output objects.
+
+---
+
+## 12. R5-CORRECTIVE-3 — reference-environment closure on the frozen real
+## workload (#22 REAL WORKLOAD CORRECTNESS CLOSURE)
+
+This corrective repairs the SEMANTIC-DEPENDENCY HANDLING field of §7 (H2),
+§8 (H3) and §9 (H4). It is an evidence-backed correction of a claim that
+was falsified by the frozen CORRECTIVE-C workload (PR #39), not a
+redefinition designed around results: mechanism identities, reuse rules,
+safe windows, counters, damage rules and the shared grammar substrate are
+UNCHANGED. Nothing in R3/CORRECTIVE-C workload identity is touched.
+
+### 12.1 The falsified claim
+
+§7's SEMANTIC-DEPENDENCY HANDLING asserted (and §8/§9 inherited):
+
+```text
+"When no definition changed, reference-bearing subtrees may be reused:
+ their resolved destinations are still valid because every definition in
+ the document lives in unchanged bytes."
+```
+
+Unchanged definition BYTES are necessary but NOT sufficient. Whether a
+byte sequence is a definition at all is decided by the FORWARD PARSE
+STATE at its line — container stack and fence state. A small delimiter
+edit can change that state over an arbitrarily long suffix:
+
+```text
+COUNTEREXAMPLE (frozen, G0-FENCE-CLOSER-REMOVE)
+  pre   ... ``` x ```  [a]: /a        (a is a definition)
+  edit  delete the closing ```         (three definition-free bytes)
+  post  ... ``` x ... [a]: /a          (the fence runs to EOF;
+                                        [a]: /a is fence content)
+  every definition byte is unchanged, yet `a` leaves the table, so an
+  earlier, reused paragraph must stop resolving.
+```
+
+`G0-REFDEF-RESTORE` is the mirror case and exposes a second hole in the
+same clause: the retained payload of a paragraph whose reference did NOT
+resolve holds no `ReferenceLink`, so a `has_ref` test cannot see that it
+must now resolve.
+
+### 12.2 The corrected invariant (all three horses)
+
+```text
+REFERENCE-ENVIRONMENT CLAUSE (sound)
+  A retained subtree's materialized reference resolution is valid only
+  while the document-global definition environment is unchanged — i.e.
+  while the rebuilt first-wins table (fresh definitions + surviving
+  retained facts, in document order) equals the table the retained
+  payloads were materialized against. The comparison is made from the
+  mechanism's OWN assembled structure, so it needs no extra source scan
+  and is exact for the frozen first-wins semantics.
+```
+
+Per-horse response to a changed environment, each inside its own frozen
+model:
+
+```text
+H2 (§7)  the retained member's PAYLOAD is re-materialized against the
+         rebuilt table (its retained content segments are re-scanned);
+         the block structure, safe windows, fragment table and Arc
+         identity of reference-insensitive descendants are unchanged.
+         Reuse authority still comes ONLY from the fragment table, and
+         reuse failure is still natural degradation: there is still no
+         fallback slot (fallback_to_full_count stays NotApplicable).
+H3 (§8)  identical repair on the patched tree (`TPayload` re-scan); the
+         change flags, patch path and cursor are unchanged.
+H4 (§9)  the definition-environment GENERATION already exists in H4's
+         model; only its DETECTION is corrected. The source-local probe
+         (`damaged_has_def` / `]: ` in the edited span) stays as a fast
+         path, and the assembled-table comparison is added as the sound
+         condition. When it fires, H4 does what §9 already says it does
+         for definition-changing damage: RESTART AT ZERO at the next
+         generation. Still not a fallback — H4 has no degraded mode.
+```
+
+### 12.3 Why this stays faithful
+
+- The clause is a REUSE-VALIDITY condition, not a new mechanism: every
+  horse already had a reference clause; it was too weak, and it is now
+  checked against the mechanism's own assembled table instead of against
+  the edit's neighbourhood.
+- No mechanism consults H0, the oracle, a payload id, a transition id, a
+  source path or workload membership (`diagnostics/tests/anti_cheat.rs`
+  enforces this structurally).
+- The repair is CONDITIONAL and semantic: it fires only when the
+  document's definition environment actually changed. Ordinary edits keep
+  the previous reuse behaviour exactly, and the frozen H2/H3/H4 gate
+  suites (grammar, differential, structural, counter, reuse, identity,
+  adversarial small-model) pass unchanged.
+- Cost accounting stays honest: a re-materialized H2/H3 member moves from
+  `nodes_reused` to `nodes_rebuilt` (its reference-insensitive
+  descendants still count as reused, so no node is double-counted); H4's
+  restart reports `nodes_reused = 0` with the restart/convergence gauges
+  at their restart values.
+
+### 12.4 Evidence
+
+```text
+protocol/R5-REAL-WORKLOAD-CORRECTNESS-CLOSURE-v1.md   closure report
+                                                      (BASE 83d535e, verified
+                                                      head 890f63f, PR #40)
+mechanisms/*/tests/reference_environment.rs           level-1 fixtures
+diagnostics/tests/frozen_correctness_closure.rs       level-2 + level-3
+diagnostics/tests/anti_cheat.rs                       static guards
+diagnostics (bin mdbench-diverge)                     A/B/C/D isolation
+oracle::divergence                                    first-divergence locator
+```
+
+Frozen workload identity (source-lock, transition registry, applicability
+matrix, FULL_READ / EDIT_WRITE / trace manifests, coverage report, freeze
+receipt) is byte-identical before and after this corrective.

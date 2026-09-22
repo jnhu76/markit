@@ -25,6 +25,7 @@
 //! hooks only after all timing has stopped, and the oracle never touches
 //! a clock.
 
+pub mod divergence;
 pub mod fixture;
 pub mod normalized;
 pub mod validate;
@@ -32,6 +33,9 @@ pub mod validate;
 use markit_mdbench_common::Completed;
 use markit_mdbench_common::CorrectnessStatus;
 
+pub use divergence::{
+    describe as describe_divergence, first_divergence, Divergence, DivergenceKind,
+};
 pub use normalized::{
     node_path_at, normalized_checksum, Node, NodeKind, NormalizedDocument, PathNode,
 };

@@ -12,10 +12,12 @@ R3  grammar/corpus/mutation freeze     PASS
 R4  H0 reference full rebuild          PASS
 R5  H1-H4 correctness/parity           PASS — PR #30 merged
 
-ACTIVE: #35 Stage A real-workload construction
-        CORRECTIVE-A semantic substrate (lanes/profiler/oracle/lifecycle)
-        — no freeze granted, no H0-H4 timing authorized
+#35 workload construction              COMPLETE — PR #39 merged
+#22 real-workload correctness closure  PR #40 current review
+#31 performance                        NOT STARTED
 ```
+
+For workload definition and usage, see `WORKLOAD.md`.
 
 R5 established that H0-H4 solve the same BENCH-GRAMMAR-v1 problem under the
 same normalized-result contract and that eager completion, correctness,
@@ -90,10 +92,14 @@ semantics/          Stage A semantic substrate: grammar lanes, profiler,
                     transition oracle, payload lifecycle, semantic pilot
 scripts/            verification and campaign scripts
 
-# #35 Stage A workload construction
+# #35 Stage A workload construction (COMPLETE — see WORKLOAD.md)
 workloads/          acquisition provenance/lock/inventory (PR #34), profiler
-                    contract + schemas, payload lifecycle + schemas, semantic
-                    pilot, deferred attribution contracts
+                    contract + schemas, frozen selections, frozen payload
+                    artifacts (transition registry, applicability matrix,
+                    FULL_READ/EDIT_WRITE/trace manifests, coverage, freeze
+                    receipt), payload lifecycle + schemas, semantic pilot
+diagnostics/        post-freeze correctness diagnosis only (mdbench-diverge);
+                    owns no workload identity, imported by no mechanism
 
 # #31 project-driven measurement lifecycle
 projects/           pinned project manifests, eligibility, profiles
@@ -171,27 +177,27 @@ trace identity.
 
 ## Current next gate
 
-Stage A runs as three correctives under #35; no H0-H4 research timing is
-authorized during any of them.
+Stage A ran as three correctives under #35; all three are complete and the
+frozen workload exists (`WORKLOAD.md`). No H0-H4 research timing is authorized
+yet.
 
 ```text
 CORRECTIVE-A  semantic substrate          lanes / profiler / oracle / lifecycle
-              -> closes G2, G3, G5, G6 substrate contracts
+              -> closed G2, G3, G5, G6 substrate contracts
 CORRECTIVE-B  profile + select            all candidates, bias, four sets
               -> G1, G4
 CORRECTIVE-C  payload freeze              anchors, edits, BREAK/RESTORE, traces
-              -> G6, G7
+              -> G6, G7 — PR #39 merged
 
-then G1..G8 -> REAL_WORKLOAD_FREEZE_PASS
-              (or CORE_REAL_WORKLOAD_FREEZE_PASS for a named core lane only)
+#22 correctness closure (H2/H3/H4)        PR #40
+              -> frozen G0 matrix 362 x H0-H4 = 1810/1810 PASS
+              -> awaiting human correctness review
+
+then #31 P0 -> project/eligibility/trace freeze -> H0-H4 timing
 ```
 
 `PROJECT_CORPUS_FREEZE_PASS` is superseded as a Stage A execution gate by the
 #35 gate set (`protocol/R6-REAL-WORKLOAD-AUTHORITY-AMENDMENT.md` §2).
-
-CORRECTIVE-A grants none of these freezes. It freezes grammar-lane identity
-and eligibility, the profiler fact classes and definitions, the reference
-oracle and transition predicates, and the payload lifecycle — and validates
-them on a small semantic pilot. Representative/extremal/syntax-coverage/
-full-document selection, the 3,970-file profiling run, and every performance
-measurement remain outstanding.
+`CORE_REAL_WORKLOAD_FREEZE_PASS` for the primary G0 lane is a
+candidate awaiting human review; every performance measurement remains
+outstanding and belongs to #31.

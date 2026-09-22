@@ -72,6 +72,13 @@ pub enum FPayload {
     /// Scanned inline nodes (relative spans), links enabled.
     Para {
         inline: Vec<Node>,
+        /// The paragraph's content intervals, node-relative (build
+        /// metadata, `Skel::Para.segments` rebased). Retained so the
+        /// payload can be RE-MATERIALIZED against a changed document
+        /// definition table without reparsing the block (see the
+        /// reference-environment clause in `update`). Never read by a
+        /// parse that reuses the payload unchanged.
+        segments_rel: Vec<(usize, usize)>,
     },
     Heading {
         level: u8,
@@ -152,14 +159,16 @@ fn count_node(n: &FNode) -> u64 {
 
 /// Recursive count of inline syntax nodes stored in one payload.
 fn payload_inline_nodes(p: &FPayload) -> u64 {
-    fn forest(nodes: &[Node]) -> u64 {
-        nodes.iter().map(|n| 1 + forest(&n.children)).sum()
-    }
     match p {
-        FPayload::Para { inline } => forest(inline),
-        FPayload::Heading { inline, .. } => forest(inline),
+        FPayload::Para { inline, .. } => count_forest(inline),
+        FPayload::Heading { inline, .. } => count_forest(inline),
         _ => 0,
     }
+}
+
+/// Recursive count of an inline node forest (each node once).
+fn count_forest(nodes: &[Node]) -> u64 {
+    nodes.iter().map(|n| 1 + count_forest(&n.children)).sum()
 }
 
 /// One fragment range in UPDATED-document coordinates; `to_old` maps a
@@ -420,15 +429,43 @@ impl Mechanism for FragmentReuseMechanism {
         // table is complete.
         let table = rebuilt_table(&rp.blocks, &takes);
 
+        // REFERENCE-ENVIRONMENT CLAUSE (sound). A retained payload's
+        // reference resolution is valid only while the document-global
+        // definition environment is UNCHANGED. Unchanged definition
+        // BYTES are not sufficient: an edit can change whether those
+        // bytes are definitions at all (deleting a fence closer makes
+        // the rest of the document fence content, so the definitions
+        // inside it leave the table) — a forward-state change over a
+        // long suffix. The rebuilt table is computed from the
+        // mechanism's own assembled structure, so the comparison costs
+        // no extra parse and is exact for the frozen first-wins
+        // semantics.
+        let reference_environment_changed = table.entries() != old_state.tree.defs.as_slice();
+        if reference_environment_changed {
+            cx.sink.add_metadata_records_touched(1);
+        }
+
         // Assemble the new tree: fresh FNodes for parsed material, shared
         // Arcs for taken runs (containers wrapping takes are rebuilt; the
         // run members keep their identity — their retained inline payloads
         // are reused with ZERO parser source reads).
         let mut built = Built::default();
-        let slots = assemble_slots(&rp.blocks, &takes, post, &table, &mut built, cx.sink);
+        let slots = assemble_slots(
+            &rp.blocks,
+            &takes,
+            post,
+            &table,
+            reference_environment_changed,
+            &mut built,
+            cx.sink,
+        );
         cx.sink.add_blocks_reparsed(built.fnodes);
         cx.sink.add_nodes_rebuilt(built.nodes);
-        cx.sink.add_nodes_reused(reused);
+        // Honest reuse accounting: a re-materialized member was not
+        // reused as a unit, but its reference-insensitive descendants
+        // kept their identity and still count as reused.
+        cx.sink
+            .add_nodes_reused(reused - built.rematerialized_members + built.rematerialized_kept);
         cx.sink
             .add_metadata_records_touched(consultations + slot_count as u64);
 
@@ -818,6 +855,16 @@ fn any_def_in_range(tree: &FTree, a: usize, b: usize) -> bool {
 struct Built {
     fnodes: u64,
     nodes: u64,
+    /// Native nodes of take members RE-MATERIALIZED against a changed
+    /// document definition table: the cursor counted these as reused, so
+    /// they are subtracted from `nodes_reused` (the subtree was not
+    /// reused as a unit).
+    rematerialized_members: u64,
+    /// Native nodes INSIDE a re-materialized member that kept their
+    /// `Arc` identity (reference-insensitive descendants): added back to
+    /// `nodes_reused`. `rematerialized_members == nodes + rematerialized_kept`
+    /// holds for every rebuilt member, so no node is ever double-counted.
+    rematerialized_kept: u64,
 }
 
 /// Build top-level slots from completed blocks (absolute spans in the
@@ -859,6 +906,7 @@ fn build_fnode<W: WorkSink>(
             NodeKind::Paragraph,
             FPayload::Para {
                 inline: rebased(scan_inlines_abs(src, segments, table, sink), start),
+                segments_rel: rebase_segments(segments, start),
             },
             Vec::new(),
         ),
@@ -963,6 +1011,127 @@ fn build_level<W: WorkSink>(
         .collect()
 }
 
+/// A re-materialized retained subtree plus its honest native-node
+/// accounting.
+struct Rematerialized {
+    node: Arc<FNode>,
+    /// Native nodes reconstructed (this node + re-scanned inline syntax).
+    rebuilt: u64,
+    /// Native nodes that kept their `Arc` identity (reference-insensitive
+    /// descendants, and the children of non-reference payloads).
+    kept: u64,
+}
+
+/// Whether a retained subtree's materialized inline payload could carry
+/// a reference resolution.
+///
+/// Sound over-approximation: a reference link — resolved OR resolvable —
+/// always contains a `[` in its source bytes, so a subtree whose span has
+/// no `[` cannot change meaning when the definition table changes. The
+/// `has_ref` subtree fact short-circuits the common case with no read at
+/// all; otherwise the probe reads the subtree's own bytes and reports
+/// every inspected range (R5-CORRECTIVE-2).
+fn mentions_reference<W: WorkSink>(node: &FNode, post: &[u8], base: usize, sink: &mut W) -> bool {
+    if node.has_ref {
+        return true;
+    }
+    let end = (base + node.size).min(post.len());
+    if base >= end {
+        return false;
+    }
+    sink.record_source_inspection(base as u64, end as u64);
+    post[base..end].contains(&b'[')
+}
+
+/// Re-materialize a retained subtree's reference-sensitive inline
+/// payloads against `table`, keeping every reference-insensitive
+/// descendant's `Arc` identity.
+///
+/// Only the PAYLOAD is reconstructed (the block structure — kind, size,
+/// line offset, context key, children layout, definition facts — is
+/// retained): the paragraph's retained content segments are re-scanned
+/// with the new first-wins table. This is the "rebuild affected
+/// dependency consumers" repair, not a reparse and not a full rebuild.
+fn rematerialize<W: WorkSink>(
+    node: &Arc<FNode>,
+    post: &[u8],
+    base: usize,
+    table: &sg::RefTable,
+    sink: &mut W,
+) -> Rematerialized {
+    let mut rebuilt = 1; // this node is reconstructed
+    let payload = match &node.payload {
+        FPayload::Para { segments_rel, .. } => {
+            let segments: Vec<(usize, usize)> = segments_rel
+                .iter()
+                .map(|(a, b)| (base + a, base + b))
+                .collect();
+            let inline = rebased(scan_inlines_abs(post, &segments, table, sink), base);
+            rebuilt += count_forest(&inline);
+            FPayload::Para {
+                inline,
+                segments_rel: segments_rel.clone(),
+            }
+        }
+        FPayload::Heading {
+            level, content_rel, ..
+        } => {
+            let content = (base + content_rel.0, base + content_rel.1);
+            let inline = rebased(
+                scan_inlines_abs(post, std::slice::from_ref(&content), table, sink),
+                base,
+            );
+            rebuilt += count_forest(&inline);
+            FPayload::Heading {
+                level: *level,
+                content_rel: *content_rel,
+                inline,
+            }
+        }
+        FPayload::Fence { info, content_rel } => FPayload::Fence {
+            info: info.clone(),
+            content_rel: *content_rel,
+        },
+        FPayload::Def { label, destination } => FPayload::Def {
+            label: label.clone(),
+            destination: destination.clone(),
+        },
+        FPayload::Container => FPayload::Container,
+    };
+    let mut kept = 0u64;
+    let mut children = Vec::with_capacity(node.children.len());
+    for (rel, child) in &node.children {
+        let child_base = base + rel;
+        if mentions_reference(child, post, child_base, sink) {
+            let sub = rematerialize(child, post, child_base, table, sink);
+            rebuilt += sub.rebuilt;
+            kept += sub.kept;
+            children.push((*rel, sub.node));
+        } else {
+            kept += count_node(child);
+            children.push((*rel, child.clone()));
+        }
+    }
+    let has_ref = payload_has_ref(&payload) || children.iter().any(|(_, c)| c.has_ref);
+    let node = Arc::new(FNode {
+        kind: node.kind,
+        size: node.size,
+        line_offset: node.line_offset,
+        marker: node.marker,
+        children,
+        ctx: node.ctx.clone(),
+        has_ref,
+        has_def: node.has_def,
+        def_facts: node.def_facts.clone(),
+        payload,
+    });
+    Rematerialized {
+        node,
+        rebuilt,
+        kept,
+    }
+}
+
 /// Scan inline content for one segment list with absolute spans,
 /// reporting every scanned segment to `sink` (R5-CORRECTIVE-1, MAJOR-2).
 fn scan_inlines_abs<W: WorkSink>(
@@ -977,6 +1146,14 @@ fn scan_inlines_abs<W: WorkSink>(
 /// Shift every span in an inline node forest by `delta` (rebase to
 /// block-relative coordinates at build time, to document coordinates at
 /// projection time).
+/// Rebase absolute content segments to node-relative coordinates.
+fn rebase_segments(segments: &[(usize, usize)], start: usize) -> Vec<(usize, usize)> {
+    segments
+        .iter()
+        .map(|(a, b)| (a - start, b - start))
+        .collect()
+}
+
 fn rebased(nodes: Vec<Node>, block_start: usize) -> Vec<Node> {
     shift_forest(nodes, -(block_start as isize))
 }
@@ -1001,7 +1178,7 @@ fn payload_has_ref(p: &FPayload) -> bool {
             .any(|n| n.kind == NodeKind::ReferenceLink || forest_has_ref(&n.children))
     }
     match p {
-        FPayload::Para { inline } => forest_has_ref(inline),
+        FPayload::Para { inline, .. } => forest_has_ref(inline),
         FPayload::Heading { inline, .. } => forest_has_ref(inline),
         _ => false,
     }
@@ -1045,15 +1222,25 @@ fn rebuilt_table(blocks: &[Skel], takes: &[TakeRun]) -> sg::RefTable {
     table
 }
 
+#[allow(clippy::too_many_arguments)]
 fn assemble_slots<W: WorkSink>(
     blocks: &[Skel],
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
+    reference_environment_changed: bool,
     built: &mut Built,
     sink: &mut W,
 ) -> Vec<FSlot> {
-    let entries = assemble_level(blocks, takes, post, table, built, sink);
+    let entries = assemble_level(
+        blocks,
+        takes,
+        post,
+        table,
+        reference_environment_changed,
+        built,
+        sink,
+    );
     let mut out = Vec::new();
     let mut cursor = 0usize;
     for (start, node) in entries {
@@ -1073,11 +1260,13 @@ fn assemble_slots<W: WorkSink>(
 /// placeholder start plus the members' old internal layout — unchanged
 /// bytes, and the members' retained inline payloads are reused without
 /// any source read). Returns `(new_start, node)` pairs in order.
+#[allow(clippy::too_many_arguments)]
 fn assemble_level<W: WorkSink>(
     blocks: &[Skel],
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
+    reference_environment_changed: bool,
     built: &mut Built,
     sink: &mut W,
 ) -> Vec<(usize, Arc<FNode>)> {
@@ -1089,23 +1278,49 @@ fn assemble_level<W: WorkSink>(
                 for (old_start, node) in run.members.iter() {
                     let new_start = run.pos + (old_start - run.old_start);
                     debug_assert!(new_start >= *start);
-                    out.push((new_start, node.clone()));
+                    // A retained member whose payload could carry a
+                    // reference resolution is only valid while the
+                    // definition environment it was materialized
+                    // against still holds; otherwise its payload is
+                    // re-materialized against the rebuilt table (the
+                    // block STRUCTURE stays shared — no reparse).
+                    if reference_environment_changed
+                        && mentions_reference(node, post, new_start, sink)
+                    {
+                        let rebuilt = rematerialize(node, post, new_start, table, sink);
+                        built.nodes += rebuilt.rebuilt;
+                        built.rematerialized_members += count_node(node);
+                        built.rematerialized_kept += rebuilt.kept;
+                        out.push((new_start, rebuilt.node));
+                    } else {
+                        out.push((new_start, node.clone()));
+                    }
                 }
             }
             other => out.push((
                 other.start(),
-                assemble_fnode(other, takes, post, table, built, sink),
+                assemble_fnode(
+                    other,
+                    takes,
+                    post,
+                    table,
+                    reference_environment_changed,
+                    built,
+                    sink,
+                ),
             )),
         }
     }
     out
 }
 
+#[allow(clippy::too_many_arguments)]
 fn assemble_fnode<W: WorkSink>(
     sk: &Skel,
     takes: &[TakeRun],
     post: &[u8],
     table: &sg::RefTable,
+    reference_environment_changed: bool,
     built: &mut Built,
     sink: &mut W,
 ) -> Arc<FNode> {
@@ -1118,6 +1333,7 @@ fn assemble_fnode<W: WorkSink>(
             NodeKind::Paragraph,
             FPayload::Para {
                 inline: rebased(scan_inlines_abs(post, segments, table, sink), start),
+                segments_rel: rebase_segments(segments, start),
             },
             Vec::new(),
         ),
@@ -1154,12 +1370,28 @@ fn assemble_fnode<W: WorkSink>(
         Skel::Quote { children, .. } => (
             NodeKind::BlockQuote,
             FPayload::Container,
-            assemble_level(children, takes, post, table, built, sink),
+            assemble_level(
+                children,
+                takes,
+                post,
+                table,
+                reference_environment_changed,
+                built,
+                sink,
+            ),
         ),
         Skel::List { items, .. } => (
             NodeKind::List,
             FPayload::Container,
-            assemble_level(items, takes, post, table, built, sink),
+            assemble_level(
+                items,
+                takes,
+                post,
+                table,
+                reference_environment_changed,
+                built,
+                sink,
+            ),
         ),
         Skel::Item {
             marker: m,
@@ -1170,7 +1402,15 @@ fn assemble_fnode<W: WorkSink>(
             (
                 NodeKind::ListItem,
                 FPayload::Container,
-                assemble_level(children, takes, post, table, built, sink),
+                assemble_level(
+                    children,
+                    takes,
+                    post,
+                    table,
+                    reference_environment_changed,
+                    built,
+                    sink,
+                ),
             )
         }
         Skel::Spliced { .. } => unreachable!("splices expand at the level above"),
@@ -1229,7 +1469,7 @@ fn project_node(node: &FNode, base: usize) -> Node {
         n.marker = Some(if m == b'-' { "-" } else { "*" }.to_string());
     }
     match &node.payload {
-        FPayload::Para { inline } => {
+        FPayload::Para { inline, .. } => {
             n.children = shift_forest(inline.clone(), base as isize);
         }
         FPayload::Heading { level, inline, .. } => {

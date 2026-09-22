@@ -75,6 +75,11 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
   `candidate-rows-v1.jsonl`) is gitignored and hash-bound the same way.
   No timing and no mechanism facts belong here; the frozen edit payloads
   in `payloads/` are correctness evidence, never measurement input.
+  `payloads/` owns the **primary frozen edit/trace identity** of the real
+  workload (payload ids, anchors, canonical edits, BREAK/RESTORE chains,
+  transition registry, freeze receipt); later `projects/` and `traces/`
+  material must not re-select, redefine or re-anchor that primary workload.
+  Workload definition and usage: `WORKLOAD.md`.
   See `workloads/README.md` and `workloads/ACQUISITION-REPORT-1.md`.
 
 `corpus/`
@@ -120,6 +125,14 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 `mechanisms/`
 : H0-H4 mechanism-owned state and policy plus the R1 null mechanism.
 
+`diagnostics/`
+: Post-freeze correctness diagnosis only (A/B/C/D isolation, wrong-dispatch
+  inventory, deterministic first-divergence locator; binary `mdbench-diverge`).
+  It is read-only over the frozen workload, writes no payload/manifest/receipt,
+  runs no clock and no research metric, owns no workload identity, and is
+  imported by no mechanism crate. It exists to answer questions about the
+  frozen #22 workload, not to extend it.
+
 `semantics/`
 : CORRECTIVE-A semantic substrate: grammar-lane registry, REAL-MARKDOWN
   profiler, transition oracle, payload lifecycle, and the semantic pilot
@@ -160,11 +173,15 @@ A later layer may reference an earlier layer; it must not silently rewrite it.
 `projects/`
 : Project pins plus BENCH-GRAMMAR-v1 eligibility and workload profiles. Once a
   project manifest is frozen for a campaign, its SHA/eligibility inputs are
-  immutable for that campaign. Do not put benchmark timing here.
+  immutable for that campaign. Do not put benchmark timing here. Project
+  material must not re-select, redefine or re-anchor the primary frozen
+  workload owned by `workloads/payloads/`.
 
 `traces/`
 : Deterministic canonical edit traces derived from project structure. No timing
-  or horse-specific selection is allowed here.
+  or horse-specific selection is allowed here. Traces must not redefine the
+  primary frozen workload's edit/trace identity; the frozen real-workload
+  traces are `workloads/payloads/trace-manifest-v1.jsonl`.
 
 `results/`
 : Machine-readable measurement outputs. `raw` is immutable evidence;
@@ -225,9 +242,14 @@ analysis command.
 ## Current execution order
 
 ```text
-#35 CORRECTIVE-A  semantic substrate (lanes/profiler/oracle/lifecycle)  <- NOW
-#35 CORRECTIVE-B  profile all candidates, publish bias, select sets
-#35 CORRECTIVE-C  payload freeze, BREAK/RESTORE, traces, harness dry-run
+#35 CORRECTIVE-A  semantic substrate (lanes/profiler/oracle/lifecycle)  COMPLETE
+#35 CORRECTIVE-B  profile all candidates, publish bias, select sets      COMPLETE
+#35 CORRECTIVE-C  payload freeze, BREAK/RESTORE, traces, harness dry-run COMPLETE
+                  (PR #39 merged)
+#22 real-workload correctness closure (PR #40)                           <- NOW
+                  H2/H3/H4 repaired on the frozen G0 workload;
+                  362 x H0-H4 = 1810/1810 correctness PASS
+                  -> awaiting human correctness review
 #31 P0  project reconnaissance + eligibility/trace policy freeze
 #31 P1  R6 full parse/state construction -> results/
 #31 P2  R7/R8 real-project edit measurements -> results/
@@ -236,9 +258,11 @@ analysis command.
 #31 P5  R11 optimization-sensitivity / residual attribution -> analysis/
 ```
 
-CORRECTIVE-A grants no freeze: `REAL_WORKLOAD_FREEZE_PASS`,
-`CORE_REAL_WORKLOAD_FREEZE_PASS`, and `PROJECT_CORPUS_FREEZE_PASS` remain
-ungranted, and no H0-H4 timing may run before the #35 §10 gates pass.
+The three #35 correctives are complete and the frozen real workload exists
+(`WORKLOAD.md`). `CORE_REAL_WORKLOAD_FREEZE_PASS` for the primary G0 lane is a
+candidate awaiting human review; `REAL_WORKLOAD_FREEZE_PASS` beyond that lane
+and `PROJECT_CORPUS_FREEZE_PASS` remain ungranted, and no H0-H4 timing may run
+before the #31 P0 gate.
 
 R9 representation/query remains a required orthogonal surface as specified by
 the ROADMAP. Final report/Weakness Map authority remains with the later final

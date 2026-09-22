@@ -1,0 +1,42 @@
+[package]
+name = "markit-mdbench-diagnostics"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# POST-FREEZE CORRECTNESS DIAGNOSIS ONLY.
+#
+# This crate exists to answer "#22 REAL WORKLOAD CORRECTNESS CLOSURE"
+# questions about the FROZEN CORRECTIVE-C workload: which horse rows are
+# wrong, and is the wrongness the incremental mechanism, the horse's own
+# clean parser, or the old state?
+#
+# It is read-only over the frozen workload (it never writes a payload or
+# manifest), it runs NO clock and NO work counters, and it produces no
+# metric of any kind (no changed_nodes, no damage size, no propagation
+# distance, no timing). Its only outputs are correctness facts and the
+# first normalized divergence between two results.
+#
+# It is NOT part of the horse implementation: no mechanism crate depends
+# on it, and it must never be imported by one.
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-semantics = { workspace = true }
+markit-mdbench-workload-freeze = { path = "../workload-freeze" }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-block-local = { workspace = true }
+markit-mdbench-fragment-reuse = { workspace = true }
+markit-mdbench-old-tree-subtree-reuse = { workspace = true }
+markit-mdbench-restart-convergence = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[[bin]]
+name = "mdbench-diverge"
+path = "src/bin/mdbench-diverge.rs"
+
+[lib]
+name = "markit_mdbench_diagnostics"
+path = "src/lib.rs"
