@@ -456,6 +456,11 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     let outcome = executor.run(&cases, &clock, &mut file)?;
     use std::io::Write;
     file.flush().map_err(|e| format!("flush: {e}"))?;
+    drop(file);
+    // Finalization run receipt (task §39): after the raw file is
+    // finalized its SHA256, row count, and first/last observation id
+    // enter a receipt; finalized raw files are never overwritten.
+    write_run_receipt(&out_path)?;
     match outcome {
         markit_mdbench_campaign::execute::SessionOutcome::Completed { observations, .. } => {
             println!("SESSION_COMPLETE observations={observations}");
@@ -466,6 +471,41 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
             Ok(false)
         }
     }
+}
+
+/// Write `<raw file>.receipt.json` binding the finalized raw file:
+/// SHA256, row count, first/last observation id (task §26/§39).
+fn write_run_receipt(raw_path: &Path) -> Result<(), String> {
+    let bytes = std::fs::read(raw_path).map_err(|e| format!("read {}: {e}", raw_path.display()))?;
+    let text = String::from_utf8_lossy(&bytes);
+    let mut ids: Vec<&str> = Vec::new();
+    for line in text.lines().filter(|line| !line.trim().is_empty()) {
+        let value: serde_json::Value = serde_json::from_str(line)
+            .map_err(|e| format!("parse raw row in {}: {e}", raw_path.display()))?;
+        ids.push(
+            value["observation_id"]
+                .as_str()
+                .ok_or_else(|| "raw row missing observation_id".to_string())?,
+        );
+    }
+    let receipt = serde_json::json!({
+        "schema": "run-file-receipt-v1",
+        "file": raw_path.file_name().and_then(|n| n.to_str()).unwrap_or(""),
+        "sha256": markit_mdbench_campaign::sha256_hex(&bytes),
+        "row_count": ids.len(),
+        "first_observation_id": ids.first().copied().unwrap_or(""),
+        "last_observation_id": ids.last().copied().unwrap_or(""),
+    });
+    let receipt_path = raw_path.with_extension("jsonl.receipt.json");
+    if receipt_path.exists() {
+        return Err(format!(
+            "{} already exists: run receipts are written once",
+            receipt_path.display()
+        ));
+    }
+    std::fs::write(&receipt_path, format!("{receipt}\n"))
+        .map_err(|e| format!("write {}: {e}", receipt_path.display()))?;
+    Ok(())
 }
 
 fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
@@ -552,6 +592,9 @@ fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
     let outcome = executor.run_attribution(&cases, &mut file)?;
     use std::io::Write;
     file.flush().map_err(|e| format!("flush: {e}"))?;
+    drop(file);
+    // Finalization run receipt (task §39).
+    write_run_receipt(&out_path)?;
     match outcome {
         markit_mdbench_campaign::execute::SessionOutcome::Completed { observations, .. } => {
             println!("ATTRIBUTION_COMPLETE observations={observations}");
