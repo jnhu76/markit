@@ -36,8 +36,9 @@ coordinate spaces, unique-vs-cumulative effort, explicit PA definition),
 cumulative counter authority including discarded fallback/restart work, the
 H1/H4 counter repairs with H2/H3 audits, and FULL_READ extended to
 **clean parse + native-state construction parity on all five horses
-(110/110)**. The canonical research question and the operational decision
-questions DQ1-DQ7 are frozen in `protocol/R0-METHODOLOGY.md` §0.1; the
+(110/110)**. The canonical research question, the decision questions
+DQ1-DQ7, and the measurement/attribution qualification questions MQ1-MQ7
+are frozen in `protocol/R0-METHODOLOGY.md` §0.1; the
 metric qualification table (what may and may not be concluded in this
 environment) is in `protocol/MEASUREMENT-CORRECTIVE-1.md` §9. No formal
 timing, no ranking, and no primary measurement were produced by the
