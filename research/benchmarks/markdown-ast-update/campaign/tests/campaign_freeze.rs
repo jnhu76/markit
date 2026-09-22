@@ -155,8 +155,10 @@ fn attribution_counters_are_deterministic_on_representative_cases() {
             markit_mdbench_campaign::execute::attribution_session_id(&spec_id, surface.as_str());
         let mut buffer: Vec<u8> = Vec::new();
         use markit_mdbench_campaign::execute::{ScheduledCase, SessionExecutor};
-        let horse_order: Vec<String> =
-            ["H0", "H1", "H2", "H3", "H4"].iter().map(|h| h.to_string()).collect();
+        let horse_order: Vec<String> = ["H0", "H1", "H2", "H3", "H4"]
+            .iter()
+            .map(|h| h.to_string())
+            .collect();
         let scheduled: Vec<ScheduledCase> = match surface {
             markit_mdbench_campaign::Surface::CleanState => vec![ScheduledCase::CleanState {
                 order_ordinal: 0,

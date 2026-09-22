@@ -289,7 +289,8 @@ mod tests {
             horse_order_policy: crate::schedule::HORSE_ORDER_POLICY_ID.to_string(),
             session_seed_domain: SESSION_SEED_DOMAIN.to_string(),
             horse_base_seed_domain: HORSE_BASE_SEED_DOMAIN.to_string(),
-            build_profile_id: markit_mdbench_runner::build_identity::RELEASE_PRIMARY_PROFILE_ID.to_string(),
+            build_profile_id: markit_mdbench_runner::build_identity::RELEASE_PRIMARY_PROFILE_ID
+                .to_string(),
             machine_manifest_sha256: "ef".repeat(32),
             metric_qualification: crate::METRIC_QUALIFICATION
                 .iter()

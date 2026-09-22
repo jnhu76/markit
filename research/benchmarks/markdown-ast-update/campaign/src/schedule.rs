@@ -243,7 +243,10 @@ pub fn verify_schedule(
     let horse_base = base_horse_permutation(crate::identity::horse_base_seed(root_seed));
 
     let expected_total = session_count as usize
-        * surfaces.iter().map(|surface| surface.cases.len()).sum::<usize>();
+        * surfaces
+            .iter()
+            .map(|surface| surface.cases.len())
+            .sum::<usize>();
     if rows.len() != expected_total {
         blockers.push(format!(
             "schedule row count {} != expected {expected_total} \
@@ -255,14 +258,13 @@ pub fn verify_schedule(
     for surface in surfaces {
         let surface_name = surface.surface.as_str();
         for s in 0..session_count {
-            let expected_entries =
-                match session_case_order(surface, root_seed, s) {
-                    Ok(entries) => entries,
-                    Err(error) => {
-                        blockers.push(error);
-                        continue;
-                    }
-                };
+            let expected_entries = match session_case_order(surface, root_seed, s) {
+                Ok(entries) => entries,
+                Err(error) => {
+                    blockers.push(error);
+                    continue;
+                }
+            };
             let mut session_rows: Vec<&ScheduleRow> = rows
                 .iter()
                 .filter(|r| r.surface == surface_name && r.session_ordinal == s)
@@ -307,9 +309,17 @@ pub fn verify_schedule(
                 // order is derived from the seed, so any order
                 // corruption or identity drift is caught positionally.
                 let expected_entry = &expected_entries[j];
-                if (row.case_id.as_str(), row.payload_id.as_str(), row.source_key.as_str(), row.trace_id.as_ref())
-                    != (expected_entry.0.as_str(), expected_entry.1.as_str(), expected_entry.2.as_str(), expected_entry.3.as_ref())
-                {
+                if (
+                    row.case_id.as_str(),
+                    row.payload_id.as_str(),
+                    row.source_key.as_str(),
+                    row.trace_id.as_ref(),
+                ) != (
+                    expected_entry.0.as_str(),
+                    expected_entry.1.as_str(),
+                    expected_entry.2.as_str(),
+                    expected_entry.3.as_ref(),
+                ) {
                     blockers.push(format!(
                         "{surface_name} session {s} ordinal {j}: case identity {:?} != recomputed {:?} (order corruption or identity drift)",
                         row.case_id, expected_entry.0
