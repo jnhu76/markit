@@ -220,7 +220,7 @@ fn cmd_schedule_determinism(root: &Path) -> Result<bool, String> {
         }
         return Ok(false);
     }
-    println!("SCHEDULE_DETERMINISM_PASS rows={}", first.len());
+    println!("SCHEDULE_DETERMINISM_PASS bytes={}", first.len());
     Ok(true)
 }
 
