@@ -1,0 +1,184 @@
+# results/manifests/primary-performance-campaign-v1.toml
+#
+# MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-1 (#31).
+#
+# The frozen PRIMARY performance campaign execution contract: WHAT runs,
+# HOW sessions/iterations run, HOW case and horse order are determined,
+# WHAT machine/profile is allowed, WHAT metrics are qualified, HOW raw
+# rows are identified, HOW failures are handled, HOW quantiles are
+# computed, and HOW cases/traces/files/projects are aggregated.
+#
+# This manifest binds NO measured value. It is produced before any
+# primary timing; the campaign receipt SHA256-binds it. Changing a bound
+# input after the freeze invalidates the CampaignSpecId (task §41).
+#
+# Authority: #35 frozen workload (22 G0-strict FULL_READ files, 362
+# G0_PRIMARY EDIT_WRITE cases) + #41 frozen measurement substrate.
+# #31 consumes the workload; it never reselects it.
+
+schema = "primary-performance-campaign-v1"
+campaign_id = "MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-v1"
+# PR #41 MEASUREMENT-SUBSTRATE-CORRECTIVE merge SHA the freeze is rooted at.
+base_authority_sha = "911788a2ad5fcb5b939d8bc3576d3aea77f7df62"
+# Primary trace semantics (task §4): each measured EDIT_WRITE iteration
+# starts from the exact frozen pre-edit source and a freshly constructed
+# valid pre-edit horse state. No chained editing, no state reuse.
+trace_semantics = "SINGLE_RESET"
+
+[surfaces.clean_state]
+kind = "clean_state"
+case_count = 22
+horse_count = 5
+
+[surfaces.edit_write]
+kind = "edit_write"
+case_count = 362
+horse_count = 5
+
+[sessions]
+count = 3
+warmup_iterations = 10
+measured_iterations = 30
+# One session = a fresh campaign worker process on the same frozen
+# binary/build/machine/profile with a new deterministic case order and
+# no shared state (task §11). CLEAN_STATE and EDIT_WRITE sessions never
+# interleave inside one process (task §12).
+separate_processes_per_surface = true
+
+# The frozen horse roster (identity order H0-H4). Per-case EXECUTION
+# order is a seeded rotation, never identity order (task §15).
+[[horses]]
+id = "H0"
+mechanism_id = "h0-full-rebuild"
+
+[[horses]]
+id = "H1"
+mechanism_id = "block-local-reparse-h1"
+
+[[horses]]
+id = "H2"
+mechanism_id = "fragment-reuse-h2"
+
+[[horses]]
+id = "H3"
+mechanism_id = "old-tree-subtree-reuse-h3"
+
+[[horses]]
+id = "H4"
+mechanism_id = "restart-convergence-h4"
+
+[seed]
+# Chosen before any timing exists; never regenerated after results are
+# seen (task §13).
+derivation = "first 64 bits (big-endian) of SHA256(\"MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-v1\\n\" + base_authority_sha)"
+algorithm = "sha256-first64-bigendian-v1"
+byte_order = "big-endian"
+base_authority_sha = "911788a2ad5fcb5b939d8bc3576d3aea77f7df62"
+value = 6000671815411757117
+
+[ordering]
+# Reused from the runner, never re-implemented.
+case_algorithm = "splitmix64-v1+fisher-yates-lemire-rejection-v2"
+# Seeded base H0-H4 permutation, rotated by (case ordinal j + session s)
+# mod 5 per scheduled case: deterministic near-exact position balance
+# with no adaptive procedure and no dependence on observed latency.
+horse_policy = "seeded-base-permutation-rotate-v1"
+session_seed_domain = "MARKIT-31-CAMPAIGN-SESSION-SEED-v1"
+horse_base_seed_domain = "MARKIT-31-CAMPAIGN-HORSE-PERMUTATION-SEED-v1"
+
+[quantiles]
+method = "nearest-rank"
+sample_size = 30
+p50_rank = 15
+p95_rank = 29
+indexing = "1-indexed"
+interpolation = false
+note = "p50 rank = ceil(0.50*30) = 15, p95 rank = ceil(0.95*30) = 29. With n = 30, p95 is a descriptive tail indicator, not a high-confidence tail model. The 90 observations of three sessions are never pooled as 90 independent replications; summaries are per session first, then medians of the three session values."
+
+# The frozen #41 metric qualification table (task §19). UNAVAILABLE
+# metrics are never printed as zero; any view requesting one must show
+# UNAVAILABLE or omit the view with explanation.
+[[metric]]
+name = "LATENCY"
+status = "QUALIFIED"
+
+[[metric]]
+name = "WORK_COUNTERS"
+status = "QUALIFIED"
+
+[[metric]]
+name = "PARSE_AMPLIFICATION"
+status = "QUALIFIED"
+
+[[metric]]
+name = "CPU_TIME"
+status = "UNAVAILABLE"
+
+[[metric]]
+name = "ALLOC_COUNT"
+status = "UNAVAILABLE"
+
+[[metric]]
+name = "ALLOC_BYTES"
+status = "UNAVAILABLE"
+
+[[metric]]
+name = "PEAK_MEMORY"
+status = "UNAVAILABLE"
+
+[[metric]]
+name = "RETAINED_MEMORY"
+status = "UNAVAILABLE"
+
+# Aggregation policy (task §33): CASE_WEIGHTED = each frozen CaseId one
+# equal unit, descriptive of the exact frozen population only, never
+# external replication. PROJECT_MACRO = hierarchical geometric mean
+# (case -> trace -> file -> project -> equal-weight projects) for
+# H0-relative speedups, so a 100-case repository cannot dominate a
+# 10-case one. FAMILY_MACRO = equal E-family weight, SECONDARY, never
+# the primary "best mechanism" statement. Absolute latencies: per-case
+# /file/project distributions are retained; geometric means of
+# nanoseconds are never presented as physical throughput (task §34).
+aggregation = [
+  "CASE_WEIGHTED: descriptive of the frozen case population only; never external replication",
+  "PROJECT_MACRO: session ratios -> geo-mean per CaseId -> geo-mean per trace (BREAK/RESTORE related) -> geo-mean per file -> geo-mean per project -> equal-weight projects; speedups pair per session BEFORE aggregation",
+  "FAMILY_MACRO: equal E1-E6 family weight; SECONDARY only",
+  "ABSOLUTE_LATENCY: retain distributions; no geo-mean-of-nanoseconds throughput; throughput only as specified total work / specified total time",
+  "HIERARCHY: iteration -> session -> case/trace -> file -> project; 362 cases are NOT 362 independent samples",
+]
+
+# Failure policy (task §36-§38, §52): fail-closed. A failed qualified
+# sample is retained as raw evidence and never deleted, replaced,
+# retried, imputed, or zeroed; the campaign becomes
+# PRIMARY_CAMPAIGN_INVALID for headline comparison. No outlier deletion
+# of any kind; only a WHOLE session may be invalidated with a recorded
+# reason (archived; replacement gets a new SessionId). SESSION_UNSTABLE
+# is a diagnostic flag, never a deletion.
+failure_policy = [
+  "fail-closed: stop cleanly after recording the failure",
+  "no-outlier-deletion: all successful measured observations remain",
+  "PRIMARY_CAMPAIGN_INVALID on any failed qualified sample",
+  "warmup failures abort the session (warmups are not disposable correctness)",
+  "raw files append/create-only; finalized files are checksummed in a run receipt and never overwritten",
+  "substrate change after failure requires a new CampaignSpecId and RunId",
+]
+
+[cardinality]
+# Exact arithmetic from the surfaces/sessions above (task §10).
+logical_cells_per_session = 1920
+timing_rows_per_session = 76800
+total_timing_rows = 230400
+measured_rows_total = 172800
+warmup_rows_total = 57600
+attribution_rows = 1920
+
+[refs]
+machine_manifest = "results/manifests/primary-machine-v1.toml"
+schedule_manifest = "results/manifests/primary-schedule-v1.jsonl"
+campaign_receipt = "results/manifests/primary-campaign-receipt-v1.json"
+envelope_schema = "protocol/campaign-observation-schema-v1.json"
+result_schema_json = "protocol/result-schema-v2.json"
+result_schema_doc = "protocol/result-schema.md"
+environment_record = "manifest/environment.toml"
+workload_freeze_receipt = "workloads/payloads/freeze-receipt-v1.json"
+protocol_doc = "protocol/R7-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-v1.md"

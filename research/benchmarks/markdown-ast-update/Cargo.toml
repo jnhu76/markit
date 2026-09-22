@@ -11,6 +11,7 @@ members = [
     "profile-select",
     "workload-freeze",
     "diagnostics",
+    "campaign",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
     "mechanisms/block-local",

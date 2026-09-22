@@ -1,0 +1,39 @@
+[package]
+name = "markit-mdbench-campaign"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-1 (#31).
+#
+# Separation note (task §42, "prefer a module/binary in the existing
+# workspace; do not add a new crate unless separation is demonstrably
+# required"): separation IS required by the existing dependency directions —
+#   - `runner` is deliberately horse-agnostic (zero mechanism-crate deps);
+#     the campaign orchestrator must construct all five horses, so it cannot
+#     live in `runner` without regressing that boundary;
+#   - `workload-freeze` is the FROZEN #35 authority (generator/validator);
+#     hanging #31 execution code off it would let campaign work mutate a
+#     closed freeze crate's semantics.
+# This crate therefore reuses — and never re-implements — the runner
+# dispatch, the mechanism crates, the workload adapters, CaseId and the
+# result row; the campaign layer is orchestration only.
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-instrumentation = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-runner = { workspace = true }
+markit-mdbench-semantics = { workspace = true }
+markit-mdbench-workload-freeze = { path = "../workload-freeze" }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-block-local = { workspace = true }
+markit-mdbench-fragment-reuse = { workspace = true }
+markit-mdbench-old-tree-subtree-reuse = { workspace = true }
+markit-mdbench-restart-convergence = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+schemars = { workspace = true }
+toml = { workspace = true }
+libc = "0.2"
