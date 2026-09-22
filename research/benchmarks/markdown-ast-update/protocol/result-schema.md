@@ -17,7 +17,7 @@ Rows are emitted as JSONL (one JSON object per line).
 
 | field              | value / meaning                                        |
 |--------------------|--------------------------------------------------------|
-| `schema_version`   | `1` (`RESULT_SCHEMA_VERSION_V1`)                       |
+| `schema_version`   | `2` (`RESULT_SCHEMA_VERSION_V2`; the Rust row struct keeps its historical `ResultRowV1` name) |
 | `protocol_version` | `"R0-FROZEN-V1"` — points at `protocol/R0-METHODOLOGY.md` |
 | `case_id`          | hex `SHA256(canonical_encode(CaseKeyV1))`; algorithm id `sha256-of-casekey-v1`; contains no mechanism/lane/run-order facts |
 | `seed`             | the recorded case-order seed                           |
@@ -80,16 +80,42 @@ INSERT / REPLACE_EQ / REPLACE_GROW / REPLACE_SHRINK / STRUCTURAL_EDIT:
   run). `peak_bytes` (maximum live bytes IN the window) and
   `retained_bytes` (bytes still held at window close) are DISTINCT
   metrics and are never conflated into a `peak_retained_bytes` field.
-- `attribution` slots (R0 §10) are three-valued: `Known(v)` serializes as
-  the number, absent instrumentation as `"UNKNOWN"`, structurally
-  inapplicable as `"NOT_APPLICABLE"`. `Known(0)` is therefore always
-  distinguishable from unknown/inapplicable.
-  `unique_source_intervals_inspected` / `unique_source_bytes_inspected`
-  are DERIVED by the common collector from `record_source_inspection`
-  events (prepare + update unioned, overlaps never double-counted); they
-  stay `"UNKNOWN"` for runs that did not complete. Parse Amplification,
-  when activated later, is computed by the common layer from the derived
-  byte counter — never by horses.
+- `attribution` slots (ATTRIBUTION-SCHEMA-v2, MEASUREMENT-CORRECTIVE-1
+  §18/§19) are three-valued: `Known(v)` serializes as the number, absent
+  instrumentation as `"UNKNOWN"`, structurally inapplicable as
+  `"NOT_APPLICABLE"`. `Known(0)` is therefore always distinguishable from
+  unknown/inapplicable. The v1 derived slots
+  (`unique_source_intervals_inspected` /
+  `unique_source_bytes_inspected`, single offset union) are RETIRED and
+  do not deserialize as v2. The v2 derived slots are computed by the
+  common collector from `record_source_inspection` events, which carry
+  explicit OLD/POST source-version provenance; the two coordinate spaces
+  are never unioned with each other:
+
+```text
+unique_old_source_intervals / unique_old_source_bytes
+    distinct byte intervals/bytes of the OLD source inspected
+unique_post_source_intervals / unique_post_source_bytes
+    distinct byte intervals/bytes of the POST source inspected
+unique_source_intervals / unique_source_bytes
+    the COMBINED primary unique-coverage quantity: the SUM of the two
+    per-version unions (a byte touched in both versions counts once per
+    version)
+source_bytes_inspected_total
+    cumulative inspection EFFORT: every event contributes its full
+    length, repeated scans included
+```
+
+  Unique source coverage (how much distinct source territory was
+  touched) is therefore NOT cumulative inspection effort (how much
+  source-reading work actually occurred): repeated scans increase
+  `source_bytes_inspected_total` but not the unique slots. The derived
+  slots stay `"UNKNOWN"` for runs that did not complete. Parse
+  Amplification is derived by the common analysis layer as
+  `unique_source_bytes / logical_edited_bytes` (combined per-version
+  union sum in the numerator), with repeated effort reported separately
+  as `source_bytes_inspected_total / logical_edited_bytes` — never by
+  horses, and never conflated.
 
 ## Provenance
 

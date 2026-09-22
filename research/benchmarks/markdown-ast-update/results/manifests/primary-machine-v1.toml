@@ -1,0 +1,29 @@
+schema = "primary-machine-v1"
+machine_id = "primary-e5-xeon2666v3-fedora44"
+architecture = "x86_64"
+os_distribution = "Fedora Linux 44 (KDE Plasma Desktop Edition)"
+kernel = "7.2.5-200.fc44.x86_64"
+cpu_vendor = "GenuineIntel"
+cpu_model = "Intel(R) Xeon(R) CPU E5-2666 v3 @ 2.90GHz"
+microcode = "0x49"
+physical_cores = 10
+logical_cpus = 20
+smt_enabled = true
+numa_nodes = 1
+numa_cpu_map = "node0:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19"
+selected_cpu = 1
+selected_core_id = 1
+selected_thread_siblings = "1,11"
+selected_numa_node = 0
+frequency_governor = "schedutil"
+turbo_boost_policy = "/sys/devices/system/cpu/intel_pstate/no_turbo=0 (turbo/boost ENABLED)"
+total_ram_bytes = 67252445184
+rustc = "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+cargo = "cargo 1.97.1 (c980f4866 2026-06-30)"
+llvm = "22.1.6"
+target_triple = "x86_64-unknown-linux-gnu"
+allocator_policy = "rust-system-default"
+release_profile_id = "release-primary-v1"
+rustflags = ""
+cargo_lock_sha256 = "e42e1a917455ac859832a7f5584c934f69c48cd587b83fd0c4aa398267c3fba3"
+control_notes = "Governor (schedutil), turbo/boost (intel_pstate no_turbo=0, ENABLED), and SMT are inspected and recorded, never modified by tooling. Affinity to cpu1 (core 1, SMT sibling 11, NUMA node 0) is applied per session and fail-closed. Frequency policy is schedutil-driven; the campaign records this host as controlled-by-policy-record, not controlled-by-tooling."

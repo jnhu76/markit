@@ -53,7 +53,12 @@ impl SplitMix64V1 {
     ///
     /// Deterministic for a fixed PRNG stream; changing this method
     /// changes [`SHUFFLE_ALGORITHM_ID`] — golden vectors pin its behavior.
-    fn below(&mut self, n: usize) -> usize {
+    ///
+    /// Public since MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-1: the
+    /// campaign layer derives its seeded base horse permutation from the
+    /// SAME frozen bounded-draw primitive instead of duplicating it
+    /// (behavior-neutral exposure; the golden vectors still pin it).
+    pub fn next_below(&mut self, n: usize) -> usize {
         debug_assert!(n > 0);
         let n64 = n as u64;
         // The biased zone is the final `2^64 mod n` values of the u64
@@ -79,7 +84,7 @@ where
     items.sort_by(|a, b| case_id_of(a).as_bytes().cmp(case_id_of(b).as_bytes()));
     let mut rng = SplitMix64V1::new(seed.0);
     for i in (1..items.len()).rev() {
-        let j = rng.below(i + 1);
+        let j = rng.next_below(i + 1);
         items.swap(i, j);
     }
 }
@@ -265,7 +270,7 @@ mod tests {
             let draws = n * 256;
             let mut buckets = vec![0u32; n];
             for _ in 0..draws {
-                let draw = rng.below(n);
+                let draw = rng.next_below(n);
                 buckets[draw] += 1;
             }
             let expected = (draws / n) as i64;

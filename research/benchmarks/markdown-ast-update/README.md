@@ -61,8 +61,13 @@ H4 RESTART_CONVERGENCE
 - post-R5 execution amendment: `protocol/R6-PROJECT-PERFORMANCE-EXECUTION-AMENDMENT.md`
 - real-workload authority amendment: `protocol/R6-REAL-WORKLOAD-AUTHORITY-AMENDMENT.md`
 - measurement substrate corrective: `protocol/MEASUREMENT-CORRECTIVE-1.md`
+- primary campaign freeze (#31):
+  `protocol/R7-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-v1.md`
+  (+ `results/manifests/primary-*.toml|jsonl|json`,
+  `protocol/campaign-observation-schema-v1.json`, the `campaign` crate)
 - Stage A workload construction: **#35** + `workloads/`
-- post-freeze performance execution: **#31** (not started)
+- post-freeze performance execution: **#31** (campaign contract frozen;
+  primary timing NOT started)
 - harness contract: `protocol/R1-HARNESS-CONTRACT.md`
 - grammar: `grammar/BENCH-GRAMMAR-v1.md`
 - normalized result: `grammar/NORMALIZED-RESULT-v1.md`

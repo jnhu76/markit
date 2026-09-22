@@ -848,6 +848,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-campaign"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "markit-mdbench-block-local",
+ "markit-mdbench-common",
+ "markit-mdbench-fragment-reuse",
+ "markit-mdbench-full-rebuild",
+ "markit-mdbench-instrumentation",
+ "markit-mdbench-old-tree-subtree-reuse",
+ "markit-mdbench-oracle",
+ "markit-mdbench-restart-convergence",
+ "markit-mdbench-runner",
+ "markit-mdbench-semantics",
+ "markit-mdbench-workload-freeze",
+ "schemars",
+ "serde",
+ "serde_json",
+ "sha2",
+ "toml",
+]
+
+[[package]]
 name = "markit-mdbench-common"
 version = "0.1.0"
 dependencies = [
