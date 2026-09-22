@@ -25,6 +25,39 @@ base_authority_sha = "911788a2ad5fcb5b939d8bc3576d3aea77f7df62"
 # valid pre-edit horse state. No chained editing, no state reuse.
 trace_semantics = "SINGLE_RESET"
 
+# Aggregation policy (task §33): CASE_WEIGHTED = each frozen CaseId one
+# equal unit, descriptive of the exact frozen population only, never
+# external replication. PROJECT_MACRO = hierarchical geometric mean
+# (case -> trace -> file -> project -> equal-weight projects) for
+# H0-relative speedups, so a 100-case repository cannot dominate a
+# 10-case one. FAMILY_MACRO = equal E-family weight, SECONDARY, never
+# the primary "best mechanism" statement. Absolute latencies: per-case
+# /file/project distributions are retained; geometric means of
+# nanoseconds are never presented as physical throughput (task §34).
+aggregation = [
+  "CASE_WEIGHTED: descriptive of the frozen case population only; never external replication",
+  "PROJECT_MACRO: session ratios -> geo-mean per CaseId -> geo-mean per trace (BREAK/RESTORE related) -> geo-mean per file -> geo-mean per project -> equal-weight projects; speedups pair per session BEFORE aggregation",
+  "FAMILY_MACRO: equal E1-E6 family weight; SECONDARY only",
+  "ABSOLUTE_LATENCY: retain distributions; no geo-mean-of-nanoseconds throughput; throughput only as specified total work / specified total time",
+  "HIERARCHY: iteration -> session -> case/trace -> file -> project; 362 cases are NOT 362 independent samples",
+]
+
+# Failure policy (task §36-§38, §52): fail-closed. A failed qualified
+# sample is retained as raw evidence and never deleted, replaced,
+# retried, imputed, or zeroed; the campaign becomes
+# PRIMARY_CAMPAIGN_INVALID for headline comparison. No outlier deletion
+# of any kind; only a WHOLE session may be invalidated with a recorded
+# reason (archived; replacement gets a new SessionId). SESSION_UNSTABLE
+# is a diagnostic flag, never a deletion.
+failure_policy = [
+  "fail-closed: stop cleanly after recording the failure",
+  "no-outlier-deletion: all successful measured observations remain",
+  "PRIMARY_CAMPAIGN_INVALID on any failed qualified sample",
+  "warmup failures abort the session (warmups are not disposable correctness)",
+  "raw files append/create-only; finalized files are checksummed in a run receipt and never overwritten",
+  "substrate change after failure requires a new CampaignSpecId and RunId",
+]
+
 [surfaces.clean_state]
 kind = "clean_state"
 case_count = 22
@@ -130,38 +163,7 @@ status = "UNAVAILABLE"
 name = "RETAINED_MEMORY"
 status = "UNAVAILABLE"
 
-# Aggregation policy (task §33): CASE_WEIGHTED = each frozen CaseId one
-# equal unit, descriptive of the exact frozen population only, never
-# external replication. PROJECT_MACRO = hierarchical geometric mean
-# (case -> trace -> file -> project -> equal-weight projects) for
-# H0-relative speedups, so a 100-case repository cannot dominate a
-# 10-case one. FAMILY_MACRO = equal E-family weight, SECONDARY, never
-# the primary "best mechanism" statement. Absolute latencies: per-case
-# /file/project distributions are retained; geometric means of
-# nanoseconds are never presented as physical throughput (task §34).
-aggregation = [
-  "CASE_WEIGHTED: descriptive of the frozen case population only; never external replication",
-  "PROJECT_MACRO: session ratios -> geo-mean per CaseId -> geo-mean per trace (BREAK/RESTORE related) -> geo-mean per file -> geo-mean per project -> equal-weight projects; speedups pair per session BEFORE aggregation",
-  "FAMILY_MACRO: equal E1-E6 family weight; SECONDARY only",
-  "ABSOLUTE_LATENCY: retain distributions; no geo-mean-of-nanoseconds throughput; throughput only as specified total work / specified total time",
-  "HIERARCHY: iteration -> session -> case/trace -> file -> project; 362 cases are NOT 362 independent samples",
-]
 
-# Failure policy (task §36-§38, §52): fail-closed. A failed qualified
-# sample is retained as raw evidence and never deleted, replaced,
-# retried, imputed, or zeroed; the campaign becomes
-# PRIMARY_CAMPAIGN_INVALID for headline comparison. No outlier deletion
-# of any kind; only a WHOLE session may be invalidated with a recorded
-# reason (archived; replacement gets a new SessionId). SESSION_UNSTABLE
-# is a diagnostic flag, never a deletion.
-failure_policy = [
-  "fail-closed: stop cleanly after recording the failure",
-  "no-outlier-deletion: all successful measured observations remain",
-  "PRIMARY_CAMPAIGN_INVALID on any failed qualified sample",
-  "warmup failures abort the session (warmups are not disposable correctness)",
-  "raw files append/create-only; finalized files are checksummed in a run receipt and never overwritten",
-  "substrate change after failure requires a new CampaignSpecId and RunId",
-]
 
 [cardinality]
 # Exact arithmetic from the surfaces/sessions above (task §10).
