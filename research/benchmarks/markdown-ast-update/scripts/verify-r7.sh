@@ -9,7 +9,9 @@
 #     the NON_RESEARCH fake-clock end-to-end smoke);
 #   - #35 workload freeze verification + determinism (mdbench-corrective-c);
 #   - campaign manifest verify / receipt verify / schedule determinism;
-#   - machine preflight (non-measuring, fail-closed).
+#   - machine preflight (non-measuring, fail-closed) in all three scopes:
+#     All / Timing / Attribution — they enumerate different identity sets
+#     (232,320 / 4,400 / 1,810 ids) and are never inferred from flags.
 #
 # The campaign steps run the RELEASE build (the frozen
 # `release-primary-v1` profile): the preflight verifies the build identity
@@ -55,8 +57,14 @@ step "campaign receipt verify"
 step "campaign schedule determinism (byte-identical regeneration)"
 "$CAMPAIGN" schedule-determinism .
 
-step "machine preflight (non-measuring, fail-closed)"
+step "machine preflight (non-measuring, fail-closed) — scope All"
 "$CAMPAIGN" preflight .
+
+step "machine preflight — scope Timing (clean_state session 0)"
+"$CAMPAIGN" preflight . --timing clean_state --session 0
+
+step "machine preflight — scope Attribution (edit_write lane)"
+"$CAMPAIGN" preflight . --attribution edit_write
 
 step "campaign fake-clock NON_RESEARCH smoke (end-to-end plumbing)"
 SMOKE_DIR="$(mktemp -d)"

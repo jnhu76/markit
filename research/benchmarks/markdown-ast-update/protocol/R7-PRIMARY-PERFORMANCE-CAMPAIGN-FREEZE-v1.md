@@ -128,8 +128,20 @@ attribution rows            = (22 + 362) × 5            = 1,920
 schedule rows               = 3 × (22 + 362)            = 1,152
 ```
 
+Per-lane identities (the granularity the preflight enumerates):
+
+```text
+timing session, CLEAN_STATE = 22 × 5 × (10 + 30)        = 4,400
+timing session, EDIT_WRITE  = 362 × 5 × (10 + 30)       = 72,400
+attribution, CLEAN_STATE    = 22 × 5                    = 110
+attribution, EDIT_WRITE     = 362 × 5                   = 1,810
+campaign-wide enumeration   = 230,400 + 1,920           = 232,320
+```
+
 A completed primary campaign must not silently contain fewer or more
-rows; schedule verification and the preflight enforce these numbers.
+rows; schedule verification and the preflight enforce these numbers
+against the FROZEN surface cardinalities (never against the materialized
+case list, which is the thing under test).
 
 ## 7. Campaign seed and derivation
 
@@ -241,12 +253,22 @@ level. Stable identities:
 - `SessionId` = derived from CampaignSpecId + surface + session
   ordinal (attribution rows use a dedicated attribution derivation).
 - `RunId` = execution-time binding of CampaignSpecId + approved runner
-  git commit + machine manifest digest + build identity; all sessions
-  of one primary campaign share the same RunId inputs.
+  git commit + machine manifest digest + build identity + **the SHA256
+  of the exact executable that produces the rows**; all sessions of one
+  primary campaign share the same RunId inputs. The executable digest
+  is a BINDING, not a footnote: identical commit + toolchain + profile
+  + lockfile can rebuild to different bytes, so build identity alone
+  cannot prove "one binary". One CampaignSpecId therefore carries
+  exactly ONE RunId, and `run-session` / `run-attribution` fail closed
+  when the spec's raw directory already holds a different one — a
+  rebuilt binary starts a new run or is archived deliberately, it never
+  silently continues an existing campaign run.
 - `ObservationId` = derived from RunId + SessionId + surface + CaseId
   + HorseId + sample_kind + iteration_ordinal. No two raw observations
   share one; schedule verification and preflight enumerate and guard
-  uniqueness and cardinality.
+  uniqueness and cardinality, in the explicit scope below.
+- Preflight enumeration scope (§13) is stated, never inferred. The
+  three scopes enumerate structurally different id sets:
 
 FULL_READ cases get a stable CaseId through the EXISTING `CaseKeyV1`
 machinery (`operation = FullParse`, payload/source identity from the
@@ -281,9 +303,15 @@ Build profile: the frozen `release-primary-v1` (opt-level 3,
 lto thin, codegen-units 1, incremental false, panic unwind,
 target-cpu default, RUSTFLAGS "", allocator rust-system-default).
 Build ONCE before session execution; never compile inside timing
-sessions; all sessions use byte-identical binaries or a recorded
-identical build digest. The real `run-session` / `run-attribution`
-entry points refuse non-release builds.
+sessions; all sessions use byte-identical binaries.
+
+"Byte-identical" is enforced, not merely documented: the executable
+SHA256 is part of the `RunId` (§11), each `run-session` /
+`run-attribution` invocation hashes its own executable before doing
+anything else and fails closed if that digest cannot be computed, and a
+spec directory that already holds raw data under a different `RunId`
+aborts the session. The real `run-session` / `run-attribution` entry
+points also refuse non-release builds.
 
 ## 13. Preflight (non-measuring, fail-closed)
 
@@ -298,6 +326,26 @@ temperature where readable) is recorded as diagnostics only. If the
 host is clearly busy or the policy mismatches, the session aborts
 BEFORE collecting data. There is no adaptive inclusion/exclusion based
 on whether timing "looks good."
+
+The ObservationId enumeration is **scope-explicit**. A timing session,
+an attribution lane, and the whole campaign check different identity
+sets, so the scope is a required argument and never inferred from which
+flags happened to be present:
+
+```text
+preflight                          scope All         232,320 ids
+preflight --timing S --session N   scope Timing      4,400 / 72,400 ids
+preflight --attribution S          scope Attribution 110 / 1,810 ids
+```
+
+Each scope reports what it enumerated (lane, rows, warmup/measured/
+attribution split, distinct ids, duplicates) into the preflight
+diagnostics, so the JSON output shows which identities were actually
+checked. `All` unions every lane into one campaign-wide id set, which
+also catches cross-lane collisions (an attribution id colliding with a
+timing id). Expectations always come from the frozen surface
+cardinalities; a missing case, an extra case, and a repeated case each
+fail closed with their own blocker.
 
 ## 14. Quantiles (frozen before any timing)
 
@@ -365,7 +413,7 @@ campaign. No outlier deletion of any kind; only a WHOLE session may be
 invalidated with a recorded reason (the invalid session stays
 archived; a replacement gets a new SessionId).
 
-## 18. Raw-data immutability
+## 18. Raw-data immutability and finalization
 
 ```text
 results/raw/<CampaignSpecId>/<RunId>/
@@ -375,9 +423,28 @@ results/raw/<CampaignSpecId>/<RunId>/
   attribution/edit_write.jsonl
 ```
 
-Append/create-only; after finalization each file's SHA256, row count,
-and first/last observation id enter a run receipt; finalized files are
-never overwritten. Summaries are derived artifacts.
+Append/create-only. A raw file is FINALIZED only after being re-read
+from disk and checked against the frozen contract that produced it:
+envelope schema, result schema v2, CampaignSpecId, RunId, SessionId,
+surface, session ordinal, and the ObservationId re-derived from each
+row's own identity fields (never trusted as stored); exact row count
+and warmup/measured/attribution split; and exact coverage — the
+(case × horse × sample_kind × iteration) set against the frozen
+schedule the execution consumed, with no missing and no extra entry.
+
+```text
+all checks pass -> write raw-file receipt (verdict FINAL_RAW_FILE_PASS)
+                -> SESSION_COMPLETE / ATTRIBUTION_COMPLETE
+any check fails -> PRIMARY_CAMPAIGN_INVALID, no success receipt;
+                   the file is retained and marked .jsonl.invalid.json
+```
+
+The finalization verifier considers the expectations frozen: they are
+read from the schedule and the frozen surface cardinalities, so a
+truncated schedule fails before the session starts rather than lowering
+the bar. After finalization the receipt's SHA256, row counts, and
+first/last observation id bind the file; finalized files are never
+overwritten and never receive a "success" receipt they did not earn.
 
 ## 19. Concurrency and I/O
 
@@ -407,7 +474,9 @@ cargo run -q -p markit-mdbench-campaign --bin mdbench-campaign -- \
     manifest-verify .                # CAMPAIGN_MANIFEST_OK
     receipt-verify .                 # CAMPAIGN_RECEIPT_OK
     schedule-determinism .           # SCHEDULE_DETERMINISM_PASS
-    preflight .                      # CAMPAIGN_PREFLIGHT_PASS
+    preflight .                      # CAMPAIGN_PREFLIGHT_PASS (scope All)
+    preflight . --timing clean_state --session 0   # scope Timing
+    preflight . --attribution edit_write           # scope Attribution
     smoke . --out <dir> --inject-failure   # NON_RESEARCH_SMOKE_PASS
 ```
 

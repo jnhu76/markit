@@ -78,9 +78,13 @@ pub fn run_smoke(
     let mut checks = Vec::new();
 
     // Receipt + workload + schedule validation on the REAL frozen
-    // artifacts (task §49 "receipt validation").
-    let preflight =
-        crate::preflight::preflight(benchmark_root, HostBinding::SkipForNonResearch, None, None);
+    // artifacts (task §49 "receipt validation"), over the whole
+    // campaign scope (the smoke consumes both surfaces and both lanes).
+    let preflight = crate::preflight::preflight(
+        benchmark_root,
+        HostBinding::SkipForNonResearch,
+        crate::preflight::PreflightScope::All,
+    );
     if !preflight.pass {
         return Err(format!(
             "smoke preflight failed (frozen artifacts invalid): {:?}",
@@ -106,9 +110,16 @@ pub fn run_smoke(
     let machine_digest =
         crate::sha256_file(&benchmark_root.join(crate::manifest::MACHINE_MANIFEST_PATH))?;
     let build = markit_mdbench_runner::current_build_identity();
+    let executable_sha256 = crate::identity::current_executable_sha256()?;
     // NON-RESEARCH run id: deterministic, explicitly not the research
     // RunId (which binds the approved runner commit of a real run).
-    let run_id = crate::identity::run_id(&spec_id, "NON_RESEARCH_SMOKE", &machine_digest, &build);
+    let run_id = crate::identity::run_id(
+        &spec_id,
+        "NON_RESEARCH_SMOKE",
+        &machine_digest,
+        &build,
+        &executable_sha256,
+    );
     let identity = ExecutionIdentity {
         campaign_spec_id: spec_id.clone(),
         run_id: run_id.clone(),

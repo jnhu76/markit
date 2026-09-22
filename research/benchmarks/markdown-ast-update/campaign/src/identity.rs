@@ -13,8 +13,9 @@
 //!   depend on measured values (task §22), so the binding struct below
 //!   carries policies and digests, never observations;
 //! - `RunId` is the execution-time binding (approved runner commit +
-//!   machine manifest digest + build identity); all sessions of one
-//!   primary campaign share the same RunId inputs;
+//!   machine manifest digest + build identity + the SHA256 of the exact
+//!   executable producing the rows); all sessions of one primary
+//!   campaign share the same RunId inputs;
 //! - `ObservationId` is derived from immutable envelope identity fields;
 //!   no two raw observations may share one (enforced by schedule
 //!   verification and preflight).
@@ -141,22 +142,46 @@ pub fn session_id(spec_id: &str, surface: &str, session_ordinal: u32) -> String 
 }
 
 /// `RunId` = execution-time binding of spec + approved runner commit +
-/// machine manifest digest + build identity (task §22). All sessions of
-/// one primary campaign share the same inputs.
+/// machine manifest digest + build identity + the SHA256 of the exact
+/// executable that produces the rows (task §22, §47).
+///
+/// Field order (frozen): `CampaignSpecId`, runner commit, machine
+/// manifest digest, rustc, target, build profile id, `Cargo.lock`
+/// digest, executable SHA256.
+///
+/// The executable digest is a BINDING, not a record: R7 §12 requires all
+/// sessions of one primary campaign to run the same binary, and the
+/// build identity alone cannot prove that (an identical commit /
+/// toolchain / profile / lockfile can rebuild to different bytes). A
+/// rebuilt binary therefore changes the `RunId` and can never silently
+/// continue an existing campaign run.
 pub fn run_id(
     spec_id: &str,
     runner_git_commit: &str,
     machine_manifest_sha256: &str,
     build_identity: &markit_mdbench_runner::BuildIdentityV1,
+    executable_sha256: &str,
 ) -> String {
     let material = format!(
-        "{spec_id}\n{runner_git_commit}\n{machine_manifest_sha256}\n{}\n{}\n{}\n{}",
+        "{spec_id}\n{runner_git_commit}\n{machine_manifest_sha256}\n{}\n{}\n{}\n{}\n{executable_sha256}",
         build_identity.rustc,
         build_identity.target,
         build_identity.build_profile_id,
         build_identity.cargo_lock_sha256
     );
     markit_mdbench_common::to_lower_hex(&sha256_digest(material.as_bytes()))
+}
+
+/// SHA256 (lowercase hex) of the currently running executable.
+///
+/// Fails closed: a primary session must never collect data under an
+/// unknown binary identity, so an unresolvable or unreadable
+/// `current_exe()` is an error, never `"unknown"`.
+pub fn current_executable_sha256() -> Result<String, String> {
+    let path = std::env::current_exe()
+        .map_err(|e| format!("resolve current executable for the RunId binding: {e}"))?;
+    crate::sha256_file(&path)
+        .map_err(|e| format!("hash current executable {}: {e}", path.display()))
 }
 
 /// `ObservationId` = `hex(SHA256(canonical line of immutable envelope
@@ -263,6 +288,49 @@ mod tests {
         let mut other = binding.clone();
         other.metric_qualification[0].1 = "UNAVAILABLE".to_string();
         assert_ne!(campaign_spec_id(&binding), campaign_spec_id(&other));
+    }
+
+    #[test]
+    fn run_id_is_deterministic_and_binds_the_executable_digest() {
+        let build = markit_mdbench_runner::current_build_identity();
+        let base = run_id("spec", "commit", "machine", &build, &"ab".repeat(32));
+        assert_eq!(
+            base,
+            run_id("spec", "commit", "machine", &build, &"ab".repeat(32))
+        );
+        // A rebuilt binary (same commit/toolchain/profile/lockfile,
+        // different bytes) MUST move the RunId: it is a binding, not a
+        // record.
+        assert_ne!(
+            base,
+            run_id("spec", "commit", "machine", &build, &"cd".repeat(32))
+        );
+        // Prior inputs stay binding too.
+        assert_ne!(
+            base,
+            run_id("other", "commit", "machine", &build, &"ab".repeat(32))
+        );
+        assert_ne!(
+            base,
+            run_id("spec", "other", "machine", &build, &"ab".repeat(32))
+        );
+        assert_ne!(
+            base,
+            run_id("spec", "commit", "other", &build, &"ab".repeat(32))
+        );
+        let mut other_build = build.clone();
+        other_build.rustc = "rustc-other".to_string();
+        assert_ne!(
+            base,
+            run_id("spec", "commit", "machine", &other_build, &"ab".repeat(32))
+        );
+    }
+
+    #[test]
+    fn current_executable_digest_is_available_and_stable() {
+        let first = current_executable_sha256().expect("test binary is resolvable");
+        assert_eq!(first.len(), 64);
+        assert_eq!(first, current_executable_sha256().unwrap());
     }
 
     fn sample_binding() -> CampaignSpecBinding {

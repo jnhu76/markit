@@ -48,6 +48,7 @@
 //! across measured iterations.
 
 pub mod execute;
+pub mod finalize;
 pub mod identity;
 pub mod machine;
 pub mod manifest;

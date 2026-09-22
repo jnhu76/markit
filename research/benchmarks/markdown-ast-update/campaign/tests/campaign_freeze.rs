@@ -124,17 +124,62 @@ fn result_rows_are_schema_v2_only() {
 
 #[test]
 fn preflight_passes_and_enumerates_unique_observation_ids() {
+    let root = benchmark_root();
+    for scope in [
+        markit_mdbench_campaign::preflight::PreflightScope::All,
+        markit_mdbench_campaign::preflight::PreflightScope::Timing {
+            surface: markit_mdbench_campaign::Surface::EditWrite,
+            session: 0,
+        },
+        markit_mdbench_campaign::preflight::PreflightScope::Attribution {
+            surface: markit_mdbench_campaign::Surface::CleanState,
+        },
+    ] {
+        let report = markit_mdbench_campaign::preflight::preflight(
+            &root,
+            markit_mdbench_campaign::preflight::HostBinding::SkipForNonResearch,
+            scope,
+        );
+        assert!(
+            report.pass,
+            "non-research preflight blockers for {}: {:?}",
+            scope.label(),
+            report.blockers
+        );
+    }
+    // The All scope really does enumerate the whole campaign: 3 sessions
+    // x 2 surfaces x 76,800 timing rows + 1,920 attribution rows, with
+    // no duplicate and no missing identity (task §10).
     let report = markit_mdbench_campaign::preflight::preflight(
-        &benchmark_root(),
+        &root,
         markit_mdbench_campaign::preflight::HostBinding::SkipForNonResearch,
-        None,
-        None,
+        markit_mdbench_campaign::preflight::PreflightScope::All,
     );
-    assert!(
-        report.pass,
-        "non-research preflight blockers: {:?}",
-        report.blockers
-    );
+    let enumeration = &report.diagnostics["observation_enumeration"];
+    assert_eq!(enumeration["rows"], 232_320);
+    assert_eq!(enumeration["unique_ids"], 232_320);
+    assert_eq!(enumeration["duplicate_ids"], 0);
+    assert_eq!(enumeration["lanes"].as_array().unwrap().len(), 8);
+    // Attribution lanes report their own frozen cardinalities, not a
+    // timing session's (the defect the explicit scope fixes).
+    let attribution: Vec<&serde_json::Value> = enumeration["lanes"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|lane| lane["lane"].as_str().unwrap().starts_with("attribution:"))
+        .collect();
+    assert_eq!(attribution.len(), 2);
+    let mut rows: Vec<u64> = attribution
+        .iter()
+        .map(|lane| lane["rows"].as_u64().unwrap())
+        .collect();
+    rows.sort();
+    assert_eq!(rows, vec![110, 1_810]);
+    for lane in attribution {
+        assert_eq!(lane["attribution_rows"], lane["rows"]);
+        assert_eq!(lane["warmup_rows"], 0);
+        assert_eq!(lane["measured_rows"], 0);
+    }
 }
 
 #[test]
