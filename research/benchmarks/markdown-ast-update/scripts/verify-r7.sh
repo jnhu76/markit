@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 CAMPAIGN="cargo run -q -p markit-mdbench-campaign --bin mdbench-campaign --"
