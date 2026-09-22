@@ -268,7 +268,11 @@ pub fn scan_region_with_sink<W: WorkSink>(
     defs: &RefTable,
     sink: &mut W,
 ) -> Vec<Node> {
-    sink.record_source_inspection(ss as u64, se as u64);
+    sink.record_source_inspection(
+        markit_mdbench_common::SourceVersion::Post,
+        ss as u64,
+        se as u64,
+    );
     let mut out: Vec<Elem> = Vec::new();
     // pending maximal text run [text_start, i)
     let mut text_start: Option<usize> = None;

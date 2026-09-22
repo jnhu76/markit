@@ -40,7 +40,7 @@ use markit_mdbench_null_r1::fixture::{
     smoke_fixture, smoke_payload_id, smoke_payload_size_bytes, R1_SMOKE_ONLY_GENERATOR_ID,
     SMOKE_EDIT_OPERATION,
 };
-use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullPending};
+use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullState};
 use markit_mdbench_oracle::ScalarChecksumHook;
 use markit_mdbench_runner::{
     assemble_row, build_initial_state, current_build_identity, edit_meta, run_full_parse_timed,
@@ -82,12 +82,23 @@ struct PanicsInUpdate;
 /// Test fixture mechanism: the initial-state `full_parse` unwinds.
 struct PanicsInFullParse;
 
+/// Local state newtype for the death-fixture mechanisms (a foreign trait
+/// cannot be implemented on a primitive).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct TrivialState(u64);
+
+impl markit_mdbench_common::ResultChecksum for TrivialState {
+    fn result_checksum(&self) -> u64 {
+        self.0
+    }
+}
+
 macro_rules! impl_trivial_mechanism {
     ($name:ident, $panic_phase:ident) => {
         impl Mechanism for $name {
-            type State = u64;
-            type Prepared = u64;
-            type Pending = u64;
+            type State = TrivialState;
+            type Prepared = TrivialState;
+            type Pending = TrivialState;
 
             fn id(&self) -> MechanismId {
                 MechanismId("__r1_worker_death_fixture_test_only__".to_string())
@@ -101,7 +112,7 @@ macro_rules! impl_trivial_mechanism {
                 if stringify!($panic_phase) == "full_parse" {
                     panic!("injected initial-state crash for supervisor testing");
                 }
-                Ok(source.len_bytes() as u64)
+                Ok(TrivialState(source.len_bytes() as u64))
             }
 
             fn prepare_update<W: WorkSink>(
@@ -127,17 +138,14 @@ macro_rules! impl_trivial_mechanism {
                 if stringify!($panic_phase) == "update" {
                     panic!("injected crash for supervisor testing");
                 }
-                Ok(old_state + 1)
+                Ok(TrivialState(old_state.0 + 1))
             }
 
             fn complete(
                 &self,
                 pending: Self::Pending,
             ) -> Result<Completed<Self::State>, FailureStatus> {
-                Ok(Completed {
-                    state: pending,
-                    result_checksum: pending,
-                })
+                Ok(Completed { state: pending })
             }
         }
     };
@@ -206,12 +214,8 @@ fn run_case(job: &WorkerJob) -> Result<markit_mdbench_runner::ResultRowV1, Failu
         WorkerMode::NullSmokeUpdate => {
             let mechanism = NullMechanism::new();
             let old_state = build_initial_state(&mechanism, &old)?;
-            let expected = null_checksum(&NullPending {
-                old_len_bytes: old.len_bytes() as u64,
-                post_len_bytes: post.len_bytes() as u64,
-                edit_start_byte: edit.start_byte(),
-                edit_end_byte: edit.end_byte(),
-                inserted_len_bytes: edit.inserted_text_len_bytes(),
+            let expected = null_checksum(&NullState {
+                source_len_bytes: post.len_bytes() as u64,
                 revision: 1,
             });
             let report = run_update_timed(
@@ -233,12 +237,8 @@ fn run_case(job: &WorkerJob) -> Result<markit_mdbench_runner::ResultRowV1, Failu
         }
         WorkerMode::NullSmokeFullParse => {
             let mechanism = NullMechanism::new();
-            let expected = null_checksum(&NullPending {
-                old_len_bytes: old.len_bytes() as u64,
-                post_len_bytes: old.len_bytes() as u64,
-                edit_start_byte: 0,
-                edit_end_byte: 0,
-                inserted_len_bytes: 0,
+            let expected = null_checksum(&NullState {
+                source_len_bytes: old.len_bytes() as u64,
                 revision: 0,
             });
             let report =
@@ -281,7 +281,7 @@ fn run_case(job: &WorkerJob) -> Result<markit_mdbench_runner::ResultRowV1, Failu
                 &old,
                 &post,
                 &edit,
-                0,
+                TrivialState(0),
                 &clock,
                 &ScalarChecksumHook::new(0),
             );

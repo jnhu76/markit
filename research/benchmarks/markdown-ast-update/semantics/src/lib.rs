@@ -64,10 +64,10 @@ pub use lanes::{
 pub use parse::{fenced_content_interval, LaneNode, LaneParse};
 pub use payload::{
     build_payload, resolve_positions, trace_identity_key, validate_break_restore, validate_payload,
-    PAYLOAD_ID_NAMESPACE,
     validate_trace, Anchor, BreakRestoreReport, BreakRestoreRequest, PayloadPosition,
     PayloadRecord, PayloadValidation, PositionResolutionOutcome, RequestedPosition, SourceKind,
-    TraceForm, TraceRequest, TraceReport, PAYLOAD_LIFECYCLE_VERSION, PAYLOAD_SCHEMA,
+    TraceForm, TraceReport, TraceRequest, PAYLOAD_ID_NAMESPACE, PAYLOAD_LIFECYCLE_VERSION,
+    PAYLOAD_SCHEMA,
 };
 pub use probes::{probe_candidates, RawCandidate, PROBE_PRIORITY};
 pub use profile::{

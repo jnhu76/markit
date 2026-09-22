@@ -18,12 +18,14 @@
 //!   inspection) and W2 (changed / state-mismatched candidates are
 //!   refused, result == H0);
 //! - `H3_EAGER_COMPLETION_PASS` — the pending already holds the complete
-//!   state and result; complete() seals only.
+//!   eager native STATE; complete() seals only (the normalized projection
+//!   and checksum are post-complete pure exports).
 
 use gen::{PayloadShape, ALL_SHAPES, SIZE_16M, SIZE_1M, SIZE_64K};
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, Source, WorkCounters,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Observed, ResultChecksum, Source,
+    SourceVersion, WorkCounters,
 };
 use markit_mdbench_corpusgen as gen;
 use markit_mdbench_corpusgen::mutations::{
@@ -100,9 +102,17 @@ fn assert_update_structural(
             )
             .expect("update");
         let clean = parse_document(post);
-        assert_eq!(pending.result(), &clean, "structural mismatch ({context})");
+        // MEASUREMENT-CORRECTIVE-1: the projection is derived from the
+        // SEALED state post-`complete()` (pure export), not carried in
+        // the pending. Seal first, then assert structure + checksum.
+        let done = mech.complete(pending).expect("complete");
         assert_eq!(
-            normalized_checksum(pending.result()),
+            done.state.normalize_v1(),
+            clean,
+            "structural mismatch ({context})"
+        );
+        assert_eq!(
+            done.state.result_checksum(),
             normalized_checksum(&clean),
             "checksum mismatch ({context})"
         );
@@ -110,8 +120,6 @@ fn assert_update_structural(
             Observed::Known(n) => n,
             other => panic!("{context}: nodes_reused must be Known, got {other:?}"),
         };
-        let done = mech.complete(pending).expect("complete");
-        assert_eq!(done.result_checksum, normalized_checksum(&clean));
         new_state = done.state;
     }
     (new_state, counters, reused)
@@ -185,9 +193,8 @@ fn h3_grammar_pass_all_43_fixtures() {
             let pending = mech
                 .full_parse(&source_of(src, 2), &mut cx)
                 .expect("full_parse");
-            let r = pending.result().clone();
-            mech.complete(pending).expect("complete");
-            r
+            let done = mech.complete(pending).expect("complete");
+            done.state.normalize_v1()
         };
         let clean = parse_document(src);
         if result != clean {
@@ -454,9 +461,17 @@ fn reuse_probe(name: &str, old: &str, start: usize, end: usize, inserted: &str, 
             )
             .expect("update");
         let clean = parse_document(post_b);
-        assert_eq!(pending.result(), &clean, "{name}: structural mismatch");
         let done = mech.complete(pending).expect("complete");
-        assert_eq!(done.result_checksum, normalized_checksum(&clean), "{name}");
+        assert_eq!(
+            done.state.normalize_v1(),
+            clean,
+            "{name}: structural mismatch"
+        );
+        assert_eq!(
+            done.state.result_checksum(),
+            normalized_checksum(&clean),
+            "{name}"
+        );
         assert_tree_integrity(&done.state, post_b, name);
     }
     match counters.nodes_reused {
@@ -564,8 +579,14 @@ fn h3_identity_w1_local_same_context_edit() {
                 &mut cx,
             )
             .expect("update");
-        assert_eq!(pending.result(), &parse_document(post_b), "W1 result == H0");
-        mech.complete(pending).expect("complete");
+        // MEASUREMENT-CORRECTIVE-1: complete() seals the state; the
+        // normalized projection is a post-complete pure export of it.
+        let done = mech.complete(pending).expect("complete");
+        assert_eq!(
+            done.state.normalize_v1(),
+            parse_document(post_b),
+            "W1 result == H0"
+        );
         cx.sink.finalize_derived();
     }
     assert!(changed_on_prepared > 0 && patched_nodes > 0);
@@ -577,7 +598,7 @@ fn h3_identity_w1_local_same_context_edit() {
         Observed::Known(n) => assert!(n > 0, "W1: the damaged region was rebuilt"),
         other => panic!("W1: nodes_rebuilt must be Known, got {other:?}"),
     }
-    match counters.unique_source_bytes_inspected {
+    match counters.unique_source_bytes {
         Observed::Known(n) => assert!(
             n < post_b.len() as u64,
             "W1: inspected {n} must be < post len {}",
@@ -631,8 +652,14 @@ fn h3_identity_w2_changed_and_state_mismatched_candidates_refused() {
                 &mut cx,
             )
             .expect("update");
-        assert_eq!(pending.result(), &parse_document(post_b), "W2 result == H0");
-        mech.complete(pending).expect("complete");
+        // MEASUREMENT-CORRECTIVE-1: complete() seals the state; the
+        // normalized projection is a post-complete pure export of it.
+        let done = mech.complete(pending).expect("complete");
+        assert_eq!(
+            done.state.normalize_v1(),
+            parse_document(post_b),
+            "W2 result == H0"
+        );
     }
     match counters.nodes_reused {
         Observed::Known(n) => assert!(n == 0, "W2: refused candidates (got {n} reused)"),
@@ -682,7 +709,7 @@ fn h3_counters_and_eager_completion() {
     // EAGER (behavioral): counters + the complete inspection union are
     // observed strictly BEFORE complete().
     let clean = parse_document(post_b);
-    assert_eq!(pending.result(), &clean, "pending already holds the result");
+    // MEASUREMENT-CORRECTIVE-1: the pending carries the eager native STATE; the normalized projection is a post-complete pure export of that state.
     assert!(matches!(counters.blocks_reparsed, Observed::Known(_)));
     assert!(matches!(counters.nodes_rebuilt, Observed::Known(_)));
     assert!(matches!(counters.nodes_reused, Observed::Known(n) if n > 0));
@@ -702,9 +729,10 @@ fn h3_counters_and_eager_completion() {
     );
     assert_eq!(counters.convergence_distance, Observed::NotApplicable);
 
-    // EAGER (structural): complete() receives no source and no sink.
+    // EAGER (structural): complete() receives no source and no sink — it
+    // seals the state; the checksum is the post-timer export.
     let done = mech.complete(pending).expect("complete");
-    assert_eq!(done.result_checksum, normalized_checksum(&clean));
+    assert_eq!(done.state.result_checksum(), normalized_checksum(&clean));
 
     // COMPLETED-STATE LAW (R5-CORRECTIVE-1, MAJOR-3/00a710): the sealed
     // state projects to the normalized result PURELY — no Source, no
@@ -713,7 +741,7 @@ fn h3_counters_and_eager_completion() {
     assert_eq!(doc, clean, "completed-state projection == H0");
     assert_eq!(
         normalized_checksum(&doc),
-        done.result_checksum,
+        done.state.result_checksum(),
         "checksum(completed normalize_v1) == completed checksum"
     );
     // QUERY from the completed state equals the H0 answers.
@@ -803,7 +831,7 @@ fn h3_updates_are_deterministic() {
             )
             .expect("update");
         let done = mech.complete(pending).expect("complete");
-        (done.result_checksum, counters.nodes_reused)
+        (done.state.result_checksum(), counters.nodes_reused)
     };
     assert_eq!(run(), run(), "two identical runs must agree");
 }
@@ -848,27 +876,35 @@ fn h3_patch_margins_report_source_inspection() {
                 &mut cx,
             )
             .expect("update");
-        assert_eq!(pending.result(), &parse_document(post_b), "result == H0");
-        mech.complete(pending).expect("complete");
+        // MEASUREMENT-CORRECTIVE-1: complete() seals the state; the
+        // normalized projection is a post-complete pure export of it.
+        let done = mech.complete(pending).expect("complete");
+        assert_eq!(
+            done.state.normalize_v1(),
+            parse_document(post_b),
+            "result == H0"
+        );
         cx.sink.finalize_derived();
         let events = sink.inspections();
         // Prev-separation margin: [prev entry end, es) = [19, 23) — the
         // blank bytes before a block are the entry's gap, so the entry
-        // ending at/before the edit is beta (end 19). Crosses no line
-        // boundary a parser report would carry.
+        // ending at/before the edit is beta (end 19). The patch is built
+        // against the OLD retained source, so §18 stamps this read Old;
+        // the post-edit side (next margin, probe) scans the POST source.
         assert!(
-            events.contains(&(19, 23)),
-            "prev-separation margin scan must be reported, events: {events:?}"
+            events.contains(&(SourceVersion::Old, 19, 23)),
+            "prev-separation margin scan must be reported as an OLD-source \
+             read, events: {events:?}"
         );
         // Next-separation margin: [ee_new, delta's shifted line start) =
         // [27, 35) in post coordinates.
         assert!(
-            events.contains(&(27, 35)),
+            events.contains(&(SourceVersion::Post, 27, 35)),
             "next-separation margin scan must be reported, events: {events:?}"
         );
         // The definition probe over the edited span.
         assert!(
-            events.contains(&(23, 27)),
+            events.contains(&(SourceVersion::Post, 23, 27)),
             "edited-span definition probe must be reported, events: {events:?}"
         );
         // Consult-time paragraph margins. The unmarked alpha+beta run is
@@ -878,7 +914,7 @@ fn h3_patch_margins_report_source_inspection() {
         // parser line report emits.
         for pair in [(19u64, 20u64), (33, 34)] {
             assert!(
-                events.contains(&pair),
+                events.contains(&(SourceVersion::Post, pair.0, pair.1)),
                 "consult margin {pair:?} must be reported, events: {events:?}"
             );
         }

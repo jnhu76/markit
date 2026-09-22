@@ -68,8 +68,8 @@ pub fn load_syntax_coverage_repair(
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(format!("read {}: {error}", path.display())),
     };
-    let artifact: RepairArtifact = serde_json::from_str(&raw)
-        .map_err(|error| format!("parse {}: {error}", path.display()))?;
+    let artifact: RepairArtifact =
+        serde_json::from_str(&raw).map_err(|error| format!("parse {}: {error}", path.display()))?;
     if artifact.schema != SYNTAX_COVERAGE_REPAIR_SCHEMA {
         return Err(format!(
             "repair artifact schema {} != {}",
@@ -87,8 +87,7 @@ pub fn apply_repair(
 ) -> Result<Vec<SelectedFile>, String> {
     // The repair's basis is the frozen selection identity; fail closed
     // when the base selection no longer matches it.
-    let selection_path = benchmark_root
-        .join("workloads/selections/selected-files-v1.json");
+    let selection_path = benchmark_root.join("workloads/selections/selected-files-v1.json");
     let raw = std::fs::read_to_string(&selection_path)
         .map_err(|error| format!("read selected-files-v1.json: {error}"))?;
     let base: serde_json::Value = serde_json::from_str(&raw)
@@ -109,10 +108,7 @@ pub fn apply_repair(
         }
     }
 
-    if files
-        .iter()
-        .any(|file| file.key == repair.selected_key)
-    {
+    if files.iter().any(|file| file.key == repair.selected_key) {
         return Err(format!(
             "repair selected key {} is already selected",
             repair.selected_key
@@ -154,7 +150,7 @@ pub fn apply_repair(
         ));
     }
 
-    let file_bytes = text.as_bytes().len() as u64;
+    let file_bytes = text.len() as u64;
     files.push(SelectedFile {
         key: repair.selected_key.clone(),
         source_id: source_id.to_string(),

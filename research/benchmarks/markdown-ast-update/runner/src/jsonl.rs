@@ -24,7 +24,7 @@ mod tests {
 
     fn sample_row() -> ResultRowV1 {
         ResultRowV1 {
-            schema_version: crate::RESULT_SCHEMA_VERSION_V1,
+            schema_version: crate::RESULT_SCHEMA_VERSION_V2,
             protocol_version: crate::PROTOCOL_VERSION.to_string(),
             build_identity: BuildIdentitySlot {
                 runner_git_commit: "test".to_string(),

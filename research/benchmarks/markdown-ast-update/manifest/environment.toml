@@ -37,9 +37,12 @@ os_kernel = "Linux 6.18.33.2-microsoft-standard-WSL2 (x86_64)"
 notes = "R1 ran no benchmarks; full host capture (CPU model, affinity, frequency policy) is recorded at measurement stages per R0 §13."
 
 [result_refs]
-schema_version = 1
+# MEASUREMENT-CORRECTIVE-1: the result row schema is v2 (per-version
+# source-inspection attribution); v1 is retired. The Rust row struct
+# keeps its historical ResultRowV1 name.
+schema_version = 2
 schema_doc = "protocol/result-schema.md"
-schema_json = "protocol/result-schema-v1.json"
+schema_json = "protocol/result-schema-v2.json"
 case_id_algorithm = "sha256-of-casekey-v1"
 # v2 = Lemire multiply-shift WITH rejection (R1-CORRECTIVE-1); v1
 # ("splitmix64-v1+fisher-yates-mulshift-v1") is retired: its bounded

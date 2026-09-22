@@ -142,7 +142,7 @@ source inspection 由 common collector 对 raw interval events 做 union/derive�
 CaseId = SHA256(canonical_encode(CaseKeyV1))，无机制/lane/运行时身份
 order = CaseId 字节排序 + splitmix64-v1+fisher-yates-lemire-rejection-v2
 CaseId / SplitMix64 / final permutation 有 golden vectors 防止 silent drift
-ResultRowV1 schema（Rust 类型为源，protocol/result-schema-v1.json 漂移防护）
+ResultRowV1 schema（Rust 类型为源，protocol/result-schema-v2.json 漂移防护；MEASUREMENT-CORRECTIVE-1 起 schema v2）
 worker/supervisor process boundary 保留 timeout/fatal-exit case；fatal signals 统一诚实归类 Crash
 null mechanism __r1_null__ + R1_SMOKE_ONLY fixture 端到端通过
 scripts/verify-r1.sh 验收门

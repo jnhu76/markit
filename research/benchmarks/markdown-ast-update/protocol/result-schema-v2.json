@@ -308,7 +308,7 @@
       ]
     },
     "WorkCounters": {
-      "description": "The R0 first-round work-counter slots, in frozen order.\n\n`unique_source_intervals_inspected` / `unique_source_bytes_inspected`\nare DERIVED slots: mechanisms never write them; they are computed by\n[`CounterSink::finalize_derived`] from `record_source_inspection`\nevents. They stay `Unknown` for runs that did not complete (or did not\nrun attribution).\n\nNo `Default`: absent instrumentation must be spelled\n[`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]\nexplicitly, never implicit.",
+      "description": "The ATTRIBUTION-SCHEMA-v2 work-counter slots, in frozen order\n(supersedes the v1 slot set; MEASUREMENT-CORRECTIVE-1 §18/§19 — the\nv1 schema silently unioned OLD and POST source offsets and had no\nrepeated-effort quantity).\n\n`unique_*_source_*` are DERIVED slots: mechanisms never write them;\nthey are computed by [`CounterSink::finalize_derived`] from\n`record_source_inspection` events, per source version. They stay\n`Unknown` for runs that did not complete (or did not run\nattribution).\n\nNo `Default`: absent instrumentation must be spelled\n[`WorkCounters::all_unknown`] or [`WorkCounters::all_not_applicable`]\nexplicitly, never implicit.",
       "type": "object",
       "properties": {
         "blocks_reparsed": {
@@ -332,17 +332,41 @@
         "restart_distance": {
           "$ref": "#/$defs/observed_uint64"
         },
-        "unique_source_bytes_inspected": {
+        "source_bytes_inspected_total": {
+          "description": "Actual cumulative inspection EFFORT: the sum of every inspection\nevent's length across both versions, repeated scans included.",
           "$ref": "#/$defs/observed_uint64"
         },
-        "unique_source_intervals_inspected": {
+        "unique_old_source_bytes": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_old_source_intervals": {
+          "description": "Derived, OLD version: distinct byte intervals/bytes of the OLD\nsource inspected.",
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_post_source_bytes": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_post_source_intervals": {
+          "description": "Derived, POST version: distinct byte intervals/bytes of the POST\nsource inspected.",
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_source_bytes": {
+          "$ref": "#/$defs/observed_uint64"
+        },
+        "unique_source_intervals": {
+          "description": "Derived COMBINED primary unique-coverage quantity: the SUM of the\nOLD-union bytes and the POST-union bytes. Never a cross-version\noffset union.",
           "$ref": "#/$defs/observed_uint64"
         }
       },
       "additionalProperties": false,
       "required": [
-        "unique_source_intervals_inspected",
-        "unique_source_bytes_inspected",
+        "unique_old_source_intervals",
+        "unique_old_source_bytes",
+        "unique_post_source_intervals",
+        "unique_post_source_bytes",
+        "unique_source_intervals",
+        "unique_source_bytes",
+        "source_bytes_inspected_total",
         "blocks_reparsed",
         "nodes_rebuilt",
         "nodes_reused",

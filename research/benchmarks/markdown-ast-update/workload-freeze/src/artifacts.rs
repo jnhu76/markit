@@ -11,12 +11,12 @@ use crate::applicability::{FrozenWorkload, MatrixRow};
 use crate::coverage::CoverageReport;
 use crate::fullread::FullReadRecord;
 use crate::traces::TraceRecord;
-use crate::{FREEZE_RECEIPT_SCHEMA, CORRECTIVE_C_VERSION};
+use crate::{CORRECTIVE_C_VERSION, FREEZE_RECEIPT_SCHEMA};
 
 /// Canonical JSONL lines for the applicability matrix.
 pub fn matrix_lines(rows: &[MatrixRow]) -> Vec<String> {
     rows.iter()
-        .map(|row| markit_mdbench_semantics::canonical_json_line(row))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect()
 }
 
@@ -24,7 +24,7 @@ pub fn matrix_lines(rows: &[MatrixRow]) -> Vec<String> {
 pub fn full_read_lines(records: &[FullReadRecord]) -> Vec<String> {
     records
         .iter()
-        .map(|record| markit_mdbench_semantics::canonical_json_line(record))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect()
 }
 
@@ -32,7 +32,7 @@ pub fn full_read_lines(records: &[FullReadRecord]) -> Vec<String> {
 pub fn payload_lines(payloads: &[markit_mdbench_semantics::payload::PayloadRecord]) -> Vec<String> {
     payloads
         .iter()
-        .map(|payload| markit_mdbench_semantics::canonical_json_line(payload))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect()
 }
 
@@ -40,7 +40,7 @@ pub fn payload_lines(payloads: &[markit_mdbench_semantics::payload::PayloadRecor
 pub fn trace_lines(records: &[TraceRecord]) -> Vec<String> {
     records
         .iter()
-        .map(|record| markit_mdbench_semantics::canonical_json_line(record))
+        .map(markit_mdbench_semantics::canonical_json_line)
         .collect()
 }
 
@@ -102,7 +102,6 @@ pub fn freeze_receipt(
 pub fn write_artifact(dir: &Path, name: &str, content: &str) -> Result<String, String> {
     std::fs::create_dir_all(dir).map_err(|error| format!("mkdir {}: {error}", dir.display()))?;
     let path = dir.join(name);
-    std::fs::write(&path, content)
-        .map_err(|error| format!("write {}: {error}", path.display()))?;
+    std::fs::write(&path, content).map_err(|error| format!("write {}: {error}", path.display()))?;
     Ok(markit_mdbench_semantics::sha256_hex(content.as_bytes()))
 }

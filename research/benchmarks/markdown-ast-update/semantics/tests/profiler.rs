@@ -11,9 +11,7 @@ use std::path::{Path, PathBuf};
 
 use markit_mdbench_semantics::facts::{FactReason, LaneScopeGrade, NewlineForm, RecognitionStatus};
 use markit_mdbench_semantics::pilot::load_fixture;
-use markit_mdbench_semantics::{
-    profile_g0, profile_g1, source_facts, SyntaxKind,
-};
+use markit_mdbench_semantics::{profile_g0, profile_g1, source_facts, SyntaxKind};
 
 fn bench_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -82,9 +80,10 @@ fn host_context_rule_keeps_literal_content_out_of_host_syntax() {
         fact.syntax_kind == SyntaxKind::Table
             && fact.recognition_status == RecognitionStatus::Recognized
     }));
-    assert!(!profile.syntax_facts.iter().any(|fact| {
-        fact.syntax_kind == SyntaxKind::Table && fact.host_context
-    }));
+    assert!(!profile
+        .syntax_facts
+        .iter()
+        .any(|fact| { fact.syntax_kind == SyntaxKind::Table && fact.host_context }));
 
     // `$not math$` inside the fence and `$inline$` inside the code span are
     // candidates in non-host context, never host math evidence.
@@ -107,7 +106,10 @@ fn host_context_rule_keeps_literal_content_out_of_host_syntax() {
             fact.syntax_kind,
             SyntaxKind::Table | SyntaxKind::InlineMath | SyntaxKind::DisplayMath
         ) {
-            assert!(!fact.host_context, "literal content must not be host syntax");
+            assert!(
+                !fact.host_context,
+                "literal content must not be host syntax"
+            );
             assert_eq!(fact.reason, FactReason::NonHostContext);
             assert_ne!(fact.recognition_status, RecognitionStatus::Recognized);
             assert!(!fact.is_strict_coverage());
@@ -157,7 +159,10 @@ fn recognized_facts_carry_byte_spans_on_char_boundaries() {
     assert_eq!((heading.source_start, heading.source_end), (0, 15));
     assert!(source.is_char_boundary(heading.source_start));
     assert!(source.is_char_boundary(heading.source_end));
-    assert_eq!(&source[heading.source_start..heading.source_end], "# 中文标题\n");
+    assert_eq!(
+        &source[heading.source_start..heading.source_end],
+        "# 中文标题\n"
+    );
 
     let emoji_cell = profile
         .syntax_facts
@@ -294,7 +299,11 @@ fn probe_oracle_disagreement_is_recorded() {
         "a recognized construct carries exactly one fact"
     );
     assert_eq!(
-        recognized.structural.table.expect("table facts").table_count,
+        recognized
+            .structural
+            .table
+            .expect("table facts")
+            .table_count,
         1
     );
 
@@ -328,7 +337,9 @@ fn source_facts_are_parser_independent_and_byte_exact() {
     assert_eq!(unterminated.line_count, 2);
     assert_eq!(unterminated.crlf_count, 1);
     assert!(facts.cjk_bytes > 0);
-    assert!((facts.cjk_byte_share - facts.cjk_bytes as f64 / facts.file_bytes as f64).abs() < 1e-12);
+    assert!(
+        (facts.cjk_byte_share - facts.cjk_bytes as f64 / facts.file_bytes as f64).abs() < 1e-12
+    );
     assert_eq!(facts.source_sha256.len(), 64);
     assert!(facts.utf8_valid);
 

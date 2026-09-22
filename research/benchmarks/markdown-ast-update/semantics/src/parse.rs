@@ -8,8 +8,10 @@
 //! Nothing in this module parses Markdown: G0 fills it from the frozen
 //! repository reference parse, G1 from the pinned independent oracle.
 
+use crate::facts::{
+    Span, StructuralFacts, CONTAINER_DEPTH_CONVENTION, LARGEST_BLOCK_RULE, ZERO_DENOMINATOR_RULE,
+};
 use crate::facts::{SyntaxFact, SyntaxKind, TableFacts};
-use crate::facts::{Span, StructuralFacts, CONTAINER_DEPTH_CONVENTION, LARGEST_BLOCK_RULE, ZERO_DENOMINATOR_RULE};
 
 /// One node of a lane parse.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -148,11 +150,7 @@ pub fn structural_facts(
     let mut fence_count = 0u64;
 
     for child in &parse.root.children {
-        walk_depth(
-        child,
-        0,
-        container_kinds,
-        &mut |node, depth| {
+        walk_depth(child, 0, container_kinds, &mut |node, depth| {
             if block_kinds.contains(&node.kind) {
                 block_count += 1;
                 let bytes = node.span.len() as u64;
@@ -172,13 +170,15 @@ pub fn structural_facts(
             if container_kinds.contains(&node.kind) {
                 max_container_depth = max_container_depth.max(depth + 1);
             }
-        },
-    );
+        });
     }
 
     let kib = source_bytes as f64 / 1024.0;
     let fence_density_per_kib = ratio(fence_count as f64, kib);
-    let code_occupancy = ratio(parse.extras.fenced_code_content_bytes as f64, source_bytes as f64);
+    let code_occupancy = ratio(
+        parse.extras.fenced_code_content_bytes as f64,
+        source_bytes as f64,
+    );
     let reference_total =
         parse.extras.reference_definition_count + parse.extras.reference_use_count;
     let reference_density_per_kib = ratio(reference_total as f64, kib);
@@ -241,12 +241,12 @@ pub fn ratio(numerator: f64, denominator: f64) -> f64 {
 /// second parser: it never decides whether the construct exists.
 ///
 /// Closing-line rule (mirrors the oracle state machines): the span's last
-/// line closes the fence when it ends in a run of `fence_char` of length
-/// >= max(3, opener run), preceded only by container-prefix bytes (space,
-/// tab, `>`, `-`, `+`, `*`, `.`, `)`, digits) and followed only by spaces.
-/// The prefix allowance is what makes a quoted closer (`> ```` `) close
-/// the fence exactly as the oracle's per-line container stripping does;
-/// ordinary body text before the run (`x```` `) never qualifies.
+/// line closes the fence when it ends in a run of `fence_char` of at
+/// least max(3, opener run) characters, preceded only by container-prefix
+/// bytes (space, tab, `>`, `-`, `+`, `*`, `.`, `)`, digits) and followed
+/// only by spaces. The prefix allowance is what makes a blockquote-prefixed
+/// closer line close the fence exactly as the oracle's per-line container
+/// stripping does; ordinary body text before the run never qualifies.
 pub fn fenced_content_interval(source: &str, span: Span, fence_char: char) -> Span {
     let opener_end = match source[span.start..span.end].find('\n') {
         Some(offset) => span.start + offset + 1,
@@ -260,7 +260,10 @@ pub fn fenced_content_interval(source: &str, span: Span, fence_char: char) -> Sp
     // keeps the rule total), then count the run.
     let opener_head = &source[span.start..opener_end];
     let opener_run = match opener_head.find(fence_char) {
-        Some(first) => opener_head[first..].chars().take_while(|c| *c == fence_char).count(),
+        Some(first) => opener_head[first..]
+            .chars()
+            .take_while(|c| *c == fence_char)
+            .count(),
         None => 3,
     };
     // Last line of the span; it closes the fence only if it is a valid
@@ -285,9 +288,12 @@ fn is_closing_fence_line(line: &str, fence_char: char, min_run: usize) -> bool {
         return false;
     }
     let prefix = &line[..line.len() - run_len];
-    prefix
-        .chars()
-        .all(|c| matches!(c, ' ' | '\t' | '>' | '-' | '+' | '*' | '.' | ')' | '0'..='9'))
+    prefix.chars().all(|c| {
+        matches!(
+            c,
+            ' ' | '\t' | '>' | '-' | '+' | '*' | '.' | ')' | '0'..='9'
+        )
+    })
 }
 
 /// The fence character of a fenced block at `span.start`, derived from the

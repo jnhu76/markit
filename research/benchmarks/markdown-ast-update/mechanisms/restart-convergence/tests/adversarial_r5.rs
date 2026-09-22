@@ -10,10 +10,11 @@
 
 use markit_mdbench_common::source::SourceId;
 use markit_mdbench_common::{
-    CanonicalEdit, CounterSink, Mechanism, MechanismContext, Source, WorkCounters,
+    CanonicalEdit, CounterSink, Mechanism, MechanismContext, ResultChecksum, Source, WorkCounters,
 };
 use markit_mdbench_full_rebuild::parse_document;
 use markit_mdbench_oracle::normalized::normalized_checksum;
+use markit_mdbench_oracle::NormalizeV1;
 use markit_mdbench_restart_convergence::{H4State, RestartConvergenceMechanism};
 
 // ---------------------------------------------------------------------------
@@ -371,17 +372,20 @@ fn run_sequence(family: Family, seed: u64, cjk: bool) {
                     panic!("family {family:?} seed {seed} step {step}: update: {err:?}")
                 });
             let clean = parse_document(post.as_bytes());
+            // MEASUREMENT-CORRECTIVE-1: complete() seals the state; the
+            // normalized projection and checksum are post-complete exports.
+            let done = mech.complete(pending).expect("complete");
             assert_eq!(
-                pending.result(),
-                &clean,
+                done.state.normalize_v1(),
+                clean,
                 "family {family:?} seed {seed} step {step}: structural mismatch vs H0"
             );
             assert_eq!(
-                normalized_checksum(pending.result()),
+                done.state.result_checksum(),
                 normalized_checksum(&clean),
                 "family {family:?} seed {seed} step {step}: checksum mismatch"
             );
-            next_state = mech.complete(pending).expect("complete").state;
+            next_state = done.state;
         }
         state = next_state;
         doc = post;

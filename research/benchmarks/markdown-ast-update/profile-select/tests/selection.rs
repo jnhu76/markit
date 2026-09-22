@@ -5,12 +5,18 @@
 
 use markit_mdbench_profile_select::redundancy::{signature, RedundancyArtifact};
 use markit_mdbench_profile_select::selection::{
-    feature_value, key, select, syntax_cell, MATH_CANDIDATE_FEATURE, PROJECT_CAP,
+    feature_value, select, syntax_cell, MATH_CANDIDATE_FEATURE, PROJECT_CAP,
 };
 use markit_mdbench_profile_select::stats::{bin_of, derive_bins, percentile_rank};
 use markit_mdbench_profile_select::{CandidateIdentity, CandidateRow};
 
-fn identity(source_id: &str, path: &str, domain: &str, sha256: &str, bytes: u64) -> CandidateIdentity {
+fn identity(
+    source_id: &str,
+    path: &str,
+    domain: &str,
+    sha256: &str,
+    bytes: u64,
+) -> CandidateIdentity {
     CandidateIdentity {
         source_id: source_id.to_string(),
         snapshot_path: path.to_string(),
@@ -53,7 +59,7 @@ fn bins_split_zero_and_tertiles_deterministically() {
     assert!(bins.bins.contains(&"LOW".to_string()));
     assert!(bins.bins.contains(&"MEDIUM".to_string()));
     assert!(bins.bins.contains(&"HIGH".to_string()));
-    assert_eq!(bins.zero_meaningful, true);
+    assert!(bins.zero_meaningful);
     // Deterministic across calls.
     assert_eq!(derive_bins("test_feature", true, &values), bins);
     // ZERO assignment.
@@ -83,8 +89,15 @@ fn profile_source_hash_binds_to_identity() {
     assert!(row.hash_match);
     // A row constructed against a wrong identity hash is flagged at
     // construction, never accepted.
-    let wrong_identity = identity("src", "files/a.md", "D", &"0".repeat(64), markdown.len() as u64);
-    let tampered = markit_mdbench_profile_select::rows::profile_candidate(&wrong_identity, markdown);
+    let wrong_identity = identity(
+        "src",
+        "files/a.md",
+        "D",
+        &"0".repeat(64),
+        markdown.len() as u64,
+    );
+    let tampered =
+        markit_mdbench_profile_select::rows::profile_candidate(&wrong_identity, markdown);
     assert!(!tampered.hash_match);
     assert!(!tampered.g0_strict_eligible());
 }
@@ -118,11 +131,7 @@ fn representative_selection_respects_project_cap_and_covers_cells() {
     }
     assert!(rows.iter().all(|row| row.g0_strict_eligible()));
     let outcome = select(&rows, &empty_redundancy()).expect("selection");
-    for (project, count) in [
-        ("project-a", 0),
-        ("project-b", 0),
-        ("project-c", 0),
-    ] {
+    for (project, count) in [("project-a", 0), ("project-b", 0), ("project-c", 0)] {
         let used = outcome
             .representative
             .iter()
@@ -169,11 +178,13 @@ fn domain_cap_relaxation_is_mechanical_and_logged() {
     // files are needed, so any further selection is a logged relaxation.
     let mut rows = Vec::new();
     for index in 0..8 {
-        let doc = format!(
-            "# H{index}\n\n{}\n",
-            "para ".repeat(index * 40)
-        );
-        rows.push(row("only-project", &format!("files/p{index}.md"), "SINGLE_DOM", &doc));
+        let doc = format!("# H{index}\n\n{}\n", "para ".repeat(index * 40));
+        rows.push(row(
+            "only-project",
+            &format!("files/p{index}.md"),
+            "SINGLE_DOM",
+            &doc,
+        ));
     }
     let outcome = select(&rows, &empty_redundancy()).expect("selection");
     // Either the cap held for the whole (small) set, or every violation
@@ -193,30 +204,64 @@ fn domain_cap_relaxation_is_mechanical_and_logged() {
 #[test]
 fn extremal_maximum_and_tail_replicate_rules() {
     let mut rows = Vec::new();
-    rows.push(row("big", "files/big.md", "D1", &format!("# T\n\n{}", "x".repeat(50_000))));
+    rows.push(row(
+        "big",
+        "files/big.md",
+        "D1",
+        &format!("# T\n\n{}", "x".repeat(50_000)),
+    ));
     // The replicate must be a distinct project INSIDE the top 1% (min 2):
     // rank 2 is the cross-project file; the same-project runner-up at
     // rank 3 must not claim the replicate role.
-    rows.push(row("other", "files/rep.md", "D2", &format!("# T\n\n{}", "x".repeat(45_000))));
-    rows.push(row("big", "files/second.md", "D1", &format!("# T\n\n{}", "x".repeat(40_000))));
+    rows.push(row(
+        "other",
+        "files/rep.md",
+        "D2",
+        &format!("# T\n\n{}", "x".repeat(45_000)),
+    ));
+    rows.push(row(
+        "big",
+        "files/second.md",
+        "D1",
+        &format!("# T\n\n{}", "x".repeat(40_000)),
+    ));
     let outcome = select(&rows, &empty_redundancy()).expect("selection");
     let roles: Vec<(String, Vec<String>)> = outcome
         .members
         .iter()
         .map(|(key, member)| (key.clone(), member.extreme_roles.clone()))
         .collect();
-    let big = roles.iter().find(|(key, _)| key == "big/files/big.md").unwrap();
+    let big = roles
+        .iter()
+        .find(|(key, _)| key == "big/files/big.md")
+        .unwrap();
     assert!(big.1.contains(&"file_bytes:OBSERVED_MAXIMUM".to_string()));
-    let rep = roles.iter().find(|(key, _)| key == "other/files/rep.md").unwrap();
+    let rep = roles
+        .iter()
+        .find(|(key, _)| key == "other/files/rep.md")
+        .unwrap();
     assert!(rep.1.contains(&"file_bytes:TAIL_REPLICATE".to_string()));
     // Same-project runner-up is NOT the replicate.
-    let second = roles.iter().find(|(key, _)| key == "big/files/second.md").unwrap();
+    let second = roles
+        .iter()
+        .find(|(key, _)| key == "big/files/second.md")
+        .unwrap();
     assert!(!second.1.iter().any(|role| role.contains("TAIL_REPLICATE")));
 
     // Single-project universe: replicate is NONE_AVAILABLE.
     let mut single = Vec::new();
-    single.push(row("solo", "files/a.md", "D", &format!("# T\n\n{}", "y".repeat(10_000))));
-    single.push(row("solo", "files/b.md", "D", &format!("# T\n\n{}", "y".repeat(9_000))));
+    single.push(row(
+        "solo",
+        "files/a.md",
+        "D",
+        &format!("# T\n\n{}", "y".repeat(10_000)),
+    ));
+    single.push(row(
+        "solo",
+        "files/b.md",
+        "D",
+        &format!("# T\n\n{}", "y".repeat(9_000)),
+    ));
     let outcome = select(&single, &empty_redundancy()).expect("selection");
     assert!(outcome
         .trace
@@ -244,7 +289,10 @@ fn syntax_cells_carry_evidence_grades_not_mixed_counts() {
 
     let strike_doc = "Struck ~~gone~~ text.\n";
     let row_strike = row("s", "files/s.md", "D", strike_doc);
-    assert_eq!(syntax_cell(&row_strike, "extra:strikethrough"), Some("candidate"));
+    assert_eq!(
+        syntax_cell(&row_strike, "extra:strikethrough"),
+        Some("candidate")
+    );
 
     // Core cells require strict G0 evidence.
     let plain = row("p", "files/p.md", "D", &g0_strict_doc("H", ""));
@@ -267,7 +315,10 @@ fn full_document_rank_uses_math_candidate_occurrences_not_occupancy() {
     );
     let rows = vec![small.clone(), mathy.clone()];
     // The pseudo-feature is occurrence-based (G2 deferred).
-    assert!(feature_value(&mathy, MATH_CANDIDATE_FEATURE) > feature_value(&small, MATH_CANDIDATE_FEATURE));
+    assert!(
+        feature_value(&mathy, MATH_CANDIDATE_FEATURE)
+            > feature_value(&small, MATH_CANDIDATE_FEATURE)
+    );
     let outcome = select(&rows, &empty_redundancy()).expect("selection");
     let full = outcome
         .trace
@@ -309,7 +360,12 @@ fn exact_duplicates_form_one_group_with_lexical_canonical() {
         row("beta", "files/b1.md", "D", &doc),
         row("alpha", "files/a9.md", "D", &doc),
     ];
-    rows.push(row("gamma", "files/other.md", "D", &g0_strict_doc("Other", "")));
+    rows.push(row(
+        "gamma",
+        "files/other.md",
+        "D",
+        &g0_strict_doc("Other", ""),
+    ));
     let groups = markit_mdbench_profile_select::redundancy::exact_groups(&rows);
     assert_eq!(groups.len(), 1);
     let group = &groups[0];
@@ -329,7 +385,11 @@ fn near_duplicate_signature_is_deterministic_and_inspectable() {
     let sig_a2 = signature(text_b);
     let sig_c = signature(text_c);
     assert_eq!(sig_a, sig_a2);
-    let equal = sig_a.iter().zip(sig_c.iter()).filter(|(a, b)| a == b).count();
+    let equal = sig_a
+        .iter()
+        .zip(sig_c.iter())
+        .filter(|(a, b)| a == b)
+        .count();
     assert!(equal < 60, "unrelated texts must not look near-identical");
 }
 
@@ -366,7 +426,11 @@ fn candidate_universe_loader_rejects_undeclared_and_missing_sources() {
     assert_eq!(per_source.get("src-one").copied(), Some(2));
     // An undeclared extra SOURCE.json fails closed.
     let _ = std::fs::create_dir_all(dir.join("sources/src-extra"));
-    std::fs::write(dir.join("sources/src-extra/SOURCE.json"), r#"{"source_id":"src-extra","files":[]}"#).unwrap();
+    std::fs::write(
+        dir.join("sources/src-extra/SOURCE.json"),
+        r#"{"source_id":"src-extra","files":[]}"#,
+    )
+    .unwrap();
     assert!(markit_mdbench_profile_select::universe::load_identities(&dir).is_err());
     let _ = std::fs::remove_dir_all(&dir);
 }
@@ -423,7 +487,12 @@ fn selection_is_stable_across_repeated_runs() {
             &g0_strict_doc(&format!("H{index}"), &"filler ".repeat(index * 200)),
         ));
     }
-    rows.push(row("t", "files/table.md", "DOM2", "| a | b |\n|---|---|\n| 1 | 2 |\n"));
+    rows.push(row(
+        "t",
+        "files/table.md",
+        "DOM2",
+        "| a | b |\n|---|---|\n| 1 | 2 |\n",
+    ));
     let a = select(&rows, &empty_redundancy()).expect("sel");
     let b = select(&rows, &empty_redundancy()).expect("sel");
     assert_eq!(a.representative, b.representative);
@@ -495,7 +564,12 @@ fn syntax_inventory_grades_mirror_frozen_construct_scopes() {
     assert_eq!(grade_of("table"), "strict_lane_coverage");
     assert_eq!(grade_of("image"), "contract_declared_not_qualified");
     assert_eq!(grade_of("inline_math"), "lane_deferred");
-    for target in ["strikethrough", "task_list_item", "front_matter", "directive"] {
+    for target in [
+        "strikethrough",
+        "task_list_item",
+        "front_matter",
+        "directive",
+    ] {
         assert_eq!(
             grade_of(target),
             "out_of_lane_candidate",

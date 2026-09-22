@@ -508,7 +508,8 @@ pub fn g1_lane() -> LaneSpec {
              table construct, so an extension/base conflict cannot silently redefine the base"
                 .into(),
             "table recognition needs a header row immediately followed by a delimiter row whose \
-             cell count matches (GFM §4.10)".into(),
+             cell count matches (GFM §4.10)"
+                .into(),
             "a table cannot interrupt a paragraph (GFM §4.10)".into(),
             "pipes inside code spans do not split cells (GFM §4.10)".into(),
             "syntax bytes inside fences/code spans/raw HTML are literal content, never host \
@@ -537,7 +538,10 @@ pub fn g1_lane() -> LaneSpec {
             .into(),
         construct_scopes: vec![
             frozen(Table, "GFM §4.10 tables extension; the G1 pilot construct"),
-            frozen(TableHeaderRow, "GFM §4.10: the header row; normalized as `table_header_row`"),
+            frozen(
+                TableHeaderRow,
+                "GFM §4.10: the header row; normalized as `table_header_row`",
+            ),
             frozen(TableRow, "GFM §4.10"),
             frozen(TableCell, "GFM §4.10"),
             declared(Paragraph),
@@ -628,10 +632,11 @@ pub fn g2_lane() -> LaneSpec {
         normalized_vocabulary: None,
         reference_oracle: None,
         semantic_status: SemanticStatus::Deferred,
-        semantic_scope: "Identity reserved only. No semantics, no normalized result vocabulary, no \
+        semantic_scope:
+            "Identity reserved only. No semantics, no normalized result vocabulary, no \
             oracle, no eligibility rule. Math-looking bytes are reported as candidates with \
             `unknown`/`ambiguous` status under other lanes and are never counted as coverage."
-            .into(),
+                .into(),
         construct_scopes: vec![
             deferred(
                 SyntaxKind::InlineMath,

@@ -19,6 +19,7 @@ use markit_mdbench_common::CounterSink;
 use markit_mdbench_common::Mechanism;
 use markit_mdbench_common::MechanismContext;
 use markit_mdbench_common::Observed;
+use markit_mdbench_common::ResultChecksum;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkCounters;
 use markit_mdbench_corpusgen as gen;
@@ -105,7 +106,7 @@ fn assert_update_differential(
             "structural mismatch ({context})"
         );
         assert_eq!(
-            done.result_checksum,
+            done.state.result_checksum(),
             normalized_checksum(&clean),
             "checksum mismatch ({context})"
         );
@@ -593,7 +594,7 @@ fn h0_eager_completion_validation_pass() {
     assert_eq!(counters.blocks_reparsed, Observed::Known(blocks));
     assert_eq!(counters.nodes_rebuilt, Observed::Known(nodes));
     assert_eq!(
-        counters.unique_source_bytes_inspected,
+        counters.unique_post_source_bytes,
         Observed::Known(post.len() as u64),
         "the block pass must inspect every byte of the post source"
     );
@@ -606,9 +607,10 @@ fn h0_eager_completion_validation_pass() {
         normalized_checksum(&clean)
     );
 
-    // complete() seals state + checksum and reports nothing further
+    // complete() seals the state; the checksum is the post-timer export and
+    // complete() reports nothing further
     let done = mech.complete(pending).expect("complete");
-    assert_eq!(done.result_checksum, normalized_checksum(&clean));
+    assert_eq!(done.state.result_checksum(), normalized_checksum(&clean));
     assert_eq!(done.state.document, clean);
     assert_eq!(
         counters.blocks_reparsed,
@@ -677,7 +679,7 @@ fn attribution_is_honest_on_update() {
     assert_eq!(counters.restart_distance, Observed::NotApplicable);
     assert_eq!(counters.convergence_distance, Observed::NotApplicable);
     assert_eq!(
-        counters.unique_source_bytes_inspected,
+        counters.unique_post_source_bytes,
         Observed::Known(post.len() as u64)
     );
     // the measured nodes_reused zero survives finalize unchanged, and
@@ -686,7 +688,7 @@ fn attribution_is_honest_on_update() {
     assert_eq!(counters.metadata_records_touched, Observed::NotApplicable);
     // no slot is left Unknown after a completed, derived case
     assert!(!matches!(
-        counters.unique_source_bytes_inspected,
+        counters.unique_post_source_bytes,
         Observed::Unknown
     ));
 }

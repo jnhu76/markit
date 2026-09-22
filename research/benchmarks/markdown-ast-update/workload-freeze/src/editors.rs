@@ -19,7 +19,7 @@
 
 use markit_mdbench_semantics::facts::{RecognitionStatus, SyntaxFact, SyntaxKind};
 use markit_mdbench_semantics::parse::{fenced_content_interval, LaneNode, LaneParse};
-use markit_mdbench_semantics::transition::{topology, text_fingerprint, EditSpec, PredicateV1};
+use markit_mdbench_semantics::transition::{text_fingerprint, topology, EditSpec, PredicateV1};
 use markit_mdbench_semantics::{g0::parse_g0, g1::parse_g1};
 
 /// Kinds whose recognized counts are derived as payload-specific
@@ -64,15 +64,17 @@ pub fn parse_lane(source: &str, lane_id: &str) -> LaneParse {
 /// out-of-band facts not already covered by a node (the frozen
 /// TRANSITION-ORACLE-v1 counting rule).
 pub fn recognized_count(parse: &LaneParse, facts: &[SyntaxFact], kind: SyntaxKind) -> u64 {
-    let nodes: Vec<&LaneNode> = parse.nodes().into_iter().filter(|n| n.kind == kind).collect();
+    let nodes: Vec<&LaneNode> = parse
+        .nodes()
+        .into_iter()
+        .filter(|n| n.kind == kind)
+        .collect();
     let extra = facts
         .iter()
         .filter(|fact| {
             fact.syntax_kind == kind
                 && fact.recognition_status == RecognitionStatus::Recognized
-                && !nodes
-                    .iter()
-                    .any(|node| node.span.intersects(&fact.span()))
+                && !nodes.iter().any(|node| node.span.intersects(&fact.span()))
         })
         .count() as u64;
     nodes.len() as u64 + extra
@@ -100,6 +102,9 @@ pub struct Derivation {
 /// Derive the payload predicate set for one edit. The registry floors are
 /// carried verbatim into their sides; every derived predicate is proven
 /// independently by the oracle at validation time.
+// The frozen payload-construction contract fixes this parameter list;
+// grouping it would churn the frozen editors for lint aesthetics.
+#[allow(clippy::too_many_arguments)]
 pub fn derive_predicates(
     grammar_id: &str,
     pre_parse: &LaneParse,
@@ -149,12 +154,8 @@ pub fn derive_predicates(
         topology_equal,
         text_differs,
         kind_flip,
-        pre_topology_sha256: markit_mdbench_semantics::sha256_hex(
-            topology(pre_parse).as_bytes(),
-        ),
-        post_topology_sha256: markit_mdbench_semantics::sha256_hex(
-            topology(post_parse).as_bytes(),
-        ),
+        pre_topology_sha256: markit_mdbench_semantics::sha256_hex(topology(pre_parse).as_bytes()),
+        post_topology_sha256: markit_mdbench_semantics::sha256_hex(topology(post_parse).as_bytes()),
     }
 }
 
@@ -182,10 +183,7 @@ fn floor_boundary(source: &str, mut offset: usize) -> usize {
 /// Start of the line containing `offset`.
 fn line_start_of(source: &str, offset: usize) -> usize {
     let offset = floor_boundary(source, offset);
-    source[..offset]
-        .rfind('\n')
-        .map(|pos| pos + 1)
-        .unwrap_or(0)
+    source[..offset].rfind('\n').map(|pos| pos + 1).unwrap_or(0)
 }
 
 /// End of the line containing `offset` (exclusive, LF included when the
@@ -273,12 +271,10 @@ pub fn construct_paragraph_split(
     let mut index = span.start;
     while index < span.end {
         if bytes[index] == b' ' {
-            let prev_ok = index > span.start
-                && bytes[index - 1] != b' '
-                && bytes[index - 1] != b'\n';
-            let next_ok = index + 1 < span.end
-                && bytes[index + 1] != b' '
-                && bytes[index + 1] != b'\n';
+            let prev_ok =
+                index > span.start && bytes[index - 1] != b' ' && bytes[index - 1] != b'\n';
+            let next_ok =
+                index + 1 < span.end && bytes[index + 1] != b' ' && bytes[index + 1] != b'\n';
             if prev_ok && next_ok {
                 interior_spaces.push(index);
             }
@@ -448,10 +444,7 @@ pub fn construct_bq_nest(source: &str, fact: &SyntaxFact) -> Result<ConstructedE
 /// Locate the closer's backtick run of a real fenced block: scan forward
 /// from the frozen body-interval end over container/trivia bytes until
 /// the run. Returns (run_start, run_len).
-fn closer_backtick_run(
-    source: &str,
-    fact: &SyntaxFact,
-) -> Result<(usize, usize), String> {
+fn closer_backtick_run(source: &str, fact: &SyntaxFact) -> Result<(usize, usize), String> {
     let span = fact.span();
     let fence_char = markit_mdbench_semantics::parse::fence_char_at(source, span);
     let body = fenced_content_interval(source, span, fence_char);
@@ -540,10 +533,7 @@ pub fn construct_codespan_delim_break(
 }
 
 /// G0-REFDEF-REMOVE: delete the real definition's whole line.
-pub fn construct_refdef_remove(
-    source: &str,
-    fact: &SyntaxFact,
-) -> Result<ConstructedEdit, String> {
+pub fn construct_refdef_remove(source: &str, fact: &SyntaxFact) -> Result<ConstructedEdit, String> {
     let span = fact.span();
     let start = line_start_of(source, span.start);
     let end = line_end_of(source, span.end);
@@ -599,7 +589,10 @@ pub fn construct_link_dest_break(
 // ---------------------------------------------------------------------------
 
 /// Byte range of the delimiter row (the table span's second line).
-fn table_delimiter_row(source: &str, table_span: markit_mdbench_semantics::Span) -> Result<(usize, usize), String> {
+fn table_delimiter_row(
+    source: &str,
+    table_span: markit_mdbench_semantics::Span,
+) -> Result<(usize, usize), String> {
     let header_start = line_start_of(source, table_span.start);
     let header_end = line_end_of(source, header_start);
     if header_end >= table_span.end {
@@ -610,7 +603,10 @@ fn table_delimiter_row(source: &str, table_span: markit_mdbench_semantics::Span)
     Ok((delim_start, delim_end))
 }
 
-fn table_header_row_span(source: &str, table_span: markit_mdbench_semantics::Span) -> (usize, usize) {
+fn table_header_row_span(
+    source: &str,
+    table_span: markit_mdbench_semantics::Span,
+) -> (usize, usize) {
     let header_start = line_start_of(source, table_span.start);
     (header_start, line_end_of(source, header_start))
 }
@@ -654,17 +650,16 @@ pub fn construct_table_header_pipe_remove(
     let bytes = source.as_bytes();
     // Exclude the line terminator: only row content participates in the
     // leading/trailing boundary decision.
-    let header_end = if header_end_inclusive > header_start
-        && bytes[header_end_inclusive - 1] == b'\n'
-    {
-        header_end_inclusive - 1
-    } else {
-        header_end_inclusive
-    };
+    let header_end =
+        if header_end_inclusive > header_start && bytes[header_end_inclusive - 1] == b'\n' {
+            header_end_inclusive - 1
+        } else {
+            header_end_inclusive
+        };
     let mut pipes: Vec<usize> = Vec::new();
-    for pos in header_start..header_end {
-        if bytes[pos] == b'|' {
-            pipes.push(pos);
+    for (offset, &byte) in bytes[header_start..header_end].iter().enumerate() {
+        if byte == b'|' {
+            pipes.push(header_start + offset);
         }
     }
     if pipes.is_empty() {

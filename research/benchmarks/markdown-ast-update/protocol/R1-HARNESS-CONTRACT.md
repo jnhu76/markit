@@ -294,8 +294,9 @@ Seed is recorded in every row. `HashMap` iteration never determines order.
 
 ## 10. Result schema
 
-`ResultRowV1` (in `runner/src/result.rs`) is the single schema authority;
-`protocol/result-schema-v1.json` is GENERATED from it via
+`ResultRowV1` (in `runner/src/result.rs`; the row type keeps its
+historical name and stamps `RESULT_SCHEMA_VERSION_V2 = 2`) is the single
+schema authority; `protocol/result-schema-v2.json` is GENERATED from it via
 `mdbench-gen-schema` (schemars), and a test fails if the checked-in schema
 drifts from the Rust model. Fields, taxonomies, and the lane payload are
 documented in `protocol/result-schema.md`. Raw rows contain facts only — no

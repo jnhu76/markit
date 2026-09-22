@@ -24,11 +24,11 @@ use std::collections::BTreeMap;
 use markit_mdbench_block_local::BlockLocalMechanism;
 use markit_mdbench_common::case::{CaseId, CaseKeyV1};
 use markit_mdbench_common::payload::PayloadShape;
-use markit_mdbench_common::{Source, SourceId};
-use markit_mdbench_full_rebuild::FullRebuildMechanism;
+use markit_mdbench_common::{CorrectnessStatus, ExecutionStatus, Source, SourceId};
 use markit_mdbench_fragment_reuse::FragmentReuseMechanism;
+use markit_mdbench_full_rebuild::FullRebuildMechanism;
 use markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism;
-use markit_mdbench_oracle::{validate_normalized, NormalizeV1, ReferenceOracle};
+use markit_mdbench_oracle::{validate_normalized, ReferenceOracle};
 use markit_mdbench_restart_convergence::RestartConvergenceMechanism;
 use markit_mdbench_runner::orchestrate::{
     build_initial_state, run_full_parse_correctness, run_update_correctness,
@@ -37,7 +37,7 @@ use markit_mdbench_semantics::payload::{validate_payload, PayloadRecord};
 use serde::{Deserialize, Serialize};
 
 use crate::fullread::FullReadRecord;
-use crate::{DRY_RUN_SCHEMA, CASE_GENERATOR_ID, MEMBERSHIP_G0_PRIMARY};
+use crate::{CASE_GENERATOR_ID, DRY_RUN_SCHEMA, MEMBERSHIP_G0_PRIMARY};
 
 /// One per-case dry-run row (JSONL).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -65,8 +65,13 @@ pub struct HorseCounts {
 pub struct DryRunFullReadSection {
     pub files: u64,
     pub g0_strict_cases: u64,
+    /// Total H0-H4 clean-construction dispatches (files x 5 horses).
+    pub horse_dispatches: u64,
     pub pass: u64,
     pub failed: u64,
+    /// Per-horse clean-state construction counts (BLOCKER B parity:
+    /// every G0-strict file must pass on every horse -> 110/110).
+    pub per_horse: BTreeMap<String, HorseCounts>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -90,7 +95,9 @@ pub struct DryRunReport {
 }
 
 /// Load JSONL records.
-pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Result<Vec<T>, String> {
+pub fn read_jsonl<T: serde::de::DeserializeOwned>(
+    path: &std::path::Path,
+) -> Result<Vec<T>, String> {
     let raw = std::fs::read_to_string(path)
         .map_err(|error| format!("read {}: {error}", path.display()))?;
     let mut records = Vec::new();
@@ -98,11 +105,10 @@ pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Res
         if line.trim().is_empty() {
             continue;
         }
-        records.push(
-            serde_json::from_str(line).map_err(|error| {
+        records
+            .push(serde_json::from_str(line).map_err(|error| {
                 format!("parse {} line {}: {error}", path.display(), index + 1)
-            })?,
-        );
+            })?);
     }
     Ok(records)
 }
@@ -112,22 +118,16 @@ pub fn read_jsonl<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Res
 pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<String, String> {
     let old_source_sha256: [u8; 32] = (0..32)
         .map(|index| {
-            u8::from_str_radix(
-                &payload.pre_source_sha256[index * 2..index * 2 + 2],
-                16,
-            )
-            .map_err(|error| format!("pre sha hex: {error}"))
+            u8::from_str_radix(&payload.pre_source_sha256[index * 2..index * 2 + 2], 16)
+                .map_err(|error| format!("pre sha hex: {error}"))
         })
         .collect::<Result<Vec<_>, _>>()?
         .try_into()
         .map_err(|_| "pre sha length")?;
     let inserted: [u8; 32] = (0..32)
         .map(|index| {
-            u8::from_str_radix(
-                &payload.inserted_sha256[index * 2..index * 2 + 2],
-                16,
-            )
-            .map_err(|error| format!("inserted sha hex: {error}"))
+            u8::from_str_radix(&payload.inserted_sha256[index * 2..index * 2 + 2], 16)
+                .map_err(|error| format!("inserted sha hex: {error}"))
         })
         .collect::<Result<Vec<_>, _>>()?
         .try_into()
@@ -144,9 +144,7 @@ pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<Stri
         operation,
         edit_start_byte: has_edit.then_some(payload.edit.edit_start),
         edit_end_byte: has_edit.then_some(payload.edit.edit_end),
-        inserted_text_sha256: operation
-            .has_inserted_text()
-            .then_some(inserted),
+        inserted_text_sha256: operation.has_inserted_text().then_some(inserted),
         generator_id: Some(CASE_GENERATOR_ID.to_string()),
         generator_seed: None,
     }
@@ -155,15 +153,20 @@ pub fn case_id_of(payload: &PayloadRecord, pre_source_bytes: u64) -> Result<Stri
     Ok(CaseId::from_key(&key).hex())
 }
 
+/// One clean-state construction dispatch (Horse, full parse) against the
+/// H0 reference. The reference is computed ONCE per file from H0's clean
+/// parse (the correctness authority); every horse normalizes its
+/// completed state OUTSIDE any measurement and is compared structurally.
 fn dispatch_full_read(
     sources: &BTreeMap<String, &str>,
     full_read: &[FullReadRecord],
-) -> (DryRunFullReadSection, Vec<DryRunCaseRow>) {
-    let mechanism = FullRebuildMechanism::new();
+) -> Result<(DryRunFullReadSection, Vec<DryRunCaseRow>), String> {
     let mut rows = Vec::new();
     let mut pass = 0u64;
     let mut failed = 0u64;
     let mut g0_strict = 0u64;
+    let mut horse_dispatches = 0u64;
+    let mut per_horse: BTreeMap<String, HorseCounts> = BTreeMap::new();
     for record in full_read {
         let Some(_lane) = record
             .lanes
@@ -177,56 +180,66 @@ fn dispatch_full_read(
             .get(record.source_key.as_str())
             .expect("FULL_READ source is materialized");
         let source = Source::new(SourceId(0), (*source_text).to_string());
-        // One H0 clean parse through the runner's correctness-only path;
-        // the hook verifies the clean-parse result contract (the frozen
-        // NORMALIZED-RESULT-v1 gate) on the completed state.
-        let hook = NormalizeContractHook;
-        let report = run_full_parse_correctness(&mechanism, &source, &hook);
-        let ok = report.execution_status == markit_mdbench_common::ExecutionStatus::Pass
-            && report.correctness_status == markit_mdbench_common::CorrectnessStatus::Pass;
-        if ok {
-            pass += 1;
-        } else {
-            failed += 1;
+        let payload_id = format!("full-read:{}", record.source_key);
+
+        // The reference: H0 clean parse (the correctness authority, built
+        // outside every measurement; parse_document keeps the frozen
+        // NORMALIZED-RESULT-v1 conformance gate on the reference).
+        let reference = markit_mdbench_full_rebuild::parse_document(source.as_bytes());
+        validate_normalized(&reference, None)
+            .map_err(|error| format!("full-read reference gate: {error:?}"))?;
+
+        macro_rules! full_read_dispatch {
+            ($horse:expr, $mechanism:expr) => {{
+                let mechanism = $mechanism;
+                let hook = ReferenceOracle::new(reference.clone());
+                let report = run_full_parse_correctness(&mechanism, &source, &hook);
+                let ok = report.execution_status == ExecutionStatus::Pass
+                    && report.correctness_status == CorrectnessStatus::Pass;
+                horse_dispatches += 1;
+                rows.push(DryRunCaseRow {
+                    kind: "full_read".to_string(),
+                    horse: $horse.to_string(),
+                    payload_id: payload_id.clone(),
+                    case_id: String::new(),
+                    source_key: record.source_key.clone(),
+                    execution_status: format!("{:?}", report.execution_status),
+                    correctness_status: format!("{:?}", report.correctness_status),
+                });
+                let entry = per_horse.entry($horse.to_string()).or_insert(HorseCounts {
+                    pass: 0,
+                    wrong_result: 0,
+                    execution_failed: 0,
+                });
+                if ok {
+                    pass += 1;
+                    entry.pass += 1;
+                } else {
+                    failed += 1;
+                    entry.wrong_result += 1;
+                }
+            }};
         }
-        rows.push(DryRunCaseRow {
-            kind: "full_read".to_string(),
-            horse: "H0".to_string(),
-            payload_id: format!("full-read:{}", record.source_key),
-            case_id: String::new(),
-            source_key: record.source_key.clone(),
-            execution_status: format!("{:?}", report.execution_status),
-            correctness_status: format!("{:?}", report.correctness_status),
-        });
+        // BLOCKER B (MEASUREMENT-CORRECTIVE-1 §12): every G0-strict file
+        // is correctness-qualified on ALL FIVE horses — clean parse +
+        // native-state construction, 22 x 5 = 110 dispatches, no timing.
+        full_read_dispatch!("H0", FullRebuildMechanism::new());
+        full_read_dispatch!("H1", BlockLocalMechanism::new());
+        full_read_dispatch!("H2", FragmentReuseMechanism::new());
+        full_read_dispatch!("H3", OldTreeSubtreeReuseMechanism::new());
+        full_read_dispatch!("H4", RestartConvergenceMechanism::new());
     }
-    (
+    Ok((
         DryRunFullReadSection {
             files: full_read.len() as u64,
             g0_strict_cases: g0_strict,
+            horse_dispatches,
             pass,
             failed,
+            per_horse,
         },
         rows,
-    )
-}
-
-/// Hook verifying the clean-parse result contract: the completed H0 state
-/// must satisfy the frozen NORMALIZED-RESULT-v1 conformance gate.
-struct NormalizeContractHook;
-impl markit_mdbench_oracle::CorrectnessHook<markit_mdbench_full_rebuild::H0State>
-    for NormalizeContractHook
-{
-    fn verify(
-        &self,
-        completed: &markit_mdbench_common::Completed<markit_mdbench_full_rebuild::H0State>,
-    ) -> markit_mdbench_common::CorrectnessStatus {
-        let document = completed.state.normalize_v1();
-        if validate_normalized(&document, None).is_ok() {
-            markit_mdbench_common::CorrectnessStatus::Pass
-        } else {
-            markit_mdbench_common::CorrectnessStatus::WrongResult
-        }
-    }
+    ))
 }
 
 /// Dispatch one G0 EDIT_WRITE case through all five horses.
@@ -300,7 +313,7 @@ pub fn run_dry_run(
     }
 
     // ---- FULL_READ -----------------------------------------------------
-    let (full_read_section, mut rows) = dispatch_full_read(&sources, &full_read);
+    let (full_read_section, mut rows) = dispatch_full_read(&sources, &full_read)?;
 
     // ---- EDIT_WRITE ------------------------------------------------------
     // Reconstruct each trace's pre sources from the frozen base + step-0
@@ -308,7 +321,10 @@ pub fn run_dry_run(
     // the step-0 post source).
     let mut by_trace: BTreeMap<&str, Vec<&PayloadRecord>> = BTreeMap::new();
     for payload in &payloads {
-        by_trace.entry(payload.trace_id.as_str()).or_default().push(payload);
+        by_trace
+            .entry(payload.trace_id.as_str())
+            .or_default()
+            .push(payload);
     }
     let mut per_horse: BTreeMap<String, HorseCounts> = BTreeMap::new();
     let mut g0_cases = 0u64;
@@ -385,8 +401,7 @@ pub fn run_dry_run(
         generator_version: crate::CORRECTIVE_C_VERSION.to_string(),
         mode: "correctness_only_dry_run".to_string(),
         correctness_authority:
-            "normalize(Hx update result) == normalize(H0 clean full parse(post source))"
-                .to_string(),
+            "normalize(Hx update result) == normalize(H0 clean full parse(post source))".to_string(),
         full_read: full_read_section,
         edit_write: DryRunEditWriteSection {
             g0_cases,

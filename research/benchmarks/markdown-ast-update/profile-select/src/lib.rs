@@ -198,7 +198,10 @@ impl CandidateRow {
         self.materialized
             && self.hash_match
             && self.profile_failure.is_none()
-            && self.g0().map(|lane| lane.strict_scope_clean).unwrap_or(false)
+            && self
+                .g0()
+                .map(|lane| lane.strict_scope_clean)
+                .unwrap_or(false)
     }
 
     /// Frozen lexical candidate order: `(source_id, snapshot_path)`.

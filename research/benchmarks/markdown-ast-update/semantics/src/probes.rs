@@ -278,7 +278,10 @@ fn probe_directive(source: &str, lines: &[Line]) -> Vec<RawCandidate> {
             let mut name_len = 0usize;
             while cursor < bytes.len() {
                 let byte = bytes[cursor];
-                if byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-' || byte == b'_'
+                if byte.is_ascii_lowercase()
+                    || byte.is_ascii_digit()
+                    || byte == b'-'
+                    || byte == b'_'
                 {
                     name_len += 1;
                     cursor += 1;
@@ -499,7 +502,10 @@ fn split_row(line: &str) -> Vec<String> {
     if trimmed.trim().is_empty() {
         return Vec::new();
     }
-    trimmed.split('|').map(|cell| cell.trim().to_string()).collect()
+    trimmed
+        .split('|')
+        .map(|cell| cell.trim().to_string())
+        .collect()
 }
 
 fn is_delimiter_cell(cell: &str) -> bool {
@@ -635,13 +641,20 @@ fn probe_task_list_item(source: &str, lines: &[Line]) -> Vec<RawCandidate> {
                 continue;
             }
             let after = &trimmed[digits..];
-            match after.strip_prefix(". ").or_else(|| after.strip_prefix(") ")) {
+            match after
+                .strip_prefix(". ")
+                .or_else(|| after.strip_prefix(") "))
+            {
                 Some(rest) => rest,
                 None => continue,
             }
         };
-        let checkbox = rest.starts_with("[ ] ") || rest.starts_with("[x] ") || rest.starts_with("[X] ")
-            || rest == "[ ]" || rest == "[x]" || rest == "[X]";
+        let checkbox = rest.starts_with("[ ] ")
+            || rest.starts_with("[x] ")
+            || rest.starts_with("[X] ")
+            || rest == "[ ]"
+            || rest == "[x]"
+            || rest == "[X]";
         if checkbox {
             out.push(RawCandidate {
                 kind: SyntaxKind::TaskListItem,
@@ -670,7 +683,10 @@ fn probe_autolink(source: &str) -> Vec<RawCandidate> {
             Some(colon) => {
                 let scheme = &inner[..colon];
                 (2..=32).contains(&scheme.len())
-                    && scheme.chars().next().is_some_and(|c| c.is_ascii_alphabetic())
+                    && scheme
+                        .chars()
+                        .next()
+                        .is_some_and(|c| c.is_ascii_alphabetic())
                     && scheme
                         .chars()
                         .all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '.' | '-'))
@@ -778,8 +794,7 @@ fn probe_raw_html_inline(source: &str) -> Vec<RawCandidate> {
         }
         let after = inner.trim_start_matches('/');
         let plausible = after.starts_with(&name)
-            && (after.len() == name.len()
-                || after[name.len()..].starts_with(|c: char| c == ' ' || c == '/' || c == '\t'));
+            && (after.len() == name.len() || after[name.len()..].starts_with([' ', '/', '\t']));
         if plausible {
             out.push(RawCandidate {
                 kind: SyntaxKind::RawHtmlInline,

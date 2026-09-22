@@ -66,7 +66,10 @@ pub struct RedundancyArtifact {
 pub fn exact_groups(rows: &[CandidateRow]) -> Vec<ExactDuplicateGroup> {
     let mut by_hash: BTreeMap<&str, Vec<&CandidateRow>> = BTreeMap::new();
     for row in rows {
-        by_hash.entry(row.source_sha256.as_str()).or_default().push(row);
+        by_hash
+            .entry(row.source_sha256.as_str())
+            .or_default()
+            .push(row);
     }
     let mut groups = Vec::new();
     for (hash, members) in by_hash {
@@ -99,11 +102,8 @@ fn normalize(text: &str) -> Vec<String> {
     let mut current = String::new();
     for ch in text.chars() {
         let lower = ch.to_lowercase().next().unwrap_or(ch);
-        if ch.is_whitespace() {
-            if !current.is_empty() {
-                tokens.push(std::mem::take(&mut current));
-            }
-        } else if "*_`[]()#>+-|~<!.".contains(lower) {
+        let is_separator = ch.is_whitespace() || "*_`[]()#>+-|~<!.".contains(lower);
+        if is_separator {
             if !current.is_empty() {
                 tokens.push(std::mem::take(&mut current));
             }
@@ -270,22 +270,22 @@ pub fn near_groups(
 /// Full redundancy artifact. The acquisition exact-duplicate registry is
 /// cross-checked: any disagreement is a hard error (the same authority
 /// must produce the same groups).
-pub fn analyze(
-    workloads_root: &Path,
-    rows: &[CandidateRow],
-) -> Result<RedundancyArtifact, String> {
+pub fn analyze(workloads_root: &Path, rows: &[CandidateRow]) -> Result<RedundancyArtifact, String> {
     let exact = exact_groups(rows);
     let near = near_groups(workloads_root, rows)?;
 
     // Cross-check against the acquisition registry.
     let registry_path = workloads_root.join("manifests/exact-duplicates-v1.json");
-    let registry: serde_json::Value =
-        serde_json::from_str(&fs::read_to_string(&registry_path).map_err(|error| {
-            format!("{}: {error}", registry_path.display())
-        })?)
-        .map_err(|error| format!("{}: {error}", registry_path.display()))?;
+    let registry: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&registry_path)
+            .map_err(|error| format!("{}: {error}", registry_path.display()))?,
+    )
+    .map_err(|error| format!("{}: {error}", registry_path.display()))?;
     let mut registry_hashes: Vec<String> = Vec::new();
-    for group in registry["duplicate_groups"].as_array().unwrap_or(&Vec::new()) {
+    for group in registry["duplicate_groups"]
+        .as_array()
+        .unwrap_or(&Vec::new())
+    {
         if let Some(hash) = group["sha256"].as_str() {
             registry_hashes.push(hash.to_string());
         }
@@ -310,7 +310,9 @@ pub fn analyze(
         .filter(|row| row.profile_failure.is_some())
         .count();
     if skipped > 0 {
-        notes.push(format!("{skipped} rows with profile failures skipped from near-duplicate analysis"));
+        notes.push(format!(
+            "{skipped} rows with profile failures skipped from near-duplicate analysis"
+        ));
     }
 
     Ok(RedundancyArtifact {
@@ -336,13 +338,16 @@ pub fn near_conflict_count(
     let selected_keys: std::collections::BTreeSet<String> = selected
         .iter()
         .map(|chosen| {
-            format!("{}/{}", chosen.identity.source_id, chosen.identity.snapshot_path)
+            format!(
+                "{}/{}",
+                chosen.identity.source_id, chosen.identity.snapshot_path
+            )
         })
         .collect();
     artifact
         .near_groups
         .iter()
-        .filter(|group| group.members.iter().any(|member| *member == key))
+        .filter(|group| group.members.contains(&key))
         .filter(|group| {
             group
                 .members

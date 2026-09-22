@@ -148,7 +148,7 @@ fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
 echo "--- CORRECTIVE PROBE B: inline inspection event emission disabled (attribution gate must catch) ---"
-apply "$SGI" 's/sink\.record_source_inspection\(ss as u64, se as u64\);/let _ = (ss, se);/' 'let _ = (ss, se);'
+apply "$SGI" 's/sink\.record_source_inspection\(\s*\n\s*markit_mdbench_common::SourceVersion::Post,\s*\n\s*ss as u64,\s*\n\s*se as u64,\s*\n\s*\);/let _ = (ss, se);/' 'let _ = (ss, se);'
 cargo build -q -p markit-mdbench-full-rebuild 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
 if cargo test -q -p markit-mdbench-full-rebuild --test inline_inspection >/tmp/r5-mutation-detector.log 2>&1; then
     echo "MUTATION SURVIVED: attribution gate passed with inline emission disabled" >&2
@@ -158,7 +158,7 @@ fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
 echo "--- CORRECTIVE PROBE C: completed-state QUERY bypassed to the Pending result (static gate must catch) ---"
-apply "$H1M" 's/    let doc = done\.state\.normalize_v1\(\);\n    assert_eq!\(\n        doc, eager,/    let doc = eager.clone();\n    assert_eq!(\n        doc, eager,/' 'let doc = eager.clone();'
+apply "$H1M" 's/    let doc = done\.state\.normalize_v1\(\);\n    assert_eq!\(\n        normalized_checksum\(&doc\),/    let doc = eager.clone();\n    assert_eq!(\n        normalized_checksum(&doc),/' 'let doc = eager.clone();'
 if static_query_authority; then
     echo "MUTATION SURVIVED: static completed-state QUERY authority passed on the bypassed helper" >&2
     exit 1
@@ -166,7 +166,7 @@ fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
 echo "--- CORRECTIVE PROBE D: H4 restart-boundary margin inspection event removed (attribution test must catch) ---"
-apply "$H4" 's/cx\.sink\s*\n\s*\.record_source_inspection\(sep_lo as u64, sep_hi as u64\);/let _ = (sep_lo, sep_hi);/' 'let _ = (sep_lo, sep_hi);'
+apply "$H4" 's/cx\.sink\.record_source_inspection\(\s*\n\s*markit_mdbench_common::SourceVersion::Old,\s*\n\s*sep_lo as u64,\s*\n\s*sep_hi as u64,\s*\n\s*\);/let _ = (sep_lo, sep_hi);/' 'let _ = (sep_lo, sep_hi);'
 cargo build -q -p markit-mdbench-restart-convergence 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
 if cargo test -q -p markit-mdbench-restart-convergence --test h4_gate h4_prepare_margins_report_source_inspection >/tmp/r5-mutation-detector.log 2>&1; then
     echo "MUTATION SURVIVED: H4 attribution test passed with the margin event removed" >&2
@@ -176,7 +176,7 @@ fi
 restore_all; detected=$((detected + 1)); echo "detected"
 
 echo "--- CORRECTIVE PROBE E: shared splice_to tail-byte inspection event removed (attribution test must catch) ---"
-apply "$SGP" 's/self\.sink\s*\n\s*\.record_source_inspection\(prev as u64, new_pos as u64\);/let _ = (prev, new_pos);/' 'let _ = (prev, new_pos);'
+apply "$SGP" 's/self\.sink\.record_source_inspection\(\s*\n\s*markit_mdbench_common::SourceVersion::Post,\s*\n\s*prev as u64,\s*\n\s*new_pos as u64,\s*\n\s*\);/let _ = (prev, new_pos);/' 'let _ = (prev, new_pos);'
 cargo build -q -p markit-mdbench-shared-grammar 2>/dev/null || { echo "MUTATION INVALID (compile error is not detection)" >&2; exit 1; }
 if cargo test -q -p markit-mdbench-shared-grammar --lib splice_take_reports_its_tail_byte_source_inspection >/tmp/r5-mutation-detector.log 2>&1; then
     echo "MUTATION SURVIVED: shared splice attribution test passed with the tail-byte event removed" >&2

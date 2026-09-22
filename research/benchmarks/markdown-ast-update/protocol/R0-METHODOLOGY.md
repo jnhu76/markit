@@ -29,6 +29,106 @@ prior-art/source reconnaissance
 
 Evidence that cannot advance this chain remains `INCONCLUSIVE`.
 
+### 0.1 Canonical research question and frozen question set: DQ1-DQ7 + MQ1-MQ7 (MEASUREMENT-CORRECTIVE-1 §2; split restored in review round 2)
+
+The canonical research question this benchmark ultimately serves is the #33
+question, unchanged:
+
+> **Under the same grammar, result contract, Rust substrate, machine/profile, project/file set, and edit workload, how do different Markdown AST update mechanisms differ in performance, behavior, resource cost, and failure/degradation regime; and under what concrete conditions does each mechanism work best or worst, and why?**
+
+The R0 question above is this question's measurement-phase form. The
+benchmark exists to answer **decision questions** — questions whose
+answers change what Markit does next. A measurement that cannot move one
+of these decisions is bookkeeping, not evidence. The question set is
+frozen here so that later stages cannot quietly re-scope it, and it is
+split into two layers with a fixed relationship:
+
+```text
+DQ1-DQ7  DECISION QUESTIONS — what the benchmark must ultimately answer
+   ↓ answered by
+measurement (frozen workload + frozen protocol)
+   ↓ made credible by
+MQ1-MQ7  MEASUREMENT / ATTRIBUTION QUALIFICATION QUESTIONS — is the
+         evidence good enough to answer a DQ
+   ↓
+answers to DQ1-DQ7
+```
+
+MQ questions qualify evidence; they never replace or re-scope the DQ
+questions. The split was restored in MEASUREMENT-CORRECTIVE-1 review
+round 2 after the first freeze had promoted the qualification questions
+over the decision questions.
+
+DQ1-DQ7 (DECISION QUESTIONS, frozen):
+
+```text
+DQ1  Local text edit inside an existing block: which mechanism is best?
+                                 (decides: whether an incremental
+                                 mechanism wins the common case)
+DQ2  As the affected block grows, which mechanism degrades first?
+                                 (decides: the degradation order as the
+                                 edit blast radius grows)
+DQ3  List / blockquote container edit: which mechanism is best?
+                                 (decides: the container-edit strategy)
+DQ4  Under fence forward propagation, which mechanisms degrade, and why?
+                                 (decides: whether forward propagation is
+                                 a cliff, and for whom)
+DQ5  When a reference dependency changes, which mechanism pays the most?
+                                 (decides: reference-edit cost attribution)
+DQ6  On small files, is full rebuild (H0) the outright cheaper choice?
+                                 (decides: the small-file strategy)
+DQ7  As the N/B/L/K/F regimes vary, where are the crossovers?
+                                 (decides: the axes and crossover points
+                                 of the regime map)
+```
+
+MQ1-MQ7 (MEASUREMENT / ATTRIBUTION QUALIFICATION QUESTIONS, frozen):
+
+```text
+MQ1  Does any incremental mechanism (H1-H4) deliver a measured end-to-end
+     update win over H0 full rebuild on the primary real workload at
+     realistic file scales — or is H0 already adequate for Markit's
+     document sizes?            (qualifies: the aggregate evidence behind
+                                 DQ1/DQ6)
+MQ2  Which mechanism family's avoided work (blocks reparsed, nodes
+     rebuilt/reused, metadata touched) explains its wins, and is that
+     avoided work stable across regimes rather than timing noise?
+                                 (qualifies: the causal reading of any
+                                 DQ1-DQ7 ranking)
+MQ3  How often do conservative soundness fallbacks fire on real edits, and
+     what does fallback-inclusive cumulative work look like compared with
+     the incremental happy path?
+                                 (qualifies: whether measured wins survive
+                                 fallback-inclusive accounting)
+MQ4  Which structural regimes (file size, block count, largest block,
+     container depth, fence density, reference density) flip the measured
+     ranking — where do the measured crossovers and cliffs land?
+                                 (qualifies: the measurement behind
+                                 DQ2/DQ4/DQ7)
+MQ5  Is the measured source-inspection effort (unique vs cumulative, Old
+     vs Post) consistent with each mechanism's claimed locality — does
+     the counter evidence survive attribution audit?
+                                 (qualifies: the locality claims behind a
+                                 DQ1/DQ5 answer)
+MQ6  How much of each mechanism's measured time and counters is spent
+     producing the usable native state, versus proving the result equals
+     the normalized oracle?
+                                 (qualifies: the timer-boundary reading of
+                                 every DQ answer)
+MQ7  Which metric families are QUALIFIED for decision-making under the
+     current substrate, and can a candidate conclusion be stated without
+     leaning on UNAVAILABLE metrics?
+                                 (qualifies: whether a conclusion is
+                                 writable at all)
+```
+
+Result contract for the decision questions: every promoted benchmark
+conclusion must name the DQ(s) it answers, the MQ(s) that qualify its
+evidence, the evidence class supporting it (#33 §1), and the metric
+families it relies on, each QUALIFIED under
+`protocol/MEASUREMENT-CORRECTIVE-1.md` §9. A conclusion requiring an
+UNAVAILABLE family is not writable in this environment.
+
 ---
 
 ## 1. Primary experiment: one Rust substrate

@@ -69,10 +69,8 @@ impl DomainStrata {
                 return Err(format!("duplicate domain entry for {}", entry.source_id));
             }
         }
-        let members: BTreeMap<&str, usize> = self
-            .sources
-            .iter()
-            .fold(BTreeMap::new(), |mut acc, entry| {
+        let members: BTreeMap<&str, usize> =
+            self.sources.iter().fold(BTreeMap::new(), |mut acc, entry| {
                 *acc.entry(entry.stratum.as_str()).or_insert(0) += 1;
                 acc
             });
@@ -88,10 +86,9 @@ impl DomainStrata {
 /// Load the committed mapping from `workloads/analysis/domain-strata-v1.json`.
 pub fn load_mapping(workloads_root: &Path) -> Result<DomainStrata, String> {
     let path = workloads_root.join("analysis/domain-strata-v1.json");
-    let text =
-        fs::read_to_string(&path).map_err(|error| format!("{}: {error}", path.display()))?;
-    let strata: DomainStrata = serde_json::from_str(&text)
-        .map_err(|error| format!("{}: {error}", path.display()))?;
+    let text = fs::read_to_string(&path).map_err(|error| format!("{}: {error}", path.display()))?;
+    let strata: DomainStrata =
+        serde_json::from_str(&text).map_err(|error| format!("{}: {error}", path.display()))?;
     if strata.schema != DOMAIN_STRATA_SCHEMA {
         return Err(format!(
             "{}: schema {} != {DOMAIN_STRATA_SCHEMA}",

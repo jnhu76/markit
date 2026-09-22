@@ -29,7 +29,7 @@ use markit_mdbench_null_r1::fixture::{
     smoke_fixture, smoke_payload_id, smoke_payload_shape, smoke_payload_size_bytes,
     R1_SMOKE_ONLY_GENERATOR_ID, SMOKE_EDIT_OPERATION,
 };
-use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullPending};
+use markit_mdbench_null_r1::{null_checksum, NullMechanism, NullState};
 use markit_mdbench_oracle::ScalarChecksumHook;
 use markit_mdbench_runner::current_build_identity;
 use markit_mdbench_runner::{
@@ -104,12 +104,10 @@ fn main() -> ExitCode {
     }
 
     // ---- run both operations through the real runner (T-LANE) --------
-    let expected_full_parse = null_checksum(&NullPending {
-        old_len_bytes: old.len_bytes() as u64,
-        post_len_bytes: old.len_bytes() as u64,
-        edit_start_byte: 0,
-        edit_end_byte: 0,
-        inserted_len_bytes: 0,
+    // The checksum is the POST-TIMER export of the sealed state
+    // (MEASUREMENT-CORRECTIVE-1): a function of NullState.
+    let expected_full_parse = null_checksum(&NullState {
+        source_len_bytes: old.len_bytes() as u64,
         revision: 0,
     });
     let report_full_parse = run_full_parse_timed(
@@ -127,12 +125,8 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
-    let expected_update = null_checksum(&NullPending {
-        old_len_bytes: old.len_bytes() as u64,
-        post_len_bytes: post.len_bytes() as u64,
-        edit_start_byte: edit.start_byte(),
-        edit_end_byte: edit.end_byte(),
-        inserted_len_bytes: edit.inserted_text_len_bytes(),
+    let expected_update = null_checksum(&NullState {
+        source_len_bytes: post.len_bytes() as u64,
         revision: 1,
     });
     let report_update = run_update_timed(

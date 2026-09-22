@@ -209,17 +209,15 @@ impl NormalizeV1 for H2State {
     }
 }
 
-/// Pending work handed to `complete()` — already fully materialized
-/// (eager completion boundary, R5 freeze §4).
+/// Pending work handed to `complete()` — the complete new tree and
+/// fragment table (eager completion boundary, R5 freeze §4).
+///
+/// MEASUREMENT-CORRECTIVE-1 §9: the normalized projection (`project`, a
+/// pure traversal over retained payloads) is experiment/oracle EXPORT,
+/// not H2 mechanism state — it is derived at the runner's post-timer
+/// export boundary via `NormalizeV1`, never inside the timed update.
 pub struct H2Pending {
     state: H2State,
-    result: NormalizedDocument,
-}
-
-impl H2Pending {
-    pub fn result(&self) -> &NormalizedDocument {
-        &self.result
-    }
 }
 
 /// `prepare_update` product: the fragment table after the applyChanges
@@ -266,7 +264,6 @@ impl FragmentReuseMechanism {
             defs,
             src_len: src.len(),
         };
-        let result = project(&tree);
         H2Pending {
             state: H2State {
                 fragments: vec![Fragment {
@@ -278,7 +275,6 @@ impl FragmentReuseMechanism {
                 }],
                 tree,
             },
-            result,
         }
     }
 }
@@ -385,7 +381,11 @@ impl Mechanism for FragmentReuseMechanism {
         // sequence at any container depth.) The probe reads the edited
         // span: report the scan (R5-CORRECTIVE-2).
         let damaged_has_def = any_def_in_range(&old_state.tree, es, ee);
-        cx.sink.record_source_inspection(es as u64, ee_new as u64);
+        cx.sink.record_source_inspection(
+            markit_mdbench_common::SourceVersion::Post,
+            es as u64,
+            ee_new as u64,
+        );
         let region_may_create_def = post[es..ee_new].windows(3).any(|w| w == b"]: ");
         let definition_changing = damaged_has_def || region_may_create_def;
 
@@ -419,7 +419,8 @@ impl Mechanism for FragmentReuseMechanism {
             )
         };
         for (a, b) in &margin_checks {
-            cx.sink.record_source_inspection(*a, *b);
+            cx.sink
+                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, *a, *b);
         }
 
         // Rebuild the document-global first-wins table from the assembled
@@ -474,7 +475,6 @@ impl Mechanism for FragmentReuseMechanism {
             defs: table.entries().to_vec(),
             src_len: post.len(),
         };
-        let result = project(&tree);
         Ok(H2Pending {
             state: H2State {
                 fragments: vec![Fragment {
@@ -486,17 +486,25 @@ impl Mechanism for FragmentReuseMechanism {
                 }],
                 tree,
             },
-            result,
         })
     }
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
-        // Sealing only (eager completion boundary, R5 freeze §4).
-        let checksum = normalized_checksum(&pending.result);
+        // Native-sealing ONLY (eager completion boundary, R5 freeze §4):
+        // the projection + checksum are the runner's post-timer export
+        // (MEASUREMENT-CORRECTIVE-1).
         Ok(Completed {
             state: pending.state,
-            result_checksum: checksum,
         })
+    }
+}
+
+/// Post-timer experiment export (MEASUREMENT-CORRECTIVE-1): the H2
+/// checksum is the checksum of the pure `NormalizeV1` projection over
+/// the retained tree.
+impl markit_mdbench_common::ResultChecksum for H2State {
+    fn result_checksum(&self) -> u64 {
+        normalized_checksum(&self.normalize_v1())
     }
 }
 
@@ -540,9 +548,21 @@ fn left_window_end<W: WorkSink>(tree: &FTree, old: &[u8], es: usize, sink: &mut 
         // (R5-CORRECTIVE-2); the blank check's span is covered by the
         // backward-scan report.
         if boundary_start >= 2 && node_kind_at(tree, boundary_start - 2) == NodeKind::Paragraph {
-            let prev_ls = sg::parser::line_start_of_reported(old, boundary_start - 1, sink);
+            // These scans read the OLD source: reported under
+            // `SourceVersion::Old` (MEASUREMENT-CORRECTIVE-1 §18).
+            let prev_ls = sg::parser::line_start_of_reported_in(
+                markit_mdbench_common::SourceVersion::Old,
+                old,
+                boundary_start - 1,
+                sink,
+            );
             let blank_before = sg::parser::all_spaces(old, prev_ls, boundary_start - 1);
-            let first_lf = sg::parser::memchr_lf_reported(old, boundary_start, sink);
+            let first_lf = sg::parser::memchr_lf_reported_in(
+                markit_mdbench_common::SourceVersion::Old,
+                old,
+                boundary_start,
+                sink,
+            );
             if !blank_before && es < first_lf {
                 return 0;
             }
@@ -1039,7 +1059,11 @@ fn mentions_reference<W: WorkSink>(node: &FNode, post: &[u8], base: usize, sink:
     if base >= end {
         return false;
     }
-    sink.record_source_inspection(base as u64, end as u64);
+    sink.record_source_inspection(
+        markit_mdbench_common::SourceVersion::Post,
+        base as u64,
+        end as u64,
+    );
     post[base..end].contains(&b'[')
 }
 

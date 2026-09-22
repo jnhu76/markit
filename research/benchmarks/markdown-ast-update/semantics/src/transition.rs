@@ -403,7 +403,13 @@ pub fn validate_transition(request: &TransitionRequest) -> TransitionReport {
     // hashes and a label alone — exactly the hole the transition oracle
     // exists to close. Non-emptiness (`MissingTransitionAssertion`) is
     // necessary but not sufficient.
-    if !assertions_are_exercised(request, &pre_profile, &pre_parse, &post_profile, &post_parse) {
+    if !assertions_are_exercised(
+        request,
+        &pre_profile,
+        &pre_parse,
+        &post_profile,
+        &post_parse,
+    ) {
         failure_codes.push(FailureCode::TransitionNotExercised);
     }
 
@@ -584,7 +590,11 @@ fn evaluate_predicates(
 /// `workloads/profiles/PROFILER-CONTRACT-v1.md` §2.1 forbids. A fact that a
 /// node already covers is not counted twice.
 fn recognized_count(parse: &LaneParse, profile: &LaneProfile, kind: SyntaxKind) -> u64 {
-    let nodes: Vec<&LaneNode> = parse.nodes().into_iter().filter(|n| n.kind == kind).collect();
+    let nodes: Vec<&LaneNode> = parse
+        .nodes()
+        .into_iter()
+        .filter(|n| n.kind == kind)
+        .collect();
     let extra = profile
         .syntax_facts
         .iter()
@@ -637,9 +647,7 @@ pub fn text_fingerprint(parse: &LaneParse, source: &str) -> String {
 }
 
 fn classify_change(pre: &SourceOracleCheck, post: &SourceOracleCheck) -> Option<ChangeClass> {
-    if pre.topology_sha256 != post.topology_sha256
-        || kind_predicates_differ(pre, post)
-    {
+    if pre.topology_sha256 != post.topology_sha256 || kind_predicates_differ(pre, post) {
         return Some(ChangeClass::StructureChange);
     }
     if pre.text_fingerprint_sha256 != post.text_fingerprint_sha256 {

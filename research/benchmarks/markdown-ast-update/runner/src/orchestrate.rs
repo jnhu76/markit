@@ -1,15 +1,24 @@
 //! Case orchestration with frozen timer boundaries and lane separation.
 //!
-//! Timer placement rules enforced here (R0 §7):
+//! Timer placement rules enforced here (R0 §7, as corrected by
+//! MEASUREMENT-CORRECTIVE-1):
 //!
 //! - the runner is the only clock caller; each phase reads the clock
 //!   exactly twice (start/stop);
 //! - `prepare_update` runs only inside `T_prepare`;
 //! - `update` + `complete` + `black_box(completed)` run only inside
-//!   `T_native` — `complete()` is the explicit completion AUTHORITY
+//!   `T_native` — `complete()` is the explicit native-sealing AUTHORITY
 //!   boundary (see `markit_mdbench_common::Mechanism` for its precise,
 //!   non-overclaimed meaning);
-//! - the oracle hook runs strictly after every timer has stopped;
+//! - the timer STOPS once a valid eager native state exists and is
+//!   `black_box`ed. Everything after that is experiment
+//!   verification/export: the `NormalizeV1` projection, its validation,
+//!   the deterministic result checksum, and the oracle hook all run
+//!   strictly after every timer has stopped, via the state's frozen
+//!   [`markit_mdbench_common::ResultChecksum`] export and the hook. No
+//!   parsing may be deferred past the stop, and no mechanism-required
+//!   state/index construction may move outside timing
+//!   (MEASUREMENT-CORRECTIVE-1 §7/§8/§11);
 //! - `T_total` is always the arithmetic sum from [`TimingRecord`], never
 //!   an enclosing wall-clock measurement;
 //! - panics inside a mechanism phase are caught and recorded as
@@ -42,6 +51,7 @@ use markit_mdbench_common::FailureStatus;
 use markit_mdbench_common::Mechanism;
 use markit_mdbench_common::MechanismContext;
 use markit_mdbench_common::NoopWorkSink;
+use markit_mdbench_common::ResultChecksum;
 use markit_mdbench_common::Source;
 use markit_mdbench_common::WorkCounters;
 use markit_mdbench_instrumentation::Clock;
@@ -97,17 +107,22 @@ pub struct CorrectnessReport {
     pub failure: Option<FailureStatus>,
 }
 
-fn finish_correctness<S>(
+fn finish_correctness<S: ResultChecksum>(
     outcome: Result<Completed<S>, FailureStatus>,
     hook: &dyn CorrectnessHook<S>,
 ) -> CorrectnessReport {
     match outcome {
-        Ok(done) => CorrectnessReport {
-            execution_status: ExecutionStatus::Pass,
-            correctness_status: hook.verify(&done),
-            result_checksum: Some(done.result_checksum),
-            failure: None,
-        },
+        Ok(done) => {
+            // Post-timer experiment export: the checksum is derived from
+            // the sealed state, never inside a mechanism phase.
+            let checksum = done.state.result_checksum();
+            CorrectnessReport {
+                execution_status: ExecutionStatus::Pass,
+                correctness_status: hook.verify(&done),
+                result_checksum: Some(checksum),
+                failure: None,
+            }
+        }
         Err(failure) => CorrectnessReport {
             execution_status: failure.into(),
             correctness_status: CorrectnessStatus::NotChecked,
@@ -130,6 +145,7 @@ pub fn run_update_correctness<M>(
 ) -> CorrectnessReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
 {
     let (old, post, edit) = (
         black_box(old_source),
@@ -142,8 +158,7 @@ where
         catch_phase(|| mechanism.prepare_update(old, post, edit, &old_state, &mut cx)).and_then(
             |prep| {
                 catch_phase(|| {
-                    let pending =
-                        mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
+                    let pending = mechanism.update(old, post, edit, old_state, prep, &mut cx)?;
                     let done = mechanism.complete(pending)?;
                     black_box(&done);
                     Ok(done)
@@ -163,6 +178,7 @@ pub fn run_full_parse_correctness<M>(
 ) -> CorrectnessReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
 {
     let source = black_box(source);
     let outcome = {
@@ -179,22 +195,26 @@ where
 }
 
 /// Successful/failed execution + materialized timing record -> report.
-/// The oracle hook (called here for completed runs) runs strictly AFTER
-/// all timers stopped.
-fn finish_timed<S>(
+/// The oracle hook and the result-checksum export (called here for
+/// completed runs) run strictly AFTER all timers stopped
+/// (MEASUREMENT-CORRECTIVE-1).
+fn finish_timed<S: ResultChecksum>(
     outcome: Result<Completed<S>, FailureStatus>,
     record: TimingRecord,
     hook: &dyn CorrectnessHook<S>,
 ) -> RunReport {
     let measurement = LaneMeasurement::Timing(record);
     match outcome {
-        Ok(done) => RunReport {
-            execution_status: ExecutionStatus::Pass,
-            correctness_status: hook.verify(&done),
-            measurement,
-            result_checksum: Some(done.result_checksum),
-            failure: None,
-        },
+        Ok(done) => {
+            let checksum = done.state.result_checksum();
+            RunReport {
+                execution_status: ExecutionStatus::Pass,
+                correctness_status: hook.verify(&done),
+                measurement,
+                result_checksum: Some(checksum),
+                failure: None,
+            }
+        }
         Err(failure) => RunReport {
             execution_status: failure.into(),
             correctness_status: CorrectnessStatus::NotChecked,
@@ -208,29 +228,38 @@ fn finish_timed<S>(
 /// Timing arithmetic overflow poisons the run even if the work
 /// completed: the number cannot be represented honestly, so the row
 /// records `InstrumentationUnavailable` with `Unknown` timing.
-fn finish_timing_overflow<S>(outcome: Result<Completed<S>, FailureStatus>) -> RunReport {
+fn finish_timing_overflow<S: ResultChecksum>(
+    outcome: Result<Completed<S>, FailureStatus>,
+) -> RunReport {
+    let checksum = outcome
+        .as_ref()
+        .ok()
+        .map(|done| done.state.result_checksum());
     RunReport {
         execution_status: ExecutionStatus::InstrumentationUnavailable,
         correctness_status: CorrectnessStatus::NotChecked,
         measurement: LaneMeasurement::Timing(TimingRecord::unknown()),
-        result_checksum: outcome.ok().map(|done| done.result_checksum),
+        result_checksum: checksum,
         failure: Some(FailureStatus::InstrumentationUnavailable),
     }
 }
 
-fn finish_untimed<S>(
+fn finish_untimed<S: ResultChecksum>(
     outcome: Result<Completed<S>, FailureStatus>,
     measurement: LaneMeasurement,
     hook: &dyn CorrectnessHook<S>,
 ) -> RunReport {
     match outcome {
-        Ok(done) => RunReport {
-            execution_status: ExecutionStatus::Pass,
-            correctness_status: hook.verify(&done),
-            measurement,
-            result_checksum: Some(done.result_checksum),
-            failure: None,
-        },
+        Ok(done) => {
+            let checksum = done.state.result_checksum();
+            RunReport {
+                execution_status: ExecutionStatus::Pass,
+                correctness_status: hook.verify(&done),
+                measurement,
+                result_checksum: Some(checksum),
+                failure: None,
+            }
+        }
         Err(failure) => RunReport {
             execution_status: failure.into(),
             correctness_status: CorrectnessStatus::NotChecked,
@@ -273,6 +302,7 @@ pub fn run_update_timed<M, C>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
     C: Clock,
 {
     let (old, post, edit) = (
@@ -325,6 +355,7 @@ pub fn run_update_attributed<M>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
 {
     let (old, post, edit) = (
         black_box(old_source),
@@ -374,6 +405,7 @@ pub fn run_update_memory<M, R>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
     R: MemoryReporter,
 {
     let (old, post, edit) = (
@@ -412,6 +444,7 @@ pub fn run_full_parse_timed<M, C>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
     C: Clock,
 {
     let source = black_box(source);
@@ -439,6 +472,7 @@ pub fn run_full_parse_attributed<M>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
 {
     let source = black_box(source);
     let outcome = {
@@ -471,6 +505,7 @@ pub fn run_full_parse_memory<M, R>(
 ) -> RunReport
 where
     M: Mechanism,
+    M::State: ResultChecksum,
     R: MemoryReporter,
 {
     let source = black_box(source);

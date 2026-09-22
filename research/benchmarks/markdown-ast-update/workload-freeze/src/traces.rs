@@ -58,10 +58,8 @@ fn steps_digest(steps: &[TraceStepRecord]) -> String {
 /// Build the trace manifest from the frozen payloads (grouped by trace
 /// identity, ordered by step).
 pub fn build_traces(payloads: &[PayloadRecord]) -> Vec<TraceRecord> {
-    let mut grouped: std::collections::BTreeMap<
-        (&str, &str, &str),
-        Vec<&PayloadRecord>,
-    > = std::collections::BTreeMap::new();
+    let mut grouped: std::collections::BTreeMap<(&str, &str, &str), Vec<&PayloadRecord>> =
+        std::collections::BTreeMap::new();
     for payload in payloads {
         grouped
             .entry((

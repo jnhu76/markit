@@ -21,8 +21,7 @@ use markit_mdbench_semantics::{
 };
 
 use crate::{
-    universe, CandidateIdentity, CandidateRow, LaneRow, CANDIDATE_ROW_SCHEMA,
-    PROFILED_GRAMMAR_IDS,
+    universe, CandidateIdentity, CandidateRow, LaneRow, CANDIDATE_ROW_SCHEMA, PROFILED_GRAMMAR_IDS,
 };
 
 #[derive(Debug, Clone, Default)]
@@ -137,8 +136,7 @@ fn reduce_lane(lane: &LaneProfile) -> LaneRow {
     };
 
     for blocker in &lane.eligibility.scope_blockers {
-        *row
-            .blocker_kinds
+        *row.blocker_kinds
             .entry(blocker.syntax_kind.name().to_string())
             .or_insert(0) += 1;
     }
@@ -219,7 +217,10 @@ fn reduce_lane(lane: &LaneProfile) -> LaneRow {
             }
             if !matches!(
                 fact.syntax_kind,
-                SyntaxKind::CodeSpan | SyntaxKind::Emphasis | SyntaxKind::Strong | SyntaxKind::LinkInline
+                SyntaxKind::CodeSpan
+                    | SyntaxKind::Emphasis
+                    | SyntaxKind::Strong
+                    | SyntaxKind::LinkInline
             ) {
                 continue;
             }
@@ -250,10 +251,7 @@ pub fn profile_universe(
                 fs::create_dir_all(parent)
                     .map_err(|error| format!("{}: {error}", parent.display()))?;
             }
-            Some(
-                fs::File::create(path)
-                    .map_err(|error| format!("{}: {error}", path.display()))?,
-            )
+            Some(fs::File::create(path).map_err(|error| format!("{}: {error}", path.display()))?)
         }
         None => None,
     };
@@ -314,7 +312,8 @@ pub fn profile_universe(
         }
     }
     if let Some(file) = jsonl_file.as_mut() {
-        file.flush().map_err(|error| format!("profile jsonl: {error}"))?;
+        file.flush()
+            .map_err(|error| format!("profile jsonl: {error}"))?;
     }
     Ok(outcome)
 }
@@ -335,7 +334,8 @@ pub fn write_rows_jsonl(rows: &[CandidateRow], path: &Path) -> Result<u64, Strin
             .map_err(|error| format!("{}: {error}", path.display()))?;
         total += line.len() as u64 + 1;
     }
-    file.flush().map_err(|error| format!("{}: {error}", path.display()))?;
+    file.flush()
+        .map_err(|error| format!("{}: {error}", path.display()))?;
     Ok(total)
 }
 
@@ -349,8 +349,7 @@ pub fn load_rows_jsonl(path: &Path) -> Result<Vec<CandidateRow>, String> {
             continue;
         }
         rows.push(
-            serde_json::from_str(line)
-                .map_err(|error| format!("{}: {error}", path.display()))?,
+            serde_json::from_str(line).map_err(|error| format!("{}: {error}", path.display()))?,
         );
     }
     Ok(rows)
@@ -366,16 +365,19 @@ pub fn span_evidence_ok(source: &str, fact: &SyntaxFact) -> Result<(), String> {
         return Err(format!("span out of range: {}..{}", span.start, span.end));
     }
     if !source.is_char_boundary(span.start) || !source.is_char_boundary(span.end) {
-        return Err(format!("span not on char boundaries: {}..{}", span.start, span.end));
+        return Err(format!(
+            "span not on char boundaries: {}..{}",
+            span.start, span.end
+        ));
     }
     let text = &source[span.start..span.end];
     let ok = match fact.syntax_kind {
         SyntaxKind::HeadingAtx => text.trim_start().starts_with('#'),
-        SyntaxKind::CodeBlockFenced => text.trim_start().starts_with('`')
-            || text.trim_start().starts_with('~'),
+        SyntaxKind::CodeBlockFenced => {
+            text.trim_start().starts_with('`') || text.trim_start().starts_with('~')
+        }
         SyntaxKind::HeadingSetext => {
-            text.trim_end().ends_with('=')
-                || text.trim_end().ends_with('-')
+            text.trim_end().ends_with('=') || text.trim_end().ends_with('-')
         }
         SyntaxKind::ThematicBreak => text.contains("---") || text.contains("***"),
         SyntaxKind::Table | SyntaxKind::TableHeaderRow | SyntaxKind::TableRow => text.contains('|'),

@@ -340,8 +340,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             }
             let line_start = pos;
             let line_lf = memchr_lf(self.src, line_start);
-            self.sink
-                .record_source_inspection(line_start as u64, (line_lf + 1).min(self.end) as u64);
+            self.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                line_start as u64,
+                (line_lf + 1).min(self.end) as u64,
+            );
             // 1. consume container prefixes (§6/§7); may close frames.
             let col = self.strip_prefixes(line_start, line_lf);
             // 2. classify the remainder at the (possibly new) innermost
@@ -379,8 +382,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
         self.push_into_innermost(spliced);
         let prev = new_pos.saturating_sub(1);
         let carried = if new_pos > 0 {
-            self.sink
-                .record_source_inspection(prev as u64, new_pos as u64);
+            self.sink.record_source_inspection(
+                markit_mdbench_common::SourceVersion::Post,
+                prev as u64,
+                new_pos as u64,
+            );
             self.src.get(prev) == Some(&b'\n')
         } else {
             false
@@ -1008,8 +1014,21 @@ pub fn memchr_lf(src: &[u8], from: usize) -> usize {
 /// (R5-CORRECTIVE-2, source-inspection closure); contexts that report
 /// their own covering range may keep the plain form.
 pub fn line_start_of_reported<W: WorkSink>(src: &[u8], pos: usize, sink: &mut W) -> usize {
+    line_start_of_reported_in(markit_mdbench_common::SourceVersion::Post, src, pos, sink)
+}
+
+/// [`line_start_of_reported`] with an EXPLICIT source version
+/// (MEASUREMENT-CORRECTIVE-1 §18): mechanism consultations of the OLD
+/// retained source report `Old`; substrate scans of the source being
+/// parsed report `Post`.
+pub fn line_start_of_reported_in<W: WorkSink>(
+    version: markit_mdbench_common::SourceVersion,
+    src: &[u8],
+    pos: usize,
+    sink: &mut W,
+) -> usize {
     let found = src[..pos].iter().rposition(|&b| b == b'\n');
-    sink.record_source_inspection(found.map_or(0, |p| p) as u64, pos as u64);
+    sink.record_source_inspection(version, found.map_or(0, |p| p) as u64, pos as u64);
     found.map_or(0, |p| p + 1)
 }
 
@@ -1017,8 +1036,20 @@ pub fn line_start_of_reported<W: WorkSink>(src: &[u8], pos: usize, sink: &mut W)
 /// inspected — `[from, lf]` including the terminator when found,
 /// `[from, len)` otherwise.
 pub fn memchr_lf_reported<W: WorkSink>(src: &[u8], from: usize, sink: &mut W) -> usize {
+    memchr_lf_reported_in(markit_mdbench_common::SourceVersion::Post, src, from, sink)
+}
+
+/// [`memchr_lf_reported`] with an EXPLICIT source version
+/// (MEASUREMENT-CORRECTIVE-1 §18).
+pub fn memchr_lf_reported_in<W: WorkSink>(
+    version: markit_mdbench_common::SourceVersion,
+    src: &[u8],
+    from: usize,
+    sink: &mut W,
+) -> usize {
     let found = src[from..].iter().position(|&b| b == b'\n');
     sink.record_source_inspection(
+        version,
         from as u64,
         found.map_or(src.len(), |p| from + p + 1) as u64,
     );
@@ -1140,7 +1171,7 @@ pub fn refdef_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(usize, usize
 #[cfg(test)]
 mod tests {
     use super::*;
-    use markit_mdbench_common::{CounterSink, NoopWorkSink, WorkCounters};
+    use markit_mdbench_common::{CounterSink, NoopWorkSink, SourceVersion, WorkCounters};
     use markit_mdbench_oracle::normalized::NodeKind;
 
     #[test]
@@ -1267,11 +1298,13 @@ mod tests {
         // just as much an unreported mechanism-work read).
         let events = sink.inspections();
         assert!(
-            events.contains(&(8, 9)),
+            events.contains(&(SourceVersion::Post, 8, 9)),
             "splice tail byte (8, 9) not reported; events: {events:?}"
         );
         assert!(
-            !events.iter().any(|&(s, e)| s < 8 && e > 5),
+            !events
+                .iter()
+                .any(|&(v, s, e)| v == SourceVersion::Post && s < 8 && e > 5),
             "reused-range interior [5, 8) must stay uninspected (no overlapping event); events: {events:?}"
         );
     }

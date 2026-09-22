@@ -166,9 +166,8 @@ pub fn load_identities(
     }
 
     // Deterministic global order: lexical (source_id, snapshot_path).
-    identities.sort_by(|a, b| {
-        (&a.source_id, &a.snapshot_path).cmp(&(&b.source_id, &b.snapshot_path))
-    });
+    identities
+        .sort_by(|a, b| (&a.source_id, &a.snapshot_path).cmp(&(&b.source_id, &b.snapshot_path)));
     Ok((identities, per_source_counts))
 }
 
@@ -241,10 +240,7 @@ pub fn verify_universe(
             .filter(|entry| entry.materialized && !entry.hash_match)
             .count() as u64,
         byte_total_expected: identities.iter().map(|identity| identity.bytes).sum(),
-        byte_total_materialized: entries
-            .iter()
-            .filter_map(|entry| entry.actual_bytes)
-            .sum(),
+        byte_total_materialized: entries.iter().filter_map(|entry| entry.actual_bytes).sum(),
         per_source,
     };
 

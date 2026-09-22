@@ -106,22 +106,23 @@ pub fn mix64(mut x: u64) -> u64 {
     x ^ (x >> 31)
 }
 
-/// The documented null checksum formula: a deterministic scalar mix of
-/// exactly the scalars the null mechanism touches. The oracle hook uses
-/// the same formula to derive the expected value.
-pub fn null_checksum(pending: &NullPending) -> u64 {
+/// The documented null checksum formula (MEASUREMENT-CORRECTIVE-1): a
+/// deterministic scalar mix of exactly the scalars the SEALED null state
+/// carries. The checksum is a POST-TIMER experiment export derived from
+/// the completed state — never computed inside a mechanism phase — so it
+/// is a function of `NullState`, not of the consumed pending scalars.
+pub fn null_checksum(state: &NullState) -> u64 {
     let mut h = 0x9E37_79B9_7F4A_7C15u64;
-    for v in [
-        pending.old_len_bytes,
-        pending.post_len_bytes,
-        pending.edit_start_byte,
-        pending.edit_end_byte,
-        pending.inserted_len_bytes,
-        pending.revision,
-    ] {
+    for v in [state.source_len_bytes, state.revision] {
         h = mix64(h ^ v);
     }
     h
+}
+
+impl markit_mdbench_common::ResultChecksum for NullState {
+    fn result_checksum(&self) -> u64 {
+        null_checksum(self)
+    }
 }
 
 impl Mechanism for NullMechanism {
@@ -204,13 +205,14 @@ impl Mechanism for NullMechanism {
 
     fn complete(&self, pending: Self::Pending) -> Result<Completed<Self::State>, FailureStatus> {
         self.check()?;
-        let checksum = null_checksum(&pending);
+        // Native-sealing ONLY (MEASUREMENT-CORRECTIVE-1): no checksum
+        // here — the runner derives it post-timer via NullState's
+        // ResultChecksum export.
         Ok(Completed {
             state: NullState {
                 source_len_bytes: pending.post_len_bytes,
                 revision: pending.revision,
             },
-            result_checksum: checksum,
         })
     }
 }
@@ -220,6 +222,7 @@ mod tests {
     use super::*;
     use crate::fixture;
     use markit_mdbench_common::OperationKind;
+    use markit_mdbench_common::ResultChecksum as _;
     use markit_mdbench_common::SourceId;
 
     #[test]
@@ -229,12 +232,10 @@ mod tests {
 
     #[test]
     fn checksum_is_deterministic_and_sensitive() {
-        let p = |revision| NullPending {
-            old_len_bytes: 10,
-            post_len_bytes: 14,
-            edit_start_byte: 3,
-            edit_end_byte: 3,
-            inserted_len_bytes: 4,
+        // The checksum is a function of the SEALED state (post-timer
+        // export, MEASUREMENT-CORRECTIVE-1).
+        let p = |revision| NullState {
+            source_len_bytes: 14,
             revision,
         };
         assert_eq!(null_checksum(&p(1)), null_checksum(&p(1)));
@@ -271,14 +272,11 @@ mod tests {
             .update(&old, &post, &edit, done.state, prepared, &mut cx)
             .expect("update");
         let done = mech.complete(pending).expect("complete");
+        // The checksum is the post-timer export of the sealed state.
         assert_eq!(
-            done.result_checksum,
-            null_checksum(&NullPending {
-                old_len_bytes: old.len_bytes() as u64,
-                post_len_bytes: post.len_bytes() as u64,
-                edit_start_byte: edit.start_byte(),
-                edit_end_byte: edit.end_byte(),
-                inserted_len_bytes: edit.inserted_text_len_bytes(),
+            done.state.result_checksum(),
+            null_checksum(&NullState {
+                source_len_bytes: post.len_bytes() as u64,
                 revision: 1,
             })
         );

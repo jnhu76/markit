@@ -86,12 +86,16 @@ pub fn derive_bins(feature: &str, zero_meaningful: bool, values: &[f64]) -> Feat
     let mut low_max: Option<f64> = None;
     let mut medium_max: Option<f64> = None;
 
-    let has_zero = values.iter().any(|value| *value == 0.0);
+    let has_zero = values.contains(&0.0);
     if zero_meaningful && has_zero {
         labels.push("ZERO".to_string());
     }
 
-    let mut positive: Vec<f64> = values.iter().copied().filter(|value| *value > 0.0).collect();
+    let mut positive: Vec<f64> = values
+        .iter()
+        .copied()
+        .filter(|value| *value > 0.0)
+        .collect();
     positive.sort_by(|a, b| a.partial_cmp(b).expect("values must not be NaN"));
     if positive.is_empty() {
         return FeatureBins {
@@ -143,7 +147,11 @@ pub fn bin_of(bins: &FeatureBins, value: f64) -> String {
     if bins.zero_meaningful && value == 0.0 && bins.bins.iter().any(|b| b == "ZERO") {
         return "ZERO".to_string();
     }
-    if !bins.bins.iter().any(|b| b == "LOW" || b == "MEDIUM" || b == "HIGH") {
+    if !bins
+        .bins
+        .iter()
+        .any(|b| b == "LOW" || b == "MEDIUM" || b == "HIGH")
+    {
         // No positive bin exists; the only attainable label is ZERO.
         return "ZERO".to_string();
     }
@@ -175,10 +183,7 @@ pub fn percentile_rank(sorted_values: &[f64], value: f64) -> f64 {
     if sorted_values.is_empty() {
         return 0.0;
     }
-    let less = sorted_values
-        .iter()
-        .filter(|other| **other < value)
-        .count() as f64;
+    let less = sorted_values.iter().filter(|other| **other < value).count() as f64;
     let equal = sorted_values
         .iter()
         .filter(|other| **other == value)

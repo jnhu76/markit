@@ -43,9 +43,8 @@ fn main() -> io::Result<()> {
         .map(PathBuf::from)
         .unwrap_or_else(bench_root);
 
-    let fixtures: Vec<PilotFixture> = load_fixtures(&root).map_err(|error| {
-        io::Error::new(io::ErrorKind::InvalidData, error)
-    })?;
+    let fixtures: Vec<PilotFixture> =
+        load_fixtures(&root).map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
     let real_source = real_source_spec(&root);
     let results = run_pilot(&root, &fixtures, real_source.as_ref());
 
@@ -94,12 +93,7 @@ fn print_summary(results: &PilotResults) {
                 real.available
             );
             for check in &real.checks {
-                println!(
-                    "    {} {} — {}",
-                    check.status(),
-                    check.check,
-                    check.detail
-                );
+                println!("    {} {} — {}", check.status(), check.check, check.detail);
             }
             for profile in &real.profiles {
                 println!(
@@ -125,4 +119,3 @@ fn print_summary(results: &PilotResults) {
         if results.pass { "PASS" } else { "FAIL" }
     );
 }
-

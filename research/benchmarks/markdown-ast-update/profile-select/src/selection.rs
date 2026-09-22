@@ -138,10 +138,13 @@ pub fn rank_feature_value(row: &CandidateRow, feature: &str) -> f64 {
         let g1 = row.g1();
         return g1
             .map(|lane| {
-                ["inline_math", "display_math"].iter().map(|kind| {
-                    lane.ambiguous_kinds.get(*kind).copied().unwrap_or(0)
-                        + lane.unknown_kinds.get(*kind).copied().unwrap_or(0)
-                }).sum::<u64>() as f64
+                ["inline_math", "display_math"]
+                    .iter()
+                    .map(|kind| {
+                        lane.ambiguous_kinds.get(*kind).copied().unwrap_or(0)
+                            + lane.unknown_kinds.get(*kind).copied().unwrap_or(0)
+                    })
+                    .sum::<u64>() as f64
             })
             .unwrap_or(0.0);
     }
@@ -347,6 +350,9 @@ struct CellState {
 }
 
 /// Run the full four-set selection over the profiled universe (§25-§36).
+// The ranking bookkeeping tuples are local to this frozen algorithm;
+// factoring them out would churn the selection code for lint aesthetics.
+#[allow(clippy::type_complexity)]
 pub fn select(
     rows: &[CandidateRow],
     redundancy: &RedundancyArtifact,
@@ -365,8 +371,15 @@ pub fn select(
     // ---- bins over the eligible population (frozen rule, §23) ----
     let mut bins = Vec::new();
     for feature in FEATURES {
-        let values: Vec<f64> = eligible.iter().map(|row| feature_value(row, feature)).collect();
-        bins.push(derive_bins(feature, ZERO_MEANINGFUL.contains(&feature), &values));
+        let values: Vec<f64> = eligible
+            .iter()
+            .map(|row| feature_value(row, feature))
+            .collect();
+        bins.push(derive_bins(
+            feature,
+            ZERO_MEANINGFUL.contains(&feature),
+            &values,
+        ));
     }
     // ---- attainable mandatory cells (§24-§25) ----
     let include_optional = optional_joint_included(&eligible);
@@ -380,7 +393,9 @@ pub fn select(
             let members: BTreeSet<usize> = eligible
                 .iter()
                 .enumerate()
-                .filter(|(_, row)| crate::stats::bin_of(bin, feature_value(row, &bin.feature)) == *label)
+                .filter(|(_, row)| {
+                    crate::stats::bin_of(bin, feature_value(row, &bin.feature)) == *label
+                })
                 .map(|(index, _)| index)
                 .collect();
             if !members.is_empty() {
@@ -401,7 +416,8 @@ pub fn select(
                     .enumerate()
                     .filter(|(_, row)| {
                         crate::stats::bin_of(bin_a, feature_value(row, feature_a)) == *label_a
-                            && crate::stats::bin_of(bin_b, feature_value(row, feature_b)) == *label_b
+                            && crate::stats::bin_of(bin_b, feature_value(row, feature_b))
+                                == *label_b
                     })
                     .map(|(index, _)| index)
                     .collect();
@@ -414,8 +430,10 @@ pub fn select(
             }
         }
     }
-    let eligible_domains: BTreeSet<&str> =
-        eligible.iter().map(|row| row.identity.domain.as_str()).collect();
+    let eligible_domains: BTreeSet<&str> = eligible
+        .iter()
+        .map(|row| row.identity.domain.as_str())
+        .collect();
     let cells_of = |index: usize| -> Vec<String> {
         mandatory
             .iter()
@@ -466,19 +484,24 @@ pub fn select(
                 domain_count(&selected_rep, &row.identity.domain),
                 project_count(&selected_rep, &row.identity.source_id),
                 crate::redundancy::near_conflict_count(redundancy, row, &selected_before),
-                (row.identity.source_id.clone(), row.identity.snapshot_path.clone()),
+                (
+                    row.identity.source_id.clone(),
+                    row.identity.snapshot_path.clone(),
+                ),
             )
         };
         let mut best_compliant: Option<(RepKey, usize, Vec<String>)> = None;
         let mut best_violating: Option<(RepKey, usize, Vec<String>, String)> = None;
-        for index in 0..eligible.len() {
+        for (index, row) in eligible.iter().enumerate() {
             if selected_rep.contains(&index) {
                 continue;
             }
-            let row = eligible[index];
             let cells = cells_of(index);
-            let new_cells: Vec<String> =
-                cells.iter().filter(|cell| !covered.contains(*cell)).cloned().collect();
+            let new_cells: Vec<String> = cells
+                .iter()
+                .filter(|cell| !covered.contains(*cell))
+                .cloned()
+                .collect();
             let new_domain = !covered_domains.contains(row.identity.domain.as_str());
             let gain = new_cells.len() + usize::from(new_domain);
             if gain == 0 {
@@ -491,12 +514,19 @@ pub fn select(
             let project_allowed =
                 project_count(&selected_rep, &row.identity.source_id) < PROJECT_CAP;
             if domain_allowed && project_allowed {
-                if best_compliant.as_ref().map(|(best, _, _)| &ordering < best).unwrap_or(true) {
+                if best_compliant
+                    .as_ref()
+                    .map(|(best, _, _)| &ordering < best)
+                    .unwrap_or(true)
+                {
                     best_compliant = Some((ordering, index, new_cells));
                 }
             } else {
                 let violation = if !project_allowed {
-                    format!("project cap {PROJECT_CAP} exceeded for {}", row.identity.source_id)
+                    format!(
+                        "project cap {PROJECT_CAP} exceeded for {}",
+                        row.identity.source_id
+                    )
                 } else {
                     format!(
                         "domain cap {:.0}% exceeded for {}",
@@ -537,7 +567,10 @@ pub fn select(
         let near_flags_before = crate::redundancy::near_conflict_count(
             redundancy,
             row,
-            &selected_rep.iter().map(|index| eligible[*index]).collect::<Vec<_>>(),
+            &selected_rep
+                .iter()
+                .map(|index| eligible[*index])
+                .collect::<Vec<_>>(),
         );
         for cell in &new_cells {
             covered.insert(cell.clone());
@@ -564,13 +597,19 @@ pub fn select(
                 ("new_cells".to_string(), new_cells.len().to_string()),
                 (
                     "domain_representation".to_string(),
-                    domain_count(&selected_rep[..selected_rep.len() - 1], &row.identity.domain)
-                        .to_string(),
+                    domain_count(
+                        &selected_rep[..selected_rep.len() - 1],
+                        &row.identity.domain,
+                    )
+                    .to_string(),
                 ),
                 (
                     "project_representation".to_string(),
-                    project_count(&selected_rep[..selected_rep.len() - 1], &row.identity.source_id)
-                        .to_string(),
+                    project_count(
+                        &selected_rep[..selected_rep.len() - 1],
+                        &row.identity.source_id,
+                    )
+                    .to_string(),
                 ),
                 ("lexical".to_string(), row.identity.snapshot_path.clone()),
             ],
@@ -580,7 +619,11 @@ pub fn select(
             why: format!(
                 "covers {} new mandatory cell(s){}; domain {} project {}",
                 new_cells.len(),
-                if new_domain { " + 1 new domain stratum" } else { "" },
+                if new_domain {
+                    " + 1 new domain stratum"
+                } else {
+                    ""
+                },
                 row.identity.domain,
                 row.identity.source_id
             ),
@@ -712,16 +755,23 @@ pub fn select(
     let mut full_document: Vec<String> = Vec::new();
     let mut full_document_rejections: Vec<String> = Vec::new();
     let hard_candidates: [(&str, &str, &str); 3] = [
-        ("cpp-core-guidelines", "files/CppCoreGuidelines.md", "FULL-CPP-CORE"),
+        (
+            "cpp-core-guidelines",
+            "files/CppCoreGuidelines.md",
+            "FULL-CPP-CORE",
+        ),
         ("node", "files/doc/api/fs.md", "FULL-NODE-FS"),
-        ("d2l-en", "files/chapter_preliminaries/linear-algebra.md", "FULL-D2L-LINEAR-ALGEBRA"),
+        (
+            "d2l-en",
+            "files/chapter_preliminaries/linear-algebra.md",
+            "FULL-D2L-LINEAR-ALGEBRA",
+        ),
     ];
     let mut full_doc_records: Vec<TraceRecord> = Vec::new();
     for (source_id, snapshot_path, label) in hard_candidates {
-        match usable
-            .iter()
-            .find(|row| row.identity.source_id == source_id && row.identity.snapshot_path == snapshot_path)
-        {
+        match usable.iter().find(|row| {
+            row.identity.source_id == source_id && row.identity.snapshot_path == snapshot_path
+        }) {
             Some(row) => {
                 full_document.push(key(row));
                 full_doc_records.push(TraceRecord {
@@ -776,7 +826,10 @@ pub fn select(
     }
 
     // Mechanical full documents: frozen percentile-rank formulas (§34).
-    let rank_file = |source_rows: &[&CandidateRow], row: &CandidateRow, features: &[&str]| -> (f64, Vec<(String, f64)>) {
+    let rank_file = |source_rows: &[&CandidateRow],
+                     row: &CandidateRow,
+                     features: &[&str]|
+     -> (f64, Vec<(String, f64)>) {
         let mut total = 0.0;
         let mut components = Vec::new();
         for feature in features {
@@ -791,55 +844,58 @@ pub fn select(
         }
         (total / features.len() as f64, components)
     };
-    let mut add_mechanical_full_doc =
-        |source_id: &str, features: &[&str], label: &str, math_note: bool| -> Result<(), String> {
-            let rows_for_source: Vec<&CandidateRow> = usable
-                .iter()
-                .filter(|row| row.identity.source_id == source_id)
-                .copied()
-                .collect();
-            if rows_for_source.is_empty() {
-                // An absent source is recorded as a rejection, never a
-                // silent skip and never a hard failure of the whole
-                // selection.
-                full_document_rejections.push(format!(
-                    "{label}: no usable candidates from {source_id} in this universe"
-                ));
-                full_doc_records.push(TraceRecord {
-                    schema: SELECTION_TRACE_SCHEMA.to_string(),
-                    set: "full_document".to_string(),
-                    iteration: full_document.len() as u64,
-                    selected: format!("REJECTED({label})"),
-                    new_cells: vec![],
-                    duplicated_cells: 0,
-                    domain_count_before: 0,
-                    domain_count_after: 0,
-                    project_count_before: 0,
-                    project_count_after: 0,
-                    near_duplicate_flags: 0,
-                    tie_break: vec![],
-                    remaining_uncovered: 0,
-                    cap_relaxation: None,
-                    rejected: Some(format!("no usable candidates from {source_id}")),
-                    why: format!("{label}: mechanical rank could not run — source absent"),
-                });
-                return Ok(());
-            }
-            let mut ranked: Vec<(&CandidateRow, f64, Vec<(String, f64)>)> = rows_for_source
-                .iter()
-                .map(|row| {
-                    let (score, components) = rank_file(&rows_for_source, row, features);
-                    (*row, score, components)
-                })
-                .collect();
-            ranked.sort_by(|a, b| {
-                b.1.partial_cmp(&a.1)
-                    .unwrap()
-                    .then_with(|| a.0.lexical_key().cmp(&b.0.lexical_key()))
-            });
-            let (winner, score, components) = ranked[0].clone();
-            full_document.push(key(winner));
+    let mut add_mechanical_full_doc = |source_id: &str,
+                                       features: &[&str],
+                                       label: &str,
+                                       math_note: bool|
+     -> Result<(), String> {
+        let rows_for_source: Vec<&CandidateRow> = usable
+            .iter()
+            .filter(|row| row.identity.source_id == source_id)
+            .copied()
+            .collect();
+        if rows_for_source.is_empty() {
+            // An absent source is recorded as a rejection, never a
+            // silent skip and never a hard failure of the whole
+            // selection.
+            full_document_rejections.push(format!(
+                "{label}: no usable candidates from {source_id} in this universe"
+            ));
             full_doc_records.push(TraceRecord {
+                schema: SELECTION_TRACE_SCHEMA.to_string(),
+                set: "full_document".to_string(),
+                iteration: full_document.len() as u64,
+                selected: format!("REJECTED({label})"),
+                new_cells: vec![],
+                duplicated_cells: 0,
+                domain_count_before: 0,
+                domain_count_after: 0,
+                project_count_before: 0,
+                project_count_after: 0,
+                near_duplicate_flags: 0,
+                tie_break: vec![],
+                remaining_uncovered: 0,
+                cap_relaxation: None,
+                rejected: Some(format!("no usable candidates from {source_id}")),
+                why: format!("{label}: mechanical rank could not run — source absent"),
+            });
+            return Ok(());
+        }
+        let mut ranked: Vec<(&CandidateRow, f64, Vec<(String, f64)>)> = rows_for_source
+            .iter()
+            .map(|row| {
+                let (score, components) = rank_file(&rows_for_source, row, features);
+                (*row, score, components)
+            })
+            .collect();
+        ranked.sort_by(|a, b| {
+            b.1.partial_cmp(&a.1)
+                .unwrap()
+                .then_with(|| a.0.lexical_key().cmp(&b.0.lexical_key()))
+        });
+        let (winner, score, components) = ranked[0].clone();
+        full_document.push(key(winner));
+        full_doc_records.push(TraceRecord {
                 schema: SELECTION_TRACE_SCHEMA.to_string(),
                 set: "full_document".to_string(),
                 iteration: full_document.len() as u64,
@@ -871,8 +927,8 @@ pub fn select(
                     )
                 },
             });
-            Ok(())
-        };
+        Ok(())
+    };
 
     add_mechanical_full_doc(
         "openmlsys",
@@ -887,7 +943,12 @@ pub fn select(
     )?;
     add_mechanical_full_doc(
         "kubernetes-keps",
-        &["file_bytes", "block_count", "max_container_depth", "fence_density_per_kib"],
+        &[
+            "file_bytes",
+            "block_count",
+            "max_container_depth",
+            "fence_density_per_kib",
+        ],
         "FULL-KEP",
         false,
     )?;
@@ -908,7 +969,10 @@ pub fn select(
         .filter(|row| six_keys.contains(&key(row)))
         .copied()
         .collect();
-    let six_domains: BTreeSet<&str> = six_rows.iter().map(|row| row.identity.domain.as_str()).collect();
+    let six_domains: BTreeSet<&str> = six_rows
+        .iter()
+        .map(|row| row.identity.domain.as_str())
+        .collect();
     let uncovered_domain: Option<&str> = usable
         .iter()
         .map(|row| row.identity.domain.as_str())
@@ -922,7 +986,9 @@ pub fn select(
         .collect();
     let uncovered_syntax: Option<&str> = SYNTAX_CELLS
         .iter()
-        .find(|cell| !six_syntax.contains(*cell) && usable.iter().any(|row| syntax_cell(row, cell).is_some()))
+        .find(|cell| {
+            !six_syntax.contains(*cell) && usable.iter().any(|row| syntax_cell(row, cell).is_some())
+        })
         .copied();
     if let Some(trigger) = uncovered_domain.or(uncovered_syntax) {
         // Candidate = largest-bytes usable row covering the trigger.
@@ -938,7 +1004,9 @@ pub fn select(
             })
             .collect();
         candidates.sort_by(|a, b| {
-            b.file_bytes.cmp(&a.file_bytes).then_with(|| a.lexical_key().cmp(&b.lexical_key()))
+            b.file_bytes
+                .cmp(&a.file_bytes)
+                .then_with(|| a.lexical_key().cmp(&b.lexical_key()))
         });
         if let Some(seventh) = candidates.first() {
             let seventh = **seventh;
@@ -971,8 +1039,9 @@ pub fn select(
                         "seventh document justified by uncovered regime {trigger}; largest-bytes deterministic choice"
                     ),
                 });
-                seventh_document_note =
-                    Some(format!("seventh document added for uncovered regime {trigger}"));
+                seventh_document_note = Some(format!(
+                    "seventh document added for uncovered regime {trigger}"
+                ));
             }
         }
     } else {
@@ -1001,7 +1070,9 @@ pub fn select(
     for row in &seed {
         for cell in SYNTAX_CELLS {
             if syntax_cell(row, cell).is_some() {
-                covered_syntax.entry(cell.to_string()).or_insert_with(|| key(row));
+                covered_syntax
+                    .entry(cell.to_string())
+                    .or_insert_with(|| key(row));
             }
         }
     }
@@ -1021,14 +1092,25 @@ pub fn select(
                 project.to_string()
             }))
             .collect();
-        let known_domains: BTreeSet<String> = seed
-            .iter()
-            .map(|row| row.identity.domain.clone())
-            .collect();
+        let known_domains: BTreeSet<String> =
+            seed.iter().map(|row| row.identity.domain.clone()).collect();
         // §31 ordering: stronger evidence grade, more new cells, new
         // project, new domain, lexical. Stored per candidate as a single
         // comparable tuple.
-        let mut best: Option<((Reverse<u64>, Reverse<usize>, Reverse<u64>, Reverse<u64>, (String, String)), &CandidateRow, Vec<String>, u64, bool, bool)> = None;
+        let mut best: Option<(
+            (
+                Reverse<u64>,
+                Reverse<usize>,
+                Reverse<u64>,
+                Reverse<u64>,
+                (String, String),
+            ),
+            &CandidateRow,
+            Vec<String>,
+            u64,
+            bool,
+            bool,
+        )> = None;
         for row in &usable {
             let row_key = key(row);
             if chosen_so_far.contains(&row_key) || seed_keys.contains(&row_key) {
@@ -1057,14 +1139,24 @@ pub fn select(
                 Reverse(new_cells.len()),
                 Reverse(new_project as u64),
                 Reverse(new_domain as u64),
-                (row.identity.source_id.clone(), row.identity.snapshot_path.clone()),
+                (
+                    row.identity.source_id.clone(),
+                    row.identity.snapshot_path.clone(),
+                ),
             );
             let better = best
                 .as_ref()
                 .map(|(current, _, _, _, _, _)| &ordering < current)
                 .unwrap_or(true);
             if better {
-                best = Some((ordering, row, new_cells, best_grade, new_project, new_domain));
+                best = Some((
+                    ordering,
+                    row,
+                    new_cells,
+                    best_grade,
+                    new_project,
+                    new_domain,
+                ));
             }
         }
         let Some((_, row, new_cells, best_grade, new_project, new_domain)) = best else {
@@ -1087,7 +1179,10 @@ pub fn select(
             project_count_after: 0,
             near_duplicate_flags: 0,
             tie_break: vec![
-                ("evidence_grade".to_string(), grade_rank_label(best_grade).to_string()),
+                (
+                    "evidence_grade".to_string(),
+                    grade_rank_label(best_grade).to_string(),
+                ),
                 ("new_cells".to_string(), new_cells.len().to_string()),
                 ("new_project".to_string(), new_project.to_string()),
                 ("new_domain".to_string(), new_domain.to_string()),
@@ -1181,7 +1276,10 @@ pub fn select(
         member.memberships.push("syntax_coverage".to_string());
         member.why_this_file.push(format!(
             "syntax_coverage: {}",
-            record.as_ref().map(|record| record.why.clone()).unwrap_or_default()
+            record
+                .as_ref()
+                .map(|record| record.why.clone())
+                .unwrap_or_default()
         ));
         // Evidence labels (§30): a file whose selection value is only
         // non-strict evidence is REALISM_ONLY; deferred math adds
@@ -1197,11 +1295,13 @@ pub fn select(
                 !grades.is_empty() && grades.iter().all(|grade| *grade != "strict");
             if non_strict_only {
                 member.evidence_labels.push("REALISM_ONLY".to_string());
-                if grades.iter().any(|grade| *grade == "ambiguous_or_unknown") {
+                if grades.contains(&"ambiguous_or_unknown") {
                     member.evidence_labels.push("LANE_DEFERRED".to_string());
                 }
-                if grades.iter().any(|grade| *grade == "candidate") {
-                    member.evidence_labels.push("GRAMMAR_EXTENSION_REQUIRED".to_string());
+                if grades.contains(&"candidate") {
+                    member
+                        .evidence_labels
+                        .push("GRAMMAR_EXTENSION_REQUIRED".to_string());
                 }
             }
         }
@@ -1236,7 +1336,10 @@ pub fn select(
         .collect();
 
     Ok(SelectionOutcome {
-        representative: selected_rep.iter().map(|index| key(eligible[*index])).collect(),
+        representative: selected_rep
+            .iter()
+            .map(|index| key(eligible[*index]))
+            .collect(),
         extremal: extremal_keys.into_iter().collect(),
         syntax_coverage: syntax_selected,
         full_document,
@@ -1252,4 +1355,3 @@ pub fn select(
         seventh_document_note,
     })
 }
-

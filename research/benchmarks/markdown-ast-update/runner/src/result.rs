@@ -1,10 +1,21 @@
-//! Versioned raw result row (schema v1).
+//! Versioned raw result row (schema v2).
 //!
 //! The Rust model in this file is the single source of truth;
-//! `protocol/result-schema-v1.json` is GENERATED from it (see the
+//! `protocol/result-schema-v2.json` is GENERATED from it (see the
 //! `mdbench-gen-schema` binary) and `protocol/result-schema.md` documents
 //! it. Raw rows preserve facts only: no winner, rank, score, weighted
 //! metric, or speedup conclusion may ever be added here.
+//!
+//! SCHEMA v2 (MEASUREMENT-CORRECTIVE-1 §19): the attribution lane
+//! payload is ATTRIBUTION-SCHEMA-v2 — source-inspection events carry
+//! explicit OLD/POST source-version provenance, the unique-coverage
+//! slots are derived per version with an explicit combined primary
+//! quantity, and a cumulative `source_bytes_inspected_total` effort slot
+//! is added. v1 rows (unique_source_*_inspected, no provenance) do NOT
+//! deserialize as v2; v1 and v2 rows must never be pooled in one
+//! analysis. The row-level `result_checksum` is unchanged in meaning but
+//! is now derived POST-TIMER from the sealed state's `ResultChecksum`
+//! export.
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -23,7 +34,7 @@ use markit_mdbench_instrumentation::MemoryRecord;
 use markit_mdbench_instrumentation::TimingRecord;
 
 /// Version of the raw result row schema emitted by this runner.
-pub const RESULT_SCHEMA_VERSION_V1: u16 = 1;
+pub const RESULT_SCHEMA_VERSION_V2: u16 = 2;
 
 /// The frozen protocol generation these rows were produced under.
 /// Points at `protocol/R0-METHODOLOGY.md` (R0 FROZEN, verdict PASS).
@@ -219,7 +230,7 @@ pub fn assemble_row(
     provenance_ref: &str,
 ) -> ResultRowV1 {
     ResultRowV1 {
-        schema_version: RESULT_SCHEMA_VERSION_V1,
+        schema_version: RESULT_SCHEMA_VERSION_V2,
         protocol_version: PROTOCOL_VERSION.to_string(),
         build_identity: build_identity.clone().into(),
         case_id: facts.case_id.hex(),

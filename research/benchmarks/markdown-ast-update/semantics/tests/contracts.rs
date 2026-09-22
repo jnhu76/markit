@@ -98,8 +98,8 @@ fn generated_artifacts_match_the_models() {
     let root = bench_root();
     for (relative, expected) in schema_artifacts() {
         let path = root.join(relative);
-        let on_disk = fs::read_to_string(&path)
-            .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+        let on_disk =
+            fs::read_to_string(&path).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
         assert_eq!(
             on_disk, expected,
             "{relative} drifted from the Rust model; re-run \
@@ -117,11 +117,15 @@ fn generated_artifacts_match_the_models() {
 fn committed_pilot_artifacts_match_the_driver() {
     let root = bench_root();
     let artifacts = pilot_artifacts(&root).unwrap_or_else(|error| panic!("{error}"));
-    assert_eq!(artifacts.len(), 2, "manifest and results are both published");
+    assert_eq!(
+        artifacts.len(),
+        2,
+        "manifest and results are both published"
+    );
     for (relative, expected) in artifacts {
         let path = root.join(relative);
-        let on_disk = fs::read_to_string(&path)
-            .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+        let on_disk =
+            fs::read_to_string(&path).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
         assert_eq!(
             on_disk, expected,
             "{relative} is stale; re-run \
@@ -173,8 +177,7 @@ fn synthetic_case_identity_is_unchanged() {
 #[test]
 fn profiler_identity_is_versioned() {
     assert_eq!(PROFILER_VERSION, "REAL-MARKDOWN-PROFILER-v1");
-    let profile =
-        markit_mdbench_semantics::profile("x\n", &[G1_GRAMMAR_ID, G0_GRAMMAR_ID]);
+    let profile = markit_mdbench_semantics::profile("x\n", &[G1_GRAMMAR_ID, G0_GRAMMAR_ID]);
     assert_eq!(profile.profiler_version, PROFILER_VERSION);
     assert_eq!(profile.schema, "real-profile-v1");
     assert_eq!(profile.source.source_sha256.len(), 64);

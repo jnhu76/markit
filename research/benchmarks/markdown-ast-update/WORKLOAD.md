@@ -160,10 +160,12 @@ cargo run -q -p markit-mdbench-workload-freeze \
   --bin mdbench-corrective-c -- dry-run .
 ```
 
-At the PR #40 correctness-closure state:
+At the PR #40 correctness-closure state, after MEASUREMENT-CORRECTIVE-1
+extended FULL_READ to all five horses:
 
 ```text
-FULL_READ:   22/22 strict G0 cases PASS
+FULL_READ:   110/110 (22 strict G0 files x H0-H4)
+             clean parse + native-state construction PASS per horse
 EDIT_WRITE:  362 cases x H0-H4
              1810 / 1810 correctness dispatches PASS
              0 wrong_result, 0 execution failures

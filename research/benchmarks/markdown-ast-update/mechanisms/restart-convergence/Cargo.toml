@@ -14,3 +14,6 @@ markit-mdbench-corpusgen = { workspace = true }
 # Test-side oracle only (R5 freeze §1): tests may compare H4 against H0;
 # the mechanism itself never calls H0.
 markit-mdbench-full-rebuild = { workspace = true }
+# Attribution-fixture dispatch goes through the real runner lanes
+# (MEASUREMENT-CORRECTIVE-1 §21); the mechanism never depends on it.
+markit-mdbench-runner = { workspace = true }

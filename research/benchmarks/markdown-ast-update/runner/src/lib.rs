@@ -31,6 +31,6 @@ pub use orchestrate::{
 };
 pub use result::{
     assemble_row, edit_meta, CaseFacts, EditMetaError, EditMetaV1, MeasurementV1, PayloadMetaV1,
-    ResultRowV1, TimingMetricsV1, PROTOCOL_VERSION, RESULT_SCHEMA_VERSION_V1,
+    ResultRowV1, TimingMetricsV1, PROTOCOL_VERSION, RESULT_SCHEMA_VERSION_V2,
 };
 pub use supervisor::{failure_row, run_supervised, synthesized_failure_row, WorkerTermination};
