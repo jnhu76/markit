@@ -78,7 +78,11 @@ fn campaign_receipt_binds_every_artifact() {
         .expect("campaign receipt verifies");
     let receipt =
         markit_mdbench_campaign::receipt::CampaignReceipt::load(&benchmark_root()).unwrap();
-    assert_eq!(receipt.artifacts.len(), 12, "12 bound artifacts (task §41)");
+    assert_eq!(
+        receipt.artifacts.len(),
+        14,
+        "14 bound artifacts (task §41 incl. profile-defining Cargo.toml/rust-toolchain.toml)"
+    );
     assert!(receipt.produced_before_primary_timing);
     assert_eq!(receipt.campaign_seed, 6000671815411757117);
 }

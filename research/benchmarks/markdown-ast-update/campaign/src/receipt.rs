@@ -14,7 +14,12 @@ use crate::manifest::{
 use crate::{sha256_file, CAMPAIGN_RECEIPT_SCHEMA};
 
 /// Every artifact the campaign receipt SHA256-binds (task §41).
-pub const BOUND_ARTIFACTS: [&str; 12] = [
+///
+/// `Cargo.toml` and `rust-toolchain.toml` are bound because they DEFINE
+/// the frozen `release-primary-v1` build profile and the pinned
+/// toolchain: binding only `Cargo.lock` would let a post-freeze profile
+/// edit (opt-level/lto/codegen-units) pass unnoticed.
+pub const BOUND_ARTIFACTS: [&str; 14] = [
     "results/manifests/primary-performance-campaign-v1.toml",
     "results/manifests/primary-machine-v1.toml",
     "results/manifests/primary-schedule-v1.jsonl",
@@ -26,6 +31,8 @@ pub const BOUND_ARTIFACTS: [&str; 12] = [
     "workloads/profiles/strict-surface-profile-v1.jsonl",
     "protocol/result-schema-v2.json",
     "Cargo.lock",
+    "Cargo.toml",
+    "rust-toolchain.toml",
     "manifest/environment.toml",
 ];
 

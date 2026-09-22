@@ -295,12 +295,15 @@ fn check_observation_uniqueness(
             }
         }
     }
-    // Full-campaign cardinality guards (task §10).
+    // Full-campaign cardinality guards (task §10): derived from the
+    // frozen surface counts, so they cannot silently drift from 1920 /
+    // 76,800 / 1,152.
     let cells = manifest.cells_per_session();
     let per_session = manifest.timing_rows_per_session();
-    if cells != 1920 || per_session != 76_800 {
+    let expected_frozen = crate::schedule::expected_frozen_schedule_rows(manifest.sessions.count);
+    if cells != 1920 || per_session != 76_800 || expected_frozen != 1152 {
         blockers.push(format!(
-            "cardinality guard: cells/session {cells} != 1920 or rows/session {per_session} != 76800"
+            "cardinality guard: cells/session {cells} != 1920 or rows/session {per_session} != 76800 or schedule rows {expected_frozen} != 1152"
         ));
     }
 }

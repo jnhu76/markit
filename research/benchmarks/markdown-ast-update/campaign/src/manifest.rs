@@ -145,6 +145,7 @@ pub struct CampaignManifest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SurfacesMap {
     pub clean_state: SurfaceSpec,
     pub edit_write: SurfaceSpec,
@@ -271,6 +272,12 @@ impl CampaignManifest {
             blockers.push(format!(
                 "campaign seed {} != recomputed {recomputed} for base authority {}",
                 self.seed.value, self.base_authority_sha
+            ));
+        }
+        if self.seed.base_authority_sha != self.base_authority_sha {
+            blockers.push(format!(
+                "seed.base_authority_sha {:?} != top-level base_authority_sha {:?}",
+                self.seed.base_authority_sha, self.base_authority_sha
             ));
         }
         if self.seed.algorithm != crate::identity::CAMPAIGN_SEED_ALGORITHM_ID

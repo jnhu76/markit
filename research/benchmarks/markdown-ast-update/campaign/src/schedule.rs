@@ -321,8 +321,15 @@ pub fn verify_schedule(
                     expected_entry.3.as_ref(),
                 ) {
                     blockers.push(format!(
-                        "{surface_name} session {s} ordinal {j}: case identity {:?} != recomputed {:?} (order corruption or identity drift)",
-                        row.case_id, expected_entry.0
+                        "{surface_name} session {s} ordinal {j}: case identity mismatch (order corruption or identity drift): on disk (case {:?}, payload {:?}, source {:?}, trace {:?}) vs recomputed (case {:?}, payload {:?}, source {:?}, trace {:?})",
+                        row.case_id,
+                        row.payload_id,
+                        row.source_key,
+                        row.trace_id,
+                        expected_entry.0,
+                        expected_entry.1,
+                        expected_entry.2,
+                        expected_entry.3
                     ));
                 }
                 for horse in &row.horse_order {

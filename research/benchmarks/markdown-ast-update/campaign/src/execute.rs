@@ -300,13 +300,32 @@ impl<'a> SessionExecutor<'a> {
                 report.correctness_status
             ));
         }
-        if let LaneMeasurement::Timing(timing) = &report.measurement {
-            let unknown = |value: &Observed<u64>| *value == Observed::Unknown;
-            if unknown(&timing.prepare_ns)
-                || unknown(&timing.native_ns)
-                || unknown(&timing.total_ns)
-            {
-                return Err("qualified timing metric UNKNOWN (task §36)".to_string());
+        match &report.measurement {
+            LaneMeasurement::Timing(timing) => {
+                let unknown = |value: &Observed<u64>| *value == Observed::Unknown;
+                if unknown(&timing.prepare_ns)
+                    || unknown(&timing.native_ns)
+                    || unknown(&timing.total_ns)
+                {
+                    return Err("qualified timing metric UNKNOWN (task §36)".to_string());
+                }
+            }
+            LaneMeasurement::Attribution(counters) => {
+                // Counter authority (task §45): attribution counters are
+                // deterministic mechanism facts; a completed run whose
+                // every slot is Unknown has no attribution evidence at
+                // all and must not be summarized as if it did.
+                if counters.all_unknown_slots() {
+                    return Err(
+                        "attribution counters are all UNKNOWN on a completed run (task §45)"
+                            .to_string(),
+                    );
+                }
+            }
+            LaneMeasurement::Memory(_) => {
+                return Err(
+                    "memory lane is UNAVAILABLE in the primary campaign (task §19)".to_string(),
+                );
             }
         }
         Ok(())
@@ -331,6 +350,16 @@ impl<'a> SessionExecutor<'a> {
         clock: &CampaignClock,
         sink: &mut dyn ObservationSink,
     ) -> Result<SessionOutcome, String> {
+        // Provenance coherence (task §49): NON_RESEARCH executions must
+        // carry a NON_RESEARCH provenance tag, and research executions
+        // must not — a mislabeled row is worse than a missing one.
+        let tagged_non_research = self.identity.provenance.contains("NON_RESEARCH");
+        if tagged_non_research != self.identity.non_research {
+            return Err(format!(
+                "provenance {:?} contradicts non_research={}",
+                self.identity.provenance, self.identity.non_research
+            ));
+        }
         for case in cases {
             for (horse_order_ordinal, horse_id) in case.horse_order().iter().enumerate() {
                 let horse_order_ordinal = horse_order_ordinal as u32;

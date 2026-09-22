@@ -57,12 +57,23 @@ pub struct SmokeReport {
 }
 
 /// Run the fake-clock smoke. `out_dir` must be OUTSIDE the primary raw
-/// result path; the caller enforces that (CLI + tests).
+/// result path; this function enforces that itself (defense in depth
+/// below the CLI guard).
 pub fn run_smoke(
     benchmark_root: &Path,
     out_dir: &Path,
     options: &SmokeOptions,
 ) -> Result<SmokeReport, String> {
+    // NON_RESEARCH output must never land in the primary raw tree, even
+    // when the directory does not exist yet (lexical normalization, not
+    // canonicalization — canonicalize() fails open for fresh paths).
+    if is_under_primary_raw_root(out_dir, benchmark_root) {
+        return Err(format!(
+            "smoke output {} is under the primary raw result path {:?}",
+            out_dir.display(),
+            benchmark_root.join("results/raw").display()
+        ));
+    }
     std::fs::create_dir_all(out_dir).map_err(|e| format!("mkdir {}: {e}", out_dir.display()))?;
     let mut checks = Vec::new();
 
@@ -385,4 +396,94 @@ fn validate_output(
         ));
     }
     Ok(())
+}
+
+/// Lexically normalize a path (resolve `.` and `..` without touching the
+/// filesystem): canonicalization fails open for paths that do not exist
+/// yet, lexical normalization does not.
+pub fn lexical_normalize(path: &Path) -> std::path::PathBuf {
+    use std::path::Component;
+    let mut out: Vec<std::ffi::OsString> = Vec::new();
+    for component in path.components() {
+        match component {
+            Component::CurDir => {}
+            Component::ParentDir => {
+                out.pop();
+            }
+            Component::Prefix(_) | Component::RootDir | Component::Normal(_) => {
+                out.push(component.as_os_str().to_os_string());
+            }
+        }
+    }
+    let mut normalized = std::path::PathBuf::new();
+    for part in out {
+        normalized.push(part);
+    }
+    normalized
+}
+
+/// Whether `out_dir` lands under the primary raw result tree. Two rules,
+/// both fail-closed:
+///
+/// 1. the absolute (CWD-resolved, lexically normalized) path is inside
+///    `<benchmark_root>/results/raw`; or
+/// 2. the path contains the consecutive component pair `results/raw`
+///    (a relative path that would land there once resolved, or a stray
+///    `results/raw` anywhere).
+pub fn is_under_primary_raw_root(out_dir: &Path, benchmark_root: &Path) -> bool {
+    use std::path::Component;
+    let cwd = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
+    let absolute = if out_dir.is_absolute() {
+        out_dir.to_path_buf()
+    } else {
+        cwd.join(out_dir)
+    };
+    let normalized_out = lexical_normalize(&absolute);
+    let raw_root = lexical_normalize(&benchmark_root.join("results/raw"));
+    if normalized_out.starts_with(&raw_root) {
+        return true;
+    }
+    let components: Vec<Option<std::ffi::OsString>> = normalized_out
+        .components()
+        .map(|component| match component {
+            Component::Prefix(_) | Component::RootDir | Component::Normal(_) => {
+                Some(component.as_os_str().to_os_string())
+            }
+            _ => None,
+        })
+        .collect();
+    components.windows(2).any(|window| {
+        window[0].as_deref() == Some(std::ffi::OsStr::new("results"))
+            && window[1].as_deref() == Some(std::ffi::OsStr::new("raw"))
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn raw_root_guard_blocks_relative_and_absolute_paths() {
+        let root = Path::new("/srv/markit/research/benchmarks/markdown-ast-update");
+        // Relative path that escapes into results/raw via `..`.
+        assert!(is_under_primary_raw_root(
+            Path::new("results/raw/non-research"),
+            root
+        ));
+        assert!(is_under_primary_raw_root(
+            Path::new("/srv/markit/research/benchmarks/markdown-ast-update/results/raw/x"),
+            root
+        ));
+        assert!(is_under_primary_raw_root(
+            Path::new("workloads/../results/raw/y"),
+            root
+        ));
+        // A sibling that merely shares a prefix is not the raw root.
+        assert!(!is_under_primary_raw_root(
+            Path::new("results/raw-not/real"),
+            root
+        ));
+        assert!(!is_under_primary_raw_root(Path::new("target/smoke"), root));
+        assert!(!is_under_primary_raw_root(Path::new("/tmp/smoke"), root));
+    }
 }

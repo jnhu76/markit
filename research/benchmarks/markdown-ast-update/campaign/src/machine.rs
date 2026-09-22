@@ -357,6 +357,62 @@ pub fn match_current_host(
                 frozen.selected_core_id, frozen.selected_thread_siblings
             ));
         }
+        // SMT / core-count / NUMA topology are part of the frozen machine
+        // identity: compare every recorded field, not just the selected
+        // CPU.
+        let cpus = online_cpus().unwrap_or_default();
+        let mut sibling_groups: BTreeSet<String> = BTreeSet::new();
+        for cpu in &cpus {
+            sibling_groups
+                .insert(cpu_topology_file(*cpu, "thread_siblings_list").unwrap_or_default());
+        }
+        let physical = sibling_groups.len() as u32;
+        let smt = cpus.len() as u32 > physical;
+        if physical != frozen.physical_cores {
+            blockers.push(format!(
+                "machine field physical_cores: frozen {} != current {physical}",
+                frozen.physical_cores
+            ));
+        }
+        if smt != frozen.smt_enabled {
+            blockers.push(format!(
+                "machine field smt_enabled: frozen {} != current {smt}",
+                frozen.smt_enabled
+            ));
+        }
+        match numa_nodes() {
+            Ok(nodes) => {
+                let numa_cpu_map = nodes
+                    .iter()
+                    .map(|(id, cpus)| format!("node{id}:{}", join_cpus(cpus)))
+                    .collect::<Vec<_>>()
+                    .join("; ");
+                if nodes.len() as u32 != frozen.numa_nodes {
+                    blockers.push(format!(
+                        "machine field numa_nodes: frozen {} != current {}",
+                        frozen.numa_nodes,
+                        nodes.len()
+                    ));
+                }
+                if numa_cpu_map != frozen.numa_cpu_map {
+                    blockers.push(format!(
+                        "machine field numa_cpu_map: frozen {:?} != current {:?}",
+                        frozen.numa_cpu_map, numa_cpu_map
+                    ));
+                }
+                let node = nodes
+                    .iter()
+                    .find(|(_, node_cpus)| node_cpus.contains(&frozen.selected_cpu))
+                    .map(|(id, _)| *id);
+                if node != Some(frozen.selected_numa_node) {
+                    blockers.push(format!(
+                        "machine field selected_numa_node: frozen {} != current {:?}",
+                        frozen.selected_numa_node, node
+                    ));
+                }
+            }
+            Err(error) => blockers.push(format!("NUMA topology unreadable: {error}")),
+        }
     } else {
         blockers.push("cannot recompute the frozen CPU selection rule".to_string());
     }
@@ -379,12 +435,24 @@ pub fn match_current_host(
 
     let rustc = run_capture("rustc", &["--version"]).unwrap_or_default();
     push!("rustc", &frozen.rustc, rustc);
+    let cargo = run_capture("cargo", &["--version"]).unwrap_or_default();
+    push!("cargo", &frozen.cargo, cargo);
     let verbose = run_capture("rustc", &["--version", "--verbose"]).unwrap_or_default();
     let target_triple = verbose
         .lines()
         .find_map(|line| line.strip_prefix("host: ").map(|s| s.to_string()))
         .unwrap_or_default();
     push!("target_triple", &frozen.target_triple, target_triple);
+    let llvm = verbose
+        .lines()
+        .find_map(|line| line.strip_prefix("LLVM version: ").map(|s| s.to_string()))
+        .unwrap_or_default();
+    push!("llvm", &frozen.llvm, llvm);
+    push!(
+        "allocator_policy",
+        &frozen.allocator_policy,
+        "rust-system-default".to_string()
+    );
 
     // Affinity must be applicable on this host (task §47); restored
     // immediately so the check itself is non-intrusive.

@@ -310,11 +310,9 @@ fn cmd_smoke(root: &Path, flags: &[String]) -> Result<bool, String> {
         return Err("smoke requires --out <dir> (must be OUTSIDE results/raw)".to_string());
     };
     let out_path = PathBuf::from(&out_dir);
-    // Guard: smoke output must never land under the primary raw path.
-    let canonical_root = root.canonicalize().unwrap_or_else(|_| root.to_path_buf());
-    let raw_root = canonical_root.join("results/raw");
-    let canonical_out = out_path.canonicalize().unwrap_or_else(|_| out_path.clone());
-    if canonical_out.starts_with(&raw_root) {
+    // Guard: smoke output must never land under the primary raw path
+    // (the library-level guard in run_smoke enforces the same rule).
+    if markit_mdbench_campaign::smoke::is_under_primary_raw_root(&out_path, root) {
         return Err(format!(
             "smoke output {} is under the primary raw result path",
             out_path.display()
@@ -489,6 +487,24 @@ fn write_run_receipt(raw_path: &Path) -> Result<(), String> {
                 .to_string(),
         );
     }
+    // Process identity: the frozen session semantics require a FRESH
+    // worker process per session (task §11); recording pid + kernel
+    // start-time makes that auditable after the fact.
+    let producer_pid = std::process::id();
+    let producer_start_ticks = std::fs::read_to_string("/proc/self/stat")
+        .ok()
+        .and_then(|text| {
+            // Field 22 (1-indexed) is starttime; the comm field may
+            // contain spaces, so split after the last ')'.
+            let after_comm = text.rsplit_once(')').map(|(_, rest)| rest.to_string())?;
+            after_comm
+                .split_whitespace()
+                .nth(19)
+                .map(|value| value.to_string())
+        });
+    let executable_sha256 = std::env::current_exe()
+        .ok()
+        .and_then(|path| markit_mdbench_campaign::sha256_file(&path).ok());
     let receipt = serde_json::json!({
         "schema": "run-file-receipt-v1",
         "file": raw_path.file_name().and_then(|n| n.to_str()).unwrap_or(""),
@@ -496,6 +512,9 @@ fn write_run_receipt(raw_path: &Path) -> Result<(), String> {
         "row_count": ids.len(),
         "first_observation_id": ids.first().cloned().unwrap_or_default(),
         "last_observation_id": ids.last().cloned().unwrap_or_default(),
+        "producer_pid": producer_pid,
+        "producer_start_ticks": producer_start_ticks,
+        "executable_sha256": executable_sha256,
     });
     let receipt_path = raw_path.with_extension("jsonl.receipt.json");
     if receipt_path.exists() {

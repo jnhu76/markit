@@ -191,6 +191,29 @@ pub struct CaseEstimate {
 /// are required, and no measured sample may be substituted (task §9,
 /// §36).
 pub fn summarize(samples: &[LatencySample]) -> SummariesOutcome {
+    // Warmup failures are campaign failures too (task §17/§37): a
+    // wrong warmup invalidates the campaign, so check ALL samples before
+    // excluding warmups from the summaries.
+    if let Some(failed) = samples
+        .iter()
+        .find(|sample| !sample.execution_pass || !sample.correctness_pass)
+    {
+        return SummariesOutcome::Invalid {
+            reason: format!(
+                "{} sample case {} horse {} session {} did not pass (execution {} correctness {})",
+                if failed.measured {
+                    "measured"
+                } else {
+                    "warmup"
+                },
+                failed.case,
+                failed.horse,
+                failed.session,
+                failed.execution_pass,
+                failed.correctness_pass
+            ),
+        };
+    }
     // Warmup exclusion (task §17).
     let measured: Vec<&LatencySample> = samples.iter().filter(|sample| sample.measured).collect();
     // Invalid-row propagation (task §36): one failed qualified sample
@@ -585,6 +608,17 @@ mod tests {
         short.remove(index);
         assert!(matches!(
             summarize(&short),
+            SummariesOutcome::Invalid { .. }
+        ));
+
+        // A failed WARMUP also invalidates (task §17/§37): warmups are
+        // not disposable correctness.
+        let mut warmup_failed = synthetic_samples();
+        if let Some(sample) = warmup_failed.iter_mut().find(|s| !s.measured) {
+            sample.correctness_pass = false;
+        }
+        assert!(matches!(
+            summarize(&warmup_failed),
             SummariesOutcome::Invalid { .. }
         ));
 

@@ -49,6 +49,14 @@
       "sha256": "e42e1a917455ac859832a7f5584c934f69c48cd587b83fd0c4aa398267c3fba3"
     },
     {
+      "artifact": "Cargo.toml",
+      "sha256": "3ad241ff772aef0f369c126a97b11d583f6d1375f6c239da283b3968be8035b1"
+    },
+    {
+      "artifact": "rust-toolchain.toml",
+      "sha256": "c8c457db00318d37befe3da283e3be0ed91da63fb1d7b8cac50826ae4a4dca25"
+    },
+    {
       "artifact": "manifest/environment.toml",
       "sha256": "723ff512e69e199824dbe546524593e0b3ebad2fc6c045478531b657cae73278"
     }
