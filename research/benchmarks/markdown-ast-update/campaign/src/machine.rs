@@ -1,9 +1,26 @@
 //! Machine capture, matching, and CPU affinity (task §24-§26, §47).
 //!
-//! The machine manifest records STABLE identity fields of the actual
-//! primary benchmark machine. Transient values (current frequency, load
-//! average, temperature, uptime) are preflight diagnostics and never
-//! enter machine identity.
+//! The machine manifest records the actual primary benchmark machine in
+//! three tiers (wording corrected by MARKIT-31-MACHINE-BINDING-
+//! CORRECTIVE-1; the recorded values are unchanged):
+//!
+//! - HARD host-binding fields — every mismatch blocks the preflight,
+//!   with no fuzzy matching: architecture, distribution/kernel, CPU
+//!   vendor/model/microcode, cores, SMT, NUMA topology, the selected
+//!   CPU with its core/sibling/NUMA relationship, governor + turbo
+//!   policy, rustc/cargo/LLVM/target, allocator policy, release
+//!   profile, RUSTFLAGS, Cargo.lock digest, affinity applicability.
+//! - RECORDED host observations — captured once, still reported, never
+//!   byte-exact matched: `total_ram_bytes` is
+//!   `/proc/meminfo:MemTotal` at capture time. Linux defines MemTotal
+//!   as usable RAM (installed capacity minus firmware/kernel
+//!   reservations), not immutable installed capacity, so it legitimately
+//!   moves between boots; the frozen value stays exactly as recorded
+//!   and a current-vs-frozen delta is a visible, auditable,
+//!   non-blocking preflight diagnostic.
+//! - TRANSIENT diagnostics — per-session values (current frequency,
+//!   load average, temperature, uptime) that never enter machine
+//!   identity.
 //!
 //! Affinity (task §25): primary horse execution is single-worker and
 //! pinned to ONE frozen logical CPU. The selection process is
@@ -295,28 +312,72 @@ fn join_cpus(cpus: &[u32]) -> String {
         .join(",")
 }
 
-/// Compare the CURRENT host against the frozen machine manifest (task
-/// §47). Every mismatch is a blocker; there is no fuzzy matching.
-pub fn match_current_host(
+/// What the LIVE host currently reports, captured once for machine
+/// binding (task §47). Pure data: [`compare_host_binding`] turns it
+/// into blockers, so tests can synthesize observations instead of
+/// depending on a real `/proc`+`/sys`.
+pub struct HostObservations {
+    pub architecture: String,
+    pub kernel: String,
+    pub os_distribution: String,
+    pub cpu_vendor: String,
+    pub cpu_model: String,
+    pub microcode: String,
+    /// Count of online logical CPUs (`None` = unreadable; the capture
+    /// blockers say why).
+    pub logical_cpus: Option<u32>,
+    /// Recomputation of the frozen CPU selection rule plus the topology
+    /// it implies (`None` = the rule could not be recomputed).
+    pub topology: Option<HostTopology>,
+    pub frequency_governor: String,
+    pub turbo_boost_policy: String,
+    /// `/proc/meminfo:MemTotal` at observation time — DIAGNOSTIC ONLY,
+    /// never a hard binding field (see [`memory_binding_diagnostic`]).
+    pub mem_total_bytes: u64,
+    pub rustc: String,
+    pub cargo: String,
+    pub llvm: String,
+    pub target_triple: String,
+    pub rustflags: String,
+    /// Result of the non-intrusive affinity probe for the frozen CPU
+    /// (applied and restored).
+    pub affinity_probe: Result<(), String>,
+    /// SHA256 of the workspace `Cargo.lock` (`Err` = unreadable).
+    pub cargo_lock_sha256: Result<String, String>,
+}
+
+/// Topology implied by a successful recomputation of the frozen CPU
+/// selection rule.
+pub struct HostTopology {
+    pub physical_cores: u32,
+    pub smt_enabled: bool,
+    /// NUMA facts (`None` = unreadable; the capture blockers say why).
+    pub numa: Option<HostNuma>,
+    pub selected_cpu: u32,
+    pub selected_core_id: u32,
+    pub selected_thread_siblings: String,
+}
+
+/// NUMA topology as observed.
+pub struct HostNuma {
+    pub node_count: u32,
+    pub cpu_map: String,
+    /// Node containing the frozen `selected_cpu` (`None` = no node
+    /// lists it, itself a mismatch against the frozen manifest).
+    pub selected_node: Option<u32>,
+}
+
+/// Capture the current host's binding-relevant state (task §47).
+/// Capture failures are returned as fail-closed blockers exactly like
+/// field mismatches — an unreadable fact is never silently skipped.
+pub fn observe_host_for_binding(
     frozen: &MachineManifest,
     benchmark_root: &std::path::Path,
-) -> Result<(), Vec<String>> {
-    let mut blockers = Vec::new();
-    macro_rules! push {
-        ($field:expr, $expected:expr, $actual:expr) => {
-            if &$actual != $expected {
-                blockers.push(format!(
-                    "machine field {}: frozen {:?} != current {:?}",
-                    $field, $expected, $actual
-                ));
-            }
-        };
-    }
+) -> (HostObservations, Vec<String>) {
+    let mut capture_blockers = Vec::new();
 
     let architecture = run_capture("uname", &["-m"]).unwrap_or_default();
-    push!("architecture", &frozen.architecture, architecture);
     let kernel = run_capture("uname", &["-r"]).unwrap_or_default();
-    push!("kernel", &frozen.kernel, kernel);
     let os_distribution = std::fs::read_to_string("/etc/os-release")
         .ok()
         .and_then(|text| {
@@ -326,152 +387,271 @@ pub fn match_current_host(
             })
         })
         .unwrap_or_default();
-    push!("os_distribution", &frozen.os_distribution, os_distribution);
+    let (cpu_vendor, cpu_model, microcode) = proc_cpuinfo_fields();
 
-    let (vendor, model, microcode) = proc_cpuinfo_fields();
-    push!("cpu_vendor", &frozen.cpu_vendor, vendor);
-    push!("cpu_model", &frozen.cpu_model, model);
-    push!("microcode", &frozen.microcode, microcode);
-
-    if let Ok(cpus) = online_cpus() {
-        if cpus.len() as u32 != frozen.logical_cpus {
-            blockers.push(format!(
-                "machine field logical_cpus: frozen {} != current {}",
-                frozen.logical_cpus,
-                cpus.len()
-            ));
-        }
-    } else {
-        blockers.push("cannot read online CPUs".to_string());
+    let online = online_cpus();
+    if online.is_err() {
+        capture_blockers.push("cannot read online CPUs".to_string());
     }
-    if let Ok((selected, core_id, siblings)) = select_primary_cpu() {
-        if selected != frozen.selected_cpu {
-            blockers.push(format!(
-                "selected cpu: frozen cpu{} != recomputed cpu{selected}",
-                frozen.selected_cpu
-            ));
-        }
-        if core_id != frozen.selected_core_id || siblings != frozen.selected_thread_siblings {
-            blockers.push(format!(
-                "selected cpu topology changed: frozen core {} siblings {:?} != current core {core_id} siblings {siblings:?}",
-                frozen.selected_core_id, frozen.selected_thread_siblings
-            ));
-        }
-        // SMT / core-count / NUMA topology are part of the frozen machine
-        // identity: compare every recorded field, not just the selected
-        // CPU.
-        let cpus = online_cpus().unwrap_or_default();
-        let mut sibling_groups: BTreeSet<String> = BTreeSet::new();
-        for cpu in &cpus {
-            sibling_groups
-                .insert(cpu_topology_file(*cpu, "thread_siblings_list").unwrap_or_default());
-        }
-        let physical = sibling_groups.len() as u32;
-        let smt = cpus.len() as u32 > physical;
-        if physical != frozen.physical_cores {
-            blockers.push(format!(
-                "machine field physical_cores: frozen {} != current {physical}",
-                frozen.physical_cores
-            ));
-        }
-        if smt != frozen.smt_enabled {
-            blockers.push(format!(
-                "machine field smt_enabled: frozen {} != current {smt}",
-                frozen.smt_enabled
-            ));
-        }
-        match numa_nodes() {
-            Ok(nodes) => {
-                let numa_cpu_map = nodes
-                    .iter()
-                    .map(|(id, cpus)| format!("node{id}:{}", join_cpus(cpus)))
-                    .collect::<Vec<_>>()
-                    .join("; ");
-                if nodes.len() as u32 != frozen.numa_nodes {
-                    blockers.push(format!(
-                        "machine field numa_nodes: frozen {} != current {}",
-                        frozen.numa_nodes,
-                        nodes.len()
-                    ));
-                }
-                if numa_cpu_map != frozen.numa_cpu_map {
-                    blockers.push(format!(
-                        "machine field numa_cpu_map: frozen {:?} != current {:?}",
-                        frozen.numa_cpu_map, numa_cpu_map
-                    ));
-                }
-                let node = nodes
-                    .iter()
-                    .find(|(_, node_cpus)| node_cpus.contains(&frozen.selected_cpu))
-                    .map(|(id, _)| *id);
-                if node != Some(frozen.selected_numa_node) {
-                    blockers.push(format!(
-                        "machine field selected_numa_node: frozen {} != current {:?}",
-                        frozen.selected_numa_node, node
-                    ));
-                }
+    let logical_cpus = online.as_ref().ok().map(|cpus| cpus.len() as u32);
+
+    let topology = match select_primary_cpu() {
+        Ok((selected, core_id, siblings)) => {
+            let cpus = online.unwrap_or_default();
+            let mut sibling_groups: BTreeSet<String> = BTreeSet::new();
+            for cpu in &cpus {
+                sibling_groups
+                    .insert(cpu_topology_file(*cpu, "thread_siblings_list").unwrap_or_default());
             }
-            Err(error) => blockers.push(format!("NUMA topology unreadable: {error}")),
+            let physical = sibling_groups.len() as u32;
+            let smt = cpus.len() as u32 > physical;
+            let numa = match numa_nodes() {
+                Ok(nodes) => Some(HostNuma {
+                    node_count: nodes.len() as u32,
+                    cpu_map: nodes
+                        .iter()
+                        .map(|(id, cpus)| format!("node{id}:{}", join_cpus(cpus)))
+                        .collect::<Vec<_>>()
+                        .join("; "),
+                    selected_node: nodes
+                        .iter()
+                        .find(|(_, node_cpus)| node_cpus.contains(&frozen.selected_cpu))
+                        .map(|(id, _)| *id),
+                }),
+                Err(error) => {
+                    capture_blockers.push(format!("NUMA topology unreadable: {error}"));
+                    None
+                }
+            };
+            Some(HostTopology {
+                physical_cores: physical,
+                smt_enabled: smt,
+                numa,
+                selected_cpu: selected,
+                selected_core_id: core_id,
+                selected_thread_siblings: siblings,
+            })
         }
-    } else {
-        blockers.push("cannot recompute the frozen CPU selection rule".to_string());
-    }
+        Err(_) => {
+            capture_blockers.push("cannot recompute the frozen CPU selection rule".to_string());
+            None
+        }
+    };
 
     let governor = governor_of(frozen.selected_cpu);
-    push!("frequency_governor", &frozen.frequency_governor, governor);
-    push!(
-        "turbo_boost_policy",
-        &frozen.turbo_boost_policy,
-        turbo_policy()
-    );
-
-    if total_ram_bytes() != frozen.total_ram_bytes {
-        blockers.push(format!(
-            "machine field total_ram_bytes: frozen {} != current {}",
-            frozen.total_ram_bytes,
-            total_ram_bytes()
-        ));
-    }
-
     let rustc = run_capture("rustc", &["--version"]).unwrap_or_default();
-    push!("rustc", &frozen.rustc, rustc);
     let cargo = run_capture("cargo", &["--version"]).unwrap_or_default();
-    push!("cargo", &frozen.cargo, cargo);
     let verbose = run_capture("rustc", &["--version", "--verbose"]).unwrap_or_default();
     let target_triple = verbose
         .lines()
         .find_map(|line| line.strip_prefix("host: ").map(|s| s.to_string()))
         .unwrap_or_default();
-    push!("target_triple", &frozen.target_triple, target_triple);
     let llvm = verbose
         .lines()
         .find_map(|line| line.strip_prefix("LLVM version: ").map(|s| s.to_string()))
         .unwrap_or_default();
-    push!("llvm", &frozen.llvm, llvm);
+
+    (
+        HostObservations {
+            architecture,
+            kernel,
+            os_distribution,
+            cpu_vendor,
+            cpu_model,
+            microcode,
+            logical_cpus,
+            topology,
+            frequency_governor: governor,
+            turbo_boost_policy: turbo_policy(),
+            mem_total_bytes: total_ram_bytes(),
+            rustc,
+            cargo,
+            llvm,
+            target_triple,
+            rustflags: std::env::var("RUSTFLAGS").unwrap_or_default(),
+            affinity_probe: probe_apply_affinity(frozen.selected_cpu),
+            cargo_lock_sha256: crate::sha256_file(&benchmark_root.join("Cargo.lock")),
+        },
+        capture_blockers,
+    )
+}
+
+/// Compare observed host state against the frozen machine manifest
+/// (task §47). Every HARD host-binding field mismatch is a blocker;
+/// there is no fuzzy matching.
+///
+/// `total_ram_bytes` is deliberately NOT compared here
+/// (MARKIT-31-MACHINE-BINDING-CORRECTIVE-1): MemTotal is usable RAM,
+/// not installed capacity, so the frozen value is a recorded
+/// observation reported through [`memory_binding_diagnostic`], never a
+/// byte-exact identity gate.
+pub fn compare_host_binding(frozen: &MachineManifest, observed: &HostObservations) -> Vec<String> {
+    let mut blockers = Vec::new();
+    macro_rules! push {
+        ($field:expr, $expected:expr, $actual:expr) => {
+            if $actual != $expected {
+                blockers.push(format!(
+                    "machine field {}: frozen {:?} != current {:?}",
+                    $field, $expected, $actual
+                ));
+            }
+        };
+    }
+
+    push!("architecture", &frozen.architecture, &observed.architecture);
+    push!("kernel", &frozen.kernel, &observed.kernel);
+    push!(
+        "os_distribution",
+        &frozen.os_distribution,
+        &observed.os_distribution
+    );
+
+    push!("cpu_vendor", &frozen.cpu_vendor, &observed.cpu_vendor);
+    push!("cpu_model", &frozen.cpu_model, &observed.cpu_model);
+    push!("microcode", &frozen.microcode, &observed.microcode);
+
+    match observed.logical_cpus {
+        Some(count) if count != frozen.logical_cpus => blockers.push(format!(
+            "machine field logical_cpus: frozen {} != current {count}",
+            frozen.logical_cpus
+        )),
+        // `None` already produced a capture blocker.
+        _ => {}
+    }
+    if let Some(topology) = &observed.topology {
+        if topology.selected_cpu != frozen.selected_cpu {
+            blockers.push(format!(
+                "selected cpu: frozen cpu{} != recomputed cpu{}",
+                frozen.selected_cpu, topology.selected_cpu
+            ));
+        }
+        if topology.selected_core_id != frozen.selected_core_id
+            || topology.selected_thread_siblings != frozen.selected_thread_siblings
+        {
+            blockers.push(format!(
+                "selected cpu topology changed: frozen core {} siblings {:?} != current core {} siblings {:?}",
+                frozen.selected_core_id,
+                frozen.selected_thread_siblings,
+                topology.selected_core_id,
+                topology.selected_thread_siblings
+            ));
+        }
+        // SMT / core-count / NUMA topology are part of the frozen machine
+        // identity: compare every recorded field, not just the selected
+        // CPU.
+        if topology.physical_cores != frozen.physical_cores {
+            blockers.push(format!(
+                "machine field physical_cores: frozen {} != current {}",
+                frozen.physical_cores, topology.physical_cores
+            ));
+        }
+        if topology.smt_enabled != frozen.smt_enabled {
+            blockers.push(format!(
+                "machine field smt_enabled: frozen {} != current {}",
+                frozen.smt_enabled, topology.smt_enabled
+            ));
+        }
+        if let Some(numa) = &topology.numa {
+            if numa.node_count != frozen.numa_nodes {
+                blockers.push(format!(
+                    "machine field numa_nodes: frozen {} != current {}",
+                    frozen.numa_nodes, numa.node_count
+                ));
+            }
+            if numa.cpu_map != frozen.numa_cpu_map {
+                blockers.push(format!(
+                    "machine field numa_cpu_map: frozen {:?} != current {:?}",
+                    frozen.numa_cpu_map, numa.cpu_map
+                ));
+            }
+            if numa.selected_node != Some(frozen.selected_numa_node) {
+                blockers.push(format!(
+                    "machine field selected_numa_node: frozen {} != current {:?}",
+                    frozen.selected_numa_node, numa.selected_node
+                ));
+            }
+        }
+        // `topology.numa == None` already produced a capture blocker.
+    }
+    // `observed.topology == None` already produced a capture blocker.
+
+    push!(
+        "frequency_governor",
+        &frozen.frequency_governor,
+        &observed.frequency_governor
+    );
+    push!(
+        "turbo_boost_policy",
+        &frozen.turbo_boost_policy,
+        &observed.turbo_boost_policy
+    );
+
+    push!("rustc", &frozen.rustc, &observed.rustc);
+    push!("cargo", &frozen.cargo, &observed.cargo);
+    push!(
+        "target_triple",
+        &frozen.target_triple,
+        &observed.target_triple
+    );
+    push!("llvm", &frozen.llvm, &observed.llvm);
     push!(
         "allocator_policy",
         &frozen.allocator_policy,
-        "rust-system-default".to_string()
+        &"rust-system-default".to_string()
     );
 
-    // Affinity must be applicable on this host (task §47); restored
-    // immediately so the check itself is non-intrusive.
-    match probe_apply_affinity(frozen.selected_cpu) {
-        Ok(()) => {}
-        Err(error) => blockers.push(format!(
+    // Affinity must be applicable on this host (task §47); the probe
+    // applied and restored it non-intrusively at capture time.
+    if let Err(error) = &observed.affinity_probe {
+        blockers.push(format!(
             "CPU affinity to frozen cpu{} cannot be applied: {error}",
             frozen.selected_cpu
-        )),
+        ));
     }
 
     // Build identity cross-checks (Cargo.lock digest + RUSTFLAGS).
-    match crate::sha256_file(&benchmark_root.join("Cargo.lock")) {
+    match &observed.cargo_lock_sha256 {
         Ok(digest) => push!("cargo_lock_sha256", &frozen.cargo_lock_sha256, digest),
         Err(error) => blockers.push(format!("Cargo.lock unreadable: {error}")),
     }
-    let rustflags = std::env::var("RUSTFLAGS").unwrap_or_default();
-    push!("rustflags", &frozen.rustflags, rustflags);
+    push!("rustflags", &frozen.rustflags, &observed.rustflags);
 
+    blockers
+}
+
+/// Memory binding diagnostic (MARKIT-31-MACHINE-BINDING-CORRECTIVE-1).
+///
+/// Linux `/proc/meminfo:MemTotal` reports usable RAM — installed
+/// capacity minus firmware/kernel reservations — which legitimately
+/// moves between boots. The frozen `total_ram_bytes` therefore stays
+/// exactly as captured, and any current-vs-frozen delta is REPORTED,
+/// never matched: this value is a recorded host observation, not a
+/// hard machine identity field. The diagnostic is visible, auditable,
+/// and non-blocking by construction.
+pub fn memory_binding_diagnostic(
+    frozen_total_ram_bytes: u64,
+    current_mem_total_bytes: u64,
+) -> serde_json::Value {
+    let delta_bytes = current_mem_total_bytes as i128 - frozen_total_ram_bytes as i128;
+    serde_json::json!({
+        "frozen_mem_total_bytes": frozen_total_ram_bytes,
+        "current_mem_total_bytes": current_mem_total_bytes,
+        "delta_bytes": delta_bytes,
+        "identity_role": "diagnostic_only",
+        "definition": "/proc/meminfo:MemTotal = usable RAM (installed capacity minus firmware/kernel reservations), not installed physical capacity; recorded observation, never byte-exact matched",
+    })
+}
+
+/// Compare the CURRENT host against the frozen machine manifest (task
+/// §47). Every hard host-binding mismatch is a blocker; there is no
+/// fuzzy matching. MemTotal is not matched (see
+/// [`memory_binding_diagnostic`]).
+pub fn match_current_host(
+    frozen: &MachineManifest,
+    benchmark_root: &std::path::Path,
+) -> Result<(), Vec<String>> {
+    let (observed, mut blockers) = observe_host_for_binding(frozen, benchmark_root);
+    blockers.extend(compare_host_binding(frozen, &observed));
     if blockers.is_empty() {
         Ok(())
     } else {
@@ -590,5 +770,252 @@ mod tests {
         }
         // On hosts without /sys (non-Linux dev boxes) the selection is
         // an error — fail closed, never a silent default.
+    }
+
+    // -----------------------------------------------------------------
+    // MARKIT-31-MACHINE-BINDING-CORRECTIVE-1 tests (A/B/C).
+    //
+    // The comparison is tested through the PURE [`compare_host_binding`]
+    // so these hold on any dev machine, not only on the primary host.
+    // -----------------------------------------------------------------
+
+    fn frozen_primary_manifest() -> MachineManifest {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
+        MachineManifest::load(&root).expect("frozen machine manifest loads")
+    }
+
+    /// Observations of a host that agrees with the frozen manifest on
+    /// EVERY hard binding field (affinity applies; Cargo.lock reads).
+    fn mirror_observations(frozen: &MachineManifest, mem_total_bytes: u64) -> HostObservations {
+        HostObservations {
+            architecture: frozen.architecture.clone(),
+            kernel: frozen.kernel.clone(),
+            os_distribution: frozen.os_distribution.clone(),
+            cpu_vendor: frozen.cpu_vendor.clone(),
+            cpu_model: frozen.cpu_model.clone(),
+            microcode: frozen.microcode.clone(),
+            logical_cpus: Some(frozen.logical_cpus),
+            topology: Some(HostTopology {
+                physical_cores: frozen.physical_cores,
+                smt_enabled: frozen.smt_enabled,
+                numa: Some(HostNuma {
+                    node_count: frozen.numa_nodes,
+                    cpu_map: frozen.numa_cpu_map.clone(),
+                    selected_node: Some(frozen.selected_numa_node),
+                }),
+                selected_cpu: frozen.selected_cpu,
+                selected_core_id: frozen.selected_core_id,
+                selected_thread_siblings: frozen.selected_thread_siblings.clone(),
+            }),
+            frequency_governor: frozen.frequency_governor.clone(),
+            turbo_boost_policy: frozen.turbo_boost_policy.clone(),
+            mem_total_bytes,
+            rustc: frozen.rustc.clone(),
+            cargo: frozen.cargo.clone(),
+            llvm: frozen.llvm.clone(),
+            target_triple: frozen.target_triple.clone(),
+            rustflags: frozen.rustflags.clone(),
+            affinity_probe: Ok(()),
+            cargo_lock_sha256: Ok(frozen.cargo_lock_sha256.clone()),
+        }
+    }
+
+    fn blockers_for(
+        frozen: &MachineManifest,
+        mutate: impl FnOnce(&mut HostObservations),
+    ) -> Vec<String> {
+        let mut observed = mirror_observations(frozen, frozen.total_ram_bytes);
+        mutate(&mut observed);
+        compare_host_binding(frozen, &observed)
+    }
+
+    /// Test A: the same frozen host with MemTotal moved by the observed
+    /// +4096 bytes must NOT block solely because of the memory total.
+    /// There is no tolerance involved — MemTotal is not compared at all,
+    /// so an arbitrarily large delta is equally non-blocking.
+    #[test]
+    fn mem_total_drift_alone_never_blocks() {
+        let frozen = frozen_primary_manifest();
+
+        // The exact observed primary-host drift: +4096 bytes.
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.mem_total_bytes = frozen.total_ram_bytes + 4096;
+        });
+        assert!(
+            blockers.is_empty(),
+            "MemTotal drift must not block: {blockers:?}"
+        );
+
+        // No hidden tolerance: a 1 GiB delta behaves identically because
+        // there is NO MemTotal comparison, not a widened one.
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.mem_total_bytes = frozen.total_ram_bytes - (1 << 30);
+        });
+        assert!(
+            blockers.is_empty(),
+            "a large MemTotal delta must be as non-blocking as a small one: {blockers:?}"
+        );
+
+        // Baseline: a mirrored host with unchanged MemTotal blocks on
+        // nothing at all.
+        assert!(compare_host_binding(
+            &frozen,
+            &mirror_observations(&frozen, frozen.total_ram_bytes)
+        )
+        .is_empty());
+    }
+
+    /// Test B: real hard-identity mismatches still block — cpu_model,
+    /// kernel, selected_cpu, governor, and the other hard binding
+    /// fields. Unrelated matching is not weakened by the corrective.
+    #[test]
+    fn hard_identity_mismatches_still_block() {
+        let frozen = frozen_primary_manifest();
+
+        // cpu_model
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.cpu_model = "Intel(R) Xeon(R) CPU E5-9999 v9 @ 9.90GHz".to_string();
+        });
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.starts_with("machine field cpu_model:")),
+            "cpu_model mismatch must block; got {blockers:?}"
+        );
+
+        // kernel
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.kernel = "7.2.6-200.fc44.x86_64".to_string();
+        });
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.starts_with("machine field kernel:")),
+            "kernel mismatch must block; got {blockers:?}"
+        );
+
+        // selected_cpu (the frozen CPU selection rule recomputed to a
+        // different CPU)
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.topology.as_mut().unwrap().selected_cpu += 1;
+        });
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.starts_with("selected cpu: frozen cpu")),
+            "selected_cpu mismatch must block; got {blockers:?}"
+        );
+
+        // governor
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.frequency_governor = "performance".to_string();
+        });
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.starts_with("machine field frequency_governor:")),
+            "governor mismatch must block; got {blockers:?}"
+        );
+
+        // microcode, rustc, target triple, Cargo.lock digest, RUSTFLAGS,
+        // affinity applicability: all remain hard.
+        for (name, mutate) in [
+            (
+                "machine field microcode:",
+                &(|o: &mut HostObservations| {
+                    o.microcode = "0x50".to_string();
+                }) as &dyn Fn(&mut HostObservations),
+            ),
+            (
+                "machine field rustc:",
+                &(|o: &mut HostObservations| {
+                    o.rustc = "rustc 1.98.0 (000000000 2026-01-01)".to_string();
+                }),
+            ),
+            (
+                "machine field target_triple:",
+                &(|o: &mut HostObservations| {
+                    o.target_triple = "aarch64-unknown-linux-gnu".to_string();
+                }),
+            ),
+            (
+                "machine field cargo_lock_sha256:",
+                &(|o: &mut HostObservations| {
+                    o.cargo_lock_sha256 = Ok("ab".repeat(32));
+                }),
+            ),
+            (
+                "machine field rustflags:",
+                &(|o: &mut HostObservations| {
+                    o.rustflags = "-C target-cpu=native".to_string();
+                }),
+            ),
+        ] {
+            let blockers = blockers_for(&frozen, |observed| {
+                mutate(observed);
+            });
+            assert!(
+                blockers.iter().any(|b| b.starts_with(name)),
+                "{name} mismatch must block; got {blockers:?}"
+            );
+        }
+
+        let blockers = blockers_for(&frozen, |observed| {
+            observed.affinity_probe = Err("sched_setaffinity failed".to_string());
+        });
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.starts_with("CPU affinity to frozen cpu")),
+            "affinity inapplicability must block; got {blockers:?}"
+        );
+
+        // A failed topology recomputation blocks fail-closed through the
+        // capture path (observe), never silently passes the comparison.
+        let observed = HostObservations {
+            topology: None,
+            ..mirror_observations(&frozen, frozen.total_ram_bytes)
+        };
+        assert_eq!(
+            compare_host_binding(&frozen, &observed),
+            Vec::<String>::new(),
+            "comparison adds nothing; the capture blocker owns the failure"
+        );
+    }
+
+    /// Test C: MemTotal remains present in capture/reporting — the
+    /// frozen manifest still carries the recorded value unchanged, live
+    /// capture still reads it, and the diagnostic reports the full
+    /// frozen/current/delta shape.
+    #[test]
+    fn mem_total_remains_captured_and_reported() {
+        let frozen = frozen_primary_manifest();
+
+        // The recorded value stays exactly as captured (not replaced by
+        // today's MemTotal).
+        assert_eq!(
+            frozen.total_ram_bytes, 67_252_445_184,
+            "frozen recorded MemTotal must stay as captured"
+        );
+
+        // Live capture still reads a nonzero MemTotal where /proc exists.
+        #[cfg(target_os = "linux")]
+        assert!(total_ram_bytes() > 0, "MemTotal capture must keep working");
+
+        // The diagnostic is visible, auditable, non-blocking by shape.
+        let diagnostic = memory_binding_diagnostic(frozen.total_ram_bytes, frozen.total_ram_bytes);
+        assert_eq!(diagnostic["frozen_mem_total_bytes"], frozen.total_ram_bytes);
+        assert_eq!(
+            diagnostic["current_mem_total_bytes"],
+            frozen.total_ram_bytes
+        );
+        assert_eq!(diagnostic["delta_bytes"], 0);
+        assert_eq!(diagnostic["identity_role"], "diagnostic_only");
+
+        // The observed primary-host drift reports as +4096, non-blocking.
+        let diagnostic =
+            memory_binding_diagnostic(frozen.total_ram_bytes, frozen.total_ram_bytes + 4096);
+        assert_eq!(diagnostic["delta_bytes"], 4096);
+        assert_eq!(diagnostic["identity_role"], "diagnostic_only");
     }
 }
