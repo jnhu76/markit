@@ -1,0 +1,1029 @@
+
+=== cargo fmt --all -- --check ===
+
+=== cargo clippy --workspace --all-targets -- -D warnings ===
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling version_check v0.9.5
+   Compiling serde_core v1.0.229
+    Checking memchr v2.8.3
+   Compiling serde v1.0.229
+    Checking itoa v1.0.18
+    Checking cfg-if v1.0.4
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling ref-cast v1.0.27
+    Checking typenum v1.20.1
+    Checking cpufeatures v0.2.17
+    Checking dyn-clone v1.0.20
+    Checking equivalent v1.0.2
+    Checking foldhash v0.2.0
+    Checking allocator-api2 v0.2.21
+    Checking winnow v0.7.15
+    Checking toml_write v0.1.2
+   Compiling libc v0.2.189
+    Checking bitflags v2.13.2
+   Compiling pulldown-cmark v0.13.4
+    Checking unicase v2.9.0
+    Checking stable_deref_trait v1.2.1
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.12
+    Checking bytes v1.12.1
+    Checking once_cell v1.21.4
+    Checking pin-project-lite v0.2.17
+   Compiling fs_extra v1.3.0
+   Compiling dunce v1.0.5
+    Checking smallvec v1.16.1
+   Compiling pkg-config v0.3.34
+    Checking futures-core v0.3.34
+   Compiling autocfg v1.5.1
+    Checking futures-sink v0.3.34
+    Checking writeable v0.6.4
+   Compiling generic-array v0.14.7
+   Compiling aws-lc-rs v1.18.1
+    Checking litemap v0.8.3
+    Checking zeroize v1.9.0
+   Compiling icu_normalizer_data v2.3.0
+    Checking hashbrown v0.17.1
+    Checking utf8_iter v1.0.4
+   Compiling icu_properties_data v2.3.0
+    Checking slab v0.4.12
+    Checking rustls-pki-types v1.15.1
+    Checking percent-encoding v2.3.2
+    Checking tracing-core v0.1.36
+    Checking untrusted v0.9.0
+   Compiling httparse v1.10.1
+    Checking futures-io v0.3.34
+   Compiling rustls v0.23.45
+    Checking futures-task v0.3.34
+   Compiling zerocopy v0.8.57
+   Compiling getrandom v0.3.4
+    Checking futures-util v0.3.34
+   Compiling num-traits v0.2.19
+    Checking atomic-waker v1.1.2
+    Checking fnv v1.0.7
+    Checking http v1.5.0
+    Checking try-lock v0.2.5
+    Checking tower-service v0.3.3
+    Checking subtle v2.6.1
+    Checking want v0.3.1
+    Checking futures-channel v0.3.34
+    Checking tracing v0.1.44
+   Compiling ahash v0.8.12
+    Checking regex-syntax v0.8.11
+   Compiling parking_lot_core v0.9.12
+    Checking form_urlencoded v1.2.2
+    Checking aho-corasick v1.1.5
+   Compiling syn v3.0.5
+    Checking indexmap v2.14.2
+    Checking sync_wrapper v1.0.2
+    Checking openssl-probe v0.2.1
+    Checking base64 v0.22.1
+    Checking ipnet v2.12.2
+    Checking tower-layer v0.3.3
+    Checking scopeguard v1.2.0
+    Checking rustls-native-certs v0.8.4
+    Checking lock_api v0.4.14
+   Compiling syn v2.0.119
+    Checking log v0.4.34
+   Compiling heck v0.5.0
+   Compiling unicode-general-category v1.1.0
+    Checking borrow-or-share v0.2.4
+    Checking bit-vec v0.8.0
+    Checking lazy_static v1.5.0
+    Checking vsimd v0.8.0
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.7
+    Checking mio v1.2.3
+    Checking socket2 v0.6.5
+    Checking http-body v1.1.0
+    Checking digest v0.10.7
+    Checking http-body-util v0.1.5
+   Compiling jobserver v0.1.35
+    Checking bit-set v0.8.0
+    Checking num-integer v0.1.47
+    Checking sha2 v0.10.9
+    Checking num-complex v0.4.6
+    Checking parking_lot v0.12.5
+    Checking bytecount v0.6.9
+    Checking num-cmp v0.1.0
+    Checking tokio v1.53.1
+    Checking outref v0.5.2
+    Checking base64 v0.23.1
+   Compiling cc v1.4.6
+    Checking micromap v0.3.0
+    Checking uuid-simd v0.8.0
+    Checking num-bigint v0.4.8
+    Checking num-iter v0.1.46
+    Checking data-encoding v2.11.1
+   Compiling markit-mdbench-runner v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/runner)
+    Checking regex-automata v0.4.18
+    Checking jsonschema-regex v0.49.9
+   Compiling cmake v0.1.58
+   Compiling aws-lc-sys v0.45.0
+    Checking num-rational v0.4.2
+   Compiling strum_macros v0.28.0
+    Checking num v0.4.3
+    Checking fraction v0.15.4
+   Compiling serde_derive_internals v0.30.0
+   Compiling synstructure v0.14.0
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.3
+   Compiling schemars_derive v1.2.2
+    Checking zerofrom v0.1.8
+    Checking yoke v0.8.3
+    Checking strum v0.28.0
+    Checking zerovec v0.11.8
+    Checking zerotrie v0.2.5
+    Checking regex v1.13.1
+    Checking fancy-regex v0.19.2
+    Checking tokio-util v0.7.19
+    Checking tower v0.5.3
+    Checking tinystr v0.8.4
+    Checking potential_utf v0.1.6
+    Checking icu_collections v2.3.0
+    Checking icu_locale_core v2.3.0
+    Checking h2 v0.4.19
+    Checking icu_provider v2.3.1
+    Checking icu_normalizer v2.3.0
+    Checking icu_properties v2.3.0
+    Checking schemars v1.2.2
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking fluent-uri v0.4.1
+    Checking email_address v0.2.9
+    Checking toml_edit v0.22.27
+    Checking jsonschema-value v0.49.9
+    Checking referencing v0.49.9
+    Checking markit-mdbench-common v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/common)
+    Checking idna_adapter v1.2.2
+    Checking idna v1.1.0
+    Checking url v2.5.8
+    Checking markit-mdbench-instrumentation v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/instrumentation)
+    Checking markit-mdbench-null-r1 v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/null-r1)
+    Checking markit-mdbench-corpusgen v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/corpusgen)
+    Checking tower-http v0.6.11
+    Checking hyper v1.11.1
+    Checking toml v0.8.23
+    Checking markit-mdbench-oracle v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/oracle)
+    Checking hyper-util v0.1.20
+    Checking markit-mdbench-shared-grammar v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/shared-grammar)
+    Checking markit-mdbench-full-rebuild v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/full-rebuild)
+    Checking markit-mdbench-semantics v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/semantics)
+    Checking markit-mdbench-restart-convergence v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/restart-convergence)
+    Checking markit-mdbench-old-tree-subtree-reuse v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/old-tree-subtree-reuse)
+    Checking markit-mdbench-block-local v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/block-local)
+    Checking markit-mdbench-fragment-reuse v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/fragment-reuse)
+    Checking rustls-webpki v0.103.15
+    Checking tokio-rustls v0.26.5
+    Checking rustls-platform-verifier v0.7.0
+    Checking hyper-rustls v0.27.9
+    Checking reqwest v0.13.5
+    Checking markit-mdbench-workload-freeze v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/workload-freeze)
+    Checking markit-mdbench-profile-select v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/profile-select)
+    Checking jsonschema v0.49.9
+    Checking markit-mdbench-diagnostics v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/diagnostics)
+    Checking markit-mdbench-campaign v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/campaign)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.67s
+
+=== cargo test --workspace (campaign freeze contract + prior gates) ===
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling cfg-if v1.0.4
+   Compiling typenum v1.20.1
+   Compiling cpufeatures v0.2.17
+   Compiling dyn-clone v1.0.20
+   Compiling allocator-api2 v0.2.21
+   Compiling equivalent v1.0.2
+   Compiling foldhash v0.2.0
+   Compiling toml_write v0.1.2
+   Compiling winnow v0.7.15
+   Compiling bitflags v2.13.2
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling unicase v2.9.0
+   Compiling stable_deref_trait v1.2.1
+   Compiling libc v0.2.189
+   Compiling ref-cast v1.0.27
+   Compiling zerofrom v0.1.8
+   Compiling once_cell v1.21.4
+   Compiling bytes v1.12.1
+   Compiling pin-project-lite v0.2.17
+   Compiling futures-core v0.3.34
+   Compiling smallvec v1.16.1
+   Compiling futures-sink v0.3.34
+   Compiling zeroize v1.9.0
+   Compiling writeable v0.6.4
+   Compiling yoke v0.8.3
+   Compiling litemap v0.8.3
+   Compiling num-traits v0.2.19
+   Compiling utf8_iter v1.0.4
+   Compiling slab v0.4.12
+   Compiling percent-encoding v2.3.2
+   Compiling icu_properties_data v2.3.0
+   Compiling rustls-pki-types v1.15.1
+   Compiling tracing-core v0.1.36
+   Compiling icu_normalizer_data v2.3.0
+   Compiling untrusted v0.9.0
+   Compiling futures-task v0.3.34
+   Compiling futures-io v0.3.34
+   Compiling zerovec v0.11.8
+   Compiling zerotrie v0.2.5
+   Compiling atomic-waker v1.1.2
+   Compiling subtle v2.6.1
+   Compiling fnv v1.0.7
+   Compiling hashbrown v0.17.1
+   Compiling try-lock v0.2.5
+   Compiling tower-service v0.3.3
+   Compiling httparse v1.10.1
+   Compiling futures-channel v0.3.34
+   Compiling want v0.3.1
+   Compiling regex-syntax v0.8.11
+   Compiling zerocopy v0.8.57
+   Compiling form_urlencoded v1.2.2
+   Compiling sync_wrapper v1.0.2
+   Compiling openssl-probe v0.2.1
+   Compiling tower-layer v0.3.3
+   Compiling scopeguard v1.2.0
+   Compiling pulldown-cmark v0.13.4
+   Compiling futures-util v0.3.34
+   Compiling aho-corasick v1.1.5
+   Compiling ipnet v2.12.2
+   Compiling base64 v0.22.1
+   Compiling lock_api v0.4.14
+   Compiling http v1.5.0
+   Compiling tracing v0.1.44
+   Compiling generic-array v0.14.7
+   Compiling rustls-native-certs v0.8.4
+   Compiling lazy_static v1.5.0
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling num-integer v0.1.47
+   Compiling num-complex v0.4.6
+   Compiling borrow-or-share v0.2.4
+   Compiling icu_collections v2.3.0
+   Compiling indexmap v2.14.2
+   Compiling bit-vec v0.8.0
+   Compiling log v0.4.34
+   Compiling bytecount v0.6.9
+   Compiling icu_locale_core v2.3.0
+   Compiling jobserver v0.1.35
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.3
+   Compiling num-bigint v0.4.8
+   Compiling num-iter v0.1.46
+   Compiling getrandom v0.3.4
+   Compiling parking_lot_core v0.9.12
+   Compiling bit-set v0.8.0
+   Compiling cc v1.4.6
+   Compiling base64 v0.23.1
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling vsimd v0.8.0
+   Compiling http-body v1.1.0
+   Compiling parking_lot v0.12.5
+   Compiling digest v0.10.7
+   Compiling tokio v1.53.1
+   Compiling http-body-util v0.1.5
+   Compiling sha2 v0.10.9
+   Compiling num-cmp v0.1.0
+   Compiling outref v0.5.2
+   Compiling micromap v0.3.0
+   Compiling strum v0.28.0
+   Compiling unicode-general-category v1.1.0
+   Compiling data-encoding v2.11.1
+   Compiling uuid-simd v0.8.0
+   Compiling icu_provider v2.3.1
+   Compiling markit-mdbench-runner v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/runner)
+   Compiling regex-automata v0.4.18
+   Compiling jsonschema-regex v0.49.9
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling cmake v0.1.58
+   Compiling num-rational v0.4.2
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling aws-lc-sys v0.45.0
+   Compiling num v0.4.3
+   Compiling fraction v0.15.4
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling fluent-uri v0.4.1
+   Compiling email_address v0.2.9
+   Compiling toml_edit v0.22.27
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling schemars v1.2.2
+   Compiling url v2.5.8
+   Compiling ahash v0.8.12
+   Compiling markit-mdbench-common v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/common)
+   Compiling referencing v0.49.9
+   Compiling jsonschema-value v0.49.9
+   Compiling regex v1.13.1
+   Compiling fancy-regex v0.19.2
+   Compiling markit-mdbench-null-r1 v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/null-r1)
+   Compiling toml v0.8.23
+   Compiling markit-mdbench-instrumentation v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/instrumentation)
+   Compiling markit-mdbench-corpusgen v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/corpusgen)
+   Compiling tokio-util v0.7.19
+   Compiling tower v0.5.3
+   Compiling markit-mdbench-oracle v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/oracle)
+   Compiling tower-http v0.6.11
+   Compiling h2 v0.4.19
+   Compiling markit-mdbench-shared-grammar v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/shared-grammar)
+   Compiling markit-mdbench-full-rebuild v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/full-rebuild)
+   Compiling markit-mdbench-semantics v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/semantics)
+   Compiling markit-mdbench-restart-convergence v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/restart-convergence)
+   Compiling markit-mdbench-block-local v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/block-local)
+   Compiling markit-mdbench-fragment-reuse v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/fragment-reuse)
+   Compiling markit-mdbench-old-tree-subtree-reuse v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/mechanisms/old-tree-subtree-reuse)
+   Compiling hyper v1.11.1
+   Compiling hyper-util v0.1.20
+   Compiling markit-mdbench-workload-freeze v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/workload-freeze)
+   Compiling markit-mdbench-profile-select v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/profile-select)
+   Compiling aws-lc-rs v1.18.1
+   Compiling rustls v0.23.45
+   Compiling rustls-webpki v0.103.15
+   Compiling markit-mdbench-diagnostics v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/diagnostics)
+   Compiling markit-mdbench-campaign v0.1.0 (/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/campaign)
+   Compiling tokio-rustls v0.26.5
+   Compiling rustls-platform-verifier v0.7.0
+   Compiling hyper-rustls v0.27.9
+   Compiling reqwest v0.13.5
+   Compiling jsonschema v0.49.9
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.46s
+     Running unittests src/lib.rs (target/debug/deps/markit_mdbench_block_local-037a0ebfd650d437)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adversarial_r5.rs (target/debug/deps/adversarial_r5-2784fbf844500d84)
+
+running 1 test
+test adversarial_small_model_differential_504_sequences ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.66s
+
+     Running tests/attribution_exact_fixtures.rs (target/debug/deps/attribution_exact_fixtures-9f3285fe90387db3)
+
+running 4 tests
+test h1_length_shrinking_old_post_inspections ... ok
+test h1_fallback_keeps_discarded_region_work ... ok
+test h1_fallback_repeated_inspection_effort ... ok
+test h1_metadata_scan_is_charged_exactly_once ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/h1_gate.rs (target/debug/deps/h1_gate-5e78ef5fd80a9e35)
+
+running 17 tests
+test h1_counters_and_eager_completion ... ok
+test h1_fallback_counters_are_full_reconstruction_plus_discarded_region ... ok
+test h1_identity_w1_safe_local_edit ... ok
+test h1_prefix_reuse_is_ownership_pass_through ... ok
+test h1_identity_w2_definition_presence ... ok
+test h1_guard_margins_report_source_inspection ... ok
+test h1_fallback_pass_guard_probes ... ok
+test h1_grammar_pass_all_43_fixtures ... ok
+test h1_updates_are_deterministic ... ok
+test h1_chained_edits_stay_equal_to_clean_parses ... ok
+test h1_query_batch_matches_the_frozen_contract ... ok
+test h1_update_matches_clean_parse_multibyte_sensitive_ops ... ok
+test h1_update_matches_clean_parse_structural_recipes_64k ... ok
+test h1_update_matches_clean_parse_generic_grid_64k ... ok
+test h1_update_matches_clean_parse_structural_recipes_1m ... ok
+test h1_update_matches_clean_parse_every_shape_insert_tiny_all_anchors ... ok
+test h1_update_matches_clean_parse_scaling_slice has been running for over 60 seconds
+test h1_update_matches_clean_parse_scaling_slice ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 77.24s
+
+     Running tests/matrix_r5.rs (target/debug/deps/matrix_r5-25cc131e59b1295d)
+
+running 549 tests
+test matrix_case_000 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_001 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_002 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_003 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_004 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_005 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_006 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_007 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_008 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_009 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_010 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_011 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_012 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_013 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_014 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_015 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_016 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_017 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_018 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_019 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_020 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_021 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_022 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_023 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_024 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_025 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_026 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_027 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_028 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_029 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_030 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_031 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_032 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_033 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_034 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_035 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_036 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_037 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_038 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_039 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_040 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_041 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_042 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_043 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_044 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_045 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_046 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_047 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_048 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_049 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_050 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_051 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_052 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_053 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_054 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_055 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_056 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_057 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_058 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_059 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_060 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_061 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_062 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_063 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_064 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_065 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_066 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_067 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_068 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_069 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_070 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_071 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_072 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_073 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_074 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_075 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_076 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_077 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_078 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_079 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_080 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_081 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_082 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_083 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_084 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_085 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_086 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_087 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_088 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_089 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_090 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_091 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_092 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_093 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_094 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_095 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_096 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_097 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_098 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_099 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_100 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_101 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_102 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_103 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_104 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_105 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_106 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_107 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_108 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_109 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_110 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_111 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_112 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_113 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_114 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_115 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_116 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_117 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_118 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_119 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_120 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_121 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_122 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_123 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_124 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_125 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_126 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_127 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_128 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_129 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_130 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_131 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_132 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_133 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_134 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_135 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_136 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_137 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_138 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_139 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_140 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_141 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_142 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_143 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_144 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_145 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_146 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_147 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_148 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_149 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_150 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_151 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_152 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_153 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_154 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_155 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_156 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_157 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_158 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_159 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_160 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_161 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_162 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_163 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_164 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_165 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_166 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_167 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_168 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_169 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_170 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_171 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_172 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_173 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_174 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_175 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_176 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_177 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_178 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_179 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_180 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_181 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_182 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_183 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_184 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_185 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_186 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_187 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_188 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_189 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_190 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_191 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_192 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_193 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_194 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_195 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_196 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_197 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_198 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_199 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_200 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_201 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_202 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_203 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_204 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_205 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_206 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_207 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_208 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_209 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_210 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_211 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_212 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_213 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_214 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_215 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_216 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_217 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_218 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_219 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_220 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_221 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_222 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_223 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_224 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_225 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_226 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_227 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_228 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_229 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_230 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_231 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_232 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_233 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_234 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_235 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_236 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_237 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_238 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_239 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_240 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_241 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_242 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_243 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_244 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_245 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_246 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_247 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_248 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_249 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_250 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_251 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_252 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_253 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_254 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_255 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_256 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_257 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_258 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_259 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_260 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_261 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_262 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_263 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_264 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_265 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_266 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_267 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_268 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_269 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_270 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_271 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_272 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_273 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_274 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_275 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_276 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_277 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_278 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_279 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_280 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_281 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_282 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_283 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_284 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_285 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_286 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_287 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_288 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_289 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_290 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_291 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_292 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_293 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_294 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_295 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_296 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_297 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_298 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_299 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_300 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_301 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_302 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_303 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_304 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_305 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_306 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_307 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_308 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_309 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_310 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_311 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_312 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_313 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_314 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_315 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_316 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_317 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_318 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_319 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_320 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_321 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_322 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_323 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_324 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_325 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_326 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_327 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_328 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_329 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_330 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_331 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_332 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_333 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_334 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_335 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_336 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_337 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_338 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_339 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_340 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_341 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_342 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_343 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_344 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_345 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_346 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_347 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_348 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_349 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_350 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_351 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_352 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_353 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_354 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_355 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_356 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_357 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_358 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_359 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_360 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_361 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_362 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_363 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_364 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_365 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_366 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_367 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_368 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_369 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_370 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_371 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_372 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_373 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_374 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_375 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_376 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_377 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_378 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_379 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_380 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_381 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_382 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_383 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_384 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_385 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_386 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_387 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_388 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_389 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_390 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_391 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_392 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_393 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_394 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_395 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_396 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_397 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_398 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_399 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_400 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_401 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_402 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_403 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_404 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_405 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_406 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_407 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_408 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_409 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_410 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_411 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_412 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_413 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_414 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_415 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_416 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_417 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_418 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_419 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_420 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_421 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_422 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_423 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_424 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_425 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_426 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_427 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_428 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_429 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_430 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_431 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_432 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_433 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_434 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_435 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_436 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_437 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_438 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_439 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_440 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_441 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_442 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_443 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_444 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_445 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_446 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_447 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_448 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_449 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_450 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_451 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_452 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_453 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_454 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_455 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_456 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_457 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_458 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_459 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_460 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_461 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_462 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_463 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_464 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_465 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_466 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_467 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_468 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_469 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_470 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_471 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_472 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_473 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_474 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_475 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_476 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_477 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_478 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_479 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_480 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_481 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_482 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_483 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_484 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_485 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_486 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_487 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_488 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_489 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_490 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_491 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_492 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_493 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_494 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_495 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_496 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_497 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_498 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_499 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_500 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_501 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_502 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_503 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_504 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_505 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_506 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_507 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_508 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_509 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_510 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_511 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_512 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_513 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_514 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_515 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_516 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_517 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_518 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_519 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_520 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_521 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_522 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_523 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_524 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_525 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_526 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_527 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_528 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_529 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_530 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_531 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_532 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_533 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_534 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_535 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_536 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_537 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_538 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_539 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_540 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_541 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_542 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_543 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_544 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_545 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_546 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_547 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test r5_case_inventory_frozen_counts ... ignored, frozen inventory counts; verify-r5.sh runs it with --release
+
+test result: ok. 0 passed; 0 failed; 549 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/markit_mdbench_campaign-fb3c53793cab2b49)
+
+running 42 tests
+test finalize::tests::expectation_from_schedule_rejects_a_truncated_schedule ... ok
+test identity::tests::campaign_seed_is_documented_derivation ... ok
+test identity::tests::observation_ids_are_unique_per_immutable_fields ... ok
+test machine::tests::cpu_list_parsing ... ok
+test identity::tests::run_id_is_deterministic_and_binds_the_executable_digest ... ok
+test identity::tests::session_and_horse_seeds_are_distinct_per_inputs ... ok
+test machine::tests::selection_rule_prefers_lowest_nonzero_cpu ... ok
+test machine::tests::mem_total_remains_captured_and_reported ... ok
+test machine::tests::mem_total_drift_alone_never_blocks ... ok
+test machine::tests::hard_identity_mismatches_still_block ... ok
+test schedule::tests::horse_order_is_position_balanced_and_deterministic ... ok
+test smoke::tests::raw_root_guard_blocks_relative_and_absolute_paths ... ok
+test identity::tests::spec_id_is_deterministic_and_sensitive_to_binding ... ok
+test stats::tests::aggregation_pairs_before_averaging ... ok
+test stats::tests::family_macro_equal_weights_families ... ok
+test stats::tests::case_estimates_are_medians_of_three_sessions ... ok
+test stats::tests::geometric_mean_basics ... ok
+test stats::tests::median_of_three_is_the_middle_value ... ok
+test stats::tests::nearest_rank_definitions_are_exact ... ok
+test preflight::tests::attribution_scope_blocks_a_duplicate_case ... ok
+test preflight::tests::timing_scope_rejects_a_session_outside_the_frozen_count ... FAILED
+test preflight::tests::attribution_scope_blocks_a_missing_case ... ok
+test stats::tests::p50_p95_of_30_samples ... ok
+test stats::tests::session_instability_is_flag_only ... ok
+test stats::tests::project_macro_prevents_high_case_count_domination ... ok
+test finalize::tests::a_complete_attribution_lane_passes ... ok
+test preflight::tests::real_scopes_enumerate_the_frozen_campaign_cardinalities ... FAILED
+test finalize::tests::a_missing_row_is_blocked ... ok
+test stats::tests::speedup_formula_preserves_parity_semantics ... ok
+test finalize::tests::an_extra_unscheduled_row_is_blocked ... ok
+test finalize::tests::a_duplicate_row_is_blocked ... ok
+test schedule::tests::seed_drift_changes_the_schedule ... ok
+test schedule::tests::negative_missing_duplicate_unknown_horse_wrong_sessions ... ok
+test stats::tests::warmups_are_excluded_and_failures_invalidate ... ok
+test schedule::tests::schedule_generation_is_deterministic ... ok
+test finalize::tests::a_complete_timing_session_passes ... ok
+test preflight::tests::attribution_scope_blocks_an_extra_case ... ok
+test preflight::tests::attribution_lane_passes_the_frozen_shape_without_blockers ... ok
+test finalize::tests::identity_and_schema_drift_are_blocked ... ok
+test preflight::tests::timing_session_passes_the_frozen_shape_and_blocks_duplicates ... ok
+test preflight::tests::attribution_ids_never_collide_with_timing_ids_or_each_other ... ok
+test identity::tests::current_executable_digest_is_available_and_stable ... ok
+
+failures:
+
+---- preflight::tests::timing_scope_rejects_a_session_outside_the_frozen_count stdout ----
+
+thread 'preflight::tests::timing_scope_rejects_a_session_outside_the_frozen_count' (150107) panicked at campaign/src/preflight.rs:783:72:
+workload loads: "materialized source missing: /home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/campaign/../workloads/sources/cpp-core-guidelines/files/CppCoreGuidelines.md: No such file or directory (os error 2)"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- preflight::tests::real_scopes_enumerate_the_frozen_campaign_cardinalities stdout ----
+
+thread 'preflight::tests::real_scopes_enumerate_the_frozen_campaign_cardinalities' (150106) panicked at campaign/src/preflight.rs:807:72:
+workload loads: "materialized source missing: /home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/campaign/../workloads/sources/cpp-core-guidelines/files/CppCoreGuidelines.md: No such file or directory (os error 2)"
+
+
+failures:
+    preflight::tests::real_scopes_enumerate_the_frozen_campaign_cardinalities
+    preflight::tests::timing_scope_rejects_a_session_outside_the_frozen_count
+
+test result: FAILED. 40 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.77s
+
+error: test failed, to rerun pass `-p markit-mdbench-campaign --lib`
+EXIT_CODE=101

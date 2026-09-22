@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Formal lane runner with binary hash guard (MARKIT-31 primary run).
+# usage: run-lane.sh <log-file-name> <campaign args...>
+set -o pipefail
+LOG_ROOT=/home/jnhu/markit-primary-run-logs/20260922T142541Z
+PRIMARY_BIN_SHA="$(cat "$LOG_ROOT/primary-bin.sha256")"
+CAMPAIGN=/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/target/release/mdbench-campaign
+LOGNAME="$1"; shift
+
+CURRENT_SHA="$(sha256sum "$CAMPAIGN" | awk '{print $1}')"
+if [ "$CURRENT_SHA" != "$PRIMARY_BIN_SHA" ]; then
+  echo "PRIMARY_PERFORMANCE_RUN_BLOCKED reason=executable_changed" | tee -a "$LOG_ROOT/$LOGNAME"
+  exit 99
+fi
+
+cd /home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update
+"$CAMPAIGN" "$@" 2>&1 | tee "$LOG_ROOT/$LOGNAME"
+rc=${PIPESTATUS[0]}
+echo "EXIT_CODE=$rc" | tee -a "$LOG_ROOT/$LOGNAME"
+exit $rc

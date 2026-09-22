@@ -1,0 +1,11 @@
+PRIMARY_EXECUTABLE=/home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/target/release/mdbench-campaign
+PRIMARY_EXECUTABLE_SHA256=a3ef4e63a8548604fff991c5b981e3dfc856238fd06ead3e9192a5a3b6acd5bb
+  File: /home/jnhu/Source/markit-primary-run/research/benchmarks/markdown-ast-update/target/release/mdbench-campaign
+  Size: 3811272   	Blocks: 7448       IO Block: 4096   regular file
+Device: 0,52	Inode: 2679412     Links: 2
+Access: (0755/-rwxr-xr-x)  Uid: ( 1000/    jnhu)   Gid: ( 1000/    jnhu)
+Context: unconfined_u:object_r:user_home_t:s0
+Access: 2026-09-22 22:51:45.476587159 +0800
+Modify: 2026-09-22 22:51:45.438587506 +0800
+Change: 2026-09-22 22:51:45.462587287 +0800
+ Birth: 2026-09-22 22:51:45.432587561 +0800
