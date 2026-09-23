@@ -2,6 +2,29 @@
 
 This page is the campaign status map for Markit parser research.
 
+## Campaign-2 synthesis and algorithm-design handoff
+
+Issue [#48](https://github.com/jnhu76/markit/issues/48) preserves the complete
+independent analysis and follow-up guidance requested by the maintainer:
+
+- [Campaign-2 mechanism synthesis](campaign-2-mechanism-synthesis.md): A–J
+  evidence verdict, regime/causal maps, lifecycle, weaknesses, and limitations.
+- [From experiment to AST implementation](campaign-2-to-ast-guidance.md):
+  the engineering direction and staged rationale.
+- [Markit AST/update algorithm design v0](markit-ast-update-design-v0.md):
+  **research design candidate**, including representation, coordinates,
+  restart/convergence, semantic dependencies, full-rebuild selection,
+  invariants, and the smallest discriminating experiment.
+
+The reviewed evidence is pinned to PR #47 at `819928966e05ca00bb82c58b887014e54f3d0cd5`,
+with mechanism authority `3762b7a42e1c284a4c2c2e0ebac8496e70c63431`.
+These documents do not assert PR #47 is merged, close #22/#31/#33, authorize
+production implementation, or lift the product architecture HOLD. The
+candidate's concrete data structures and benefits remain subject to the
+scoped research validation described in the design.
+
+## Campaign authority and substrate
+
 ```text
 ACTIVE UMBRELLA:
     #22 MARKIT-MARKDOWN-BENCHMARK-1
