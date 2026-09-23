@@ -1,0 +1,62 @@
+=== chosen CPU / affinity plan ===
+taskset -c 1 (matches the frozen Campaign-2 lane: cpu1, physical core 1, SMT siblings 1,11)
+
+=== cpu1 topology ===
+0
+1
+1,11
+
+=== NUMA node of cpu1 ===
+zsh:3: no matches found: /sys/devices/system/cpu/cpu1/node*/physcpubind
+(none)
+
+=== governor (all cpus) ===
+     20 schedutil
+
+=== scaling_driver ===
+intel_cpufreq
+
+=== no_turbo ===
+0
+
+=== boost ===
+(no boost knob)
+
+=== microcode ===
+microcode	: 0x49
+
+=== cpu1 model name / MHz ===
+model name	: Intel(R) Xeon(R) CPU E5-2666 v3 @ 2.90GHz
+cpu1 MHz: 1200.000
+
+=== meminfo ===
+MemTotal:       65676220 kB
+MemAvailable:   62142600 kB
+
+=== load average ===
+1.04 1.29 0.62 1/750 31881
+
+=== uptime ===
+ 07:48:57 up  2:06,  2 users,  load average: 1.04, 1.29, 0.62
+
+=== temperature ===
+coretemp-isa-0000
+Adapter: ISA adapter
+Package id 0:  +52.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 0:        +44.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 1:        +44.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 2:        +46.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 3:        +47.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 4:        +46.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 8:        +47.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 9:        +46.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 10:       +44.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 11:       +45.0°C  (high = +83.0°C, crit = +93.0°C)
+Core 12:       +47.0°C  (high = +83.0°C, crit = +93.0°C)
+
+nvme-pci-0200
+Adapter: PCI adapter
+Composite:    +40.9°C  (low  = -273.1°C, high = +89.8°C)
+                       (crit = +94.8°C)
+Sensor 1:     +40.9°C  (low  = -273.1°C, high = +65261.8°C)
+Sensor 2:     +27.9°C  (low  = -273.1°C, high = +65261.8°C)

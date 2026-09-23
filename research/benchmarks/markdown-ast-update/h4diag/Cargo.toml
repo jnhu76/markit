@@ -1,0 +1,60 @@
+[package]
+name = "markit-mdbench-h4diag"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# Issue #50 (H4-LARGE-N-CAUSE-1) diagnostic crate.
+#
+# This crate is DIAGNOSTIC TOOLING. It contains:
+#
+# - a diagnostic COPY of the frozen H4 algorithm (`alg`) whose only
+#   purpose is to be instrumented (phase timers, work counters,
+#   allocator accounting, single-factor ablations). The frozen H4 crate
+#   `markit-mdbench-restart-convergence` is NOT modified by this work and
+#   remains the U_PLAIN authority.
+# - the frozen #50 workload cells (`cells`), built by the Campaign-2
+#   controlled-N byte construction and byte-verified against the frozen
+#   `campaign2::generators::case_n` output for every overlapping point.
+#
+# Instrumentation is behind cargo features so that no timing binary ever
+# contains instrumentation it is not reporting:
+#
+#   (default)        no phase timers, no counters, no allocator wrapper
+#   phases           mutually-exclusive phase timers (U_PHASE)
+#   counters         direct representation-operation counters (W_COUNTERS)
+#   allocator        counting global allocator (A_ALLOCATOR)
+[features]
+default = []
+phases = []
+counters = []
+allocator = []
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-instrumentation = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-runner = { workspace = true }
+markit-mdbench-restart-convergence = { workspace = true }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-shared-grammar = { workspace = true }
+markit-mdbench-campaign2 = { path = "../campaign2" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[[bin]]
+name = "mdbench-h4diag"
+path = "src/bin/mdbench-h4diag.rs"
+
+[[bin]]
+name = "mdbench-h4diag-alloc"
+path = "src/bin/mdbench-h4diag-alloc.rs"
+
+[[bin]]
+name = "mdbench-h4diag-counters"
+path = "src/bin/mdbench-h4diag-counters.rs"
+
+[[bin]]
+name = "mdbench-h4diag-phases"
+path = "src/bin/mdbench-h4diag-phases.rs"
