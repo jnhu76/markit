@@ -1,0 +1,12 @@
+# started on Wed Sep 23 09:18:54 2026
+
+359.17,msec,task-clock:u,359165645,100.00,,
+1087744998,,cycles:u,239209311,66.00,,
+2685917370,,instructions:u,299174619,83.00,,
+398264095,,branches:u,299181652,83.00,,
+7142205,,branch-misses:u,299164114,83.00,,
+3756514,,cache-references:u,299476993,83.00,,
+47168,,cache-misses:u,299630510,83.00,,
+1799,,page-faults:u,359165645,100.00,,
+0,,context-switches:u,359165645,100.00,,
+0,,cpu-migrations:u,359165645,100.00,,

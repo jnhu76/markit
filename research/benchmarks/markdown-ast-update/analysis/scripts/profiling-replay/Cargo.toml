@@ -1,0 +1,26 @@
+[package]
+name = "profiling-replay"
+version = "0.1.0"
+edition = "2021"
+
+# MARKIT-31 Stage-B profiling replay (task §36): the SMALLEST diagnostic
+# utility that replays one frozen CaseId x one horse with the SAME
+# mechanism dispatch, pre-state semantics, edit, and complete() boundary
+# as the frozen campaign — via the SAME public runner primitives the
+# campaign itself calls. No primary raw output, no ObservationId, no
+# horse change, no optimization. NON_PRIMARY / POST_HOC diagnostic only.
+
+[workspace]
+
+[dependencies]
+markit-mdbench-campaign = { path = "../../../campaign" }
+markit-mdbench-common = { path = "../../../common" }
+markit-mdbench-instrumentation = { path = "../../../instrumentation" }
+markit-mdbench-oracle = { path = "../../../oracle" }
+markit-mdbench-runner = { path = "../../../runner" }
+markit-mdbench-full-rebuild = { path = "../../../mechanisms/full-rebuild" }
+markit-mdbench-block-local = { path = "../../../mechanisms/block-local" }
+markit-mdbench-fragment-reuse = { path = "../../../mechanisms/fragment-reuse" }
+markit-mdbench-old-tree-subtree-reuse = { path = "../../../mechanisms/old-tree-subtree-reuse" }
+markit-mdbench-restart-convergence = { path = "../../../mechanisms/restart-convergence" }
+serde_json = "1"

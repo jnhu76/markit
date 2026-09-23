@@ -34,3 +34,22 @@ timing difference
 ```
 
 A timing difference without mechanism evidence remains an observation.
+
+## Current artifacts
+
+```text
+primary/905427da/      MARKIT-31-PRIMARY-PERFORMANCE-ANALYSIS-1 output:
+                       frozen Stage-A summaries (CSV layer), DQ/MQ matrices,
+                       PRIMARY-ANALYSIS-REPORT, observation freeze
+                       (PRIMARY-OBSERVATIONS-v1), Stage-B profiling
+                       (NON_PRIMARY, post-hoc), ANALYSIS-MANIFEST.json
+scripts/               deterministic analysis tools (input gate, summary,
+                       regime views, figures, campaign::stats cross-check,
+                       profiling replay)
+```
+
+Reproduce: `scripts/input_integrity_gate.py` then
+`scripts/primary_summary.py --input-dir <RunId snapshot> --benchmark-root
+<benchmark root> --out-dir primary/905427da`, then `scripts/regime_views.py`
+and `scripts/make_figures.py`. Raw evidence stays outside Git; analysis
+runs on a verified copy.

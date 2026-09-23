@@ -1,0 +1,16 @@
+binning,bin,horse,n_cases,median_case_total_p50_ns,median_case_speedup
+max_container_depth,0,H0,91,16135,1.000000
+max_container_depth,0,H1,91,15931,0.857616
+max_container_depth,0,H2,91,10214,1.719442
+max_container_depth,0,H3,91,9822,1.947926
+max_container_depth,0,H4,91,5550,4.076507
+max_container_depth,1-2,H0,226,23623,1.000000
+max_container_depth,1-2,H1,226,33927,0.657179
+max_container_depth,1-2,H2,226,13696,1.854766
+max_container_depth,1-2,H3,226,12181,2.111639
+max_container_depth,1-2,H4,226,7158,3.728080
+max_container_depth,3+,H0,45,24784,1.000000
+max_container_depth,3+,H1,45,14495,0.961191
+max_container_depth,3+,H2,45,18554,0.668481
+max_container_depth,3+,H3,45,17332,0.644327
+max_container_depth,3+,H4,45,11613,0.834180

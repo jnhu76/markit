@@ -1,0 +1,189 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 501  of event 'cpu/cycles/Pu'
+# Event count (approx.): 1575549938
+#
+# Children      Self  Command          Shared Object              Symbol                                                                                                                                                                                                                                                                                                          
+# ........  ........  ...............  .........................  ................................................................................................................................................................................................................................................................................................................
+#
+    27.34%    27.34%  profiling-repla  profiling-replay           [.] sha2::sha256::compress256
+            |          
+            |--1.30%--0x4f
+            |          markit_mdbench_semantics::canonical::sha256_hex
+            |          sha2::sha256::compress256
+            |          
+             --0.60%--0x23
+                       markit_mdbench_semantics::canonical::sha256_hex
+                       sha2::sha256::compress256
+
+     6.88%     6.88%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::probes::probe_candidates
+     5.89%     1.21%  profiling-repla  libc.so.6                  [.] realloc
+            |          
+             --5.68%--realloc
+                       |          
+                        --4.67%--_int_realloc
+                                  |          
+                                  |--1.62%--_int_free_chunk
+                                  |          |          
+                                  |           --1.01%--_int_free_merge_chunk
+                                  |          
+                                  |--1.22%--__memmove_avx_unaligned_erms
+                                  |          
+                                   --1.22%--_int_malloc
+
+     5.48%     5.28%  profiling-repla  libc.so.6                  [.] _int_malloc
+            |          
+            |--3.45%--__libc_malloc2
+            |          _int_malloc
+            |          
+            |--1.02%--realloc
+            |          _int_realloc
+            |          _int_malloc
+            |          
+             --0.61%--_int_malloc
+
+     5.08%     1.84%  profiling-repla  libc.so.6                  [.] _int_free_chunk
+            |          
+            |--4.26%--_int_free_chunk
+            |          |          
+            |           --3.04%--_int_free_merge_chunk
+            |                     |          
+            |                      --1.01%--_int_free_create_chunk
+            |          
+             --0.61%--realloc
+                       _int_realloc
+                       _int_free_chunk
+
+     4.87%     0.81%  profiling-repla  libc.so.6                  [.] _int_realloc
+            |          
+            |--4.27%--_int_realloc
+            |          |          
+            |          |--1.62%--_int_free_chunk
+            |          |          |          
+            |          |           --1.01%--_int_free_merge_chunk
+            |          |          
+            |          |--1.22%--__memmove_avx_unaligned_erms
+            |          |          
+            |           --1.22%--_int_malloc
+            |          
+             --0.61%--realloc
+                       _int_realloc
+
+     4.27%     0.41%  profiling-repla  libc.so.6                  [.] __libc_malloc2
+            |
+            ---__libc_malloc2
+               |          
+                --3.86%--_int_malloc
+
+     3.86%     3.86%  profiling-repla  libc.so.6                  [.] __memmove_avx_unaligned_erms
+            |          
+            |--2.24%--__memmove_avx_unaligned_erms
+            |          
+             --1.22%--realloc
+                       _int_realloc
+                       __memmove_avx_unaligned_erms
+
+     3.04%     2.02%  profiling-repla  libc.so.6                  [.] _int_free_merge_chunk
+            |          
+            |--1.01%--_int_free_merge_chunk
+            |          _int_free_create_chunk
+            |          
+            |--0.81%--_int_free_chunk
+            |          _int_free_merge_chunk
+            |          
+             --0.81%--realloc
+                       _int_realloc
+                       _int_free_chunk
+                       _int_free_merge_chunk
+
+     2.91%     0.40%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::canonical::sha256_hex
+            |          
+             --2.51%--markit_mdbench_semantics::canonical::sha256_hex
+                       |          
+                        --2.10%--sha2::sha256::compress256
+
+     2.66%     2.66%  profiling-repla  profiling-replay           [.] <alloc::vec::Vec<markit_mdbench_oracle::normalized::Node> as core::clone::Clone>::clone
+     2.42%     2.42%  profiling-repla  profiling-replay           [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     2.23%     2.23%  profiling-repla  libc.so.6                  [.] cfree@GLIBC_2.2.5
+            |          
+             --2.03%--cfree@GLIBC_2.2.5
+
+     2.03%     2.03%  profiling-repla  libc.so.6                  [.] malloc
+            |
+            ---malloc
+
+     1.84%     1.84%  profiling-repla  profiling-replay           [.] alloc::vec::in_place_collect::from_iter_in_place::<core::iter::adapters::map::Map<alloc::vec::into_iter::IntoIter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_old_tree_subtree_reuse::shift_forest::{closure#1}>, markit_mdbench_oracle::normalized::Node>
+     1.83%     1.83%  profiling-repla  profiling-replay           [.] markit_mdbench_shared_grammar::parser::memchr_lf
+     1.82%     1.82%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::transition::recognized_count
+     1.62%     1.42%  profiling-repla  profiling-replay           [.] markit_mdbench_oracle::validate::walk
+     1.42%     1.01%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::profile::lane_profile_with
+     1.41%     1.41%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::g0::convert
+     1.30%     0.00%  profiling-repla  [unknown]                  [.] 0x000000000000004f
+            |
+            ---0x4f
+               markit_mdbench_semantics::canonical::sha256_hex
+               sha2::sha256::compress256
+
+     1.23%     1.23%  profiling-repla  profiling-replay           [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     1.21%     1.01%  profiling-repla  profiling-replay           [.] markit_mdbench_shared_grammar::parser::parse_full::<markit_mdbench_common::work::NoopWorkSink>
+     1.02%     1.02%  profiling-repla  profiling-replay           [.] <alloc::vec::Vec<markit_mdbench_oracle::normalized::Node> as core::clone::Clone>::clone
+     1.01%     1.01%  profiling-repla  libc.so.6                  [.] _int_free_create_chunk
+            |
+            ---_int_free_chunk
+               _int_free_merge_chunk
+               _int_free_create_chunk
+
+     1.01%     0.61%  profiling-repla  profiling-replay           [.] alloc::fmt::format::format_inner
+     1.01%     1.01%  profiling-repla  profiling-replay           [.] <core::iter::adapters::copied::Copied<core::slice::iter::Iter<&str>> as core::iter::traits::iterator::Iterator>::try_fold::<(), core::iter::traits::iterator::Iterator::find::check<&str, &mut markit_mdbench_oracle::validate::walk::{closure#1}>::{closure#0}, core::ops::control_flow::ControlFlow<&str>>
+     1.01%     0.61%  profiling-repla  profiling-replay           [.] core::fmt::write
+     1.01%     1.01%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::parse::collect
+     1.01%     0.00%  profiling-repla  [unknown]                  [.] 0x0000000000000023
+            |
+            ---0x23
+               markit_mdbench_semantics::canonical::sha256_hex
+               |          
+                --0.60%--sha2::sha256::compress256
+
+     0.82%     0.82%  profiling-repla  profiling-replay           [.] markit_mdbench_old_tree_subtree_reuse::build_tnode::<markit_mdbench_common::work::NoopWorkSink>
+     0.81%     0.81%  profiling-repla  profiling-replay           [.] core::slice::sort::stable::quicksort::quicksort::<markit_mdbench_semantics::facts::SyntaxFact, <[markit_mdbench_semantics::facts::SyntaxFact]>::sort_by<markit_mdbench_semantics::profile::lane_profile_with::{closure#1}>::{closure#0}>
+     0.81%     0.81%  profiling-repla  profiling-replay           [.] <core::fmt::Formatter>::pad_integral
+     0.65%     0.65%  profiling-repla  [unknown]                  [k] 0xffffffff9c0001c8
+     0.65%     0.00%  profiling-repla  libc.so.6                  [.] __syscall_cancel
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+
+     0.65%     0.00%  profiling-repla  libc.so.6                  [.] __internal_syscall_cancel
+            |
+            ---__internal_syscall_cancel
+
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] <markit_mdbench_old_tree_subtree_reuse::Cursor>::consult
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] markit_mdbench_oracle::normalized::encode_node
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] markit_mdbench_old_tree_subtree_reuse::count_forest
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] <markit_mdbench_old_tree_subtree_reuse::H3State as markit_mdbench_oracle::NormalizeV1>::normalize_v1
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] <alloc::string::String as core::clone::Clone>::clone
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] __rustc::__rust_dealloc
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] markit_mdbench_shared_grammar::inline::materialize_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::transition::write_topology
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] markit_mdbench_oracle::validate::field_is_set
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] <alloc::vec::Vec<&str> as alloc::vec::spec_from_iter_nested::SpecFromIterNested<&str, core::iter::adapters::filter::Filter<core::iter::adapters::copied::Copied<core::slice::iter::Iter<&str>>, markit_mdbench_oracle::validate::walk::{closure#1}>>>::from_iter
+     0.61%     0.61%  profiling-repla  profiling-replay           [.] core::slice::memchr::memchr_aligned
+     0.61%     0.00%  profiling-repla  profiling-replay           [.] markit_mdbench_semantics::g0::parse_g0
+            |
+            ---markit_mdbench_semantics::g0::parse_g0
+
+     0.60%     0.00%  profiling-repla  profiling-replay           [.] <alloc::string::String as core::fmt::Write>::write_str
+            |
+            ---<alloc::string::String as core::fmt::Write>::write_str
+
+     0.60%     0.20%  profiling-repla  profiling-replay           [.] <alloc::raw_vec::RawVecInner>::finish_grow
+
+
+#
+# (Tip: Skip collecting build-id when recording: perf record -B)
+#

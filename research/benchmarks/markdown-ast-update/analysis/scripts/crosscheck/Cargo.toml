@@ -1,0 +1,19 @@
+[package]
+name = "stats-crosscheck"
+version = "0.1.0"
+edition = "2021"
+
+# MARKIT-31 primary analysis §58: independent cross-check of the Python
+# Stage-A summaries against the FROZEN statistical primitives of
+# campaign/src/stats.rs (campaign crate = path dependency; this crate is
+# detached from the benchmark workspace and never modifies it).
+#
+# Selected CaseIds come from a file fixed BEFORE any comparison
+# (crosscheck-case-list-v1.txt; SHA256(RunId:crosscheck-selection-v1)
+# driven subsample of the sorted edit_write case list).
+
+[workspace]
+
+[dependencies]
+markit-mdbench-campaign = { path = "../../../campaign" }
+serde_json = "1"
