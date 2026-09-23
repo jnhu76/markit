@@ -1,0 +1,80 @@
+=== CORPUS MATERIALIZATION EPISODE (evidence) ===
+2026-09-22T14:31:03+00:00
+Phase A attempt 1 failed: cargo test panicked, materialized source missing
+(workloads/sources/*/files/ is gitignored MATERIALIZE_ONLY; fresh worktree had no bytes)
+Remedy: copy local materialized bytes from dev worktree (same pinned SOURCE.json, verified below); NO lock write; NO upstream re-pin.
+
+=== diff SOURCE.json dev vs primary (must be empty) ===
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/cpp-core-guidelines: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/crafting-interpreters: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/cs231n: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/d2l-en: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/ethereum-eips: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/graphql-spec: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/kubernetes-keps: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/mystmd: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/myst-parser: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/node: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/oci-image: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/oci-runtime: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/openapi: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/openmlsys: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/opentelemetry-spec: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/owasp-cheatsheets: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/progit: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/rust-book: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/rust-rfcs: files
+Only in /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/workloads/sources/swift-evolution: files
+
+=== rsync only files/ trees ===
+rsync rc=0
+
+=== acquire.py verify --full (byte verification against lock) ===
+[cpp-core-guidelines] ok: pin 33bcd015997f, 1 files, 841419 bytes, policy MATERIALIZE_ONLY
+[crafting-interpreters] ok: pin 4a840f70f69c, 50 files, 181127 bytes, policy MATERIALIZE_ONLY
+[cs231n] ok: pin 8ec57ccfc323, 30 files, 606126 bytes, policy VENDORED
+[d2l-en] ok: pin 23d7a5aeccee, 191 files, 3058724 bytes, policy VENDORED
+[ethereum-eips] ok: pin dbc6d457cbf9, 956 files, 6578099 bytes, policy VENDORED
+[graphql-spec] ok: pin 59bc70ac974b, 15 files, 336747 bytes, policy VENDORED
+[kubernetes-keps] ok: pin 0469acb1d944, 678 files, 20907633 bytes, policy VENDORED
+[myst-parser] ok: pin 723cffcf8421, 27 files, 139298 bytes, policy VENDORED
+[mystmd] ok: pin d09d3e59391c, 89 files, 621868 bytes, policy VENDORED
+[node] ok: pin 97af3d7da562, 70 files, 4695458 bytes, policy VENDORED
+[oci-image] ok: pin ca68a05fad73, 18 files, 129249 bytes, policy VENDORED
+[oci-runtime] ok: pin 6999a89a76a0, 21 files, 209935 bytes, policy VENDORED
+[openapi] ok: pin c9f8f040e825, 23 files, 1983802 bytes, policy VENDORED
+[openmlsys] ok: pin 9c289782ccbb, 234 files, 1636268 bytes, policy MATERIALIZE_ONLY
+[opentelemetry-spec] ok: pin 148f27606cf0, 99 files, 1324328 bytes, policy VENDORED
+[owasp-cheatsheets] ok: pin ffa997b0ba06, 122 files, 2538601 bytes, policy VENDORED
+[progit] ok: pin a013e3230a12, 3 files, 9290 bytes, policy MATERIALIZE_ONLY
+[rust-book] ok: pin 1500248d8f23, 112 files, 1221077 bytes, policy VENDORED
+[rust-rfcs] ok: pin 51783df9a76c, 651 files, 9267975 bytes, policy VENDORED
+[swift-evolution] ok: pin 5d88903d843f, 580 files, 10104895 bytes, policy VENDORED
+ERROR: [cpp-core-guidelines] --full requires the pinned tree locally; run 'materialize' first (warm cache)
+VERIFY_FULL_RC=1
+=== warm cache copy (gitignored _cache/, derived data) ===
+rsync rc=0
+=== re-run acquire.py verify --full in primary worktree ===
+[cpp-core-guidelines] ok: pin 33bcd015997f, 1 files, 841419 bytes, policy MATERIALIZE_ONLY
+[crafting-interpreters] ok: pin 4a840f70f69c, 50 files, 181127 bytes, policy MATERIALIZE_ONLY
+[cs231n] ok: pin 8ec57ccfc323, 30 files, 606126 bytes, policy VENDORED
+[d2l-en] ok: pin 23d7a5aeccee, 191 files, 3058724 bytes, policy VENDORED
+[ethereum-eips] ok: pin dbc6d457cbf9, 956 files, 6578099 bytes, policy VENDORED
+[graphql-spec] ok: pin 59bc70ac974b, 15 files, 336747 bytes, policy VENDORED
+[kubernetes-keps] ok: pin 0469acb1d944, 678 files, 20907633 bytes, policy VENDORED
+[myst-parser] ok: pin 723cffcf8421, 27 files, 139298 bytes, policy VENDORED
+[mystmd] ok: pin d09d3e59391c, 89 files, 621868 bytes, policy VENDORED
+[node] ok: pin 97af3d7da562, 70 files, 4695458 bytes, policy VENDORED
+[oci-image] ok: pin ca68a05fad73, 18 files, 129249 bytes, policy VENDORED
+[oci-runtime] ok: pin 6999a89a76a0, 21 files, 209935 bytes, policy VENDORED
+[openapi] ok: pin c9f8f040e825, 23 files, 1983802 bytes, policy VENDORED
+[openmlsys] ok: pin 9c289782ccbb, 234 files, 1636268 bytes, policy MATERIALIZE_ONLY
+[opentelemetry-spec] ok: pin 148f27606cf0, 99 files, 1324328 bytes, policy VENDORED
+[owasp-cheatsheets] ok: pin ffa997b0ba06, 122 files, 2538601 bytes, policy VENDORED
+[progit] ok: pin a013e3230a12, 3 files, 9290 bytes, policy MATERIALIZE_ONLY
+[rust-book] ok: pin 1500248d8f23, 112 files, 1221077 bytes, policy VENDORED
+[rust-rfcs] ok: pin 51783df9a76c, 651 files, 9267975 bytes, policy VENDORED
+[swift-evolution] ok: pin 5d88903d843f, 580 files, 10104895 bytes, policy VENDORED
+VERIFY PASS: 20 sources, 3970 materialized files byte-verified (66391919 bytes), 0 not materialized locally; lock + inventories + derived manifests consistent (full=yes)
+NO benchmark execution is performed by this tool (acquisition only).
+VERIFY_FULL_RC=0
