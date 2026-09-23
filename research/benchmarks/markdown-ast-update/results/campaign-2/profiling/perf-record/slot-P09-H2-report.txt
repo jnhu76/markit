@@ -1,0 +1,52 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 167  of event 'cycles:u'
+# Event count (approx.): 562038096
+#
+# Overhead  Command         Shared Object     Symbol                                                                                                        
+# ........  ..............  ................  ..............................................................................................................
+#
+    20.98%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_fragment_reuse::Cursor>::consult
+    17.72%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    16.17%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<alloc::vec::Vec<(usize, alloc::sync::Arc<markit_mdbench_fragment_reuse::FNode>)>>
+     5.15%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::shift_forest
+     4.45%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+     3.95%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     3.81%  mdbench-replay  libc.so.6         [.] _int_malloc
+     2.45%  mdbench-replay  libc.so.6         [.] malloc
+     1.99%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::project_node
+     1.89%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::assemble_level::<markit_mdbench_common::work::NoopWorkSink>
+     1.37%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     1.31%  mdbench-replay  libc.so.6         [.] __libc_malloc2
+     1.29%  mdbench-replay  libc.so.6         [.] _int_free_merge_chunk
+     1.29%  mdbench-replay  mdbench-replay    [.] <alloc::vec::Vec<markit_mdbench_oracle::normalized::Node> as core::clone::Clone>::clone
+     1.28%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::count_forest
+     1.28%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_fragment_reuse::Cursor>::search_level
+     1.27%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_fragment_reuse::FSlot>>
+     1.25%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_inlines_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     1.24%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>
+     1.18%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run
+     1.16%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::count_node
+     1.00%  mdbench-replay  libc.so.6         [.] _int_free_chunk
+     0.73%  mdbench-replay  mdbench-replay    [.] <alloc::sync::Arc<markit_mdbench_fragment_reuse::FNode>>::drop_slow
+     0.70%  mdbench-replay  libc.so.6         [.] realloc
+     0.69%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVec<markit_mdbench_shared_grammar::inline::Elem>>::grow_one
+     0.67%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::inline::Elem>>
+     0.63%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::build_fnode::<markit_mdbench_common::work::NoopWorkSink>
+     0.60%  mdbench-replay  libc.so.6         [.] __memcmp_avx2_movbe
+     0.58%  mdbench-replay  mdbench-replay    [.] markit_mdbench_fragment_reuse::right_window_start
+     0.58%  mdbench-replay  libc.so.6         [.] _int_free_maybe_trim
+     0.36%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.34%  mdbench-replay  libc.so.6         [.] unlink_chunk.isra.0
+     0.30%  mdbench-replay  mdbench-replay    [.] markit_mdbench_full_rebuild::parse_document
+     0.14%  mdbench-replay  [unknown]         [k] 0xffffffff9c001280
+     0.09%  mdbench-replay  mdbench-replay    [.] markit_mdbench_campaign2::generators::para_region
+     0.09%  mdbench-replay  mdbench-replay    [.] markit_mdbench_campaign2::generators::generate_cell
+
+
+#
+# (Tip: Show individual samples with: perf script)
+#

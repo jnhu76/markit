@@ -1,0 +1,19 @@
+{
+  "authority_sha": "3762b7a42e1c284a4c2c2e0ebac8496e70c63431",
+  "byte_size": 3236949,
+  "campaign_spec_id": "bd89908c51b0724073bdb090c7b54a380e08bfc2a4240df4b296b26e47800990",
+  "complete_marker": "COMPLETE",
+  "executable_sha256": "1bd1c09e0bc271bb34394f8ad3b8174d5e2a6da81bc0cb5e013e6d2378fbf282",
+  "exit_status": 0,
+  "lane": "controlled/K-container",
+  "machine_id": "primary-e5-xeon2666v3-fedora44",
+  "machine_manifest_sha256": "0fd3665ed1dbbe9e38ef4d877309ae2d8eb94f8eefdde173044ed4722e88ef93",
+  "raw_path": "controlled/K-container/session-2-k-controlled.jsonl",
+  "row_count": 1600,
+  "run_id": "9411446f0f5cd8ce5fd116591e7557fd5b674bcd9d09d1de65054ae2ad1d7a46",
+  "schema": "campaign2-raw-receipt-v1",
+  "sha256": "dc3911e9379fecf6e43d2ae0811868b2f76c4dfcfaa54193d6e707c8bc368f68",
+  "study_id": "cf151a01b1a347210320d6d2cf920c3de2310612cd8f4aa2f5aadb01d4b19856",
+  "sub_campaign_spec_id": "7d7c7019d506dff15818cc7b2dc2eb53187c37c6a838139c6dfc23bb39c02a32",
+  "surface": "campaign2-observation-v1"
+}

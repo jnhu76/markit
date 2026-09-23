@@ -1,0 +1,14 @@
+=== PROFILING LANE perf-stat ===
+utc_start=2026-09-23T10:25:11Z
+host=E5
+profiling_binary=./target/release/mdbench-replay
+profiling_binary_sha256=2b4ac6b877c88d6dd2f1408071be52ca008181630613831886423511157c34c6
+campaign_executable_sha256=c1c7756a1d36316dff2fb278e9db7926ee20a39bceaa0e8248e2619af52f5822
+events=cycles:u,instructions:u,branches:u,branch-misses:u,cache-references:u,cache-misses:u,task-clock,page-faults,context-switches,cpu-migrations
+perf_stat_repetitions=10
+rotation=horse order rotated once per repetition
+affinity=taskset -c 1
+evidence_class=PROFILE_PERF
+label=POST_HOC NON_PRIMARY
+utc_end=2026-09-23T10:29:07Z
+PROFILING_LANE_DONE perf-stat

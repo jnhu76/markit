@@ -1,0 +1,60 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 320  of event 'cycles:u'
+# Event count (approx.): 1061365623
+#
+# Overhead  Command         Shared Object     Symbol                                                                                                                                                                                                                                                              
+# ........  ..............  ................  ....................................................................................................................................................................................................................................................................
+#
+    33.11%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    14.06%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::probes::probe_candidates
+     6.45%  mdbench-replay  libc.so.6         [.] _int_malloc
+     5.47%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::g0::parse_g0
+     3.23%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     2.88%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::recognized_count
+     2.58%  mdbench-replay  libc.so.6         [.] malloc
+     2.58%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     1.94%  mdbench-replay  mdbench-replay    [.] alloc::fmt::format::format_inner
+     1.92%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+     1.92%  mdbench-replay  mdbench-replay    [.] <alloc::string::String as core::fmt::Write>::write_str
+     1.62%  mdbench-replay  libc.so.6         [.] _int_free_maybe_trim
+     1.61%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::profile::lane_profile_with
+     1.29%  mdbench-replay  libc.so.6         [.] _int_free_create_chunk
+     1.29%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::parse::collect
+     0.97%  mdbench-replay  libc.so.6         [.] realloc
+     0.97%  mdbench-replay  libc.so.6         [.] unlink_chunk.isra.0
+     0.97%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     0.96%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::canonical::sha256_hex
+     0.96%  mdbench-replay  libc.so.6         [.] __libc_malloc2
+     0.95%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::g0::convert
+     0.65%  mdbench-replay  mdbench-replay    [.] markit_mdbench_oracle::validate::walk
+     0.65%  mdbench-replay  mdbench-replay    [.] <usize>::_fmt_inner
+     0.65%  mdbench-replay  mdbench-replay    [.] <core::fmt::Formatter>::pad_integral::write_prefix
+     0.65%  mdbench-replay  mdbench-replay    [.] core::fmt::write
+     0.65%  mdbench-replay  libc.so.6         [.] _int_free_merge_chunk
+     0.64%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.64%  mdbench-replay  libc.so.6         [.] _int_free_chunk
+     0.59%  mdbench-replay  libc.so.6         [.] _int_realloc
+     0.50%  mdbench-replay  mdbench-replay    [.] <serde_json::read::StrRead as serde_json::read::Read>::parse_str
+     0.33%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::parse::walk_depth::<markit_mdbench_semantics::parse::structural_facts::{closure#0}>
+     0.32%  mdbench-replay  mdbench-replay    [.] core::slice::sort::stable::quicksort::quicksort::<markit_mdbench_semantics::facts::SyntaxFact, <[markit_mdbench_semantics::facts::SyntaxFact]>::sort_by<markit_mdbench_semantics::profile::lane_profile_with::{closure#1}>::{closure#0}>
+     0.32%  mdbench-replay  mdbench-replay    [.] <core::str::lossy::Utf8Chunks as core::iter::traits::iterator::Iterator>::next
+     0.32%  mdbench-replay  mdbench-replay    [.] <serde_json::value::Value as serde_core::ser::Serialize>::serialize::<serde_json::value::ser::Serializer>
+     0.32%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::text_fingerprint
+     0.32%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::materialize_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     0.32%  mdbench-replay  mdbench-replay    [.] markit_mdbench_oracle::validate::field_is_set
+     0.32%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_oracle::normalized::NodeKind as core::fmt::Debug>::fmt
+     0.32%  mdbench-replay  mdbench-replay    [.] <core::str::pattern::CharSearcher as core::str::pattern::ReverseSearcher>::next_match_back
+     0.32%  mdbench-replay  mdbench-replay    [.] <core::fmt::Formatter>::pad_integral
+     0.32%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVec<markit_mdbench_shared_grammar::inline::Elem>>::grow_one
+     0.32%  mdbench-replay  libc.so.6         [.] __memcmp_avx2_movbe
+     0.32%  mdbench-replay  mdbench-replay    [.] core::slice::sort::stable::quicksort::quicksort::<markit_mdbench_semantics::probes::RawCandidate, <[markit_mdbench_semantics::probes::RawCandidate]>::sort_by_key<(usize, usize), markit_mdbench_semantics::probes::probe_candidates::{closure#2}>::{closure#0}>
+     0.32%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::write_topology
+     0.32%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     0.32%  mdbench-replay  mdbench-replay    [.] <str>::trim_matches::<char>
+     0.32%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::push_into_innermost
+     0.31%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::inline::Elem>>
+     0.31%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVec<markit_mdbench_semantics::transition::PredicateResult>>::grow_one

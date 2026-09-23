@@ -1,0 +1,19 @@
+{
+  "authority_sha": "3762b7a42e1c284a4c2c2e0ebac8496e70c63431",
+  "byte_size": 134912442,
+  "campaign_spec_id": "bd89908c51b0724073bdb090c7b54a380e08bfc2a4240df4b296b26e47800990",
+  "complete_marker": "COMPLETE",
+  "executable_sha256": "1bd1c09e0bc271bb34394f8ad3b8174d5e2a6da81bc0cb5e013e6d2378fbf282",
+  "exit_status": 0,
+  "lane": "resident-update",
+  "machine_id": "primary-e5-xeon2666v3-fedora44",
+  "machine_manifest_sha256": "0fd3665ed1dbbe9e38ef4d877309ae2d8eb94f8eefdde173044ed4722e88ef93",
+  "raw_path": "resident-update/session-1-resident-update.jsonl",
+  "row_count": 72400,
+  "run_id": "b1f1b2509eb106200a114e1d1952a9746eebe9e64017ce96cdb00535a6dbadaa",
+  "schema": "campaign2-raw-receipt-v1",
+  "sha256": "62a1f5a494478b6ce48bb0f922b6ce7c9b3018317cc67b32ac5cd8346015cb2b",
+  "study_id": "cf151a01b1a347210320d6d2cf920c3de2310612cd8f4aa2f5aadb01d4b19856",
+  "sub_campaign_spec_id": "754038ae9638b4459d7372a1dd2ab5b811846da6831981fedd190f696bb49b37",
+  "surface": "campaign2-observation-v1"
+}

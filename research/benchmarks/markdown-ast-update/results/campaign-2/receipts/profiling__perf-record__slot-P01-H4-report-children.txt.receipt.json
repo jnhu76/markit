@@ -1,0 +1,19 @@
+{
+  "authority_sha": "3762b7a42e1c284a4c2c2e0ebac8496e70c63431",
+  "byte_size": 3637,
+  "campaign_spec_id": "bd89908c51b0724073bdb090c7b54a380e08bfc2a4240df4b296b26e47800990",
+  "complete_marker": "COMPLETE",
+  "executable_sha256": "1bd1c09e0bc271bb34394f8ad3b8174d5e2a6da81bc0cb5e013e6d2378fbf282",
+  "exit_status": 0,
+  "lane": "profiling/perf-record",
+  "machine_id": "primary-e5-xeon2666v3-fedora44",
+  "machine_manifest_sha256": "0fd3665ed1dbbe9e38ef4d877309ae2d8eb94f8eefdde173044ed4722e88ef93",
+  "raw_path": "profiling/perf-record/slot-P01-H4-report-children.txt",
+  "row_count": 0,
+  "run_id": "n/a",
+  "schema": "campaign2-raw-receipt-v1",
+  "sha256": "a9d174008aa162883699d60b66babf5ce93bf3f752fd09d7b9bcc60af519cc3c",
+  "study_id": "cf151a01b1a347210320d6d2cf920c3de2310612cd8f4aa2f5aadb01d4b19856",
+  "sub_campaign_spec_id": "n/a",
+  "surface": "n/a"
+}

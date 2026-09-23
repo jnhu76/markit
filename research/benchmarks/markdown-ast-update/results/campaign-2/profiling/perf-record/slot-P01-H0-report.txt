@@ -1,0 +1,60 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 350  of event 'cycles:u'
+# Event count (approx.): 1052988451
+#
+# Overhead  Command         Shared Object     Symbol                                                                                                                                                                                                                                      
+# ........  ..............  ................  ............................................................................................................................................................................................................................................
+#
+    33.59%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    12.01%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::probes::probe_candidates
+     4.07%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+     3.68%  mdbench-replay  libc.so.6         [.] _int_malloc
+     3.24%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::g0::parse_g0
+     3.07%  mdbench-replay  libc.so.6         [.] _int_free_create_chunk
+     2.92%  mdbench-replay  libc.so.6         [.] malloc
+     2.64%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::g0::convert
+     2.36%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     2.19%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     2.00%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::recognized_count
+     1.84%  mdbench-replay  mdbench-replay    [.] <core::fmt::Formatter>::pad_integral::write_prefix
+     1.68%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::parse::collect
+     1.61%  mdbench-replay  mdbench-replay    [.] core::fmt::write
+     1.55%  mdbench-replay  mdbench-replay    [.] core::slice::sort::stable::quicksort::quicksort::<markit_mdbench_semantics::facts::SyntaxFact, <[markit_mdbench_semantics::facts::SyntaxFact]>::sort_by<markit_mdbench_semantics::profile::lane_profile_with::{closure#1}>::{closure#0}>
+     1.41%  mdbench-replay  mdbench-replay    [.] alloc::fmt::format::format_inner
+     1.19%  mdbench-replay  mdbench-replay    [.] <core::fmt::Formatter>::pad_integral
+     1.14%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::profile::lane_profile_with
+     1.13%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>
+     1.07%  mdbench-replay  libc.so.6         [.] _int_realloc
+     0.92%  mdbench-replay  libc.so.6         [.] _int_free_merge_chunk
+     0.92%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::materialize_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     0.88%  mdbench-replay  mdbench-replay    [.] markit_mdbench_oracle::validate::walk
+     0.86%  mdbench-replay  libc.so.6         [.] realloc
+     0.86%  mdbench-replay  mdbench-replay    [.] <alloc::string::String as core::fmt::Write>::write_str
+     0.81%  mdbench-replay  libc.so.6         [.] unlink_chunk.isra.0
+     0.62%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     0.60%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.60%  mdbench-replay  mdbench-replay    [.] <core::str::pattern::CharSearcher as core::str::pattern::Searcher>::next_match
+     0.59%  mdbench-replay  libc.so.6         [.] _int_free_maybe_trim
+     0.59%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     0.59%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.54%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::parser::refdef_at
+     0.54%  mdbench-replay  mdbench-replay    [.] <usize>::_fmt_inner
+     0.49%  mdbench-replay  [unknown]         [k] 0xffffffff9c001280
+     0.33%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::canonical::write_canonical
+     0.33%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::validate_transition
+     0.32%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_inlines_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     0.32%  mdbench-replay  mdbench-replay    [.] <usize as core::fmt::Display>::fmt
+     0.27%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::text_fingerprint
+     0.27%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_semantics::parse::LaneNode>
+     0.27%  mdbench-replay  mdbench-replay    [.] <serde_json::value::Value as serde_core::ser::Serialize>::serialize::<serde_json::value::ser::Serializer>
+     0.27%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.27%  mdbench-replay  mdbench-replay    [.] <alloc::collections::btree::map::IntoIter<alloc::string::String, serde_json::value::Value>>::dying_next
+     0.27%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::write_topology
+     0.27%  mdbench-replay  mdbench-replay    [.] <&u8 as core::fmt::LowerHex>::fmt
+     0.27%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVec<markit_mdbench_shared_grammar::inline::Elem>>::grow_one
+     0.27%  mdbench-replay  mdbench-replay    [.] <alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>>::insert
+     0.27%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_semantics::parse::LaneParse>

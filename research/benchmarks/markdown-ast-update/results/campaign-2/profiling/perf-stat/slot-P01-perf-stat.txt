@@ -1,0 +1,1050 @@
+### slot=P01 rep=0 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,069,262,767      cycles:u                                                                (66.66%)
+         2,716,162,114      instructions:u                                                          (83.33%)
+           371,643,862      branches:u                                                              (83.33%)
+             7,058,212      branch-misses:u                                                         (82.91%)
+             3,407,065      cache-references:u                                                      (83.21%)
+                10,159      cache-misses:u                                                          (83.35%)
+                323.85 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324539668 seconds time elapsed
+    
+           0.310628000 seconds user
+           0.009562000 seconds sys
+    
+    
+### slot=P01 rep=0 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,062,189,026      cycles:u                                                                (66.36%)
+         2,722,218,667      instructions:u                                                          (83.24%)
+           373,826,780      branches:u                                                              (83.44%)
+             7,152,399      branch-misses:u                                                         (83.43%)
+             3,548,354      cache-references:u                                                      (83.43%)
+                 7,323      cache-misses:u                                                          (82.86%)
+                325.83 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326417171 seconds time elapsed
+    
+           0.314024000 seconds user
+           0.008742000 seconds sys
+    
+    
+### slot=P01 rep=0 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,062,275,727      cycles:u                                                                (66.46%)
+         2,722,204,230      instructions:u                                                          (83.34%)
+           370,601,937      branches:u                                                              (83.43%)
+             7,071,060      branch-misses:u                                                         (83.42%)
+             3,636,939      cache-references:u                                                      (83.42%)
+                 9,609      cache-misses:u                                                          (82.88%)
+                319.69 msec task-clock:u                                                          
+                 1,811      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320437283 seconds time elapsed
+    
+           0.308730000 seconds user
+           0.007760000 seconds sys
+    
+    
+### slot=P01 rep=0 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,058,493,999      cycles:u                                                                (66.54%)
+         2,714,850,011      instructions:u                                                          (83.27%)
+           373,692,015      branches:u                                                              (82.78%)
+             7,002,127      branch-misses:u                                                         (83.07%)
+             3,238,740      cache-references:u                                                      (83.39%)
+                 9,358      cache-misses:u                                                          (83.53%)
+                316.69 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.317369841 seconds time elapsed
+    
+           0.300845000 seconds user
+           0.012820000 seconds sys
+    
+    
+### slot=P01 rep=0 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,055,818,722      cycles:u                                                                (66.75%)
+         2,710,957,530      instructions:u                                                          (83.37%)
+           373,445,203      branches:u                                                              (83.37%)
+             7,027,917      branch-misses:u                                                         (83.37%)
+             3,291,462      cache-references:u                                                      (83.13%)
+                 9,156      cache-misses:u                                                          (83.14%)
+                318.66 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.319390354 seconds time elapsed
+    
+           0.305527000 seconds user
+           0.009877000 seconds sys
+    
+    
+### slot=P01 rep=1 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,065,882,533      cycles:u                                                                (66.52%)
+         2,714,057,724      instructions:u                                                          (83.40%)
+           367,979,829      branches:u                                                              (83.39%)
+             7,092,301      branch-misses:u                                                         (83.39%)
+             3,302,416      cache-references:u                                                      (82.81%)
+                 8,806      cache-misses:u                                                          (83.03%)
+                319.05 msec task-clock:u                                                          
+                 1,806      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.319789113 seconds time elapsed
+    
+           0.308783000 seconds user
+           0.006910000 seconds sys
+    
+    
+### slot=P01 rep=1 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,062,803,661      cycles:u                                                                (66.68%)
+         2,719,007,538      instructions:u                                                          (83.34%)
+           374,244,068      branches:u                                                              (83.33%)
+             7,187,496      branch-misses:u                                                         (82.82%)
+             3,272,364      cache-references:u                                                      (83.11%)
+                 9,439      cache-misses:u                                                          (83.31%)
+                318.01 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318660888 seconds time elapsed
+    
+           0.302071000 seconds user
+           0.012809000 seconds sys
+    
+    
+### slot=P01 rep=1 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,057,337,127      cycles:u                                                                (66.45%)
+         2,714,475,872      instructions:u                                                          (83.31%)
+           370,788,341      branches:u                                                              (83.44%)
+             6,981,115      branch-misses:u                                                         (83.44%)
+             3,208,610      cache-references:u                                                      (83.44%)
+                13,677      cache-misses:u                                                          (82.81%)
+                319.97 msec task-clock:u                                                          
+                 1,815      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320728510 seconds time elapsed
+    
+           0.305015000 seconds user
+           0.011662000 seconds sys
+    
+    
+### slot=P01 rep=1 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,056,969,761      cycles:u                                                                (66.33%)
+         2,714,415,973      instructions:u                                                          (83.20%)
+           374,212,462      branches:u                                                              (83.44%)
+             7,006,996      branch-misses:u                                                         (83.43%)
+             3,409,628      cache-references:u                                                      (83.45%)
+                 8,983      cache-misses:u                                                          (82.82%)
+                325.97 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326632733 seconds time elapsed
+    
+           0.312649000 seconds user
+           0.009746000 seconds sys
+    
+    
+### slot=P01 rep=1 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,062,850,114      cycles:u                                                                (66.31%)
+         2,727,248,904      instructions:u                                                          (83.19%)
+           370,966,904      branches:u                                                              (83.43%)
+             7,008,141      branch-misses:u                                                         (83.43%)
+             3,384,457      cache-references:u                                                      (83.43%)
+                 9,126      cache-misses:u                                                          (82.83%)
+                319.89 msec task-clock:u                                                          
+                 1,813      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320572590 seconds time elapsed
+    
+           0.307034000 seconds user
+           0.009466000 seconds sys
+    
+    
+### slot=P01 rep=2 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,059,732,192      cycles:u                                                                (66.43%)
+         2,715,581,895      instructions:u                                                          (83.34%)
+           373,016,608      branches:u                                                              (83.40%)
+             7,087,728      branch-misses:u                                                         (83.40%)
+             3,631,146      cache-references:u                                                      (83.40%)
+                 7,844      cache-misses:u                                                          (83.02%)
+                325.28 msec task-clock:u                                                          
+                 1,805      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.325872414 seconds time elapsed
+    
+           0.314239000 seconds user
+           0.007894000 seconds sys
+    
+    
+### slot=P01 rep=2 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,059,554,288      cycles:u                                                                (66.50%)
+         2,712,813,310      instructions:u                                                          (83.38%)
+           373,846,338      branches:u                                                              (83.42%)
+             7,031,278      branch-misses:u                                                         (83.43%)
+             3,421,685      cache-references:u                                                      (83.42%)
+                10,191      cache-misses:u                                                          (82.86%)
+                319.71 msec task-clock:u                                                          
+                 1,811      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320463657 seconds time elapsed
+    
+           0.306411000 seconds user
+           0.009846000 seconds sys
+    
+    
+### slot=P01 rep=2 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,058,342,330      cycles:u                                                                (66.65%)
+         2,710,028,172      instructions:u                                                          (83.32%)
+           370,163,064      branches:u                                                              (83.32%)
+             7,082,761      branch-misses:u                                                         (82.88%)
+             3,257,040      cache-references:u                                                      (83.18%)
+                 8,919      cache-misses:u                                                          (83.38%)
+                317.76 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318395669 seconds time elapsed
+    
+           0.305685000 seconds user
+           0.008893000 seconds sys
+    
+    
+### slot=P01 rep=2 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,057,620,091      cycles:u                                                                (66.70%)
+         2,720,839,345      instructions:u                                                          (83.35%)
+           372,392,576      branches:u                                                              (83.35%)
+             7,063,431      branch-misses:u                                                         (83.34%)
+             3,395,852      cache-references:u                                                      (83.09%)
+                 9,600      cache-misses:u                                                          (83.26%)
+                318.19 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318937209 seconds time elapsed
+    
+           0.301347000 seconds user
+           0.013664000 seconds sys
+    
+    
+### slot=P01 rep=2 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,068,838,029      cycles:u                                                                (66.19%)
+         2,725,077,315      instructions:u                                                          (82.98%)
+           371,615,548      branches:u                                                              (83.28%)
+             7,078,982      branch-misses:u                                                         (83.49%)
+             3,284,752      cache-references:u                                                      (83.50%)
+                 6,530      cache-misses:u                                                          (83.33%)
+                327.14 msec task-clock:u                                                          
+                 1,805      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.327812350 seconds time elapsed
+    
+           0.312958000 seconds user
+           0.010755000 seconds sys
+    
+    
+### slot=P01 rep=3 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,063,979,738      cycles:u                                                                (66.40%)
+         2,719,123,978      instructions:u                                                          (83.27%)
+           374,600,011      branches:u                                                              (83.42%)
+             7,122,608      branch-misses:u                                                         (83.42%)
+             3,256,685      cache-references:u                                                      (83.42%)
+                 9,424      cache-misses:u                                                          (82.90%)
+                319.69 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320384522 seconds time elapsed
+    
+           0.310597000 seconds user
+           0.005895000 seconds sys
+    
+    
+### slot=P01 rep=3 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,062,538,411      cycles:u                                                                (66.53%)
+         2,721,473,887      instructions:u                                                          (83.26%)
+           373,828,494      branches:u                                                              (83.00%)
+             7,077,322      branch-misses:u                                                         (83.32%)
+             3,556,766      cache-references:u                                                      (83.58%)
+                 7,419      cache-misses:u                                                          (83.31%)
+                316.66 msec task-clock:u                                                          
+                 1,805      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.317384540 seconds time elapsed
+    
+           0.305600000 seconds user
+           0.007901000 seconds sys
+    
+    
+### slot=P01 rep=3 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,064,064,986      cycles:u                                                                (66.46%)
+         2,718,392,492      instructions:u                                                          (83.37%)
+           371,381,290      branches:u                                                              (83.40%)
+             7,174,047      branch-misses:u                                                         (83.40%)
+             3,206,997      cache-references:u                                                      (83.40%)
+                 9,122      cache-misses:u                                                          (82.99%)
+                319.27 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.319996322 seconds time elapsed
+    
+           0.311206000 seconds user
+           0.004926000 seconds sys
+    
+    
+### slot=P01 rep=3 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,070,371,481      cycles:u                                                                (66.14%)
+         2,721,352,248      instructions:u                                                          (83.28%)
+           372,035,596      branches:u                                                              (83.47%)
+             7,159,946      branch-misses:u                                                         (83.47%)
+             3,269,394      cache-references:u                                                      (83.47%)
+                 9,328      cache-misses:u                                                          (82.97%)
+                320.61 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.321346472 seconds time elapsed
+    
+           0.309466000 seconds user
+           0.007867000 seconds sys
+    
+    
+### slot=P01 rep=3 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,058,419,558      cycles:u                                                                (66.59%)
+         2,719,908,912      instructions:u                                                          (83.43%)
+           368,742,555      branches:u                                                              (83.42%)
+             7,051,100      branch-misses:u                                                         (83.42%)
+             3,316,830      cache-references:u                                                      (82.89%)
+                 7,600      cache-misses:u                                                          (82.89%)
+                325.70 msec task-clock:u                                                          
+                 1,806      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326360449 seconds time elapsed
+    
+           0.309589000 seconds user
+           0.012742000 seconds sys
+    
+    
+### slot=P01 rep=4 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,064,689,941      cycles:u                                                                (66.55%)
+         2,728,276,060      instructions:u                                                          (82.91%)
+           369,201,125      branches:u                                                              (83.24%)
+             7,050,555      branch-misses:u                                                         (83.54%)
+             3,233,786      cache-references:u                                                      (83.59%)
+                 4,309      cache-misses:u                                                          (83.04%)
+                316.84 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.317465885 seconds time elapsed
+    
+           0.304751000 seconds user
+           0.008916000 seconds sys
+    
+    
+### slot=P01 rep=4 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,058,982,629      cycles:u                                                                (66.65%)
+         2,716,091,934      instructions:u                                                          (83.32%)
+           371,214,279      branches:u                                                              (83.32%)
+             7,104,530      branch-misses:u                                                         (82.90%)
+             3,221,712      cache-references:u                                                      (83.21%)
+                 8,868      cache-misses:u                                                          (83.38%)
+                317.73 msec task-clock:u                                                          
+                 1,805      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318342941 seconds time elapsed
+    
+           0.302544000 seconds user
+           0.011887000 seconds sys
+    
+    
+### slot=P01 rep=4 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,060,451,301      cycles:u                                                                (66.66%)
+         2,723,630,460      instructions:u                                                          (83.33%)
+           371,744,596      branches:u                                                              (82.70%)
+             7,111,080      branch-misses:u                                                         (82.99%)
+             3,579,110      cache-references:u                                                      (83.30%)
+                 8,358      cache-misses:u                                                          (83.35%)
+                323.89 msec task-clock:u                                                          
+                 1,806      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324602029 seconds time elapsed
+    
+           0.315353000 seconds user
+           0.005784000 seconds sys
+    
+    
+### slot=P01 rep=4 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,065,555,537      cycles:u                                                                (66.47%)
+         2,732,859,073      instructions:u                                                          (83.23%)
+           369,906,814      branches:u                                                              (82.96%)
+             7,048,568      branch-misses:u                                                         (83.28%)
+             3,451,912      cache-references:u                                                      (83.55%)
+                 9,494      cache-misses:u                                                          (83.47%)
+                316.06 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.316735638 seconds time elapsed
+    
+           0.301095000 seconds user
+           0.011863000 seconds sys
+    
+    
+### slot=P01 rep=4 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,060,150,125      cycles:u                                                                (66.72%)
+         2,717,598,434      instructions:u                                                          (83.35%)
+           371,774,153      branches:u                                                              (83.36%)
+             7,136,528      branch-misses:u                                                         (82.80%)
+             3,247,156      cache-references:u                                                      (83.11%)
+                 9,450      cache-misses:u                                                          (83.21%)
+                318.35 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.319114212 seconds time elapsed
+    
+           0.309374000 seconds user
+           0.005933000 seconds sys
+    
+    
+### slot=P01 rep=5 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,059,507,355      cycles:u                                                                (66.53%)
+         2,722,734,680      instructions:u                                                          (83.39%)
+           370,827,596      branches:u                                                              (83.37%)
+             7,022,066      branch-misses:u                                                         (83.38%)
+             3,260,583      cache-references:u                                                      (82.85%)
+                 7,530      cache-misses:u                                                          (83.11%)
+                324.81 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.325503926 seconds time elapsed
+    
+           0.309724000 seconds user
+           0.011850000 seconds sys
+    
+    
+### slot=P01 rep=5 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,059,061,073      cycles:u                                                                (66.64%)
+         2,730,741,413      instructions:u                                                          (83.32%)
+           374,448,830      branches:u                                                              (82.74%)
+             7,039,818      branch-misses:u                                                         (83.05%)
+             3,649,683      cache-references:u                                                      (83.36%)
+                 9,129      cache-misses:u                                                          (83.36%)
+                317.64 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318374433 seconds time elapsed
+    
+           0.303612000 seconds user
+           0.010823000 seconds sys
+    
+    
+### slot=P01 rep=5 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,056,221,540      cycles:u                                                                (66.46%)
+         2,713,788,931      instructions:u                                                          (83.32%)
+           372,992,095      branches:u                                                              (83.44%)
+             6,988,790      branch-misses:u                                                         (83.43%)
+             3,192,630      cache-references:u                                                      (83.43%)
+                10,102      cache-misses:u                                                          (82.81%)
+                325.95 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326702582 seconds time elapsed
+    
+           0.313138000 seconds user
+           0.009686000 seconds sys
+    
+    
+### slot=P01 rep=5 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,053,598,294      cycles:u                                                                (66.60%)
+         2,712,987,515      instructions:u                                                          (83.30%)
+           371,539,823      branches:u                                                              (82.82%)
+             7,046,367      branch-misses:u                                                         (83.14%)
+             3,542,643      cache-references:u                                                      (83.44%)
+                 8,651      cache-misses:u                                                          (83.35%)
+                317.34 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318013061 seconds time elapsed
+    
+           0.305013000 seconds user
+           0.008850000 seconds sys
+    
+    
+### slot=P01 rep=5 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,056,856,643      cycles:u                                                                (66.64%)
+         2,712,710,891      instructions:u                                                          (83.32%)
+           374,562,618      branches:u                                                              (83.31%)
+             7,082,642      branch-misses:u                                                         (83.03%)
+             3,657,872      cache-references:u                                                      (83.34%)
+                 8,875      cache-misses:u                                                          (83.38%)
+                317.67 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.318323478 seconds time elapsed
+    
+           0.306575000 seconds user
+           0.007871000 seconds sys
+    
+    
+### slot=P01 rep=6 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,061,693,811      cycles:u                                                                (66.46%)
+         2,721,415,526      instructions:u                                                          (83.34%)
+           368,906,523      branches:u                                                              (83.41%)
+             7,125,716      branch-misses:u                                                         (83.41%)
+             3,256,033      cache-references:u                                                      (83.41%)
+                 9,224      cache-misses:u                                                          (82.93%)
+                325.49 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326157519 seconds time elapsed
+    
+           0.309615000 seconds user
+           0.012722000 seconds sys
+    
+    
+### slot=P01 rep=6 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,068,227,899      cycles:u                                                                (66.37%)
+         2,718,021,281      instructions:u                                                          (83.19%)
+           373,291,986      branches:u                                                              (83.48%)
+             7,184,373      branch-misses:u                                                         (83.47%)
+             3,600,381      cache-references:u                                                      (83.48%)
+                 5,797      cache-misses:u                                                          (83.20%)
+                326.72 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.327479563 seconds time elapsed
+    
+           0.314509000 seconds user
+           0.008893000 seconds sys
+    
+    
+### slot=P01 rep=6 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,113,207,819      cycles:u                                                                (66.04%)
+         2,726,593,417      instructions:u                                                          (82.74%)
+           374,139,690      branches:u                                                              (83.01%)
+             7,155,041      branch-misses:u                                                         (83.30%)
+             3,790,684      cache-references:u                                                      (83.56%)
+                32,049      cache-misses:u                                                          (82.23%)
+                346.81 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.347970749 seconds time elapsed
+    
+           0.333537000 seconds user
+           0.009846000 seconds sys
+    
+    
+### slot=P01 rep=6 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,088,995,661      cycles:u                                                                (66.54%)
+         2,715,190,067      instructions:u                                                          (83.41%)
+           371,082,122      branches:u                                                              (83.42%)
+             6,995,984      branch-misses:u                                                         (83.41%)
+             3,659,923      cache-references:u                                                      (83.42%)
+                34,667      cache-misses:u                                                          (82.91%)
+                331.58 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.332377707 seconds time elapsed
+    
+           0.317276000 seconds user
+           0.010867000 seconds sys
+    
+    
+### slot=P01 rep=6 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,060,133,875      cycles:u                                                                (66.59%)
+         2,717,701,905      instructions:u                                                          (83.29%)
+           372,671,390      branches:u                                                              (82.87%)
+             7,055,067      branch-misses:u                                                         (83.19%)
+             3,683,907      cache-references:u                                                      (83.51%)
+                 8,070      cache-misses:u                                                          (83.32%)
+                317.23 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.317812631 seconds time elapsed
+    
+           0.300219000 seconds user
+           0.013720000 seconds sys
+    
+    
+### slot=P01 rep=7 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,065,112,049      cycles:u                                                                (66.26%)
+         2,717,017,293      instructions:u                                                          (83.11%)
+           370,864,316      branches:u                                                              (83.41%)
+             7,075,739      branch-misses:u                                                         (83.46%)
+             3,412,702      cache-references:u                                                      (83.46%)
+                 9,432      cache-misses:u                                                          (83.38%)
+                320.32 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.320925344 seconds time elapsed
+    
+           0.308908000 seconds user
+           0.007798000 seconds sys
+    
+    
+### slot=P01 rep=7 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,062,284,922      cycles:u                                                                (66.53%)
+         2,716,317,225      instructions:u                                                          (83.37%)
+           373,471,287      branches:u                                                              (83.37%)
+             7,077,964      branch-misses:u                                                         (83.37%)
+             3,283,100      cache-references:u                                                      (82.88%)
+                 6,572      cache-misses:u                                                          (83.12%)
+                324.73 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.325369824 seconds time elapsed
+    
+           0.312538000 seconds user
+           0.008894000 seconds sys
+    
+    
+### slot=P01 rep=7 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,064,299,400      cycles:u                                                                (66.46%)
+         2,742,437,145      instructions:u                                                          (82.75%)
+           370,810,811      branches:u                                                              (83.04%)
+             7,136,388      branch-misses:u                                                         (83.35%)
+             3,607,864      cache-references:u                                                      (83.54%)
+                 6,727      cache-misses:u                                                          (83.42%)
+                321.91 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.322530127 seconds time elapsed
+    
+           0.313670000 seconds user
+           0.004958000 seconds sys
+    
+    
+### slot=P01 rep=7 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,056,463,986      cycles:u                                                                (66.69%)
+         2,718,908,036      instructions:u                                                          (83.34%)
+           372,928,972      branches:u                                                              (83.34%)
+             7,075,135      branch-misses:u                                                         (83.33%)
+             3,580,507      cache-references:u                                                      (83.07%)
+                 6,989      cache-misses:u                                                          (83.29%)
+                324.09 msec task-clock:u                                                          
+                 1,811      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324794167 seconds time elapsed
+    
+           0.310126000 seconds user
+           0.010873000 seconds sys
+    
+    
+### slot=P01 rep=7 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,056,230,782      cycles:u                                                                (66.82%)
+         2,708,699,334      instructions:u                                                          (83.41%)
+           372,633,142      branches:u                                                              (83.41%)
+             7,011,823      branch-misses:u                                                         (82.93%)
+             3,304,584      cache-references:u                                                      (83.22%)
+                 6,691      cache-misses:u                                                          (82.97%)
+                325.37 msec task-clock:u                                                          
+                 1,813      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326108481 seconds time elapsed
+    
+           0.318180000 seconds user
+           0.003964000 seconds sys
+    
+    
+### slot=P01 rep=8 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,056,679,555      cycles:u                                                                (66.62%)
+         2,717,549,370      instructions:u                                                          (83.30%)
+           372,332,149      branches:u                                                              (82.79%)
+             7,071,214      branch-misses:u                                                         (83.08%)
+             3,602,875      cache-references:u                                                      (83.38%)
+                 6,081      cache-misses:u                                                          (83.39%)
+                323.47 msec task-clock:u                                                          
+                 1,809      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324121922 seconds time elapsed
+    
+           0.311365000 seconds user
+           0.008918000 seconds sys
+    
+    
+### slot=P01 rep=8 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,059,073,347      cycles:u                                                                (66.60%)
+         2,717,371,491      instructions:u                                                          (83.30%)
+           374,339,362      branches:u                                                              (83.30%)
+             7,105,099      branch-misses:u                                                         (82.99%)
+             3,652,079      cache-references:u                                                      (83.29%)
+                 6,731      cache-misses:u                                                          (83.51%)
+                323.27 msec task-clock:u                                                          
+                 1,811      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.323941346 seconds time elapsed
+    
+           0.311343000 seconds user
+           0.008889000 seconds sys
+    
+    
+### slot=P01 rep=8 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,055,329,104      cycles:u                                                                (66.56%)
+         2,713,808,448      instructions:u                                                          (83.43%)
+           375,423,869      branches:u                                                              (83.41%)
+             6,968,728      branch-misses:u                                                         (83.41%)
+             3,631,803      cache-references:u                                                      (83.41%)
+                 6,688      cache-misses:u                                                          (82.91%)
+                325.56 msec task-clock:u                                                          
+                 1,808      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326303778 seconds time elapsed
+    
+           0.313103000 seconds user
+           0.008901000 seconds sys
+    
+    
+### slot=P01 rep=8 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,059,474,687      cycles:u                                                                (66.47%)
+         2,722,657,233      instructions:u                                                          (83.32%)
+           374,119,676      branches:u                                                              (83.46%)
+             7,036,466      branch-misses:u                                                         (83.45%)
+             3,594,049      cache-references:u                                                      (83.45%)
+                10,539      cache-misses:u                                                          (82.73%)
+                320.32 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.321080583 seconds time elapsed
+    
+           0.307945000 seconds user
+           0.008871000 seconds sys
+    
+    
+### slot=P01 rep=8 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,064,235,032      cycles:u                                                                (66.30%)
+         2,715,922,681      instructions:u                                                          (83.10%)
+           372,146,335      branches:u                                                              (83.40%)
+             7,043,596      branch-misses:u                                                         (83.48%)
+             3,332,702      cache-references:u                                                      (83.49%)
+                 9,182      cache-misses:u                                                          (83.27%)
+                326.83 msec task-clock:u                                                          
+                 1,805      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.327533191 seconds time elapsed
+    
+           0.314011000 seconds user
+           0.009695000 seconds sys
+    
+    
+### slot=P01 rep=9 horse=H4
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H4 --reps 30':
+    
+         1,059,063,805      cycles:u                                                                (66.64%)
+         2,713,490,068      instructions:u                                                          (83.32%)
+           372,742,372      branches:u                                                              (83.31%)
+             7,226,509      branch-misses:u                                                         (82.92%)
+             3,596,126      cache-references:u                                                      (83.23%)
+                 6,451      cache-misses:u                                                          (83.42%)
+                323.64 msec task-clock:u                                                          
+                 1,806      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324187088 seconds time elapsed
+    
+           0.313436000 seconds user
+           0.006923000 seconds sys
+    
+    
+### slot=P01 rep=9 horse=H0
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H0 --reps 30':
+    
+         1,052,072,797      cycles:u                                                                (66.82%)
+         2,711,318,598      instructions:u                                                          (83.44%)
+           373,563,007      branches:u                                                              (83.44%)
+             7,011,291      branch-misses:u                                                         (83.43%)
+             3,554,211      cache-references:u                                                      (83.07%)
+                 8,772      cache-misses:u                                                          (82.81%)
+                326.00 msec task-clock:u                                                          
+                 1,806      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.326818056 seconds time elapsed
+    
+           0.311770000 seconds user
+           0.010850000 seconds sys
+    
+    
+### slot=P01 rep=9 horse=H1
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H1 --reps 30':
+    
+         1,056,452,344      cycles:u                                                                (66.59%)
+         2,721,558,364      instructions:u                                                          (83.30%)
+           375,547,329      branches:u                                                              (82.71%)
+             6,988,449      branch-misses:u                                                         (82.99%)
+             3,612,563      cache-references:u                                                      (83.30%)
+                 6,354      cache-misses:u                                                          (83.53%)
+                323.12 msec task-clock:u                                                          
+                 1,810      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.323790990 seconds time elapsed
+    
+           0.310992000 seconds user
+           0.008897000 seconds sys
+    
+    
+### slot=P01 rep=9 horse=H2
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H2 --reps 30':
+    
+         1,056,860,153      cycles:u                                                                (66.62%)
+         2,716,442,943      instructions:u                                                          (83.31%)
+           371,801,886      branches:u                                                              (83.30%)
+             7,185,332      branch-misses:u                                                         (82.89%)
+             3,580,657      cache-references:u                                                      (83.20%)
+                 7,463      cache-misses:u                                                          (83.47%)
+                323.40 msec task-clock:u                                                          
+                 1,811      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.324061418 seconds time elapsed
+    
+           0.309410000 seconds user
+           0.010878000 seconds sys
+    
+    
+### slot=P01 rep=9 horse=H3
+    
+     Performance counter stats for 'taskset -c 1 ./target/release/mdbench-replay . --surface resident-update --case-index 67 --horse H3 --reps 30':
+    
+         1,064,664,886      cycles:u                                                                (66.31%)
+         2,714,485,114      instructions:u                                                          (83.13%)
+           372,196,677      branches:u                                                              (83.43%)
+             7,037,389      branch-misses:u                                                         (83.48%)
+             3,728,831      cache-references:u                                                      (83.48%)
+                 7,437      cache-misses:u                                                          (83.25%)
+                326.88 msec task-clock:u                                                          
+                 1,807      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.327598276 seconds time elapsed
+    
+           0.316511000 seconds user
+           0.006921000 seconds sys
+    
+    

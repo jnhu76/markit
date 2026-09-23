@@ -1,0 +1,12 @@
+=== PERF RECORD LANE perf-record ===
+utc_start=2026-09-23T10:34:15Z
+host=E5
+profiling_binary=./target/release/mdbench-replay
+profiling_binary_sha256=b864fe5331c021d77f5446134d1308b0b804328ad068538b0fc32fa586064810
+flags=release-primary-v1 (opt-level 3, lto thin, codegen-units 1); no debug-info rebuild
+event=cycles:u  frequency=999Hz  call-graph=dwarf (falls back to flat symbols)
+affinity=taskset -c 1
+evidence_class=PROFILE_PERF
+label=POST_HOC NON_PRIMARY
+utc_end=2026-09-23T10:34:28Z
+PERF_RECORD_LANE_DONE perf-record

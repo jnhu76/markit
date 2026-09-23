@@ -1,0 +1,21 @@
+# CAMPAIGN-2 EVIDENCE COMMITTING POLICY (task §52)
+#
+# Committed: manifests, receipts, hashes, inventories, small mechanical
+# summary tables, perf text reports, profiling manifests, the logs needed
+# for reproducibility, the freeze / gaps / closure / handoff documents.
+#
+# NOT committed (hashes and storage locations ARE committed, in
+#   manifests/raw-inventory-v1.json / .txt and receipts/):
+#   - raw observation JSONL (2.4 GB)
+#   - perf .data captures (large binaries)
+#   - perf-stat / replay per-slot JSONL (regenerable, large)
+#   - the memory sample JSONL (regenerable)
+#
+# Nothing here is deleted: the excluded files stay on the primary server,
+# on the independent-filesystem copy and on the durable copy, all three
+# verified byte-identical by tools/verify-copies.py.
+
+*.jsonl
+*.data
+pilot/
+memory/memory-*.jsonl

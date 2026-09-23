@@ -74,6 +74,7 @@ fn main() -> ExitCode {
         "run-construction" => cmd_run_construction(&root, &flags),
         "run-resident-update" => cmd_run_resident_update(&root, &flags),
         "run-lifecycle" => cmd_run_lifecycle(&root, &flags),
+        "run-lifecycle-attribution" => cmd_run_lifecycle_attribution(&root, &flags),
         "run-controlled" => cmd_run_controlled(&root, &flags),
         "run-attribution" => cmd_run_attribution(&root, &flags),
         "run-memory" => cmd_run_memory(&root, &flags),
@@ -1436,6 +1437,165 @@ fn lifecycle_case_spec(
         post.as_str().to_string(),
         edit.clone(),
     ))
+}
+
+/// Surface C, ATTRIBUTION lane (task §17): per-edit work counters on a
+/// CHAINED state, with the same `CounterSink` authority the frozen
+/// `run_update_attributed` uses. The oracle runs outside every collection
+/// window; the state is carried step to step exactly as on the timing
+/// surface.
+fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), String> {
+    let session = flag_u32(flags, "--session", 0);
+    let (exec_identity, session_id) = identity_for(
+        root,
+        "lifecycle",
+        EvidenceClass::PrimaryLifecycle.as_str(),
+        Some(session),
+        "attribution",
+    )?;
+    let workload = load_campaign_workload(root)?;
+    let mut traces = load_frozen_traces(root)?;
+    if let Some(trace) = flag_value(flags, "--trace") {
+        traces.retain(|t| t.trace_id == trace || t.family == trace);
+    }
+    let path = match flag_value(flags, "--out") {
+        Some(path) => PathBuf::from(path),
+        None => store::campaign_root(root)
+            .join("lifecycle")
+            .join(format!("session-{session}-lifecycle-attribution.jsonl")),
+    };
+    let mut out = new_writer(&path)?;
+    let emitter = Emitter {
+        exec_identity,
+        surface: Surface2::Lifecycle,
+        session_id,
+        session_ordinal: Some(session),
+        build: current_build_identity(),
+    };
+    let seed = identity::session_seed(identity::campaign_seed(AUTHORITY_SHA), "lifecycle", session);
+    let mut observations = 0u64;
+
+    for (ordinal, trace) in traces.iter().enumerate() {
+        let trace_case_id = trace_case_id(trace);
+        let trace_case_hex = trace_case_id.hex();
+        let initial = trace_initial_source(trace, &workload)?;
+        let mut current = initial.clone();
+        let mut step_sources = Vec::with_capacity(trace.steps.len());
+        for step in &trace.steps {
+            let edit = step.edit();
+            let pre = Source::new(SourceId(0), current.clone());
+            let post = edit
+                .apply(&pre, SourceId(1))
+                .map_err(|e| format!("trace {} step {}: {e:?}", trace.trace_id, step.step))?
+                .as_str()
+                .to_string();
+            step_sources.push((Source::new(SourceId(0), current.clone()), Source::new(SourceId(1), post.clone()), edit));
+            current = post;
+        }
+        let initial_source = Source::new(SourceId(9), initial.clone());
+        let checkpoints: std::collections::BTreeSet<u32> = lifecycle::K_CHECKPOINTS.iter().copied().collect();
+
+        for (horse_ordinal, horse_id) in HORSE_IDS.iter().copied().enumerate() {
+            let mechanism_id = horse_mechanism_id(horse_id)?;
+            let fact_list: Vec<markit_mdbench_runner::CaseFacts> = step_sources
+                .iter()
+                .enumerate()
+                .map(|(index, (pre, post, edit))| {
+                    Ok(lifecycle_case_spec(
+                        &trace.trace_id,
+                        step_index_payload(&trace.trace_id, index),
+                        pre,
+                        post,
+                        edit,
+                        &trace.steps[index],
+                        seed,
+                    )?
+                    .facts(mechanism_id, seed))
+                })
+                .collect::<Result<Vec<_>, String>>()?;
+
+            let rows = markit_mdbench_campaign2::with_horse!(horse_id, |mech| {
+                let initial_state = match markit_mdbench_runner::orchestrate::build_initial_state(
+                    &mech,
+                    &initial_source,
+                ) {
+                    Ok(state) => Ok(state),
+                    Err(failure) => Err(format!("{failure:?}")),
+                };
+                let mut state = match initial_state {
+                    Ok(state) => Some(state),
+                    Err(message) => return Err(message),
+                };
+                let mut produced: Vec<(markit_mdbench_runner::ResultRowV1, Option<markit_mdbench_campaign2::envelope::StateReprV1>)> =
+                    Vec::with_capacity(step_sources.len());
+                // A chain that fails must stop WITHOUT a `return`: inside a
+                // `with_horse!` arm a `return` would leave the enclosing
+                // function, not this arm.
+                while produced.len() < step_sources.len() {
+                    let index = produced.len();
+                    let (pre, post, edit) = &step_sources[index];
+                    let reference = reference_for(post.as_str())?;
+                    let hook = ReferenceOracle::new(reference);
+                    let Some(current_state) = state.take() else {
+                        break;
+                    };
+                    let outcome = markit_mdbench_campaign2::exec::lifecycle_step_attributed(
+                        &mech, pre, post, edit, current_state, &hook,
+                    );
+                    let repr = outcome.new_state.as_ref().map(
+                        markit_mdbench_campaign2::exec::StateReprExport::state_repr,
+                    );
+                    let report = markit_mdbench_campaign2::exec::attribution_report(&outcome);
+                    let row = markit_mdbench_runner::assemble_row(
+                        &fact_list[index],
+                        &report,
+                        &emitter.build,
+                        &emitter.exec_identity.machine_environment_ref,
+                        emitter.exec_identity.provenance,
+                    );
+                    match outcome.new_state {
+                        Some(new_state) => state = Some(new_state),
+                        None => {
+                            produced.push((row, repr));
+                            break;
+                        }
+                    }
+                    produced.push((row, repr));
+                }
+                Ok(produced)
+            })?;
+
+            for (index, (row, repr)) in rows.iter().enumerate() {
+                let step = &trace.steps[index];
+                emitter.emit(
+                    &mut out,
+                    ordinal as u32,
+                    horse_ordinal as u32,
+                    horse_id,
+                    SampleKind2::Attribution,
+                    step.step,
+                    &trace_case_hex,
+                    None,
+                    Some(LifecycleIdentityV1 {
+                        trace_id: trace.trace_id.clone(),
+                        family: trace.family.clone(),
+                        chain_construction: trace.chain_construction.clone(),
+                        step: step.step,
+                        step_count: trace.step_count,
+                        rep: 0,
+                        checkpoint: checkpoints.contains(&(step.step + 1)).then_some(step.step + 1),
+                        cumulative_edits: step.step + 1,
+                        step_label: step.label.clone(),
+                        transition_label: step.transition_label.clone(),
+                    }),
+                    repr.clone(),
+                    row.clone(),
+                )?;
+                observations += 1;
+            }
+        }
+    }
+    finish_lane(out, &path, observations)
 }
 
 fn cmd_run_controlled(root: &Path, flags: &[String]) -> Result<(), String> {

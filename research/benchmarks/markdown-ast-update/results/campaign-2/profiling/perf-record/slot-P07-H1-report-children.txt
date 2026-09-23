@@ -1,0 +1,40 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 63  of event 'cycles:u'
+# Event count (approx.): 187508982
+#
+# Children      Self  Command         Shared Object     Symbol                                                                                                                
+# ........  ........  ..............  ................  ......................................................................................................................
+#
+    26.01%    26.01%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    19.64%    19.64%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+    16.15%     0.00%  mdbench-replay  [unknown]         [.] 0x0000000000000007
+    14.15%     0.00%  mdbench-replay  mdbench-replay    [.] markit_mdbench_campaign2::sha256_hex
+    11.33%    11.33%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run
+    10.80%     7.30%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     9.44%     0.00%  mdbench-replay  libc.so.6         [.] realloc
+     6.97%     1.85%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_shared_grammar::parser::Skel>
+     6.82%     3.44%  mdbench-replay  libc.so.6         [.] _int_malloc
+     5.77%     3.84%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_oracle::normalized::Node as core::clone::Clone>::clone
+     5.75%     0.00%  mdbench-replay  [unknown]         [.] 0xfffffffffffffffe
+     5.54%     1.68%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_block_local::BlockLocalMechanism>::parse_into_pending::<markit_mdbench_common::work::NoopWorkSink>
+     5.10%     0.00%  mdbench-replay  libc.so.6         [.] _int_free_chunk
+     4.35%     0.00%  mdbench-replay  libc.so.6         [.] __libc_malloc2
+     3.90%     0.00%  mdbench-replay  libc.so.6         [.] _int_realloc
+     3.87%     0.00%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_block_local::H1State as markit_mdbench_oracle::NormalizeV1>::normalize_v1
+     3.79%     1.84%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<[markit_mdbench_block_local::TopEntry]>
+     3.74%     1.86%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     3.68%     0.00%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_inlines_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     3.63%     0.00%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     3.44%     3.44%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::materialize_one_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     3.44%     1.52%  mdbench-replay  libc.so.6         [.] _int_free_merge_chunk
+     3.44%     0.00%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::Skel as core::clone::Clone>::clone
+     3.17%     0.00%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_shared_grammar::parser::RegionParse>
+     3.04%     3.04%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     1.93%     0.00%  mdbench-replay  [unknown]         [.] 0x0000000000000fff
+     1.93%     1.93%  mdbench-replay  libc.so.6         [.] _int_free_create_chunk
+     1.89%     0.00%  mdbench-replay  [unknown]         [.] 0x00000000800078ff
+     1.89%     1.89%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_oracle::normalized::Node as core::clone::Clone>::clone
