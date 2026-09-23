@@ -527,7 +527,13 @@ fn case_d(index: u32, d: u64, label: &str) -> Result<ControlledCase, String> {
     let interior = d - closet_b_len;
     pre.push_str(&para_region(interior, 0x33));
     let closer_b_start = pre.len();
-    debug_assert_eq!(closer_b_start, closer_a_start + d);
+    // Frozen cell geometry (controlled-cells-v1.txt): interior = D - 6, so
+    // the reconvergence closer sits A.len() + D - 6 past the edited
+    // closer's start. The old `+ d` expectation contradicted the manifest.
+    debug_assert_eq!(
+        closer_b_start,
+        closer_a_start + C_D_CLOSER_A.len() + d - C_D_CLOSER_B.len()
+    );
     pre.push_str(C_D_CLOSER_B);
     let suffix = n
         .checked_sub(pre.len())
