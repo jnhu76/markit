@@ -178,12 +178,28 @@ interval for a whole lifecycle run.
 ## 8. Attribution coverage
 
 The attribution lane covers construction (22 × 5), resident-update
-(362 × 5) and the controlled cells (43 × 5). It does **not** cover the
-lifecycle surface, so the per-step work counters (blocks reparsed, nodes
-rebuilt/reused, metadata records touched, unique/old/post bytes inspected,
-H1 fallback, H4 restart/convergence distances) for the chained lifecycle
-edits are **not** in the raw evidence. Lifecycle evidence is timing plus
-the final sealed state-representation export.
+(362 × 5), the controlled cells (43 × 5), **and lifecycle** through a
+dedicated untimed lifecycle-attribution lane.
+
+Lifecycle attribution contains:
+
+```text
+14 traces × 5 horses × 128 steps × 3 sessions = 26,880 raw rows
+```
+
+It carries the same per-step work counters used elsewhere: blocks reparsed,
+nodes rebuilt/reused, metadata records touched, unique/old/post bytes
+inspected, H1 fallback, and H4 restart/convergence distances where
+applicable. The lane was produced by the attribution-only executable
+`1bd1c09e…` under its own RunId; it is never pooled with lifecycle timing
+rows and is joined only through stable trace/step/horse/session identities.
+
+The attribution lane is intentionally **not repeated for all 30 lifecycle
+timing repetitions**. It records one deterministic mechanism-work dispatch
+per trace/step/horse/session; timing variability remains in the separate
+PRIMARY_LIFECYCLE lane. `summary/attribution-lifecycle.csv` mechanically
+reduces the three session rows to 14 × 128 × 5 = 8,960 trace-step-horse
+rows.
 
 State-representation counts (task §29) are exported only at the END of a
 lifecycle chain, and only for the fields each horse actually exposes; a
