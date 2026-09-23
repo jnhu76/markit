@@ -1,0 +1,40 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 320  of event 'cycles:u'
+# Event count (approx.): 1061872594
+#
+# Children      Self  Command         Shared Object     Symbol                                                                                                                                                                                                                                                                                           
+# ........  ........  ..............  ................  .................................................................................................................................................................................................................................................................................................
+#
+    32.31%    32.31%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    15.58%    15.58%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::probes::probe_candidates
+    11.17%     0.00%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::canonical::sha256_hex
+     9.50%     2.58%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::profile::lane_profile_with
+     7.43%     7.11%  mdbench-replay  libc.so.6         [.] _int_malloc
+     5.97%     0.00%  mdbench-replay  [unknown]         [.] 0x0000000000000077
+     5.80%     4.52%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::g0::parse_g0
+     5.77%     2.24%  mdbench-replay  mdbench-replay    [.] alloc::fmt::format::format_inner
+     5.50%     0.00%  mdbench-replay  libc.so.6         [.] __libc_malloc2
+     5.13%     0.97%  mdbench-replay  mdbench-replay    [.] markit_mdbench_oracle::validate::walk
+     4.50%     0.64%  mdbench-replay  libc.so.6         [.] realloc
+     4.19%     1.29%  mdbench-replay  mdbench-replay    [.] core::fmt::write
+     4.18%     0.33%  mdbench-replay  libc.so.6         [.] _int_realloc
+     4.16%     0.00%  mdbench-replay  mdbench-replay    [.] 0x000055c04f3e64af
+     3.87%     3.55%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     3.86%     3.86%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+     3.85%     0.64%  mdbench-replay  libc.so.6         [.] _int_free_chunk
+     3.24%     3.24%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     3.21%     1.27%  mdbench-replay  libc.so.6         [.] _int_free_merge_chunk
+     2.91%     0.65%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     2.90%     0.65%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     2.58%     0.33%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     2.57%     0.31%  mdbench-replay  mdbench-replay    [.] <usize as core::fmt::Display>::fmt
+     2.25%     0.32%  mdbench-replay  mdbench-replay    [.] <alloc::string::String as core::fmt::Write>::write_str
+     1.94%     0.00%  mdbench-replay  [unknown]         [.] 0x000000000000027f
+     1.94%     1.62%  mdbench-replay  libc.so.6         [.] _int_free_create_chunk
+     1.93%     1.30%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::text_fingerprint
+     1.93%     1.93%  mdbench-replay  mdbench-replay    [.] markit_mdbench_semantics::transition::recognized_count
+     1.62%     0.00%  mdbench-replay  [unknown]         [.] 0x000000000000188f

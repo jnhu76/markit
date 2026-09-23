@@ -1,0 +1,11 @@
+tag = "resident_update"
+surface = "resident_update"
+evidence_classes = ["PRIMARY_TIMING"]
+lanes = ["timing"]
+case_cardinality = 362
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+axis_values = []
+raw_path = "results/campaign-2/resident-update/"
+note = ""

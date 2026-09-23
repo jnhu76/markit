@@ -1,0 +1,47 @@
+{
+  "study_id": "cf151a01b1a347210320d6d2cf920c3de2310612cd8f4aa2f5aadb01d4b19856",
+  "campaign_spec_id": "bd89908c51b0724073bdb090c7b54a380e08bfc2a4240df4b296b26e47800990",
+  "campaign_id": "MARKIT-31-FULL-EVIDENCE-CAMPAIGN-2",
+  "authority_sha": "3762b7a42e1c284a4c2c2e0ebac8496e70c63431",
+  "envelope_schema_id": "campaign2-observation-v1",
+  "seed_algorithm": "sha256-first64-bigendian-v1",
+  "campaign_seed": 4794930673931540045,
+  "sub_campaigns": [
+    {
+      "tag": "construction",
+      "sub_campaign_spec_id": "26bdc4f63b0e320bb6e39f3a2aa20bfdd91220c4baaaf19f8e06e637940e3c8b"
+    },
+    {
+      "tag": "resident_update",
+      "sub_campaign_spec_id": "754038ae9638b4459d7372a1dd2ab5b811846da6831981fedd190f696bb49b37"
+    },
+    {
+      "tag": "lifecycle",
+      "sub_campaign_spec_id": "bf56b263a09c44b5c78351c24858fe9d00e9bb16a5edb03d4716f49739ed5925"
+    },
+    {
+      "tag": "controlled_n",
+      "sub_campaign_spec_id": "98e76d34c5608275f3750e6d3ed9bc30a94c8407c968ad43db0a28d5cb5120f6"
+    },
+    {
+      "tag": "controlled_b",
+      "sub_campaign_spec_id": "d4c76429aad76b4db6e928707a86a935c7c61acf43eebb7f7a11f684821f4314"
+    },
+    {
+      "tag": "controlled_d_fence",
+      "sub_campaign_spec_id": "9d7d09a5fc7b3cb2f95e582c915454f4a051b572a15d7ec35dfbc5aef21a0f65"
+    },
+    {
+      "tag": "controlled_f_reference",
+      "sub_campaign_spec_id": "ecfa796fd6af43d525a519392a1ec22512f84675eb69070fdb45435b1b5c43a1"
+    },
+    {
+      "tag": "controlled_k_container",
+      "sub_campaign_spec_id": "7d7c7019d506dff15818cc7b2dc2eb53187c37c6a838139c6dfc23bb39c02a32"
+    },
+    {
+      "tag": "profiling",
+      "sub_campaign_spec_id": "72bb7d034afebde5def009bc988125c74038a71272c5fb6f5d0e276774049377"
+    }
+  ]
+}

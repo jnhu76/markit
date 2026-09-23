@@ -1,0 +1,42 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 472  of event 'cycles:u'
+# Event count (approx.): 1595890613
+#
+# Overhead  Command         Shared Object   Symbol                                                                                                                                                                               
+# ........  ..............  ..............  .....................................................................................................................................................................................
+#
+    43.11%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_old_tree_subtree_reuse::Cursor>::consult
+    35.32%  mdbench-replay  mdbench-replay  [.] core::ptr::drop_glue::<alloc::vec::Vec<(usize, alloc::sync::Arc<markit_mdbench_old_tree_subtree_reuse::TNode>)>>
+     7.11%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_old_tree_subtree_reuse::Cursor>::search_level
+     4.09%  mdbench-replay  mdbench-replay  [.] sha2::sha256::compress256
+     1.76%  mdbench-replay  libc.so.6       [.] __memmove_avx_unaligned_erms
+     1.29%  mdbench-replay  mdbench-replay  [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     0.86%  mdbench-replay  mdbench-replay  [.] markit_mdbench_old_tree_subtree_reuse::project_node
+     0.86%  mdbench-replay  mdbench-replay  [.] markit_mdbench_old_tree_subtree_reuse::shift_forest
+     0.86%  mdbench-replay  libc.so.6       [.] cfree@GLIBC_2.2.5
+     0.65%  mdbench-replay  mdbench-replay  [.] <alloc::vec::Vec<markit_mdbench_oracle::normalized::Node> as core::clone::Clone>::clone
+     0.65%  mdbench-replay  libc.so.6       [.] _int_free_create_chunk
+     0.56%  mdbench-replay  libc.so.6       [.] _int_malloc
+     0.43%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run
+     0.43%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_oracle::normalized::Node as core::clone::Clone>::clone
+     0.43%  mdbench-replay  libc.so.6       [.] malloc
+     0.22%  mdbench-replay  mdbench-replay  [.] core::ptr::drop_glue::<markit_mdbench_old_tree_subtree_reuse::TPayload>
+     0.22%  mdbench-replay  mdbench-replay  [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_old_tree_subtree_reuse::TEntry>>
+     0.22%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+     0.21%  mdbench-replay  libc.so.6       [.] realloc
+     0.21%  mdbench-replay  mdbench-replay  [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::push_into_innermost
+     0.21%  mdbench-replay  libc.so.6       [.] __libc_malloc2
+     0.12%  mdbench-replay  mdbench-replay  [.] <alloc::string::String as core::fmt::Write>::write_str
+     0.10%  mdbench-replay  mdbench-replay  [.] markit_mdbench_full_rebuild::parse_document
+     0.03%  mdbench-replay  mdbench-replay  [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.03%  mdbench-replay  mdbench-replay  [.] alloc::fmt::format::format_inner
+     0.03%  mdbench-replay  mdbench-replay  [.] markit_mdbench_campaign2::generators::para_region
+
+
+#
+# (Tip: To see callchains in a more compact form: perf report -g folded)
+#

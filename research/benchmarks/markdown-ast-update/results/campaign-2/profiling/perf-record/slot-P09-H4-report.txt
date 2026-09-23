@@ -1,0 +1,45 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 89  of event 'cycles:u'
+# Event count (approx.): 285413972
+#
+# Overhead  Command         Shared Object     Symbol                                                                                                                 
+# ........  ..............  ................  .......................................................................................................................
+#
+    31.02%  mdbench-replay  mdbench-replay    [.] sha2::sha256::compress256
+    12.52%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+    10.64%  mdbench-replay  libc.so.6         [.] __memmove_avx_unaligned_erms
+     5.18%  mdbench-replay  libc.so.6         [.] _int_malloc
+     4.05%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run
+     3.72%  mdbench-replay  mdbench-replay    [.] markit_mdbench_restart_convergence::fresh_slots::<markit_mdbench_common::work::NoopWorkSink>
+     3.63%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::Skel as core::clone::Clone>::clone
+     3.48%  mdbench-replay  libc.so.6         [.] cfree@GLIBC_2.2.5
+     2.79%  mdbench-replay  libc.so.6         [.] _int_free_maybe_trim
+     2.62%  mdbench-replay  libc.so.6         [.] _int_free_create_chunk
+     2.58%  mdbench-replay  mdbench-replay    [.] markit_mdbench_restart_convergence::collect_defs_skel
+     2.28%  mdbench-replay  libc.so.6         [.] __libc_malloc2
+     1.37%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_oracle::normalized::Node as core::clone::Clone>::clone
+     1.32%  mdbench-replay  [unknown]         [k] 0xffffffff9c001280
+     1.30%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::norm_label
+     1.29%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_oracle::normalized::Node as core::cmp::PartialEq>::eq
+     1.22%  mdbench-replay  mdbench-replay    [.] markit_mdbench_shared_grammar::inline::scan_inlines_with_sink::<markit_mdbench_common::work::NoopWorkSink>
+     1.21%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>
+     1.18%  mdbench-replay  mdbench-replay    [.] markit_mdbench_restart_convergence::skel_count
+     1.18%  mdbench-replay  mdbench-replay    [.] markit_mdbench_restart_convergence::registers
+     0.92%  mdbench-replay  mdbench-replay    [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::close_frames_from
+     0.91%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>
+     0.87%  mdbench-replay  libc.so.6         [.] malloc
+     0.79%  mdbench-replay  mdbench-replay    [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_restart_convergence::BlockSlot>>
+     0.73%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>
+     0.73%  mdbench-replay  mdbench-replay    [.] markit_mdbench_oracle::validate::walk
+     0.18%  mdbench-replay  libc.so.6         [.] __GI___sigaltstack
+     0.16%  mdbench-replay  mdbench-replay    [.] <alloc::raw_vec::RawVecInner>::finish_grow
+     0.16%  mdbench-replay  mdbench-replay    [.] markit_mdbench_campaign2::generators::para_region
+
+
+#
+# (Tip: For tracepoint events, try: perf report -s trace_fields)
+#

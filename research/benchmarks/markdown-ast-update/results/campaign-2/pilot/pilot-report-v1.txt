@@ -1,0 +1,45 @@
+PILOT_CONSTRUCTION horse=H0 mechanism=h0-full-rebuild source_bytes=416 best_total_ns=1527
+PILOT_CONSTRUCTION horse=H1 mechanism=block-local-reparse-h1 source_bytes=416 best_total_ns=1814
+PILOT_CONSTRUCTION horse=H2 mechanism=fragment-reuse-h2 source_bytes=416 best_total_ns=1648
+PILOT_CONSTRUCTION horse=H3 mechanism=old-tree-subtree-reuse-h3 source_bytes=416 best_total_ns=1671
+PILOT_CONSTRUCTION horse=H4 mechanism=restart-convergence-h4 source_bytes=416 best_total_ns=1724
+PILOT_RESIDENT_UPDATE horse=H0 mechanism=h0-full-rebuild pre_bytes=44914 best_total_ns=53180
+PILOT_RESIDENT_UPDATE horse=H1 mechanism=block-local-reparse-h1 pre_bytes=44914 best_total_ns=62069
+PILOT_RESIDENT_UPDATE horse=H2 mechanism=fragment-reuse-h2 pre_bytes=44914 best_total_ns=9519
+PILOT_RESIDENT_UPDATE horse=H3 mechanism=old-tree-subtree-reuse-h3 pre_bytes=44914 best_total_ns=9505
+PILOT_RESIDENT_UPDATE horse=H4 mechanism=restart-convergence-h4 pre_bytes=44914 best_total_ns=3834
+PILOT_LIFECYCLE_K8 horse=H0 mechanism=h0-full-rebuild steps=8 cumulative_total_ns=1909699
+PILOT_LIFECYCLE_K8 horse=H1 mechanism=block-local-reparse-h1 steps=8 cumulative_total_ns=813494
+PILOT_LIFECYCLE_K8 horse=H2 mechanism=fragment-reuse-h2 steps=8 cumulative_total_ns=789355
+PILOT_LIFECYCLE_K8 horse=H3 mechanism=old-tree-subtree-reuse-h3 steps=8 cumulative_total_ns=611644
+PILOT_LIFECYCLE_K8 horse=H4 mechanism=restart-convergence-h4 steps=8 cumulative_total_ns=338615
+PILOT_CONTROLLED axis=N cell=C2-N-512B pre_bytes=512 horse=H0 best_total_ns=1798
+PILOT_CONTROLLED axis=N cell=C2-N-512B pre_bytes=512 horse=H1 best_total_ns=1333
+PILOT_CONTROLLED axis=N cell=C2-N-512B pre_bytes=512 horse=H2 best_total_ns=2197
+PILOT_CONTROLLED axis=N cell=C2-N-512B pre_bytes=512 horse=H3 best_total_ns=2265
+PILOT_CONTROLLED axis=N cell=C2-N-512B pre_bytes=512 horse=H4 best_total_ns=1002
+PILOT_CONTROLLED axis=B cell=C2-B-128B pre_bytes=131072 horse=H0 best_total_ns=493186
+PILOT_CONTROLLED axis=B cell=C2-B-128B pre_bytes=131072 horse=H1 best_total_ns=222945
+PILOT_CONTROLLED axis=B cell=C2-B-128B pre_bytes=131072 horse=H2 best_total_ns=211982
+PILOT_CONTROLLED axis=B cell=C2-B-128B pre_bytes=131072 horse=H3 best_total_ns=172144
+PILOT_CONTROLLED axis=B cell=C2-B-128B pre_bytes=131072 horse=H4 best_total_ns=80607
+PILOT_CONTROLLED axis=D cell=C2-D-64B pre_bytes=131072 horse=H0 best_total_ns=710225
+PILOT_CONTROLLED axis=D cell=C2-D-64B pre_bytes=131072 horse=H1 best_total_ns=955720
+PILOT_CONTROLLED axis=D cell=C2-D-64B pre_bytes=131072 horse=H2 best_total_ns=15393845
+PILOT_CONTROLLED axis=D cell=C2-D-64B pre_bytes=131072 horse=H3 best_total_ns=15848950
+PILOT_CONTROLLED axis=D cell=C2-D-64B pre_bytes=131072 horse=H4 best_total_ns=809242
+PILOT_CONTROLLED axis=F cell=C2-F-0 pre_bytes=131072 horse=H0 best_total_ns=744737
+PILOT_CONTROLLED axis=F cell=C2-F-0 pre_bytes=131072 horse=H1 best_total_ns=1033576
+PILOT_CONTROLLED axis=F cell=C2-F-0 pre_bytes=131072 horse=H2 best_total_ns=565052
+PILOT_CONTROLLED axis=F cell=C2-F-0 pre_bytes=131072 horse=H3 best_total_ns=114175643
+PILOT_CONTROLLED axis=F cell=C2-F-0 pre_bytes=131072 horse=H4 best_total_ns=1106982
+PILOT_CONTROLLED axis=K cell=C2-K-0 pre_bytes=131072 horse=H0 best_total_ns=738823
+PILOT_CONTROLLED axis=K cell=C2-K-0 pre_bytes=131072 horse=H1 best_total_ns=450563
+PILOT_CONTROLLED axis=K cell=C2-K-0 pre_bytes=131072 horse=H2 best_total_ns=534264
+PILOT_CONTROLLED axis=K cell=C2-K-0 pre_bytes=131072 horse=H3 best_total_ns=408411
+PILOT_CONTROLLED axis=K cell=C2-K-0 pre_bytes=131072 horse=H4 best_total_ns=161743
+PILOT_CONTROLLED_16MIB horse=H0 mechanism=h0-full-rebuild pre_bytes=16777216 total_ns=115406930 wall_ns=344486239
+PILOT_CONTROLLED_16MIB horse=H1 mechanism=block-local-reparse-h1 pre_bytes=16777216 total_ns=100234855 wall_ns=379475281
+PILOT_CONTROLLED_16MIB horse=H2 mechanism=fragment-reuse-h2 pre_bytes=16777216 total_ns=51058558 wall_ns=281392213
+PILOT_CONTROLLED_16MIB horse=H3 mechanism=old-tree-subtree-reuse-h3 pre_bytes=16777216 total_ns=45388054 wall_ns=269634426
+PILOT_CONTROLLED_16MIB horse=H4 mechanism=restart-convergence-h4 pre_bytes=16777216 total_ns=28415447 wall_ns=298484087

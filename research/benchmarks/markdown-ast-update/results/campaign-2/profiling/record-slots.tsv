@@ -1,0 +1,5 @@
+# slot|surface|axis|cell|case_index|trace|step|reps
+P01|resident-update|||67|||30
+P02|resident-update|||194|||30
+P07|controlled|D|64KiB||||30
+P09|controlled|F|64||||30

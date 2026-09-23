@@ -1,0 +1,22 @@
+tag = "controlled_d_fence"
+surface = "controlled"
+evidence_classes = [
+    "CONTROLLED_TIMING",
+    "CONTROLLED_WORK",
+]
+lanes = ["timing"]
+case_cardinality = 7
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+axis_values = [
+    "64B",
+    "256B",
+    "1KiB",
+    "4KiB",
+    "16KiB",
+    "32KiB",
+    "64KiB",
+]
+raw_path = "results/campaign-2/controlled/D-fence/"
+note = ""

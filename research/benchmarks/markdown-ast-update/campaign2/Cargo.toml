@@ -1,0 +1,25 @@
+[package]
+name = "markit-mdbench-campaign2"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-instrumentation = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-runner = { workspace = true }
+markit-mdbench-campaign = { path = "../campaign" }
+markit-mdbench-corpusgen = { workspace = true }
+markit-mdbench-workload-freeze = { path = "../workload-freeze" }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-block-local = { workspace = true }
+markit-mdbench-fragment-reuse = { workspace = true }
+markit-mdbench-old-tree-subtree-reuse = { workspace = true }
+markit-mdbench-restart-convergence = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+schemars = { workspace = true }
+toml = { workspace = true }
+libc = "0.2"
