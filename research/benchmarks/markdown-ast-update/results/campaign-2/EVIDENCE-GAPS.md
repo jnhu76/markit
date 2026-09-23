@@ -201,9 +201,19 @@ PRIMARY_LIFECYCLE lane. `summary/attribution-lifecycle.csv` mechanically
 reduces the three session rows to 14 × 128 × 5 = 8,960 trace-step-horse
 rows.
 
-State-representation counts (task §29) are exported only at the END of a
-lifecycle chain, and only for the fields each horse actually exposes; a
-field a horse does not expose is the literal string `UNAVAILABLE`:
+State-representation counts (task §29) are exported in TWO places, and the
+coverage differs between them:
+
+```text
+lifecycle ATTRIBUTION lane   every step of every chain, every horse
+                             (14 x 5 x 128 x 3 = 26,880 exports)
+lifecycle TIMING lane        only the LAST step of each chain run, so the
+                             export describes the final sealed state
+                             (one export per trace x horse x rep run)
+```
+
+Fields a horse does not expose are the literal string `UNAVAILABLE` in
+both lanes; nothing is fabricated as a zero:
 
 ```text
 H0  retained_blocks, retained_source_bytes

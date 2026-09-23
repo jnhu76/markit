@@ -305,10 +305,18 @@ real lifecycle      only 7 G0 break transitions have exact pairs;
                     E1_LOCAL_TEXT, E2_PARAGRAPH_SPLIT_MERGE and
                     E5 LINK-DEST-BREAK have NO real lifecycle trace
 lifecycle chain     real chains are periodic repeat(break,restore)
-lifecycle counters  covered by the dedicated lifecycle attribution lane,
-                    but only at rep = 0 (counters are deterministic facts)
-state_repr          exported per horse for the fields that horse exposes;
-                    other fields are the literal string UNAVAILABLE
+lifecycle counters  covered by the dedicated lifecycle attribution lane at
+                    every step of every trace; the lane runs once per
+                    (trace, step, horse, session) rather than once per
+                    timing repetition, because the counters are
+                    deterministic mechanism facts and the TIMING
+                    variability lives in the separate PRIMARY_LIFECYCLE
+                    lane
+state_repr          exported at EVERY step in the lifecycle attribution
+                    lane (26,880 exports) and only at the LAST step of
+                    each chain in the lifecycle timing lane; per horse the
+                    exposed fields differ and the rest are the literal
+                    string UNAVAILABLE
 memory lane         process RSS only; not object size; no allocator data
 frequency           schedutil; recorded per session, not proven identical
 ```
