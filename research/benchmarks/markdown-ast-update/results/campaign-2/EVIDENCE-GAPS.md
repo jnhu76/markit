@@ -326,3 +326,38 @@ Root cause, for future campaigns: a receipt field must be derived from the
 artifact's provenance; never read the ambient environment at receipt-write
 time. A campaign binary rebuilt between two lanes is exactly the situation
 that makes the difference visible.
+
+## 14. Derived summary table defects (recorded, not hidden)
+
+Two defects exist in the committed `DERIVED_MECHANICAL` CSV tables. Both
+tables are mechanical reductions reproducible by `tools/summarize.py` from
+raw; neither defect touches any raw row, receipt, identity or file hash.
+
+```text
+1. axis_value  (summary/controlled-{N,B,D,F,K}-cell-horse.csv)
+   The `axis_value` column repeats the FIRST cell's value across the
+   entire axis (every C2-N row shows `512`, every C2-B row `128`,
+   every C2-D row `64`, every C2-F row `0`, every C2-K row `0`).
+   The authoritative axis value of a cell is its `cell_id` plus the
+   frozen cell geometry in `manifests/controlled-cells-v1.txt`.
+   Never cite the `axis_value` column. The timing columns
+   (`*_p50_ns`, `case_estimate_p50_ns`, ...) are computed from raw
+   directly and are unaffected.
+
+2. attribution numeric collapse (summary/attribution-*.csv)
+   Numeric work counters are written as the literal marker `KNOWN`
+   instead of the observed numbers. The authoritative values are the
+   raw attribution rows (`ATTRIBUTION-SCHEMA-v2` `Observed<u64>`
+   slots, where `Known(n)` is a number and `UNKNOWN` /
+   `NOT_APPLICABLE` are distinct literal strings). Never cite the
+   collapsed CSV counter columns as numeric evidence.
+```
+
+## 15. Profiling selection prose vs case identity
+
+The slot table in `profiling/PROFILING-SELECTION-v1.md` quotes case
+descriptions (case indexes, transition-family labels) as selection prose.
+The authoritative relation for every profiling artifact is the `case_id`
+recorded in the raw/header fields → the actual timing `case_id`, never the
+descriptive text copied into the selection table. Where prose and the
+recorded case id disagree, the recorded case id wins.

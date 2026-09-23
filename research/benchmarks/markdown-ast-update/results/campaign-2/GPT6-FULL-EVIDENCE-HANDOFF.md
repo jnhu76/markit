@@ -179,6 +179,10 @@ DESCRIPTIVE_MEMORY / ENVIRONMENT_TELEMETRY / DERIVED_MECHANICAL
 ## 6. Mechanical summary tables (DERIVED_MECHANICAL)
 
 Reproducible by `tools/summarize.py` from raw. No analysis, no ranking.
+Known defects in two derived fields — `axis_value` repetition in the
+controlled CSVs and attribution counters collapsed to the marker `KNOWN` —
+are recorded in `EVIDENCE-GAPS.md` §14; the raw rows and the cell manifest
+are authoritative for those fields.
 
 ```text
 summary/construction-case-horse.csv              110 rows
