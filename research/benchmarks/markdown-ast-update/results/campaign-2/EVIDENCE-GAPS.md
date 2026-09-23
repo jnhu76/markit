@@ -285,3 +285,34 @@ Campaign-1 raw and Campaign-1 identities were not read as authority and
 were not modified.
 PR #45 was not used as scientific authority.
 ```
+
+## 13. Receipt executable attribution — corrected
+
+The original receipts recorded `executable_sha256` from the campaign
+binary **present at closure time** rather than from the binary that
+produced each file, so all 274 asserted `1bd1c09e…` while the `run_id` in
+the raw rows proves 31 of the 34 observation files were produced by
+`c1c7756a…`.
+
+Corrected by `EXECUTABLE-ATTRIBUTION-CORRECTIVE-1`
+(`tools/receipts-rebuild.py`, per-file table in
+`manifests/executable-derivation-v1.json`), with two independent methods
+that must agree:
+
+```text
+M1  the execution-time lane log, which hashed the binary immediately
+    before the lane ran
+M2  recomputation of the frozen RunId derivation for each candidate
+    (build commit, executable) pair
+M1_M2_AGREEMENT = PASS for all 34 observation files
+```
+
+The superseded value is preserved in every receipt under
+`superseded_executable_sha256`, no raw row changed, and no raw file hash
+changed. The defect and its cause are recorded rather than reissued
+silently.
+
+Root cause, for future campaigns: a receipt field must be derived from the
+artifact's provenance; never read the ambient environment at receipt-write
+time. A campaign binary rebuilt between two lanes is exactly the situation
+that makes the difference visible.

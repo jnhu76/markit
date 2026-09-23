@@ -63,6 +63,12 @@ c1c7756a1d36316dff2fb278e9db7926ee20a39bceaa0e8248e2619af52f5822
     build commit f6262716daddf8b5151de0b2b0e2879d3e838b2b (CAMPAIGN-2-FREEZE)
 ```
 
+Every receipt carries the CORRECT per-file producer and the derivation
+method that established it (`EXECUTABLE-ATTRIBUTION-CORRECTIVE-1`); the
+superseded blanket value is preserved under
+`superseded_executable_sha256`, and per-file detail is in
+`manifests/executable-derivation-v1.json`.
+
 The change between the two is **purely additive campaign tooling**:
 `git diff` over `campaign2/src/bin/mdbench-campaign2.rs` is
 `160 insertions(+), 0 deletions(-)` — one new match arm and one new
