@@ -158,8 +158,8 @@ controlled = "identical to resident_update"
 session_count = 3
 warmup_iterations = 10
 measured_iterations = 30
-lifecycle_repetitions = 1
-controlled_repetitions = 1
+lifecycle_repetitions = 30
+controlled_repetitions = 30
 warmup_applies_to = [
     "construction",
     "controlled",
