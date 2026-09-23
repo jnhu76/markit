@@ -1,0 +1,220 @@
+study_id = "cf151a01b1a347210320d6d2cf920c3de2310612cd8f4aa2f5aadb01d4b19856"
+campaign_id = "MARKIT-31-FULL-EVIDENCE-CAMPAIGN-2"
+schema = "campaign2-spec-v1"
+authority_sha = "3762b7a42e1c284a4c2c2e0ebac8496e70c63431"
+horse_set = [
+    "H0",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+]
+horse_mechanism_ids = [
+    "h0-full-rebuild",
+    "block-local-reparse-h1",
+    "fragment-reuse-h2",
+    "old-tree-subtree-reuse-h3",
+    "restart-convergence-h4",
+]
+interpretation_rules = [
+    "blocks_reparsed counts fresh block-structure / skeleton units produced by reparse. It is NOT a count of top-level blocks and NOT a byte count.",
+    "For H3, unique source inspection = parser work + reuse-vouch / consultation margin reads. Full source coverage therefore does NOT automatically mean full reparse.",
+    "Interpret convergence_distance together with reuse: when nodes_reused > 0 it is the forward distance to accepted suffix reuse; when nodes_reused == 0 it is the forward parse distance to EOF. Never interpret the gauge alone.",
+    "If the frozen implementation reports Unknown on the H1 full_parse fallback slot because of the known applicability mismatch, treat it as not-applicable-by-phase. Do NOT convert it into update fallback evidence.",
+]
+envelope_schema_id = "campaign2-observation-v1"
+envelope_schema_sha256 = "e457f7ddb64aebeee882af8987f48da2870442327c064d51325eb46cbb17e9e8"
+metric_qualification = [
+    [
+    "LATENCY",
+    "QUALIFIED",
+],
+    [
+    "WORK_COUNTERS",
+    "QUALIFIED",
+],
+    [
+    "PARSE_AMPLIFICATION",
+    "QUALIFIED",
+],
+    [
+    "CPU_TIME",
+    "UNAVAILABLE",
+],
+    [
+    "ALLOC_COUNT",
+    "UNAVAILABLE",
+],
+    [
+    "ALLOC_BYTES",
+    "UNAVAILABLE",
+],
+    [
+    "PEAK_MEMORY",
+    "UNAVAILABLE",
+],
+    [
+    "RETAINED_MEMORY",
+    "UNAVAILABLE",
+],
+]
+order_algorithms = [
+    "splitmix64-v1+fisher-yates-lemire-rejection-v2",
+    "seeded-base-permutation-rotate-v1",
+]
+base_authority_sha = "3762b7a42e1c284a4c2c2e0ebac8496e70c63431"
+
+[real_workload_identity]
+source = "#35 CORRECTIVE-C frozen workload (workloads/); never re-selected"
+full_read_manifest = "workloads/payloads/full-read-manifest-v1.jsonl"
+full_read_manifest_sha256 = "dbcaf40cc83015faeb4590f35e4f773013548224611f4fadf7aaec208c802443"
+edit_write_manifest = "workloads/payloads/edit-write-manifest-v1.jsonl"
+edit_write_manifest_sha256 = "1480c1da1bb2b284f2302f054e0c9b28f58b8980c84b8331ca9b5f44d3a34146"
+trace_manifest = "workloads/payloads/trace-manifest-v1.jsonl"
+trace_manifest_sha256 = "ffcc482f36adcc8372e8ab10501f0c7f0afa0cd057d63668c61bb5a49bf71e1d"
+freeze_receipt = "workloads/payloads/freeze-receipt-v1.json"
+freeze_receipt_sha256 = "35a6f99a3842c1a5cf9fbadf7a7aefc80db4606adcbe6331ecd8a91f62c62cf7"
+full_read_qualified_cases = 22
+edit_write_qualified_cases = 362
+trace_records = 329
+break_restore_pairs = 329
+projects = 0
+edit_families = 7
+reselection_allowed = false
+
+[controlled_generator_identity]
+generator_id = "CAMPAIGN-2-CONTROLLED-GENERATOR"
+generator_version = "campaign-2-controlled-v1"
+axes = [
+    "N",
+    "B",
+    "D",
+    "F",
+    "K",
+]
+n_scale_points = [
+    "512B",
+    "1KiB",
+    "2KiB",
+    "4KiB",
+    "8KiB",
+    "16KiB",
+    "32KiB",
+    "64KiB",
+    "128KiB",
+    "1MiB",
+    "16MiB",
+]
+b_scale_points = [
+    "128B",
+    "512B",
+    "1KiB",
+    "2KiB",
+    "4KiB",
+    "8KiB",
+    "16KiB",
+    "32KiB",
+    "64KiB",
+]
+d_scale_points = [
+    "64B",
+    "256B",
+    "1KiB",
+    "4KiB",
+    "16KiB",
+    "32KiB",
+    "64KiB",
+]
+f_scale_points = [
+    "0",
+    "1",
+    "2",
+    "4",
+    "8",
+    "16",
+    "32",
+    "64",
+]
+k_scale_points = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "6",
+    "8",
+    "12",
+]
+fixed_n_bytes = 131072
+note = "43 controlled cells; documents are BENCH-GRAMMAR-v1 valid synthetic documents; edits are LOCAL_TEXT insertions or the axis's single designated structural edit; see campaign2/src/generators.rs for the frozen geometry and the recorded N-invariance entanglements"
+
+[timer_boundaries]
+construction = "source resident -> start -> clean parse + native state construction + seal -> usable -> stop; filesystem IO, oracle validation, normalize, checksum and report serialization excluded"
+resident_update = "fresh pre-edit state built OUTSIDE the timer; start -> prepare_update -> update -> seal -> stop; oracle outside; T_total = T_prepare + T_native"
+lifecycle = "state built once per (trace, horse, rep), untimed; then per step the resident_update boundaries with NO state reconstruction between edits"
+controlled = "identical to resident_update"
+
+[sampling]
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+lifecycle_repetitions = 1
+controlled_repetitions = 1
+warmup_applies_to = [
+    "construction",
+    "controlled",
+]
+note = "lifecycle records EVERY edit and additionally flags the K checkpoints; lifecycle/controlled repetition counts are frozen before the first formal row of their sub-campaign and never changed afterwards"
+
+[cpu_binding]
+selected_cpu = 1
+selected_core_id = 1
+selected_thread_siblings = "1,11"
+selected_numa_node = 0
+policy = "one physical CPU for every session; affinity applied fail-closed; never changed between horses"
+
+[statistics]
+quantile = "nearest-rank"
+p50 = "rank 15 of 30 measured"
+p95 = "rank 29 of 30 measured"
+pooling = "sessions are NEVER pooled into n=90"
+case_estimate = "median of the 3 session p50s"
+h0_relative = "per-session p50(H0)/p50(Hx), then geometric mean across sessions"
+lifecycle = "per-step p50 plus a cumulative p50-derived trajectory, labelled derived and never presented as a directly measured wall-clock trace"
+instability_flag = "max(session p50)/min(session p50) > 1.5"
+instability_action = "diagnostic flag only; never delete, downweight or rerun"
+
+[correctness]
+oracle = "normalize(Hx result) == normalize(H0 clean full parse(post-edit source))"
+reference = "H0 clean full parse, NORMALIZED-RESULT-v1 validated"
+outside_timer = true
+lifecycle_verification = "after EVERY edit step, against the frozen trace checksum"
+failure_action = "stop the affected formal sub-campaign, preserve the failing evidence, do not retry until classified"
+
+[failure]
+on_lane_failure = "preserve partial raw, mark the lane invalid, stop the affected sub-campaign"
+on_code_change = "new executable SHA, new RunId, restart the affected sub-campaign"
+forbidden = [
+    "delete",
+    "impute",
+    "retry invisibly",
+]
+performance_driven_adaptation = "forbidden once formal rows start"
+
+[profiling]
+primary_timing_clean = true
+forbidden_during_primary = [
+    "perf record",
+    "bpftrace",
+    "strace",
+    "heap profiler",
+    "allocator interposer",
+    "debug build",
+]
+matched_rule = "same exact case, source, edit, replay structure, profiling binary and CPU across H0-H4"
+perf_stat_repetitions = 10
+perf_stat_rotation = "horse order rotated per repetition"
+perf_record_selection = "PROFILING-SELECTION-v1.md, POST_HOC / NON_PRIMARY"
+ebpf_role = "capability-gated; supplemental only; never a substitute for PMU events"
+allocator_label = "PROFILE_ONLY_ALLOCATOR_EVIDENCE"
+region_isolation = "dedicated replay command; a whole-process value is only reported together with its validating setup-only run"

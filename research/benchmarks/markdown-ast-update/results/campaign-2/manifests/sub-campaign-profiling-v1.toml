@@ -1,0 +1,11 @@
+tag = "profiling"
+surface = "profiling"
+evidence_classes = ["PROFILE_PERF"]
+lanes = ["profile"]
+case_cardinality = 0
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+axis_values = []
+raw_path = "results/campaign-2/profiling/"
+note = ""

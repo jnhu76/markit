@@ -1,0 +1,26 @@
+tag = "controlled_n"
+surface = "controlled"
+evidence_classes = [
+    "CONTROLLED_TIMING",
+    "CONTROLLED_WORK",
+]
+lanes = ["timing"]
+case_cardinality = 11
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+axis_values = [
+    "512B",
+    "1KiB",
+    "2KiB",
+    "4KiB",
+    "8KiB",
+    "16KiB",
+    "32KiB",
+    "64KiB",
+    "128KiB",
+    "1MiB",
+    "16MiB",
+]
+raw_path = "results/campaign-2/controlled/N/"
+note = ""

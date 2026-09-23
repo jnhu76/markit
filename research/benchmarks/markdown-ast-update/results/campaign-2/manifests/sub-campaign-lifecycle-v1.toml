@@ -1,0 +1,11 @@
+tag = "lifecycle"
+surface = "lifecycle"
+evidence_classes = ["PRIMARY_LIFECYCLE"]
+lanes = ["lifecycle"]
+case_cardinality = 14
+session_count = 3
+warmup_iterations = 10
+measured_iterations = 30
+axis_values = []
+raw_path = "results/campaign-2/lifecycle/"
+note = ""
