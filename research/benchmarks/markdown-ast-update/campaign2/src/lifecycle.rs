@@ -715,6 +715,8 @@ pub struct RealPairChain {
     pub base_source: String,
     pub base_sha256: String,
     pub broken_source: String,
+    /// SHA256 the frozen manifest records for the break step's post source.
+    pub broken_source_sha256: String,
     pub break_edit: CanonicalEdit,
     pub restore_edit: CanonicalEdit,
     pub break_transition: String,
@@ -767,14 +769,24 @@ impl TracePlan for RealPairChain {
     }
 }
 
-/// Deterministic preregistered selection of real pair traces: at most
-/// `per_family` traces per frozen `edit_family`, in ascending
-/// `(edit_family, trace_id)` order. Frozen BEFORE any timing and never
-/// re-selected from results.
+/// Deterministic preregistered selection of real pair traces (task §16).
+///
+/// Rule (frozen before any timing, never re-selected from results):
+///
+/// - a candidate is a frozen #35 trace whose two steps form an exact
+///   `base -> broken -> base` pair (`post(step 0) == pre(step 1)` and
+///   `pre(step 0) == post(step 1)`);
+/// - candidates are grouped by `(edit_family, break_transition)`, so a
+///   family carrying several frozen transitions contributes one trace per
+///   TRANSITION rather than several for whichever transition sorts first;
+/// - within a group the lexicographically smallest `trace_id` wins;
+/// - at most `per_transition` traces per group, and only traces whose base
+///   source is at most `max_base_bytes`.
 pub fn select_real_pair_traces(
     workload: &markit_mdbench_campaign::workload::CampaignWorkload,
-    per_family: usize,
+    per_transition: usize,
     steps: u32,
+    max_base_bytes: usize,
 ) -> Vec<RealPairChain> {
     use std::collections::BTreeMap;
     let mut by_trace: BTreeMap<&str, Vec<&markit_mdbench_campaign::workload::EditWriteCase>> =
@@ -784,36 +796,61 @@ pub fn select_real_pair_traces(
     }
     let mut counts: BTreeMap<String, usize> = BTreeMap::new();
     let mut out = Vec::new();
-    for (trace_id, mut group) in by_trace {
-        group.sort_by_key(|case| case.payload_id.clone());
+    for (trace_id, group) in by_trace {
         if group.len() != 2 {
             continue;
         }
-        let family = group[0].edit_family.clone();
-        let taken = counts.entry(family.clone()).or_insert(0);
-        if *taken >= per_family {
+        // The frozen #35 naming rule: a trace is named after its BREAK
+        // transition, so the break step is the one whose transition is the
+        // trace id's prefix. Deriving the phase from the payload hash order
+        // would be arbitrary, and both assignments satisfy the
+        // pre/post symmetry checks below.
+        let prefix = trace_id.split('|').next().unwrap_or_default();
+        let breaking: Vec<_> = group
+            .iter()
+            .filter(|case| case.expected_transition == prefix)
+            .collect();
+        if breaking.len() != 1 {
             continue;
         }
-        // The frozen pair must be exactly break -> restore over one base.
-        let (first, second) = (group[0], group[1]);
-        if first.pre_source_text != second.post_source_text {
+        let break_case = breaking[0];
+        let restore_case = group
+            .iter()
+            .find(|case| case.payload_id != break_case.payload_id);
+        let Some(restore_case) = restore_case else {
+            continue;
+        };
+        // The frozen pair must be exactly base -> broken -> base.
+        if break_case.pre_source_text != restore_case.post_source_text {
             continue;
         }
-        if first.post_source_text != second.pre_source_text {
+        if break_case.post_source_text != restore_case.pre_source_text {
+            continue;
+        }
+        if break_case.pre_source_text.len() > max_base_bytes {
+            continue;
+        }
+        let key = format!("{}|{}", break_case.edit_family, break_case.expected_transition);
+        let taken = counts.entry(key).or_insert(0);
+        if *taken >= per_transition {
             continue;
         }
         *taken += 1;
         out.push(RealPairChain {
             workload_trace_id: trace_id.to_string(),
-            base_source: first.pre_source_text.clone(),
-            base_sha256: crate::sha256_hex(first.pre_source_text.as_bytes()),
-            broken_source: first.post_source_text.clone(),
-            break_edit: first.edit.clone(),
-            restore_edit: second.edit.clone(),
-            break_transition: first.expected_transition.clone(),
-            restore_transition: second.expected_transition.clone(),
+            base_source: break_case.pre_source_text.clone(),
+            base_sha256: crate::sha256_hex(break_case.pre_source_text.as_bytes()),
+            broken_source: break_case.post_source_text.clone(),
+            broken_source_sha256: crate::sha256_hex(
+                break_case.post_source_text.as_bytes(),
+            ),
+            break_edit: break_case.edit.clone(),
+            restore_edit: restore_case.edit.clone(),
+            break_transition: break_case.expected_transition.clone(),
+            restore_transition: restore_case.expected_transition.clone(),
             steps,
         });
     }
     out
+
 }

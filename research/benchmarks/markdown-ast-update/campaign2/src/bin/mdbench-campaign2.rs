@@ -650,17 +650,21 @@ fn cmd_generators_verify(root: &Path, _flags: &[String]) -> Result<(), String> {
 // Lifecycle freeze
 // ---------------------------------------------------------------------------
 
-/// Preregistered real-trace selection (task §16): at most
-/// `REAL_TRACE_PER_FAMILY` traces per frozen edit family — the
-/// lexicographically first `trace_id` of each family — restricted to
-/// base sources of at most `MAX_REAL_TRACE_BYTES`.
-pub const REAL_TRACE_PER_FAMILY: usize = 2;
+/// Preregistered real-trace selection (task §16), frozen BEFORE any
+/// timing: at most `REAL_TRACE_PER_TRANSITION` frozen BREAK/RESTORE pair
+/// per `(edit_family, break_transition)` — the lexicographically first
+/// `trace_id` of each group — restricted to base sources of at most
+/// `MAX_REAL_TRACE_BYTES`.
+pub const REAL_TRACE_PER_TRANSITION: usize = 1;
 pub const MAX_REAL_TRACE_BYTES: usize = 131_072;
 
 fn real_pair_traces(workload: &CampaignWorkload) -> Vec<RealPairChain> {
-    let mut chains = lifecycle::select_real_pair_traces(workload, REAL_TRACE_PER_FAMILY, lifecycle::TRACE_STEPS);
-    chains.retain(|chain| chain.base_source.len() <= MAX_REAL_TRACE_BYTES);
-    chains
+    lifecycle::select_real_pair_traces(
+        workload,
+        REAL_TRACE_PER_TRANSITION,
+        lifecycle::TRACE_STEPS,
+        MAX_REAL_TRACE_BYTES,
+    )
 }
 
 fn materialize_real(chain: &RealPairChain) -> Result<LifecycleTraceV1, String> {
@@ -675,6 +679,21 @@ fn materialize_real(chain: &RealPairChain) -> Result<LifecycleTraceV1, String> {
             .map_err(|e| format!("{} step {step}: {e:?}", chain.trace_id()))?
             .as_str()
             .to_string();
+        // Cross-check the replayed post source against the FROZEN #35
+        // manifest digest for that step: a trace whose phase assignment
+        // drifted can never be frozen silently.
+        let frozen_post = if step % 2 == 0 {
+            &chain.broken_source_sha256
+        } else {
+            &chain.base_sha256
+        };
+        let replayed = sha256_hex(post.as_bytes());
+        if &replayed != frozen_post {
+            return Err(format!(
+                "{} step {step}: replayed post digest {replayed} != frozen manifest {frozen_post}",
+                chain.trace_id()
+            ));
+        }
         let expected = lifecycle::expected_checksum(&post)?;
         steps.push(TraceStepV1 {
             step,

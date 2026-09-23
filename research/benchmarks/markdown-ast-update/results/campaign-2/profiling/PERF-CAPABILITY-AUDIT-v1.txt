@@ -1,0 +1,52 @@
+# CAMPAIGN-2 PERF / eBPF CAPABILITY AUDIT (task §33, §39)
+# recorded: 2026-09-23T09:45:17Z  host: E5
+
+## perf
+perf version 7.2.5-200.fc44.x86_64
+kernel.perf_event_paranoid: 2
+CAP_PERFMON in effective set: CapEff:	0000000000000000
+
+## available hardware events (user-space scope, ':u')
+cycles                          230,298      cycles:u                                                              
+instructions                    146,173      instructions:u                                                        
+branches                         30,050      branches:u                                                            
+branch-misses                     2,497      branch-misses:u                                                       
+cache-references                  3,952      cache-references:u                                                    
+cache-misses                        188      cache-misses:u                                                        
+
+## available software events
+task-clock                         0.78 msec task-clock:u                                                          
+page-faults          context-switches     cpu-migrations       
+## raw perf stat -e task-clock,page-faults,context-switches,cpu-migrations true
+    
+     Performance counter stats for 'true':
+    
+                  0.59 msec task-clock:u                                                          
+                    52      page-faults:u                                                         
+                     0      context-switches:u                                                    
+                     0      cpu-migrations:u                                                      
+    
+           0.000735197 seconds time elapsed
+    
+           0.000823000 seconds user
+           0.000000000 seconds sys
+    
+    
+
+## perf record sampling
+perf record -F 999 --call-graph dwarf <bin> -> [ perf record: Captured and wrote 0.020 MB /tmp/audit.data (2 samples) ]
+### PERF_RECORD = AVAILABLE (user-space samples only; kernel samples denied by paranoid=2)
+
+## eBPF
+kernel.unprivileged_bpf_disabled: 2
+bpftrace: NOT INSTALLED
+bpftool : NOT INSTALLED
+ulimit -l (memlock KiB): 8192
+### EBPF_UNAVAILABLE reason=unprivileged_bpf_disabled=2_and_no_bpftrace_or_bpftool_binary
+### No kernel setting was modified. eBPF availability is NOT a campaign blocker (task §39).
+
+## allocator profiling
+allocator interposer (LD_PRELOAD libc malloc wrapper): available if a wrapper is built;
+glibc malloc hooks are removed in Fedora 44 glibc; use 'perf record -e cpu-clock --call-graph dwarf'
+over an unmodified release binary plus /proc VmHWM for the descriptive memory lane.
+### ALLOCATOR = profile-only evidence; never a primary qualified metric (task §41).
