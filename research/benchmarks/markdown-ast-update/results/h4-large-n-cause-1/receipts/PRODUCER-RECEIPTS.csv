@@ -32,3 +32,4 @@ ebpf/raw/* (bench runs),eBPF,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d799318
 "u-plain*.csv, u-phase*.csv, work-counters*.csv, ablations*.csv, allocator*.csv",derived,analyze.py (deterministic over raw),analyze.py (deterministic over raw),
 derived-*.csv,derived,derive-tables.py (deterministic over analyzer CSVs),derive-tables.py (deterministic over analyzer CSVs),
 H4-LARGE-N-CAUSE-REPORT.md,derived,author of record (this campaign),author of record (this campaign),
+perf/stat-summary.csv,derived,perf/derive-stat-summary.py (deterministic over raw perf/stat/*.json; regression-tested by perf/test-derive-stat-summary.py),perf/derive-stat-summary.py,

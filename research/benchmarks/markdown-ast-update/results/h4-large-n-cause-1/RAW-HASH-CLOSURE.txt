@@ -45,8 +45,8 @@ ab8ff5ebaeec614f471da9018954840a1ee06fb32b9384b102d5f0005cedc3ef  ./ebpf/scripts
 ca8924ccb11395ce04152c564233583b217b31e0e0470b7de77bf2181b815d37  ./environment.txt
 b5d048755cc77e71ce05d2efb10c3570294affefa205b1c241378ea99f73edd9  ./equivalence.jsonl
 2d8f49795f87b607b5e8a90ba4281d5283bf340bb9681836beb98a46388fe2df  ./executable-shas.txt
-60bdcb4b88c532cf91244bfd69e43c60b5b0fe89c0566fe08ab60ae3abd81e73  ./H4-LARGE-N-CAUSE-1-MANIFEST.md
-8297a049c1153465a0e2a05f2fabd0cf28d44729e1e8003f78ff6dd01c2824a4  ./H4-LARGE-N-CAUSE-REPORT.md
+0e92f56a28d972d9175fa2aecc99090fbffccaf5174fe47fb03e9bf0d3a31523  ./H4-LARGE-N-CAUSE-1-MANIFEST.md
+da2496ccf078baf2d71ff8e2aa81fbaadb6cf867e59eb96399b86b6410e182c0  ./H4-LARGE-N-CAUSE-REPORT.md
 46378a0ea25781c707ee6148316310ef307a2ed5e39adf6d80f5aec0a9aa7ccf  ./logs/a-u-plain-session-0.log
 2c1a62aaae23d866d4d450b6bb6ee9faa72bd1b4708cbed18c8a44625dd6ff7b  ./logs/a-u-plain-session-1.log
 26609dcceb8eb148dfe98e6e44a35367c5553099134928e03b38df1829cb1005  ./logs/a-u-plain-session-2.log
@@ -62,6 +62,7 @@ fa7f3036c1a4bd0592bf3e77fb0748e6090bb40662692a5be1b573e707d0fca3  ./logs/d-alloc
 99b2d133d8c4d30a09ea5c9e34fdcc3c2e60e49923913ccb6dbc06f3e45fbbfa  ./logs/e-ablations-session-2.log
 cc23e2685b6449e206ff6c3fe5d01e47cc43bc2e636a07d826bd56eefb32d74a  ./machine-pinning.txt
 5205241402465e9faa2b4f2361df972a4c7f83e070ccac22b4ad5da8826d3d9f  ./perf/capability.txt
+b33a6752be9d9ec10a4cb1731bd08b6215bae4c0cf62e1bb65488d1aac280d92  ./perf/derive-stat-summary.py
 395ef7828e32e0d0a9631d2c28e3aee606b4c8f17ea5dfb4e94704d90dcc6dc9  ./perf/record/16MiB.data
 e24814495adb34783b72a5a2b7b638f9c9519750ba9de5da0666c2628a0d54e8  ./perf/record/16MiB.jsonl
 1083b4216ffb91a83f28e30671bc76918e12da6263613263c8437f5c07b0b301  ./perf/record/16MiB.record.txt
@@ -202,7 +203,8 @@ d41dc6090add4bcb19c7fa36297a29c85d1343ec2a0ff240763d5b47217e42bc  ./perf/stat/ro
 345f67518772061aca18d28cb74ef944a3a7a0d21396a838b8bc16b2051aa568  ./perf/stat/root-groupS-8MiB.json
 d39e936af64ad430c8a182675d54c95556b8b2ba5c2ced4c33b1621cadf92ac6  ./perf/stat/root-groupS-8MiB.jsonl
 d41dc6090add4bcb19c7fa36297a29c85d1343ec2a0ff240763d5b47217e42bc  ./perf/stat/root-groupS-8MiB.txt
-acb2d09b64556c073eb1a4c90b41c709a89784c40956b1cf734c7b9a6e3c490a  ./perf/stat-summary.csv
+c1fbce843f04af5d380590ff1b873ee165045f6de449bc019756aafc3d17b275  ./perf/stat-summary.csv
+65952e0fdd4bbc3effd08a9a84cf9bcbcb6ab5d771151120d285ce17dc7a1b91  ./perf/test-derive-stat-summary.py
 6f5290fd115275f9eec3ae04c29eec9d43fb5a36a4ff539df594350e66fa0f3a  ./perf/stat/user-groupA-128KiB.json
 15061d1e78c82e8af48ab11b19e9dd5189b591f4d4c4dda2b590a5a1fcaf6af6  ./perf/stat/user-groupA-128KiB.jsonl
 4c895fbe29ad09bcbb5511c5615c0076f45c8f088e1f130b6c1fe752c299aa9b  ./perf/stat/user-groupA-128KiB.txt

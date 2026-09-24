@@ -19,6 +19,7 @@ Campaign-2 raw evidence: NOT modified
 | Diagnostic implementation commit | `f52fe5a` — *h4diag: diagnostic instrumentation for H4 large-N cost attribution (#50)* |
 | Implementation corrections commit | `6b2c2a4` — *h4diag: fix window ordering, counter attribution and allocator tagging for the formal collection* |
 | Results commit | `45ad068` — *results: H4-LARGE-N-CAUSE-1 evidence, analysis and report (issue #50)* |
+| Corrective commit | *this commit* — derived PMU root summary fixed + microarchitectural attribution narrowed (§12); raw evidence unchanged, no re-collection |
 | HEAD SHA at collection | binaries frozen from the `6b2c2a4` tree; per-run receipts in `raw/*.jsonl` and `logs/*.log` |
 
 The diagnostic implementation is committed **separately** from the collected
@@ -198,3 +199,44 @@ PERF_RECORD  COMPLETE   1 MiB (300 windows) + 16 MiB (20 windows), DWARF call gr
 EBPF         COMPLETE   EBPF_ATTEMPT = AVAILABLE; EBPF_PERTURBED = NO (ratio 1.0040)
 MICROKERNELS NOT_NEEDED (selection-notes/07)
 ```
+
+## 12. Post-collection corrective (this commit)
+
+Two documentation-layer defects were found after the results commit; both
+are fixed here WITHOUT touching any raw evidence and WITHOUT re-collecting
+anything.
+
+1. **Root PMU derived summary was all zeros.** The `perf/stat-summary.csv`
+   shipped in `45ad068` was produced by an inline generator that matched
+   perf event names only under their user-mode names (`cycles:u`), so the
+   root files' plain names (`cycles`) silently fell through to a 0.0
+   default. The committed raw root PMU files were always valid (e.g.
+   root 16 MiB groupA: cycles 1 365 569 519, instructions 529 446 989,
+   pcnt-running 100.00%); only the derived summary was wrong. Fix: the
+   derivation is now a committed, deterministic script
+   (`perf/derive-stat-summary.py`) that normalizes event names by
+   stripping perf modifiers, refuses missing events, and refuses to
+   derive a zero from non-zero raw counters; `perf/stat-summary.csv` is
+   regenerated from the unchanged raw files. The user rows reproduce
+   byte-identically; the root rows now derive (16 MiB: 91 037 968
+   cycles/update, CPI 2.579, LLC-miss/block 9.44 — corroborating the
+   user rows, +2.4% cycles from kernel-side context switches/faults).
+   Regression test: `perf/test-derive-stat-summary.py` (7 tests,
+   `python3 perf/test-derive-stat-summary.py`).
+   The report's former "context switches ≈ 64/update-window" remark was
+   likewise unsupported by the derived data and is corrected to the raw
+   values (user counters 0; root 15-37 per 15-update window).
+
+2. **Microarchitectural attribution narrowed.** The report's §9 claimed
+   the 13.9 ms linear-extrapolation gap and the 14.3 ms excess-cycle
+   model were "two independent estimates", closing the nonlinearity to a
+   ≤1.6% residual. Both quantities measure the same excess relative to
+   small-N behaviour (wall-clock vs cycles); neither partitions the
+   excess cycles into LLC-latency / MLP / prefetch / downstream / TLB /
+   allocator stall components. The report now states:
+   ALGORITHMIC work linear (unchanged); cache/memory-hierarchy
+   amplification STRONGLY SUPPORTED (unchanged in strength, now worded
+   as association with the regime transition rather than arithmetic
+   closure); PRECISE_STALL_DECOMPOSITION = UNRESOLVED; no quantitative
+   stall-attribution residual claimed. Representation-level
+   classification and all V1 mandates are unchanged.

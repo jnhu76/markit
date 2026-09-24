@@ -3,7 +3,18 @@
 ```text
 result class:      POST_HOC_EXPLANATORY / H4_ONLY / RESIDENT_SINGLE_RESET
 authority base:    master @ 334eea6201fc0258e35a7c5b21feb722641ddcbd
-HEAD at analysis:  6b2c2a4 (branch research/50-h4-large-n-cause-1)
+diagnostic implementation / analysis executable authority:
+                   6b2c2a4 (branch research/50-h4-large-n-cause-1; the
+                   producing binaries are frozen under bin/ with SHA256s
+                   in receipts/FROZEN-EXECUTABLES.txt and in every raw
+                   receipt row)
+results commit:    45ad068 (raw evidence, first report, receipts)
+corrective commit: THIS commit — derived PMU root summary fixed and the
+                   microarchitectural attribution narrowed; raw evidence
+                   untouched, nothing re-collected
+current PR head:   Draft PR #51, branch research/50-h4-large-n-cause-1
+                   (moves with documentation commits; it is NOT the
+                   provenance of any measurement)
 collection:        attempt 5 (attempts 1-4 archived under attempt-*-superseded/,
                    each with the defect that forced the re-run)
 H4_LARGE_N_CAUSE_RESULT = PASS
@@ -38,10 +49,14 @@ re-compared against the retained table; the whole old state is
 retired. Those five O(M) streams explain ~96% of U at 16 MiB. The
 executed instruction count stays linear (constant ~260–275
 instructions per block at every N); the super-linear latency growth
-(×36 for ×16 over 1→16 MiB) is a **cache-capacity effect**: the
-~100–150 MB resident representation stops fitting in the LLC, per-block
-LLC misses rise from ≈0 to 9.4, and cycles/instruction double from
-1.10 to 2.57.
+(×36 for ×16 over 1→16 MiB) is strongly associated with a
+**cache-capacity / memory-hierarchy amplification**: at the same
+2–4 MiB regime transition where the ~100–150 MB resident representation
+stops fitting in the LLC, per-block LLC misses rise from ≈0 to 9.4 and
+cycles/instruction rise from 1.10 to 2.57, while the competing
+scheduler/fault/kernel suspects are excluded (§5). What these counters
+do NOT resolve is the precise stall-level partition of the excess
+cycles (§9); that is recorded as microarchitecturally unresolved in §7.
 
 ## 2. Workload and invariants (frozen)
 
@@ -175,9 +190,24 @@ like noise.
 window opened/closed by `--delay=-1 --control=fifo` around the resident
 update only. **Every group in every invocation reported
 running/enabled = 100.00%** (≥ 0.99 required): no multiplexing, no
-`PMU_GROUP_UNRELIABLE` (`perf/stat-reliability.txt`,
-`perf/stat-summary.csv`). An earlier all-LLC+TLB single group WAS
+`PMU_GROUP_UNRELIABLE` (`perf/stat-reliability.txt`). The derived
+summary `perf/stat-summary.csv` is produced deterministically from the
+raw `perf/stat/*.json` by `perf/derive-stat-summary.py`, regression-
+tested by `perf/test-derive-stat-summary.py` (raw root counters
+non-zero ⇒ derived root summary non-zero; known raw→summary numeric
+case). CORRECTIVE: the summary first shipped in 45ad068 carried all-zero
+root rows — its inline generator matched events only under their
+user-mode perf names (`cycles:u`), silently defaulting the root files'
+plain names (`cycles`) to 0. The raw root files were always valid; only
+the derived summary was wrong, and it has been regenerated from the
+unchanged raw evidence. An earlier all-LLC+TLB single group WAS
 multiplexed (49–75%) and was split into C1/C2 as the record shows.
+
+The table quotes the user-privilege rows. The root (kernel-inclusive)
+rows corroborate them at every cell — at 16 MiB: 91.0 M vs 88.9 M
+cycles/update (+2.4%, the kernel-side context-switch/fault cost), CPI
+2.579 vs 2.567, LLC-miss/block 9.44 vs 9.38 — with the regime transition
+at exactly the same cells.
 
 | N | cycles/upd | instr/upd | cyc/blk | CPI | LLC-miss/blk | dTLB-miss/blk |
 |---|---|---|---|---|---|---|
@@ -191,7 +221,8 @@ multiplexed (49–75%) and was split into C1/C2 as the record shows.
 Instructions per update grow ×16.1 for ×16 M (linear; per-block
 constant). Cycles per update grow ×36.9. LLC-load-misses per update
 grow ×22 789 (54 → 1.23 M). Page faults grow ×16 (7 → 119, all minor);
-context switches ≈ 64/update-window, migrations 0. The knee is at the
+context switches: 0 in user-mode counters, 15–37 per 15-update window
+in root mode (≈1–2.5 per update); migrations 0. The knee is at the
 2–4 MiB cells, exactly where the ~1 KB/block resident representation
 exceeds L2/LLC.
 
@@ -259,9 +290,19 @@ NEGLIGIBLE:
 - **page faults / scheduler / address-space churn** (eBPF lane).
 - **closure residual** (0.01%).
 
-UNRESOLVED: none. Every phase ≥ 2% has counter evidence + phase
-evidence, and P4/P7 additionally have targeted ablations; the
-phase closure residual is 0.01%.
+REPRESENTATION_CAUSAL_UNRESOLVED: **none.** Every phase ≥ 2% has
+counter evidence + phase evidence, and P4/P7 additionally have targeted
+ablations; the phase closure residual is 0.01%.
+
+MICROARCHITECTURAL_UNRESOLVED: **the precise decomposition of the
+excess CPI / memory-stall cycles.** The collected PMU groups establish
+*that* the working set leaving the cache coincides with the CPI rise
+(§4, §9), but they do not independently partition the excess cycles
+into LLC-latency, memory-level-parallelism, prefetch,
+downstream-memory, TLB, allocator or other backend-stall components.
+That partition is UNRESOLVED; it was not needed for the
+representation-level classification above, which rests on the phase,
+counter and ablation evidence only.
 
 ## 8. Fundamental vs accidental (issue §20)
 
@@ -292,16 +333,46 @@ M grows ×16; U grows ×36. Decomposition of the increment (medians):
    because the resident representation (~M × ~1 KB incl. payload,
    slots, checkpoints, skeletons) leaves the LLC: LLC-misses/block
    0.007 → 9.38, CPI 1.12 → 2.57.
-3. **Arithmetic closure.** Linear-fit extrapolation predicts 11.1 ms
-   at 16 MiB; measured 25.0 ms; gap 13.9 ms. Independent PMU stall
-   model: extra cycles = 88.9 M − 34.6 M × 1.10 = 50.8 M cycles
-   ≈ 14.3 ms at the measured 3.56 GHz. The two independent estimates
-   agree within 3%.
+3. **Excess cycles account for the gap — in aggregate only.** Linear-fit
+   extrapolation predicts 11.1 ms at 16 MiB; measured 25.0 ms; gap
+   13.9 ms. The total-excess-cycle model — actual cycles minus
+   instructions × baseline CPI (88.9 M − 34.6 M × 1.10 ≈ 50.8 M cycles
+   ≈ 14.3 ms at the measured 3.56 GHz) — accounts for the same gap
+   within 3%. This is NOT a quantitative closure of the cache cause:
+   both quantities measure the same excess relative to small-N
+   behaviour (one in wall-clock, one in cycles). The agreement
+   establishes that the added latency is delivered as added cycles per
+   unit of work — a memory-hierarchy slowdown, not extra executed work
+   and not a timing artifact — and the coincident sharp rise of LLC
+   misses per block at the same regime transition (§4) strongly
+   supports the cache/memory hierarchy as its source. The stall-level
+   composition of those 50.8 M cycles is not partitioned by the
+   collected counters.
 
-`UNEXPLAINED_NONLINEAR_RESIDUAL ≤ ~0.4 ms (≈1.6% of U at 16 MiB)` —
-bounded by the CPI-model rounding and the phase closure residual; the
-nonlinearity is a cache-capacity effect on a linear amount of
-representation work, not an algorithmic surprise and not parser work.
+```text
+ALGORITHMIC_WORK_RESULT:
+The amount of representation work remains linear in M.
+There is no evidence of a second super-linear algorithmic work term
+within the measured regime.
+
+MICROARCHITECTURAL_RESULT:
+The large-N nonlinear latency amplification is strongly associated with
+the working set leaving cache: CPI and LLC misses per block rise
+sharply at the same 2–4 MiB regime transition, while competing
+scheduler/fault/kernel explanations are not supported (§4–§5).
+
+PRECISE_STALL_DECOMPOSITION:
+UNRESOLVED. The current PMU data does not independently partition
+excess cycles into LLC-latency, memory-level-parallelism, prefetch,
+downstream-memory, TLB, allocator or other backend-stall components.
+```
+
+Consequently no quantitative stall-attribution residual is claimed.
+The nonlinearity is a cache/memory-hierarchy amplification of a linear
+amount of representation work — not an algorithmic surprise and not
+parser work — but the exact share of the excess cycles attributable
+specifically to LLC misses (as opposed to other memory-hierarchy
+components) is not closed by this evidence.
 
 ## 10. V1 implications (diagnostic mandates only — no design, no V1 implementation)
 
@@ -337,7 +408,14 @@ V1_STILL_UNPROVEN (explicitly not decided here):
 - Base `334eea6`; implementation commits `f52fe5a` + `6b2c2a4`
   (diagnostic crate only; frozen crates byte-identical to base —
   `git diff 334eea62 HEAD -- {common,instrumentation,oracle,runner,
-  shared-grammar,mechanisms}` is empty).
+  shared-grammar,mechanisms}` is empty). Results/report commit
+  `45ad068`; a later documentation-only corrective commit fixes the
+  derived root PMU summary and narrows the microarchitectural
+  attribution (§4, §7, §9) — it changed no raw evidence and re-collected
+  nothing. The current PR head of Draft #51 moves with such
+  documentation commits and is deliberately NOT the provenance of any
+  measurement: provenance for every number here is the frozen
+  executable SHA (below) plus the raw receipt rows, not the branch tip.
 - Producing executables: four feature-isolated binaries, frozen in
   `bin/`, SHA256s in `receipts/FROZEN-EXECUTABLES.txt` and recorded
   per lane in `logs/*.log` **and** inside every raw JSONL receipt row.
@@ -351,4 +429,6 @@ V1_STILL_UNPROVEN (explicitly not decided here):
 - `RAW_HASH_CLOSURE`: `receipts/PRODUCER-RECEIPTS.csv` maps every
   deliverable to its producing executable SHA and evidence log;
   `analyze.py` and `derive-tables.py` are deterministic over the
-  committed raw JSONL.
+  committed raw JSONL, as are `perf/derive-stat-summary.py` over the
+  committed raw `perf/stat/*.json` (regression-tested by
+  `perf/test-derive-stat-summary.py`).
