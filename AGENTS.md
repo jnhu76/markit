@@ -60,6 +60,27 @@ Do not:
 - treat old benchmark numbers, corpora, or tooling as current evidence without
   re-measuring under the #22 protocol.
 
+### Experiment authorization is a hard gate
+
+Do not use benchmark code, prototype implementation, instrumentation, workload
+selection, or exploratory optimization to obtain an early answer for a research
+question that has not yet been authorized and frozen by the current research
+contract.
+
+“Only exploratory”, “just checking whether it is promising”, “just a smoke
+benchmark”, or “we will formalize it later” does not bypass this gate. Before the
+relevant experiment is authorized, code may only serve work already permitted by
+the current campaign: benchmark-substrate construction, oracle validation,
+correctness characterization, instrument validation, or another explicitly
+authorized preparatory task. It must not silently exercise a future Markit
+algorithm or produce decision-bearing comparative evidence for it.
+
+If pre-authorization measurements are produced accidentally, mark them
+non-decision-bearing. They must not be used to choose the favored mechanism,
+freeze Hx, select the corpus/edit subset, choose metrics, set thresholds, or
+justify promotion to the next research stage. Any later authorized experiment
+must be independently preregistered and rerun under its frozen protocol.
+
 ## 4. What agents MAY do (this phase)
 
 Allowed work is benchmark research only:
@@ -152,6 +173,70 @@ corpus version, and benchmark mode with every performance claim.
 Do not justify a mechanism with "this should be faster", "native is faster",
 "all editors do this", or "the old Markit code already had it". All of those
 are hypotheses to measure.
+
+### 7.1 Failure-first benchmark discipline
+
+An authorized benchmark mechanism must be capable of losing. Before implementing,
+tuning, or materially changing the treatment, freeze enough of the experiment to
+state:
+
+```text
+payload / corpus
+edit or mutation
+clean authoritative parse oracle
+normalized result contract
+expected correctness failures
+expected degradation modes
+measured costs
+measurement boundary
+falsification / weakening conditions
+and the decision the result can change
+```
+
+Correctness evidence comes before performance interpretation. No timing result is
+decision-bearing for an edit whose incremental result has not passed the frozen
+authoritative equivalence gate.
+
+Do not implement an optimization, inspect favorable cases, and then redefine the
+workload, edit selection, metric, exclusion rule, threshold, or correctness gate
+around those cases. A material protocol change after observing treatment results
+creates a new experiment version; all mechanisms needed for the comparison must
+be rerun under the new frozen protocol.
+
+Unit tests are appropriate when they independently establish an invariant that
+the benchmark oracle does not directly expose. Do not add implementation-shaped
+tests merely to increase coverage of a mechanism already determined by its own
+code. For this research phase, E2E is not the sole or primary testing mechanism:
+the experimental variable must remain isolated enough to attribute cost.
+End-to-end editor tests become primary evidence only when a later authorized
+claim crosses parser/update boundaries into actual editor behavior.
+
+Every decision-bearing run should produce or reference replayable evidence
+containing, where applicable:
+
+```text
+repository commit
+toolchain
+hardware / OS
+corpus identity and content hash
+mutation/edit manifest
+mechanism configuration
+normalized correctness results or hashes
+raw benchmark samples
+allocation / reuse / rescan / propagation counters
+measurement metadata
+exact execution command
+analysis output
+```
+
+Derived charts and summary tables must be regenerable from retained raw evidence.
+During mechanism development run narrow correctness and smoke checks; run the
+frozen comparison campaign at the designated measurement boundary rather than
+continuously executing the whole corpus merely because the harness can do so.
+
+A benchmark that shows no advantage, exposes a new weakness, or falsifies Hx is
+successful research. Do not modify the benchmark to preserve the preferred
+algorithm.
 
 ## 8. Unicode and source coordinates
 
