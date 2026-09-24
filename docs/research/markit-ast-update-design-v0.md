@@ -16,11 +16,32 @@ Status: **RESEARCH DESIGN CANDIDATE — NOT PRODUCTION ARCHITECTURE**
 
 ### 0.1 证据身份
 
-- 机制与计数权威：`3762b7a42e1c284a4c2c2e0ebac8496e70c63431`，包含 #46。
-- 本次实际分析：#47 @ `819928966e05ca00bb82c58b887014e54f3d0cd5`。
-- 补充 raw：用户提供的 `research/31-campaign-2-review-inputs` 两个 archive；本次取得提交 `7f2cdb2`。
+权威一律指向**已合并的 master 权威**，不指向临时 PR head：
+
+```text
+机制与计数权威          PR #46 merge  3762b7a42e1c284a4c2c2e0ebac8496e70c63431
+Campaign-2 证据权威      PR #47 merge  334eea6201fc0258e35a7c5b21feb722641ddcbd
+H0-H4 correctness parity PR #30 merge  12952a561c79fa051bca6bae7409ef536cd43011
+H4 大 N 根因证据权威     PR #51 merge  6cec47e9bb756affb0a4477bcb4962c3c78d8901
+```
+
+补充说明：
+
+- Campaign-2 的 A–J 解读是在 PR #47 的审查 head
+  `819928966e05ca00bb82c58b887014e54f3d0cd5` 上完成的；该 head 以历史
+  provenance 的身份出现在
+  [campaign-2-mechanism-synthesis.md](campaign-2-mechanism-synthesis.md)
+  与 [docs/research/README.md](README.md) 中（该历史文档内的链接也固定到该
+  head）。本文其余引用一律使用上表的 merge SHA，不使用该 head。
+- 补充 raw：用户提供的 `research/31-campaign-2-review-inputs` 两个 archive；
+  本次取得提交 `7f2cdb2`。
 - #45 不作为研究权威；#21、Experiment 0、归档 markit-core 不因本文重新生效。
-- 本次评审结论：`CAMPAIGN_2_ANALYSIS_USABLE=YES`，候选综合 `MODIFY`；不等于 #47 已合并或生产设计已证明。
+- 本次评审结论：`CAMPAIGN_2_ANALYSIS_USABLE=YES`，候选综合 `MODIFY`。
+- 本文已被 #50 / PR #51 的证据**扩展**（而非推翻）：Campaign-2 的 §C4 假设
+  （H4 的全局表示维护税不可收窄为 suffix relocation）后来被量化为多条 O(M)
+  retained-state 流；见
+  [markit-31-research-synthesis.md](markit-31-research-synthesis.md) §4–§5。
+- 本文仍不等于生产设计已证明；`V1_DATA_STRUCTURE = UNDECIDED`。
 
 这是当前 #22/#31/#33 研究链的证据综合与算法设计候选。现有 `AGENTS.md`、产品 source-truth/losslessness 等不变量继续适用。本文不修改 `docs/product/architecture.md` 的 HOLD，不为 UI、渲染、线程模型、插件 ABI 或生产 parser 实施授权。用户本轮明确要求完成 issue 归档和详细设计；实际代码与测量属于后续明确工作范围。
 
@@ -40,6 +61,115 @@ Status: **RESEARCH DESIGN CANDIDATE — NOT PRODUCTION ARCHITECTURE**
 | OPEN | 本次不足以决定 | chunk 宽度、持久化、嵌套 restart 密度、产品方言 |
 
 后续模型不能把 PROPOSED/OPEN 写成“实验已经证明”。可以替换候选结构；必须保留它所承担的正确性和成本义务。
+
+### 0.4 陈述分级（A/B/C/D）—— 每条主要陈述的可追踪分类
+
+上一节的四级与本节四类一一对应，但本节是**逐条陈述**的分类表。
+读本文时，任何一条陈述都应落在下列四类之一；不属于任何一类的陈述不应被引用。
+
+```text
+A. REQUIRED_BY_CORRECTNESS
+   违背它得到的就是错误结果，与性能无关。不能被“更快”交换掉。
+
+B. SUPPORTED_BY_EVIDENCE
+   由仓库内的证据权威支持的设计方向。仍然只是方向：
+   它约束“必须去除什么工作”，不指定“用什么结构”。
+
+C. CANDIDATE_DESIGN_CHOICE
+   可以具体实现、尚待验证的选择。可以被替换，但必须保留它承担的
+   正确性(A)与成本(B)义务。
+
+D. OPEN_QUESTION
+   现有证据不足以决定。必须显式保留为开放项，不得默默选一个。
+```
+
+#### A. REQUIRED_BY_CORRECTNESS
+
+| 陈述 | 位置 | 检查方式 |
+|---|---|---|
+| 编辑后的规范化结果 == clean full parse | §7、§14 I3 | oracle normalize equality |
+| source 是唯一文本真值，非编辑区字节不变（losslessness） | §4.1、§5、§14 I1 | source edit + 版本/hash fixture |
+| coverage 恰好无重叠无遗漏地分割 `[0, source_len)` | §4.2、§14 I2 | 覆盖区间与 length sum 检查 |
+| restart 必须携带完整可恢复的 parser continuation（含未完成 paragraph / container / fence 状态） | §8、§14 I4 | 重启结果与对应 clean suffix 的语义一致性测试 |
+| convergence 必须**证明** continuation 等价，不能凭 node kind / hash / `nodes_reused>0` | §9.1、§14 I5 | 强制关闭 reuse 的反事实对照 + 边界 fixtures |
+| definition winner 遵循源顺序与冻结 normalization（含 duplicate / shadowed） | §7、§11.3、§14 I6 | duplicate/undefined fixtures |
+| 任何可受有效 label 变化影响的 retained owner 都可被发现（**含 unresolved 引用尝试**） | §11.2、§14 I7 | 依赖全扫描 oracle 对照（仅验证 lane） |
+| 删除 owner 后无悬挂 postings / locator | §4.4、§14 I8 | index consistency checks |
+| 发布时 syntax / semantic / source version 一致；不暴露半完成状态 | §10、§14 I9 | eager result/query checks |
+| UTF-8 字节坐标与半开区间；编辑必须在字符边界 | §5 | 非法边界拒绝测试；CJK/emoji fixtures |
+| 语义修复必须在发布前完成，不得推迟到读取时 | §6、§10、§11.4 | 读接口不得触发 reference resolution |
+
+**比较有效性义务（不是 A 类）**：下表这一条之所以不属于
+REQUIRED_BY_CORRECTNESS，是因为违背它不会产生错误结果，只会让新 horse 与
+H0–H4 的比较失去意义（AGENTS.md §7 benchmark integrity）。它是测量契约，
+必须满足，但它的失效模式是“结论无效”，不是“文档错误”。
+
+| 陈述 | 位置 | 检查方式 |
+|---|---|---|
+| full path 与 incremental path 构建**相同** ready-state 类型与语义对象 | §7、§12.2、§16 | 两条路径的 state 结构一致性检查 |
+
+#### B. SUPPORTED_BY_EVIDENCE
+
+下表 `R1`–`R6` 是 **V1 行为要求**；`protocol/R0`–`R7` 文件是研究阶段记录，
+两者编号无关（分别写作 “V1 requirement R2” 与 `protocol/R7-…`）。
+
+| 陈述 | 证据权威 |
+|---|---|
+| R1 局部编辑不得要求 O(M) damage / restart search | #50 P1；`damage_records_visited = M`（PR #51） |
+| R2 未变 prefix/suffix 不得仅为保留而逐块重走 | #50 P3 = 20.2%、P5 = 21.5%（P5 在冻结证据中是整体，没有 suffix/fresh 数值拆分，不引用“半个 P5”）+ `prefix_slots_visited = M/2`、`suffix_slots_visited = M/2 − 1`（PR #51） |
+| R3 未变 suffix 状态不得要求逐记录 slot/checkpoint/ContextKey 重建 | #50 P6（PR #51） |
+| R4 未变语义/定义环境不得要求全语法遍历才能发现它没变 | #50 P4 + Adefs；Campaign-2 F 轴（PR #47） |
+| R5 局部编辑不得强制 O(M) 退役整个 retained representation | #50 P7 + Adrop/T_drain（PR #51） |
+| R6 attribution/statistics 不得在热路径内要求 O(M) retained-tree walk | frozen source `lib.rs:511,606` + 诊断副本采样（PR #51） |
+| restart + convergence 是应当保留的主语法机制 | Campaign-2 H4 的 N/B/K/lifecycle（PR #47） |
+| full rebuild 必须是正常候选与 escape（cost-selected） | Campaign-2 D/F/global-semantic regime（PR #47） |
+| syntax validity 与 semantic validity 必须分开判断 | H2 的 structural/semantic/rematerialization 分离；C-F（PR #47） |
+| 更新路径内不得反复枚举全局 old-top-level 候选 | H2/H3 的 consult + candidate Vec 热点（PR #47）；R6 |
+| 不得为保留 suffix 而立即逐条重写其绝对坐标 | H1 的 suffix 坐标重建；H4 的 slot/checkpoint 重建（PR #47、PR #51） |
+| D 名义值不等于实际收敛距离；`nodes_reused>0` 不代表 suffix take | Campaign-2 C-D 与 H4 计数（PR #47） |
+
+#### C. CANDIDATE_DESIGN_CHOICE
+
+| 陈述 | 位置 | 替代时必须保留 |
+|---|---|---|
+| 可变平衡 chunk sequence 作为最小原型表示 | §4.3 | 按 byte weight 定位、record 边界 split/concat、未变 suffix 不平移 |
+| B-tree / 其他平衡 interval sequence | §4.3、§20 | 同上；并实测其常数与摊还性质 |
+| relative coordinate scheme（块内相对 span + 上层聚合） | §4.2、§5 | coverage 精确分割；绝对位置按需派生 |
+| `BlockId` + leaf/slot locator（而非每 ID 全树路径） | §4.4 | locator 维护与解析成本计入 U |
+| 单当前版本、受控 mutation（暂不引入 persistence/COW） | §4.3、§10 | fallback 能从 post_source 全量重建 |
+| certified top-level boundaries 作为首版 checkpoint 粒度 | §8、§15 | 安全边界证明；R 成本公开计入 |
+| label -> 按源顺序的 definition occurrences | §11.1 | winner 删除后仍能找到后继 |
+| label -> consumer owner blocks（含 unresolved；去重到 block） | §11.2 | 低 F 时不做全文 probe；索引税必须报告 |
+| semantic owner 粒度 = block / top-level container | §11.2、§20 | owner 内部重做的成本公开 |
+| 分层实现：V1 只有局部 definition facts，V2 才启用 consumers | §11.4 | 两个新增状态组件各自可被否证 |
+| 预算型 cost selector（少量工作系数 + 尝试上限） | §12.2 | 不硬编码 C-F 交叉点；不靠 O(N) 预测 |
+| `ChangeSummary` 作为内部候选（非稳定外部协议） | §6 | 不把 BlockId/Arc 暴露为插件契约 |
+
+#### D. OPEN_QUESTION
+
+| 问题 | 位置 | 什么证据触发决定 |
+|---|---|---|
+| retained sequence 的最佳表示（chunk tree vs 其他） | §4.3、§20 | 操作访问/分配与 C/U/内存的实测差异 |
+| chunk 宽度 / 分裂合并规则 / fanout | §4.3、§20 | 同上 |
+| construction tax 与常驻内存代价 | §16、§17 S0 | 新原型的 C 与 retired-state 计量 |
+| pointer-chasing 与 cache 行为 | §16 | 大 N 实测；不得沿用旧 horse 的 cache 结论 |
+| persistence / COW 是否需要 | §4.3、§20 | 明确快照读者及其生命周期需求 |
+| checkpoint 密度（含嵌套容器 restart） | §8、§20 | R 成本与记录成本的局部比较；K/B 区间收益 |
+| dependency index 是否值得其构建/内存税 | §11.4、§20 | low-F 净收益与索引税；否则删除该快速路径 |
+| 每 label occurrence 的布局（有序 vector vs 树） | §11.1、§20 | duplicate-heavy 压力是否成为实际瓶颈 |
+| cost selector 的策略与参数 | §12、§20 | 误选损失是否足以要求更复杂模型 |
+| 产品 Markdown 方言与完整 CST | §0.2、§20 | 产品语义契约与消费接口的明确需求 |
+| 首次 full parse 能否更快 | §1、§16 | 本阶段证据不支持；需要独立工作 |
+
+设计目标是**行为要求**，不是某一实现：
+
+> 一个机制，其更新工作与实际语法/语义损伤及 restart/convergence 距离成比例，
+> 同时未改动的 retained state 被保留而不承担逐记录维护。
+
+**不得**把本文读成 “Markit is a persistent B-tree parser”，也不得把 §4.3 的
+第一候选当作已获证的选择。下一阶段的比较必须让新 horse 与 H0-H4 在相同
+semantic core、oracle、payload/edit contract、workload 与 measurement protocol
+下竞争；把候选结构当成前提会使该比较循环化。
 
 ## 1. 目标、非目标与性能契约
 
@@ -62,13 +192,19 @@ Campaign-2 的 source edit materialization 在 U 外。新原型必须同时声�
 | ID | 证据 | 设计含义 | 尚未证明 |
 |---|---|---|---|
 | E1 | H1/H4 真实局部编辑约 53.256→4 μs，parse 区域很小 | 局部损伤＋保留昂贵结果有价值 | 任意编辑都局部 |
-| E2 | H4 C-N 固定 138 post bytes，但 metadata 随 M 增长 | 解析局部性必须扩展到状态维护 | 具体 tree 布局/大小最优 |
+| E2 | H4 C-N 固定 138 post bytes，但 metadata 随 M 增长；**#50 已把它量化为多条具体 O(M) 流** | 解析局部性必须扩展到状态维护 | 具体 tree 布局/大小最优 |
 | E3 | H2/H3 反复候选枚举、clone/drop 热点 | 无全局旧树搜索的边界寻址 | 所有线性算法都比 H0 慢 |
 | E4 | H2 低 F 保留大多数 payload；F 增大后退化 | syntax validity 与 semantic validity 分离 | 当前 C-F 已经测出 O(F) 修复 |
 | E5 | H1/H4 定义变化退回全量；H2 仍广泛 probe | label 级依赖是值得验证的附加状态 | 索引一定节省总成本 |
 | E6 | K0→1 fresh blocks 1→258 | top-level 恢复有粗粒度成本 | 全嵌套 checkpoint 必须加入 |
 | E7 | 广泛损伤、失败尝试使 H0 更经济 | full builder 是正常路径和 escape | N/F 的通用固定 crossover |
 | E8 | 128 步状态字段无累积漂移 | 暂无证据要求复杂历史治理 | 长期 heap/碎片问题不存在 |
+| **E9** | **#50：publish/parse work 恒定（1 block、2 nodes、283 total / 138 unique bytes，8/8 cells），但每次更新仍执行多条 O(M) retained-state 流** | **R1-R6 是必须被具体消除的工作，而不是“换成树”就能消失** | **是否存在同时满足 R1-R6 且保持语义与 fallback 的表示** |
+| **E10** | **#50：16 MiB 时唯一 fundamental phase P2 = 0.02% of U_PHASE；三条 O(M) 重建流合计 68.3%** | **设计对象是表示维护，不是 parser** | **新表示的 cache/内存行为** |
+| **E11** | **#50：`CACHE_CAPACITY_AMPLIFICATION = STRONGLY_SUPPORTED`（关联），`PRECISE_STALL_DECOMPOSITION = UNRESOLVED`** | **先消除不必要工作，再评估 cache 行为；不要用旧 horse 的 cache 结论预判新结构** | **新机制是把非线性消除还是只是移动** |
+
+E9–E11 的证据权威是 PR #51 merge `6cec47e9bb756affb0a4477bcb4962c3c78d8901`，
+不是任何中间 head。
 
 特别禁止两种错误归因：C-D 名义轴值不等于真实 D（当前 H4 全部到 EOF）；H4 `nodes_reused>0` 不代表 suffix take（也可能只有 prefix）。profiling 是定性辅助，不能给出本次纯 U 的可信 IPC 或时间百分比。
 

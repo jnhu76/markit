@@ -1,5 +1,22 @@
 # Markit Campaign-2：机制综合独立评审
 
+```text
+Historical Campaign-2 mechanism synthesis
+Evidence authority:  PR #47 (merged, 334eea6201fc0258e35a7c5b21feb722641ddcbd)
+Reviewed snapshot:   819928966e05ca00bb82c58b887014e54f3d0cd5 (PR #47 head at review time)
+Later H4 large-N root-cause evidence: #50 / PR #51
+                     (merged, 6cec47e9bb756affb0a4477bcb4962c3c78d8901)
+```
+
+**这是一份历史文档，按当时（2026-09-23）可获得的分析上下文保留原样。**
+它记录的是 Campaign-2 解释，而不是最终解释；`#50 / PR #51` 之后才取得的
+H4 大 N 根因证据**没有**被回写进正文。跨阶段综合、最终 Weakness Map 与
+R1-R6 可追踪矩阵见
+[markit-31-research-synthesis.md](markit-31-research-synthesis.md)。
+
+后续证据对本文的具体影响，记录在文末的 **Later evidence** 一节 —— 包括 §C4 的
+suffix-metadata 假设如何被 #50 扩展为“多条 O(M) retained-state 流共同支配”。
+
 审查日期：2026-09-23。研究目的：识别局部性、传播、语义依赖与维护成本，决定 Markit 应保留哪些最小机制；不产生 H0–H4 排行榜。
 
 - 实现与主证据：PR #47，`819928966e05ca00bb82c58b887014e54f3d0cd5`。
@@ -522,3 +539,59 @@ T_full = P_block(N,K) + P_inline(all relevant content,K)
 - [Executable-derivation supplement](https://github.com/jnhu76/markit/blob/research/31-campaign-2-review-inputs/markit-c2-executable-derivation.tar.gz)
 
 本报告中的derived family统计以schedule的case_id→payload_id与冻结edit manifest连接；数字work counters来自补充包的raw JSONL，不来自压成KNOWN的attribution CSV。没有以全局平均值替代regime解释。
+
+---
+
+## Later evidence（#50/PR #51 之后补充）
+
+本节**不修改上文任何结论**；它记录后来的证据如何确认、细化或改写了本文的哪些陈述。
+本文正文保持 Campaign-2 当时（2026-09-23，PR #47）的解读。
+
+新增的证据权威：
+
+```text
+#50 H4-LARGE-N-CAUSE-1  ->  PR #51 merge 6cec47e9bb756affb0a4477bcb4962c3c78d8901
+    research/benchmarks/markdown-ast-update/results/h4-large-n-cause-1/
+    U_PLAIN（原始 frozen H4，`run-plain`）86.3 us (128 KiB) -> 24.99 ms (16 MiB)
+    （这是与 Campaign-2 不同的一次采集；绝对值不同，regime 相同。）
+```
+
+### 被确认的陈述
+
+| 本文原陈述 | #50 的结果 |
+|---|---|
+| §C 表末行：“16 MiB 相对 1 MiB 的额外非线性退化 … 假设；不能指定为某种 cache miss 原因” | algorithmic work 侧被确定：**工作线性**、指令数线性；非线性是 memory hierarchy 的放大（`CACHE_CAPACITY_AMPLIFICATION = STRONGLY_SUPPORTED`，作为与 2–4 MiB regime transition 的关联）。`PRECISE_STALL_DECOMPOSITION` 仍为 **UNRESOLVED** —— 本文当时的谨慎判断在这一点上没有被推翻。 |
+| §C4：“存在不可忽略的全局表示维护税；不能收窄成只有 suffix relocation” | **确认并量化**。H4 每次局部编辑执行多条 O(M) retained-state 流：P6 26.6%、P5 21.5%、P3 20.2%、P7 12.4%、P1 11.6%、P4 8.6%（share of U_PHASE at 16 MiB）。冻结 §14 规则下 **DOMINANT = none**：没有任何单条流独占主导。 |
+| §I1：“H4 在局部 parse 以外仍包含 `O(M)` slots/checkpoints 和可能的全树 definition 遍历” | 两者都确认：P6 `slots_created = checkpoint_records_created = checkpoint_key_clones = M`；P4 `definition_nodes_visited = M` 而定义表为空（Adefs -8.7%）。 |
+| §C 表：“H4 C-N 保持 forward=136 B，但时间随 N 涨” | 确认：`blocks_reparsed = 1`、`nodes_rebuilt = 2`、source inspection 283 total / 138 unique bytes 在 8/8 cells 恒定，而 `damage_records_visited = M`、`nodes_reused = 2M - 2`。 |
+| §E Weakness Map 第 1 条：“局部语法工作配上全局维护” | 由 #50 的 phase/counter/ablation 证据具体化；H4 行补上 “parser locality != representation locality”。 |
+| §B2 的 H4 大 N 优势回落到 3.695× | regime 复现（不同采集、不同绝对值）；本文的“不具备大小无关的局部更新时间”结论保持。 |
+
+### 被改写或推进的陈述
+
+- **“H4 16 MiB 额外退化的唯一主因判定”**（本文 §A2 列为仍阻断项之一）：
+  #50 的结论是**不存在单一主因**。可回答的部分已经回答（多条 O(M) 流共同支配、
+  其中三条合计 68.3% of U_PHASE）；不可回答的部分（精确 stall 分解）明确保留为
+  UNRESOLVED，并且不阻塞 V1。
+- **当时缺失的匹配数据现已存在**：本文 §C 表与 §C4 指出缺少 C-N 大点的匹配
+  perf-record 与 allocation 计量。#50 补齐了 allocator lane、窗口化的 perf stat、
+  perf record（1 MiB / 16 MiB）与一个 scope 受限的 eBPF/kernel lane
+  （明细与 scope 限制见 `h4-large-n-cause-1/H4-LARGE-N-CAUSE-REPORT.md` §4–§5）。
+- **§J 的六 cell 消融**：本文把它当作“最小判别实验”提出。#50 之后它被**推迟**，
+  不是被删除：它的形状（少量 cell、预先写明可推翻结果、对照 VF 全量退路）仍然有效，
+  但它的 V1/V2 variant **预设了具体的表示组件**，因此在新候选机制的机制身份被显式
+  设计出来之前不得启动。当前顺序是先确立 R1-R6、再设计候选机制身份，然后才谈
+  判别实验；§J 的 V1/V2 在新分级下属于 C（candidate design choice），不属于已获证据。
+  见 [markit-31-research-synthesis.md](markit-31-research-synthesis.md) §8 与
+  [markit-ast-update-design-v0.md](markit-ast-update-design-v0.md) §0.4 / §18。
+- **§F1 的逐项裁决**（persistent block sequence = MODIFY、restart-and-converge =
+  ACCEPT、cost-based full rebuild = ACCEPT 等）与 **§F2** 的“已获证需求 /
+  仍未获证选择”划分，与 #50 的结论一致，并被提升为行为要求 R1-R6
+  （综合文档 §5）。具体数据结构仍然 **UNDECIDED**。
+
+### 未被改变的陈述
+
+- 本文的全部 Campaign-2 数值、regime map、源码级解释与限制说明。
+- §G 的 state budget 与 §F3 的最小 semantic dependency 状态形状。
+- §H 的算法骨架与 §I 的复杂度项清单（R1-R6 与之一致）。
+- 本文 §A2 中除“H4 唯一主因”之外的所有降级项。
