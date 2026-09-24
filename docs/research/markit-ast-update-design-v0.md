@@ -34,7 +34,7 @@ H4 大 N 根因证据权威     PR #51 merge  6cec47e9bb756affb0a4477bcb4962c3c7
   与 [docs/research/README.md](README.md) 中（该历史文档内的链接也固定到该
   head）。本文其余引用一律使用上表的 merge SHA，不使用该 head。
 - 补充 raw：用户提供的 `research/31-campaign-2-review-inputs` 两个 archive；
-  本次取得提交 `7f2cdb2`。
+  本次取得提交 `7f2cdb2`（补充材料的 provenance，不是证据权威）。
 - #45 不作为研究权威；#21、Experiment 0、归档 markit-core 不因本文重新生效。
 - 本次评审结论：`CAMPAIGN_2_ANALYSIS_USABLE=YES`，候选综合 `MODIFY`。
 - 本文已被 #50 / PR #51 的证据**扩展**（而非推翻）：Campaign-2 的 §C4 假设
@@ -97,16 +97,20 @@ D. OPEN_QUESTION
 | 删除 owner 后无悬挂 postings / locator | §4.4、§14 I8 | index consistency checks |
 | 发布时 syntax / semantic / source version 一致；不暴露半完成状态 | §10、§14 I9 | eager result/query checks |
 | UTF-8 字节坐标与半开区间；编辑必须在字符边界 | §5 | 非法边界拒绝测试；CJK/emoji fixtures |
-| 语义修复必须在发布前完成，不得推迟到读取时 | §6、§10、§11.4 | 读接口不得触发 reference resolution |
 
-**比较有效性义务（不是 A 类）**：下表这一条之所以不属于
-REQUIRED_BY_CORRECTNESS，是因为违背它不会产生错误结果，只会让新 horse 与
-H0–H4 的比较失去意义（AGENTS.md §7 benchmark integrity）。它是测量契约，
-必须满足，但它的失效模式是“结论无效”，不是“文档错误”。
+**比较有效性义务（不是 A 类）**：下表条目之所以不属于
+REQUIRED_BY_CORRECTNESS，是因为按本文 A 类定义（违背 => 错误结果），
+单纯把语义修复推迟到读取时**可以**仍给出正确结果——它的失效模式是
+“结论无效 / 测量失真”，不是必然的“文档错误”。其正确性一半
+（发布时 version 一致、不暴露半完成状态）由上表 I9 承担。它们是
+测量契约，必须满足（AGENTS.md §7 benchmark integrity）：
+若更新路径把语义工作藏进读路径，新 horse 与 H0–H4 的更新成本比较
+就不再比较同一件事。
 
 | 陈述 | 位置 | 检查方式 |
 |---|---|---|
 | full path 与 incremental path 构建**相同** ready-state 类型与语义对象 | §7、§12.2、§16 | 两条路径的 state 结构一致性检查 |
+| 语义修复必须在发布前完成，不得推迟到读取时（正确性基础 = I9） | §6、§10、§11.4 | 读接口不得触发 reference resolution；更新计时器外不得隐藏语义工作 |
 
 #### B. SUPPORTED_BY_EVIDENCE
 
@@ -124,7 +128,7 @@ H0–H4 的比较失去意义（AGENTS.md §7 benchmark integrity）。它是测
 | restart + convergence 是应当保留的主语法机制 | Campaign-2 H4 的 N/B/K/lifecycle（PR #47） |
 | full rebuild 必须是正常候选与 escape（cost-selected） | Campaign-2 D/F/global-semantic regime（PR #47） |
 | syntax validity 与 semantic validity 必须分开判断 | H2 的 structural/semantic/rematerialization 分离；C-F（PR #47） |
-| 更新路径内不得反复枚举全局 old-top-level 候选 | H2/H3 的 consult + candidate Vec 热点（PR #47）；R6 |
+| 更新路径内不得反复枚举全局 old-top-level 候选 | H2/H3 的 consult + candidate Vec 热点（PR #47） |
 | 不得为保留 suffix 而立即逐条重写其绝对坐标 | H1 的 suffix 坐标重建；H4 的 slot/checkpoint 重建（PR #47、PR #51） |
 | D 名义值不等于实际收敛距离；`nodes_reused>0` 不代表 suffix take | Campaign-2 C-D 与 H4 计数（PR #47） |
 

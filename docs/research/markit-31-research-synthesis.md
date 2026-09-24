@@ -267,7 +267,8 @@ NEGLIGIBLE
 ```
 
 没有任何单一操作独占主导；三条 O(M) 重建流合计 68.3% of U_PHASE；
-唯一 fundamental 的 phase 是 P2 (0.02%)。**约 99.98% 的 16 MiB update 不是解析工作。**
+唯一 fundamental 的 phase 是 P2 (0.02%)。**约 99.98% 的 16 MiB 更新时间
+（U_PHASE 份额，见 §0 符号约定）不是解析工作。**
 
 解释框架（三层，必须分开陈述）：
 
