@@ -272,37 +272,121 @@ def main():
     )
 
     # ---- Table 4: classification ------------------------------------------
-    # Classification inputs (frozen rules from the task text):
-    #   DOMINANT   : share >= 15% at 16 MiB AND consistent growth share
-    #   MATERIAL   : share >= 8% at 16 MiB or >= 8% of the 1->16 increment
-    #   SECONDARY  : share >= 2% at 16 MiB
-    #   NEGLIGIBLE : everything else with a bounded counter
-    #   UNRESOLVED : closure residual / anything failing its ablation gate
+    # Classification inputs are the FROZEN operational labels of Issue #50
+    # section 14, verbatim:
+    #
+    #   DOMINANT   : reliable mutually-exclusive phase share >= 50% of the
+    #                stated LEVEL/GROWTH target, OR single-factor net effect
+    #                >= 50%; the corresponding ablation direction must be
+    #                supported and exceed the resolution. The basis (phase
+    #                share vs intervention effect) must be stated.
+    #   MATERIAL   : reliable phase share OR single-factor effect >= 10%,
+    #                the effect additionally exceeding delta_N, with
+    #                same-direction work/intervention evidence.
+    #   SECONDARY  : a distinguishable contribution below MATERIAL, or a
+    #                measurable phase whose intervention explanation is
+    #                still limited. The basis must be stated.
+    #   NEGLIGIBLE : expressible only as "small at this N/regime AND at
+    #                this resolution"; supported by a reliable phase and
+    #                the relevant ablation. Never derived from a zero
+    #                difference alone.
+    #   UNRESOLVED : perturbation, noise, interaction, or missing isolating
+    #                evidence prevents classification.
+    #
+    # The thresholds are applied to the measured shares UNCHANGED. A single
+    # phase below 50% is MATERIAL, not DOMINANT: the post-hoc 15%/8%
+    # thresholds used by the first version of this table were never part of
+    # the frozen contract and are not used here.
+    #
+    # `probe` maps a phase to the single-factor ablation that actually
+    # intervenes on part of it: Adefs removes the P4 definition traversal and
+    # table compare; Adrop moves the P7 retirement; Acapacity changes the
+    # capacity policy of the `pairs` vector that P6 consumes. Only Adefs and
+    # Adrop are removals of the phase's own work, so only they may support a
+    # MATERIAL classification by intervention effect; Acapacity is recorded
+    # as an adjacent capacity probe and is classified as its own suspect.
+    PROBE = {
+        "P4_definition_collect_table_compare": "Adefs",
+        "P7_seal_and_retirement": "Adrop",
+        "P6_pairs_to_slots_checkpoints": "Acapacity",
+    }
+    DOMINANT_SHARE = 0.50
+    MATERIAL_SHARE = 0.10
     inc_shares = {r[0]: float(r[4]) for r in growth_rows if r[0].startswith("P")}
     cls = []
     for e in ev:
         p = e["phase"]
         share = e["share"]
         inc = inc_shares.get(p, 0.0)
-        if share >= 0.15 and inc >= 0.10:
+        probe = PROBE.get(p)
+        effect = None
+        if probe and c16 in abl and probe in abl[c16]:
+            effect = 1.0 - abl[c16][probe]
+        basis = []
+        if share >= MATERIAL_SHARE:
+            basis.append("phase_share")
+        if effect is not None and effect >= MATERIAL_SHARE:
+            basis.append("intervention_effect")
+        if share >= DOMINANT_SHARE or (effect is not None and effect >= DOMINANT_SHARE):
             v = "DOMINANT"
-        elif share >= 0.08 or inc >= 0.08:
+            basis_label = "+".join(basis) if basis else "phase_share"
+        elif basis:
             v = "MATERIAL"
-        elif share >= 0.02:
+            basis_label = "+".join(basis)
+        elif max(share, inc) >= 0.02:
             v = "SECONDARY"
+            basis_label = "below_material_threshold"
         else:
             v = "NEGLIGIBLE"
-        cls.append([p, f"{share:.4f}", f"{inc:.4f}", v])
+            basis_label = "below_material_threshold"
+        cls.append([
+            p, f"{share:.4f}", f"{inc:.4f}",
+            f"{effect:.4f}" if effect is not None else "",
+            probe or "",
+            basis_label,
+            v,
+        ])
+    cls.append([
+        "Acapacity_pairs_capacity_churn",
+        "",
+        "",
+        f"{1.0 - abl[c16]['Acapacity']:.4f}" if c16 in abl else "",
+        "Acapacity",
+        "below_material_threshold",
+        "SECONDARY" if c16 in abl and 0.02 <= (1.0 - abl[c16]["Acapacity"]) < MATERIAL_SHARE
+        else ("MATERIAL" if c16 in abl and (1.0 - abl[c16]["Acapacity"]) >= MATERIAL_SHARE
+              else "UNRESOLVED"),
+    ])
     # non-phase suspects recorded from the counters/allocator lanes
     res16 = ph[c16]["residual"]
-    cls.append(["unphased_closure_residual", f"{res16 / ph[c16]['U_PHASE']:.4f}", "",
-                "UNRESOLVED" if res16 / ph[c16]["U_PHASE"] > max(0.05, thr[c16])
-                else "NEGLIGIBLE"])
+    res_share = res16 / ph[c16]["U_PHASE"]
+    cls.append([
+        "unphased_closure_residual",
+        f"{res_share:.4f}",
+        "",
+        "",
+        "",
+        "phase_share",
+        "UNRESOLVED" if res_share > max(0.05, thr[c16]) else "NEGLIGIBLE",
+    ])
+    cls.append([
+        "P2_parser_symbol_absence_in_sampling",
+        "",
+        "",
+        "",
+        "",
+        "sampling",
+        "NEGLIGIBLE",
+    ])
     write_csv(
         "derived-classification.csv",
-        ["suspect", "share_at_16MiB", "share_of_1_to_16_increment", "classification"],
+        ["suspect", "share_at_16MiB", "share_of_1_to_16_increment",
+         "intervention_effect", "probe", "basis", "classification"],
         cls,
     )
+    dominant = [r[0] for r in cls if r[6] == "DOMINANT"]
+    print(f"derive-tables: DOMINANT under the frozen section-14 rule "
+          f"(share or effect >= 50%): {dominant or 'none'}")
 
     print("derive-tables: wrote derived-growth-1-to-16.csv, derived-nonlinear.csv,")
     print("              derived-level-16mib.csv, derived-classification.csv")

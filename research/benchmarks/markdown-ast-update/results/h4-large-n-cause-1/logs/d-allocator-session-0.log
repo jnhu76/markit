@@ -1,0 +1,12 @@
+=== LANE d-allocator-session-0 ===
+utc_start=2026-09-24T02:12:17Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-alloc
+command=run-alloc --session 0 --out ./results/h4-large-n-cause-1/raw/allocator-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/allocator-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.10 0.92 0.49 1/758 41934
+executable_sha256=fd81e27d4014a229fe2ce9b63b52a38299a186db8abfd78f23a09c51e80d026e
+executable_features={'allocator': True, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.05 0.93 0.51 1/760 41955
+utc_end=2026-09-24T02:12:53Z

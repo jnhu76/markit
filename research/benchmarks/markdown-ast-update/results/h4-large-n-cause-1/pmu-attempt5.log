@@ -1,0 +1,17 @@
+PERF_STAT_PER_CELL_START utc=2026-09-24T02:24:13Z loadavg=0.39 0.77 0.70 2/747 42293
+perf_event_paranoid=2
+rounds=15 cells=128KiB 256KiB 512KiB 1MiB 2MiB 4MiB 8MiB 16MiB
+4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6  results/h4-large-n-cause-1/bin/mdbench-h4diag
+PERF_STAT_PER_CELL_COMPLETE utc=2026-09-24T02:26:34Z
+4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6  results/h4-large-n-cause-1/bin/mdbench-h4diag
+--- perf record 1MiB rounds=300 ---
+exit=0
+samples:
+# Total Lost Samples: 0
+--- perf record 16MiB rounds=20 ---
+exit=0
+samples:
+# Total Lost Samples: 0
+PERF_RECORD_COMPLETE utc=2026-09-24T02:26:49Z
+PMU_ALL_STAT_RC=0 RECORD_RC=0
+PMU_ALL_DONE

@@ -1,0 +1,6 @@
+H4LARGEN_COLLECTION_START utc=2026-09-23T23:53:30Z
+loadavg_start=1.93 1.40 0.80 3/747 32878
+--- LANE a-u-plain-session-0 (mdbench-h4diag) ---
+./results/h4-large-n-cause-1/run-collection.sh: line 23: ./results/h4-large-n-cause-1/run-lane.sh: No such file or directory
+LANE_FAILED a-u-plain-session-0
+H4LARGEN_COLLECTION_STOPPED_AT a-u-plain-session-0

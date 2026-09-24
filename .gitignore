@@ -25,6 +25,16 @@ node_modules/
 *.temp
 __pycache__/
 
+# Exception: the #50 H4-LARGE-N-CAUSE-1 evidence tree closes over its own
+# collection logs. `RAW-HASH-CLOSURE.txt` covers the collection-attempt
+# logs and the per-lane logs (they are cited evidence: run-lane.sh records
+# each lane's producing executable SHA256 there, and Issue #50 section 17
+# keeps attempts 1-4 archived with the defect that forced the re-run).
+# A closure over files that a fresh clone cannot contain is not verifiable,
+# so these logs must be tracked. Nothing else under `*.log` is affected.
+!research/benchmarks/markdown-ast-update/results/h4-large-n-cause-1/**/*.log
+!research/benchmarks/markdown-ast-update/results/h4-large-n-cause-1/*.log
+
 # Research experiment raw benchmark output stays local; curated summaries
 # under results/summary/ are the committed evidence.
 research/experiments/experiment-0-parser-survey/results/raw/

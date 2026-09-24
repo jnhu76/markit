@@ -1,0 +1,174 @@
+H4LARGEN_COLLECTION_START utc=2026-09-24T00:52:01Z
+loadavg_start=0.87 1.10 0.92 1/756 39588
+--- LANE a-u-plain-session-0 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-0 ===
+utc_start=2026-09-24T00:52:01Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-plain --session 0 --out ./results/h4-large-n-cause-1/raw/u-plain-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=0.87 1.10 0.92 1/759 39595
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.09 0.93 1/760 39622
+utc_end=2026-09-24T00:53:10Z
+--- LANE a-u-plain-session-1 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-1 ===
+utc_start=2026-09-24T00:53:10Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-plain --session 1 --out ./results/h4-large-n-cause-1/raw/u-plain-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.09 0.93 1/760 39630
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.07 0.93 1/758 39640
+utc_end=2026-09-24T00:54:17Z
+--- LANE a-u-plain-session-2 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-2 ===
+utc_start=2026-09-24T00:54:17Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-plain --session 2 --out ./results/h4-large-n-cause-1/raw/u-plain-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.07 0.93 1/758 39648
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.05 0.94 1/758 39656
+utc_end=2026-09-24T00:55:28Z
+--- LANE b-u-phase-session-0 (mdbench-h4diag-phases) ---
+=== LANE b-u-phase-session-0 ===
+utc_start=2026-09-24T00:55:28Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-phases
+command=run-phase --session 0 --out ./results/h4-large-n-cause-1/raw/u-phase-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-phase-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.05 0.94 1/758 39664
+executable_sha256=d0001a642ac9d10bf65722e715dda36aa44b6b8b7568969bf4913d6d3cbb52a2
+executable_features={'allocator': False, 'counters': False, 'phases': True}
+EXIT_CODE=0
+loadavg_end=1.00 1.05 0.94 1/758 39672
+utc_end=2026-09-24T00:56:02Z
+--- LANE b-u-phase-session-1 (mdbench-h4diag-phases) ---
+=== LANE b-u-phase-session-1 ===
+utc_start=2026-09-24T00:56:02Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-phases
+command=run-phase --session 1 --out ./results/h4-large-n-cause-1/raw/u-phase-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-phase-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.05 0.94 1/758 39680
+executable_sha256=d0001a642ac9d10bf65722e715dda36aa44b6b8b7568969bf4913d6d3cbb52a2
+executable_features={'allocator': False, 'counters': False, 'phases': True}
+EXIT_CODE=0
+loadavg_end=1.00 1.04 0.95 1/754 39689
+utc_end=2026-09-24T00:56:36Z
+--- LANE b-u-phase-session-2 (mdbench-h4diag-phases) ---
+=== LANE b-u-phase-session-2 ===
+utc_start=2026-09-24T00:56:36Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-phases
+command=run-phase --session 2 --out ./results/h4-large-n-cause-1/raw/u-phase-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-phase-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.04 0.95 1/754 39697
+executable_sha256=d0001a642ac9d10bf65722e715dda36aa44b6b8b7568969bf4913d6d3cbb52a2
+executable_features={'allocator': False, 'counters': False, 'phases': True}
+EXIT_CODE=0
+loadavg_end=1.00 1.03 0.95 1/752 39705
+utc_end=2026-09-24T00:57:10Z
+--- LANE c-work-counters (mdbench-h4diag-counters) ---
+=== LANE c-work-counters ===
+utc_start=2026-09-24T00:57:10Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-counters
+command=run-counters --session 0 --out ./results/h4-large-n-cause-1/raw/work-counters.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.03 0.95 1/752 39713
+executable_sha256=b8da27f75970f1548a424b91110d2ceddce289796edbf785232bb36977d14cc9
+executable_features={'allocator': False, 'counters': True, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.03 0.95 1/752 39721
+utc_end=2026-09-24T00:57:12Z
+--- LANE d-allocator-session-0 (mdbench-h4diag-alloc) ---
+=== LANE d-allocator-session-0 ===
+utc_start=2026-09-24T00:57:12Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-alloc
+command=run-alloc --session 0 --out ./results/h4-large-n-cause-1/raw/allocator-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/allocator-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.03 0.95 1/752 39729
+executable_sha256=dc220e09aa45f024de18ddb4c67f323e1f28255675059774d97a72b1a3714495
+executable_features={'allocator': True, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.03 0.96 1/751 39737
+utc_end=2026-09-24T00:57:48Z
+--- LANE d-allocator-session-1 (mdbench-h4diag-alloc) ---
+=== LANE d-allocator-session-1 ===
+utc_start=2026-09-24T00:57:48Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-alloc
+command=run-alloc --session 1 --out ./results/h4-large-n-cause-1/raw/allocator-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/allocator-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.03 0.96 1/751 39745
+executable_sha256=dc220e09aa45f024de18ddb4c67f323e1f28255675059774d97a72b1a3714495
+executable_features={'allocator': True, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.02 0.96 1/752 39754
+utc_end=2026-09-24T00:58:26Z
+--- LANE d-allocator-session-2 (mdbench-h4diag-alloc) ---
+=== LANE d-allocator-session-2 ===
+utc_start=2026-09-24T00:58:26Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-alloc
+command=run-alloc --session 2 --out ./results/h4-large-n-cause-1/raw/allocator-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/allocator-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.02 0.96 1/752 39762
+executable_sha256=dc220e09aa45f024de18ddb4c67f323e1f28255675059774d97a72b1a3714495
+executable_features={'allocator': True, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.02 0.96 1/750 39772
+utc_end=2026-09-24T00:59:02Z
+--- LANE e-ablations-session-0 (mdbench-h4diag) ---
+=== LANE e-ablations-session-0 ===
+utc_start=2026-09-24T00:59:02Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-ablations --session 0 --out ./results/h4-large-n-cause-1/raw/ablations-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/ablations-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.02 0.96 1/750 39780
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.02 1.02 0.98 1/752 39810
+utc_end=2026-09-24T01:01:51Z
+--- LANE e-ablations-session-1 (mdbench-h4diag) ---
+=== LANE e-ablations-session-1 ===
+utc_start=2026-09-24T01:01:51Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-ablations --session 1 --out ./results/h4-large-n-cause-1/raw/ablations-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/ablations-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.02 1.02 0.98 1/752 39818
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.05 1.02 1.00 1/752 39830
+utc_end=2026-09-24T01:04:39Z
+--- LANE e-ablations-session-2 (mdbench-h4diag) ---
+=== LANE e-ablations-session-2 ===
+utc_start=2026-09-24T01:04:39Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-ablations --session 2 --out ./results/h4-large-n-cause-1/raw/ablations-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/ablations-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.05 1.02 1.00 1/752 39838
+executable_sha256=095c03d814c4a3e3574aafd354a90a185a37a5d6fa585d9346c54f2aca492a0a
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.00 1.00 1/751 39854
+utc_end=2026-09-24T01:07:28Z
+loadavg_end=1.00 1.00 1.00 1/748 39856
+utc_end=2026-09-24T01:07:28Z
+H4LARGEN_COLLECTION_COMPLETE

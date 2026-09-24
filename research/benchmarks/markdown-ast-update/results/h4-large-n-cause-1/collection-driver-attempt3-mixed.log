@@ -1,0 +1,53 @@
+H4LARGEN_COLLECTION_START utc=2026-09-24T00:06:59Z
+loadavg_start=1.95 1.39 1.12 1/765 36164
+--- LANE a-u-plain-session-0 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-0 ===
+utc_start=2026-09-24T00:06:59Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 0 --out ./results/h4-large-n-cause-1/raw/u-plain-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.95 1.39 1.12 1/768 36171
+executable_sha256=aefd4114231da3c85d4700383496aee2143ac3a394e6df548590b72ae4d17c07
+EXIT_CODE=0
+loadavg_end=1.29 1.30 1.10 1/766 36185
+utc_end=2026-09-24T00:08:07Z
+--- LANE a-u-plain-session-1 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-1 ===
+utc_start=2026-09-24T00:08:07Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 1 --out ./results/h4-large-n-cause-1/raw/u-plain-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.29 1.30 1.10 1/766 36193
+executable_sha256=aefd4114231da3c85d4700383496aee2143ac3a394e6df548590b72ae4d17c07
+EXIT_CODE=0
+loadavg_end=1.13 1.26 1.10 1/763 36217
+utc_end=2026-09-24T00:09:13Z
+--- LANE a-u-plain-session-2 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-2 ===
+utc_start=2026-09-24T00:09:13Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 2 --out ./results/h4-large-n-cause-1/raw/u-plain-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.13 1.26 1.10 1/763 36225
+executable_sha256=aefd4114231da3c85d4700383496aee2143ac3a394e6df548590b72ae4d17c07
+EXIT_CODE=0
+loadavg_end=1.31 1.29 1.12 2/763 36231
+utc_end=2026-09-24T00:10:23Z
+--- LANE b-u-phase-session-0 (mdbench-h4diag-phases) ---
+=== LANE b-u-phase-session-0 ===
+utc_start=2026-09-24T00:10:23Z
+host=E5
+binary=./target/release/mdbench-h4diag-phases
+command=run-phase --session 0 --out ./results/h4-large-n-cause-1/raw/u-phase-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-phase-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.31 1.29 1.12 1/763 36239
+executable_sha256=e6bc7a3592da9900ba34c09481d54dca4ea4da81fd91cdb2b70ff6e5c6a01f6e
+error: run-phase requires a binary built with --features phases
+EXIT_CODE=1
+loadavg_end=1.31 1.29 1.12 1/763 36244
+utc_end=2026-09-24T00:10:23Z
+LANE_FAILED b-u-phase-session-0
+H4LARGEN_COLLECTION_STOPPED_AT b-u-phase-session-0

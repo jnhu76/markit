@@ -28,17 +28,52 @@ Producing executable: results/h4-large-n-cause-1/bin/mdbench-h4diag
 
 ## Narrow probes (causal questions, `scripts/03`, `scripts/04`)
 
-| Question | Probe | Result (whole batch) |
+| Question | Probe | Result |
 |---|---|---|
-| S1 scheduler interference | `sched_switch` / `sched_migrate_task` | 73 switches / **0 migrations** of the benchmark thread → scheduler is not a cause |
-| S2 page faults | `page_fault_user`, plus `perf stat -e page-faults` inside the update window | all **minor**; 0 major faults in every window; windowed faults are a small linear quantity (x16 for x16 M) — allocation-fault cost is NOT super-linear |
-| S3 address-space churn | `mmap/munmap/brk/mremap` tracepoints | 31 mmap / 19 munmap / 4109 brk / **0 mremap** over 20 updates → no mmap churn; the heap grows by brk a few times per update; the allocator is not creating address-space pressure |
+| S1 scheduler interference | `sched_switch` / `sched_migrate_task` under bpftrace, attached to the benchmark process | **whole-run counts for the benchmark comm, not resume-filtered**: 73 switches / **0 migrations** |
+| S2 page faults | `page_fault_user` under bpftrace (whole process), plus `perf stat -e page-faults,minor-faults,major-faults` inside the update window | windowed scope: 13 056 page-faults = 13 056 minor, **0 major** across the 30 counted windows; whole-process scope: 276 385 `page_fault_user` events. Windowed faults are a small linear quantity (×17 for ×16 M: 7 → 119 per update) — allocation-fault cost is NOT super-linear |
+| S3 address-space churn | `mmap/munmap/brk/mremap` tracepoints, whole process | 31 mmap / 19 munmap / **4 109 brk** / **0 mremap**, with large anonymous mmap/munmap pairs (len ≈ 1.04–2.10 MB) present |
 
-Interpretation: the three "environment" suspects (scheduler
-interference, fault storms, allocator address-space churn) are all
-ruled out as causes of the 1→16 MiB super-linearity. This agrees with
-the PMU lane: the missing time is LLC/TLB misses walking the O(M)
-representation, not kernel-side effects.
+Interpretation — **narrowed by the corrective below**. The supported
+conclusion is:
+
+> The eBPF/kernel lane found no evidence of CPU migration, of major-fault
+> storms, or of a kernel-side regime transition large enough to explain
+> the observed nonlinear scaling.
+
+The three "environment" suspects are therefore *not evident as causes* of
+the 1→16 MiB super-linearity within the scopes these probes actually had
+— which is weaker than "ruled out".
+
+**Corrective (documentation layer; raw counts unchanged).** The first
+version of this section stated that the scheduler was "excluded", that
+there were "0 major faults in every window", that there was "no mmap
+churn", that the heap "grows by brk a few times per update", and that the
+allocator was irrelevant. The probe scopes recorded in `raw/` do not
+support those statements:
+
+- the counts in the table are **whole-process aggregates over one
+  ~20-update batch** for the benchmark comm, and are not resume-filtered;
+- the `sched` trace was taken with `perf record -a` and is
+  **system-wide** — `raw/s1-perf-sched-script.txt` shows the *profiler's
+  own* process (`perf:43290`) being switched and migrated by
+  `migration/0`, so those events are not the benchmark's;
+- `4 109 brk` over 20 updates is ≈205 per update, and the raw trace shows
+  the break moving both up and down; "a few times per update" is
+  withdrawn;
+- large anonymous `mmap`/`munmap` pairs *are* present, i.e. the allocator
+  does create and destroy mappings for the large vectors; this lane did
+  not quantify that as a cost, and "allocator irrelevant" is not claimed;
+- the two fault lanes do not share a scope (whole-process 276 385 vs
+  windowed 13 056 over 30 windows) and must not be compared numerically;
+  "0 major faults" holds **for the windowed scope**;
+- migration is 0 in both lanes — the one suspect this lane does exclude
+  within its scope.
+
+The conclusion is unchanged for the #50 result: the kernel lane does not
+explain the nonlinearity, but it does not quantitatively exclude the
+kernel suspects either. The matching wording in the #50 report §5 is
+identical.
 
 ## Perturbation control (`scripts/04`)
 
