@@ -1,0 +1,12 @@
+=== LANE b-u-phase-session-2 ===
+utc_start=2026-09-24T00:16:56Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-phases
+command=run-phase --session 2 --out ./results/h4-large-n-cause-1/raw/u-phase-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-phase-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.05 1.01 1.00 2/758 36965
+executable_sha256=24be08d5c2d5c29366a91753ded39d889ba84313399729ce3d67d00b7881b440
+executable_features={'allocator': False, 'counters': False, 'phases': True}
+EXIT_CODE=0
+loadavg_end=1.03 1.00 1.00 1/757 36984
+utc_end=2026-09-24T00:17:31Z

@@ -13,6 +13,7 @@ members = [
     "diagnostics",
     "campaign",
     "campaign2",
+    "h4diag",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
     "mechanisms/block-local",

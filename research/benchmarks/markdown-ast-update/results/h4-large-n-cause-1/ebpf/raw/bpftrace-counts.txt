@@ -1,0 +1,9 @@
+
+
+@brk: 4109
+@mig: 0
+@mmap: 31
+@mremap: 0
+@munmap: 19
+@pf: 276385
+@sw: 73

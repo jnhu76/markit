@@ -1,0 +1,72 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 906  of event 'cpu/cycles/P'
+# Event count (approx.): 729328860
+#
+# Children      Self  Shared Object    
+# ........  ........  .................
+#
+    98.91%    97.56%  mdbench-h4diag   
+            |          
+            |--9.38%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          |          
+            |           --0.86%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |          
+            |--8.59%--0xfff
+            |          core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+            |          
+            |--6.58%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--3.26%--core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--2.43%--0x2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--1.01%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--0.98%--0x12f
+            |          |          
+            |           --0.75%--markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--0.67%--<markit_mdbench_h4diag::cli::PerfControl>::command
+            |          
+            |--0.56%--clock_gettime@@GLIBC_2.17
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+             --0.55%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+    20.22%     0.00%  [unknown]        
+            |          
+            |--8.59%--0xfff
+            |          core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+            |          
+            |--2.43%--0x2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--1.01%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+             --0.98%--0x12f
+                       |          
+                        --0.75%--markit_mdbench_h4diag::alg::skel_count
+
+     2.45%     0.89%  libc.so.6        
+            |          
+            |--0.56%--clock_gettime@@GLIBC_2.17
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+             --0.56%--__GI___libc_write
+                       __syscall_cancel
+                       __internal_syscall_cancel
+
+     1.55%     1.55%  [kernel.kallsyms]
+
+
+#
+# (Tip: Show estimate cycles per function and IPC in annotate use perf record -b ... ; perf report --total-cycles)
+#

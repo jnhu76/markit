@@ -1,0 +1,1705 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 906  of event 'cpu/cycles/P'
+# Event count (approx.): 729328860
+#
+# Children      Self  Symbol                                                                                                                                                                                                                                                                                                                                                                 IPC   [IPC Coverage]
+# ........  ........  .....................................................................................................................................................................................................................................................................................................................................................................  ....................
+#
+    48.00%    46.59%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                           -      -            
+            |          
+            |--8.24%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--7.72%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          |          
+            |          |--0.86%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |          |          
+            |          |--0.27%--0xffffffffb640160a
+            |          |          |          
+            |          |          |--0.16%--0xffffffffb7bbbfd8
+            |          |          |          0xffffffffb6788468
+            |          |          |          |          
+            |          |          |          |--0.11%--0xffffffffb692d8f7
+            |          |          |          |          0xffffffffb692ca88
+            |          |          |          |          0xffffffffb694675f
+            |          |          |          |          0xffffffffb692ac95
+            |          |          |          |          0xffffffffb684a0d2
+            |          |          |          |          0xffffffffb684436d
+            |          |          |          |          0xffffffffb68a832f
+            |          |          |          |          0xffffffffb674d78b
+            |          |          |          |          
+            |          |          |           --0.05%--0xffffffffb692d801
+            |          |          |          
+            |          |           --0.11%--0xffffffffb7bbd005
+            |          |                     0xffffffffb6915e47
+            |          |          
+            |          |--0.22%--__libc_malloc2
+            |          |          _int_malloc
+            |          |          
+            |           --0.06%--0xffffffffb64012a6
+            |                     0xffffffffb7bbca10
+            |                     0xffffffffb67ae9dd
+            |                     0xffffffffb6bc2a84
+            |                     0xffffffffb6bc271c
+            |                     0xffffffffb6bc0da7
+            |                     0xffffffffb6bc09dd
+            |                     0xffffffffb6c439aa
+            |                     0xffffffffb6c40752
+            |                     0xffffffffb6bfda80
+            |                     0xffffffffb6bfc264
+            |                     0xffffffffb6bfa17d
+            |                     0xffffffffb6bf8eab
+            |          
+            |--0.12%--0x190b
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x1d1f
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x1a20
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x18fe
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x1e94
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x30
+            |          markit_mdbench_h4diag::cli::cmd_pmu_run
+            |          <std::io::buffered::bufwriter::BufWriter<std::fs::File>>::write_all_cold
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x11dd
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x1cc1
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x1547
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.12%--0x188a
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x124b
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x102d
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1f51
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1a1b
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1d0c
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1ab9
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1ab6
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1d97
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1dcf
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x19da
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1e7b
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x109f
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1de6
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1f7a
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1aa2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1d88
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x119a
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1771
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1b34
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1b21
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1cac
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1ba4
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1930
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x13c7
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1207
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1db2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x16c5
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1f33
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x191d
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x122a
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x1023
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x16ab
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x15b7
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.11%--0x80046
+            |          0x5595bea49393
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.10%--0x18fd
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.10%--0x1b24
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.10%--0x1d6f
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.10%--0x11bb
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--0.09%--0x1d02
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+             --0.04%--0x105d
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+    20.80%    20.80%  [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>                                                                                                                                                                                                                                                                                 -      -            
+            |          
+             --8.59%--0xfff
+                       core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+
+    12.38%    12.38%  [.] core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}  -      -            
+            |          
+            |--3.26%--core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--0.56%--clock_gettime@@GLIBC_2.17
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--0.34%--0x80085
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--0.11%--0x4e93664b
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--0.11%--0x6edc73e1
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--0.11%--0x5a322f7b
+            |          core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+             --0.11%--0x7b36c899
+                       core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     9.38%     0.00%  [.] markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>                                                                                                                                                                                                                                                                           -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               |          
+               |--0.86%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+               |          
+               |--0.22%--__libc_malloc2
+               |          _int_malloc
+               |          
+                --0.06%--0xffffffffb64012a6
+                          0xffffffffb7bbca10
+                          0xffffffffb67ae9dd
+                          0xffffffffb6bc2a84
+                          0xffffffffb6bc271c
+                          0xffffffffb6bc0da7
+                          0xffffffffb6bc09dd
+                          0xffffffffb6c439aa
+                          0xffffffffb6c40752
+                          0xffffffffb6bfda80
+                          0xffffffffb6bfc264
+                          0xffffffffb6bfa17d
+                          0xffffffffb6bf8eab
+
+     8.59%     0.00%  [.] 0x0000000000000fff                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+
+     5.91%     5.91%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                   -      -            
+            |          
+             --2.43%--0x2
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+
+     5.02%     5.02%  [.] markit_mdbench_h4diag::alg::collect_defs_skel                                                                                                                                                                                                                                                                                                                      -      -            
+            |          
+            |--1.01%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--0.55%--markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--0.22%--0x12f
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+             --0.12%--0x559500000012
+                       markit_mdbench_h4diag::alg::collect_defs_skel
+
+     4.56%     4.56%  [.] markit_mdbench_h4diag::alg::skel_count                                                                                                                                                                                                                                                                                                                             -      -            
+            |          
+            |--0.75%--0x12f
+            |          markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--0.46%--markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--0.34%--0x559500000012
+            |          markit_mdbench_h4diag::alg::skel_count
+            |          
+             --0.23%--0x7
+                       markit_mdbench_h4diag::alg::skel_count
+
+     2.43%     0.00%  [.] 0x0000000000000002                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+
+     1.86%     1.86%  [.] core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>                                                                                                                                                                                                                                                                                                    -      -            
+            |          
+             --0.86%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+                       core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+     1.22%     0.22%  [.] __syscall_cancel                                                                                                                                                                                                                                                                                                                                                   -      -            
+            |          
+            |--1.00%--__syscall_cancel
+            |          __internal_syscall_cancel
+            |          |          
+            |          |--0.88%--0xffffffffb640012f
+            |          |          |          
+            |          |          |--0.77%--0xffffffffb7bb4a92
+            |          |          |          |          
+            |          |          |          |--0.34%--0xffffffffb6cc9e4f
+            |          |          |          |          0xffffffffb6cc9ae4
+            |          |          |          |          0xffffffffb6cd89a6
+            |          |          |          |          |          
+            |          |          |          |          |--0.22%--0xffffffffb6cd8555
+            |          |          |          |          |          0xffffffffb68a6283
+            |          |          |          |          |          0xffffffffb689cb8a
+            |          |          |          |          |          0xffffffffb6cec787
+            |          |          |          |          |          0xffffffffb684dc82
+            |          |          |          |          |          |          
+            |          |          |          |          |          |--0.11%--0xffffffffb6846518
+            |          |          |          |          |          |          0xffffffffb6861621
+            |          |          |          |          |          |          0xffffffffb685eb72
+            |          |          |          |          |          |          
+            |          |          |          |          |           --0.11%--0xffffffffb6846557
+            |          |          |          |          |          
+            |          |          |          |           --0.12%--0xffffffffb6cd8059
+            |          |          |          |          
+            |          |          |          |--0.33%--0xffffffffb6cc9ccf
+            |          |          |          |          |          
+            |          |          |          |          |--0.22%--0xffffffffb6cc9025
+            |          |          |          |          |          0xffffffffb6cd8f86
+            |          |          |          |          |          0xffffffffb6cd8da6
+            |          |          |          |          |          0xffffffffb7bc4567
+            |          |          |          |          |          |          
+            |          |          |          |          |          |--0.11%--0xffffffffb7bc403e
+            |          |          |          |          |          |          0xffffffffb683f35f
+            |          |          |          |          |          |          0xffffffffb6b2aa32
+            |          |          |          |          |          |          0xffffffffb6b27f88
+            |          |          |          |          |          |          0xffffffffb6b20737
+            |          |          |          |          |          |          0xffffffffb66fc501
+            |          |          |          |          |          |          
+            |          |          |          |          |           --0.11%--0xffffffffb7bc3fb3
+            |          |          |          |          |                     0xffffffffb68469ce
+            |          |          |          |          |                     0xffffffffb68605b7
+            |          |          |          |          |                     0xffffffffb685fc80
+            |          |          |          |          |                     0xffffffffb685f9b8
+            |          |          |          |          |                     0xffffffffb6852d22
+            |          |          |          |          |          
+            |          |          |          |           --0.11%--0xffffffffb6cc8e21
+            |          |          |          |          
+            |          |          |           --0.10%--0xffffffffb6cc9daa
+            |          |          |                     0xffffffffb6cfdfb2
+            |          |          |          
+            |          |           --0.11%--0xffffffffb7bb4acf
+            |          |                     0xffffffffb66f7a84
+            |          |                     0xffffffffb6751074
+            |          |          
+            |           --0.11%--0xffffffffb64001c8
+            |          
+             --0.22%--<markit_mdbench_h4diag::cli::PerfControl>::command
+                       |          
+                       |--0.11%--__GI___libc_write
+                       |          __syscall_cancel
+                       |          
+                        --0.11%--read
+                                  __syscall_cancel
+
+     1.11%     0.11%  [.] __internal_syscall_cancel                                                                                                                                                                                                                                                                                                                                          -      -            
+            |          
+            |--1.00%--__internal_syscall_cancel
+            |          |          
+            |          |--0.88%--0xffffffffb640012f
+            |          |          |          
+            |          |          |--0.77%--0xffffffffb7bb4a92
+            |          |          |          |          
+            |          |          |          |--0.34%--0xffffffffb6cc9e4f
+            |          |          |          |          0xffffffffb6cc9ae4
+            |          |          |          |          0xffffffffb6cd89a6
+            |          |          |          |          |          
+            |          |          |          |          |--0.22%--0xffffffffb6cd8555
+            |          |          |          |          |          0xffffffffb68a6283
+            |          |          |          |          |          0xffffffffb689cb8a
+            |          |          |          |          |          0xffffffffb6cec787
+            |          |          |          |          |          0xffffffffb684dc82
+            |          |          |          |          |          |          
+            |          |          |          |          |          |--0.11%--0xffffffffb6846518
+            |          |          |          |          |          |          0xffffffffb6861621
+            |          |          |          |          |          |          0xffffffffb685eb72
+            |          |          |          |          |          |          
+            |          |          |          |          |           --0.11%--0xffffffffb6846557
+            |          |          |          |          |          
+            |          |          |          |           --0.12%--0xffffffffb6cd8059
+            |          |          |          |          
+            |          |          |          |--0.33%--0xffffffffb6cc9ccf
+            |          |          |          |          |          
+            |          |          |          |          |--0.22%--0xffffffffb6cc9025
+            |          |          |          |          |          0xffffffffb6cd8f86
+            |          |          |          |          |          0xffffffffb6cd8da6
+            |          |          |          |          |          0xffffffffb7bc4567
+            |          |          |          |          |          |          
+            |          |          |          |          |          |--0.11%--0xffffffffb7bc403e
+            |          |          |          |          |          |          0xffffffffb683f35f
+            |          |          |          |          |          |          0xffffffffb6b2aa32
+            |          |          |          |          |          |          0xffffffffb6b27f88
+            |          |          |          |          |          |          0xffffffffb6b20737
+            |          |          |          |          |          |          0xffffffffb66fc501
+            |          |          |          |          |          |          
+            |          |          |          |          |           --0.11%--0xffffffffb7bc3fb3
+            |          |          |          |          |                     0xffffffffb68469ce
+            |          |          |          |          |                     0xffffffffb68605b7
+            |          |          |          |          |                     0xffffffffb685fc80
+            |          |          |          |          |                     0xffffffffb685f9b8
+            |          |          |          |          |                     0xffffffffb6852d22
+            |          |          |          |          |          
+            |          |          |          |           --0.11%--0xffffffffb6cc8e21
+            |          |          |          |          
+            |          |          |           --0.10%--0xffffffffb6cc9daa
+            |          |          |                     0xffffffffb6cfdfb2
+            |          |          |          
+            |          |           --0.11%--0xffffffffb7bb4acf
+            |          |                     0xffffffffb66f7a84
+            |          |                     0xffffffffb6751074
+            |          |          
+            |           --0.11%--0xffffffffb64001c8
+            |          
+             --0.11%--<markit_mdbench_h4diag::cli::PerfControl>::command
+                       read
+                       __internal_syscall_cancel
+
+     1.01%     0.00%  [.] 0xfffffffffffffffe                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---markit_mdbench_h4diag::alg::collect_defs_skel
+
+     0.98%     0.00%  [.] 0x000000000000012f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.75%--markit_mdbench_h4diag::alg::skel_count
+            |          
+             --0.22%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+     0.88%     0.00%  [.] 0xffffffffb640012f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.77%--0xffffffffb7bb4a92
+            |          |          
+            |          |--0.34%--0xffffffffb6cc9e4f
+            |          |          0xffffffffb6cc9ae4
+            |          |          0xffffffffb6cd89a6
+            |          |          |          
+            |          |          |--0.22%--0xffffffffb6cd8555
+            |          |          |          0xffffffffb68a6283
+            |          |          |          0xffffffffb689cb8a
+            |          |          |          0xffffffffb6cec787
+            |          |          |          0xffffffffb684dc82
+            |          |          |          |          
+            |          |          |          |--0.11%--0xffffffffb6846518
+            |          |          |          |          0xffffffffb6861621
+            |          |          |          |          0xffffffffb685eb72
+            |          |          |          |          
+            |          |          |           --0.11%--0xffffffffb6846557
+            |          |          |          
+            |          |           --0.12%--0xffffffffb6cd8059
+            |          |          
+            |          |--0.33%--0xffffffffb6cc9ccf
+            |          |          |          
+            |          |          |--0.22%--0xffffffffb6cc9025
+            |          |          |          0xffffffffb6cd8f86
+            |          |          |          0xffffffffb6cd8da6
+            |          |          |          0xffffffffb7bc4567
+            |          |          |          |          
+            |          |          |          |--0.11%--0xffffffffb7bc403e
+            |          |          |          |          0xffffffffb683f35f
+            |          |          |          |          0xffffffffb6b2aa32
+            |          |          |          |          0xffffffffb6b27f88
+            |          |          |          |          0xffffffffb6b20737
+            |          |          |          |          0xffffffffb66fc501
+            |          |          |          |          
+            |          |          |           --0.11%--0xffffffffb7bc3fb3
+            |          |          |                     0xffffffffb68469ce
+            |          |          |                     0xffffffffb68605b7
+            |          |          |                     0xffffffffb685fc80
+            |          |          |                     0xffffffffb685f9b8
+            |          |          |                     0xffffffffb6852d22
+            |          |          |          
+            |          |           --0.11%--0xffffffffb6cc8e21
+            |          |          
+            |           --0.10%--0xffffffffb6cc9daa
+            |                     0xffffffffb6cfdfb2
+            |          
+             --0.11%--0xffffffffb7bb4acf
+                       0xffffffffb66f7a84
+                       0xffffffffb6751074
+
+     0.77%     0.00%  [.] 0xffffffffb7bb4a92                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.34%--0xffffffffb6cc9e4f
+            |          0xffffffffb6cc9ae4
+            |          0xffffffffb6cd89a6
+            |          |          
+            |          |--0.22%--0xffffffffb6cd8555
+            |          |          0xffffffffb68a6283
+            |          |          0xffffffffb689cb8a
+            |          |          0xffffffffb6cec787
+            |          |          0xffffffffb684dc82
+            |          |          |          
+            |          |          |--0.11%--0xffffffffb6846518
+            |          |          |          0xffffffffb6861621
+            |          |          |          0xffffffffb685eb72
+            |          |          |          
+            |          |           --0.11%--0xffffffffb6846557
+            |          |          
+            |           --0.12%--0xffffffffb6cd8059
+            |          
+            |--0.33%--0xffffffffb6cc9ccf
+            |          |          
+            |          |--0.22%--0xffffffffb6cc9025
+            |          |          0xffffffffb6cd8f86
+            |          |          0xffffffffb6cd8da6
+            |          |          0xffffffffb7bc4567
+            |          |          |          
+            |          |          |--0.11%--0xffffffffb7bc403e
+            |          |          |          0xffffffffb683f35f
+            |          |          |          0xffffffffb6b2aa32
+            |          |          |          0xffffffffb6b27f88
+            |          |          |          0xffffffffb6b20737
+            |          |          |          0xffffffffb66fc501
+            |          |          |          
+            |          |           --0.11%--0xffffffffb7bc3fb3
+            |          |                     0xffffffffb68469ce
+            |          |                     0xffffffffb68605b7
+            |          |                     0xffffffffb685fc80
+            |          |                     0xffffffffb685f9b8
+            |          |                     0xffffffffb6852d22
+            |          |          
+            |           --0.11%--0xffffffffb6cc8e21
+            |          
+             --0.10%--0xffffffffb6cc9daa
+                       0xffffffffb6cfdfb2
+
+     0.67%     0.00%  [.] <markit_mdbench_h4diag::cli::PerfControl>::command                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.35%--__GI___libc_write
+            |          __syscall_cancel
+            |          |          
+            |           --0.23%--__internal_syscall_cancel
+            |                     0xffffffffb640012f
+            |                     0xffffffffb7bb4a92
+            |                     0xffffffffb6cc9e4f
+            |                     0xffffffffb6cc9ae4
+            |                     0xffffffffb6cd89a6
+            |                     |          
+            |                     |--0.12%--0xffffffffb6cd8059
+            |                     |          
+            |                      --0.11%--0xffffffffb6cd8555
+            |                                0xffffffffb68a6283
+            |                                0xffffffffb689cb8a
+            |                                0xffffffffb6cec787
+            |                                0xffffffffb684dc82
+            |                                0xffffffffb6846518
+            |                                0xffffffffb6861621
+            |                                0xffffffffb685eb72
+            |          
+             --0.33%--read
+                       |          
+                       |--0.22%--__syscall_cancel
+                       |          |          
+                       |           --0.11%--__internal_syscall_cancel
+                       |                     0xffffffffb640012f
+                       |                     0xffffffffb7bb4acf
+                       |                     0xffffffffb66f7a84
+                       |                     0xffffffffb6751074
+                       |          
+                        --0.11%--__internal_syscall_cancel
+
+     0.67%     0.00%  [.] __GI___libc_write                                                                                                                                                                                                                                                                                                                                                  -      -            
+            |
+            ---__syscall_cancel
+               |          
+                --0.56%--__internal_syscall_cancel
+                          |          
+                          |--0.44%--0xffffffffb640012f
+                          |          0xffffffffb7bb4a92
+                          |          |          
+                          |          |--0.34%--0xffffffffb6cc9e4f
+                          |          |          0xffffffffb6cc9ae4
+                          |          |          0xffffffffb6cd89a6
+                          |          |          |          
+                          |          |          |--0.22%--0xffffffffb6cd8555
+                          |          |          |          0xffffffffb68a6283
+                          |          |          |          0xffffffffb689cb8a
+                          |          |          |          0xffffffffb6cec787
+                          |          |          |          0xffffffffb684dc82
+                          |          |          |          |          
+                          |          |          |          |--0.11%--0xffffffffb6846518
+                          |          |          |          |          0xffffffffb6861621
+                          |          |          |          |          0xffffffffb685eb72
+                          |          |          |          |          
+                          |          |          |           --0.11%--0xffffffffb6846557
+                          |          |          |          
+                          |          |           --0.12%--0xffffffffb6cd8059
+                          |          |          
+                          |           --0.10%--0xffffffffb6cc9daa
+                          |                     0xffffffffb6cfdfb2
+                          |          
+                           --0.11%--0xffffffffb64001c8
+
+     0.66%     0.00%  [.] read                                                                                                                                                                                                                                                                                                                                                               -      -            
+            |          
+            |--0.55%--__syscall_cancel
+            |          |          
+            |           --0.44%--__internal_syscall_cancel
+            |                     0xffffffffb640012f
+            |                     |          
+            |                     |--0.33%--0xffffffffb7bb4a92
+            |                     |          0xffffffffb6cc9ccf
+            |                     |          |          
+            |                     |          |--0.22%--0xffffffffb6cc9025
+            |                     |          |          0xffffffffb6cd8f86
+            |                     |          |          0xffffffffb6cd8da6
+            |                     |          |          0xffffffffb7bc4567
+            |                     |          |          |          
+            |                     |          |          |--0.11%--0xffffffffb7bc403e
+            |                     |          |          |          0xffffffffb683f35f
+            |                     |          |          |          0xffffffffb6b2aa32
+            |                     |          |          |          0xffffffffb6b27f88
+            |                     |          |          |          0xffffffffb6b20737
+            |                     |          |          |          0xffffffffb66fc501
+            |                     |          |          |          
+            |                     |          |           --0.11%--0xffffffffb7bc3fb3
+            |                     |          |                     0xffffffffb68469ce
+            |                     |          |                     0xffffffffb68605b7
+            |                     |          |                     0xffffffffb685fc80
+            |                     |          |                     0xffffffffb685f9b8
+            |                     |          |                     0xffffffffb6852d22
+            |                     |          |          
+            |                     |           --0.11%--0xffffffffb6cc8e21
+            |                     |          
+            |                      --0.11%--0xffffffffb7bb4acf
+            |                                0xffffffffb66f7a84
+            |                                0xffffffffb6751074
+            |          
+             --0.11%--__internal_syscall_cancel
+
+     0.56%     0.00%  [.] clock_gettime@@GLIBC_2.17                                                                                                                                                                                                                                                                                                                                          -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.49%     0.00%  [.] 0xffffffffb640160a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.28%--0xffffffffb7bbbfd8
+            |          0xffffffffb6788468
+            |          |          
+            |          |--0.22%--0xffffffffb692d8f7
+            |          |          0xffffffffb692ca88
+            |          |          |          
+            |          |          |--0.11%--0xffffffffb694680c
+            |          |          |          0xffffffffb6933613
+            |          |          |          0xffffffffb6931fc4
+            |          |          |          
+            |          |           --0.11%--0xffffffffb694675f
+            |          |                     0xffffffffb692ac95
+            |          |                     0xffffffffb684a0d2
+            |          |                     0xffffffffb684436d
+            |          |                     0xffffffffb68a832f
+            |          |                     0xffffffffb674d78b
+            |          |          
+            |           --0.05%--0xffffffffb692d801
+            |          
+            |--0.11%--0xffffffffb7bbd005
+            |          0xffffffffb6915e47
+            |          
+             --0.10%--0xffffffffb7bbbfae
+                       0xffffffffb7bbce73
+
+     0.46%     0.00%  [.] 0x0000559500000012                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.34%--markit_mdbench_h4diag::alg::skel_count
+            |          
+             --0.12%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+     0.34%     0.00%  [.] 0xffffffffb6cc9e4f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cc9ae4
+               0xffffffffb6cd89a6
+               |          
+               |--0.22%--0xffffffffb6cd8555
+               |          0xffffffffb68a6283
+               |          0xffffffffb689cb8a
+               |          0xffffffffb6cec787
+               |          0xffffffffb684dc82
+               |          |          
+               |          |--0.11%--0xffffffffb6846518
+               |          |          0xffffffffb6861621
+               |          |          0xffffffffb685eb72
+               |          |          
+               |           --0.11%--0xffffffffb6846557
+               |          
+                --0.12%--0xffffffffb6cd8059
+
+     0.34%     0.00%  [.] 0xffffffffb6cc9ae4                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cd89a6
+               |          
+               |--0.22%--0xffffffffb6cd8555
+               |          0xffffffffb68a6283
+               |          0xffffffffb689cb8a
+               |          0xffffffffb6cec787
+               |          0xffffffffb684dc82
+               |          |          
+               |          |--0.11%--0xffffffffb6846518
+               |          |          0xffffffffb6861621
+               |          |          0xffffffffb685eb72
+               |          |          
+               |           --0.11%--0xffffffffb6846557
+               |          
+                --0.12%--0xffffffffb6cd8059
+
+     0.34%     0.00%  [.] 0xffffffffb6cd89a6                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.22%--0xffffffffb6cd8555
+            |          0xffffffffb68a6283
+            |          0xffffffffb689cb8a
+            |          0xffffffffb6cec787
+            |          0xffffffffb684dc82
+            |          |          
+            |          |--0.11%--0xffffffffb6846518
+            |          |          0xffffffffb6861621
+            |          |          0xffffffffb685eb72
+            |          |          
+            |           --0.11%--0xffffffffb6846557
+            |          
+             --0.12%--0xffffffffb6cd8059
+
+     0.34%     0.34%  [.] _int_malloc                                                                                                                                                                                                                                                                                                                                                        -      -            
+            |          
+            |--0.22%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          __libc_malloc2
+            |          _int_malloc
+            |          
+             --0.12%--__libc_malloc2
+                       _int_malloc
+
+     0.34%     0.00%  [.] __libc_malloc2                                                                                                                                                                                                                                                                                                                                                     -      -            
+            |
+            ---_int_malloc
+
+     0.34%     0.00%  [.] 0x0000000000080085                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.33%     0.00%  [.] 0xffffffffb6cc9ccf                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.22%--0xffffffffb6cc9025
+            |          0xffffffffb6cd8f86
+            |          0xffffffffb6cd8da6
+            |          0xffffffffb7bc4567
+            |          |          
+            |          |--0.11%--0xffffffffb7bc403e
+            |          |          0xffffffffb683f35f
+            |          |          0xffffffffb6b2aa32
+            |          |          0xffffffffb6b27f88
+            |          |          0xffffffffb6b20737
+            |          |          0xffffffffb66fc501
+            |          |          
+            |           --0.11%--0xffffffffb7bc3fb3
+            |                     0xffffffffb68469ce
+            |                     0xffffffffb68605b7
+            |                     0xffffffffb685fc80
+            |                     0xffffffffb685f9b8
+            |                     0xffffffffb6852d22
+            |          
+             --0.11%--0xffffffffb6cc8e21
+
+     0.28%     0.00%  [.] 0xffffffffb7bbbfd8                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6788468
+               |          
+               |--0.22%--0xffffffffb692d8f7
+               |          0xffffffffb692ca88
+               |          |          
+               |          |--0.11%--0xffffffffb694680c
+               |          |          0xffffffffb6933613
+               |          |          0xffffffffb6931fc4
+               |          |          
+               |           --0.11%--0xffffffffb694675f
+               |                     0xffffffffb692ac95
+               |                     0xffffffffb684a0d2
+               |                     0xffffffffb684436d
+               |                     0xffffffffb68a832f
+               |                     0xffffffffb674d78b
+               |          
+                --0.05%--0xffffffffb692d801
+
+     0.28%     0.00%  [.] 0xffffffffb6788468                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.22%--0xffffffffb692d8f7
+            |          0xffffffffb692ca88
+            |          |          
+            |          |--0.11%--0xffffffffb694680c
+            |          |          0xffffffffb6933613
+            |          |          0xffffffffb6931fc4
+            |          |          
+            |           --0.11%--0xffffffffb694675f
+            |                     0xffffffffb692ac95
+            |                     0xffffffffb684a0d2
+            |                     0xffffffffb684436d
+            |                     0xffffffffb68a832f
+            |                     0xffffffffb674d78b
+            |          
+             --0.05%--0xffffffffb692d801
+
+     0.23%     0.00%  [.] 0x0000000000000007                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---markit_mdbench_h4diag::alg::skel_count
+
+     0.22%     0.00%  [.] 0xffffffffb692d8f7                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb692ca88
+               |          
+               |--0.11%--0xffffffffb694680c
+               |          0xffffffffb6933613
+               |          0xffffffffb6931fc4
+               |          
+                --0.11%--0xffffffffb694675f
+                          0xffffffffb692ac95
+                          0xffffffffb684a0d2
+                          0xffffffffb684436d
+                          0xffffffffb68a832f
+                          0xffffffffb674d78b
+
+     0.22%     0.00%  [.] 0xffffffffb692ca88                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.11%--0xffffffffb694680c
+            |          0xffffffffb6933613
+            |          0xffffffffb6931fc4
+            |          
+             --0.11%--0xffffffffb694675f
+                       0xffffffffb692ac95
+                       0xffffffffb684a0d2
+                       0xffffffffb684436d
+                       0xffffffffb68a832f
+                       0xffffffffb674d78b
+
+     0.22%     0.12%  [.] _int_realloc                                                                                                                                                                                                                                                                                                                                                       -      -            
+            |          
+            |--0.12%--0x1000
+            |          <alloc::raw_vec::RawVecInner>::finish_grow
+            |          realloc
+            |          _int_realloc
+            |          
+             --0.11%--_int_realloc
+                       _int_free_chunk
+
+     0.22%     0.00%  [.] realloc                                                                                                                                                                                                                                                                                                                                                            -      -            
+            |
+            ---_int_realloc
+               |          
+                --0.11%--_int_free_chunk
+
+     0.22%     0.00%  [.] 0xffffffffb6cd8555                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb68a6283
+               0xffffffffb689cb8a
+               0xffffffffb6cec787
+               0xffffffffb684dc82
+               |          
+               |--0.11%--0xffffffffb6846518
+               |          0xffffffffb6861621
+               |          0xffffffffb685eb72
+               |          
+                --0.11%--0xffffffffb6846557
+
+     0.22%     0.00%  [.] 0xffffffffb68a6283                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb689cb8a
+               0xffffffffb6cec787
+               0xffffffffb684dc82
+               |          
+               |--0.11%--0xffffffffb6846518
+               |          0xffffffffb6861621
+               |          0xffffffffb685eb72
+               |          
+                --0.11%--0xffffffffb6846557
+
+     0.22%     0.00%  [.] 0xffffffffb689cb8a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cec787
+               0xffffffffb684dc82
+               |          
+               |--0.11%--0xffffffffb6846518
+               |          0xffffffffb6861621
+               |          0xffffffffb685eb72
+               |          
+                --0.11%--0xffffffffb6846557
+
+     0.22%     0.00%  [.] 0xffffffffb6cec787                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb684dc82
+               |          
+               |--0.11%--0xffffffffb6846518
+               |          0xffffffffb6861621
+               |          0xffffffffb685eb72
+               |          
+                --0.11%--0xffffffffb6846557
+
+     0.22%     0.00%  [.] 0xffffffffb684dc82                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.11%--0xffffffffb6846518
+            |          0xffffffffb6861621
+            |          0xffffffffb685eb72
+            |          
+             --0.11%--0xffffffffb6846557
+
+     0.22%     0.00%  [.] 0xffffffffb6cc9025                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cd8f86
+               0xffffffffb6cd8da6
+               0xffffffffb7bc4567
+               |          
+               |--0.11%--0xffffffffb7bc403e
+               |          0xffffffffb683f35f
+               |          0xffffffffb6b2aa32
+               |          0xffffffffb6b27f88
+               |          0xffffffffb6b20737
+               |          0xffffffffb66fc501
+               |          
+                --0.11%--0xffffffffb7bc3fb3
+                          0xffffffffb68469ce
+                          0xffffffffb68605b7
+                          0xffffffffb685fc80
+                          0xffffffffb685f9b8
+                          0xffffffffb6852d22
+
+     0.22%     0.00%  [.] 0xffffffffb6cd8f86                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cd8da6
+               0xffffffffb7bc4567
+               |          
+               |--0.11%--0xffffffffb7bc403e
+               |          0xffffffffb683f35f
+               |          0xffffffffb6b2aa32
+               |          0xffffffffb6b27f88
+               |          0xffffffffb6b20737
+               |          0xffffffffb66fc501
+               |          
+                --0.11%--0xffffffffb7bc3fb3
+                          0xffffffffb68469ce
+                          0xffffffffb68605b7
+                          0xffffffffb685fc80
+                          0xffffffffb685f9b8
+                          0xffffffffb6852d22
+
+     0.22%     0.00%  [.] 0xffffffffb6cd8da6                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb7bc4567
+               |          
+               |--0.11%--0xffffffffb7bc403e
+               |          0xffffffffb683f35f
+               |          0xffffffffb6b2aa32
+               |          0xffffffffb6b27f88
+               |          0xffffffffb6b20737
+               |          0xffffffffb66fc501
+               |          
+                --0.11%--0xffffffffb7bc3fb3
+                          0xffffffffb68469ce
+                          0xffffffffb68605b7
+                          0xffffffffb685fc80
+                          0xffffffffb685f9b8
+                          0xffffffffb6852d22
+
+     0.22%     0.00%  [.] 0xffffffffb7bc4567                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |          
+            |--0.11%--0xffffffffb7bc403e
+            |          0xffffffffb683f35f
+            |          0xffffffffb6b2aa32
+            |          0xffffffffb6b27f88
+            |          0xffffffffb6b20737
+            |          0xffffffffb66fc501
+            |          
+             --0.11%--0xffffffffb7bc3fb3
+                       0xffffffffb68469ce
+                       0xffffffffb68605b7
+                       0xffffffffb685fc80
+                       0xffffffffb685f9b8
+                       0xffffffffb6852d22
+
+     0.12%     0.00%  [.] 0x000000000000190b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.12%  [k] 0xffffffffb6cd8051                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__GI___libc_write
+               __syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9e4f
+               0xffffffffb6cc9ae4
+               0xffffffffb6cd89a6
+               0xffffffffb6cd8059
+
+     0.12%     0.00%  [.] 0xffffffffb6cd8059                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.12%     0.00%  [.] 0x0000000000001d1f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x0000000000001a20                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x00000000000018fe                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x0000000000001e94                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x0000000000000030                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---markit_mdbench_h4diag::cli::cmd_pmu_run
+               <std::io::buffered::bufwriter::BufWriter<std::fs::File>>::write_all_cold
+               <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] markit_mdbench_h4diag::cli::cmd_pmu_run                                                                                                                                                                                                                                                                                                                            -      -            
+            |
+            ---<std::io::buffered::bufwriter::BufWriter<std::fs::File>>::write_all_cold
+               <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] <std::io::buffered::bufwriter::BufWriter<std::fs::File>>::write_all_cold                                                                                                                                                                                                                                                                                           -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x00000000000011dd                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x0000000000001cc1                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x0000000000001000                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<alloc::raw_vec::RawVecInner>::finish_grow
+               realloc
+               _int_realloc
+
+     0.12%     0.00%  [.] <alloc::raw_vec::RawVecInner>::finish_grow                                                                                                                                                                                                                                                                                                                         -      -            
+            |
+            ---realloc
+               _int_realloc
+
+     0.12%     0.00%  [.] 0x0000000000001547                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.12%     0.00%  [.] 0x000000000000188a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb6cc8e19                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9ccf
+               0xffffffffb6cc8e21
+
+     0.11%     0.00%  [.] 0xffffffffb6cc8e21                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x000000000000124b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000000000102d                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [.] core::str::converts::from_utf8                                                                                                                                                                                                                                                                                                                                     -      -            
+     0.11%     0.00%  [.] 0x0000000000001f51                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001a1b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001d0c                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb6931fbd                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb7bbbfd8
+               0xffffffffb6788468
+               0xffffffffb692d8f7
+               0xffffffffb692ca88
+               0xffffffffb694680c
+               0xffffffffb6933613
+               0xffffffffb6931fc4
+
+     0.11%     0.00%  [.] 0xffffffffb694680c                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6933613
+               0xffffffffb6931fc4
+
+     0.11%     0.00%  [.] 0xffffffffb6933613                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6931fc4
+
+     0.11%     0.00%  [.] 0xffffffffb6931fc4                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.11%  [k] 0xffffffffb64001c1                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb64001c8
+
+     0.11%     0.00%  [.] 0xffffffffb64001c8                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x000000004e93664b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.11%     0.00%  [.] 0x0000000000001ab9                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000006edc73e1                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.11%     0.00%  [.] 0x0000000000001ab6                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001d97                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001dcf                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x00000000000019da                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001e7b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000000000109f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001de6                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb6915e3f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb640160a
+               0xffffffffb7bbd005
+               0xffffffffb6915e47
+
+     0.11%     0.00%  [.] 0xffffffffb7bbd005                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6915e47
+
+     0.11%     0.00%  [.] 0xffffffffb6915e47                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x000000005a322f7b                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.11%     0.00%  [.] 0x0000000000001f7a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001aa2                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001d88                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000000000119a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb674d784                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               0xffffffffb640160a
+               0xffffffffb7bbbfd8
+               0xffffffffb6788468
+               0xffffffffb692d8f7
+               0xffffffffb692ca88
+               0xffffffffb694675f
+               0xffffffffb692ac95
+               0xffffffffb684a0d2
+               0xffffffffb684436d
+               0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [k] 0x0000000000001bb4                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               0xffffffffb640160a
+               0xffffffffb7bbbfd8
+               0xffffffffb6788468
+               0xffffffffb692d8f7
+               0xffffffffb692ca88
+               0xffffffffb694675f
+               0xffffffffb692ac95
+               0xffffffffb684a0d2
+               0xffffffffb684436d
+               0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb694675f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb692ac95
+               0xffffffffb684a0d2
+               0xffffffffb684436d
+               0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb692ac95                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb684a0d2
+               0xffffffffb684436d
+               0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb684a0d2                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb684436d
+               0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb684436d                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb68a832f
+               0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb68a832f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb674d78b
+
+     0.11%     0.00%  [.] 0xffffffffb674d78b                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.11%  [k] 0xffffffffb685eb6e                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__GI___libc_write
+               __syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9e4f
+               0xffffffffb6cc9ae4
+               0xffffffffb6cd89a6
+               0xffffffffb6cd8555
+               0xffffffffb68a6283
+               0xffffffffb689cb8a
+               0xffffffffb6cec787
+               0xffffffffb684dc82
+               0xffffffffb6846518
+               0xffffffffb6861621
+               0xffffffffb685eb72
+
+     0.11%     0.00%  [.] 0xffffffffb6846518                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6861621
+               0xffffffffb685eb72
+
+     0.11%     0.00%  [.] 0xffffffffb6861621                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb685eb72
+
+     0.11%     0.00%  [.] 0xffffffffb685eb72                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x0000000000001771                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001b34                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001b21                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001cac                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>                                                                                                                                                                                                                                                                                                    -      -            
+     0.11%     0.00%  [.] 0x0000000000001ba4                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb6751070                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---read
+               __syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4acf
+               0xffffffffb66f7a84
+               0xffffffffb6751074
+
+     0.11%     0.00%  [.] 0xffffffffb7bb4acf                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb66f7a84
+               0xffffffffb6751074
+
+     0.11%     0.00%  [.] 0xffffffffb66f7a84                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6751074
+
+     0.11%     0.00%  [.] 0xffffffffb6751074                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x0000000000001930                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000007b36c899                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.11%     0.11%  [k] 0xffffffffb66fc4f9                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9ccf
+               0xffffffffb6cc9025
+               0xffffffffb6cd8f86
+               0xffffffffb6cd8da6
+               0xffffffffb7bc4567
+               0xffffffffb7bc403e
+               0xffffffffb683f35f
+               0xffffffffb6b2aa32
+               0xffffffffb6b27f88
+               0xffffffffb6b20737
+               0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb7bc403e                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb683f35f
+               0xffffffffb6b2aa32
+               0xffffffffb6b27f88
+               0xffffffffb6b20737
+               0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb683f35f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6b2aa32
+               0xffffffffb6b27f88
+               0xffffffffb6b20737
+               0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb6b2aa32                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6b27f88
+               0xffffffffb6b20737
+               0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb6b27f88                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6b20737
+               0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb6b20737                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb66fc501
+
+     0.11%     0.00%  [.] 0xffffffffb66fc501                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x00000000000013c7                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001207                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000001db2                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [k] 0xffffffffb6852d1f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9ccf
+               0xffffffffb6cc9025
+               0xffffffffb6cd8f86
+               0xffffffffb6cd8da6
+               0xffffffffb7bc4567
+               0xffffffffb7bc3fb3
+               0xffffffffb68469ce
+               0xffffffffb68605b7
+               0xffffffffb685fc80
+               0xffffffffb685f9b8
+               0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb7bc3fb3                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb68469ce
+               0xffffffffb68605b7
+               0xffffffffb685fc80
+               0xffffffffb685f9b8
+               0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb68469ce                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb68605b7
+               0xffffffffb685fc80
+               0xffffffffb685f9b8
+               0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb68605b7                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb685fc80
+               0xffffffffb685f9b8
+               0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb685fc80                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb685f9b8
+               0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb685f9b8                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6852d22
+
+     0.11%     0.00%  [.] 0xffffffffb6852d22                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.00%  [.] 0x00000000000016c5                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                                                          -      -            
+     0.11%     0.00%  [.] 0x0000000000001f33                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000000000191d                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x000000000000122a                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.11%  [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run                                                                                                                                                                                                                                                              -      -            
+     0.11%     0.11%  [k] 0xffffffffb6846550                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9e4f
+               0xffffffffb6cc9ae4
+               0xffffffffb6cd89a6
+               0xffffffffb6cd8555
+               0xffffffffb68a6283
+               0xffffffffb689cb8a
+               0xffffffffb6cec787
+               0xffffffffb684dc82
+               0xffffffffb6846557
+
+     0.11%     0.00%  [.] 0xffffffffb6846557                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.11%     0.11%  [.] _int_free_chunk                                                                                                                                                                                                                                                                                                                                                    -      -            
+            |
+            ---_int_realloc
+               _int_free_chunk
+
+     0.11%     0.00%  [.] 0x0000000000001023                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x00000000000016ab                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x00000000000015b7                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x0000000000080046                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0x5595bea49393
+               <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.11%     0.00%  [.] 0x00005595bea49393                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.10%     0.10%  [k] 0xffffffffb7bbce6c                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb7bbbfae
+               0xffffffffb7bbce73
+
+     0.10%     0.00%  [.] 0xffffffffb7bbbfae                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb7bbce73
+
+     0.10%     0.00%  [.] 0xffffffffb7bbce73                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.10%     0.00%  [.] 0x00000000000018fd                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.10%     0.00%  [.] 0x0000000000001b24                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.10%     0.00%  [.] 0x0000000000001d6f                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.10%     0.00%  [.] 0x00000000000011bb                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.10%     0.10%  [k] 0xffffffffb6cfdfae                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+               0xffffffffb7bb4a92
+               0xffffffffb6cc9daa
+               0xffffffffb6cfdfb2
+
+     0.10%     0.00%  [.] 0xffffffffb6cc9daa                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6cfdfb2
+
+     0.10%     0.00%  [.] 0xffffffffb6cfdfb2                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.09%     0.00%  [.] 0x0000000000001d02                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.06%     0.06%  [k] 0xffffffffb6bf8ea9                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               0xffffffffb64012a6
+               0xffffffffb7bbca10
+               0xffffffffb67ae9dd
+               0xffffffffb6bc2a84
+               0xffffffffb6bc271c
+               0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb64012a6                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb7bbca10
+               0xffffffffb67ae9dd
+               0xffffffffb6bc2a84
+               0xffffffffb6bc271c
+               0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb7bbca10                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb67ae9dd
+               0xffffffffb6bc2a84
+               0xffffffffb6bc271c
+               0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb67ae9dd                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bc2a84
+               0xffffffffb6bc271c
+               0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bc2a84                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bc271c
+               0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bc271c                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bc0da7
+               0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bc0da7                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bc09dd
+               0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bc09dd                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6c439aa
+               0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6c439aa                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6c40752
+               0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6c40752                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bfda80
+               0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bfda80                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bfc264
+               0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bfc264                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bfa17d
+               0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bfa17d                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---0xffffffffb6bf8eab
+
+     0.06%     0.00%  [.] 0xffffffffb6bf8eab                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.05%     0.05%  [k] 0xffffffffb692d7f9                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               0xffffffffb640160a
+               0xffffffffb7bbbfd8
+               0xffffffffb6788468
+               0xffffffffb692d801
+
+     0.05%     0.00%  [k] 0x0000000000001d18                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               0xffffffffb640160a
+               0xffffffffb7bbbfd8
+               0xffffffffb6788468
+               0xffffffffb692d801
+
+     0.05%     0.00%  [.] 0xffffffffb692d801                                                                                                                                                                                                                                                                                                                                                 -      -            
+     0.04%     0.00%  [.] 0x000000000000105d                                                                                                                                                                                                                                                                                                                                                 -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+
+
+#
+# (Tip: Show estimate cycles per function and IPC in annotate use perf record -b ... ; perf report --total-cycles)
+#

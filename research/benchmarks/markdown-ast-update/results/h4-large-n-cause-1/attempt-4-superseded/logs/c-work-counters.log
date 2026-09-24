@@ -1,0 +1,12 @@
+=== LANE c-work-counters ===
+utc_start=2026-09-24T00:57:10Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag-counters
+command=run-counters --session 0 --out ./results/h4-large-n-cause-1/raw/work-counters.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.03 0.95 1/752 39713
+executable_sha256=b8da27f75970f1548a424b91110d2ceddce289796edbf785232bb36977d14cc9
+executable_features={'allocator': False, 'counters': True, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.03 0.95 1/752 39721
+utc_end=2026-09-24T00:57:12Z

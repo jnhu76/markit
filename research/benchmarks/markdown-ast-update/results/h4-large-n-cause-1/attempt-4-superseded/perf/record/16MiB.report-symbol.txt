@@ -1,0 +1,335 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 8K of event 'cpu/cycles/P'
+# Event count (approx.): 7237030886
+#
+# Children      Self  Symbol                                                                                                                                                                                                                                                                                                                                                                 Shared Object      IPC   [IPC Coverage]
+# ........  ........  .....................................................................................................................................................................................................................................................................................................................................................................  .................  ....................
+#
+    24.27%    24.27%  [.] markit_mdbench_shared_grammar::inline::scan_region_with_sink::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                                                          mdbench-h4diag     -      -            
+    10.60%    10.60%  [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::NoopWorkSink>>::run                                                                                                                                                                                                                                                              mdbench-h4diag     -      -            
+     9.82%     9.82%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                           mdbench-h4diag     -      -            
+     8.93%     1.06%  [.] __libc_malloc2                                                                                                                                                                                                                                                                                                                                                     libc.so.6          -      -            
+            |          
+             --8.84%--__libc_malloc2
+                       |          
+                        --7.87%--_int_malloc
+                                  |          
+                                   --1.29%--0xffffffffb64012a6
+                                             |          
+                                              --1.25%--0xffffffffb7bbca10
+                                                        |          
+                                                         --1.14%--0xffffffffb67ae9dd
+                                                                   |          
+                                                                    --1.07%--0xffffffffb6bc2a84
+                                                                              |          
+                                                                               --1.01%--0xffffffffb6bc271c
+                                                                                         |          
+                                                                                          --0.76%--0xffffffffb6bc0da7
+                                                                                                    |          
+                                                                                                     --0.51%--0xffffffffb6bc09dd
+                                                                                                               0xffffffffb6c439aa
+                                                                                                               |          
+                                                                                                                --0.50%--0xffffffffb6c40752
+                                                                                                                          |          
+                                                                                                                           --0.47%--0xffffffffb6bfda80
+                                                                                                                                     |          
+                                                                                                                                      --0.34%--0xffffffffb6bfc575
+                                                                                                                                                |          
+                                                                                                                                                 --0.32%--0xffffffffb6bf6988
+                                                                                                                                                           |          
+                                                                                                                                                            --0.31%--0xffffffffb6befb75
+
+     8.26%     6.26%  [.] _int_malloc                                                                                                                                                                                                                                                                                                                                                        libc.so.6          -      -            
+            |          
+            |--5.87%--__libc_malloc2
+            |          _int_malloc
+            |          
+             --2.15%--_int_malloc
+                       |          
+                        --1.29%--0xffffffffb64012a6
+                                  |          
+                                   --1.25%--0xffffffffb7bbca10
+                                             |          
+                                              --1.14%--0xffffffffb67ae9dd
+                                                        |          
+                                                         --1.07%--0xffffffffb6bc2a84
+                                                                   |          
+                                                                    --1.01%--0xffffffffb6bc271c
+                                                                              |          
+                                                                               --0.76%--0xffffffffb6bc0da7
+                                                                                         |          
+                                                                                          --0.51%--0xffffffffb6bc09dd
+                                                                                                    0xffffffffb6c439aa
+                                                                                                    |          
+                                                                                                     --0.50%--0xffffffffb6c40752
+                                                                                                               |          
+                                                                                                                --0.47%--0xffffffffb6bfda80
+                                                                                                                          |          
+                                                                                                                           --0.34%--0xffffffffb6bfc575
+                                                                                                                                     |          
+                                                                                                                                      --0.32%--0xffffffffb6bf6988
+                                                                                                                                                |          
+                                                                                                                                                 --0.31%--0xffffffffb6befb75
+
+     6.64%     6.61%  [.] __memmove_avx_unaligned_erms                                                                                                                                                                                                                                                                                                                                       libc.so.6          -      -            
+            |          
+            |--5.38%--__memmove_avx_unaligned_erms
+            |          
+             --1.21%--realloc
+                       _int_realloc
+                       __memmove_avx_unaligned_erms
+
+     6.28%     6.28%  [.] core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}  mdbench-h4diag     -      -            
+     3.46%     3.46%  [.] markit_mdbench_h4diag::alg::registers                                                                                                                                                                                                                                                                                                                              mdbench-h4diag     -      -            
+     2.98%     2.98%  [.] markit_mdbench_shared_grammar::inline::materialize_one_with_sink::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                                                      mdbench-h4diag     -      -            
+     2.84%     2.84%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                   mdbench-h4diag     -      -            
+     2.78%     2.78%  [.] markit_mdbench_h4diag::alg::collect_defs_skel                                                                                                                                                                                                                                                                                                                      mdbench-h4diag     -      -            
+     2.63%     2.63%  [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>                                                                                                                                                                                                                                                                                 mdbench-h4diag     -      -            
+     2.45%     2.42%  [.] cfree@GLIBC_2.2.5                                                                                                                                                                                                                                                                                                                                                  libc.so.6          -      -            
+     2.11%     2.11%  [.] <markit_mdbench_shared_grammar::parser::Skel as core::clone::Clone>::clone                                                                                                                                                                                                                                                                                         mdbench-h4diag     -      -            
+     2.04%     2.04%  [.] malloc                                                                                                                                                                                                                                                                                                                                                             libc.so.6          -      -            
+     1.69%     1.69%  [.] markit_mdbench_h4diag::alg::skel_count                                                                                                                                                                                                                                                                                                                             mdbench-h4diag     -      -            
+     1.64%     1.64%  [.] markit_mdbench_h4diag::alg::fresh_slots::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                                                                               mdbench-h4diag     -      -            
+     1.50%     0.00%  [.] 0xffffffffb64012a6                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --1.46%--0xffffffffb7bbca10
+                       |          
+                        --1.34%--0xffffffffb67ae9dd
+                                  |          
+                                   --1.26%--0xffffffffb6bc2a84
+                                             |          
+                                              --1.19%--0xffffffffb6bc271c
+                                                        |          
+                                                         --0.90%--0xffffffffb6bc0da7
+                                                                   |          
+                                                                    --0.62%--0xffffffffb6bc09dd
+                                                                              0xffffffffb6c439aa
+                                                                              |          
+                                                                               --0.61%--0xffffffffb6c40752
+                                                                                         |          
+                                                                                          --0.58%--0xffffffffb6bfda80
+                                                                                                    |          
+                                                                                                     --0.39%--0xffffffffb6bfc575
+                                                                                                               |          
+                                                                                                                --0.37%--0xffffffffb6bf6988
+                                                                                                                          |          
+                                                                                                                           --0.35%--0xffffffffb6befb75
+
+     1.46%     0.00%  [.] 0xffffffffb7bbca10                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --1.34%--0xffffffffb67ae9dd
+                       |          
+                        --1.26%--0xffffffffb6bc2a84
+                                  |          
+                                   --1.19%--0xffffffffb6bc271c
+                                             |          
+                                              --0.90%--0xffffffffb6bc0da7
+                                                        |          
+                                                         --0.62%--0xffffffffb6bc09dd
+                                                                   0xffffffffb6c439aa
+                                                                   |          
+                                                                    --0.61%--0xffffffffb6c40752
+                                                                              |          
+                                                                               --0.58%--0xffffffffb6bfda80
+                                                                                         |          
+                                                                                          --0.39%--0xffffffffb6bfc575
+                                                                                                    |          
+                                                                                                     --0.37%--0xffffffffb6bf6988
+                                                                                                               |          
+                                                                                                                --0.35%--0xffffffffb6befb75
+
+     1.39%     0.28%  [.] _int_free_chunk                                                                                                                                                                                                                                                                                                                                                    libc.so.6          -      -            
+            |          
+             --1.37%--_int_free_chunk
+                       |          
+                        --0.96%--_int_free_merge_chunk
+
+     1.34%     0.00%  [.] 0xffffffffb67ae9dd                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --1.26%--0xffffffffb6bc2a84
+                       |          
+                        --1.19%--0xffffffffb6bc271c
+                                  |          
+                                   --0.90%--0xffffffffb6bc0da7
+                                             |          
+                                              --0.62%--0xffffffffb6bc09dd
+                                                        0xffffffffb6c439aa
+                                                        |          
+                                                         --0.61%--0xffffffffb6c40752
+                                                                   |          
+                                                                    --0.58%--0xffffffffb6bfda80
+                                                                              |          
+                                                                               --0.39%--0xffffffffb6bfc575
+                                                                                         |          
+                                                                                          --0.37%--0xffffffffb6bf6988
+                                                                                                    |          
+                                                                                                     --0.35%--0xffffffffb6befb75
+
+     1.26%     0.00%  [.] 0xffffffffb6bc2a84                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --1.19%--0xffffffffb6bc271c
+                       |          
+                        --0.90%--0xffffffffb6bc0da7
+                                  |          
+                                   --0.62%--0xffffffffb6bc09dd
+                                             0xffffffffb6c439aa
+                                             |          
+                                              --0.61%--0xffffffffb6c40752
+                                                        |          
+                                                         --0.58%--0xffffffffb6bfda80
+                                                                   |          
+                                                                    --0.39%--0xffffffffb6bfc575
+                                                                              |          
+                                                                               --0.37%--0xffffffffb6bf6988
+                                                                                         |          
+                                                                                          --0.35%--0xffffffffb6befb75
+
+     1.24%     0.00%  [.] realloc                                                                                                                                                                                                                                                                                                                                                            libc.so.6          -      -            
+            |
+            ---_int_realloc
+               |          
+                --1.21%--__memmove_avx_unaligned_erms
+
+     1.24%     0.01%  [.] _int_realloc                                                                                                                                                                                                                                                                                                                                                       libc.so.6          -      -            
+            |          
+             --1.23%--_int_realloc
+                       |          
+                        --1.21%--__memmove_avx_unaligned_erms
+
+     1.19%     0.00%  [.] 0xffffffffb6bc271c                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.90%--0xffffffffb6bc0da7
+                       |          
+                        --0.62%--0xffffffffb6bc09dd
+                                  0xffffffffb6c439aa
+                                  |          
+                                   --0.61%--0xffffffffb6c40752
+                                             |          
+                                              --0.58%--0xffffffffb6bfda80
+                                                        |          
+                                                         --0.39%--0xffffffffb6bfc575
+                                                                   |          
+                                                                    --0.37%--0xffffffffb6bf6988
+                                                                              |          
+                                                                               --0.35%--0xffffffffb6befb75
+
+     1.17%     1.17%  [.] <alloc::raw_vec::RawVecInner>::finish_grow                                                                                                                                                                                                                                                                                                                         mdbench-h4diag     -      -            
+     0.97%     0.54%  [.] _int_free_merge_chunk                                                                                                                                                                                                                                                                                                                                              libc.so.6          -      -            
+            |          
+            |--0.53%--_int_free_chunk
+            |          _int_free_merge_chunk
+            |          
+             --0.44%--_int_free_merge_chunk
+
+     0.90%     0.00%  [.] 0xffffffffb6bc0da7                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.62%--0xffffffffb6bc09dd
+                       0xffffffffb6c439aa
+                       |          
+                        --0.61%--0xffffffffb6c40752
+                                  |          
+                                   --0.58%--0xffffffffb6bfda80
+                                             |          
+                                              --0.39%--0xffffffffb6bfc575
+                                                        |          
+                                                         --0.37%--0xffffffffb6bf6988
+                                                                   |          
+                                                                    --0.35%--0xffffffffb6befb75
+
+     0.71%     0.71%  [.] <alloc::raw_vec::RawVec<markit_mdbench_shared_grammar::inline::Elem>>::grow_one                                                                                                                                                                                                                                                                                    mdbench-h4diag     -      -            
+     0.62%     0.00%  [.] 0xffffffffb6bc09dd                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |
+            ---0xffffffffb6c439aa
+               |          
+                --0.61%--0xffffffffb6c40752
+                          |          
+                           --0.58%--0xffffffffb6bfda80
+                                     |          
+                                      --0.39%--0xffffffffb6bfc575
+                                                |          
+                                                 --0.37%--0xffffffffb6bf6988
+                                                           |          
+                                                            --0.35%--0xffffffffb6befb75
+
+     0.62%     0.00%  [.] 0xffffffffb6c439aa                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.61%--0xffffffffb6c40752
+                       |          
+                        --0.58%--0xffffffffb6bfda80
+                                  |          
+                                   --0.39%--0xffffffffb6bfc575
+                                             |          
+                                              --0.37%--0xffffffffb6bf6988
+                                                        |          
+                                                         --0.35%--0xffffffffb6befb75
+
+     0.61%     0.00%  [.] 0xffffffffb6c40752                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.58%--0xffffffffb6bfda80
+                       |          
+                        --0.39%--0xffffffffb6bfc575
+                                  |          
+                                   --0.37%--0xffffffffb6bf6988
+                                             |          
+                                              --0.35%--0xffffffffb6befb75
+
+     0.60%     0.60%  [.] <alloc::raw_vec::RawVecInner<_>>::reserve::do_reserve_and_handle::<alloc::alloc::Global>                                                                                                                                                                                                                                                                           mdbench-h4diag     -      -            
+     0.58%     0.00%  [.] 0xffffffffb6bfda80                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.39%--0xffffffffb6bfc575
+                       |          
+                        --0.37%--0xffffffffb6bf6988
+                                  |          
+                                   --0.35%--0xffffffffb6befb75
+
+     0.55%     0.55%  [.] <markit_mdbench_shared_grammar::parser::BlockScanner<markit_mdbench_common::work::CounterSink>>::close_frames_from                                                                                                                                                                                                                                                 mdbench-h4diag     -      -            
+     0.51%     0.51%  [.] core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>                                                                                                                                                                                                                                                                                                    mdbench-h4diag     -      -            
+     0.49%     0.49%  [.] core::ptr::drop_glue::<markit_mdbench_shared_grammar::parser::Skel>                                                                                                                                                                                                                                                                                                mdbench-h4diag     -      -            
+     0.47%     0.47%  [.] core::ptr::drop_glue::<markit_mdbench_oracle::normalized::Node>                                                                                                                                                                                                                                                                                                    mdbench-h4diag     -      -            
+     0.45%     0.45%  [.] <alloc::raw_vec::RawVecInner>::finish_grow                                                                                                                                                                                                                                                                                                                         mdbench-h4diag     -      -            
+     0.41%     0.02%  [.] 0xffffffffb64018d9                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.39%--0xffffffffb64018d9
+
+     0.39%     0.00%  [.] 0xffffffffb6bfc575                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.37%--0xffffffffb6bf6988
+                       |          
+                        --0.35%--0xffffffffb6befb75
+
+     0.39%     0.39%  [k] 0xffffffffb64018d2                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+     0.37%     0.37%  [.] <alloc::raw_vec::RawVecInner>::finish_grow                                                                                                                                                                                                                                                                                                                         mdbench-h4diag     -      -            
+     0.37%     0.00%  [.] 0xffffffffb6bf6988                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.35%--0xffffffffb6befb75
+
+     0.35%     0.35%  [k] 0xffffffffb6befb73                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.31%--__libc_malloc2
+                       _int_malloc
+                       0xffffffffb64012a6
+                       0xffffffffb7bbca10
+                       0xffffffffb67ae9dd
+                       0xffffffffb6bc2a84
+                       0xffffffffb6bc271c
+                       0xffffffffb6bc0da7
+                       0xffffffffb6bc09dd
+                       0xffffffffb6c439aa
+                       0xffffffffb6c40752
+                       0xffffffffb6bfda80
+                       0xffffffffb6bfc575
+                       0xffffffffb6bf6988
+                       0xffffffffb6befb75
+
+     0.35%     0.00%  [.] 0xffffffffb6befb75                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+     0.34%     0.34%  [.] core::ptr::drop_glue::<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::inline::Elem>>                                                                                                                                                                                                                                                               mdbench-h4diag     -      -            
+     0.34%     0.00%  [.] 0xffffffffb640160a                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+
+
+#
+# (Tip: Print event counts in machine readable CSV format with: perf stat -x\;)
+#

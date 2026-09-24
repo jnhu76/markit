@@ -1,0 +1,60 @@
+=== kernel ===
+Linux E5 7.2.5-200.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Sep 11 15:11:05 UTC 2026 x86_64 GNU/Linux
+
+=== unprivileged_bpf_disabled ===
+2
+
+=== perf_event_paranoid ===
+2
+
+=== bpftrace ===
+NOT_FOUND
+
+=== bpftool ===
+NOT_FOUND
+
+=== BTF ===
+BTF_AVAILABLE
+
+=== tracefs/debugfs ===
+debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime,seclabel)
+tracefs on /sys/kernel/tracing type tracefs (rw,nosuid,nodev,noexec,relatime,seclabel)
+
+=== sudo -n true ===
+sudo: a password is required
+SUDO_NONINTERACTIVE_UNAVAILABLE
+
+=== id ===
+uid=1000(jnhu) gid=1000(jnhu) groups=1000(jnhu),10(wheel) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+=== capabilities ===
+Current: =
+Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read,cap_perfmon,cap_bpf,cap_checkpoint_restore
+Ambient set =
+Current IAB: 
+Securebits: 00/0x0/1'b0 (no-new-privs=0)
+ secure-noroot: no (unlocked)
+ secure-no-suid-fixup: no (unlocked)
+ secure-keep-caps: no (unlocked)
+ secure-no-ambient-raise: no (unlocked)
+uid=1000(jnhu) euid=1000(jnhu)
+gid=1000(jnhu)
+groups=10(wheel),1000(jnhu)
+Guessed mode: HYBRID (4)
+=== updated after bpftrace/bpftool install (2026-09-24, post-PMU) ===
+=== bpftrace --version ===
+bpftrace v0.24.2
+=== bpftool version ===
+bpftool v7.6.0
+using libbpf v1.6
+features: llvm, skeletons
+=== unprivileged_bpf_disabled ===
+2
+=== perf_event_paranoid ===
+2
+=== BTF ===
+-r--r--r--. 1 root root 7031804 Sep 24  2026 /sys/kernel/btf/vmlinux
+=== policy changes made for this experiment: NONE ===
+unprivileged_bpf_disabled and perf_event_paranoid are unchanged; the load
+attempt below runs under authorized sudo (wheel) which the operator supplied
+for this diagnostic work.

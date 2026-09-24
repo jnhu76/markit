@@ -1,0 +1,12 @@
+=== LANE e-ablations-session-1 ===
+utc_start=2026-09-24T02:16:56Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-ablations --session 1 --out ./results/h4-large-n-cause-1/raw/ablations-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/ablations-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.00 1.00 0.64 1/755 42035
+executable_sha256=4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.00 1.00 0.71 1/752 42050
+utc_end=2026-09-24T02:19:44Z

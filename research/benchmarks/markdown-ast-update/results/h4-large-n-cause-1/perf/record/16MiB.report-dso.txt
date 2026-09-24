@@ -1,0 +1,83 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 2K of event 'cpu/cycles/P'
+# Event count (approx.): 1832517326
+#
+# Children      Self  Shared Object    
+# ........  ........  .................
+#
+    99.69%    97.02%  mdbench-h4diag   
+            |          
+            |--24.77%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          |          
+            |           --1.79%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |          
+            |--19.09%--core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--11.00%--0x2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--9.36%--0xffff
+            |          core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+            |          
+            |--5.91%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--5.42%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--4.00%--0x12f
+            |          |          
+            |           --3.81%--markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--1.61%--<alloc::raw_vec::RawVecInner>::finish_grow
+            |          realloc
+            |          _int_realloc
+            |          __memmove_avx_unaligned_erms
+            |          
+            |--1.34%--markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+             --1.20%--markit_mdbench_h4diag::alg::skel_count
+
+    38.82%     0.00%  [unknown]        
+            |          
+            |--11.14%--0x2
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--9.36%--0xffff
+            |          core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+            |          
+            |--5.91%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--4.04%--0x12f
+            |          |          
+            |           --3.86%--markit_mdbench_h4diag::alg::skel_count
+            |          
+             --1.61%--0x10000
+                       <alloc::raw_vec::RawVecInner>::finish_grow
+                       realloc
+                       _int_realloc
+                       __memmove_avx_unaligned_erms
+
+     2.02%     1.92%  libc.so.6        
+            |          
+             --1.61%--0x10000
+                       <alloc::raw_vec::RawVecInner>::finish_grow
+                       realloc
+                       _int_realloc
+                       __memmove_avx_unaligned_erms
+
+     1.15%     1.06%  [kernel.kallsyms]
+            |          
+             --0.64%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+
+
+#
+# (Tip: Show current config key-value pairs: perf config --list)
+#

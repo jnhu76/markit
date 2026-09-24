@@ -1,0 +1,2 @@
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 1.291 MB results/h4-large-n-cause-1/ebpf/raw/s1-perf-sched.data (3057 samples) ]

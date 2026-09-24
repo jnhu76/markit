@@ -1,0 +1,4 @@
+{"counter-value" : "42072547.000000", "unit" : "", "event" : "LLC-loads:u", "event-runtime" : 327546629, "pcnt-running" : 49.00}
+{"counter-value" : "27705151.000000", "unit" : "", "event" : "LLC-load-misses:u", "event-runtime" : 493148568, "pcnt-running" : 74.00}
+{"counter-value" : "338409681.000000", "unit" : "", "event" : "dTLB-loads:u", "event-runtime" : 492844928, "pcnt-running" : 74.00}
+{"counter-value" : "5439736.000000", "unit" : "", "event" : "dTLB-load-misses:u", "event-runtime" : 329177834, "pcnt-running" : 50.00}

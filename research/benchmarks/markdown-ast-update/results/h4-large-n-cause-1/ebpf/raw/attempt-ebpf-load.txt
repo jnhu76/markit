@@ -1,0 +1,23 @@
+=== utc ===
+2026-09-24T02:32:54Z
+unprivileged_bpf_disabled=2
+perf_event_paranoid=2
+btf=AVAILABLE
+bpftrace=PRESENT /usr/sbin/bpftrace (bpftrace v0.24.2)
+bpftool=PRESENT /usr/sbin/bpftool (bpftool v7.6.0)
+--- attempt 1: bpftrace trivial BEGIN program (sudo) ---
+Attached 1 probe
+BPF_LOAD_OK
+
+
+bpftrace_trivial_rc=0
+--- attempt 2: tracepoint probe sched:sched_switch (sudo) ---
+Attached 2 probes
+
+
+@switches: 552
+bpftrace_tracepoint_rc=0
+EBPF_ATTEMPT = AVAILABLE
+  both the BPF loader stack and at least one tracepoint program
+  loaded successfully under authorized sudo; no security policy
+  was changed.

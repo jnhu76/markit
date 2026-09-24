@@ -1,0 +1,2 @@
+{"counter-value" : "191498856.000000", "unit" : "", "event" : "dTLB-loads", "event-runtime" : 391576117, "pcnt-running" : 100.00}
+{"counter-value" : "2922548.000000", "unit" : "", "event" : "dTLB-load-misses", "event-runtime" : 391576117, "pcnt-running" : 100.00}

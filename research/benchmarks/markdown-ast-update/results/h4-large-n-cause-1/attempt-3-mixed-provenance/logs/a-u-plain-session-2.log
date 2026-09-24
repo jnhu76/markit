@@ -1,0 +1,11 @@
+=== LANE a-u-plain-session-2 ===
+utc_start=2026-09-24T00:09:13Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 2 --out ./results/h4-large-n-cause-1/raw/u-plain-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.13 1.26 1.10 1/763 36225
+executable_sha256=aefd4114231da3c85d4700383496aee2143ac3a394e6df548590b72ae4d17c07
+EXIT_CODE=0
+loadavg_end=1.31 1.29 1.12 2/763 36231
+utc_end=2026-09-24T00:10:23Z

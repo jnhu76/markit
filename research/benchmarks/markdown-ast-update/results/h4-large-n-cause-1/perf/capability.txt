@@ -1,0 +1,93 @@
+=== perf --version ===
+perf version 7.2.5-200.fc44.x86_64
+
+=== /proc/sys/kernel/perf_event_paranoid ===
+2
+
+=== /proc/sys/kernel/kptr_restrict ===
+0
+
+=== /proc/sys/kernel/unprivileged_bpf_disabled ===
+2
+
+=== perf list (first 80) ===
+  mem-loads OR cpu/mem-loads/                        [Kernel PMU event]
+  mem-stores OR cpu/mem-stores/                      [Kernel PMU event]
+  topdown-fetch-bubbles OR cpu/topdown-fetch-bubbles/[Kernel PMU event]
+  topdown-recovery-bubbles OR cpu/topdown-recovery-bubbles/[Kernel PMU event]
+  topdown-slots-issued OR cpu/topdown-slots-issued/  [Kernel PMU event]
+  topdown-slots-retired OR cpu/topdown-slots-retired/[Kernel PMU event]
+  topdown-total-slots OR cpu/topdown-total-slots/    [Kernel PMU event]
+  cstate_core/c3-residency/                          [Kernel PMU event]
+  cstate_core/c6-residency/                          [Kernel PMU event]
+  cstate_core/c7-residency/                          [Kernel PMU event]
+  cstate_pkg/c2-residency/                           [Kernel PMU event]
+  cstate_pkg/c3-residency/                           [Kernel PMU event]
+  cstate_pkg/c6-residency/                           [Kernel PMU event]
+  cstate_pkg/c7-residency/                           [Kernel PMU event]
+  msr/aperf/                                         [Kernel PMU event]
+  msr/cpu_thermal_margin/                            [Kernel PMU event]
+  msr/mperf/                                         [Kernel PMU event]
+  msr/smi/                                           [Kernel PMU event]
+  msr/tsc/                                           [Kernel PMU event]
+  power/energy-pkg/                                  [Kernel PMU event]
+  uncore_imc/cas_count_read/                         [Kernel PMU event]
+  uncore_imc/cas_count_write/                        [Kernel PMU event]
+  uncore_imc/clockticks/                             [Kernel PMU event]
+
+cache:
+  l1d.replacement
+       [L1D data line replacements. Unit: cpu]
+  l1d_pend_miss.fb_full
+       [Cycles a demand request was blocked due to Fill Buffers
+        unavailability. Unit: cpu]
+  l1d_pend_miss.pending
+       [L1D miss outstanding duration in cycles. Unit: cpu]
+  l1d_pend_miss.pending_cycles
+       [Cycles with L1D load Misses outstanding. Unit: cpu]
+  l1d_pend_miss.pending_cycles_any
+       [Cycles with L1D load Misses outstanding from any thread on physical
+        core. Unit: cpu]
+  l1d_pend_miss.request_fb_full
+       [Number of times a request needed a FB entry but there was no entry
+        available for it. That is the FB unavailability was dominant reason
+        for blocking the request. A request includes cacheable/uncacheable
+        demands that is load,store or SW prefetch. HWP are e. Unit: cpu]
+  l2_demand_rqsts.wb_hit
+       [Not rejected writebacks that hit L2 cache. Unit: cpu]
+  l2_lines_in.all
+       [L2 cache lines filling L2. Unit: cpu]
+  l2_lines_in.e
+       [L2 cache lines in E state filling L2. Unit: cpu]
+  l2_lines_in.i
+       [L2 cache lines in I state filling L2. Unit: cpu]
+  l2_lines_in.s
+       [L2 cache lines in S state filling L2. Unit: cpu]
+  l2_lines_out.demand_clean
+       [Clean L2 cache lines evicted by demand. Unit: cpu]
+  l2_lines_out.demand_dirty
+       [Dirty L2 cache lines evicted by demand. Unit: cpu]
+  l2_rqsts.all_code_rd
+       [L2 code requests. Unit: cpu]
+  l2_rqsts.all_demand_data_rd
+       [Demand Data Read requests Spec update: HSD78,HSM80. Unit: cpu]
+  l2_rqsts.all_demand_miss
+       [Demand requests that miss L2 cache Spec update: HSD78,HSM80. Unit: cpu]
+  l2_rqsts.all_demand_references
+       [Demand requests to L2 cache Spec update: HSD78,HSM80. Unit: cpu]
+  l2_rqsts.all_pf
+       [Requests from L2 hardware prefetchers. Unit: cpu]
+  l2_rqsts.all_rfo
+       [RFO requests to L2 cache. Unit: cpu]
+  l2_rqsts.code_rd_hit
+       [L2 cache hits when fetching instructions,code reads. Unit: cpu]
+  l2_rqsts.code_rd_miss
+       [L2 cache misses when fetching instructions. Unit: cpu]
+  l2_rqsts.demand_data_rd_hit
+       [Demand Data Read requests that hit L2 cache Spec update: HSD78,HSM80.
+        Unit: cpu]
+  l2_rqsts.demand_data_rd_miss
+       [Demand Data Read miss L2,no rejects Spec update: HSD78,HSM80. Unit:
+        cpu]
+  l2_rqsts.l2_pf_hit
+       [L2 prefetch requests that hit L2 cache. Unit: cpu]

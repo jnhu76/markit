@@ -1,0 +1,2 @@
+{"counter-value" : "7934570.000000", "unit" : "", "event" : "LLC-loads", "event-runtime" : 357820682, "pcnt-running" : 100.00}
+{"counter-value" : "3228926.000000", "unit" : "", "event" : "LLC-load-misses", "event-runtime" : 357820682, "pcnt-running" : 100.00}

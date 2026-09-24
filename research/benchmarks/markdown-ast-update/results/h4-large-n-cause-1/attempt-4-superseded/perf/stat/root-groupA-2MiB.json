@@ -1,0 +1,4 @@
+{"counter-value" : "562678785.000000", "unit" : "", "event" : "cycles", "event-runtime" : 161511626, "pcnt-running" : 100.00}
+{"counter-value" : "1493434013.000000", "unit" : "", "event" : "instructions", "event-runtime" : 161511626, "pcnt-running" : 100.00}
+{"counter-value" : "378604430.000000", "unit" : "", "event" : "branches", "event-runtime" : 161511626, "pcnt-running" : 100.00}
+{"counter-value" : "540706.000000", "unit" : "", "event" : "branch-misses", "event-runtime" : 161511626, "pcnt-running" : 100.00}

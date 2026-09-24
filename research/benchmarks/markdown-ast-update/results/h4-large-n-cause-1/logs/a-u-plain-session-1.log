@@ -1,0 +1,12 @@
+=== LANE a-u-plain-session-1 ===
+utc_start=2026-09-24T02:08:16Z
+host=E5
+binary=results/h4-large-n-cause-1/bin/mdbench-h4diag
+command=run-plain --session 1 --out ./results/h4-large-n-cause-1/raw/u-plain-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=0.87 0.59 0.27 1/762 41713
+executable_sha256=4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+executable_features={'allocator': False, 'counters': False, 'phases': False}
+EXIT_CODE=0
+loadavg_end=1.11 0.72 0.34 1/760 41748
+utc_end=2026-09-24T02:09:23Z

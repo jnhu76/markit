@@ -1,0 +1,38 @@
+H4LARGEN_COLLECTION_START utc=2026-09-23T23:54:54Z
+loadavg_start=0.52 1.07 0.74 1/747 32903
+--- LANE a-u-plain-session-0 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-0 ===
+utc_start=2026-09-23T23:54:54Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 0 --out ./results/h4-large-n-cause-1/raw/u-plain-session-0.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-0.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=0.52 1.07 0.74 1/750 32910
+executable_sha256=f363966ebc4a218b027bf28af25f79e98332d3305b2ff40913a0e7b46ea5e5bd
+EXIT_CODE=0
+loadavg_end=0.85 1.05 0.76 1/748 32920
+utc_end=2026-09-23T23:56:02Z
+--- LANE a-u-plain-session-1 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-1 ===
+utc_start=2026-09-23T23:56:02Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 1 --out ./results/h4-large-n-cause-1/raw/u-plain-session-1.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-1.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=0.85 1.05 0.76 2/748 32928
+executable_sha256=f363966ebc4a218b027bf28af25f79e98332d3305b2ff40913a0e7b46ea5e5bd
+EXIT_CODE=0
+loadavg_end=1.57 1.18 0.82 2/763 33018
+utc_end=2026-09-23T23:57:11Z
+--- LANE a-u-plain-session-2 (mdbench-h4diag) ---
+=== LANE a-u-plain-session-2 ===
+utc_start=2026-09-23T23:57:11Z
+host=E5
+binary=./target/release/mdbench-h4diag
+command=run-plain --session 2 --out ./results/h4-large-n-cause-1/raw/u-plain-session-2.jsonl --schedule-out ./results/h4-large-n-cause-1/raw/u-plain-session-2.schedule.jsonl
+affinity=taskset -c 1
+loadavg_start=1.57 1.18 0.82 2/763 33026
+executable_sha256=f363966ebc4a218b027bf28af25f79e98332d3305b2ff40913a0e7b46ea5e5bd
+EXIT_CODE=0
+loadavg_end=2.53 1.57 0.99 3/772 33541
+utc_end=2026-09-23T23:58:26Z
