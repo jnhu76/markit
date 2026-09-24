@@ -60,6 +60,41 @@ pub const CAT_SLOTS_CHECKPOINTS: u8 = 7;
 pub const CAT_RETIREMENT: u8 = 8;
 pub const CAT_SEAL_OTHER: u8 = 9;
 
+/// Map a category name used by the `alloc_cat!` macro to its index.
+#[macro_export]
+macro_rules! concat_idents_cat {
+    (UNTAGGED) => {
+        $crate::allocstat::CAT_UNTAGGED
+    };
+    (FORWARD_PARSE) => {
+        $crate::allocstat::CAT_FORWARD_PARSE
+    };
+    (PREFIX_ASSEMBLY) => {
+        $crate::allocstat::CAT_PREFIX_ASSEMBLY
+    };
+    (DEFS_TABLE) => {
+        $crate::allocstat::CAT_DEFS_TABLE
+    };
+    (FRESH_MATERIALIZATION) => {
+        $crate::allocstat::CAT_FRESH_MATERIALIZATION
+    };
+    (SUFFIX_ASSEMBLY) => {
+        $crate::allocstat::CAT_SUFFIX_ASSEMBLY
+    };
+    (PAIRS_VEC) => {
+        $crate::allocstat::CAT_PAIRS_VEC
+    };
+    (SLOTS_CHECKPOINTS) => {
+        $crate::allocstat::CAT_SLOTS_CHECKPOINTS
+    };
+    (RETIREMENT) => {
+        $crate::allocstat::CAT_RETIREMENT
+    };
+    (SEAL_OTHER) => {
+        $crate::allocstat::CAT_SEAL_OTHER
+    };
+}
+
 static ARMED: AtomicBool = AtomicBool::new(false);
 static LIVE: AtomicI64 = AtomicI64::new(0);
 static CATEGORY: AtomicU8 = AtomicU8::new(CAT_UNTAGGED);

@@ -390,6 +390,19 @@ impl Slot {
     }
 }
 
+/// Announce the allocator attribution category (compiles to nothing
+/// without the `allocator` feature). One relaxed atomic store per phase
+/// boundary -- never per allocation.
+#[macro_export]
+macro_rules! alloc_cat {
+    ($cat:ident) => {{
+        #[cfg(feature = "allocator")]
+        {
+            $crate::allocstat::set_category($crate::concat_idents_cat!($cat));
+        }
+    }};
+}
+
 /// Increment a diagnostic counter (compiles to nothing without the
 /// `counters` feature).
 #[macro_export]

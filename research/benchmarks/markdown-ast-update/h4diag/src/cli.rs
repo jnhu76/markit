@@ -20,7 +20,7 @@
 //! the allocator accounting (they are not compiled into that binary).
 
 use std::hint::black_box;
-use std::io::Write;
+use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::time::Instant;
@@ -802,6 +802,8 @@ fn cmd_run_alloc(flags: &[String]) -> Result<(), String> {
                 "schedule_seed": schedule::lane_seed("allocator", session),
                 "mechanism": crate::alg::H4DIAG_MECHANISM_ID,
                 "allocator": "System wrapped by CountingAllocator (requested payload bytes)",
+                "scope": "the accounting window contains the resident update only (prepare_update + update + complete + black_box); construction, the oracle, the checksum and the final result destruction are outside it",
+                "category_tagging": "one relaxed atomic store per phase boundary; pairs-vector growth is attributed to the assembly phase that performs the push rather than tagged per push, because two atomic stores per element would materially perturb the lane",
                 "note": "allocator-lane wall time is NOT U_PLAIN and is never mixed into it",
             }),
         )?,
@@ -830,24 +832,38 @@ fn cmd_run_alloc(flags: &[String]) -> Result<(), String> {
         let post = Source::new(SourceId(1), cell.post_source.clone());
         let reference = markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?;
         let hook = ReferenceOracle::new(reference);
-        let old_state = build_initial_state(&mechanism, &old).map_err(|f| format!("build_initial_state: {f:?}"))?;
+
+        // Construction happens BEFORE the window opens; the live-byte
+        // baseline B0 is therefore the already-built fresh state.
+        let old_state = build_initial_state(&mechanism, &old)
+            .map_err(|f| format!("build_initial_state: {f:?}"))?;
+        let live_before_arm = crate::allocstat::live_requested_bytes();
+
         let wall_start = Instant::now();
         crate::allocstat::arm();
-        let report = run_update_timed(
-            &mechanism,
-            &old,
-            &post,
-            &cell.edit,
-            old_state,
-            &clock,
-            &hook,
-        );
+        let (outcome, prepare_ns, native_ns) =
+            run_update_region_only(&mechanism, &old, &post, &cell.edit, old_state, &clock);
         let window = crate::allocstat::disarm();
         let wall_ns = u64::try_from(wall_start.elapsed().as_nanos()).unwrap_or(u64::MAX);
-        let timing = match &report.measurement {
-            LaneMeasurement::Timing(t) => t,
-            other => return Err(format!("unexpected lane {other:?}")),
+
+        // Everything below is OUTSIDE the accounting window.
+        let (execution, correctness, checksum) = match outcome {
+            Ok(done) => {
+                let checksum = markit_mdbench_common::ResultChecksum::result_checksum(&done.state);
+                let correctness = markit_mdbench_oracle::CorrectnessHook::verify(&hook, &done);
+                (
+                    format!("{:?}", ExecutionStatus::Pass),
+                    format!("{correctness:?}"),
+                    Some(checksum),
+                )
+            }
+            Err(failure) => (
+                format!("{:?}", ExecutionStatus::from(failure)),
+                format!("{:?}", CorrectnessStatus::NotChecked),
+                None,
+            ),
         };
+
         emit(
             &mut out,
             &serde_json::json!({
@@ -863,11 +879,13 @@ fn cmd_run_alloc(flags: &[String]) -> Result<(), String> {
                 "case_id_hex": cell.case_id_hex,
                 "sample_kind": if slot.round < warmup { "warmup" } else { "measured" },
                 "measured_ordinal": slot.round.saturating_sub(warmup),
-                "execution_status": format!("{:?}", report.execution_status),
-                "correctness_status": format!("{:?}", report.correctness_status),
-                "result_checksum": report.result_checksum,
+                "execution_status": execution,
+                "correctness_status": correctness,
+                "result_checksum": checksum,
                 "alloc_lane_wall_ns": wall_ns,
-                "alloc_lane_runner_total_ns": obs_u64(&timing.total_ns),
+                "alloc_lane_prepare_ns": prepare_ns,
+                "alloc_lane_native_ns": native_ns,
+                "live_before_arm_requested_bytes": live_before_arm,
                 "allocator": window.to_json(),
                 "allocator_row": window.row(),
             }),
@@ -880,6 +898,320 @@ fn cmd_run_alloc(flags: &[String]) -> Result<(), String> {
 #[cfg(not(feature = "allocator"))]
 fn cmd_run_alloc(_flags: &[String]) -> Result<(), String> {
     Err("run-alloc requires a binary built with --features allocator".to_string())
+}
+
+
+// ---------------------------------------------------------------------------
+// PMU lane — resident-update-scoped `perf stat` (Issue #50 §12)
+// ---------------------------------------------------------------------------
+
+/// Synchronous control channel to `perf stat --control=fifo:ctl,ack`.
+///
+/// `perf` enables/disables its counters when it reads a control command and
+/// acknowledges on the ack fifo, so the harness can make the counted window
+/// exactly the resident-update region: no construction, no oracle, no
+/// checksum, no final result destruction.
+struct PerfControl {
+    ctl: std::fs::File,
+    ack: BufReader<std::fs::File>,
+}
+
+impl PerfControl {
+    fn open(ctl_path: &str, ack_path: &str) -> Result<Self, String> {
+        let ctl = std::fs::OpenOptions::new()
+            .write(true)
+            .open(ctl_path)
+            .map_err(|e| format!("open control fifo {ctl_path}: {e}"))?;
+        let ack = std::fs::OpenOptions::new()
+            .read(true)
+            .open(ack_path)
+            .map_err(|e| format!("open ack fifo {ack_path}: {e}"))?;
+        Ok(Self {
+            ctl,
+            ack: BufReader::new(ack),
+        })
+    }
+
+    fn command(&mut self, word: &str) -> Result<(), String> {
+        self.ctl
+            .write_all(word.as_bytes())
+            .and_then(|_| self.ctl.write_all(b"\n"))
+            .and_then(|_| self.ctl.flush())
+            .map_err(|e| format!("write control command {word:?}: {e}"))?;
+        let mut line = String::new();
+        self.ack
+            .read_line(&mut line)
+            .map_err(|e| format!("read ack for {word:?}: {e}"))?;
+        Ok(())
+    }
+
+    fn enable(&mut self) -> Result<(), String> {
+        self.command("enable")
+    }
+
+    fn disable(&mut self) -> Result<(), String> {
+        self.command("disable")
+    }
+}
+
+/// The resident-update region only: `prepare_update` + `update` + `complete`
+/// + `black_box`, with the frozen timer boundary. No checksum, no oracle, no
+/// export — those run after the PMU window has been closed.
+fn run_update_region_only<M>(
+    mechanism: &M,
+    old: &Source,
+    post: &Source,
+    edit: &CanonicalEdit,
+    old_state: M::State,
+    clock: &InstantClock,
+) -> (Result<markit_mdbench_common::Completed<M::State>, FailureStatus>, u64, u64)
+where
+    M: markit_mdbench_common::Mechanism,
+{
+    use markit_mdbench_common::MechanismContext;
+    use markit_mdbench_common::NoopWorkSink;
+    use markit_mdbench_instrumentation::PhaseGuard;
+
+    let mut sink = NoopWorkSink;
+    let mut cx = MechanismContext::new(&mut sink);
+    let prepare_guard = PhaseGuard::start(clock);
+    let prepared = mechanism.prepare_update(old, post, edit, &old_state, &mut cx);
+    let prepare_ns = prepare_guard.stop();
+    let prep = match prepared {
+        Ok(p) => p,
+        Err(f) => return (Err(f), prepare_ns, 0),
+    };
+    let native_guard = PhaseGuard::start(clock);
+    let outcome = mechanism
+        .update(old, post, edit, old_state, prep, &mut cx)
+        .and_then(|pending| {
+            let done = mechanism.complete(pending)?;
+            black_box(&done);
+            Ok(done)
+        });
+    let native_ns = native_guard.stop();
+    (outcome, prepare_ns, native_ns)
+}
+
+fn cmd_pmu_run(flags: &[String]) -> Result<(), String> {
+    let rounds = flag_u32(flags, "--rounds", 15);
+    let ctl_path = flag_value(flags, "--ctl-fifo")
+        .ok_or_else(|| "--ctl-fifo is required".to_string())?;
+    let ack_path = flag_value(flags, "--ack-fifo")
+        .ok_or_else(|| "--ack-fifo is required".to_string())?;
+    let cells_arg = flag_value(flags, "--cells");
+    let empty_window = flags.iter().any(|f| f == "--empty-window");
+    // Diagnostic-only switch: run the FROZEN mechanism under an identical
+    // window and schedule, so the diagnostic copy can be compared against
+    // the original on the same footing.
+    let use_original = flag_value(flags, "--mechanism").as_deref() == Some("original");
+    let mut out = out_writer(flags, "pmu")?;
+
+    let cell_labels: Vec<String> = match &cells_arg {
+        Some(list) => list.split(',').map(|s| s.trim().to_string()).collect(),
+        None => cell_labels(),
+    };
+
+    emit(
+        &mut out,
+        &receipt(
+            "pmu",
+            serde_json::json!({
+                "rounds": rounds,
+                "cells": cell_labels,
+                "empty_window_control": empty_window,
+                "schedule_seed": schedule::lane_seed("pmu", 0),
+                "scope": "resident update only (prepare_update + update + complete + black_box); construction, oracle, checksum and final result destruction are outside the counted window",
+                "control": "perf stat --delay=-1 --control=fifo:<ctl>,<ack> with a synchronous ack per enable/disable",
+                "note": "the same balanced-randomized mixed-cell schedule as U_PLAIN is used, because a homogeneous tight loop measures a different (higher) latency for the same update",
+            }),
+        )?,
+    )?;
+
+    // Same scheduling discipline as every other lane: one window per
+    // (round, cell) slot, order randomized per round from the frozen seed.
+    let labels: Vec<String> = vec!["A0".to_string()];
+    let slots = schedule::build(&cell_labels, &labels, rounds, schedule::lane_seed("pmu", 0));
+    write_schedule(flags, &slots)?;
+
+    let mechanism = H4Diag::new(Variant::A0);
+    let original_mechanism = RestartConvergenceMechanism::new();
+    let clock = InstantClock::new();
+    let all = all_cells()?;
+    let by_label: std::collections::HashMap<&str, &Cell> =
+        all.iter().map(|c| (c.label.as_str(), c)).collect();
+    let mut references: std::collections::HashMap<String, ReferenceOracle> =
+        std::collections::HashMap::new();
+    for label in &cell_labels {
+        let cell = by_label
+            .get(label.as_str())
+            .ok_or_else(|| format!("unknown cell {label}"))?;
+        references.insert(
+            label.clone(),
+            ReferenceOracle::new(markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?),
+        );
+    }
+
+    let mut control = PerfControl::open(&ctl_path, &ack_path)?;
+
+    for slot in &slots {
+        let cell = by_label
+            .get(slot.cell.as_str())
+            .ok_or_else(|| format!("unknown cell {}", slot.cell))?;
+        let old = Source::new(SourceId(0), cell.pre_source.clone());
+        let post = Source::new(SourceId(1), cell.post_source.clone());
+        let hook = references
+            .get(&cell.label)
+            .ok_or_else(|| format!("no reference for {}", cell.label))?;
+
+        // CONSTRUCTION HAPPENS BEFORE THE WINDOW OPENS. The fresh resident
+        // state is built here, outside the counted region, so the window
+        // contains the resident update and nothing else.
+        let mut diag_state = None;
+        let mut orig_state = None;
+        if !empty_window {
+            if use_original {
+                orig_state = Some(
+                    build_initial_state(&original_mechanism, &old)
+                        .map_err(|f| format!("build_initial_state: {f:?}"))?,
+                );
+            } else {
+                diag_state = Some(
+                    build_initial_state(&mechanism, &old)
+                        .map_err(|f| format!("build_initial_state: {f:?}"))?,
+                );
+            }
+        }
+
+        control.enable()?;
+        let (execution, correctness, checksum, prepare_ns, native_ns) = if empty_window {
+            control.disable()?;
+            (0u64, 0u64, "EmptyWindowControl".to_string(), "NotChecked".to_string(), None)
+                .into_pmu_row()
+        } else if use_original {
+            let (outcome, p, n) = run_update_region_only(
+                &original_mechanism,
+                &old,
+                &post,
+                &cell.edit,
+                orig_state.expect("original state built above"),
+                &clock,
+            );
+            control.disable()?;
+            export_original(outcome, hook, p, n)
+        } else {
+            let (outcome, p, n) = run_update_region_only(
+                &mechanism,
+                &old,
+                &post,
+                &cell.edit,
+                diag_state.expect("diagnostic state built above"),
+                &clock,
+            );
+            control.disable()?;
+            export_diag(outcome, hook, p, n)
+        };
+
+        emit(
+            &mut out,
+            &serde_json::json!({
+                "record": "observation",
+                "lane": "pmu",
+                "round": slot.round,
+                "ordinal": slot.ordinal,
+                "cell": cell.label,
+                "n_bytes": cell.n_bytes,
+                "m_blocks": cell.m_blocks,
+                "case_id_hex": cell.case_id_hex,
+                "empty_window": empty_window,
+                "mechanism": if use_original { "original" } else { "diag-copy" },
+                "prepare_ns": prepare_ns,
+                "native_ns": native_ns,
+                "total_ns": prepare_ns + native_ns,
+                "execution_status": execution,
+                "correctness_status": correctness,
+                "result_checksum": checksum,
+            }),
+        )?;
+    }
+    out.flush().map_err(|e| format!("flush: {e}"))?;
+    Ok(())
+}
+
+/// Export tuple used by the PMU lane: all post-window work.
+type PmuExport = (String, String, Option<u64>, u64, u64);
+
+/// Helper for the empty-window control.
+trait IntoPmuRow {
+    fn into_pmu_row(self) -> PmuExport;
+}
+impl IntoPmuRow for (u64, u64, String, String, Option<u64>) {
+    fn into_pmu_row(self) -> PmuExport {
+        (self.2, self.3, self.4, self.0, self.1)
+    }
+}
+
+/// Post-window export for the diagnostic copy.
+fn export_diag(
+    outcome: Result<markit_mdbench_common::Completed<crate::alg::H4DiagState>, FailureStatus>,
+    hook: &ReferenceOracle,
+    prepare_ns: u64,
+    native_ns: u64,
+) -> PmuExport {
+    match outcome {
+        Ok(done) => {
+            let checksum = markit_mdbench_common::ResultChecksum::result_checksum(&done.state);
+            let correctness = markit_mdbench_oracle::CorrectnessHook::verify(hook, &done);
+            (
+                format!("{:?}", ExecutionStatus::Pass),
+                format!("{correctness:?}"),
+                Some(checksum),
+                prepare_ns,
+                native_ns,
+            )
+        }
+        Err(failure) => (
+            format!("{:?}", ExecutionStatus::from(failure)),
+            format!("{:?}", CorrectnessStatus::NotChecked),
+            None,
+            prepare_ns,
+            native_ns,
+        ),
+    }
+}
+
+/// Post-window export for the FROZEN mechanism (same window, same schedule).
+fn export_original(
+    outcome: Result<
+        markit_mdbench_common::Completed<
+            <RestartConvergenceMechanism as markit_mdbench_common::Mechanism>::State,
+        >,
+        FailureStatus,
+    >,
+    hook: &ReferenceOracle,
+    prepare_ns: u64,
+    native_ns: u64,
+) -> PmuExport {
+    match outcome {
+        Ok(done) => {
+            let checksum = markit_mdbench_common::ResultChecksum::result_checksum(&done.state);
+            let correctness = markit_mdbench_oracle::CorrectnessHook::verify(hook, &done);
+            (
+                format!("{:?}", ExecutionStatus::Pass),
+                format!("{correctness:?}"),
+                Some(checksum),
+                prepare_ns,
+                native_ns,
+            )
+        }
+        Err(failure) => (
+            format!("{:?}", ExecutionStatus::from(failure)),
+            format!("{:?}", CorrectnessStatus::NotChecked),
+            None,
+            prepare_ns,
+            native_ns,
+        ),
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -899,6 +1231,7 @@ fn usage() {
          \x20 run-counters        W_COUNTERS (needs --features counters)\n\
          \x20 run-ablations       A0 / A0-dup / Adefs / Adrop / Acapacity\n\
          \x20 run-alloc           A_ALLOCATOR (needs --features allocator)\n\
+         \x20 pmu-run             resident-update-scoped perf stat window driver\n\
          \n\
          flags: --session N --out F --reps R --warmup W --schedule-out F"
     );
@@ -921,6 +1254,7 @@ pub fn main() -> ExitCode {
         "run-counters" => cmd_run_counters(&flags),
         "run-ablations" => cmd_run_ablations(&flags),
         "run-alloc" => cmd_run_alloc(&flags),
+        "pmu-run" => cmd_pmu_run(&flags),
         "receipt" => {
             let lane = flag_value(&flags, "--lane").unwrap_or_else(|| "unknown".to_string());
             let mut out = match out_writer(&flags, "receipt") {

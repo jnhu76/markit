@@ -56,7 +56,7 @@ use markit_mdbench_shared_grammar as sg;
 use sg::parser::{parse_region, parse_region_with_hook, ContextKey, Skel, SpliceHook};
 
 use crate::deferred;
-use crate::{cnt, cnt_set, phase, tracked_push};
+use crate::{alloc_cat, cnt, cnt_set, phase, phase_inclusive, tracked_push};
 
 /// Mechanism identifier of the diagnostic copy (never the frozen id).
 pub const H4DIAG_MECHANISM_ID: &str = "restart-convergence-h4-diag-copy";
@@ -527,6 +527,7 @@ impl Mechanism for H4Diag {
 
         // ---- P2: forward parse from the restart checkpoint -------------
         let r = prepared.restart_position;
+        alloc_cat!(FORWARD_PARSE);
         let (rp, slot_count, take, consultations, _blank_checks) =
             phase!(P2ForwardParseAndConvergence, {
                 let mut cursor = Cursor {
@@ -578,6 +579,7 @@ impl Mechanism for H4Diag {
         } else {
             Vec::new()
         };
+        alloc_cat!(PREFIX_ASSEMBLY);
         phase!(P3PrefixPairAssembly, {
             for (s, cp) in old_state.blocks[..prepared.restart_slot]
                 .iter()
@@ -622,6 +624,7 @@ impl Mechanism for H4Diag {
         //         definition — checked here, and timed.
         // Under (i)-(iv) the assembled table is empty, equals the retained
         // empty table, and the frozen response (no restart) is unchanged.
+        alloc_cat!(DEFS_TABLE);
         let mut defs: Vec<(String, String)> = Vec::new();
         let table_matches_retained = phase!(P4DefinitionCollectTableCompare, {
             let skip_defs = self.variant == Variant::ADefs
@@ -688,6 +691,7 @@ impl Mechanism for H4Diag {
             for sk in &rp.blocks {
                 match sk {
                     Skel::Spliced { slot, .. } => {
+                        alloc_cat!(SUFFIX_ASSEMBLY);
                         debug_assert_eq!(*slot, 0, "at most one convergence take per update");
                         let Some((old_idx, _)) = take else {
                             unreachable!("splice placeholder without a recorded take")
@@ -721,6 +725,7 @@ impl Mechanism for H4Diag {
                         }
                     }
                     other => {
+                        alloc_cat!(FRESH_MATERIALIZATION);
                         cnt!(FreshBlocksMaterialized, 1);
                         built.fnodes += skel_count(other);
                         let start = other.start();
@@ -761,6 +766,7 @@ impl Mechanism for H4Diag {
         // ---- P6: pairs -> slots / checkpoints --------------------------
         let mut slots: Vec<DiagBlockSlot>;
         let mut checkpoints: Vec<DiagCheckpoint>;
+        alloc_cat!(SLOTS_CHECKPOINTS);
         phase!(P6PairsToSlotsCheckpoints, {
             slots = Vec::with_capacity(pairs.len());
             checkpoints = Vec::with_capacity(pairs.len());
@@ -803,8 +809,10 @@ impl Mechanism for H4Diag {
             .set_convergence_distance(Observed::Known((convergence_pos - r) as u64));
 
         // ---- P7: sealing + explicit retirement of the consumed state ---
+        alloc_cat!(RETIREMENT);
         let pending = phase!(P7SealAndRetirement, {
             retire_old_state(old_state, self.variant, prefix_handles + suffix_handles);
+            alloc_cat!(SEAL_OTHER);
             H4DiagPending {
                 state: H4DiagState {
                     blocks: slots,
@@ -849,7 +857,18 @@ struct Cursor<'a> {
 }
 
 impl Cursor<'_> {
+    /// The convergence consult.
+    ///
+    /// The body is wrapped in the INCLUSIVE hook sub-measure: it runs
+    /// inside the scanner, hence inside P2, and its time is a sub-interval
+    /// of P2 that is never added to the disjoint sum.
     fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
+        phase_inclusive!(HookInclusiveSubMeasure, {
+            self.consult_inner(pos, key)
+        })
+    }
+
+    fn consult_inner(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
         self.consultations += 1;
         cnt!(ConvergenceHookCalls, 1);
         if self.take.is_some() {
