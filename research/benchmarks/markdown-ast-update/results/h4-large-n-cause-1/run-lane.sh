@@ -19,7 +19,7 @@ shift 3
 
 cd "$ROOT" || exit 2
 
-BIN="./target/release/${BIN_NAME}"
+BIN="results/h4-large-n-cause-1/bin/${BIN_NAME}"
 LOG="results/h4-large-n-cause-1/logs/${LANE}.log"
 mkdir -p results/h4-large-n-cause-1/logs
 
@@ -39,6 +39,11 @@ mkdir -p results/h4-large-n-cause-1/logs
   fi
   ACTUAL_SHA=$(sha256sum "$BIN" | cut -d' ' -f1)
   echo "executable_sha256=$ACTUAL_SHA"
+  # The binary is a FROZEN COPY in results/.../bin/, never the mutable
+  # cargo output: building this package without --bin would otherwise
+  # overwrite every feature-specific binary with the default build.
+  FEATURES=$("$BIN" receipt --lane feature-check 2>/dev/null | python3 -c "import sys,json;print(json.loads(sys.stdin.readline())['features'])" 2>/dev/null)
+  echo "executable_features=$FEATURES"
 
   taskset -c 1 "$BIN" "$@"
   CODE=$?

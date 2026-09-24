@@ -1,0 +1,42 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 6K of event 'cpu/cycles/P'
+# Event count (approx.): 5302618291
+#
+# Children      Self  Shared Object    
+# ........  ........  .................
+#
+    75.32%    75.31%  mdbench-h4diag   
+    24.14%    23.40%  libc.so.6        
+            |          
+            |--7.51%--__libc_malloc2
+            |          |          
+            |           --6.37%--_int_malloc
+            |          
+            |--6.64%--__memmove_avx_unaligned_erms
+            |          
+            |--3.56%--cfree@GLIBC_2.2.5
+            |          
+            |--3.43%--malloc
+            |          
+            |--1.71%--_int_free_chunk
+            |          |          
+            |           --1.34%--_int_free_merge_chunk
+            |          
+             --0.53%--realloc
+                       _int_realloc
+
+     1.30%     1.27%  [kernel.kallsyms]
+            |          
+             --0.52%--0xffffffffb640160a
+
+     0.29%     0.00%  [unknown]        
+     0.02%     0.02%  [amdgpu]         
+
+
+#
+# (Tip: To show time in nanoseconds in record/report add --ns)
+#

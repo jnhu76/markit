@@ -1,0 +1,5 @@
+{"counter-value" : "0.000000", "unit" : "", "event" : "context-switches:u", "event-runtime" : 5328647, "pcnt-running" : 100.00}
+{"counter-value" : "0.000000", "unit" : "", "event" : "cpu-migrations:u", "event-runtime" : 5328647, "pcnt-running" : 100.00}
+{"counter-value" : "56.000000", "unit" : "", "event" : "page-faults:u", "event-runtime" : 5328647, "pcnt-running" : 100.00}
+{"counter-value" : "56.000000", "unit" : "", "event" : "minor-faults:u", "event-runtime" : 5328647, "pcnt-running" : 100.00}
+{"counter-value" : "0.000000", "unit" : "", "event" : "major-faults:u", "event-runtime" : 5328647, "pcnt-running" : 100.00}

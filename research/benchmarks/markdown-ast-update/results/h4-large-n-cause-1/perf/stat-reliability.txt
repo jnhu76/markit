@@ -1,0 +1,13 @@
+root  groupA  min_pcnt_running=100.00% OK(>=99)
+root  groupB  min_pcnt_running=100.00% OK(>=99)
+root  groupC1 min_pcnt_running=100.00% OK(>=99)
+root  groupC2 min_pcnt_running=100.00% OK(>=99)
+root  groupS  min_pcnt_running=100.00% OK(>=99)
+user  groupA  min_pcnt_running=100.00% OK(>=99)
+user  groupB  min_pcnt_running=100.00% OK(>=99)
+user  groupC1 min_pcnt_running=100.00% OK(>=99)
+user  groupC2 min_pcnt_running=100.00% OK(>=99)
+user  groupS  min_pcnt_running=100.00% OK(>=99)
+
+verdict: all 10 (privilege x group) combinations ran unmultiplexed
+(100.00% >= 0.99 threshold): PERF_STAT = COMPLETE, no PMU_GROUP_UNRELIABLE

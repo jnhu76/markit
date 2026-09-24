@@ -1,0 +1,8 @@
+phase,p50_ns,share_of_U_PHASE,ablation_ratio_vs_A0,ablation_verdict
+P1_prepare_damage_restart,3065877,0.1163,,
+P2_forward_parse_and_convergence,4022,0.0002,,
+P3_prefix_pair_assembly,5310707,0.2015,,
+P4_definition_collect_table_compare,2269746,0.0861,0.9129,CONSISTENT_BELOW_THRESHOLD
+P5_fresh_materialization_and_suffix_assembly,5672714,0.2152,,
+P6_pairs_to_slots_checkpoints,7020285,0.2663,0.9777,CONSISTENT_BELOW_THRESHOLD
+P7_seal_and_retirement,3256252,0.1235,0.8763,REACHES_THRESHOLD

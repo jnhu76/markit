@@ -1,0 +1,2 @@
+{"counter-value" : "1212859.000000", "unit" : "", "event" : "cache-references", "event-runtime" : 39117753, "pcnt-running" : 100.00}
+{"counter-value" : "3881.000000", "unit" : "", "event" : "cache-misses", "event-runtime" : 39117753, "pcnt-running" : 100.00}

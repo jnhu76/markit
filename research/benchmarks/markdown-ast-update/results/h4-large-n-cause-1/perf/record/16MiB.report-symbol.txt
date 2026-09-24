@@ -1,0 +1,148 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 2K of event 'cpu/cycles/P'
+# Event count (approx.): 1832517326
+#
+# Children      Self  Symbol                                                                                                                                                                                                                                                                                                                                                                 Shared Object      IPC   [IPC Coverage]
+# ........  ........  .....................................................................................................................................................................................................................................................................................................................................................................  .................  ....................
+#
+    40.34%    37.82%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                           mdbench-h4diag     -      -            
+            |          
+            |--22.34%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--7.85%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          |          
+            |           --1.79%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |          
+             --0.41%--0x800046
+                       |          
+                        --0.36%--0x7f0038363931
+                                  <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+    24.77%     0.00%  [.] markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>                                                                                                                                                                                                                                                                           mdbench-h4diag     -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               |          
+                --1.79%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+    21.20%    21.06%  [.] core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}  mdbench-h4diag     -      -            
+            |          
+             --19.09%--core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+    11.73%    11.60%  [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>                                                                                                                                                                                                                   mdbench-h4diag     -      -            
+            |          
+             --11.00%--0x2
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+
+    11.14%     0.00%  [.] 0x0000000000000002                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+
+    10.47%    10.47%  [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>                                                                                                                                                                                                                                                                                 mdbench-h4diag     -      -            
+            |          
+             --9.36%--0xffff
+                       core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+
+     9.36%     0.00%  [.] 0x000000000000ffff                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |
+            ---core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+
+     8.19%     8.19%  [.] markit_mdbench_h4diag::alg::collect_defs_skel                                                                                                                                                                                                                                                                                                                      mdbench-h4diag     -      -            
+            |          
+            |--5.91%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+             --1.34%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+     5.91%     5.87%  [.] markit_mdbench_h4diag::alg::skel_count                                                                                                                                                                                                                                                                                                                             mdbench-h4diag     -      -            
+            |          
+            |--3.81%--0x12f
+            |          markit_mdbench_h4diag::alg::skel_count
+            |          
+             --1.20%--markit_mdbench_h4diag::alg::skel_count
+
+     5.91%     0.00%  [.] 0xfffffffffffffffe                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |
+            ---markit_mdbench_h4diag::alg::collect_defs_skel
+
+     4.04%     0.00%  [.] 0x000000000000012f                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |          
+             --3.86%--markit_mdbench_h4diag::alg::skel_count
+
+     1.97%     1.97%  [.] core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>                                                                                                                                                                                                                                                                                                    mdbench-h4diag     -      -            
+            |          
+             --1.79%--markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+                       core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+     1.92%     1.92%  [.] __memmove_avx_unaligned_erms                                                                                                                                                                                                                                                                                                                                       libc.so.6          -      -            
+            |          
+             --1.61%--0x10000
+                       <alloc::raw_vec::RawVecInner>::finish_grow
+                       realloc
+                       _int_realloc
+                       __memmove_avx_unaligned_erms
+
+     1.88%     0.00%  [.] realloc                                                                                                                                                                                                                                                                                                                                                            libc.so.6          -      -            
+            |
+            ---_int_realloc
+               __memmove_avx_unaligned_erms
+
+     1.88%     0.00%  [.] _int_realloc                                                                                                                                                                                                                                                                                                                                                       libc.so.6          -      -            
+            |
+            ---__memmove_avx_unaligned_erms
+
+     1.61%     0.00%  [.] 0x0000000000010000                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |
+            ---<alloc::raw_vec::RawVecInner>::finish_grow
+               realloc
+               _int_realloc
+               __memmove_avx_unaligned_erms
+
+     1.61%     0.00%  [.] <alloc::raw_vec::RawVecInner>::finish_grow                                                                                                                                                                                                                                                                                                                         mdbench-h4diag     -      -            
+            |
+            ---realloc
+               _int_realloc
+               __memmove_avx_unaligned_erms
+
+     0.50%     0.00%  [.] 0xffffffffb640160a                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |          
+             --0.36%--0xffffffffb7bbbfd8
+                       0xffffffffb6788468
+                       0xffffffffb692d8f7
+                       0xffffffffb692ca88
+
+     0.41%     0.00%  [.] 0x0000000000800046                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |          
+             --0.36%--0x7f0038363931
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+     0.36%     0.00%  [.] 0xffffffffb7bbbfd8                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |
+            ---0xffffffffb6788468
+               0xffffffffb692d8f7
+               0xffffffffb692ca88
+
+     0.36%     0.00%  [.] 0xffffffffb6788468                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |
+            ---0xffffffffb692d8f7
+               0xffffffffb692ca88
+
+     0.36%     0.00%  [.] 0xffffffffb692d8f7                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+            |
+            ---0xffffffffb692ca88
+
+     0.36%     0.00%  [.] 0xffffffffb692ca88                                                                                                                                                                                                                                                                                                                                                 [kernel.kallsyms]  -      -            
+     0.36%     0.00%  [.] 0x00007f0038363931                                                                                                                                                                                                                                                                                                                                                 [unknown]          -      -            
+            |
+            ---<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+
+
+#
+# (Tip: To see how parallelism changes over time, try: perf report -F time,latency,parallelism --time-quantum=1s)
+#

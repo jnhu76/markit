@@ -1,0 +1,339 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 913  of event 'cpu/cycles/P'
+# Event count (approx.): 731164768
+#
+# Children      Self  Command         Shared Object      Symbol                                                                                                                                                                                                                                                                                                                                                               
+# ........  ........  ..............  .................  .....................................................................................................................................................................................................................................................................................................................................................................
+#
+    48.76%    46.04%  mdbench-h4diag  mdbench-h4diag     [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--24.96%--0x3
+            |          markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |          <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+            |--3.66%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+            |          |          
+            |          |--2.06%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |          |          
+            |           --0.33%--0xffffffffb640160a
+            |                     0xffffffffb7bbbfd8
+            |                     0xffffffffb6788468
+            |          
+             --1.23%--0xfff
+                       <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+    27.70%     0.00%  mdbench-h4diag  mdbench-h4diag     [.] markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+            |
+            ---markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+               |          
+                --27.59%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+                          |          
+                           --2.06%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+    27.46%     0.00%  mdbench-h4diag  [unknown]          [.] 0x0000000000000003
+            |
+            ---0x3
+               markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+               <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               |          
+                --2.06%--core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+    18.33%     0.00%  mdbench-h4diag  [unknown]          [.] 0x0000000000000fff
+            |
+            ---0xfff
+               |          
+               |--17.10%--core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+               |          
+                --1.23%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+
+    17.10%    17.10%  mdbench-h4diag  mdbench-h4diag     [.] core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+            |
+            ---0xfff
+               core::ptr::drop_glue::<alloc::vec::Vec<markit_mdbench_h4diag::alg::DiagBlockSlot>>
+
+    10.48%    10.48%  mdbench-h4diag  mdbench-h4diag     [.] core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+            |--8.95%--core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+            |          
+             --0.66%--clock_gettime@@GLIBC_2.17
+                       core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     8.40%     8.40%  mdbench-h4diag  mdbench-h4diag     [.] <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+            |          
+             --8.29%--<markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::prepare_update::<markit_mdbench_common::work::NoopWorkSink>
+
+     7.13%     7.13%  mdbench-h4diag  mdbench-h4diag     [.] markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--3.31%--0xfffffffffffffffe
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--2.42%--markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+            |--0.86%--0x12f
+            |          markit_mdbench_h4diag::alg::collect_defs_skel
+            |          
+             --0.54%--0x55e900000012
+                       markit_mdbench_h4diag::alg::collect_defs_skel
+
+     6.02%     6.02%  mdbench-h4diag  mdbench-h4diag     [.] markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--2.37%--markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--1.88%--0x12f
+            |          markit_mdbench_h4diag::alg::skel_count
+            |          
+            |--1.33%--0x55e900000012
+            |          markit_mdbench_h4diag::alg::skel_count
+            |          
+             --0.43%--0x7
+                       markit_mdbench_h4diag::alg::skel_count
+
+     3.31%     0.00%  mdbench-h4diag  [unknown]          [.] 0xfffffffffffffffe
+            |
+            ---0xfffffffffffffffe
+               markit_mdbench_h4diag::alg::collect_defs_skel
+
+     2.74%     0.00%  mdbench-h4diag  [unknown]          [.] 0x000000000000012f
+            |
+            ---0x12f
+               |          
+               |--1.88%--markit_mdbench_h4diag::alg::skel_count
+               |          
+                --0.86%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+     2.06%     2.06%  mdbench-h4diag  mdbench-h4diag     [.] core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+            |
+            ---0x3
+               markit_mdbench_h4diag::cli::run_update_region_only::<markit_mdbench_h4diag::alg::H4Diag>
+               <markit_mdbench_h4diag::alg::H4Diag as markit_mdbench_common::mechanism::Mechanism>::update::<markit_mdbench_common::work::NoopWorkSink>
+               core::ptr::drop_glue::<markit_mdbench_h4diag::alg::H4DiagState>
+
+     1.87%     0.00%  mdbench-h4diag  [unknown]          [.] 0x000055e900000012
+            |
+            ---0x55e900000012
+               |          
+               |--1.33%--markit_mdbench_h4diag::alg::skel_count
+               |          
+                --0.54%--markit_mdbench_h4diag::alg::collect_defs_skel
+
+     1.01%     0.00%  mdbench-h4diag  [unknown]          [k] 0xacba1bd86e2ed808
+            |
+            ---0xacba1bd86e2ed808
+               <markit_mdbench_h4diag::cli::PerfControl>::command
+               |          
+               |--0.66%--read
+               |          __syscall_cancel
+               |          __internal_syscall_cancel
+               |          |          
+               |           --0.55%--0xffffffffb640012f
+               |                     0xffffffffb7bb4a92
+               |                     0xffffffffb6cc9ccf
+               |                     |          
+               |                      --0.44%--0xffffffffb6cc9025
+               |                                0xffffffffb6cd8f86
+               |                                |          
+               |                                 --0.33%--0xffffffffb6cd8da6
+               |                                           0xffffffffb7bc4567
+               |          
+                --0.35%--__GI___libc_write
+                          __syscall_cancel
+                          __internal_syscall_cancel
+                          0xffffffffb640012f
+
+     1.01%     0.00%  mdbench-h4diag  mdbench-h4diag     [.] <markit_mdbench_h4diag::cli::PerfControl>::command
+            |
+            ---<markit_mdbench_h4diag::cli::PerfControl>::command
+               |          
+               |--0.66%--read
+               |          __syscall_cancel
+               |          __internal_syscall_cancel
+               |          |          
+               |           --0.55%--0xffffffffb640012f
+               |                     0xffffffffb7bb4a92
+               |                     0xffffffffb6cc9ccf
+               |                     |          
+               |                      --0.44%--0xffffffffb6cc9025
+               |                                0xffffffffb6cd8f86
+               |                                |          
+               |                                 --0.33%--0xffffffffb6cd8da6
+               |                                           0xffffffffb7bc4567
+               |          
+                --0.35%--__GI___libc_write
+                          __syscall_cancel
+                          __internal_syscall_cancel
+                          0xffffffffb640012f
+
+     1.01%     0.00%  mdbench-h4diag  libc.so.6          [.] __syscall_cancel
+            |
+            ---__syscall_cancel
+               __internal_syscall_cancel
+               |          
+                --0.89%--0xffffffffb640012f
+                          |          
+                           --0.79%--0xffffffffb7bb4a92
+                                     |          
+                                      --0.55%--0xffffffffb6cc9ccf
+                                                |          
+                                                 --0.44%--0xffffffffb6cc9025
+                                                           0xffffffffb6cd8f86
+                                                           |          
+                                                            --0.33%--0xffffffffb6cd8da6
+                                                                      0xffffffffb7bc4567
+
+     1.01%     0.00%  mdbench-h4diag  libc.so.6          [.] __internal_syscall_cancel
+            |
+            ---__internal_syscall_cancel
+               |          
+                --0.89%--0xffffffffb640012f
+                          |          
+                           --0.79%--0xffffffffb7bb4a92
+                                     |          
+                                      --0.55%--0xffffffffb6cc9ccf
+                                                |          
+                                                 --0.44%--0xffffffffb6cc9025
+                                                           0xffffffffb6cd8f86
+                                                           |          
+                                                            --0.33%--0xffffffffb6cd8da6
+                                                                      0xffffffffb7bc4567
+
+     0.89%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb640012f
+            |
+            ---0xffffffffb640012f
+               |          
+                --0.79%--0xffffffffb7bb4a92
+                          |          
+                           --0.55%--0xffffffffb6cc9ccf
+                                     |          
+                                      --0.44%--0xffffffffb6cc9025
+                                                0xffffffffb6cd8f86
+                                                |          
+                                                 --0.33%--0xffffffffb6cd8da6
+                                                           0xffffffffb7bc4567
+
+     0.79%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb7bb4a92
+            |
+            ---0xffffffffb7bb4a92
+               |          
+                --0.55%--0xffffffffb6cc9ccf
+                          |          
+                           --0.44%--0xffffffffb6cc9025
+                                     0xffffffffb6cd8f86
+                                     |          
+                                      --0.33%--0xffffffffb6cd8da6
+                                                0xffffffffb7bc4567
+
+     0.77%     0.11%  mdbench-h4diag  libc.so.6          [.] clock_gettime@@GLIBC_2.17
+            |          
+             --0.66%--clock_gettime@@GLIBC_2.17
+                       core::iter::adapters::map::map_fold::<&markit_mdbench_oracle::normalized::Node, u64, u64, markit_mdbench_h4diag::alg::inline_node_count, <u64 as core::iter::traits::accum::Sum>::sum<core::iter::adapters::map::Map<core::slice::iter::Iter<markit_mdbench_oracle::normalized::Node>, markit_mdbench_h4diag::alg::inline_node_count>>::{closure#0}>::{closure#0}
+
+     0.77%     0.00%  mdbench-h4diag  [unknown]          [.] 0x0000000000000007
+            |
+            ---0x7
+               |          
+                --0.43%--markit_mdbench_h4diag::alg::skel_count
+
+     0.66%     0.00%  mdbench-h4diag  libc.so.6          [.] read
+            |
+            ---read
+               __syscall_cancel
+               __internal_syscall_cancel
+               |          
+                --0.55%--0xffffffffb640012f
+                          0xffffffffb7bb4a92
+                          0xffffffffb6cc9ccf
+                          |          
+                           --0.44%--0xffffffffb6cc9025
+                                     0xffffffffb6cd8f86
+                                     |          
+                                      --0.33%--0xffffffffb6cd8da6
+                                                0xffffffffb7bc4567
+
+     0.56%     0.00%  mdbench-h4diag  [unknown]          [.] 0x0000000000001000
+            |
+            ---0x1000
+               <alloc::raw_vec::RawVecInner>::finish_grow
+               realloc
+               _int_realloc
+
+     0.56%     0.10%  mdbench-h4diag  libc.so.6          [.] _int_realloc
+            |          
+             --0.46%--_int_realloc
+
+     0.56%     0.00%  mdbench-h4diag  mdbench-h4diag     [.] <alloc::raw_vec::RawVecInner>::finish_grow
+            |
+            ---<alloc::raw_vec::RawVecInner>::finish_grow
+               realloc
+               _int_realloc
+
+     0.56%     0.00%  mdbench-h4diag  libc.so.6          [.] realloc
+            |
+            ---realloc
+               _int_realloc
+
+     0.55%     0.11%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb6cc9025
+            |          
+             --0.44%--0xffffffffb6cc9025
+                       0xffffffffb6cd8f86
+                       |          
+                        --0.33%--0xffffffffb6cd8da6
+                                  0xffffffffb7bc4567
+
+     0.55%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb6cc9ccf
+            |
+            ---0xffffffffb6cc9ccf
+               |          
+                --0.44%--0xffffffffb6cc9025
+                          0xffffffffb6cd8f86
+                          |          
+                           --0.33%--0xffffffffb6cd8da6
+                                     0xffffffffb7bc4567
+
+     0.44%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb6cd8f86
+            |
+            ---0xffffffffb6cd8f86
+               |          
+                --0.33%--0xffffffffb6cd8da6
+                          0xffffffffb7bc4567
+
+     0.35%     0.00%  mdbench-h4diag  libc.so.6          [.] __GI___libc_write
+            |
+            ---__GI___libc_write
+               __syscall_cancel
+               __internal_syscall_cancel
+               0xffffffffb640012f
+
+     0.35%     0.35%  mdbench-h4diag  libc.so.6          [.] _int_malloc
+     0.33%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb640160a
+            |
+            ---0xffffffffb640160a
+               0xffffffffb7bbbfd8
+               0xffffffffb6788468
+
+     0.33%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb7bbbfd8
+            |
+            ---0xffffffffb7bbbfd8
+               0xffffffffb6788468
+
+     0.33%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb6788468
+            |
+            ---0xffffffffb6788468
+
+     0.33%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb6cd8da6
+            |
+            ---0xffffffffb6cd8da6
+               0xffffffffb7bc4567
+
+     0.33%     0.00%  mdbench-h4diag  [kernel.kallsyms]  [.] 0xffffffffb7bc4567
+            |
+            ---0xffffffffb7bc4567
+
+
+
+#
+# (Tip: To show time in nanoseconds in record/report add --ns)
+#

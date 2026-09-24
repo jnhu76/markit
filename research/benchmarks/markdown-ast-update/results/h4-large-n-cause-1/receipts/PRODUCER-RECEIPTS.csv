@@ -1,0 +1,34 @@
+artifact,lane,producing_executable,executable_sha256,evidence_log
+logs/a-u-plain-session-0.log,a-u-plain-session-0,-,-,run-lane.sh record
+logs/a-u-plain-session-1.log,a-u-plain-session-1,-,-,run-lane.sh record
+logs/a-u-plain-session-2.log,a-u-plain-session-2,-,-,run-lane.sh record
+logs/b-u-phase-session-0.log,b-u-phase-session-0,-,-,run-lane.sh record
+logs/b-u-phase-session-1.log,b-u-phase-session-1,-,-,run-lane.sh record
+logs/b-u-phase-session-2.log,b-u-phase-session-2,-,-,run-lane.sh record
+logs/c-work-counters.log,c-work-counters,-,-,run-lane.sh record
+logs/d-allocator-session-0.log,d-allocator-session-0,-,-,run-lane.sh record
+logs/d-allocator-session-1.log,d-allocator-session-1,-,-,run-lane.sh record
+logs/d-allocator-session-2.log,d-allocator-session-2,-,-,run-lane.sh record
+logs/e-ablations-session-0.log,e-ablations-session-0,-,-,run-lane.sh record
+logs/e-ablations-session-1.log,e-ablations-session-1,-,-,run-lane.sh record
+logs/e-ablations-session-2.log,e-ablations-session-2,-,-,run-lane.sh record
+raw/u-plain-*.jsonl,a-u-plain-session-0,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/a-u-plain-session-0.log
+raw/u-plain-*.jsonl,a-u-plain-session-1,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/a-u-plain-session-1.log
+raw/u-plain-*.jsonl,a-u-plain-session-2,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/a-u-plain-session-2.log
+raw/u-phase-*.jsonl,b-u-phase-session-0,mdbench-h4diag-phases,8185f825473ebc480c9102101546cb367abc3f5b80bc041e1923d05833372ca2,logs/b-u-phase-session-0.log
+raw/u-phase-*.jsonl,b-u-phase-session-1,mdbench-h4diag-phases,8185f825473ebc480c9102101546cb367abc3f5b80bc041e1923d05833372ca2,logs/b-u-phase-session-1.log
+raw/u-phase-*.jsonl,b-u-phase-session-2,mdbench-h4diag-phases,8185f825473ebc480c9102101546cb367abc3f5b80bc041e1923d05833372ca2,logs/b-u-phase-session-2.log
+raw/work-counters.jsonl,c-work-counters,mdbench-h4diag-counters,aa7317579d8ddf000d1f84ba1495ff735421ac9a14a0aaf845b2c318918c1410,logs/c-work-counters.log
+raw/allocator-*.jsonl,d-allocator-session-0,mdbench-h4diag-alloc,fd81e27d4014a229fe2ce9b63b52a38299a186db8abfd78f23a09c51e80d026e,logs/d-allocator-session-0.log
+raw/allocator-*.jsonl,d-allocator-session-1,mdbench-h4diag-alloc,fd81e27d4014a229fe2ce9b63b52a38299a186db8abfd78f23a09c51e80d026e,logs/d-allocator-session-1.log
+raw/allocator-*.jsonl,d-allocator-session-2,mdbench-h4diag-alloc,fd81e27d4014a229fe2ce9b63b52a38299a186db8abfd78f23a09c51e80d026e,logs/d-allocator-session-2.log
+raw/ablations-*.jsonl,e-ablations-session-0,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/e-ablations-session-0.log
+raw/ablations-*.jsonl,e-ablations-session-1,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/e-ablations-session-1.log
+raw/ablations-*.jsonl,e-ablations-session-2,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,logs/e-ablations-session-2.log
+preflight.jsonl / equivalence.jsonl / cells.jsonl,verification,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+perf/stat/*,PMU,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+perf/record/*,PMU,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+ebpf/raw/* (bench runs),eBPF,mdbench-h4diag,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6,4d23df55856a1e71115abdc45c0f5d7993182520f0b53df2a0cab6cdb8c0b4e6
+"u-plain*.csv, u-phase*.csv, work-counters*.csv, ablations*.csv, allocator*.csv",derived,analyze.py (deterministic over raw),analyze.py (deterministic over raw),
+derived-*.csv,derived,derive-tables.py (deterministic over analyzer CSVs),derive-tables.py (deterministic over analyzer CSVs),
+H4-LARGE-N-CAUSE-REPORT.md,derived,author of record (this campaign),author of record (this campaign),
