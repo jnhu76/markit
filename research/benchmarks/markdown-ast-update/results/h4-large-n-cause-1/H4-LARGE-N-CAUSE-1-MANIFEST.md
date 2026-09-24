@@ -18,8 +18,8 @@ Campaign-2 raw evidence: NOT modified
 | Base SHA | `334eea6201fc0258e35a7c5b21feb722641ddcbd` |
 | Diagnostic implementation commit | `f52fe5a` — *h4diag: diagnostic instrumentation for H4 large-N cost attribution (#50)* |
 | Implementation corrections commit | `6b2c2a4` — *h4diag: fix window ordering, counter attribution and allocator tagging for the formal collection* |
-| Results commit | *(filled in when the results are committed)* |
-| HEAD SHA at collection | *(recorded in `raw/*.jsonl` receipts and in the lane logs)* |
+| Results commit | `45ad068` — *results: H4-LARGE-N-CAUSE-1 evidence, analysis and report (issue #50)* |
+| HEAD SHA at collection | binaries frozen from the `6b2c2a4` tree; per-run receipts in `raw/*.jsonl` and `logs/*.log` |
 
 The diagnostic implementation is committed **separately** from the collected
 results (Issue #50 §23). The complete diagnostic diff is the `h4diag/` crate
