@@ -34,5 +34,7 @@ pub use inline::{
 };
 pub use parser::{
     classify_top_level_line, fence_opener_at, heading_at, parse_full, parse_marker, parse_region,
-    parse_region_with_hook, ContextKey, FrameKey, LineClass, RegionParse, Skel, SpliceHook,
+    parse_region_observed, parse_region_with_hook, ContextKey, FrameKey, LineClass,
+    ObservedRegionParse, ObserverControl, RegionObserver, RegionOutcome, RegionParse,
+    RootBlankEvent, Skel, SpliceHook, TopLevelEvent,
 };

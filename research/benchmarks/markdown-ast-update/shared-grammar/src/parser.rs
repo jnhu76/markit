@@ -63,7 +63,7 @@ pub struct ContextKey {
 /// STARTED (the state before its first line was dispatched, excluding
 /// the block's own frame) — parse metadata for horses, never read back
 /// by a plain parse.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Skel {
     Para {
         start: usize,
@@ -213,7 +213,7 @@ struct OpenFence {
 pub type SpliceHook<'h> = dyn FnMut(usize, &ContextKey) -> Option<usize> + 'h;
 
 /// The block pass.
-struct BlockScanner<'a, 'h, W: WorkSink> {
+struct BlockScanner<'a, 'h, 'o, W: WorkSink> {
     src: &'a [u8],
     base: usize,
     end: usize,
@@ -226,6 +226,15 @@ struct BlockScanner<'a, 'h, W: WorkSink> {
     /// union is the inspected source. Never a timer.
     sink: &'a mut W,
     hook: Option<&'h mut SpliceHook<'h>>,
+    observer: Option<&'o mut dyn RegionObserver>,
+    /// The LF byte this scan consumed to enter the current physical line,
+    /// or `None` while the current line is still the scan's first. This is
+    /// the only source of `RootBlankEvent::preceding_lf`: line provenance
+    /// the scan actually established, never a re-read of the source.
+    prev_lf: Option<usize>,
+    /// Cut of the certified root blank barrier the observer stopped at.
+    /// `Some` means the parse ended there, sealed, without EOF closure.
+    stop_requested: Option<usize>,
     slots: u32,
 }
 
@@ -236,7 +245,7 @@ struct BlockScanner<'a, 'h, W: WorkSink> {
 /// pass (R5-CORRECTIVE-1, MAJOR-2).
 pub fn parse_full<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
     let (blocks, defs) = {
-        let mut scan = BlockScanner::new_region(src, 0, src.len(), sink, None);
+        let mut scan = BlockScanner::new_region(src, 0, src.len(), sink, None, None);
         scan.run();
         scan.finish();
         scan.into_result()
@@ -249,17 +258,141 @@ pub fn parse_full<W: WorkSink>(src: &[u8], sink: &mut W) -> NormalizedDocument {
 /// definition facts created inside the region, and whether a fenced
 /// code block was still open when the region ended (an unclosed fence
 /// runs to the region end).
+#[derive(Debug, PartialEq, Eq)]
 pub struct RegionParse {
     pub blocks: Vec<Skel>,
     pub defs: RefTable,
     pub fence_open_at_end: bool,
 }
 
+/// A root-level top-level block start (Horse-A §5.4), issued at the
+/// actual dispatch that opens the block's first physical line.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TopLevelEvent {
+    /// First byte of the block's first PHYSICAL line. Never the semantic
+    /// span start: a span starts after leading spaces and container
+    /// prefixes, the physical line starts before them.
+    pub physical_line_start: usize,
+}
+
+/// A root-safe blank barrier (Horse-A §5.1), issued at the end of a real
+/// physical root `SPACES* LF` blank line whose grammar processing left no
+/// live root state, so every byte before `cut` is already sealed.
+///
+/// This is parser EVIDENCE. I1 retains nothing: turning it into a
+/// persisted restart certificate (with its support range) is a later
+/// slice's concern.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RootBlankEvent {
+    /// Physical start of the blank line.
+    pub line_start: usize,
+    /// The LF byte actually consumed for this physical line.
+    pub line_lf: usize,
+    /// `line_lf + 1`: the end of the blank line, and the region boundary a
+    /// local stop returns at.
+    pub cut: usize,
+    /// The LF byte that establishes `line_start` as a physical line start,
+    /// or `None` at BOF (`line_start == 0`). Support of a future
+    /// certificate is `{preceding_lf}` + `[line_start, cut)`.
+    ///
+    /// Events are issued only where this antecedent holds: a scan that
+    /// begins AT a blank line never consumed its establishing LF, so it
+    /// issues no barrier for it rather than claiming BOF support.
+    pub preceding_lf: Option<usize>,
+}
+
+/// The observer's bounded control request, answerable only at a
+/// [`RootBlankEvent`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ObserverControl {
+    Continue,
+    Stop,
+}
+
+/// Receives parser transition observations. The observer owns no grammar
+/// state and cannot mutate the parse: the only thing it can ask for is a
+/// bounded early stop at a certified root blank barrier.
+pub trait RegionObserver {
+    /// A new root-level top-level block begins at this physical line.
+    fn on_top_level_start(&mut self, ev: TopLevelEvent);
+
+    /// The parser just sealed a root-safe blank barrier; the observer may
+    /// ask to end the region parse at its cut.
+    fn on_root_blank_barrier(&mut self, ev: RootBlankEvent) -> ObserverControl;
+}
+
+/// How an observed region parse ended.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RegionOutcome {
+    /// The scan consumed the whole region; ordinary EOF closure applies.
+    RanToEnd,
+    /// The observer stopped at a certified root blank barrier. The region
+    /// was already sealed there, so this is a successful parse of
+    /// `[base, cut)` — not a parser error and not an EOF completion.
+    StoppedAtCertifiedCut { cut: usize },
+}
+
+/// An observed region parse: the [`RegionParse`] plus how it ended. On
+/// [`RegionOutcome::StoppedAtCertifiedCut`] the result is the sealed parse
+/// of `[base, cut)`.
+#[derive(Debug, PartialEq, Eq)]
+pub struct ObservedRegionParse {
+    pub region: RegionParse,
+    pub outcome: RegionOutcome,
+}
+
+/// Parse the region `[base, end)` with an observer installed. This is the
+/// observed sibling of [`parse_region`]: Horse-A's local parsing uses this
+/// entry point and never a [`SpliceHook`].
+///
+/// Installing an observer may not change the parse. A no-op observer —
+/// one that ignores every event and always continues — yields exactly the
+/// [`RegionParse`] and the exactly the same sink event stream as
+/// [`parse_region`], because both entries run the same grammar code.
+///
+/// The region base is this scan's BOF authority: it is never itself treated
+/// as a root blank barrier, because the scan cannot know (without reading
+/// outside the bytes it reports as inspected) what precedes it.
+pub fn parse_region_observed<W: WorkSink>(
+    src: &[u8],
+    base: usize,
+    end: usize,
+    sink: &mut W,
+    observer: &mut dyn RegionObserver,
+) -> ObservedRegionParse {
+    let mut scan = BlockScanner::new_region(src, base, end, sink, None, Some(observer));
+    scan.run();
+    let outcome = match scan.stop_requested {
+        Some(cut) => RegionOutcome::StoppedAtCertifiedCut { cut },
+        None => RegionOutcome::RanToEnd,
+    };
+    let fence_open_at_end = scan.fence.is_some();
+    match outcome {
+        // A certified stop is already sealed (no frames, no paragraph, no
+        // fence), so EOF closure is not run: real EOF is a separate
+        // completion path, and running it here would blur the two.
+        RegionOutcome::StoppedAtCertifiedCut { .. } => debug_assert!(
+            scan.frames.is_empty() && scan.para.is_none() && scan.fence.is_none(),
+            "a certified stop must leave an empty root"
+        ),
+        RegionOutcome::RanToEnd => scan.finish(),
+    }
+    let (blocks, defs) = scan.into_result();
+    ObservedRegionParse {
+        region: RegionParse {
+            blocks,
+            defs,
+            fence_open_at_end,
+        },
+        outcome,
+    }
+}
+
 /// Parse the region `[base, end)` (both line starts or document bounds)
 /// with empty entry context, EOF-closing at `end`. `base == end` yields
 /// an empty result.
 pub fn parse_region<W: WorkSink>(src: &[u8], base: usize, end: usize, sink: &mut W) -> RegionParse {
-    let mut scan = BlockScanner::new_region(src, base, end, sink, None);
+    let mut scan = BlockScanner::new_region(src, base, end, sink, None, None);
     scan.run();
     let fence_open_at_end = scan.fence.is_some();
     scan.finish();
@@ -281,7 +414,7 @@ pub fn parse_region_with_hook<W: WorkSink>(
     sink: &mut W,
     hook: &mut SpliceHook<'_>,
 ) -> (RegionParse, u32) {
-    let mut scan = BlockScanner::new_region(src, base, end, sink, Some(hook));
+    let mut scan = BlockScanner::new_region(src, base, end, sink, Some(hook), None);
     scan.run();
     let fence_open_at_end = scan.fence.is_some();
     scan.finish();
@@ -297,13 +430,14 @@ pub fn parse_region_with_hook<W: WorkSink>(
     )
 }
 
-impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
+impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
     fn new_region(
         src: &'a [u8],
         base: usize,
         end: usize,
         sink: &'a mut W,
         hook: Option<&'h mut SpliceHook<'h>>,
+        observer: Option<&'o mut dyn RegionObserver>,
     ) -> Self {
         debug_assert!(base <= end && end <= src.len());
         Self {
@@ -317,6 +451,9 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             doc: Vec::new(),
             sink,
             hook,
+            observer,
+            prev_lf: None,
+            stop_requested: None,
             slots: 0,
         }
     }
@@ -350,6 +487,15 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             // 2. classify the remainder at the (possibly new) innermost
             //    level; container pushes re-dispatch the same line.
             self.classify(line_start, line_lf, col);
+            // An accepted stop ends the region parse here: this physical
+            // line is fully processed and everything before its cut is
+            // sealed, so the next physical line is never dispatched.
+            if self.stop_requested.is_some() {
+                return;
+            }
+            // This line's terminator, if it has one, is what establishes
+            // the next line start (and the next line's barrier support).
+            self.prev_lf = if line_lf < end { Some(line_lf) } else { None };
             pos = if line_lf < end { line_lf + 1 } else { line_lf };
         }
         // EOF: unclosed fence runs to the region end (§8); paragraph
@@ -401,6 +547,9 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
                 }
             }
         }
+        // A take that ends on an LF leaves the next line start established
+        // by that LF; one that ends mid-line establishes nothing.
+        self.prev_lf = if carried { Some(prev) } else { None };
     }
 
     /// The live entry [`ContextKey`]: open container stack + fence
@@ -430,6 +579,75 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
     /// excluding the block's own frame-to-be).
     fn entry_key(&self) -> ContextKey {
         self.state_key()
+    }
+
+    // -- observation seam ------------------------------------------------
+
+    /// Issue a [`TopLevelEvent`] when this dispatch begins a new ROOT-level
+    /// top-level block.
+    ///
+    /// The offset is the block's first PHYSICAL line start, which is not
+    /// its semantic span start: leading spaces and container prefixes are
+    /// excluded from the span but are part of the line. Nothing is issued
+    /// while a container frame is live — every descendant block (nested
+    /// quotes/lists, text inside them) stays inside the Owner opened by
+    /// its root start — and a paragraph continuation line issues nothing
+    /// because its block is already open.
+    fn observe_top_level_start(&mut self, physical_line_start: usize) {
+        if !self.frames.is_empty() {
+            return;
+        }
+        if let Some(observer) = self.observer.as_deref_mut() {
+            observer.on_top_level_start(TopLevelEvent {
+                physical_line_start,
+            });
+        }
+    }
+
+    /// Issue a [`RootBlankEvent`] for a physical root `SPACES* LF` blank
+    /// line. Called from B1 only, i.e. after the grammar's own paragraph
+    /// flush and container closure have run, because the frozen condition
+    /// is about the LIVE post-B1 root state: an entry-state context key
+    /// being empty says nothing (a blank line inside a quote has an empty
+    /// content-level state yet must not certify), and with the paragraph
+    /// still open the output before the cut would not be sealed.
+    ///
+    /// The barrier is support-carrying evidence, so it is issued only when
+    /// the scan can name the LF that establishes this line as a physical
+    /// line start. A scan whose own base is the blank line never consumed
+    /// that LF and therefore issues nothing rather than fabricating BOF
+    /// support for it.
+    fn observe_root_blank_barrier(&mut self, line_start: usize, line_lf: usize) {
+        // A spaces-only tail that never had an LF consumed is not an
+        // interior blank line; real EOF is a separate completion path.
+        if line_lf >= self.end {
+            return;
+        }
+        if !self.frames.is_empty() || self.para.is_some() || self.fence.is_some() {
+            return;
+        }
+        let preceding_lf = if line_start == 0 {
+            None
+        } else {
+            match self.prev_lf {
+                Some(lf) => {
+                    debug_assert_eq!(lf, line_start - 1, "line provenance drift");
+                    Some(lf)
+                }
+                None => return,
+            }
+        };
+        let ev = RootBlankEvent {
+            line_start,
+            line_lf,
+            cut: line_lf + 1,
+            preceding_lf,
+        };
+        if let Some(observer) = self.observer.as_deref_mut() {
+            if let ObserverControl::Stop = observer.on_root_blank_barrier(ev) {
+                self.stop_requested = Some(ev.cut);
+            }
+        }
     }
 
     /// Consume quote/list-item prefixes for one line. Returns the content
@@ -579,11 +797,16 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
                         self.close_frames_from(keep, Some(line_start));
                     }
                 }
+                // Only now — real prefixes consumed, real B1 flush and
+                // closure done, completed blocks emitted — is the live
+                // root state meaningful to observe.
+                self.observe_root_blank_barrier(line_start, line_lf);
                 return;
             }
             // B2: fenced code opener
             if let Some((run_len, info)) = self.fence_opener_at(cls, line_lf) {
                 self.flush_para();
+                self.observe_top_level_start(line_start);
                 let ctx = self.entry_key();
                 self.fence = Some(OpenFence {
                     start: cls,
@@ -598,6 +821,7 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             // B3: ATX heading
             if let Some((level, content_start)) = heading_at(self.src, cls, line_lf) {
                 self.flush_para();
+                self.observe_top_level_start(line_start);
                 let ctx = self.entry_key();
                 let skel = Skel::Heading {
                     start: cls,
@@ -613,6 +837,7 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             // the rest of the line inside it.
             if cls < line_lf && self.src[cls] == b'>' {
                 self.flush_para();
+                self.observe_top_level_start(line_start);
                 let ctx = self.entry_key();
                 self.frames.push(Frame::Quote {
                     start: cls,
@@ -630,6 +855,7 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             if cls < line_lf && (self.src[cls] == b'-' || self.src[cls] == b'*') {
                 if let Some((marker, delta)) = parse_marker(self.src, cls, line_lf) {
                     self.flush_para();
+                    self.observe_top_level_start(line_start);
                     // relative indents: list markers sit at `s` spaces
                     // past the current content column; the item strips
                     // `s + delta` columns from continuation lines
@@ -664,6 +890,7 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
             if cls < line_lf && self.src[cls] == b'[' {
                 if let Some((start, end, label, destination)) = refdef_at(self.src, cls, line_lf) {
                     self.flush_para();
+                    self.observe_top_level_start(line_start);
                     let ctx = self.entry_key();
                     self.defs.define(label.clone(), destination.clone());
                     self.push_into_innermost(Skel::Def {
@@ -677,6 +904,11 @@ impl<'a, 'h, W: WorkSink> BlockScanner<'a, 'h, W> {
                 }
             }
             // B7: paragraph (start or continuation)
+            if self.para.is_none() {
+                // A paragraph START is a new top-level block; a continuation
+                // line belongs to the paragraph already open.
+                self.observe_top_level_start(line_start);
+            }
             if let Some(p) = self.para.as_mut() {
                 // continuation: leading spaces beyond container prefixes
                 // are ordinary content bytes (§3). A continuation line
@@ -1314,7 +1546,7 @@ mod tests {
         let src = b"> q1\n> q2\n\ntop\n";
         let mut noop = NoopWorkSink;
         let (blocks, _) = {
-            let mut scan = BlockScanner::new_region(src, 0, src.len(), &mut noop, None);
+            let mut scan = BlockScanner::new_region(src, 0, src.len(), &mut noop, None, None);
             scan.run();
             scan.finish();
             scan.into_result()
