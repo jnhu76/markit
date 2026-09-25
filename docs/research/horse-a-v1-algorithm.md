@@ -58,15 +58,51 @@ PERFORMANCE_COLLECTION_AUTHORIZED = NO
 
 The implementation may now be written and correctness/conformance work may be run. The frozen #60 treatment cells must **not** be collected until a later explicit collection authorization.
 
+Merging this PR does **not** expand any authorization boundary.
+
+### 0.1 Authority and future-change rule
+
+This document is the implementation-facing durable consolidation after merge.
+
+Frozen source authorities remain:
+
+```text
+#55 / PR #54
+#59
+#60
+```
+
+If a contradiction is found: the source frozen authority wins until this document is corrected.
+
+Any future change to:
+
+```text
+mechanism identity
+state semantics
+restart/convergence
+semantic preservation
+operator algorithm
+counter units
+static bounds
+thresholds
+failure adjudication
+```
+
+requires an explicit new version and review. Private Rust ergonomics (module/file names, helper names, minor ownership shape) do not.
+
+### 0.2 Trace authority
+
+The frozen worked/adversarial traces from #55/#59 (E01–E25) remain supporting conformance authority; this consolidation does not reproduce all of them. The most decision-bearing inline case — the E24 preceding-LF certificate-touch example — is retained in §6.
+
 ---
 
 # 1. Research identity
 
-Horse-A exists to test one claim:
+Horse-A exists to test one claim, quoted faithfully from the frozen #60 contract:
 
-> When a safe local Markdown edit has bounded parser/replacement/semantic-preservation work, preserving unaffected retained representation must not itself require work proportional to total retained size `M`.
+> For a fixed safe local paragraph edit whose syntax replacement, restart/propagation and semantic-preservation proof remain bounded as total retained size `M` grows, Horse-A must not perform work proportional to unaffected retained state merely to locate, preserve, re-coordinate, certify, count, or retire it.
 
-Horse-A is therefore deliberately a **structural-locality horse**, not a claim to be the final or fastest Markdown updater.
+This is a scoped structural-locality claim about the frozen witness class, not a global complexity claim. It does not assert that all local edits are O(log M), and Horse-A makes no claim to be the final or fastest Markdown updater.
 
 Frozen identity:
 
@@ -186,6 +222,44 @@ A `ReadyDocument` is externally usable only when:
 
 There is one externally current version. Staging may temporarily hold the old READY state plus fresh candidate state, but this does not create a persistent snapshot API.
 
+## 2.2 AstPayload responsibility
+
+`AstPayload` (the payload of `OwnerPayload::Syntax`) is not an unexplained opaque blob. Normatively:
+
+```text
+AstPayload contains the complete eager semantic subtree for one Owner,
+using Owner-relative spans/content intervals and owned semantic strings/
+children sufficient for normalized export and subsequent updates.
+```
+
+It introduces no additional persistent cache beyond the state model above.
+
+## 2.3 Payload ownership across updates
+
+Completed retained semantic payload borrows neither `Source` nor `RefTable` across updates.
+
+It owns whatever semantic values it must retain. It does not persist absolute document coordinates. All nested spans and content intervals remain Owner-relative; document-absolute positions are derived only at access/export time from the byte-weight prefix sums.
+
+## 2.4 RefTable relationship
+
+```text
+RefTable.entries is the document-global source-order projection of the
+complete retained ReferenceDefinition facts.
+```
+
+There is one document-global RefTable owner. There is no independently mutable second truth for definitions.
+
+The implementation must not introduce:
+
+```text
+per-Owner mutable definition index
+winner index
+consumer postings
+partial RefTable patch API
+```
+
+Old replacement definition facts may be extracted locally from retained AST payload during an update; this is a transient local read and does NOT create a second permanent definition table. In the local facts-preserved path the old RefTable is retained (moved exactly once, §11); it is never rebuilt or patched entry-by-entry.
+
 ---
 
 # 3. Coverage and Owner semantics
@@ -213,10 +287,18 @@ This preserves W-A1 as an intentional weakness.
 
 Owner coverage is based on the physical first line of each top-level block, not the semantic node span.
 
-If top-level starts are:
+For `k > 0` root-level Owners with physical first-line starts:
 
 ```text
-c0 < c1 < ... < cM
+p0 < p1 < ... < p_(k-1)
+```
+
+define the coverage cuts:
+
+```text
+c0 = 0
+c_i = p_i          for 0 < i < k
+c_k = source_len
 ```
 
 then:
@@ -225,17 +307,18 @@ then:
 Owner_i.coverage = [c_i, c_(i+1))
 ```
 
-with the last Owner extending to EOF.
+Consequences of this frozen definition:
 
-Consequences:
-
+- the leading trivia `[0, p0)` belongs to the first Owner;
 - blank/interstitial bytes between two semantic blocks belong to the left Owner;
-- leading trivia belongs to the first Owner;
-- trailing trivia belongs to the last Owner;
-- all-whitespace non-empty input is represented by one `TriviaOnly` Owner;
+- trailing trivia belongs to the last Owner, up to `source_len`;
+- the union of all coverage is exactly `[0, source_len)` — no gaps, no overlap;
 - empty input has an empty `OwnerSeq`;
+- all-whitespace non-empty input is represented by one `TriviaOnly` Owner;
 - semantic spans need not cover trivia bytes;
 - source coverage and semantic span are distinct concepts.
+
+The `TriviaOnly` rule applies according to the frozen grammar's actual whitespace classification: "all-whitespace" here means the shared BENCH-GRAMMAR-v1 root blank class (`SPACES* LF` lines only). TAB/CR-only input is ordinary text under the shared grammar (an ordinary paragraph) and does not use the `TriviaOnly` special case.
 
 Required invariant:
 
@@ -272,9 +355,13 @@ Complexity boundaries:
 
 ```text
 locate Owner by document byte = O(H)
-absolute span after Owner is located = O(1) + owner-internal path cost
-whole export = sequential Owner traversal + running base
+document absolute base for an Owner = byte-weight prefix sum (sequential
+    traversal for whole export; no per-Owner root seek)
+once an individual retained span is reached, converting its Owner-relative
+    offset to an absolute document offset = O(1)
 ```
+
+AST navigation cost inside a retained payload is a separate concern and is not part of the coordinate-projection claim above.
 
 Whole export must not perform one root seek per Owner.
 
@@ -332,6 +419,56 @@ When a valid `RootBlankBarrier` is accepted as convergence, the observed scanner
 It does not call artificial region-EOF closure to manufacture convergence.
 
 BOF is a distinguished restart authority. Real EOF is an independent legal completion path.
+
+## 5.3 Observer non-interference
+
+The observation seam is inert. This is an exact conformance requirement, not an informal "the observer should not affect semantics" remark:
+
+```text
+With a no-op observer — one that never stops and ignores all observations:
+
+RegionParse output
+    == the same parse_region run without an observer
+
+and the sink/source-inspection event stream
+    == the same unobserved parse_region run.
+```
+
+Byte-identical in both cases.
+
+Horse-A's local parsing installs no SpliceHook. The observed entry point is a sibling of the existing `parse_region` / `parse_region_with_hook` seam; the splice-hook path is untouched.
+
+H0–H4 do not install this observer, so adding the seam does not alter their parsing behavior or treatment identity.
+
+## 5.4 TopLevelStart provenance
+
+`TopLevelStart { physical_line_start }` is generated exactly when the actual root-level dispatch begins a new top-level block — at the dispatch that opens its first physical line at root level. Conceptually, the frozen cases are:
+
+```text
+root fence opener            (entry frames empty)
+root heading                 (pushed to doc)
+root quote                   (quote frame pushed onto empty frames)
+root list                    (list+item frames pushed onto empty frames)
+root reference definition    (pushed to doc)
+root paragraph first line    (entry frames empty)
+```
+
+`TopLevelStart` must NOT be derived from:
+
+```text
+semantic span.start                 (span start excludes leading
+                                     spaces/prefixes; physical provenance
+                                     is the physical line start)
+nested/descendant blocks            (descendants stay inside the Owner
+                                     opened by the root start)
+paragraph continuation lines        (the paragraph is already open)
+every list item                     (items are descendants of the root
+                                     list start)
+```
+
+A root Quote or root List gets exactly one `TopLevelStart`, at its outermost physical first line; all of its descendants remain inside that Owner.
+
+This event defines Owner physical-first-line provenance (the `p_i` of §3.2). No new parser state is invented for it; it is observed from the existing shared parser's root-level dispatch.
 
 ---
 
@@ -463,8 +600,11 @@ global first-wins RefTable remains semantically identical
 If facts differ or preservation is unknown:
 
 ```text
-same-target full build
+facts differ OR preservation unknown
+    → same-target full build
 ```
+
+The full-build target is the complete same-target Horse-A ReadyDocument defined in §13 (Same-target full builder) — never a weaker state.
 
 Inequality means only "Horse-A did not prove semantic preservation". It does not claim effective winners necessarily changed.
 
@@ -523,7 +663,7 @@ INPUT:
        eager-materialize complete fresh replacement Owners;
 
 10b. If facts differ/unknown:
-       build a complete same-target Horse-A ReadyDocument candidate.
+       build a complete same-target Horse-A ReadyDocument candidate (§13).
 
 11. Prepare every ordinary fallible resource required by commit.
     Drop parser/cursor borrows.
@@ -546,7 +686,11 @@ INPUT:
 
 15. Return already-READY pending state.
 
-16. complete() is a pure/no-fail wrapper.
+16. complete() is a sealing/value-move wrapper. Horse-A's frozen realization
+    keeps all attributable commit/retirement work inside update(), so
+    complete() performs no real mechanism work. At the generic experimental
+    phase-contract level, primary structural work still includes complete()
+    attribution whenever a realization's complete() performs real work.
 ```
 
 The implementation must not add a branch equivalent to:
@@ -558,6 +702,31 @@ work too large -> full build
 ---
 
 # 11. Staging and commit frontier
+
+## 11.1 UpdateStaging responsibility boundary
+
+`UpdateStaging` is the pre-frontier staging state. Conceptually it owns or references:
+
+```text
+the old READY document, while it remains logically coherent
+the prepared scalar/rank/edit mapping
+the fresh local replacement candidate OR the full candidate
+the semantic-preservation decision (facts equal / differ / unknown)
+all pre-frontier fallible resources
+the structural work attribution accumulated before the frontier
+```
+
+The old RefTable is not duplicated into staging; in the local path it stays owned by the old document and is moved exactly once at commit (below). Exact private Rust field names remain implementation freedom.
+
+## 11.2 PreparedCommit definition
+
+```text
+PreparedCommit
+=
+a state in which every ordinary recoverable/fallible operation required
+for commit has completed, and only non-fallible structural ownership
+operations remain.
+```
 
 Before `PreparedCommit`:
 
@@ -647,24 +816,64 @@ No fresh pivot allocation.
 
 ## 12.3 split
 
-```text
-split(root,k)
-→ first k Owners
-→ remaining Owners
-```
-
-It follows one search spine and reconstructs outputs with existing nodes and `join_with_pivot`.
-
-The final accepted proof does **not** use the withdrawn false `[h-2,h+1]` output-height lemma.
-
-Accepted conservative bounds per split:
+Precondition and semantics:
 
 ```text
-node visits <= 10H
-rotations   <= 5H
+0 <= k <= subtree_records(root)
+
+split(root,k) = (first k Owners, remaining Owners)
 ```
 
-The underlying proof establishes O(H) by accumulator-height telescoping.
+Conceptual rank cases (no production Rust is frozen here; functional identity is):
+
+```text
+k <  left_records       descend left, split there
+k == left_records       left output = existing left subtree;
+                        right output = join_with_pivot over the pivot
+k == left_records + 1   pivot becomes the last node of the left output
+k >  left_records + 1   descend right with rank reduced
+```
+
+It follows one search spine and reconstructs outputs with existing nodes and `join_with_pivot`, using two monotone output accumulators.
+
+### 12.3.1 Accepted split-proof core
+
+For `split(T,k) -> (A,B)`:
+
+```text
+h(A) <= h(T)
+h(B) <= h(T)
+```
+
+There is no common useful lower-bound window on the output heights. Along the one split search spine, reconstruction uses the two monotone output accumulators. If `δ_i` is the height difference seen by each reconstruction `join_with_pivot`, then, because accumulator heights never decrease:
+
+```text
+Σ δ_i <= h(A) + h(B) <= 2H
+```
+
+Therefore, with at most H search-spine nodes and at most H reconstruction joins, each join costing `<= 2δ_i + 1` visits and `<= δ_i + 1` rotation units:
+
+```text
+V_split <= H + 2Σδ_i + #joins <= 6H        (proved)
+
+R_split <= Σδ_i + #joins      <= 3H        (proved)
+```
+
+The study intentionally retains the more conservative frozen thresholds:
+
+```text
+split node visits <= 10H    (per split)
+split rotations   <= 5H     (per split)
+```
+
+Explicitly INVALID/WITHDRAWN — do not restore either statement:
+
+```text
+every split output lies in [h-2, h+1]     (false output-height lemma)
+all internal δ <= 3
+```
+
+Per-split structural derivatives retained from #59: link writes <= 22H; aggregate field reads <= 86H; aggregate field writes <= 40H.
 
 ## 12.4 replace_range
 
@@ -686,7 +895,68 @@ This deliberately preserves W-A3: one-record-per-node allocation/pointer/cache c
 
 ---
 
-# 13. Retirement
+# 13. Same-target full builder
+
+Whenever the semantic-preservation rule requires it (`facts differ OR preservation unknown`, §8), or a full candidate is otherwise selected by the frozen branches, Horse-A constructs the complete same-target ReadyDocument with the dedicated full builder. This section freezes its contract; it is not a weaker "re-parse fallback".
+
+## 13.1 Frozen pipeline
+
+```text
+shared full block parse over the exact source
+→ obtain physical root-level starts / parser observations
+  (TopLevelStart provenance, §5.4)
+→ collect complete ordered document definition facts
+→ construct the complete document RefTable
+→ eagerly materialize all semantic payload under that FINAL RefTable
+→ convert payload coordinates to Owner-relative form
+→ construct canonical physical-first-line Owner coverage (§3.2)
+→ attach only parser-derived real pre-EOF restart certificates
+  (RootBlankBarrier evidence, §5.1; finish() manufactures nothing)
+→ build the balanced weighted OwnerSeq / AVL in O(M) (bulk build, §12.5)
+→ construct ReadyDocument
+→ READY
+```
+
+Physical-line starts and certificate live evidence are collected online during the block pass; the order above does not permit reconstructing certificates after the parser is destroyed from an empty `ContextKey`.
+
+## 13.2 Target equivalence
+
+The full builder returns the SAME LOGICAL READY TARGET CLASS as successful local completion. It must NOT return a weaker state such as:
+
+```text
+normalized tree only
+tree + RefTable but no OwnerSeq
+state without restart certificates
+state not immediately eligible for another update
+```
+
+For a given source, local completion and full construction must agree on:
+
+```text
+logical Owners
+coverage partition
+semantic payload/result
+RefTable
+restart-certificate set permitted by the frozen parser evidence
+query/export result
+subsequent-update eligibility
+```
+
+The following may differ (non-logical construction detail):
+
+```text
+AVL shape
+heap addresses
+short-lived construction identities
+```
+
+Empty documents, TriviaOnly documents, synthetic Document roots, spans, the RefTable, queries, and subsequent-update capability are identical between the two paths. H0's existing resident state is not substituted for this target.
+
+The full path is a normal correct route, not a free one: the abandoned incremental attempt (if any), the fresh full parse/RefTable/payload/sequence construction, the temporary coexistence of old and new state, and the complete retirement of the old representation are all real recorded work of that branch.
+
+---
+
+# 14. Retirement
 
 Local update:
 
@@ -696,14 +966,19 @@ P + O + S
 → retire detached O only
 ```
 
-Retirement quantities are separate:
+Retirement quantities are separate named counters and are never merged:
 
 ```text
-retired AVL records
-payload nodes retired
-retirement frames entered
-maximum retirement depth
+retire_node_visits         = retired AVL records traversed by the drop walk
+payload_nodes_retired      = semantic payload nodes destroyed
+retirement_frames_entered  = one recursion frame per retired AVL record
+                             and per destroyed payload node
+max_retirement_depth       = resource depth
 ```
+
+Depth quantities (`max_retirement_depth`) are never combined with operation counts (`retire_node_visits`, `payload_nodes_retired`, `retirement_frames_entered`) into one scalar; the historical combined `retirement_workspace_ops` measure is withdrawn.
+
+Retained P/S payload is never traversed merely for retirement or for attribution.
 
 For the frozen failure-first witness:
 
@@ -719,41 +994,124 @@ Resource depth must account for both detached AVL depth and payload-tree depth:
 O(H_detached + D_payload)
 ```
 
-Retained P/S payload is never traversed merely to retire or count it.
-
 A full-build commit may retire the complete old representation because that branch explicitly replaces the complete document state.
 
 ---
 
-# 14. Structural accounting authority
+# 15. Structural accounting authority
 
-Horse-A structural attribution uses explicit work events/counters, not a post-update full-tree walk.
+Horse-A structural attribution uses explicit work events/counters, not a post-update full-tree walk. This section is self-contained: it defines every unit needed to reproduce the frozen thresholds of §16.
 
-Core units:
+## 15.1 node visit
 
 ```text
 node visit
   = one logical processing of one non-empty AVL node by the named operator;
-    revisiting later counts again
-
-link write
-  = one write/reassignment of a persistent structural root/left/right link slot;
-    moving a Box between local variables alone is not a link write
-
-rotation
-  single = 1
-  double = 2
-
-aggregate read/write
-  = the frozen per-field persistent aggregate accounting defined by #59
-
-certificate read
-  = inspection of one persistent RestartCertificate for a mechanism decision;
-    subtree_has_safe reads are aggregate reads, not certificate reads
-
-certificate write
-  = creation/installation/update of one persistent outgoing certificate
+    revisiting the same node later counts again.
 ```
+
+"Unique nodes touched" is never used where repeated work matters. The same logical processing is never counted in two visit counters.
+
+## 15.2 link write
+
+```text
+sequence_link_write
+  = one mutation/reassignment of a persistent AVL root/left/right
+    structural Link slot that changes which node/subtree the slot owns.
+```
+
+Moving a `Box` between local variables alone = 0 link writes; installing it into a persistent slot = 1 link write.
+
+Frozen rotation slot-write convention:
+
+```text
+single rotation = 3 structural link writes
+double rotation = 6 structural link writes
+```
+
+This convention is part of the frozen link-write thresholds of §16.
+
+## 15.3 rotation
+
+```text
+single rotation = 1
+double rotation = 2
+```
+
+A rebalance decision that performs no rotation is not itself a rotation.
+
+## 15.4 aggregate field read/write
+
+The persistent aggregate fields are exactly:
+
+```text
+height
+subtree_bytes
+subtree_records
+subtree_has_safe
+```
+
+(The §2 `Aggregate` shape groups three of these; `height` is stored on the node beside them. Whether `height` lives inside the aggregate struct or beside it is private Rust layout; the accounting treats all four as persistent per-node aggregate fields, per #59.)
+
+(`subtree_payload_nodes` is not a persistent aggregate; fresh/retired payload nodes are counted at creation/retirement.)
+
+```text
+aggregate_field_read
+  = one read of one persistent aggregate field from one non-empty AVL node.
+    An empty child has no node and contributes no reads.
+
+aggregate_field_write
+  = one write of one persistent aggregate field during node metadata
+    recomputation.
+
+recompute(node)
+  = one completed local metadata recomputation for one node:
+    reads the four aggregate fields from each non-empty child
+      (up to 4 reads per child / 8 total)
+    and writes the four persistent aggregate fields of the node
+      (= 4 writes).
+    Node-local Owner fields are O(1) locals, not aggregates.
+```
+
+Owner-local scalar reads are not automatically aggregate-field reads unless the frozen ledger (§16) says so.
+
+## 15.5 certificate read/write
+
+```text
+certificate_read
+  = inspection of one boundary/Owner's persistent RestartCertificate,
+    OR of its presence/absence, sufficient for one mechanism decision.
+```
+
+Reading `subtree_has_safe` is an aggregate read, never a certificate read; certificate presence counts as a certificate read when it drives a mechanism decision.
+
+```text
+certificate_write
+  = creation/installation/update of one persistent outgoing
+    RestartCertificate for one new/replacement Owner boundary.
+```
+
+Destruction of a detached Owner's certificate is not a write. Transient parser `RootBlankBarrier` observations are not by themselves persistent certificate writes.
+
+## 15.6 candidate check / cursor advance
+
+```text
+candidate_check
+  = one sealed old-certified boundary for which the full convergence
+    eligibility predicate is evaluated (mapped position + support-touch +
+    coverage closure).
+
+cursor_advance
+  = one monotone movement from the cursor's current certified-boundary
+    position to the next offered candidate boundary under the frozen
+    cursor algorithm.
+```
+
+Each full predicate evaluation is one `candidate_check` and one `certificate_read`, charged to those separate counters, never to `*_node_visits`.
+
+The restart cut itself is NOT a candidate and therefore generates no candidate check. Candidate walking begins strictly after restart.
+
+## 15.7 Decision integrity
 
 No decision-bearing counter may treat Unknown/missing as zero.
 
@@ -774,7 +1132,7 @@ Legitimate O(H) boundary-path access through P/S is not a forbidden sentinel.
 
 ---
 
-# 15. Frozen failure-first bounds
+# 16. Frozen failure-first bounds
 
 For the #60 witness, legal AVL heights are frozen from:
 
@@ -814,37 +1172,96 @@ f5 is separated:
   max_retirement_depth      <= max(H_detached,D_payload)
 ```
 
-Numerical primary thresholds:
+Numerical primary thresholds. Each row carries its frozen formula; every formula is a #59 §21 authority formula (or an exact witness-fixed value), and there are no unexplained constants:
 
-| counter | 128 KiB | 1 MiB | 16 MiB |
-|---|---:|---:|---:|
-| locate visits | 14 | 18 | 24 |
-| safe predecessor visits | 40 | 52 | 70 |
-| f1 | 54 | 70 | 94 |
-| cursor visits | 38 | 46 | 58 |
-| fact-range visits | 14 | 18 | 24 |
-| split visits ×2 | 280 | 360 | 480 |
-| pivot extraction visits ×2 | 110 | 142 | 190 |
-| top-level join visits ×2 | 60 | 76 | 100 |
-| f2 visits | 450 | 578 | 770 |
-| AVL rotations | 225 | 289 | 385 |
-| sequence link writes | 977 | 1249 | 1657 |
-| aggregate reads | 4007 | 5123 | 6797 |
-| aggregate writes | 1832 | 2344 | 3112 |
-| certificate reads | 5 | 5 | 5 |
-| certificate writes | 2 | 2 | 2 |
-| retired AVL records | 2 | 2 | 2 |
-| payload nodes retired | 4 | 4 | 4 |
-| retirement frames entered | 6 | 6 | 6 |
-| max retirement depth | 14 | 18 | 24 |
-| old fact Owner visits | 4 | 4 | 4 |
-| RefTable entries visited | 0 | 0 | 0 |
+| counter | frozen formula | 128 KiB | 1 MiB | 16 MiB |
+|---|---|---:|---:|---:|
+| locate visits | ≤ H | 14 | 18 | 24 |
+| safe predecessor visits | ≤ 3H − 2 | 40 | 52 | 70 |
+| f1 (locate + safe predecessor) | ≤ 4H − 2 | 54 | 70 | 94 |
+| cursor visits | ≤ 2H + 4k + Q, k = 2, Q = 2 | 38 | 46 | 58 |
+| fact-range visits | ≤ H | 14 | 18 | 24 |
+| split visits ×2 | ≤ 2 × 10H (retained threshold) = 20H | 280 | 360 | 480 |
+| pivot extraction visits ×2 | ≤ (4H−3) + (4(H+1)−3) = 8H − 2 | 110 | 142 | 190 |
+| top-level join visits ×2 | ≤ (2H+1) + (2(H+1)+1) = 4H + 4 | 60 | 76 | 100 |
+| f2 visits (replace_range total) | ≤ 32H + 2 | 450 | 578 | 770 |
+| bulk_build_node_visits | = Δ_new | 2 | 2 | 2 |
+| AVL rotations | ≤ 16H + 1 | 225 | 289 | 385 |
+| sequence link writes | ≤ 68H + 25 | 977 | 1249 | 1657 |
+| aggregate reads | ≤ 279H + 101 | 4007 | 5123 | 6797 |
+| aggregate writes | ≤ 128H + 40 | 1832 | 2344 | 3112 |
+| certificate reads | ≤ 5 (witness derivation below) | 5 | 5 | 5 |
+| certificate writes | ≤ 2 (witness derivation below) | 2 | 2 | 2 |
+| retired AVL records | ≤ Δ_old | 2 | 2 | 2 |
+| payload nodes retired | = P_removed | 4 | 4 | 4 |
+| retirement frames entered | ≤ Δ_old + P_removed | 6 | 6 | 6 |
+| max retirement depth | ≤ max(H_detached, D_payload) ≤ H | 14 | 18 | 24 |
+| old fact Owner visits | ≤ Δ_old + Δ_new | 4 | 4 | 4 |
+| RefTable entries visited | exact | 0 | 0 | 0 |
+
+Witness certificate derivation (frozen in #60 §9.3.1):
+
+```text
+certificate_reads <= 5:
+  1  safe_predecessor final selection inspection
+     (the selected boundary's own certificate)
+  1  edit support-touch validation against the selected certificate
+  2  candidate predicate evaluations (#1 rejected, #2 convergent —
+     each full predicate evaluation inspects the candidate certificate once)
+  1  replacement upper-boundary certificate inspection
+     (closing coverage at q_old/q_new)
+
+certificate_writes <= 2:
+  the local parse seals exactly two root-blank barriers before convergence
+  (the boundary between the two replacement Owners, and the convergence
+  barrier at q_old/q_new); each seal installs one persistent outgoing
+  certificate. Certificates on detached old Owners are dropped with O,
+  not written.
+```
+
+Thresholds are derived from `Hmax`, not from measured/expected H: an unexpectedly tall tree is an implementation invariant failure, not a larger permitted budget.
 
 The `f4 = 2H + 4k + Q` expression is a frozen conservative allowance for the witness, not an assertion that the cursor ledger's exact primitive count equals that expression.
 
 ---
 
-# 16. Frozen #60 witness
+# 17. Frozen #60 witness
+
+## 17.1 Workload identity and provenance
+
+Primary cells are fixed by the existing #50 / Campaign-2 authority. Durable provenance anchor (no raw evidence is duplicated here):
+
+```text
+research/benchmarks/markdown-ast-update/results/h4-large-n-cause-1/cells.jsonl
+
+git blob:
+98d04bc9eb6f4f11c7da8fc92aa9c62568d78c65
+```
+
+The three primary cases use their frozen per-cell identity fields:
+
+```text
+case_id
+pre_sha256
+post_sha256
+inserted_text_sha256
+start/end
+```
+
+Terminology: the hash of the inserted bytes is always written `inserted_text_sha256` in this consolidation (the historical `edit_sha256` label denoted the same inserted-bytes hash and is retired). Inserted bytes alone do not identify an edit; the canonical edit identity is:
+
+```text
+(case/cell identity,
+ pre_sha256,
+ post_sha256,
+ start,
+ end,
+ inserted_text_sha256)
+```
+
+with `start == end == edit_start` for this zero-length insertion witness. Do not regenerate treatment observations; no prose-equivalent generator is acceptable without byte-identity proof.
+
+## 17.2 Frozen geometry
 
 Source unit:
 
@@ -876,24 +1293,67 @@ depth = 0
 Static replacement predictions:
 
 ```text
-old replacement Owners = 2
-new replacement Owners = 2
-old replacement bytes  = 256
-new replacement bytes  = 264
+unit                    = 128 bytes
+Δ_old (old replacement Owners)  = 2
+Δ_new (new replacement Owners)  = 2
+old replacement bytes   = 256
+new replacement bytes   = 264
 edit_start - restart    = 191
 ordered facts           = [] == []
 same-target full        = false
 convergence before EOF  = true
 Q                       = 2
+P_removed               = 4
+D_payload               = 2
 ```
 
 Candidate walking starts strictly after the restart cut.
 
-The first candidate is rejected because the edit/damage has not yet been fully crossed. The second candidate is the first legal convergence.
+The first candidate is rejected because the edit/damage has not yet been fully crossed — not because a paragraph is "still open". The second candidate is the first legal convergence.
 
 ---
 
-# 17. Failure-first adjudication
+# 18. Phase coverage
+
+This section freezes which work the decision-bearing primary structural verdict covers.
+
+```text
+primary structural mechanism work =
+    prepare_update attribution
+  + update/native attribution
+  + complete attribution, if complete performs real mechanism work
+```
+
+```text
+prepare_update addressing work IS included.
+```
+
+(Horse-A's frozen realization keeps `complete()` as a sealing/value-move wrapper with all attributable commit/retirement work inside `update()`; the phase contract above still covers `complete()` generically, should a realization ever make it perform real mechanism work.)
+
+Excluded from the PRIMARY UPDATE structural verdict:
+
+```text
+whole-document fresh READY-state construction used to establish
+    the independent initial state
+oracle normalization / export
+C3 restore probe
+final destruction of the finished document after observation
+```
+
+Explicitly INCLUDED in primary update structural work:
+
+```text
+fresh replacement Owners / Δ_new produced as part of the primary update
+all local fresh semantic materialization
+all structural splice work
+retirement required before the returned state is READY
+```
+
+Frozen wording erratum, resolved normatively: the exclusion phrase "fresh ready-state construction" means whole-document fresh READY construction **outside** the primary update (establishing the independent initial state). It does NOT mean fresh replacement Owners created by the update, which remain inside primary update structural accounting.
+
+---
+
+# 19. Failure-first adjudication
 
 Before any economics claim, each primary cell must pass:
 
@@ -902,6 +1362,8 @@ C1: Horse-A full-build pre-source == clean H0 normalized result
 C2: Horse-A primary update post-source == clean H0 normalized result
 C3: delete inserted 8 bytes on the SAME returned state and recover clean pre-source result
 ```
+
+Full normalized structural equality is the correctness oracle. Checksums/hashes recorded with runs are identity/provenance/sanity fields; they are not by themselves the correctness oracle.
 
 Decision-bearing structural runs require:
 
@@ -922,15 +1384,25 @@ local retirement only
 no post-hoc retained-tree attribution walk
 ```
 
-Structural FAIL cannot be rescued by latency.
+Structural FAIL cannot be rescued by latency, PMU, allocator timing, or measured speedup.
 
-External instrumentation that adds work not executed by the treatment may invalidate that run; mechanism-required accounting that itself violates R6 is a structural/conformance FAIL, not an instrumentation escape hatch.
+```text
+Horse-A algorithm or Horse-A-required accounting performs forbidden
+O(M) retained-state work
+    → structural/conformance FAIL
+
+external recording/debug/serialization layer adds work the mechanism
+itself does not execute
+    → instrumentation INVALID for that run
+```
+
+External instrumentation that adds work not executed by the treatment may invalidate that run; mechanism-required accounting that itself violates R6 is a structural/conformance FAIL, not an instrumentation escape hatch. R6 implementation work is never reclassified as instrumentation INVALID.
 
 Structural collection remains unauthorized until a later explicit execution gate.
 
 ---
 
-# 18. Deliberately preserved weaknesses
+# 20. Deliberately preserved weaknesses
 
 ## W-A1 — restart / retention granularity
 
@@ -951,11 +1423,11 @@ Possible future line: A-R.
 Horse-A v1 keeps:
 
 ```text
-replacement ordered facts differ
+replacement facts differ OR preservation unknown
 → same-target full build
 ```
 
-A shadowed definition change may rebuild even when effective first-wins semantics are unchanged.
+A shadowed definition change may rebuild even when effective first-wins semantics are unchanged — and any unprovable preservation case falls back to the same complete same-target build (§13).
 
 Possible future line: Horse-B1/B2.
 
@@ -975,7 +1447,7 @@ These three weaknesses must not be optimized away during Horse-A v1 implementati
 
 ---
 
-# 19. Implementation freedom that remains
+# 21. Implementation freedom that remains
 
 The following may be chosen during coding if they do not change frozen semantics/accounting:
 
@@ -1005,7 +1477,7 @@ W-A1/W-A2/W-A3
 
 ---
 
-# 20. Implementation-stage gates
+# 22. Implementation-stage gates
 
 Authorized now:
 
@@ -1048,7 +1520,7 @@ execute frozen #60 failure-first cells
 
 ---
 
-# 21. Final frozen algorithm summary
+# 23. Final frozen algorithm summary
 
 ```text
 edit
