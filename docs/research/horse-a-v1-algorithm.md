@@ -1192,10 +1192,11 @@ Numerical primary thresholds. Each row carries its frozen formula; every formula
 | aggregate writes | ≤ 128H + 40 | 1832 | 2344 | 3112 |
 | certificate reads | ≤ 5 (witness derivation below) | 5 | 5 | 5 |
 | certificate writes | ≤ 2 (witness derivation below) | 2 | 2 | 2 |
-| retired AVL records | ≤ Δ_old | 2 | 2 | 2 |
-| payload nodes retired | = P_removed | 4 | 4 | 4 |
-| retirement frames entered | ≤ Δ_old + P_removed | 6 | 6 | 6 |
-| max retirement depth | ≤ max(H_detached, D_payload) ≤ H | 14 | 18 | 24 |
+| candidate_check | = Q | 2 | 2 | 2 |
+| retire_node_visits | ≤ Δ_old | 2 | 2 | 2 |
+| payload_nodes_retired | = P_removed | 4 | 4 | 4 |
+| retirement_frames_entered | ≤ Δ_old + P_removed | 6 | 6 | 6 |
+| max_retirement_depth | ≤ max(H_detached, D_payload) ≤ H | 14 | 18 | 24 |
 | old fact Owner visits | ≤ Δ_old + Δ_new | 4 | 4 | 4 |
 | RefTable entries visited | exact | 0 | 0 | 0 |
 
@@ -1238,17 +1239,32 @@ git blob:
 98d04bc9eb6f4f11c7da8fc92aa9c62568d78c65
 ```
 
-The three primary cases use their frozen per-cell identity fields:
+The three primary cases use their frozen per-cell identity fields, written
+here in this consolidation's terminology with the anchor's concrete JSON
+keys in parentheses:
 
 ```text
-case_id
+case/cell identity
+    (cell_id, case_id_hex)
+
 pre_sha256
+    (pre_sha256)
+
 post_sha256
-inserted_text_sha256
+    (post_sha256)
+
 start/end
+    (edit_start, edit_end; equal for this insertion)
+
+inserted_text_sha256
+    (edit_sha256; inserted_text = "zzzzzzzz")
 ```
 
-Terminology: the hash of the inserted bytes is always written `inserted_text_sha256` in this consolidation (the historical `edit_sha256` label denoted the same inserted-bytes hash and is retired). Inserted bytes alone do not identify an edit; the canonical edit identity is:
+Terminology: this consolidation always names the inserted-bytes hash
+`inserted_text_sha256`; the frozen anchor key `edit_sha256` denotes that
+same inserted-bytes hash.
+
+Inserted bytes alone do not identify an edit; the canonical edit identity is:
 
 ```text
 (case/cell identity,
@@ -1396,7 +1412,7 @@ itself does not execute
     → instrumentation INVALID for that run
 ```
 
-External instrumentation that adds work not executed by the treatment may invalidate that run; mechanism-required accounting that itself violates R6 is a structural/conformance FAIL, not an instrumentation escape hatch. R6 implementation work is never reclassified as instrumentation INVALID.
+External instrumentation that adds work not executed by the treatment may invalidate that run; mechanism-required accounting that itself violates V1 requirement R6 is a structural/conformance FAIL, not an instrumentation escape hatch. V1 requirement R6 implementation work is never reclassified as instrumentation INVALID.
 
 Structural collection remains unauthorized until a later explicit execution gate.
 
