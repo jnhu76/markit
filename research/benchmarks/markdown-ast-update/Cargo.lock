@@ -968,6 +968,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-horse-a"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-common",
+ "markit-mdbench-oracle",
+ "markit-mdbench-shared-grammar",
+]
+
+[[package]]
 name = "markit-mdbench-instrumentation"
 version = "0.1.0"
 dependencies = [

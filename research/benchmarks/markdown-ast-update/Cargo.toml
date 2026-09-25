@@ -20,6 +20,7 @@ members = [
     "mechanisms/fragment-reuse",
     "mechanisms/old-tree-subtree-reuse",
     "mechanisms/restart-convergence",
+    "mechanisms/horse-a",
 ]
 
 # R1 PRIMARY BUILD POLICY (frozen; see manifest/environment.toml and
