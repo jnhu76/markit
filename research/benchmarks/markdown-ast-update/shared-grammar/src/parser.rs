@@ -594,7 +594,9 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
     /// its root start — and a paragraph continuation line issues nothing
     /// because its block is already open.
     fn observe_top_level_start(&mut self, physical_line_start: usize) {
-        if !self.frames.is_empty() {
+        // No observer installed: the unobserved path does no observation
+        // work at all, and no descendant start may ever be issued.
+        if self.observer.is_none() || !self.frames.is_empty() {
             return;
         }
         if let Some(observer) = self.observer.as_deref_mut() {
@@ -618,6 +620,10 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
     /// that LF and therefore issues nothing rather than fabricating BOF
     /// support for it.
     fn observe_root_blank_barrier(&mut self, line_start: usize, line_lf: usize) {
+        // The unobserved path issues nothing and evaluates none of this.
+        if self.observer.is_none() {
+            return;
+        }
         // A spaces-only tail that never had an LF consumed is not an
         // interior blank line; real EOF is a separate completion path.
         if line_lf >= self.end {
@@ -1561,5 +1567,83 @@ mod tests {
             _ => panic!("expected quote"),
         }
         assert!(blocks[1].ctx().frames.is_empty());
+    }
+
+    /// Barrier support is line PROVENANCE, and a hook take moves the scan
+    /// position without reading a line. Only the internal seam can install
+    /// a hook and an observer together, so this invariant has no public
+    /// path: a take ending ON an LF establishes the next line start (and
+    /// its support LF), a take ending mid-line establishes nothing, so the
+    /// blank-looking position right after it does not certify.
+    #[test]
+    fn barrier_line_provenance_is_kept_across_a_splice_jump() {
+        struct Rec(Vec<RootBlankEvent>);
+        impl RegionObserver for Rec {
+            fn on_top_level_start(&mut self, _ev: TopLevelEvent) {}
+            fn on_root_blank_barrier(&mut self, ev: RootBlankEvent) -> ObserverControl {
+                self.0.push(ev);
+                ObserverControl::Continue
+            }
+        }
+
+        // "a\n\nb\n\nc\n": bytes 0..8. Taking [0, 5) ends on the LF at 4,
+        // so byte 5 is established as a line start and the blank line there
+        // carries support {4} + [5, 6).
+        let src = b"a\n\nb\n\nc\n";
+        let mut noop = NoopWorkSink;
+        let mut rec = Rec(Vec::new());
+        let mut taken = false;
+        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+            if !taken && pos == 0 {
+                taken = true;
+                Some(5)
+            } else {
+                None
+            }
+        };
+        {
+            let hook: &mut SpliceHook<'_> = &mut hook;
+            let mut scan =
+                BlockScanner::new_region(src, 0, src.len(), &mut noop, Some(hook), Some(&mut rec));
+            scan.run();
+        }
+        assert_eq!(
+            rec.0,
+            vec![RootBlankEvent {
+                line_start: 5,
+                line_lf: 5,
+                cut: 6,
+                preceding_lf: Some(4),
+            }]
+        );
+
+        // Taking [0, 4) ends mid-line: the LF the take consumed is not
+        // this line's, so position 4 issues nothing, and the scan resumes
+        // its own provenance at the next real blank line.
+        let mut rec = Rec(Vec::new());
+        let mut taken = false;
+        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+            if !taken && pos == 0 {
+                taken = true;
+                Some(4)
+            } else {
+                None
+            }
+        };
+        {
+            let hook: &mut SpliceHook<'_> = &mut hook;
+            let mut scan =
+                BlockScanner::new_region(src, 0, src.len(), &mut noop, Some(hook), Some(&mut rec));
+            scan.run();
+        }
+        assert_eq!(
+            rec.0,
+            vec![RootBlankEvent {
+                line_start: 5,
+                line_lf: 5,
+                cut: 6,
+                preceding_lf: Some(4),
+            }]
+        );
     }
 }
