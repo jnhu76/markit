@@ -38,7 +38,7 @@ use crate::parser::Skel;
 /// Document-global reference-definition table, in source order; first
 /// definition of a normalized label wins lookup (§9.3). Later duplicates
 /// remain visible as ReferenceDefinition nodes — only lookup skips them.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct RefTable {
     entries: Vec<(String, String)>,
 }
