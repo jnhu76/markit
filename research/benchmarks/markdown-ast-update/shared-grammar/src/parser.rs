@@ -607,12 +607,19 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
     }
 
     /// Issue a [`RootBlankEvent`] for a physical root `SPACES* LF` blank
-    /// line. Called from B1 only, i.e. after the grammar's own paragraph
-    /// flush and container closure have run, because the frozen condition
-    /// is about the LIVE post-B1 root state: an entry-state context key
+    /// line. Called from B1 only, after the grammar's own paragraph flush
+    /// and container closure have run, because the frozen condition is
+    /// about the LIVE post-B1 root state: an entry-state context key
     /// being empty says nothing (a blank line inside a quote has an empty
     /// content-level state yet must not certify), and with the paragraph
     /// still open the output before the cut would not be sealed.
+    ///
+    /// The caller (B1) has already established the other frozen half of
+    /// the predicate: the ORIGINAL physical line `[line_start, line_lf)`
+    /// is itself `SPACES*` before its consumed LF. A line that only
+    /// BECOMES blank after container/list prefixes were stripped
+    /// (`"- \n"`, `"* * *\n"`, …) is post-prefix B1, never a physical
+    /// root blank, and must not reach this method.
     ///
     /// The barrier is support-carrying evidence, so it is issued only when
     /// the scan can name the LF that establishes this line as a physical
@@ -805,8 +812,21 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                 }
                 // Only now — real prefixes consumed, real B1 flush and
                 // closure done, completed blocks emitted — is the live
-                // root state meaningful to observe.
-                self.observe_root_blank_barrier(line_start, line_lf);
+                // root state meaningful to observe. But post-prefix B1
+                // alone is NOT the frozen event predicate: the ORIGINAL
+                // physical line `[line_start, line_lf)` must itself be
+                // `SPACES* LF` (frozen I1 contract; e.g. `"- \n"` and
+                // `"* * *\n"` are marker lines, not root blanks). B1
+                // above has already proven `[col, line_lf)` spaces
+                // (count_spaces covered `[col, cls)`, the B1 test covered
+                // `[cls, line_lf)`), so the consumed prefix region
+                // `[line_start, col)` is the only unchecked part — the
+                // physical-blank fact is this one bounded prefix scan at
+                // the same transition, never a second full-line rescan.
+                // The unobserved path evaluates none of this.
+                if self.observer.is_some() && all_spaces(self.src, line_start, col) {
+                    self.observe_root_blank_barrier(line_start, line_lf);
+                }
                 return;
             }
             // B2: fenced code opener
