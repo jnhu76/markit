@@ -1,13 +1,46 @@
 //! markit-mdbench-horse-a — the frozen Horse-A v1 mechanism.
 //!
-//! **Slice I3** of the `HORSE-A-IMPL-1` umbrella (issue #62): the
-//! weighted-AVL navigation/mutation substrate on top of the merged I2
-//! retained READY state (PR #64) and I1 parser observation seam
-//! (PR #63). Authority: `docs/research/horse-a-v1-algorithm.md` (frozen;
-//! source authorities #55/PR #54, #59, #60).
+//! **Slice I4** of the `HORSE-A-IMPL-1` umbrella (issue #62): the complete
+//! incremental update, on top of the merged I3 weighted-AVL substrate
+//! (PR #68), the I2 retained READY state (PR #64) and the I1 parser
+//! observation seam (PR #63). Authority:
+//! `docs/research/horse-a-v1-algorithm.md` (frozen; source authorities
+//! #55/PR #54, #59, #60).
 //!
-//! What I3 establishes (spec §12; #59 §7.2–§7.6, §8; all `pub(crate)` —
-//! mechanism substrate, not a reusable AVL library):
+//! What I4 establishes — one update is exactly the frozen pipeline, with
+//! every phase a distinguishable function ([`update::stage`] owns it):
+//!
+//! - **edit/source association** — the shared canonical-edit contract
+//!   validates identity, range, UTF-8 boundaries and length arithmetic;
+//!   no repair, no re-derived edit, byte coordinates only. The post
+//!   source being exactly `edit.apply(old_source)` is a caller/host
+//!   precondition: production validation stays O(1) and full-content
+//!   comparison is deliberately outside the treatment (see `update`);
+//! - **weighted damage locate** — one `O(H)` descent with the frozen RIGHT
+//!   affinity, so an edit at a boundary belongs to the text after it;
+//! - **restart selection** — the nearest eligible certified predecessor
+//!   strictly before the damage, else the distinguished BOF authority;
+//! - **conservative left guard** — the certified predecessor's own Owner is
+//!   inside the replacement, so `[r, t)` is re-parsed too (W-A1 preserved);
+//! - **observed forward parse** — the shared parser runs from the restart
+//!   cut and reports each top-level start and root-blank barrier;
+//! - **monotone candidate walk** — strictly after the restart cut,
+//!   position-eligible before certificate inspection, first valid
+//!   convergence wins, real EOF is a legal end (module `candidate`);
+//! - **complete replacement intervals** — old and new intervals plus the
+//!   single explicit byte-space→Owner-rank-space conversion;
+//! - **complete ordered replacement facts** — definition facts of the old
+//!   replacement interval vs the freshly parsed region (module `facts`);
+//! - **the semantic decision** — equal facts retain the old RefTable and
+//!   eager-materialize fresh Owners under it, then splice structurally;
+//!   facts differ or preservation is unknown means a same-target full
+//!   build. There is no third branch and no budget/cost selector.
+//!
+//! The returned state is a normal READY state, immediately usable for the
+//! next update.
+//!
+//! What I3 established before it (spec §12; #59 §7.2–§7.6, §8; all
+//! `pub(crate)` — mechanism substrate, not a reusable AVL library):
 //!
 //! - [`sequence::locate_by_byte`] — weighted `O(H)` byte locate with the
 //!   explicit EOF position at `x == L`;
@@ -53,36 +86,49 @@
 //!   pipeline order: FINAL RefTable exists before any reference-sensitive
 //!   materialization; no deferred semantic repair after READY.
 //!
-//! What I3 deliberately does NOT implement (later slices):
+//! What no slice has implemented yet (later slices):
 //!
-//! - I4: the incremental update / restart / convergence / semantic-
-//!   preservation branch — no `update()`, no edit-damage selection, no
-//!   RIGHT-affinity navigation; the I3 operators are its substrate and
-//!   call none of the policy;
-//! - I5: `PreparedCommit`, retirement, the structural counter schema
-//!   (the operators keep relink/rotation/recompute events explicit and
-//!   countable, but no counters exist);
+//! - I5: `PreparedCommit`, the formal no-fail commit frontier, the
+//!   retirement discipline, and the structural/visit/link-write/rotation
+//!   counter schema (the operators keep relink/rotation/recompute events
+//!   explicit and countable, but no counters exist);
 //! - any #60 treatment registration or collection lane, and no
 //!   performance measurement of any kind.
+//!
+//! What I4 deliberately does NOT do (frozen weaknesses preserved, not
+//! repaired): W-A1 stays root-only restart plus atomic top-level Owner plus
+//! the conservative left guard; W-A2 stays "facts differ or preservation
+//! unknown → same-target full build"; W-A3 stays one Owner per AVL node. No
+//! nested restart checkpoints, winner index, consumer postings, stable
+//! cross-edit IDs, persistent locator map, global subtree reuse index,
+//! packed/chunked sequence, COW snapshot, or budget selector exists here.
 
+mod candidate;
 pub mod certificate;
 pub mod coverage;
 mod cursor;
 pub mod export;
+pub mod facts;
+mod fresh;
 pub mod full_build;
 pub mod payload;
 pub mod sequence;
 pub mod state;
+pub mod update;
 pub mod validate;
 
 #[cfg(test)]
 mod i3_tests;
+
+#[cfg(test)]
+mod i4_tests;
 
 pub use certificate::{RestartCertificate, RestartSupport};
 pub use full_build::{full_build, BuildError};
 pub use state::{
     Aggregate, AstPayload, AvlNode, InterpretationId, Owner, OwnerPayload, OwnerSeq, ReadyDocument,
 };
+pub use update::{update, UpdateError};
 pub use validate::{
     validate_certificates, validate_coverage, validate_full_build_tree,
     validate_owner_relative_payload, validate_ready, validate_ref_table_projection,

@@ -27,7 +27,6 @@ use markit_mdbench_shared_grammar::{
     RootBlankEvent, TopLevelEvent,
 };
 
-use crate::certificate::RestartCertificate;
 use crate::coverage::CoveragePlan;
 use crate::payload::shift_spans;
 use crate::state::{AstPayload, InterpretationId, Owner, OwnerPayload, OwnerSeq, ReadyDocument};
@@ -225,92 +224,25 @@ pub fn full_build<W: WorkSink>(source: &Source, sink: &mut W) -> Result<ReadyDoc
 
 /// The frozen root-blank grammar class: every byte is a SPACE or the LF
 /// terminating a `SPACES* LF` line (BENCH-GRAMMAR-v1 §1 — TAB/CR are
-/// ordinary text, not whitespace).
-fn is_root_blank_class(src: &[u8]) -> bool {
+/// ordinary text, not whitespace). Shared with the incremental local path's
+/// whole-document replacement cases (`fresh`), so the full and local
+/// builders classify the class identically.
+pub(crate) fn is_root_blank_class(src: &[u8]) -> bool {
     src.iter().all(|&b| b == b' ' || b == b'\n')
 }
 
 /// Install the persistent outgoing certificates (spec §6; data-model
-/// §8.3; task #19). A certificate exists only at an INTERIOR Owner
-/// boundary: the boundary between two coverage records. The certifying
-/// event is the real `RootBlankEvent` whose cut equals that boundary —
-/// the last root blank line before the next Owner's first physical line.
-///
-/// Explicitly NOT persisted:
-/// - the EOF boundary `c_k = source_len` (real EOF is a separate legal
-///   completion path and needs no certificate; `finish()` manufactures
-///   nothing — task #23);
-/// - mid-gap blank events (several blank lines in one trivia gap produce
-///   several transient events but exactly one interior boundary — the
-///   frozen one-certificate-per-Owner-boundary mapping, task #19);
-/// - leading-trivia blanks (their cuts precede the first Owner's block,
-///   which is not an interior boundary; BOF stays a distinguished virtual
-///   restart authority, data-model §8.3);
-/// - a candidate whose support CANNOT satisfy the frozen persistence
-///   condition (data-model §8.3): support must belong to the left Owner,
-///   must not cross the left Owner's coverage start, and must correspond
-///   to this interior boundary. Such a candidate is real parser evidence
-///   that is merely not persistable HERE — the frozen rule is DO NOT
-///   PERSIST that certificate, never reject the whole ReadyDocument. The
-///   optional restart point is simply absent and READY stays valid; the
-///   build continues (independent I2 review P1 repair). A genuinely
-///   inconsistent builder state (two events claiming the same cut) is a
-///   different class and stays a hard error.
+/// §8.3; task #19): one certificate per INTERIOR Owner boundary that a real
+/// pre-EOF `RootBlankEvent` certifies, with the frozen persistence
+/// condition. The rule itself is shared with the incremental local path
+/// (`certificate::persist_interior_certificates`, spec §24) so the fresh
+/// and full boundaries can never diverge.
 fn attach_interior_certificates(
     owners: &mut [Owner],
     plan: &CoveragePlan,
     barriers: &[RootBlankEvent],
 ) -> Result<(), BuildError> {
-    // Interior boundaries are c_1 .. c_(k-1); c_k = source_len is the EOF
-    // boundary and is never certified.
-    for i in 0..owners.len().saturating_sub(1) {
-        let boundary = plan.cuts[i + 1];
-        let mut candidates = barriers.iter().filter(|ev| ev.cut == boundary);
-        let Some(ev) = candidates.next() else {
-            continue;
-        };
-        if candidates.next().is_some() {
-            // Two events with the same cut is impossible for real line
-            // provenance (each physical line owns exactly one LF), so
-            // this is inconsistent builder evidence, not a transient
-            // candidate: a hard error (independent I2 review P1 repair
-            // keeps this one).
-            return Err(BuildError::InconsistentObservation {
-                detail: format!(
-                    "multiple root blank barriers certify the same boundary {boundary}"
-                ),
-            });
-        }
-        let base = plan.cuts[i];
-        // Frozen persistence condition (data-model §8.3): the blank line
-        // must lie strictly inside the left Owner's coverage — a blank
-        // starting AT the Owner's base would pull its preceding LF (or a
-        // BOF claim) across the coverage start. A candidate failing this
-        // is skipped below, not an error: the certificate is optional.
-        let Some(rel_blank_start) = ev.line_start.checked_sub(base).filter(|rel| *rel >= 1) else {
-            continue;
-        };
-        // `None` (BOF) is legal support and stays None; an LF before the
-        // left Owner's base cannot be represented Owner-relatively, so
-        // that candidate is non-persistable too. Unreachable for
-        // well-formed events (the seam always reports preceding_lf ==
-        // line_start - 1, and line_start >= base + 1 above puts that LF
-        // at or after base) — skipped rather than errored so no transient
-        // evidence shape can abort READY.
-        let rel_preceding = match ev.preceding_lf {
-            None => None,
-            Some(lf) => match lf.checked_sub(base) {
-                Some(rel) => Some(rel),
-                None => continue,
-            },
-        };
-        let rel_blank_end = ev.cut - base;
-        owners[i].outgoing_restart = Some(RestartCertificate {
-            support: crate::certificate::RestartSupport {
-                preceding_lf: rel_preceding,
-                blank_line: rel_blank_start..rel_blank_end,
-            },
-        });
-    }
-    Ok(())
+    // The full builder's last cut is the document EOF: never certified.
+    crate::certificate::persist_interior_certificates(owners, &plan.cuts, barriers, false)
+        .map_err(|detail| BuildError::InconsistentObservation { detail })
 }

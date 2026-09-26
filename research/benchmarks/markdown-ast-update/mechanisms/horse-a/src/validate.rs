@@ -9,8 +9,9 @@
 //! whole-state audit walk); debug builds keep the check, and tests
 //! invoke the validators explicitly.
 
-use markit_mdbench_oracle::normalized::{Node, NodeKind};
+use markit_mdbench_oracle::normalized::Node;
 
+use crate::facts::collect_definition_facts;
 use crate::state::{AvlNode, OwnerPayload, ReadyDocument};
 
 /// Every READY invariant in one gate (spec §2.1).
@@ -224,7 +225,10 @@ fn check_relative(node: &Node, base: usize, coverage_len: usize) -> Result<(), S
 
 /// The document RefTable is exactly the source-order projection of all
 /// retained ReferenceDefinition facts (spec §2.4) — duplicates included,
-/// in dispatch order (which is pre-order over the retained payloads).
+/// in dispatch order (which is pre-order over the retained payloads). The
+/// traversal is the shared one the update's replacement-fact extraction
+/// uses, so projection and comparison can never disagree about what a
+/// definition fact is.
 pub fn validate_ref_table_projection(doc: &ReadyDocument) -> Result<(), String> {
     let mut facts: Vec<(String, String)> = Vec::new();
     for owner in doc.owners.owners_in_order() {
@@ -240,17 +244,6 @@ pub fn validate_ref_table_projection(doc: &ReadyDocument) -> Result<(), String> 
         ));
     }
     Ok(())
-}
-
-fn collect_definition_facts(node: &Node, out: &mut Vec<(String, String)>) {
-    if node.kind == NodeKind::ReferenceDefinition {
-        if let (Some(label), Some(destination)) = (&node.label, &node.destination) {
-            out.push((label.clone(), destination.clone()));
-        }
-    }
-    for child in &node.children {
-        collect_definition_facts(child, out);
-    }
 }
 
 /// (base, owner) pairs in source order — the byte-weight prefix sums.

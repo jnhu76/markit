@@ -20,12 +20,28 @@ impl CoveragePlan {
     /// Build the frozen cuts from the observed root-level physical
     /// first-line starts. `source_len` closes the last Owner's coverage.
     pub(crate) fn build(starts: &[usize], source_len: usize) -> Result<CoveragePlan, BuildError> {
+        Self::build_with_base(0, starts, source_len)
+    }
+
+    /// The same frozen cut rule for a REGION whose first Owner's coverage
+    /// already begins at `base`: the local replacement path passes the
+    /// restart cut as `base` and the convergence cut (or real `L_new`) as
+    /// `region_end`. The first fresh block's physical start is still not a
+    /// cut — the first fresh Owner swallows the region's leading trivia,
+    /// exactly as the document's first Owner swallows the document's.
+    /// Callers must pass `starts.len() + 1` Owner slots (the Owners the
+    /// region produced plus the retained suffix's first Owner).
+    pub(crate) fn build_with_base(
+        base: usize,
+        starts: &[usize],
+        region_end: usize,
+    ) -> Result<CoveragePlan, BuildError> {
         let mut prev: Option<usize> = None;
         for &p in starts {
-            if p >= source_len {
+            if p < base || p >= region_end {
                 return Err(BuildError::InconsistentObservation {
                     detail: format!(
-                        "TopLevelStart physical line {p} is not inside [0, {source_len})"
+                        "TopLevelStart physical line {p} is not inside [{base}, {region_end})"
                     ),
                 });
             }
@@ -41,12 +57,12 @@ impl CoveragePlan {
             prev = Some(p);
         }
         let mut cuts = Vec::with_capacity(starts.len() + 1);
-        cuts.push(0);
+        cuts.push(base);
         // `c_i = p_i` for 0 < i < k: the FIRST block's physical start is
-        // not a cut — its Owner already begins at 0 and swallows the
+        // not a cut — its Owner already begins at `base` and swallows the
         // leading trivia (spec §3.2).
         cuts.extend_from_slice(&starts[1.min(starts.len())..]);
-        cuts.push(source_len);
+        cuts.push(region_end);
         Ok(CoveragePlan { cuts })
     }
 
