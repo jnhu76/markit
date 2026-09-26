@@ -46,6 +46,7 @@
 
 pub mod certificate;
 pub mod coverage;
+mod cursor;
 pub mod export;
 pub mod full_build;
 pub mod payload;
