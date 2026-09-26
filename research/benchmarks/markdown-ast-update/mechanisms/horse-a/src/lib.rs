@@ -1,14 +1,34 @@
 //! markit-mdbench-horse-a — the frozen Horse-A v1 mechanism.
 //!
-//! **Slice I2** of the `HORSE-A-IMPL-1` umbrella (issue #62): the
-//! retained READY state, canonical Owner coverage, persistent
-//! RestartCertificate support, document-global RefTable ownership, and
-//! the same-target full builder. Authority:
-//! `docs/research/horse-a-v1-algorithm.md` (frozen; source authorities
-//! #55/PR #54, #59, #60), on top of the merged I1 parser observation
-//! seam (PR #63).
+//! **Slice I3** of the `HORSE-A-IMPL-1` umbrella (issue #62): the
+//! weighted-AVL navigation/mutation substrate on top of the merged I2
+//! retained READY state (PR #64) and I1 parser observation seam
+//! (PR #63). Authority: `docs/research/horse-a-v1-algorithm.md` (frozen;
+//! source authorities #55/PR #54, #59, #60).
 //!
-//! What I2 establishes:
+//! What I3 establishes (spec §12; #59 §7.2–§7.6, §8; all `pub(crate)` —
+//! mechanism substrate, not a reusable AVL library):
+//!
+//! - [`sequence::locate_by_byte`] — weighted `O(H)` byte locate with the
+//!   explicit EOF position at `x == L`;
+//! - [`sequence::safe_predecessor`] — the aggregate-pruned nearest
+//!   certified predecessor strictly below an exclusive byte bound; no
+//!   linear scan toward BOF, position eligibility before certificate
+//!   inspection;
+//! - `remove_max` / `join_with_pivot` / `join` / `split` — relink-only
+//!   structural operators: the frozen deterministic join policy
+//!   (`remove_max(left)` exactly once), rank-based one-spine split,
+//!   shared `recompute` seam, explicit rotation primitives composed into
+//!   doubles; a moved `Box` never relocates its allocation, so retained
+//!   node identity survives every operation;
+//! - [`sequence::replace_range`] — the frozen split/split/join/join
+//!   formula over Owner record ranks, returning the removed range B to
+//!   the caller (retirement is I5's);
+//! - the sequential monotone cursor (module `cursor`) — one `O(H)`
+//!   positioning descent, then source-order advance with no per-Owner
+//!   root seek, no parent pointers, no persisted cursor state.
+//!
+//! What I2 established before it:
 //!
 //! - [`ReadyDocument`] — the frozen retained state: source association
 //!   (substrate `SourceId` + length + [`InterpretationId`]), one record
@@ -33,16 +53,17 @@
 //!   pipeline order: FINAL RefTable exists before any reference-sensitive
 //!   materialization; no deferred semantic repair after READY.
 //!
-//! What I2 deliberately does NOT implement (later slices):
+//! What I3 deliberately does NOT implement (later slices):
 //!
-//! - I3: the mutable weighted-AVL operators (`locate_by_byte`,
-//!   `safe_predecessor`, `split`, `join*`, `replace_range`, cursor) —
-//!   only the construction-only balanced build exists here;
 //! - I4: the incremental update / restart / convergence / semantic-
 //!   preservation branch — no `update()`, no edit-damage selection, no
-//!   RIGHT-affinity navigation;
-//! - I5: `PreparedCommit`, retirement, the structural counter schema;
-//! - any #60 treatment registration or collection lane.
+//!   RIGHT-affinity navigation; the I3 operators are its substrate and
+//!   call none of the policy;
+//! - I5: `PreparedCommit`, retirement, the structural counter schema
+//!   (the operators keep relink/rotation/recompute events explicit and
+//!   countable, but no counters exist);
+//! - any #60 treatment registration or collection lane, and no
+//!   performance measurement of any kind.
 
 pub mod certificate;
 pub mod coverage;

@@ -26,7 +26,7 @@ fn a_full_cursor_walk_matches_the_model_from_rank_zero() {
         while let Some(item) = cursor.next() {
             // rank monotone, no duplicates, no skips
             assert_eq!(item.rank, seen.len(), "rank at position {}", seen.len());
-            assert!(prev_rank.map_or(true, |p| item.rank > p), "rank monotone");
+            assert!(prev_rank.is_none_or(|p| item.rank > p), "rank monotone");
             prev_rank = Some(item.rank);
             // absolute Owner base and outgoing boundary cut exact
             let base: usize = seen.iter().map(|(w, _)| *w).sum();

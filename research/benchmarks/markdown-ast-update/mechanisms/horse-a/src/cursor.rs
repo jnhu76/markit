@@ -137,8 +137,8 @@ impl<'s> OwnerCursor<'s> {
         };
         // Push the leftmost spine of the yielded node's right subtree;
         // each pushed ancestor carries the base/rank its Owner begins at.
-        let mut base = frame.base + frame.node.owner.coverage_len;
-        let mut rank = frame.rank + 1;
+        let base = frame.base + frame.node.owner.coverage_len;
+        let rank = frame.rank + 1;
         let mut child = frame.node.right.as_deref();
         while let Some(n) = child {
             // Each pushed ancestor's Owner begins only after its whole

@@ -89,6 +89,7 @@ impl OwnerSeq {
     /// violation, not a fallback (I3 task contract §30). Deliberately no
     /// edit-damage policy: no deletion-endpoint view, no left guard, no
     /// restart choice (I3 task contract §11).
+    #[allow(dead_code)] // I4 composes the navigation surface (slice staging)
     pub(crate) fn locate_by_byte(&self, x: usize) -> Located<'_> {
         let total = self.total_bytes();
         assert!(x <= total, "locate_by_byte({x}) out of range 0..={total}");
@@ -132,6 +133,7 @@ impl OwnerSeq {
 /// contract §11). Transient navigation view; nothing here is persistent
 /// state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)] // I4 composes the navigation surface (slice staging)
 pub(crate) struct LocatedOwner<'s> {
     pub owner: &'s Owner,
     /// Source-order rank of this Owner (0-based).
@@ -145,6 +147,7 @@ pub(crate) struct LocatedOwner<'s> {
 /// Result of a weighted byte locate: the containing Owner, or the
 /// explicit logical EOF position at `x == L` (I3 task contract §11).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)] // I4 composes the navigation surface (slice staging)
 pub(crate) enum Located<'s> {
     Owner(LocatedOwner<'s>),
     Eof,
@@ -646,10 +649,10 @@ impl OwnerSeq {
             let (_, lb, lr, _) = child_meta(&p.left);
             let p_base = step.base + lb;
             let p_rank = step.rank + lr;
-            if p.owner.outgoing_restart.is_some() {
+            if let Some(cert) = &p.owner.outgoing_restart {
                 return Some(SafeBoundary {
                     owner: &p.owner,
-                    cert: p.owner.outgoing_restart.as_ref().expect("checked above"),
+                    cert,
                     rank: p_rank,
                     base: p_base,
                     boundary: p_base + p.owner.coverage_len,

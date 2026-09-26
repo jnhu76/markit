@@ -116,7 +116,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
     // middle empty: pure deletion of exactly one Owner.
     let mut seq = make(&weights, &certs);
     let removed = seq.replace_range(1, 2, OwnerSeq::default());
-    assert_seq(&seq, &[model[0], model[2], model[3], model[4]].as_ref());
+    assert_seq(&seq, &[model[0], model[2], model[3], model[4]]);
     assert_seq(&removed, &model[1..2]);
 
     // middle non-empty: replace exactly one Owner.

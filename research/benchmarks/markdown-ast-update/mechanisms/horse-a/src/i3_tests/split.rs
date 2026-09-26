@@ -38,8 +38,8 @@ fn split_is_exact_at_every_rank_for_n_zero_through_64() {
             let seq_b = OwnerSeq { root: b };
 
             // Order, records, bytes (I3 task contract §39).
-            assert_seq(&seq_a, &model[..k].to_vec());
-            assert_seq(&seq_b, &model[k..].to_vec());
+            assert_seq(&seq_a, &model[..k]);
+            assert_seq(&seq_b, &model[k..]);
             assert_eq!(seq_a.total_bytes() + seq_b.total_bytes(), total_bytes);
 
             // Accepted proof core only: h(A) <= h(T), h(B) <= h(T). The

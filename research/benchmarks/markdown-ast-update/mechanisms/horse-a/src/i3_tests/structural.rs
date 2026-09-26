@@ -63,7 +63,7 @@ fn remove_max_on_balanced_trees_keeps_order_and_validity() {
         // inspect it.
 
         let rest_seq = OwnerSeq { root: rest };
-        assert_seq(&rest_seq, &model[..n_owners - 1].to_vec());
+        assert_seq(&rest_seq, &model[..n_owners - 1]);
         let mut conserved = addresses(&rest_seq);
         conserved.push(addr(&pivot));
         assert_eq!(sorted(conserved), sorted(original_addrs), "no allocation");

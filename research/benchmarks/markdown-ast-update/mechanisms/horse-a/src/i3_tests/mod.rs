@@ -41,7 +41,7 @@ pub fn owner(len: usize, certified: bool) -> Owner {
     Owner {
         coverage_len: len,
         payload: OwnerPayload::TriviaOnly,
-        outgoing_restart: certified.then(|| RestartCertificate {
+        outgoing_restart: certified.then_some(RestartCertificate {
             support: RestartSupport {
                 preceding_lf: Some(0),
                 blank_line: 1..2,
