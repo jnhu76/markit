@@ -49,8 +49,11 @@ use crate::sequence::Located;
 use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
 
 /// Why an update refused to return a state. Every variant is a
-/// pre-frontier refusal: the old READY state is untouched and still
-/// coherent, and the caller may keep using it.
+/// pre-frontier refusal: staging never mutates or partially consumes the
+/// old READY state, so a refusal leaves no corrupted half-state behind.
+/// The public [`update`] API consumes `ReadyDocument` by value; on `Err`
+/// the caller does not receive the old value back (data-model §4 records
+/// exactly this shape — there is no rollback API).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum UpdateError {
     /// The old state, the canonical edit and the post source do not describe
@@ -560,9 +563,24 @@ pub(crate) fn stage<W: WorkSink>(
 
 /// The frozen update entry point: stage, then cross the commit boundary.
 ///
-/// A staging error returns `Err` while the old state is still coherent and
-/// untouched; the frozen disposition table places association/resource
-/// failures here, never in an algorithmic full-build fallback.
+/// # Precondition — caller/host trust boundary
+///
+/// `post_source` MUST be exactly the result of applying `edit` to the
+/// source associated with `old` (`edit.apply(old_source)`). The
+/// production path performs only the frozen O(1) association, range,
+/// UTF-8-boundary and length-arithmetic validation; a full-content
+/// comparison is deliberately NOT part of the Horse-A treatment (it
+/// would add O(L) work to every measured update). The debug-only
+/// byte-identity belt in `validate_association` audits host input but
+/// is not a release correctness mechanism: violating this precondition
+/// is caller/host misuse, and the returned state is not defined by the
+/// mechanism contract.
+///
+/// A staging error returns `Err` after borrow-based phases only — the old
+/// state was never mutated or partially consumed, but this API consumes
+/// `ReadyDocument` by value and does not hand it back on `Err`. The frozen
+/// disposition table places association/resource failures here, never in
+/// an algorithmic full-build fallback.
 pub fn update<W: WorkSink>(
     old: ReadyDocument,
     old_source: &Source,

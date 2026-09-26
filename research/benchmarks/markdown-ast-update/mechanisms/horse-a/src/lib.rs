@@ -12,7 +12,10 @@
 //!
 //! - **edit/source association** — the shared canonical-edit contract
 //!   validates identity, range, UTF-8 boundaries and length arithmetic;
-//!   no repair, no re-derived edit, byte coordinates only;
+//!   no repair, no re-derived edit, byte coordinates only. The post
+//!   source being exactly `edit.apply(old_source)` is a caller/host
+//!   precondition: production validation stays O(1) and full-content
+//!   comparison is deliberately outside the treatment (see `update`);
 //! - **weighted damage locate** — one `O(H)` descent with the frozen RIGHT
 //!   affinity, so an edit at a boundary belongs to the text after it;
 //! - **restart selection** — the nearest eligible certified predecessor
