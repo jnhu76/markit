@@ -1337,7 +1337,17 @@ pub fn heading_at(src: &[u8], cls: usize, line_lf: usize) -> Option<(u8, usize)>
 /// `(marker_byte, delta)` where the item's first-line content column is
 /// `p + delta`; `k > 4` caps the delta at 2 (frozen CommonMark rule —
 /// the remaining spaces are content bytes).
+///
+/// A marker must be a byte INSIDE the physical line: `p >= line_lf` is
+/// no marker (bounds guard, #66 — at an unterminated EOF line
+/// `line_lf == src.len()`, so reading `src[p]` there was out of bounds).
+/// When an LF does exist at `line_lf` it is never '-'/'*', so this guard
+/// changes no grammar decision — it only makes the exhausted-line answer
+/// explicit instead of panicking.
 pub fn parse_marker(src: &[u8], p: usize, line_lf: usize) -> Option<(u8, usize)> {
+    if p >= line_lf {
+        return None;
+    }
     let marker = src[p];
     if marker != b'-' && marker != b'*' {
         return None;
@@ -1433,6 +1443,128 @@ mod tests {
         assert!(!region.fence_open_at_end);
         // absolute spans, no re-shift needed
         assert_eq!(region.blocks[0].start(), 15);
+    }
+
+    /// Regression (SHARED-GRAMMAR-EOF-MARKER-1, #66 — surfaced by the
+    /// independent Horse-A I2 review): a container-marker-only final
+    /// line with no LF used to reach the list sibling test with a
+    /// position AT the physical line bound, and `parse_marker` indexed
+    /// `src[p]` with `p == line_lf == src.len()` → index out of bounds.
+    ///
+    /// The bounds guard makes the sibling test answer "no marker" —
+    /// exactly the decision the terminated twin makes (the byte at
+    /// `line_lf`, when one exists, is the LF and never a marker) — so
+    /// the unterminated tail flows through the same frozen closure:
+    /// sibling fails → the list closes → the blank settles inside the
+    /// still-open quote → EOF finish closes the quote. All spans below
+    /// are hand-derived from the byte layouts and that control flow.
+    #[test]
+    fn an_unterminated_marker_only_eof_tail_parses_like_its_terminated_twin() {
+        // "> - x\n>" (len 7): quote carries '>' at 6; the item dies
+        // (nothing left to strip); the list's sibling test sees an empty
+        // remainder at EOF and finds no marker → list closes inside the
+        // quote. Quote last consumed line is [.., 7).
+        let mut noop = NoopWorkSink;
+        let doc = parse_full(b"> - x\n>", &mut noop);
+        assert_eq!(doc.root.kind, NodeKind::Document);
+        assert_eq!((doc.root.start, doc.root.end), (0, 7));
+        assert_eq!(doc.root.children.len(), 1);
+        let quote = &doc.root.children[0];
+        assert_eq!(quote.kind, NodeKind::BlockQuote);
+        assert_eq!((quote.start, quote.end), (0, 7));
+        let list = &quote.children[0];
+        assert_eq!(list.kind, NodeKind::List);
+        assert_eq!((list.start, list.end), (2, 5));
+        let item = &list.children[0];
+        assert_eq!(item.kind, NodeKind::ListItem);
+        assert_eq!((item.start, item.end), (2, 5));
+        assert_eq!(item.marker.as_deref(), Some("-"));
+        let para = &item.children[0];
+        assert_eq!(para.kind, NodeKind::Paragraph);
+        assert_eq!((para.start, para.end), (4, 5));
+        let text = &para.children[0];
+        assert_eq!(text.kind, NodeKind::Text);
+        assert_eq!((text.start, text.end), (4, 5));
+        markit_mdbench_oracle::validate_root(&doc.root, Some(b"> - x\n>"))
+            .expect("unterminated quote tail violates NORMALIZED-RESULT-v1");
+
+        // "> - x\n> " (len 8): identical walk; the trailing space is
+        // consumed as the quote's optional post-marker space, so the
+        // quote runs to 8.
+        let doc = parse_full(b"> - x\n> ", &mut noop);
+        assert_eq!((doc.root.start, doc.root.end), (0, 8));
+        let quote = &doc.root.children[0];
+        assert_eq!((quote.start, quote.end), (0, 8));
+        let list = &quote.children[0];
+        assert_eq!((list.start, list.end), (2, 5));
+        let item = &list.children[0];
+        assert_eq!((item.start, item.end), (2, 5));
+        let para = &item.children[0];
+        assert_eq!((para.start, para.end), (4, 5));
+        markit_mdbench_oracle::validate_root(&doc.root, Some(b"> - x\n> "))
+            .expect("unterminated quote-space tail violates NORMALIZED-RESULT-v1");
+
+        // The terminated twins make the identical structural decisions:
+        // "> - x\n>\n" — the LF after '>' is not a marker either.
+        let terminated = parse_full(b"> - x\n>\n", &mut noop);
+        assert_eq!(terminated.root.children.len(), 1);
+        let twin = &terminated.root.children[0];
+        assert_eq!(twin.kind, NodeKind::BlockQuote);
+        assert_eq!((twin.start, twin.end), (0, 7));
+        let terminated = parse_full(b"> - x\n> \n", &mut noop);
+        let twin = &terminated.root.children[0];
+        assert_eq!((twin.start, twin.end), (0, 8));
+    }
+
+    /// Same defect without any quote: a spaces-only EOF tail that the
+    /// outer item carries but the inner item cannot — the inner list's
+    /// sibling test ran off the line bound and panicked.
+    #[test]
+    fn a_spaces_only_eof_tail_after_a_nested_list_parses() {
+        // "- - x\n  " (len 8): the two spaces satisfy the outer item's
+        // strip (2) but not the inner item's after the outer strip, so
+        // the inner item closes and the inner list's sibling test sees
+        // the empty EOF remainder — no marker → inner list closes; the
+        // blank closes the outer list at EOF.
+        let mut noop = NoopWorkSink;
+        let doc = parse_full(b"- - x\n  ", &mut noop);
+        assert_eq!(doc.root.children.len(), 1);
+        let outer = &doc.root.children[0];
+        assert_eq!(outer.kind, NodeKind::List);
+        let outer_item = &outer.children[0];
+        assert_eq!(outer_item.kind, NodeKind::ListItem);
+        let inner = &outer_item.children[0];
+        assert_eq!(inner.kind, NodeKind::List);
+        assert_eq!((inner.start, inner.end), (2, 5));
+        let inner_item = &inner.children[0];
+        assert_eq!((inner_item.start, inner_item.end), (2, 5));
+        let para = &inner_item.children[0];
+        assert_eq!((para.start, para.end), (4, 5));
+        markit_mdbench_oracle::validate_root(&doc.root, Some(b"- - x\n  "))
+            .expect("nested-list spaces tail violates NORMALIZED-RESULT-v1");
+    }
+
+    /// Nearby marker-tail forms that must keep their existing behavior:
+    /// a real marker byte present at EOF opens a sibling item (empty
+    /// item, §7's "marker alone at end-of-line" rule).
+    #[test]
+    fn a_marker_byte_present_at_eof_still_opens_an_empty_sibling_item() {
+        let mut noop = NoopWorkSink;
+        for (src, marker) in [(b"> - x\n> -".as_slice(), "-"), (b"> - x\n> *", "*")] {
+            let doc = parse_full(src, &mut noop);
+            let quote = &doc.root.children[0];
+            assert_eq!(quote.kind, NodeKind::BlockQuote);
+            let list = &quote.children[0];
+            assert_eq!(list.kind, NodeKind::List);
+            assert_eq!(list.children.len(), 2, "sibling item for {src:?}");
+            assert_eq!(list.children[1].marker.as_deref(), Some(marker));
+            assert!(
+                list.children[1].children.is_empty(),
+                "empty item for {src:?}"
+            );
+            markit_mdbench_oracle::validate_root(&doc.root, Some(src))
+                .expect("marker tail violates NORMALIZED-RESULT-v1");
+        }
     }
 
     /// Regression (R5 adversarial small-model generator, ContainerState
