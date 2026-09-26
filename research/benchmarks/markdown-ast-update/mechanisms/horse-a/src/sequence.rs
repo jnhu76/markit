@@ -78,6 +78,78 @@ impl OwnerSeq {
         self.for_each_in_order(|_, owner| out.push(owner));
         out
     }
+
+    /// Weighted byte locate (spec §12; I3 task contract §11): the unique
+    /// Owner whose coverage `[base, base + coverage_len)` contains `x`,
+    /// with rank, absolute base, and the offset inside the Owner — enough
+    /// transient information for later composition. No Owner enumeration
+    /// and no Vec materialization: one root-to-leaf weighted descent
+    /// (`O(H)`, I3 task contract §12).
+    ///
+    /// `x == L` is the explicit logical EOF position (an empty sequence
+    /// has `L = 0` and is EOF at `x = 0`); `x > L` is a precondition
+    /// violation, not a fallback (I3 task contract §30). Deliberately no
+    /// edit-damage policy: no deletion-endpoint view, no left guard, no
+    /// restart choice (I3 task contract §11).
+    pub(crate) fn locate_by_byte(&self, x: usize) -> Located<'_> {
+        let total = self.total_bytes();
+        assert!(x <= total, "locate_by_byte({x}) out of range 0..={total}");
+        if x == total {
+            return Located::Eof;
+        }
+        let mut node = self
+            .root
+            .as_deref()
+            .expect("non-total locate requires a node");
+        let mut base = 0usize;
+        let mut rank = 0usize;
+        loop {
+            let (_, lb, lr, _) = child_meta(&node.left);
+            let owner_end = base + lb + node.owner.coverage_len;
+            if x < base + lb {
+                node = node
+                    .left
+                    .as_deref()
+                    .expect("weighted descent stays on a node");
+            } else if x < owner_end {
+                return Located::Owner(LocatedOwner {
+                    owner: &node.owner,
+                    rank: rank + lr,
+                    base: base + lb,
+                    offset: x - base - lb,
+                });
+            } else {
+                base = owner_end;
+                rank += lr + 1;
+                node = node
+                    .right
+                    .as_deref()
+                    .expect("weighted descent stays on a node");
+            }
+        }
+    }
+}
+
+/// The unique Owner whose coverage contains the located byte (I3 task
+/// contract §11). Transient navigation view; nothing here is persistent
+/// state.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct LocatedOwner<'s> {
+    pub owner: &'s Owner,
+    /// Source-order rank of this Owner (0-based).
+    pub rank: usize,
+    /// Absolute byte base of this Owner (`sum of coverage_len_j, j < rank`).
+    pub base: usize,
+    /// `x - base`, inside `[0, coverage_len)`.
+    pub offset: usize,
+}
+
+/// Result of a weighted byte locate: the containing Owner, or the
+/// explicit logical EOF position at `x == L` (I3 task contract §11).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Located<'s> {
+    Owner(LocatedOwner<'s>),
+    Eof,
 }
 
 fn build_range(slots: &mut [Option<Owner>], lo: usize, hi: usize) -> Option<Box<AvlNode>> {

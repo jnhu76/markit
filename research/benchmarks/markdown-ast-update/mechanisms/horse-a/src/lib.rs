@@ -53,6 +53,9 @@ pub mod sequence;
 pub mod state;
 pub mod validate;
 
+#[cfg(test)]
+mod i3_tests;
+
 pub use certificate::{RestartCertificate, RestartSupport};
 pub use full_build::{full_build, BuildError};
 pub use state::{
