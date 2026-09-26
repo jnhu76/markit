@@ -112,6 +112,27 @@ fn a_non_persistable_optional_certificate_skips_instead_of_aborting_ready() {
     }
 }
 
+/// Cross-layer guard for the shared-grammar EOF marker bounds fix (PR
+/// #67): these sources end in an unterminated container-prefix line, so
+/// `parse_marker` used to read past the source end while dispatching the
+/// marker's next-line attempt. The fix is entirely in the shared parser
+/// (merged master); this regression only proves the I2 seam inherits it:
+/// the shared parse succeeds, the full build succeeds, the normalized
+/// results agree, and the READY invariants hold — with no Horse-A-side
+/// special-casing of these inputs.
+#[test]
+fn full_build_matches_h0_on_unterminated_eof_marker_lines() {
+    for src in [
+        b"> - x\n>".as_slice(),
+        b"> - x\n> ".as_slice(),
+        b"- - x\n  ".as_slice(),
+    ] {
+        let doc = assert_export_equals_h0(src);
+        markit_mdbench_horse_a::validate_ready(&doc)
+            .unwrap_or_else(|e| panic!("READY invariants for {src:?}: {e}"));
+    }
+}
+
 #[test]
 fn full_build_matches_h0_on_a_many_owner_document() {
     // Smoke test at scale for the construction-only balanced build: many
