@@ -238,6 +238,48 @@ fn several_blanks_in_one_gap_produce_exactly_one_boundary_certificate() {
     assert!(owners[1].outgoing_restart.is_none());
 }
 
+/// Independent I2 review P1 (persistence half): a candidate whose
+/// support cannot satisfy the frozen condition (blank line at the left
+/// Owner's very base — support would cross the coverage start) is NOT
+/// persisted, and the ReadyDocument stays valid WITHOUT that optional
+/// restart point (data-model §8.3: "if a candidate cannot satisfy this
+/// condition, do not persist certification for it" — never reject the
+/// whole build). This holds under BOTH event sets: before the I1
+/// physical-root-blank corrective (PR #65) merges, the broad marker-line
+/// event reaches this skip; after it merges, no event reaches the
+/// boundary at all. The assertion is about persistence, never about
+/// re-classifying source bytes from I2.
+#[test]
+fn marker_line_boundary_evidence_never_persists_but_never_fails_the_build() {
+    // "a\n\n* * *\n:::": Owner bases 0, 3, 9. The REAL physical blank
+    // [2,3) certifies boundary 3. The marker line "* * *" at [3,9) is a
+    // block, and whatever transient evidence its line produced for cut 9
+    // cannot be support inside Owner 1's [3,9) coverage (its "blank"
+    // would start at 3 == the Owner's base): skipped, READY complete.
+    let doc = build(b"a\n\n* * *\n:::");
+    let owners = doc.owners.owners_in_order();
+    assert_eq!(owners.len(), 3);
+    let cert = owners[0]
+        .outgoing_restart
+        .as_ref()
+        .expect("the real physical blank [2,3) certifies boundary 3");
+    assert_eq!(cert.support.preceding_lf, Some(1));
+    assert_eq!(cert.support.blank_line, 2..3);
+    assert!(
+        owners[1].outgoing_restart.is_none(),
+        "the marker-line boundary 9 must not carry a certificate"
+    );
+    assert!(owners[2].outgoing_restart.is_none());
+
+    // "- \n- \n": two list blocks, boundary 3. The first marker line's
+    // transient event has cut 3 == the boundary with "blank" start 0 ==
+    // Owner 0's base: skipped, no certificate anywhere in the document.
+    let doc = build(b"- \n- \n");
+    let owners = doc.owners.owners_in_order();
+    assert_eq!(owners.len(), 2);
+    assert!(owners.iter().all(|o| o.outgoing_restart.is_none()));
+}
+
 #[test]
 fn bof_blanks_are_real_evidence_but_never_boundary_certificates() {
     // "\na\n\nb\n": the BOF blank (cut 1, preceding_lf None) precedes the

@@ -4,8 +4,10 @@
 //! attribution is built here, and no benchmark treatment runs them in
 //! its timed path.
 //!
-//! `full_build` runs them once before returning READY (they are O(M) in
-//! the constructed size, the same order as the construction itself).
+//! `full_build` does not run them on its production path (independent
+//! I2 review: the frozen mechanism requires no redundant post-build
+//! whole-state audit walk); debug builds keep the check, and tests
+//! invoke the validators explicitly.
 
 use markit_mdbench_oracle::normalized::{Node, NodeKind};
 

@@ -51,6 +51,24 @@ const CORPUS: &[&[u8]] = &[
     b"```\n[x]: /y\n```\n",
     b"x\n\n```\nc\n```\n",
     b"\n\npara\n\n# h\n\n",
+    // Adversarial thematic/list-marker-like lines (independent I2 review
+    // §25): sources whose list-marker bytes could be mistaken for blank
+    // evidence. Correctness regression coverage only — generated data is
+    // never research evidence.
+    b"* * *",
+    b"- - -",
+    b"-",
+    b"- ",
+    b"* * *\ntext",
+    b"a\n\n* * *",
+    // EOF-without-LF shapes: the final line has no terminator, so it is
+    // ordinary content (or an empty-item marker line), never a trailing
+    // blank barrier.
+    b"para",
+    b"a\n\nb",
+    b"# h",
+    b"- x",
+    b"> q",
 ];
 
 #[test]
@@ -64,6 +82,34 @@ fn full_build_matches_h0_on_the_representative_corpus() {
 fn full_build_matches_h0_on_unicode_and_cjk() {
     let unicode = "# 標題\n\n段落 🎉 *強調* [リンク](/u)\n\n- 項目\n  - 子\n".as_bytes();
     assert_export_equals_h0(unicode);
+}
+
+/// The independent I2 review's exact P1 repro family: sources whose
+/// list-marker-line events carry cuts that coincide with interior Owner
+/// boundaries, where the (broad, pre-I1-corrective) event's "blank
+/// line" starts at the left Owner's very base — support that cannot
+/// satisfy the frozen persistence condition. The frozen rule
+/// (data-model §8.3) is DO NOT PERSIST that certificate and keep
+/// building READY; before the repair this aborted the whole build.
+///
+/// Until the I1 physical-root-blank corrective (PR #65) merges, this
+/// branch still observes the old broad event set, so these cases pass
+/// through the skip path; after it merges they pass through the
+/// no-event path. I2 deliberately contains NO second lexical check to
+/// distinguish the two — persistence-level skipping is seam-agnostic.
+#[test]
+fn a_non_persistable_optional_certificate_skips_instead_of_aborting_ready() {
+    for src in [
+        b"* * *\ntext\n".as_slice(),
+        b"- - -\ntext\n".as_slice(),
+        b"-\n# h\n".as_slice(),
+        b"- \n- \n".as_slice(),
+        b"a\n\n* * *\n:::".as_slice(),
+    ] {
+        let doc = assert_export_equals_h0(src);
+        markit_mdbench_horse_a::validate_ready(&doc)
+            .unwrap_or_else(|e| panic!("READY invariants for {src:?}: {e}"));
+    }
 }
 
 #[test]

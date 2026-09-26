@@ -11,14 +11,15 @@
 //! → attach permitted parser-derived restart certificates
 //! → construct the retained OwnerSeq (construction-only balanced build)
 //! → construct ReadyDocument
-//! → validate READY invariants
 //! → return READY
 //! ```
 //!
 //! The builder either returns a complete Horse-A ReadyDocument or fails:
 //! no fallback to an H0-style state, no partial READY, no best-effort
 //! Owner state (task #49). No incremental update, no I3 operators, no I5
-//! counters live here.
+//! counters live here. The READY-invariant validators are test/debug
+//! gates (see `validate`); the frozen mechanism requires no mandatory
+//! whole-state audit pass on the production path.
 
 use markit_mdbench_common::{Source, WorkSink};
 use markit_mdbench_shared_grammar::{
@@ -206,10 +207,17 @@ pub fn full_build<W: WorkSink>(source: &Source, sink: &mut W) -> Result<ReadyDoc
         refs: defs,
     };
 
-    // READY must mean actually ready: validate the READY invariants
-    // before returning (task #4/#7). No parser work, semantic repair,
-    // deferred index construction, or required state-building step
-    // remains past this point.
+    // READY must mean actually ready (task #4/#7): construction itself
+    // establishes every invariant (the incremental checks above — span
+    // containment, coverage plan, certificate persistence — plus the
+    // balanced build's own aggregate recomputation). The frozen
+    // full-builder mechanism (spec §13) does NOT require a redundant
+    // post-construction whole-state O(M) audit walk on the production
+    // path, so the validators are test/debug gates only: tests call
+    // validate_ready explicitly, and debug builds keep it as a belt.
+    // No parser work, semantic repair, deferred index construction, or
+    // required state-building step remains past this point either way.
+    #[cfg(debug_assertions)]
     validate::validate_ready(&document).map_err(BuildError::InvariantViolation)?;
 
     Ok(document)
@@ -237,7 +245,17 @@ fn is_root_blank_class(src: &[u8]) -> bool {
 ///   frozen one-certificate-per-Owner-boundary mapping, task #19);
 /// - leading-trivia blanks (their cuts precede the first Owner's block,
 ///   which is not an interior boundary; BOF stays a distinguished virtual
-///   restart authority, data-model §8.3).
+///   restart authority, data-model §8.3);
+/// - a candidate whose support CANNOT satisfy the frozen persistence
+///   condition (data-model §8.3): support must belong to the left Owner,
+///   must not cross the left Owner's coverage start, and must correspond
+///   to this interior boundary. Such a candidate is real parser evidence
+///   that is merely not persistable HERE — the frozen rule is DO NOT
+///   PERSIST that certificate, never reject the whole ReadyDocument. The
+///   optional restart point is simply absent and READY stays valid; the
+///   build continues (independent I2 review P1 repair). A genuinely
+///   inconsistent builder state (two events claiming the same cut) is a
+///   different class and stays a hard error.
 fn attach_interior_certificates(
     owners: &mut [Owner],
     plan: &CoveragePlan,
@@ -252,6 +270,11 @@ fn attach_interior_certificates(
             continue;
         };
         if candidates.next().is_some() {
+            // Two events with the same cut is impossible for real line
+            // provenance (each physical line owns exactly one LF), so
+            // this is inconsistent builder evidence, not a transient
+            // candidate: a hard error (independent I2 review P1 repair
+            // keeps this one).
             return Err(BuildError::InconsistentObservation {
                 detail: format!(
                     "multiple root blank barriers certify the same boundary {boundary}"
@@ -259,30 +282,29 @@ fn attach_interior_certificates(
             });
         }
         let base = plan.cuts[i];
-        // Support must not cross the left Owner's coverage start
-        // (data-model §8.3); checked arithmetic keeps a provenance bug a
-        // construction error instead of a wrapped offset.
-        let rel_blank_start = ev
-            .line_start
-            .checked_sub(base)
-            .filter(|rel| *rel >= 1)
-            .ok_or_else(|| BuildError::InconsistentObservation {
-                detail: format!(
-                    "barrier blank line start {} does not lie inside the left Owner's coverage [{}, {})",
-                    ev.line_start, base, boundary
-                ),
-            })?;
+        // Frozen persistence condition (data-model §8.3): the blank line
+        // must lie strictly inside the left Owner's coverage — a blank
+        // starting AT the Owner's base would pull its preceding LF (or a
+        // BOF claim) across the coverage start. A candidate failing this
+        // is skipped below, not an error: the certificate is optional.
+        let Some(rel_blank_start) = ev.line_start.checked_sub(base).filter(|rel| *rel >= 1) else {
+            continue;
+        };
+        // `None` (BOF) is legal support and stays None; an LF before the
+        // left Owner's base cannot be represented Owner-relatively, so
+        // that candidate is non-persistable too. Unreachable for
+        // well-formed events (the seam always reports preceding_lf ==
+        // line_start - 1, and line_start >= base + 1 above puts that LF
+        // at or after base) — skipped rather than errored so no transient
+        // evidence shape can abort READY.
+        let rel_preceding = match ev.preceding_lf {
+            None => None,
+            Some(lf) => match lf.checked_sub(base) {
+                Some(rel) => Some(rel),
+                None => continue,
+            },
+        };
         let rel_blank_end = ev.cut - base;
-        let rel_preceding = ev
-            .preceding_lf
-            .map(|lf| lf.checked_sub(base).ok_or(()))
-            .transpose()
-            .map_err(|()| BuildError::InconsistentObservation {
-                detail: format!(
-                    "barrier preceding LF does not lie inside the left Owner's coverage [{}, {})",
-                    base, boundary
-                ),
-            })?;
         owners[i].outgoing_restart = Some(RestartCertificate {
             support: crate::certificate::RestartSupport {
                 preceding_lf: rel_preceding,
