@@ -1,0 +1,10 @@
+[package]
+name = "markit-mdbench-horse-a"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-shared-grammar = { workspace = true }
