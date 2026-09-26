@@ -93,34 +93,55 @@ fn build_range(slots: &mut [Option<Owner>], lo: usize, hi: usize) -> Option<Box<
     Some(Box::new(assemble(left, right, owner)))
 }
 
-/// Recompute the node-local metadata from the assembled children
-/// (spec §12: `h(empty)=0`, `h(leaf)=1`; aggregates combine).
+/// The one authoritative local metadata recomputation (spec §12, §15.4;
+/// I3 task contract §8): `height` and all three aggregates are derived
+/// from the children's metadata and the Owner-local fields, and every
+/// metadata write on the structural path routes through this seam —
+/// `bulk_build`, rotations/rebalance, `join_with_pivot`, `remove_max`,
+/// `split`, and `replace_range` all share it. No operator duplicates the
+/// aggregate arithmetic.
+pub(crate) fn recompute(node: &mut AvlNode) {
+    let (lh, lb, lr, ls) = child_meta(&node.left);
+    let (rh, rb, rr, rs) = child_meta(&node.right);
+    node.height = 1 + lh.max(rh);
+    node.agg = Aggregate {
+        subtree_bytes: lb + node.owner.coverage_len + rb,
+        subtree_records: lr + 1 + rr,
+        subtree_has_safe: ls || node.owner.outgoing_restart.is_some() || rs,
+    };
+}
+
+/// `(height, bytes, records, has_safe)` of one child slot. An empty child
+/// contributes no aggregate-field reads (`h(empty) = 0` comes from the
+/// null check, spec §15.4).
+#[inline]
+fn child_meta(child: &Option<Box<AvlNode>>) -> (u32, usize, usize, bool) {
+    match child {
+        Some(n) => (
+            n.height,
+            n.agg.subtree_bytes,
+            n.agg.subtree_records,
+            n.agg.subtree_has_safe,
+        ),
+        None => (0, 0, 0, false),
+    }
+}
+
+/// Assemble one node from already-built children and recompute its
+/// metadata through the shared seam (spec §12: `h(empty)=0`,
+/// `h(leaf)=1`; aggregates combine).
 fn assemble(left: Option<Box<AvlNode>>, right: Option<Box<AvlNode>>, owner: Owner) -> AvlNode {
-    let (lh, lb, lr, ls) = left.as_ref().map_or((0, 0, 0, false), |n| {
-        (
-            n.height,
-            n.agg.subtree_bytes,
-            n.agg.subtree_records,
-            n.agg.subtree_has_safe,
-        )
-    });
-    let (rh, rb, rr, rs) = right.as_ref().map_or((0, 0, 0, false), |n| {
-        (
-            n.height,
-            n.agg.subtree_bytes,
-            n.agg.subtree_records,
-            n.agg.subtree_has_safe,
-        )
-    });
-    AvlNode {
-        agg: Aggregate {
-            subtree_bytes: lb + owner.coverage_len + rb,
-            subtree_records: lr + 1 + rr,
-            subtree_has_safe: ls || owner.outgoing_restart.is_some() || rs,
-        },
-        height: 1 + lh.max(rh),
+    let mut node = AvlNode {
         left,
         right,
+        height: 0,
+        agg: Aggregate {
+            subtree_bytes: 0,
+            subtree_records: 0,
+            subtree_has_safe: false,
+        },
         owner,
-    }
+    };
+    recompute(&mut node);
+    node
 }
