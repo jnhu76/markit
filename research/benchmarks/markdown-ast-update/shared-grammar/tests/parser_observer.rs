@@ -482,6 +482,116 @@ fn a_blank_that_closes_a_list_back_to_root_certifies_at_its_real_post_b1_state()
     );
 }
 
+/// The frozen event predicate needs BOTH halves: the ORIGINAL physical
+/// line is `SPACES* LF`, AND the post-B1 live state is root-safe. A line
+/// that only becomes blank after container/list prefixes were stripped
+/// (post-prefix B1) is NOT a physical root blank and must issue nothing —
+/// even though the same dispatch really did flush and close containers
+/// back to root. These are the independent I2-review discriminating
+/// sources; expected event vectors are hand-derived from the byte
+/// layouts.
+#[test]
+fn marker_lines_that_are_only_blank_after_prefix_stripping_never_certify() {
+    // Physical marker-only lines: post-prefix content is empty (B1 at the
+    // item level closes the list to root), but the physical line itself
+    // contains marker bytes, so it is not SPACES* LF.
+    assert_eq!(barriers(b"-\n"), vec![]);
+    assert_eq!(barriers(b"- \n"), vec![]);
+    assert_eq!(barriers(b"* \n"), vec![]);
+    assert_eq!(barriers(b"*   \n"), vec![]);
+    // Nested-marker lines consumed by sibling/child prefix logic.
+    assert_eq!(barriers(b"* * *\n"), vec![]);
+    assert_eq!(barriers(b"- - -\n"), vec![]);
+    // "> \n": the quote carries the line, so the live quote already
+    // suppresses the barrier (distinct reason: post-B1 state not
+    // root-safe, AND the physical line carries '>').
+    assert_eq!(barriers(b"> \n"), vec![]);
+}
+
+/// Same shapes followed by a second root block: the marker line's cut
+/// would coincide with the next block's physical start, so these are the
+/// exact sources where an over-broad event set would fabricate Owner
+/// boundary certificates downstream.
+#[test]
+fn marker_lines_before_a_following_root_block_never_certify_their_boundary() {
+    assert_eq!(barriers(b"* * *\ntext\n"), vec![]);
+    assert_eq!(barriers(b"- - -\ntext\n"), vec![]);
+    // "-\n# h\n": bytes '-' 0, LF 1, '#' 2 — the marker line's cut 2 is
+    // the heading's physical start.
+    assert_eq!(barriers(b"-\n# h\n"), vec![]);
+    // Both list lines are marker lines; the second one's cut 6 is the
+    // source end (EOF, never an interior certificate anyway).
+    assert_eq!(barriers(b"- \n- \n"), vec![]);
+    // "*   \ntext\n": the marker line is a list opener; "text" continues
+    // inside it — no event may exist for either line.
+    assert_eq!(barriers(b"*   \ntext\n"), vec![]);
+    // "    - \ntext\n": under BENCH-GRAMMAR-v1 four leading spaces are
+    // ordinary paragraph text (only up to 3 are skipped), so this is one
+    // paragraph — and still no barrier.
+    assert_eq!(barriers(b"    - \ntext\n"), vec![]);
+}
+
+/// The discriminator: the SAME positions with REAL physical blanks do
+/// certify. Physical root-blank eligibility and post-B1 root safety are
+/// separate necessary conditions; these sources satisfy both.
+#[test]
+fn real_physical_blanks_in_the_same_positions_still_certify() {
+    // Leading blank, leading-spaces blank, interior blanks.
+    assert_eq!(
+        barriers(b"\ntext\n"),
+        vec![RootBlankEvent {
+            line_start: 0,
+            line_lf: 0,
+            cut: 1,
+            preceding_lf: None,
+        }]
+    );
+    assert_eq!(
+        barriers(b"   \ntext\n"),
+        vec![RootBlankEvent {
+            line_start: 0,
+            line_lf: 3,
+            cut: 4,
+            preceding_lf: None,
+        }]
+    );
+    assert_eq!(
+        barriers(b"a\n   \nb\n"),
+        vec![RootBlankEvent {
+            line_start: 2,
+            line_lf: 5,
+            cut: 6,
+            preceding_lf: Some(1),
+        }]
+    );
+    // A spaces-only line INSIDE a list region that the item carries
+    // (3 spaces >= strip 2) and B1 then closes back to root: the
+    // physical line is SPACES* LF and the post-B1 state is root-safe, so
+    // it certifies — while the marker-only twin "- \n- \n" above does
+    // not.
+    // "- a\n   \n- b\n": '-' 0 ' ' 1 'a' 2 LF 3, blank [4, 8), LF 7.
+    assert_eq!(
+        barriers(b"- a\n   \n- b\n"),
+        vec![RootBlankEvent {
+            line_start: 4,
+            line_lf: 7,
+            cut: 8,
+            preceding_lf: Some(3),
+        }]
+    );
+    // An unprefixed physical blank that closes a live quote back to
+    // root: "> a\n\n> b\n" — blank [4, 5).
+    assert_eq!(
+        barriers(b"> a\n\n> b\n"),
+        vec![RootBlankEvent {
+            line_start: 4,
+            line_lf: 4,
+            cut: 5,
+            preceding_lf: Some(3),
+        }]
+    );
+}
+
 #[test]
 fn spaces_only_tail_without_a_consumed_lf_never_certifies() {
     // "a\n\n   ": the interior blank at [2,3) certifies; the final
@@ -559,6 +669,20 @@ fn noop_observer_is_inert_across_representative_case_shapes() {
         b"```\nunclosed\n",
         b"  # indented heading\n   text\n",
         b"[l]: /u\n[l]: /shadowed\n",
+        // The physical-blank eligibility sources: narrowing the event set
+        // changes no parse semantics, and these lines still parse exactly
+        // as lists/paragraphs.
+        b"-\n",
+        b"- \n",
+        b"* \n",
+        b"*   \n",
+        b"* * *\n",
+        b"- - -\n",
+        b"- \n- \n",
+        b"* * *\ntext\n",
+        b"- - -\ntext\n",
+        b"-\n# h\n",
+        b"a\n\n* * *\n:::",
     ];
     for src in cases {
         assert_noop_observer_is_inert(src, 0, src.len());
