@@ -1,13 +1,10 @@
-//! Construction-only OwnerSeq materialization (spec §12.5, §13.1; task
-//! #31): the frozen same-target full build requires a balanced
-//! one-record-per-node sequence, so I2 converts ordered Owners to a
-//! balanced tree in O(M) by consuming the ordered input once.
-//!
-//! This module deliberately implements ONLY construction and read-only
-//! in-order traversal. The I3 slice owns the mutable operators
-//! (`locate_by_byte`, `safe_predecessor`, `split`, `join`,
-//! `join_with_pivot`, `remove_max`, `replace_range`, monotone cursor,
-//! rebalancing mutation API); none of them exist here.
+//! OwnerSeq materialization and the I3 weighted-AVL substrate (spec
+//! §12; #59 §7.2–§7.4): the O(M) `bulk_build`, the weighted
+//! `locate_by_byte` navigation, and the relink-only structural mutation
+//! operators (`remove_max`, `join_with_pivot`, `join`, `split` —
+//! `replace_range`, `safe_predecessor` and the cursor land with their
+//! own slices). One record per node; W-A3 is preserved, not optimized
+//! away.
 
 use crate::state::{Aggregate, AvlNode, Owner, OwnerSeq};
 
@@ -216,4 +213,283 @@ fn assemble(left: Option<Box<AvlNode>>, right: Option<Box<AvlNode>>, owner: Owne
     };
     recompute(&mut node);
     node
+}
+
+// ------------------------------------------------------- structural substrate
+//
+// Relink-only structural mutation primitives (spec §12.1–§12.2, #59
+// §7.2–§7.3; I3 task contract §9/§10/§16–§19). Every operator moves
+// existing `Box<AvlNode>`s between slots — a moved Box never relocates
+// its allocation (Rust reference: memory-allocation-and-lifetime), so
+// retained-node identity survives every operation. No subtree clone, no
+// node reconstruction, no fresh pivot allocation. All metadata writes
+// route through the shared `recompute` seam.
+
+#[inline]
+fn height_of(child: &Option<Box<AvlNode>>) -> u32 {
+    child.as_ref().map_or(0, |n| n.height)
+}
+
+#[inline]
+fn records_of(child: &Option<Box<AvlNode>>) -> usize {
+    child.as_ref().map_or(0, |n| n.agg.subtree_records)
+}
+
+#[inline]
+fn has_safe_of(child: &Option<Box<AvlNode>>) -> bool {
+    child.as_ref().is_some_and(|n| n.agg.subtree_has_safe)
+}
+
+/// Balance factor `h(left) − h(right)`; within `{−1, 0, +1}` whenever
+/// the AVL invariant holds.
+fn balance_factor(node: &AvlNode) -> i32 {
+    height_of(&node.left) as i32 - height_of(&node.right) as i32
+}
+
+/// Rotate the subtree rooted at `slot` to the left: its right child
+/// becomes the subtree root. Single rotation = 1 rotation unit / 3
+/// structural link writes under the frozen §15.2–§15.3 conventions —
+/// the relinks stay explicit and countable for the later I5 accounting
+/// (I3 task contract §9/§32). Owner in-order sequence unchanged; no
+/// Owner or payload is cloned; no new retained node is allocated.
+fn rotate_left(slot: &mut Option<Box<AvlNode>>) {
+    let mut node = slot.take().expect("rotate_left requires a node");
+    let mut pivot = node
+        .right
+        .take()
+        .expect("rotate_left requires a right child");
+    node.right = pivot.left.take();
+    recompute(&mut node);
+    pivot.left = Some(node);
+    recompute(&mut pivot);
+    *slot = Some(pivot);
+}
+
+/// Rotate the subtree rooted at `slot` to the right (mirror of
+/// [`rotate_left`]).
+fn rotate_right(slot: &mut Option<Box<AvlNode>>) {
+    let mut node = slot.take().expect("rotate_right requires a node");
+    let mut pivot = node
+        .left
+        .take()
+        .expect("rotate_right requires a left child");
+    node.left = pivot.right.take();
+    recompute(&mut node);
+    pivot.right = Some(node);
+    recompute(&mut pivot);
+    *slot = Some(pivot);
+}
+
+/// Restore the AVL invariant at `slot` after one child subtree's height
+/// changed by at most one. Double rotations compose the primitive
+/// rotations — no second restructuring path exists (I3 task contract
+/// §9). Metadata must be exact on entry and stays exact.
+pub(crate) fn rebalance(slot: &mut Option<Box<AvlNode>>) {
+    let Some(node) = slot.as_deref() else {
+        return;
+    };
+    let bf = balance_factor(node);
+    if bf > 1 {
+        // Left-heavy. If the left child leans right, pre-rotate it left
+        // (LR → LL) before the single right rotation.
+        let left_bf = balance_factor(node.left.as_deref().expect("bf > 1 implies a left child"));
+        if left_bf < 0 {
+            rotate_left(&mut slot.as_mut().expect("populated").left);
+        }
+        rotate_right(slot);
+    } else if bf < -1 {
+        let right_bf = balance_factor(
+            node.right
+                .as_deref()
+                .expect("bf < −1 implies a right child"),
+        );
+        if right_bf > 0 {
+            rotate_right(&mut slot.as_mut().expect("populated").right);
+        }
+        rotate_left(slot);
+    }
+}
+
+/// Rebalance a subtree root held outside a persistent slot (helper for
+/// the recursive operators). Moving the Box through the local slot is 0
+/// link writes (§15.2).
+fn rebalance_box(node: Box<AvlNode>) -> Box<AvlNode> {
+    let mut slot = Some(node);
+    rebalance(&mut slot);
+    slot.expect("rebalance never empties a populated slot")
+}
+
+/// Remove the rightmost Owner node from a non-empty AVL tree (I3 task
+/// contract §18): returns the remaining tree (rebalanced, metadata
+/// exact) plus the existing maximum node as an isolated pivot. The
+/// maximum Owner is removed exactly once, no retained node is
+/// allocated, and the pivot keeps no child ownership. The pivot's own
+/// metadata is stale until it is attached again — `join_with_pivot`
+/// recomputes it (contract §17); nothing else may inspect a detached
+/// pivot.
+pub(crate) fn remove_max(root: Box<AvlNode>) -> (Option<Box<AvlNode>>, Box<AvlNode>) {
+    let mut node = root;
+    match node.right.take() {
+        None => {
+            let mut pivot = node;
+            let left = pivot.left.take();
+            (left, pivot)
+        }
+        Some(right) => {
+            let (rest, pivot) = remove_max(right);
+            node.right = rest;
+            recompute(&mut node);
+            (Some(rebalance_box(node)), pivot)
+        }
+    }
+}
+
+/// Height-aware AVL join with an existing detached pivot (spec §12.1;
+/// #59 §7.2): output order is `all(left) · pivot · all(right)`. The
+/// pivot must arrive structurally isolated (no child ownership, contract
+/// §17) and is never converted to an Owner or re-allocated. Result
+/// height stays in the frozen window `[max(h(L), h(R)), max + 1]`.
+pub(crate) fn join_with_pivot(
+    left: Option<Box<AvlNode>>,
+    pivot: Box<AvlNode>,
+    right: Option<Box<AvlNode>>,
+) -> Box<AvlNode> {
+    debug_assert!(
+        pivot.left.is_none() && pivot.right.is_none(),
+        "join_with_pivot pivot must be structurally isolated"
+    );
+    let lh = height_of(&left);
+    let rh = height_of(&right);
+    if (lh as i32 - rh as i32).abs() <= 1 {
+        // Compatible heights: attach both sides directly under the pivot.
+        let mut x = pivot;
+        x.left = left;
+        x.right = right;
+        recompute(&mut x);
+        return x;
+    }
+    if lh > rh {
+        join_right(left.expect("left taller than an empty right"), pivot, right)
+    } else {
+        join_left(left, pivot, right.expect("right taller than an empty left"))
+    }
+}
+
+/// `h(node) > h(right) + 1`: descend the inner (right) spine to the
+/// first node whose right child fits beside `right`, attach the pivot
+/// between them, and recompute/rebalance while unwinding. The AVL
+/// invariant at each spine node bounds the new right-subtree height by
+/// `old + 1`, so one rebalance event per unwind level suffices.
+fn join_right(
+    mut node: Box<AvlNode>,
+    pivot: Box<AvlNode>,
+    right: Option<Box<AvlNode>>,
+) -> Box<AvlNode> {
+    let right_height = height_of(&right);
+    if height_of(&node.right) <= right_height + 1 {
+        let c = node.right.take();
+        let mut mid = pivot;
+        mid.left = c;
+        mid.right = right;
+        recompute(&mut mid);
+        node.right = Some(mid);
+    } else {
+        let c = node.right.take().expect("the inner spine continues");
+        let joined = join_right(c, pivot, right);
+        node.right = Some(joined);
+    }
+    recompute(&mut node);
+    rebalance_box(node)
+}
+
+/// `h(node) > h(left) + 1`: mirror of [`join_right`] down the inner
+/// (left) spine.
+fn join_left(
+    left: Option<Box<AvlNode>>,
+    pivot: Box<AvlNode>,
+    mut node: Box<AvlNode>,
+) -> Box<AvlNode> {
+    let left_height = height_of(&left);
+    if height_of(&node.left) <= left_height + 1 {
+        let c = node.left.take();
+        let mut mid = pivot;
+        mid.left = left;
+        mid.right = c;
+        recompute(&mut mid);
+        node.left = Some(mid);
+    } else {
+        let c = node.left.take().expect("the inner spine continues");
+        let joined = join_left(left, pivot, c);
+        node.left = Some(joined);
+    }
+    recompute(&mut node);
+    rebalance_box(node)
+}
+
+/// Frozen deterministic join (spec §12.2; #59 §7.3): one side empty →
+/// the other; otherwise `remove_max(left)` exactly once supplies the
+/// pivot for [`join_with_pivot`]. No `remove_min(right)` alternative, no
+/// repeated insertion, no fresh pivot, no alternating strategy — the
+/// policy is part of the mechanism identity.
+pub(crate) fn join(
+    left: Option<Box<AvlNode>>,
+    right: Option<Box<AvlNode>>,
+) -> Option<Box<AvlNode>> {
+    match (left, right) {
+        (None, right) => right,
+        (left, None) => left,
+        (Some(left), right) => {
+            let (remaining, pivot) = remove_max(left);
+            Some(join_with_pivot(remaining, pivot, right))
+        }
+    }
+}
+
+/// Split a tree at Owner record rank `k` (spec §12.3; #59 §7.4):
+/// `0 <= k <= records(root)` and the result is
+/// `(first k Owners, remaining Owners)`. Rank-based, never byte-based.
+/// One search spine; outputs are reconstructed from existing nodes and
+/// `join_with_pivot` only — no Vec flattening, no record reinsertion.
+/// Both outputs are AVL-balanced with `h(output) <= h(input)` (the
+/// accepted §12.3.1 proof core; the withdrawn output-height window is
+/// deliberately NOT assumed anywhere).
+pub(crate) fn split(
+    root: Option<Box<AvlNode>>,
+    k: usize,
+) -> (Option<Box<AvlNode>>, Option<Box<AvlNode>>) {
+    let Some(mut node) = root else {
+        assert_eq!(k, 0, "split rank {k} out of range for an empty sequence");
+        return (None, None);
+    };
+    let total = node.agg.subtree_records;
+    assert!(k <= total, "split rank {k} out of range 0..={total}");
+    if k == 0 {
+        return (None, Some(node));
+    }
+    if k == total {
+        return (Some(node), None);
+    }
+    let left = node.left.take();
+    let right = node.right.take();
+    let left_records = records_of(&left);
+    if k < left_records {
+        // k lands inside the left subtree: the pivot joins the right
+        // output between the abandoned left part and the old right subtree.
+        let (a, b) = split(left, k);
+        let right_out = join_with_pivot(b, node, right);
+        (a, Some(right_out))
+    } else if k == left_records {
+        // The pivot becomes the first Owner of the right output.
+        let right_out = join_with_pivot(None, node, right);
+        (left, Some(right_out))
+    } else if k == left_records + 1 {
+        // The pivot becomes the final Owner of the left output.
+        let left_out = join_with_pivot(left, node, None);
+        (Some(left_out), right)
+    } else {
+        // k lands inside the right subtree: descend with the adjusted rank.
+        let (c, d) = split(right, k - left_records - 1);
+        let left_out = join_with_pivot(left, node, c);
+        (Some(left_out), d)
+    }
 }
