@@ -6,6 +6,7 @@
 //! own slices). One record per node; W-A3 is preserved, not optimized
 //! away.
 
+use crate::certificate::RestartCertificate;
 use crate::state::{Aggregate, AvlNode, Owner, OwnerSeq};
 
 impl OwnerSeq {
@@ -523,4 +524,190 @@ impl OwnerSeq {
         self.root = join(with_middle, c);
         OwnerSeq { root: b }
     }
+
+    /// Aggregate-pruned nearest-safe-boundary predecessor (spec §7.1,
+    /// #59 §7.6; I3 task contract §13): the nearest Owner boundary whose
+    /// absolute cut is **strictly below** the exclusive byte bound
+    /// `before` and whose Owner carries a persistent outgoing
+    /// RestartCertificate. The later I4 call site derives its
+    /// "strictly before the relevant Owner-start boundary" requirement
+    /// (and #59's "rightmost safe boundary ≤ r₀" via `before = r₀ + 1`);
+    /// no edit-damage policy lives here (I3 task contract §14).
+    ///
+    /// Frozen search shape — no linear scan toward BOF, no Owner
+    /// enumeration:
+    ///
+    /// 1. one weighted descent for `before - 1` with the ancestor stack
+    ///    (≤ H visits). Every Owner strictly left of the located Owner
+    ///    has its cut ≤ base(located) ≤ before − 1 < before, and the
+    ///    located Owner plus everything at or right of it does not — so
+    ///    the position eligibility of every candidate region is a
+    ///    descent-direction fact, established before any certificate is
+    ///    inspected (§14 ordering);
+    /// 2. the located Owner's own left subtree is the nearest abandoned
+    ///    predecessor region, then the backtracking ancestors — deepest
+    ///    right-descent first, each an abandoned `left ∪ self` region.
+    ///    At each region: the ancestor's own eligible certificate is the
+    ///    nearest candidate of its region, else `subtree_has_safe`
+    ///    prunes the region or guides one final descent into its
+    ///    rightmost safe candidate (≤ H − 1 visits).
+    ///
+    /// The structural shape matches the frozen conservative bound
+    /// `safe_predecessor_node_visits <= 3H - 2`; the formal counter is
+    /// I5's, not this slice's (I3 task contract §15/§32).
+    #[allow(dead_code)] // I4 composes the navigation surface (slice staging)
+    pub(crate) fn safe_predecessor(&self, before: usize) -> Option<SafeBoundary<'_>> {
+        let total = self.total_bytes();
+        assert!(
+            before <= total,
+            "safe_predecessor bound {before} out of range 0..={total}"
+        );
+        // No cut is strictly below 0.
+        if before == 0 {
+            return None;
+        }
+        // Sequence-level prune: without a certified boundary anywhere, no
+        // region can qualify (aggregate read, never a certificate read).
+        if !self.has_safe() {
+            return None;
+        }
+
+        /// One ancestor-stack entry from the phase-1 descent.
+        struct Step<'a> {
+            node: &'a AvlNode,
+            /// Absolute byte base of this node's Owner.
+            base: usize,
+            /// Source-order rank of this node's Owner.
+            rank: usize,
+            /// Whether the descent continued into this node's right
+            /// subtree — making `node.left ∪ node` an abandoned eligible
+            /// predecessor region.
+            went_right: bool,
+        }
+
+        // Phase 1: weighted descent for `before - 1` (< total, so it
+        // always lands inside an Owner).
+        let mut node = self.root.as_deref().expect("has_safe implies a node");
+        let mut base = 0usize;
+        let mut rank = 0usize;
+        let mut path: Vec<Step> = Vec::new();
+        let target = before - 1;
+        loop {
+            let (_, lb, lr, _) = child_meta(&node.left);
+            let owner_end = base + lb + node.owner.coverage_len;
+            if target < base + lb {
+                path.push(Step {
+                    node,
+                    base,
+                    rank,
+                    went_right: false,
+                });
+                node = node.left.as_deref().expect("descent stays on a node");
+            } else if target < owner_end {
+                path.push(Step {
+                    node,
+                    base,
+                    rank,
+                    went_right: false,
+                });
+                break;
+            } else {
+                path.push(Step {
+                    node,
+                    base,
+                    rank,
+                    went_right: true,
+                });
+                base = owner_end;
+                rank += lr + 1;
+                node = node.right.as_deref().expect("descent stays on a node");
+            }
+        }
+
+        // Phase 2, nearest region first: the located Owner's left subtree
+        // (its cuts are all strictly below `before`), then the abandoned
+        // `left ∪ self` regions backtracked deepest-first — each region's
+        // maximum rank is strictly below the previous one's, so the first
+        // region holding a certified boundary provides the answer.
+        let located = path[path.len() - 1].node;
+        let (located_base, located_rank) = {
+            let last = &path[path.len() - 1];
+            (last.base, last.rank)
+        };
+        if has_safe_of(&located.left) {
+            let left = located.left.as_deref().expect("has_safe implies a node");
+            return Some(rightmost_certified(left, located_base, located_rank));
+        }
+        for step in path[..path.len() - 1].iter().rev() {
+            if !step.went_right {
+                continue;
+            }
+            let p = step.node;
+            let (_, lb, lr, _) = child_meta(&p.left);
+            let p_base = step.base + lb;
+            let p_rank = step.rank + lr;
+            if p.owner.outgoing_restart.is_some() {
+                return Some(SafeBoundary {
+                    owner: &p.owner,
+                    cert: p.owner.outgoing_restart.as_ref().expect("checked above"),
+                    rank: p_rank,
+                    base: p_base,
+                    boundary: p_base + p.owner.coverage_len,
+                });
+            }
+            if has_safe_of(&p.left) {
+                let left = p.left.as_deref().expect("has_safe implies a node");
+                return Some(rightmost_certified(left, step.base, step.rank));
+            }
+        }
+        None
+    }
+}
+
+/// The rightmost certified boundary of a subtree whose `subtree_has_safe`
+/// is true — one guided descent (≤ H − 1 visits). Every boundary in the
+/// region is position-eligible by the caller's descent-direction proof.
+fn rightmost_certified<'a>(node: &'a AvlNode, base: usize, rank: usize) -> SafeBoundary<'a> {
+    let mut n = node;
+    let mut b = base;
+    let mut r = rank;
+    loop {
+        let (_, lb, lr, _) = child_meta(&n.left);
+        if has_safe_of(&n.right) {
+            b += lb + n.owner.coverage_len;
+            r += lr + 1;
+            n = n.right.as_deref().expect("guided descent stays on a node");
+        } else if n.owner.outgoing_restart.is_some() {
+            return SafeBoundary {
+                owner: &n.owner,
+                cert: n.owner.outgoing_restart.as_ref().expect("checked above"),
+                rank: r + lr,
+                base: b + lb,
+                boundary: b + lb + n.owner.coverage_len,
+            };
+        } else {
+            n = n
+                .left
+                .as_deref()
+                .expect("subtree_has_safe guarantees a certified node below");
+        }
+    }
+}
+
+/// A certified boundary found by [`OwnerSeq::safe_predecessor`]: the
+/// Owner whose outgoing boundary carries the persistent
+/// RestartCertificate, its rank and absolute base, and the absolute
+/// boundary cut (`base + coverage_len`, strictly below the queried
+/// bound). Transient navigation view; nothing here is persistent state.
+#[derive(Debug, Clone, Copy)]
+#[allow(dead_code)] // I4 composes the navigation surface (slice staging)
+pub(crate) struct SafeBoundary<'s> {
+    pub owner: &'s Owner,
+    pub cert: &'s RestartCertificate,
+    /// Source-order rank of the certified Owner (0-based).
+    pub rank: usize,
+    /// Absolute byte base of the certified Owner.
+    pub base: usize,
+    /// Absolute cut of the certified boundary (`base + coverage_len`).
+    pub boundary: usize,
 }
