@@ -74,10 +74,10 @@ pub fn model_of(seq: &OwnerSeq) -> Model {
 /// The full §36 invariant matrix after an operation: in-order Owner
 /// order, height metadata, AVL balance, `subtree_bytes`,
 /// `subtree_records`, `subtree_has_safe`, and the coverage byte total.
-pub fn assert_seq(seq: &OwnerSeq, expected: &Model) {
+pub fn assert_seq(seq: &OwnerSeq, expected: &[(usize, bool)]) {
     assert_eq!(
-        model_of(seq),
-        *expected,
+        model_of(seq).as_slice(),
+        expected,
         "in-order Owner order / weights / certificate flags"
     );
     assert_eq!(

@@ -493,3 +493,34 @@ pub(crate) fn split(
         (Some(left_out), d)
     }
 }
+
+impl OwnerSeq {
+    /// Frozen `replace_range` (spec §12.4; #59 §7.5; I3 task contract
+    /// §22): `lo`/`hi` are Owner record ranks with
+    /// `0 <= lo <= hi <= records`.
+    ///
+    /// ```text
+    /// (A,BC) = split(root, lo)
+    /// (B,C)  = split(BC, hi - lo)
+    /// self   = join(join(A, middle), C)
+    /// return = B            // owned detached structure — never dropped
+    /// ```
+    ///
+    /// Retained P/S and the fresh `middle` tree are transferred
+    /// structurally by ownership — no record-by-record reinsertion, no
+    /// clone, no rebuild (I3 task contract §24). Retirement of B is I5's
+    /// concern; here it is returned intact to the caller.
+    #[allow(dead_code)] // I4 composes the mutation surface (slice staging)
+    pub(crate) fn replace_range(&mut self, lo: usize, hi: usize, middle: OwnerSeq) -> OwnerSeq {
+        let records = self.records();
+        assert!(
+            lo <= hi && hi <= records,
+            "replace_range [{lo}, {hi}) out of range 0..={records}"
+        );
+        let (a, bc) = split(self.root.take(), lo);
+        let (b, c) = split(bc, hi - lo);
+        let with_middle = join(a, middle.root);
+        self.root = join(with_middle, c);
+        OwnerSeq { root: b }
+    }
+}
