@@ -5,6 +5,7 @@
 
 use super::*;
 use crate::sequence::{join, split};
+use crate::workspace::CommitWorkspace;
 
 /// Uneven, deterministic weight/certificate patterns (I3 task contract §37:
 /// not every Owner weighs the same).
@@ -37,6 +38,7 @@ fn split_is_exact_at_every_rank_for_n_zero_through_64() {
                 fresh.root,
                 k,
                 &mut crate::structural::NoopHorseAStructuralSink,
+                &mut CommitWorkspace::for_tests(8),
             );
             let seq_a = OwnerSeq { root: a };
             let seq_b = OwnerSeq { root: b };
@@ -80,6 +82,7 @@ fn split_is_exact_at_every_rank_for_n_zero_through_64() {
                     seq_a.root,
                     seq_b.root,
                     &mut crate::structural::NoopHorseAStructuralSink,
+                    &mut CommitWorkspace::for_tests(8),
                 ),
             };
             assert_seq(&rejoined, &model);
@@ -100,6 +103,7 @@ fn adversarial_split_heights_regist_the_withdrawn_window() {
         tree.root,
         1,
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(8),
     );
     let seq_a = OwnerSeq { root: a };
     let seq_b = OwnerSeq { root: b };
@@ -126,12 +130,18 @@ fn split_precondition_violations_are_not_fallbacks() {
             tree.root,
             4,
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(8),
         );
     }));
     assert!(result.is_err(), "k > records must fail loudly");
 
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = split(None, 1, &mut crate::structural::NoopHorseAStructuralSink);
+        let _ = split(
+            None,
+            1,
+            &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(8),
+        );
     }));
     assert!(
         result.is_err(),

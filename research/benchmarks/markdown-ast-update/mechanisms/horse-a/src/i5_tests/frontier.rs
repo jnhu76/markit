@@ -45,7 +45,9 @@ fn the_frontier_pipeline_preserves_the_frozen_ownership_shape() {
     assert_eq!(old.source_len, old_source.len_bytes(), "old stays coherent");
 
     // Formation consumes the old document by ownership (it is moved in).
-    let prepared = staged.prepare(old, &mut NoopHorseAStructuralSink);
+    let prepared = staged
+        .prepare(old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares");
 
     // Crossing is infallible — no Result, no fallback branch.
     let next = prepared.commit(&mut NoopHorseAStructuralSink);

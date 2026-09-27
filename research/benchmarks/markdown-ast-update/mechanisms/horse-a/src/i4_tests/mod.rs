@@ -88,7 +88,9 @@ impl Fixture {
             &mut NoopHorseAStructuralSink,
         )
         .expect("the update stages");
-        let prepared = staged.prepare(self.old, &mut NoopHorseAStructuralSink);
+        let prepared = staged
+            .prepare(self.old, &mut NoopHorseAStructuralSink)
+            .expect("the bounded commit workspace prepares");
         let next = prepared.commit(&mut NoopHorseAStructuralSink);
         (next, post)
     }

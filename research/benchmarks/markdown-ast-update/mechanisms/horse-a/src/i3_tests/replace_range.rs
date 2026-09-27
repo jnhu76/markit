@@ -39,6 +39,7 @@ fn replace_range_is_exact_for_every_lo_hi_and_middle_shape() {
                         hi,
                         middle,
                         &mut crate::structural::NoopHorseAStructuralSink,
+                        &mut crate::workspace::CommitWorkspace::for_tests(16),
                     );
                     let removed_seq = removed;
 
@@ -93,6 +94,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         0,
         make(&[9, 9], &[true, false]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     assert_seq(&empty, &[(9, true), (9, false)]);
     assert!(removed.is_empty());
@@ -104,6 +106,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         2,
         make(&[42], &[true]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     let mut expected = model.clone();
     expected.insert(2, (42, true));
@@ -117,6 +120,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         2,
         make(&[50], &[false]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     assert_seq(&seq, &[(50, false), (3, false), (4, true), (5, false)]);
     assert_seq(&removed, &model[..2]);
@@ -128,6 +132,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         5,
         OwnerSeq::default(),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     assert_seq(&seq, &model[..3]);
     assert_seq(&removed, &model[3..]);
@@ -139,6 +144,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         5,
         make(&[60, 61], &[false, false]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     assert_seq(&seq, &[(60, false), (61, false)]);
     assert_seq(&removed, &model);
@@ -150,6 +156,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         2,
         OwnerSeq::default(),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     assert_seq(&seq, &[model[0], model[2], model[3], model[4]]);
     assert_seq(&removed, &model[1..2]);
@@ -161,6 +168,7 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
         5,
         make(&[70, 71, 72], &[true, false, true]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut crate::workspace::CommitWorkspace::for_tests(16),
     );
     let mut expected = model[..4].to_vec();
     expected.extend([(70, true), (71, false), (72, true)]);
@@ -177,6 +185,7 @@ fn replace_range_precondition_violations_are_not_fallbacks() {
             1,
             OwnerSeq::default(),
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut crate::workspace::CommitWorkspace::for_tests(16),
         );
     }));
     assert!(result.is_err(), "lo > hi must fail loudly");
@@ -187,6 +196,7 @@ fn replace_range_precondition_violations_are_not_fallbacks() {
             4,
             OwnerSeq::default(),
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut crate::workspace::CommitWorkspace::for_tests(16),
         );
     }));
     assert!(result.is_err(), "hi > records must fail loudly");

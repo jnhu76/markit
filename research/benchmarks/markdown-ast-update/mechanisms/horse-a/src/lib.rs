@@ -144,6 +144,7 @@ pub mod state;
 pub mod structural;
 pub mod update;
 pub mod validate;
+mod workspace;
 
 #[cfg(test)]
 mod i3_tests;

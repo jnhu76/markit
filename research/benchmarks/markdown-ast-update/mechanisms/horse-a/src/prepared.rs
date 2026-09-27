@@ -7,13 +7,15 @@
 //! stage()  — fallible; the old READY state stays owned by the caller,
 //!            coherent and borrowable; every fallible phase completes here
 //! prepare() — the last pre-frontier preparation: the old READY document
-//!            is consumed BY OWNERSHIP into the prepared state and the
-//!            fixed scalar scale diagnostics are frozen
+//!            is consumed BY OWNERSHIP into the prepared state, the fixed
+//!            scalar scale diagnostics are frozen, and the bounded
+//!            explicit commit workspace is reserved (the one remaining
+//!            pre-frontier refusal is the checked capacity derivation)
 //! commit() — CROSS THE FRONTIER: infallible, no Result, no return to
-//!            staging; only structural ownership moves, split/join/
-//!            relink, rotations, aggregate recomputation, fixed scalar
-//!            counter updates, the single RefTable move, state
-//!            installation and retirement
+//!            staging, no allocation; only structural ownership moves,
+//!            split/join/relink on the pre-staged stacks, rotations,
+//!            aggregate recomputation, fixed scalar counter updates, the
+//!            single RefTable move, state installation and retirement
 //! ```
 //!
 //! After `PreparedCommit` has been formed, the normal path performs no
@@ -31,7 +33,8 @@
 
 use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
 use crate::structural::{ForbiddenKind, HorseAStructuralSink};
-use crate::update::UpdateRecord;
+use crate::update::{UpdateError, UpdateRecord};
+use crate::workspace::CommitWorkspace;
 
 /// Which route the prepared commit will cross the frontier with. Both
 /// variants are complete before formation: the local plan carries the
@@ -64,17 +67,24 @@ pub(crate) struct UpdateStaging {
 
 impl UpdateStaging {
     /// Form the [`PreparedCommit`]: consume the old READY document by
-    /// ownership and freeze the remaining fixed scalar preparation.
+    /// ownership, freeze the remaining fixed scalar preparation, and
+    /// reserve the bounded explicit commit workspace (#59 §9.1;
+    /// ACCOUNTING-CORRECTION-1 §9 resolution A).
     ///
     /// This is the last pre-frontier work. It performs only O(1)
     /// root-aggregate reads on the old sequence and the prepared candidate
-    /// (charged to the structural ledger) and computes the scale
-    /// diagnostics; it is infallible and allocates nothing.
+    /// (charged to the structural ledger), computes the scale
+    /// diagnostics, and reserves every variable-size resource the
+    /// post-frontier structural operators need — after the frontier there
+    /// is no allocation, no `reserve`, and no fallible branch. The one
+    /// refusal is the workspace capacity derivation itself (checked
+    /// arithmetic over the old/fresh heights): it can only fail here,
+    /// BEFORE the frontier, through the existing staging error authority.
     pub(crate) fn prepare(
         self,
         old: ReadyDocument,
         sink: &mut dyn HorseAStructuralSink,
-    ) -> PreparedCommit {
+    ) -> Result<PreparedCommit, UpdateError> {
         // Old-state scale/height diagnostics: O(1) root aggregate reads
         // (charged where they occur). The candidate's record count is read
         // from the prepared plan; its height is only known once the new
@@ -87,7 +97,7 @@ impl UpdateStaging {
         }
         sink.record_scale_old(m_old as u64, h_old as u64);
 
-        let m_new = match &self.plan {
+        let workspace = match &self.plan {
             CommitPlan::Local {
                 fresh,
                 post_len: _,
@@ -97,23 +107,43 @@ impl UpdateStaging {
                 if fresh.root.is_some() {
                     sink.aggregate_reads(1);
                 }
-                m_new
+                // The local splice's bounded explicit stacks, reserved
+                // here (capacity derivation over h_old/h_fresh — the
+                // possible H + 1 intermediate join height included; see
+                // `workspace`). Checked arithmetic: an overflow refuses
+                // BEFORE the frontier.
+                let h_fresh = fresh.height();
+                let ws = CommitWorkspace::prepare(h_old, h_fresh).ok_or_else(|| {
+                    UpdateError::InconsistentObservation {
+                        detail: format!(
+                            "the commit workspace capacity derivation overflowed \
+                             (h_old = {h_old}, h_fresh = {h_fresh})"
+                        ),
+                    }
+                })?;
+                sink.record_scale_new(m_new as u64);
+                ws
             }
             CommitPlan::Full(fresh) => {
+                // The full route performs no post-frontier structural
+                // operator work (no splice — retirement is frozen
+                // recursion Option B and installs nothing), so no
+                // workspace is reserved for it.
                 let m_new = fresh.owners.records();
                 if fresh.owners.root.is_some() {
                     sink.aggregate_reads(1);
                 }
-                m_new
+                sink.record_scale_new(m_new as u64);
+                CommitWorkspace::empty()
             }
         };
-        sink.record_scale_new(m_new as u64);
 
-        PreparedCommit {
+        Ok(PreparedCommit {
             old,
             record: self.record,
             plan: self.plan,
-        }
+            workspace,
+        })
     }
 }
 
@@ -124,7 +154,9 @@ fn old_replaced_records(record: &UpdateRecord) -> usize {
 }
 
 /// The frontier-crossing state (#59 §6.1): owns the old READY document by
-/// ownership, the frozen geometry record, and the complete route plan.
+/// ownership, the frozen geometry record, the complete route plan, and
+/// the pre-staged bounded explicit commit workspace (#59 §9.1 — after
+/// formation, the structural operators allocate nothing).
 /// Every ordinary recoverable/fallible operation required for commit has
 /// completed; only non-fallible structural ownership operations remain.
 #[derive(Debug)]
@@ -132,6 +164,7 @@ pub(crate) struct PreparedCommit {
     old: ReadyDocument,
     record: UpdateRecord,
     plan: CommitPlan,
+    workspace: CommitWorkspace,
 }
 
 impl PreparedCommit {
@@ -139,11 +172,18 @@ impl PreparedCommit {
     /// produce the next READY state.
     ///
     /// Infallible by construction: no `Result`, no fallible branch, no
-    /// return to staging. The only failure mode is a process-level panic
-    /// on a violated internal invariant, which is an implementation bug,
-    /// not a mechanism branch.
+    /// return to staging, and no allocation (the bounded explicit stacks
+    /// were reserved before the frontier and a within-capacity push never
+    /// allocates). The only failure mode is a process-level panic on a
+    /// violated internal invariant, which is an implementation bug, not
+    /// a mechanism branch.
     pub(crate) fn commit(self, sink: &mut dyn HorseAStructuralSink) -> ReadyDocument {
-        let PreparedCommit { old, record, plan } = self;
+        let PreparedCommit {
+            old,
+            record,
+            plan,
+            mut workspace,
+        } = self;
         match plan {
             CommitPlan::Local {
                 fresh,
@@ -166,7 +206,8 @@ impl PreparedCommit {
                 // are transferred by ownership and the detached middle
                 // comes back intact rather than being dropped inside the
                 // operator.
-                let detached = owners.replace_range(ranks.start, ranks.end, fresh, sink);
+                let detached =
+                    owners.replace_range(ranks.start, ranks.end, fresh, sink, &mut workspace);
                 sink.owners_removed((ranks.end - ranks.start) as u64);
 
                 // Defended-site sentinel assertions: the splice transferred

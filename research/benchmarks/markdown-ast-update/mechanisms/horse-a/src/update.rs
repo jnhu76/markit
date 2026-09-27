@@ -648,6 +648,6 @@ pub fn update_with_structural<W: WorkSink>(
     structural: &mut dyn HorseAStructuralSink,
 ) -> Result<ReadyDocument, UpdateError> {
     let staged = stage(&old, old_source, post_source, edit, sink, structural)?;
-    let prepared = staged.prepare(old, structural);
+    let prepared = staged.prepare(old, structural)?;
     Ok(prepared.commit(structural))
 }

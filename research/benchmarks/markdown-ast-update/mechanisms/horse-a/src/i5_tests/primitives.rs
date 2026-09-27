@@ -10,6 +10,7 @@
 
 use crate::certificate::{RestartCertificate, RestartSupport};
 use crate::sequence::{join, join_with_pivot, rebalance, recompute, remove_max, split};
+use crate::workspace::CommitWorkspace;
 use crate::state::{Aggregate, AvlNode, Owner, OwnerPayload, OwnerSeq};
 use crate::structural::{Observed, RecordingHorseAStructuralSink, StructuralOp};
 
@@ -228,7 +229,7 @@ fn remove_max_charges_descent_detach_and_unwind_separately() {
     // unwind (reprocessing + relink + recompute of 4 writes), no rotation.
     let tree = Box::new(node(None, Some(Box::new(node(None, None, 10))), 10));
     let mut sink = RecordingHorseAStructuralSink::new();
-    let (rest, pivot) = remove_max(tree, &mut sink);
+    let (rest, pivot) = remove_max(tree, &mut sink, &mut CommitWorkspace::for_tests(16));
     let c = sink.counters();
     assert_eq!(rest.as_ref().map(|r| r.owner.coverage_len), Some(10));
     assert_eq!(pivot.owner.coverage_len, 10);
@@ -253,7 +254,7 @@ fn remove_max_charges_descent_detach_and_unwind_separately() {
 fn split_charges_internal_joins_to_split_only() {
     let mut seq = three_node_sequence([false; 3]);
     let mut sink = RecordingHorseAStructuralSink::new();
-    let (a, b) = split(seq.root.take(), 1, &mut sink);
+    let (a, b) = split(seq.root.take(), 1, &mut sink, &mut CommitWorkspace::for_tests(16));
     let c = sink.counters();
     // Spine: the root (rank compare, k == left_records terminal) — 1 visit;
     // the internal join_with_pivot attach — 1 visit routed to Split.
@@ -276,7 +277,7 @@ fn join_charges_extraction_and_pivot_work_separately() {
     // fabricated Known(0) either.
     let r = Box::new(node(None, None, 10));
     let mut sink = RecordingHorseAStructuralSink::new();
-    let joined = join(None, Some(r), &mut sink).expect("right side");
+    let joined = join(None, Some(r), &mut sink, &mut CommitWorkspace::for_tests(16)).expect("right side");
     let c = sink.counters();
     assert_eq!(joined.owner.coverage_len, 10);
     assert_eq!(c.pivot_extract_node_visits, Observed::Unknown);
@@ -289,7 +290,8 @@ fn join_charges_extraction_and_pivot_work_separately() {
     let l = Box::new(node(None, None, 10));
     let r = Box::new(node(None, None, 10));
     let mut sink = RecordingHorseAStructuralSink::new();
-    let joined = join(Some(l), Some(r), &mut sink).expect("both sides");
+    let joined =
+        join(Some(l), Some(r), &mut sink, &mut CommitWorkspace::for_tests(16)).expect("both sides");
     let c = sink.counters();
     assert_eq!(joined.agg.subtree_records, 2);
     assert_eq!(c.pivot_extract_node_visits, Observed::known(1));
@@ -308,7 +310,14 @@ fn join_with_pivot_routes_its_visits_to_the_callers_counter() {
     let pivot = Box::new(node(None, None, 10));
     let r = Box::new(node(None, None, 10));
     let mut sink = RecordingHorseAStructuralSink::new();
-    let joined = join_with_pivot(Some(l), pivot, Some(r), &mut sink, StructuralOp::Split);
+    let joined = join_with_pivot(
+        Some(l),
+        pivot,
+        Some(r),
+        &mut sink,
+        StructuralOp::Split,
+        &mut CommitWorkspace::for_tests(16),
+    );
     let c = sink.counters();
     assert_eq!(joined.agg.subtree_records, 3);
     assert_eq!(c.split_node_visits, Observed::known(1), "routed to split");

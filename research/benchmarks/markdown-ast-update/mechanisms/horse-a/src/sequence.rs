@@ -21,7 +21,9 @@
 use crate::certificate::RestartCertificate;
 use crate::state::{Aggregate, AvlNode, Owner, OwnerSeq};
 use crate::structural::{HorseAStructuralSink, StructuralOp};
-
+use crate::workspace::{
+    push_bounded, CommitWorkspace, ExtractFrame, JoinFrame, SplitFrame, SplitSide,
+};
 
 /// The visit route of an internal `join_with_pivot`: split-internal joins
 /// charge `split_node_visits`, top-level-join joins charge
@@ -460,6 +462,13 @@ fn rebalance_box(
 /// recomputes it (contract §17); nothing else may inspect a detached
 /// pivot.
 ///
+/// Realization (#59 §9.1, ACCOUNTING-CORRECTION-1 §9 resolution A): an
+/// iterative right-spine descent over the pre-staged bounded extract
+/// stack (`ws`), then a reverse unwind — no recursive call stack as the
+/// structural workspace. The push/pop mechanics are resource operations
+/// and charge no counter; only the frozen logical work units are
+/// charged.
+///
 /// Frozen charging (spec §12.1.1/§16 as corrected by
 /// ACCOUNTING-CORRECTION-1 §6.2.1, under the uniform §15.2 link-write
 /// ledger): one descent visit per node entered; the terminal pivot
@@ -474,35 +483,51 @@ fn rebalance_box(
 pub(crate) fn remove_max(
     root: Box<AvlNode>,
     sink: &mut dyn HorseAStructuralSink,
+    ws: &mut CommitWorkspace,
 ) -> (Option<Box<AvlNode>>, Box<AvlNode>) {
-    // One descent visit: this call logically processes the node (the
-    // right-spine decision).
-    sink.node_visit(StructuralOp::PivotExtract);
+    debug_assert!(
+        ws.extract.is_empty(),
+        "the extract stack drains completely in every operator"
+    );
+    // Phase 1 — right-spine descent: one visit per node entered (the
+    // right-spine decision); each frame's right slot is taken exactly
+    // once and waits in the bounded workspace.
     let mut node = root;
-    match node.right.take() {
-        None => {
-            // Terminal: this node IS the maximum. Isolating the pivot
-            // detaches its left subtree — the frozen 1-link-write logical
-            // operation (rule L2).
-            let mut pivot = node;
-            let left = pivot.left.take();
-            sink.link_writes(1);
-            (left, pivot)
-        }
-        Some(right) => {
-            let (rest, pivot) = remove_max(right, sink);
-            node.right = rest;
-            // The unwind: one reprocessing visit of this ancestor plus its
-            // take/reinstall pair link write (rule L1) and metadata repair.
-            sink.node_visit(StructuralOp::PivotExtract);
-            sink.link_writes(1);
-            recompute(&mut node, sink);
-            (
-                Some(rebalance_box(node, sink, StructuralOp::PivotExtract)),
-                pivot,
-            )
+    let pivot;
+    let mut rest: Option<Box<AvlNode>>;
+    loop {
+        // One descent visit: this level logically processes the node (the
+        // right-spine decision).
+        sink.node_visit(StructuralOp::PivotExtract);
+        match node.right.take() {
+            None => {
+                // Terminal: this node IS the maximum. Isolating the pivot
+                // detaches its left subtree — the frozen 1-link-write
+                // logical operation (rule L2).
+                let mut p = node;
+                rest = p.left.take();
+                sink.link_writes(1);
+                pivot = p;
+                break;
+            }
+            Some(right) => {
+                push_bounded(&mut ws.extract, ExtractFrame { node });
+                node = right;
+            }
         }
     }
+    // Phase 2 — reverse unwind: one reprocessing visit, one take/reinstall
+    // pair link write (rule L1) and one recompute per ancestor, with the
+    // rotation primitives charging their own participants.
+    while let Some(frame) = ws.extract.pop() {
+        let mut n = frame.node;
+        n.right = rest;
+        sink.node_visit(StructuralOp::PivotExtract);
+        sink.link_writes(1);
+        recompute(&mut n, sink);
+        rest = Some(rebalance_box(n, sink, StructuralOp::PivotExtract));
+    }
+    (rest, pivot)
 }
 
 /// Height-aware AVL join with an existing detached pivot (spec §12.1;
@@ -523,12 +548,19 @@ pub(crate) fn remove_max(
 /// ≤ 20t+4 ≤ 20δ−16 writes. The terminal pivot attach is 3 link writes
 /// total (two pivot-slot installs + the `node.<inner>` same-frame pair);
 /// every non-terminal unwind level is 1.
+///
+/// Realization (#59 §9.1, ACCOUNTING-CORRECTION-1 §9 resolution A): the
+/// `δ ≥ 2` inner-spine descent/unwind runs iteratively over the
+/// pre-staged bounded join stack (`ws`) — no recursive call stack as the
+/// structural workspace, and no new join algorithm (the same descent,
+/// pivot attach, reverse unwind, recompute and rebalance).
 pub(crate) fn join_with_pivot(
     left: Option<Box<AvlNode>>,
     pivot: Box<AvlNode>,
     right: Option<Box<AvlNode>>,
     sink: &mut dyn HorseAStructuralSink,
     route: JoinRoute,
+    ws: &mut CommitWorkspace,
 ) -> Box<AvlNode> {
     debug_assert!(
         pivot.left.is_none() && pivot.right.is_none(),
@@ -555,6 +587,7 @@ pub(crate) fn join_with_pivot(
             right,
             sink,
             route,
+            ws,
         )
     } else {
         join_left(
@@ -563,6 +596,7 @@ pub(crate) fn join_with_pivot(
             right.expect("right taller than an empty left"),
             sink,
             route,
+            ws,
         )
     }
 }
@@ -572,84 +606,131 @@ pub(crate) fn join_with_pivot(
 /// between them, and recompute/rebalance while unwinding. The AVL
 /// invariant at each spine node bounds the new right-subtree height by
 /// `old + 1`, so one rebalance event per unwind level suffices.
+/// Iterative over the bounded join stack; the unwind tail (visit, pair
+/// link write, recompute, rebalance) runs for the terminal level too,
+/// exactly as the frozen recursion's common tail did.
 fn join_right(
     mut node: Box<AvlNode>,
     pivot: Box<AvlNode>,
     right: Option<Box<AvlNode>>,
     sink: &mut dyn HorseAStructuralSink,
     route: JoinRoute,
+    ws: &mut CommitWorkspace,
 ) -> Box<AvlNode> {
-    // One descent visit: the height decision on this node.
-    sink.node_visit(route);
-    let right_height = height_of(&right, sink);
-    if height_of(&node.right, sink) <= right_height + 1 {
-        let c = node.right.take();
-        let mut mid = pivot;
-        mid.left = c;
-        mid.right = right;
-        // The pivot attach: one visit for the pivot, two persistent slot
-        // installations into it; the `node.right` take/`Some(mid)` pair is
-        // the unwind tail's single charge (rule L1) — 3 link writes total
-        // for this frame, per the frozen lemma.
+    debug_assert!(
+        ws.join.is_empty(),
+        "the join stack drains completely in every operator"
+    );
+    let held_pivot = pivot;
+    let held_right = right;
+    // Phase 1 — inner-spine descent.
+    loop {
+        // One descent visit: the height decision on this node.
         sink.node_visit(route);
-        sink.link_writes(2);
-        recompute(&mut mid, sink);
-        node.right = Some(mid);
-    } else {
-        let c = node.right.take().expect("the inner spine continues");
-        // The take here and the `node.right = Some(joined)` reinstall in
-        // the common unwind tail below are ONE logical persistent-slot
-        // reassignment of `node.right` (the §15.2 same-frame pairing rule
-        // L1): the unwind tail charges the pair's single link write — the
-        // take itself is not an independent charge (ACCOUNTING-CORRECTION-1
+        let right_height = height_of(&held_right, sink);
+        if height_of(&node.right, sink) <= right_height + 1 {
+            // Terminal: attach the pivot here. The attach is one pivot
+            // visit + two persistent slot installations into it; the
+            // `node.right` take/`Some(mid)` reinstall pair is charged by
+            // the unwind tail below (rule L1) — 3 link writes total for
+            // this frame, per the frozen lemma.
+            let c = node.right.take();
+            let mut mid = held_pivot;
+            mid.left = c;
+            mid.right = held_right;
+            sink.node_visit(route);
+            sink.link_writes(2);
+            recompute(&mut mid, sink);
+            node.right = Some(mid);
+            break;
+        }
+        let child = node.right.take().expect("the inner spine continues");
+        // The take here and the `parent.right = Some(joined)` reinstall in
+        // the unwind below are ONE logical persistent-slot reassignment of
+        // that frame's `right` slot (the §15.2 same-frame pairing rule
+        // L1): the unwind charges the pair's single link write — the take
+        // itself is not an independent charge (ACCOUNTING-CORRECTION-1
         // §10.6a; links ≤ 7t + 2 ≤ 7δ − 5, spec §12.1.1).
-        let joined = join_right(c, pivot, right, sink, route);
-        node.right = Some(joined);
+        push_bounded(&mut ws.join, JoinFrame { node });
+        node = child;
     }
-    // The unwind: one reprocessing visit of this ancestor.
-    sink.node_visit(route);
-    sink.link_writes(1);
-    recompute(&mut node, sink);
-    rebalance_box(node, sink, route)
+    // Phase 2 — reverse unwind, terminal frame included: one
+    // reprocessing visit + one pair link write + one recompute + one
+    // rebalance per level; each popped parent reinstalls the joined
+    // result into its taken inner slot.
+    loop {
+        sink.node_visit(route);
+        sink.link_writes(1);
+        recompute(&mut node, sink);
+        let joined = rebalance_box(node, sink, route);
+        match ws.join.pop() {
+            Some(frame) => {
+                let mut parent = frame.node;
+                parent.right = Some(joined);
+                node = parent;
+            }
+            None => return joined,
+        }
+    }
 }
 
 /// `h(node) > h(left) + 1`: mirror of [`join_right`] down the inner
-/// (left) spine.
+/// (left) spine — iterative over the same bounded join stack.
 fn join_left(
     left: Option<Box<AvlNode>>,
     pivot: Box<AvlNode>,
     mut node: Box<AvlNode>,
     sink: &mut dyn HorseAStructuralSink,
     route: JoinRoute,
+    ws: &mut CommitWorkspace,
 ) -> Box<AvlNode> {
-    // One descent visit: the height decision on this node.
-    sink.node_visit(route);
-    let left_height = height_of(&left, sink);
-    if height_of(&node.left, sink) <= left_height + 1 {
-        let c = node.left.take();
-        let mut mid = pivot;
-        mid.left = left;
-        mid.right = c;
-        // The pivot attach: one visit for the pivot, two persistent slot
-        // installations into it; the `node.left` take/`Some(mid)` pair is
-        // the unwind tail's single charge (rule L1).
+    debug_assert!(
+        ws.join.is_empty(),
+        "the join stack drains completely in every operator"
+    );
+    let held_pivot = pivot;
+    let held_left = left;
+    // Phase 1 — inner-spine descent.
+    loop {
+        // One descent visit: the height decision on this node.
         sink.node_visit(route);
-        sink.link_writes(2);
-        recompute(&mut mid, sink);
-        node.left = Some(mid);
-    } else {
-        let c = node.left.take().expect("the inner spine continues");
-        // Same-frame take/reinstall pair of `node.left` (§15.2 rule L1):
-        // the unwind tail's single charge covers both — the take is not an
-        // independent link write (ACCOUNTING-CORRECTION-1 §10.6a).
-        let joined = join_left(left, pivot, c, sink, route);
-        node.left = Some(joined);
+        let left_height = height_of(&held_left, sink);
+        if height_of(&node.left, sink) <= left_height + 1 {
+            // Terminal attach (mirror): pivot visit + two installs; the
+            // `node.left` pair is charged by the unwind tail (rule L1).
+            let c = node.left.take();
+            let mut mid = held_pivot;
+            mid.left = held_left;
+            mid.right = c;
+            sink.node_visit(route);
+            sink.link_writes(2);
+            recompute(&mut mid, sink);
+            node.left = Some(mid);
+            break;
+        }
+        let child = node.left.take().expect("the inner spine continues");
+        // Same-frame take/reinstall pair of that frame's `left` slot
+        // (§15.2 rule L1): the unwind tail's single charge covers both —
+        // the take is not an independent link write
+        // (ACCOUNTING-CORRECTION-1 §10.6a).
+        push_bounded(&mut ws.join, JoinFrame { node });
+        node = child;
     }
-    // The unwind: one reprocessing visit of this ancestor.
-    sink.node_visit(route);
-    sink.link_writes(1);
-    recompute(&mut node, sink);
-    rebalance_box(node, sink, route)
+    // Phase 2 — reverse unwind, terminal frame included.
+    loop {
+        sink.node_visit(route);
+        sink.link_writes(1);
+        recompute(&mut node, sink);
+        let joined = rebalance_box(node, sink, route);
+        match ws.join.pop() {
+            Some(frame) => {
+                let mut parent = frame.node;
+                parent.left = Some(joined);
+                node = parent;
+            }
+            None => return joined,
+        }
+    }
 }
 
 /// Frozen deterministic join (spec §12.2; #59 §7.3): one side empty →
@@ -663,18 +744,20 @@ pub(crate) fn join(
     left: Option<Box<AvlNode>>,
     right: Option<Box<AvlNode>>,
     sink: &mut dyn HorseAStructuralSink,
+    ws: &mut CommitWorkspace,
 ) -> Option<Box<AvlNode>> {
     match (left, right) {
         (None, right) => right,
         (left, None) => left,
         (Some(left), right) => {
-            let (remaining, pivot) = remove_max(left, sink);
+            let (remaining, pivot) = remove_max(left, sink, ws);
             Some(join_with_pivot(
                 remaining,
                 pivot,
                 right,
                 sink,
                 StructuralOp::Join,
+                ws,
             ))
         }
     }
@@ -696,10 +779,17 @@ pub(crate) fn join(
 /// `total - left_records - 1`), so no frame re-reads it
 /// (ACCOUNTING-CORRECTION-1 §10.3: the per-spine-node `total` re-read was
 /// an implementation convenience over-read, not mechanism work).
+///
+/// Realization (#59 §9.1, ACCOUNTING-CORRECTION-1 §9 resolution A): the
+/// one search spine runs iteratively over the pre-staged bounded split
+/// stack (`ws`); the reconstruction joins run in reverse unwind order,
+/// calling the same frozen `join_with_pivot` — no recursive call stack
+/// as the structural workspace, no Vec flattening, no bulk rebuild.
 pub(crate) fn split(
     root: Option<Box<AvlNode>>,
     k: usize,
     sink: &mut dyn HorseAStructuralSink,
+    ws: &mut CommitWorkspace,
 ) -> (Option<Box<AvlNode>>, Option<Box<AvlNode>>) {
     let Some(node) = root else {
         assert_eq!(k, 0, "split rank {k} out of range for an empty sequence");
@@ -708,69 +798,109 @@ pub(crate) fn split(
     // The spine entry's single aggregate read: the precondition rank bound.
     sink.aggregate_reads(1);
     let total = node.agg.subtree_records;
-    split_known_total(node, k, total, sink)
+    split_known_total(node, k, total, sink, ws)
 }
 
 /// The split spine with each frame's subtree record count already known
-/// (`total` = `subtree_records` of `node`, established by the caller
-/// without a re-read). One logical processing per spine node; the child
-/// takes hand the subtrees to the recursive split / the reconstruction
-/// join (rule L2, spec §15.2); the reconstruction `join_with_pivot` calls
-/// and their order are exactly the frozen recursion's.
+/// (`total` = `subtree_records` of the entering node, established by the
+/// caller without a re-read). One logical processing per spine node; the
+/// child takes hand the subtrees to the continued descent / the
+/// reconstruction join (rule L2, spec §15.2); the terminal cases and the
+/// reconstruction `join_with_pivot` calls (their identity and order) are
+/// exactly the frozen recursion's.
 fn split_known_total(
     mut node: Box<AvlNode>,
-    k: usize,
-    total: usize,
+    mut k: usize,
+    mut total: usize,
     sink: &mut dyn HorseAStructuralSink,
+    ws: &mut CommitWorkspace,
 ) -> (Option<Box<AvlNode>>, Option<Box<AvlNode>>) {
-    // One logical processing of this spine node (the rank comparisons,
-    // including the terminal cases).
-    sink.node_visit(StructuralOp::Split);
-    assert!(k <= total, "split rank {k} out of range 0..={total}");
-    if k == 0 {
-        return (None, Some(node));
+    debug_assert!(
+        ws.split.is_empty(),
+        "the split stack drains completely in every operator"
+    );
+    let mut a: Option<Box<AvlNode>>;
+    let mut b: Option<Box<AvlNode>>;
+    // Phase 1 — the one search spine, iteratively: dissect each spine
+    // node, push its reconstruction frame, continue into the child that
+    // contains the rank; the terminal cases produce the base outputs.
+    loop {
+        // One logical processing of this spine node (the rank
+        // comparisons, including the terminal cases).
+        sink.node_visit(StructuralOp::Split);
+        assert!(k <= total, "split rank {k} out of range 0..={total}");
+        if k == 0 {
+            a = None;
+            b = Some(node);
+            break;
+        }
+        if k == total {
+            a = Some(node);
+            b = None;
+            break;
+        }
+        let left = node.left.take();
+        let right = node.right.take();
+        // The two child-slot takes dissect this node for reconstruction.
+        sink.link_writes(2);
+        let left_records = records_of(&left, sink);
+        if k < left_records {
+            // k lands inside the left subtree: the pivot will join the
+            // right output between the abandoned left part and the old
+            // right subtree. The child's record count IS `left_records`.
+            push_bounded(
+                &mut ws.split,
+                SplitFrame {
+                    node,
+                    side: SplitSide::Left { right },
+                },
+            );
+            total = left_records;
+            node = left.expect("k < left_records implies a left child");
+        } else if k == left_records {
+            // The pivot becomes the first Owner of the right output.
+            let right_out = join_with_pivot(None, node, right, sink, StructuralOp::Split, ws);
+            a = left;
+            b = Some(right_out);
+            break;
+        } else if k == left_records + 1 {
+            // The pivot becomes the final Owner of the left output.
+            let left_out = join_with_pivot(left, node, None, sink, StructuralOp::Split, ws);
+            a = Some(left_out);
+            b = right;
+            break;
+        } else {
+            // k lands inside the right subtree: descend with the adjusted
+            // rank; the child's record count is `total - left_records -
+            // 1` — this frame already holds it.
+            push_bounded(
+                &mut ws.split,
+                SplitFrame {
+                    node,
+                    side: SplitSide::Right { left },
+                },
+            );
+            k -= left_records + 1;
+            total -= left_records + 1;
+            node = right.expect("k > left_records + 1 implies a right child");
+        }
     }
-    if k == total {
-        return (Some(node), None);
+    // Phase 2 — reverse unwind: each dissected spine node rejoins its
+    // kept subtree around the outputs produced below it, exactly the
+    // frozen recursion's post-order reconstruction.
+    while let Some(SplitFrame { node: fnode, side }) = ws.split.pop() {
+        match side {
+            SplitSide::Left { right } => {
+                let right_out = join_with_pivot(b, fnode, right, sink, StructuralOp::Split, ws);
+                b = Some(right_out);
+            }
+            SplitSide::Right { left } => {
+                let left_out = join_with_pivot(left, fnode, a, sink, StructuralOp::Split, ws);
+                a = Some(left_out);
+            }
+        }
     }
-    let left = node.left.take();
-    let right = node.right.take();
-    // The two child-slot takes dissect this node for reconstruction.
-    sink.link_writes(2);
-    let left_records = records_of(&left, sink);
-    if k < left_records {
-        // k lands inside the left subtree: the pivot joins the right
-        // output between the abandoned left part and the old right subtree.
-        // The child's record count IS `left_records` — already read.
-        let (a, b) = split_known_total(
-            left.expect("k < left_records implies a left child"),
-            k,
-            left_records,
-            sink,
-        );
-        let right_out = join_with_pivot(b, node, right, sink, StructuralOp::Split);
-        (a, Some(right_out))
-    } else if k == left_records {
-        // The pivot becomes the first Owner of the right output.
-        let right_out = join_with_pivot(None, node, right, sink, StructuralOp::Split);
-        (left, Some(right_out))
-    } else if k == left_records + 1 {
-        // The pivot becomes the final Owner of the left output.
-        let left_out = join_with_pivot(left, node, None, sink, StructuralOp::Split);
-        (Some(left_out), right)
-    } else {
-        // k lands inside the right subtree: descend with the adjusted rank.
-        // The child's record count is `total - left_records - 1` — the
-        // parent's own frame already holds it.
-        let (c, d) = split_known_total(
-            right.expect("k > left_records + 1 implies a right child"),
-            k - left_records - 1,
-            total - left_records - 1,
-            sink,
-        );
-        let left_out = join_with_pivot(left, node, c, sink, StructuralOp::Split);
-        (Some(left_out), d)
-    }
+    (a, b)
 }
 
 impl OwnerSeq {
@@ -790,13 +920,18 @@ impl OwnerSeq {
     /// clone, no rebuild (I3 task contract §24). Retirement of B is the
     /// caller's (commit's) concern; here it is returned intact.
     ///
+    /// The two splits and two joins run on the caller's pre-staged
+    /// bounded workspace (`ws`, #59 §9.1) — post-frontier this operator
+    /// performs no allocation.
     pub(crate) fn replace_range(
         &mut self,
         lo: usize,
         hi: usize,
         middle: OwnerSeq,
         sink: &mut dyn HorseAStructuralSink,
+        ws: &mut CommitWorkspace,
     ) -> OwnerSeq {
+        ws.clear();
         if self.root.is_some() {
             // The O(1) root aggregate read for the range precondition.
             sink.aggregate_reads(1);
@@ -812,10 +947,10 @@ impl OwnerSeq {
         // rule; #59 §20 freezes the final root installation as the single
         // root-slot write — the temporary by-value move is not an
         // independent charge, ACCOUNTING-CORRECTION-1 §10.6b).
-        let (a, bc) = split(self.root.take(), lo, sink);
-        let (b, c) = split(bc, hi - lo, sink);
-        let with_middle = join(a, middle.root, sink);
-        let root = join(with_middle, c, sink);
+        let (a, bc) = split(self.root.take(), lo, sink, ws);
+        let (b, c) = split(bc, hi - lo, sink, ws);
+        let with_middle = join(a, middle.root, sink, ws);
+        let root = join(with_middle, c, sink, ws);
         // The final root installation: one persistent root-slot write
         // (#59 §20).
         self.root = root;

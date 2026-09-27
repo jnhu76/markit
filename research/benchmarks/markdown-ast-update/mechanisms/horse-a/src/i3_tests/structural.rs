@@ -9,6 +9,7 @@
 
 use super::*;
 use crate::sequence::{join, join_with_pivot, rebalance, remove_max};
+use crate::workspace::CommitWorkspace;
 
 fn addr(node: &AvlNode) -> usize {
     node as *const AvlNode as usize
@@ -26,7 +27,11 @@ fn remove_max_on_a_single_owner_yields_an_isolated_pivot() {
     let seq = make(&[4], &[true]);
     let root = seq.root.expect("non-empty");
     let root_addr = addr(&root);
-    let (rest, pivot) = remove_max(root, &mut crate::structural::NoopHorseAStructuralSink);
+    let (rest, pivot) = remove_max(
+        root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    );
     assert!(
         rest.is_none(),
         "nothing remains after removing the only Owner"
@@ -51,6 +56,7 @@ fn remove_max_on_balanced_trees_keeps_order_and_validity() {
         let (rest, pivot) = remove_max(
             seq.root.expect("non-empty"),
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
         );
 
         // The pivot is exactly the original final Owner node.
@@ -90,6 +96,7 @@ fn remove_max_rebalances_after_a_right_spine_removal() {
     let (rest, pivot) = remove_max(
         original_addrs.0.root.expect("non-empty"),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     );
     assert_eq!(
         pivot.owner.coverage_len, 1,
@@ -123,6 +130,7 @@ fn join_with_pivot_attaches_directly_at_compatible_heights() {
         r.root,
         &mut crate::structural::NoopHorseAStructuralSink,
         crate::structural::StructuralOp::Join,
+        &mut CommitWorkspace::for_tests(16),
     );
     // Compatible heights: the pivot IS the subtree root, attached under it.
     assert_eq!(joined.owner.coverage_len, 9);
@@ -168,6 +176,7 @@ fn join_with_pivot_preserves_every_node_across_uneven_joins() {
             r.root,
             &mut crate::structural::NoopHorseAStructuralSink,
             crate::structural::StructuralOp::Join,
+            &mut CommitWorkspace::for_tests(16),
         );
 
         assert!(
@@ -203,6 +212,7 @@ fn join_with_pivot_requires_a_structurally_isolated_pivot() {
         r.root,
         &mut crate::structural::NoopHorseAStructuralSink,
         crate::structural::StructuralOp::Join,
+        &mut CommitWorkspace::for_tests(16),
     );
 }
 
@@ -210,7 +220,13 @@ fn join_with_pivot_requires_a_structurally_isolated_pivot() {
 
 #[test]
 fn join_empty_variants_return_the_other_side() {
-    assert!(join(None, None, &mut crate::structural::NoopHorseAStructuralSink).is_none());
+    assert!(join(
+        None,
+        None,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    )
+    .is_none());
 
     let r = make(&[1, 2, 3], &[false; 3]);
     let r_addrs = addresses(&r);
@@ -218,6 +234,7 @@ fn join_empty_variants_return_the_other_side() {
         None,
         r.root,
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     )
     .expect("right side");
     assert_eq!(addresses(&OwnerSeq { root: Some(joined) }), r_addrs);
@@ -228,6 +245,7 @@ fn join_empty_variants_return_the_other_side() {
         l.root,
         None,
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     )
     .expect("left side");
     assert_eq!(addresses(&OwnerSeq { root: Some(joined) }), l_addrs);
@@ -249,6 +267,7 @@ fn join_takes_its_pivot_from_the_left_maximum() {
         l.root,
         r.root,
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     )
     .expect("both sides non-empty");
     let seq = OwnerSeq { root: Some(joined) };
@@ -285,6 +304,7 @@ fn join_covers_similar_and_uneven_heights() {
             l.root,
             r.root,
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
         )
         .expect("both non-empty");
         let seq = OwnerSeq { root: Some(joined) };

@@ -6,6 +6,7 @@
 
 use super::*;
 use crate::sequence::{join, split};
+use crate::workspace::CommitWorkspace;
 
 fn sorted(mut v: Vec<usize>) -> Vec<usize> {
     v.sort_unstable();
@@ -75,6 +76,7 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                             root.root,
                             k,
                             &mut crate::structural::NoopHorseAStructuralSink,
+                            &mut CommitWorkspace::for_tests(16),
                         );
                         pool.push((OwnerSeq { root: a }, model[..k].to_vec()));
                         pool.push((OwnerSeq { root: b }, model[k..].to_vec()));
@@ -96,6 +98,7 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                                     root_i.root,
                                     root_j.root,
                                     &mut crate::structural::NoopHorseAStructuralSink,
+                                    &mut CommitWorkspace::for_tests(16),
                                 ),
                             },
                             model,
@@ -120,6 +123,7 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                             hi,
                             middle,
                             &mut crate::structural::NoopHorseAStructuralSink,
+                            &mut CommitWorkspace::for_tests(16),
                         );
                         let removed_model = model_of(&removed);
                         model.splice(lo..hi, mid_model);
@@ -156,6 +160,7 @@ fn retained_node_identity_survives_split_join_and_replace() {
         seq.root,
         3,
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     );
     let seq_a = OwnerSeq { root: a };
     let seq_b = OwnerSeq { root: b };
@@ -168,6 +173,7 @@ fn retained_node_identity_survives_split_join_and_replace() {
             seq_a.root,
             seq_b.root,
             &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
         ),
     };
     assert_eq!(
@@ -186,6 +192,7 @@ fn retained_node_identity_survives_split_join_and_replace() {
         5,
         make(&[90, 91], &[true, false]),
         &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
     );
     let after = addresses(&seq2);
     assert_eq!(&after[..2], &original[..2], "retained prefix identity");
