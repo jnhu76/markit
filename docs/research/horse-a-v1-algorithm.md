@@ -802,6 +802,36 @@ Height-aware AVL join:
 - relink/recompute/rebalance while unwinding;
 - only existing nodes are relinked.
 
+### 12.1.1 Operator cost lemma (piecewise — ACCOUNTING-CORRECTION-1, review fix)
+
+`δ = |h(L) − h(R)|`. The compatible case and the recursive case are
+accounted separately (never as one universal formula):
+
+| quantity | δ ≤ 1 (compatible) | δ ≥ 2 (recursive, spine depth t ≤ δ − 1) |
+|---|---|---|
+| node visits | ≤ 1 | ≤ 4t + 1 ≤ 4δ − 3 |
+| rotations | 0 | ≤ 2t ≤ 2δ − 2 |
+| link writes | ≤ 2 | ≤ 7t + 2 ≤ 7δ − 5 |
+| recomputes | 1 | ≤ 5t + 1 ≤ 5δ − 4 |
+| aggregate reads | ≤ 10 | ≤ 46t + 10 ≤ 46δ − 36 |
+| aggregate writes | 4 | ≤ 20t + 4 ≤ 20δ − 16 |
+
+Spine depth: AVL heights decrease ≥ 1 per inner-spine step, every
+non-terminal level has height ≥ h(short side) + 3, the terminal level
+has height ≤ h(short side) + 3, hence `t ≤ δ − 1` (derivation and event
+tables: correction record §6.2). Event ledger per #59 §20: descent visit
+per spine call + one pivot-attach visit + unwind visit per level +
+rotation-participant visits (single = 1, double = 2); link writes under
+the §15.2 take/install pairing rule; rebalances ≤ 1 action (≤ 2 rotation
+units, ≤ 6 slot writes, ≤ 4 recomputes) per level.
+
+**Continuity/monotone envelope.** Every δ ≥ 2 closed form evaluates
+exactly to the compatible-case value at δ = 1 (`4·1−3 = 1`, `2·1−2 = 0`,
+`7·1−5 = 2`, `5·1−4 = 1`, `46·1−36 = 10`, `20·1−16 = 4`), so the
+nondecreasing envelope max(compatible value, closed form) is dominated
+by the closed form for every δ ≤ H with H ≥ 1. Compositions (§12.3.1,
+§16) substitute the closed forms directly; δ = 0 uses the compatible row.
+
 ## 12.2 join
 
 Frozen deterministic policy:
@@ -836,7 +866,7 @@ k >  left_records + 1   descend right with rank reduced
 
 It follows one search spine and reconstructs outputs with existing nodes and `join_with_pivot`, using two monotone output accumulators.
 
-### 12.3.1 Accepted split-proof core
+### 12.3.1 Split cost proof (corrected by ACCOUNTING-CORRECTION-1 — review fix)
 
 For `split(T,k) -> (A,B)`:
 
@@ -851,19 +881,38 @@ There is no common useful lower-bound window on the output heights. Along the on
 Σ δ_i <= h(A) + h(B) <= 2H
 ```
 
-Therefore, with at most H search-spine nodes and at most H reconstruction joins, each join costing `<= 2δ_i + 1` visits and `<= δ_i + 1` rotation units:
+Search-spine nodes ≤ H; reconstruction joins `J <= H`. Split-local
+events: ≤ 2 link writes per spine node (the two child-slot takes handed
+to the recursive split / the reconstruction join; the join's installs
+into the pivot's slots are charged inside the join lemma) and ≤ 2
+aggregate reads per spine node; 0 recomputes of its own.
+
+Every reconstruction join costs at most the §12.1.1 lemma. Using the
+universal envelopes `max(direct, closed) <= coefficient·δ +
+direct-constant` — `V <= 4δ+1`, `R <= 2δ`, `L <= 7δ+2`, `C <= 5δ+1`,
+`reads <= 46δ+10`, `writes <= 20δ+4` (equality at δ = 0 by
+construction, so the δ_i = 0 legal join is covered):
 
 ```text
-V_split <= H + 2Σδ_i + #joins <= 6H        (proved)
+V_split <= H + Σ(4δ_i + 1)   <= H + 8H + H  = 10H   (proved)
 
-R_split <= Σδ_i + #joins      <= 3H        (proved)
+R_split <= Σ 2δ_i            <= 4H          <= 5H   (proved)
+
+L_split <= 2H + Σ(7δ_i + 2)  <= 2H + 14H + 2H = 18H <= 22H (proved)
+
+C_split <= Σ(5δ_i + 1)       <= 10H + H     = 11H
+
+reads_split  <= 2H + Σ(46δ_i + 10) <= 2H + 92H + 10H = 104H
+
+writes_split <= Σ(20δ_i + 4)  <= 40H + 4H    = 44H
 ```
 
-The study intentionally retains the more conservative frozen thresholds:
+The frozen conservative thresholds are retained and are now proved:
 
 ```text
 split node visits <= 10H    (per split)
 split rotations   <= 5H     (per split)
+split link writes <= 22H    (per split; 18H proved above)
 ```
 
 Explicitly INVALID/WITHDRAWN — do not restore either statement:
@@ -873,7 +922,18 @@ every split output lies in [h-2, h+1]     (false output-height lemma)
 all internal δ <= 3
 ```
 
-Per-split structural derivatives retained from #59: link writes <= 22H; aggregate field reads <= 86H; aggregate field writes <= 40H.
+SUPERSEDED BY ACCOUNTING-CORRECTION-1 (historical only — never active
+authority; the intermediate review-fix history is in the correction
+record §2/§6.2):
+
+```text
+each join <= 2δ_i + 1 visits / <= δ_i + 1 rotation units
+V_split <= 6H (proved)      R_split <= 3H (proved)
+link writes <= 22H retained unproved
+aggregate field reads <= 86H; aggregate field writes <= 40H
+(join operator formulas 4δ+3 / 2δ+2 / 8δ−7 / 5δ+6 / 46δ+54 / 20δ+24
+ from the first correction candidate — internally inconsistent)
+```
 
 ## 12.4 replace_range
 
@@ -1020,7 +1080,7 @@ sequence_link_write
     structural Link slot that changes which node/subtree the slot owns.
 ```
 
-Moving a `Box` between local variables alone = 0 link writes; installing it into a persistent slot = 1 link write.
+Moving a `Box` between local variables alone = 0 link writes; installing it into a persistent slot = 1 link write. A `take()` from a persistent Link slot followed by a re-install into that same slot within the same operator frame (the by-value recursive descent/unwind shape) is that slot's single reassignment = 1 link write total; a take whose slot is handed to another operator or left detached (pivot isolation, child handoff) counts 1. (Pairing rule clarified by ACCOUNTING-CORRECTION-1 review fix; the unit itself is unchanged and drives every operator lemma uniformly — §12.1.1.)
 
 Frozen rotation slot-write convention:
 
@@ -1079,11 +1139,18 @@ Owner-local scalar reads are not automatically aggregate-field reads unless the 
 
 ```text
 certificate_read
-  = inspection of one boundary/Owner's persistent RestartCertificate,
-    OR of its presence/absence, sufficient for one mechanism decision.
+  = inspection of one boundary/Owner's persistent RestartCertificate
+    (content, or presence/absence) when that inspection participates in
+    restart/candidate eligibility, selection, support, or
+    convergence-predicate semantics.
+
+    EXCEPTION: the coarse certified/non-certified filtering performed
+    while the candidate cursor advances through crossed Owners is cursor
+    traversal mechanics — represented by the frozen k / cursor ledger
+    (§15.6) — and is not separately charged as certificate_read.
 ```
 
-Reading `subtree_has_safe` is an aggregate read, never a certificate read; certificate presence counts as a certificate read when it drives a mechanism decision.
+Reading `subtree_has_safe` is an aggregate read, never a certificate read. (Self-contained rule rewritten by ACCOUNTING-CORRECTION-1 review fix; bounds unchanged.)
 
 ```text
 certificate_write
@@ -1122,14 +1189,14 @@ are the fact-range operator's own work (never `cursor_node_visits`, whose
 budget belongs to the convergence candidate cursor). Corrected bound:
 `fact_range_node_visits ≤ H + Δ_old·(H − 1)`.
 
-### 15.6.2 Certificate presence filtering (wording clarification)
+### 15.6.2 Certificate presence filtering
 
-The §15.5 unit ("inspection … or its presence … sufficient for one
-mechanism decision") is bounded by the #59 §8 cursor policy: the candidate
-walk's certification **presence filtering** while crossing non-certified
-Owners is cursor mechanics (the frozen `k` term, charged as cursor visits),
-not a `certificate_read`. Certificate reads are charged for eligibility /
-selection / predicate inspections only.
+The candidate walk's certification **presence filtering** while crossing
+non-certified Owners is the §15.5 EXCEPTION: cursor mechanics charged to
+the frozen `k` term of the cursor ledger, never a `certificate_read`.
+Certificate reads are charged for eligibility / selection / support /
+predicate inspections only. (Normative home: §15.5; this subsection is a
+pointer, kept so no contradictory wording survives — review fix P2-02.)
 
 ## 15.7 Decision integrity
 
@@ -1170,8 +1237,8 @@ Primary cells:
 16 MiB   -> Hmax = 24
 ```
 
-Frozen symbolic upper bounds (as corrected by ACCOUNTING-CORRECTION-1 —
-see §16.1; the pre-correction values are retained there):
+Frozen symbolic upper bounds (as corrected by ACCOUNTING-CORRECTION-1,
+review-fix pass — pre-correction values retained in §16.1 history):
 
 ```text
 safe_predecessor visits <= 3H - 2
@@ -1180,24 +1247,36 @@ locate reads            <= 2H + 1    (corrected; was H)
 f1                <= 4H - 2
 
 f2 visits         <= 36H - 4         (corrected; was 32H + 2)
-f2 rotations      <= 18H + 4         (corrected; was 16H + 1)
-f2 link writes    <= 74H - 5         (corrected; was 68H + 25)
+f2 rotations      <= 18H - 4         (review fix; first candidate 18H + 4)
+f2 link writes    <= 72H - 3         (review fix; first candidate 74H - 5)
 
-f3 aggregate reads  <= 492H + 142    (corrected; was 279H + 101)
-f3 aggregate writes <= 208H + 56     (corrected; was 128H + 40)
+f3 aggregate reads  <= 406H - 39     (review fix; first candidate 492H + 142)
+f3 aggregate writes <= 168H - 24     (review fix; first candidate 208H + 56)
 
 f4 cursor allowance <= 2H + 10
 
 fact-range visits <= H + Δ_old·(H - 1)
 fact-range reads  <= 1 + 2H + 2Δ_old·(H - 1)
 
-join_with_pivot(δ)  visits <= 4δ + 3;  rotations <= 2δ + 2
-                    link writes <= 8δ - 7
-                    reads <= 46δ + 54;  writes <= 20δ + 24
+join_with_pivot(δ)  piecewise (§12.1.1; δ = |h(L) − h(R)|,
+                    recursive spine depth t ≤ δ − 1):
+  δ <= 1:  visits <= 1;  rotations = 0;  link writes <= 2
+           recomputes = 1;  reads <= 10;  writes = 4
+  δ >= 2:  visits <= 4t + 1 <= 4δ - 3;  rotations <= 2t <= 2δ - 2
+           link writes <= 7t + 2 <= 7δ - 5
+           recomputes <= 5t + 1 <= 5δ - 4
+           reads <= 46t + 10 <= 46δ - 36;  writes <= 20t + 4 <= 20δ - 16
+  (closed forms coincide with the compatible case at δ = 1; compositions
+   substitute them for every δ ≤ H, H ≥ 1; δ = 0 uses the compatible row)
 remove_max(d)       visits <= 4d - 3;   rotations <= 2(d-1)
                     link writes <= 7d - 6
+                    recomputes <= 5(d-1)
                     reads <= 44(d-1);   writes <= 20(d-1)
-split(T)            reads <= 147H + 1;  writes <= 64H
+split(T)            visits <= 10H (proved; retained threshold)
+                    rotations <= 5H (proved; retained threshold)
+                    link writes <= 22H (retained; 18H proved)
+                    recomputes <= 11H
+                    reads <= 104H;  writes <= 44H
 
 f5 is separated:
   retire_node_visits        <= Δ_old
@@ -1220,10 +1299,10 @@ Numerical primary thresholds. Each row carries its frozen formula; every formula
 | top-level join visits ×2 | ≤ (4H−3) + (4(H+1)−3) = 8H − 2 (corrected; was 4H + 4) | 110 | 142 | 190 |
 | f2 visits (replace_range total) | ≤ 36H − 4 (corrected; was 32H + 2) | 500 | 644 | 860 |
 | bulk_build_node_visits | = Δ_new | 2 | 2 | 2 |
-| AVL rotations | ≤ 18H + 4 (corrected; was 16H + 1) | 256 | 328 | 436 |
-| sequence link writes | ≤ 74H − 5 (corrected; was 68H + 25) | 1,031 | 1,327 | 1,771 |
-| aggregate reads | ≤ 492H + 142 (corrected; was 279H + 101) | 7,030 | 8,998 | 11,950 |
-| aggregate writes | ≤ 208H + 56 (corrected; was 128H + 40) | 2,968 | 3,800 | 5,048 |
+| AVL rotations | ≤ 18H − 4 (review fix; was 18H + 4, pre-correction 16H + 1) | 248 | 320 | 428 |
+| sequence link writes | ≤ 72H − 3 (review fix; was 74H − 5, pre-correction 68H + 25) | 1,005 | 1,293 | 1,725 |
+| aggregate reads | ≤ 406H − 39 (review fix; was 492H + 142, pre-correction 279H + 101) | 5,645 | 7,269 | 9,705 |
+| aggregate writes | ≤ 168H − 24 (review fix; was 208H + 56, pre-correction 128H + 40) | 2,328 | 3,000 | 4,008 |
 | certificate reads | ≤ 5 (witness derivation below) | 5 | 5 | 5 |
 | certificate writes | ≤ 2 (witness derivation below) | 2 | 2 | 2 |
 | candidate_check | = Q | 2 | 2 | 2 |
@@ -1244,7 +1323,7 @@ provenance). Summary of what changed and why:
 TRIGGER          fact_range_node_visits measured 19/25/33 vs frozen ≤ H
                  (correctness-only conformance probe; diagnostic only)
 
-CORRECTED
+CORRECTED (first candidate, PR #72 @ 39de28e)
   fact-range     §20/§21.1 charged descent-only; consuming Δ_old Owners
                  requires Δ_old successor advances in any realization.
                  Broadened (Option A): ≤ H + Δ_old(H−1).
@@ -1258,16 +1337,39 @@ CORRECTED
                  write constants corrected for double rotations
                  (4 recomputes, not 2, per rebalance action):
                  recomputes ≤ 5(d−1), reads ≤ 44(d−1), writes ≤ 20(d−1).
-  join_with_pivot visits ≤ 4δ+3 (adds the §20 rotation-participant term
-                 its own formula omitted); rotations ≤ 2δ+2 (double = 2
-                 units per level); links ≤ 8δ−7 (unwind relinks);
-                 reads ≤ 46δ+54; writes ≤ 20δ+24.
-  split          reads ≤ 147H+1 (was 86H); writes ≤ 64H (was 40H).
-                 Visits/rotations/link thresholds unchanged (re-verified
-                 to contain the corrected compositions).
+  join_with_pivot piecewise lemma (§12.1.1): δ≤1 compatible row +
+                 δ≥2 recursive row with spine depth t ≤ δ−1 —
+                 visits ≤ 4t+1 ≤ 4δ−3; rotations ≤ 2t ≤ 2δ−2;
+                 links ≤ 7t+2 ≤ 7δ−5; recomputes ≤ 5t+1 ≤ 5δ−4;
+                 reads ≤ 46t+10 ≤ 46δ−36; writes ≤ 20t+4 ≤ 20δ−16.
+  split          visits ≤ 10H and rotations ≤ 5H PROVED from the lemma
+                 (envelopes 4δ+1 / 2δ cover the legal δ=0 join);
+                 links ≤ 22H retained (18H proved); recomputes ≤ 11H;
+                 reads ≤ 104H (was 86H); writes ≤ 44H (was 40H).
   f2/f3, table   regenerated in §16 above; certificate ≤5/≤2 and
                  retirement rows audited and UNCHANGED (clarifications:
                  §15.6.1/§15.6.2).
+
+REVIEW FIX (independent review P0=0 / P1=2 / P2=2 / P3=1, all closed)
+  P1-01          first-candidate operator forms 4δ+3 / 2δ+2 / 8δ−7 /
+                 5δ+6 / 46δ+54 / 20δ+24 were internally inconsistent
+                 with their own compositions; replaced by the §12.1.1
+                 piecewise lemma under one uniform link-write ledger
+                 (§15.2 pairing rule). f2 rotations 18H+4 → 18H−4;
+                 f2 links 74H−5 → 72H−3; f3 reads 492H+142 → 406H−39;
+                 f3 writes 208H+56 → 168H−24; split reads 147H+1 → 104H;
+                 split writes 64H → 44H.
+  P1-02          this document now carries exactly ONE active split
+                 proof (§12.3.1); superseded values live only under
+                 explicit SUPERSEDED markers.
+  P2-01          #59 §9.1 explicit-stack realization debt recorded as
+                 MUST RESOLVE before #62 closure and collection
+                 authorization (correction record §9).
+  P2-02          certificate_read rule rewritten self-contained (§15.5)
+                 with the cursor presence-filtering exception.
+  P3-01          selected-restart support safety proven by position;
+                 no dynamic support-touch check required (correction
+                 record §7.1).
 
 NOT CHANGED      mechanism identity, operator algorithms, restart/
                  convergence/coverage/facts/retirement semantics,
