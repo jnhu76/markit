@@ -1238,7 +1238,8 @@ Primary cells:
 ```
 
 Frozen symbolic upper bounds (as corrected by ACCOUNTING-CORRECTION-1,
-review-fix pass — pre-correction values retained in §16.1 history):
+review-fix + final-arithmetic-closure passes — pre-correction values
+retained in §16.1 history):
 
 ```text
 safe_predecessor visits <= 3H - 2
@@ -1250,7 +1251,10 @@ f2 visits         <= 36H - 4         (corrected; was 32H + 2)
 f2 rotations      <= 18H - 4         (review fix; first candidate 18H + 4)
 f2 link writes    <= 72H - 3         (review fix; first candidate 74H - 5)
 
-f3 aggregate reads  <= 406H - 39     (review fix; first candidate 492H + 142)
+f3 aggregate reads  <= 406H - 34     (final closure: +5 fixed primary-path
+                                      association/scale reads — see §16.1;
+                                      review fix 406H - 39; first candidate
+                                      492H + 142)
 f3 aggregate writes <= 168H - 24     (review fix; first candidate 208H + 56)
 
 f4 cursor allowance <= 2H + 10
@@ -1301,7 +1305,7 @@ Numerical primary thresholds. Each row carries its frozen formula; every formula
 | bulk_build_node_visits | = Δ_new | 2 | 2 | 2 |
 | AVL rotations | ≤ 18H − 4 (review fix; was 18H + 4, pre-correction 16H + 1) | 248 | 320 | 428 |
 | sequence link writes | ≤ 72H − 3 (review fix; was 74H − 5, pre-correction 68H + 25) | 1,005 | 1,293 | 1,725 |
-| aggregate reads | ≤ 406H − 39 (review fix; was 492H + 142, pre-correction 279H + 101) | 5,645 | 7,269 | 9,705 |
+| aggregate reads | ≤ 406H − 34 (final closure +5 fixed reads; review fix 406H − 39, was 492H + 142, pre-correction 279H + 101) | 5,650 | 7,274 | 9,710 |
 | aggregate writes | ≤ 168H − 24 (review fix; was 208H + 56, pre-correction 128H + 40) | 2,328 | 3,000 | 4,008 |
 | certificate reads | ≤ 5 (witness derivation below) | 5 | 5 | 5 |
 | certificate writes | ≤ 2 (witness derivation below) | 2 | 2 | 2 |
@@ -1370,6 +1374,32 @@ REVIEW FIX (independent review P0=0 / P1=2 / P2=2 / P3=1, all closed)
   P3-01          selected-restart support safety proven by position;
                  no dynamic support-touch check required (correction
                  record §7.1).
+
+FINAL ARITHMETIC CLOSURE (focused re-review of PR #72 @ 7f8322f:
+                 P0=0 / P1=1 / P2=1 / P3=0; the one blocking P1 closed)
+  omitted reads   PR #70 explicitly charges five fixed primary-path
+                 aggregate reads that the f3 composition omitted:
+                   +1  association validation (update.rs
+                       validate_association root-aggregate read)
+                   +2  M_old / H_old scale diagnostics
+                       (UpdateStaging::prepare)
+                   +1  M_new scale diagnostic, local plan (prepare)
+                   +1  H_new diagnostic after the structural commit
+                 f3 aggregate reads 406H−39 → 406H−34; the three
+                 aggregate-reads cells 5,645/7,269/9,705 →
+                 5,650/7,274/9,710. The term is carried visibly in the
+                 correction record §6.3 (never folded into another
+                 constant).
+  unchanged       every operator lemma (join_with_pivot piecewise §12.1.1,
+                 remove_max, split), f2, f3 writes, fact-range,
+                 certificate ≤5/≤2, retirement. The bulk-build +16 read
+                 term is intentionally retained as a conservative
+                 envelope — a tighter bulk-build lemma (reads ≤ 4(n−1))
+                 exists but is deliberately NOT substituted: this pass
+                 closes one omission, it does not retune constants.
+  still open      #59 §9.1 explicit-stack realization debt (the accepted
+                 P2; MUST RESOLVE before #62 implementation-conformance
+                 closure and structural collection authorization).
 
 NOT CHANGED      mechanism identity, operator algorithms, restart/
                  convergence/coverage/facts/retirement semantics,

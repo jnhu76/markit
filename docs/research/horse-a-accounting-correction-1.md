@@ -1,14 +1,18 @@
 # HORSE-A-ACCOUNTING-CORRECTION-1 — mechanically correct structural attribution bounds before collection
 
 ```text
-STATUS                     = REVIEW-FIX COMPLETE, AWAITING FOCUSED INDEPENDENT
-                            ACCOUNTING RE-REVIEW
+STATUS                     = FINAL ARITHMETIC CLOSURE COMPLETE, AWAITING
+                            NARROW INDEPENDENT FINAL ARITHMETIC CHECK
 CORRECTION_TYPE            = PRE-COLLECTION_MECHANICAL_ACCOUNTING_CORRECTION
 IMPLEMENTATION_BASELINE    = PR #70 @ 653d5a4f10605fe17ded6f6d703656f9950c97c4
 IMPLEMENTATION_BASE_BASE   = master @ 9dc365ed878ba9f0fda877dc6daf6d300c292d73
 FIRST_CANDIDATE_HEAD       = 39de28e075477f99d241f170f771ac344b1b5993
 REVIEW_FIX                 = YES (independent review P0=0 / P1=2 / P2=2 / P3=1;
-                            every finding closed by this pass — §0)
+                            every finding closed by that pass — §0)
+FINAL_CLOSURE              = YES (focused re-review of the review-fix head
+                            7f8322f found P0=0 / P1=1 / P2=1 / P3=0; the one
+                            blocking P1 — five omitted fixed primary-path
+                            aggregate reads in f3 — is closed by §0.1/§6.3)
 
 MECHANISM_IDENTITY_CHANGED = NO
 W_A1_CHANGED               = NO
@@ -75,6 +79,54 @@ Mechanism identity, restart/convergence/coverage/facts semantics,
 retirement semantics, W-A1/W-A2/W-A3, counter schema (v1), and the witness
 geometry are unchanged by this pass. PR #70 production Rust is untouched;
 no structural or performance collection has been run or authorized.
+
+### 0.1 FINAL ARITHMETIC CLOSURE (focused re-review of 7f8322f)
+
+The focused independent re-review of the review-fix head (`7f8322f…`)
+concluded P0=0 / P1=1 / P2=1 / P3=0 and accepted every operator lemma,
+every composition except one, and both classifications in §10.6. The one
+blocking arithmetic defect (P1) and the still-open P2:
+
+```text
+P1(f)  the f3 aggregate-read composition omitted five fixed primary-path
+       reads that PR #70 explicitly charges with sink.aggregate_reads(...)
+       on the local update lane:
+         +1  association validation  (update.rs validate_association:
+              the O(1) root-aggregate consistency read)
+         +2  old M_old/H_old scale diagnostics
+              (prepared.rs UpdateStaging::prepare: old.owners.records() +
+              old.owners.height(), aggregate_reads(2))
+         +1  M_new scale diagnostic, LOCAL plan
+              (prepared.rs prepare: fresh.records(), aggregate_reads(1))
+         +1  H_new diagnostic after the structural commit
+              (prepared.rs commit, local route: next.owners.height(),
+              aggregate_reads(1))
+       None of these is oracle/export/fresh-construction/C3-restore/
+       post-hoc-attribution/performance work; the Full-route counterparts
+       (prepared.rs aggregate_reads at the CommitPlan::Full arm) are
+       correctly NOT counted.
+       CLOSED: §6.3 appends the dedicated `+ 5 fixed primary-path reads`
+       term (kept visibly decomposed, never folded into another constant);
+       f3 aggregate reads 406H − 39 → 406H − 34; the three aggregate-reads
+       cells 5,645/7,269/9,705 → 5,650/7,274/9,710 (§6.4 and durable §16).
+       No H coefficient, no operator lemma, no other formula changed. The
+       conservative bulk-build `+16` term is deliberately retained (§6.3
+       note): the tighter bulk-build lemma reads ≤ 4(n−1) exists, but this
+       closure does not retune constants.
+
+P2    WORKSPACE_EXPLICIT_STACK_DEBT remains open (accepted as still open;
+      §9 is unchanged and still MUST RESOLVE before #62 closure and
+      structural collection authorization).
+```
+
+Re-verified for this closure (STOP-condition sweep): the five reads were
+not already covered by any active f3 term (locate / safe_predecessor /
+fact-range / cursor / split / extraction / join / bulk / replace_range
+precondition all predate the commit frontier); adding +5 contradicts no
+other active formula (reads only; the writes bound and every lower bound
+are untouched); the complete PR #70 `aggregate_reads` call-site census
+(update.rs:1, prepared.rs:5, sequence.rs:8, cursor.rs:3 non-test sites)
+shows no further uncovered primary-lane read.
 
 ## 1. TRIGGER
 
@@ -508,11 +560,16 @@ f3 aggregate reads
   + 2·104H                         (splits, §6.2.3)
   + 44(d₁−1) + 44(d₂−1) ≤ 88H − 44 (extraction reads)
   + (46δ₁−36) + (46δ₂−36) ≤ 92H − 26                        (top joins)
-  + 16                             (bulk build, 8·Δ_new recompute reads)
+  + 16                             (bulk build — retention note below)
   + 1                              (replace_range precondition records())
-  = 402H + 2Δ_old(H−1) − 35
-  = 402H + 4(H−1) − 35             (Δ_old = 2)
-  = 406H − 39
+  + 5                              (fixed primary-path reads, §0.1:
+                                     +1 association validation
+                                     +2 M_old/H_old scale diagnostics
+                                     +1 M_new scale diagnostic
+                                     +1 H_new diagnostic)
+  = 402H + 2Δ_old(H−1) − 30
+  = 402H + 4(H−1) − 30             (Δ_old = 2)
+  = 406H − 34
 
 f3 aggregate writes
   ≤ 2·44H                          (splits, §6.2.3)
@@ -526,23 +583,34 @@ f3 aggregate writes
 
 Constant accounting (no unexplained slack): f3 reads constants
 `+1 (locate) +1 (fact-range) +16 (cursor) −44 (extractions) −26 (joins)
-+16 (bulk) +1 (replace_range) = −35`; f2 links constants
-`−5 −3 +4 +1 = −3` relative to the 72H coefficient. The first candidate's
++16 (bulk) +1 (replace_range) +5 (fixed primary-path reads, §0.1)
+= −30`; f2 links constants `−5 −3 +4 +1 = −3` relative to the 72H
+coefficient. The first candidate's
 `18H+4 / 74H−5 / 492H+142 / 208H+56` are superseded by this pass (they
 carried the inconsistent `2δ+2` / `8δ−7` / `46δ+54` / `20δ+24` operator
 forms and a `+2` root charge that contradicts the frozen §20
 "final root installation = 1 link write").
 
+**Bulk-build `+16` retention note.** The `+16` bulk-build read term
+(`8·Δ_new` recompute reads) is an intentionally conservative retained
+envelope. A tighter bulk-build operator-level authority exists
+(`reads ≤ 4(n−1)` per recompute-participant), which for `Δ_new = 2`
+would be smaller; the focused re-review judged the `+16` term
+conservative but safe, and this arithmetic-closure pass closes one
+omission without retuning constants — the term is therefore kept
+as-is and the final coefficient/constants are NOT derived from the
+tighter value.
+
 ### 6.4 Regenerated per-cell thresholds (#60 §9.5 rows that change)
 
-| counter | corrected formula (review-fix pass) | 128 KiB | 1 MiB | 16 MiB | (first candidate) | (pre-correction) |
+| counter | corrected formula (review fix + final closure) | 128 KiB | 1 MiB | 16 MiB | (first candidate) | (pre-correction) |
 |---|---|---:|---:|---:|---|---|
 | fact_range_node_visits | ≤ H + Δ_old(H−1) = 3H − 2 | 40 | 52 | 70 | 40/52/70 | 14/18/24 |
 | join_node_visits (×2) | ≤ (4H−3) + (4(H+1)−3) = 8H − 2 | 110 | 142 | 190 | 110/142/190 | 60/76/100 |
 | f2 visits | ≤ 36H − 4 | 500 | 644 | 860 | 500/644/860 | 450/578/770 |
 | avl_rotations | ≤ 18H − 4 | 248 | 320 | 428 | 256/328/436 | 225/289/385 |
 | sequence_link_writes | ≤ 72H − 3 | 1,005 | 1,293 | 1,725 | 1,031/1,327/1,771 | 977/1,249/1,657 |
-| aggregate_reads | ≤ 406H − 39 | 5,645 | 7,269 | 9,705 | 7,030/8,998/11,950 | 4,007/5,123/6,797 |
+| aggregate_reads | ≤ 406H − 34 | 5,650 | 7,274 | 9,710 | 7,030/8,998/11,950 | 4,007/5,123/6,797 |
 | aggregate_writes | ≤ 168H − 24 | 2,328 | 3,000 | 4,008 | 2,968/3,800/5,048 | 1,832/2,344/3,112 |
 
 All other §9.5 rows are unchanged and were re-verified against the
@@ -569,7 +637,7 @@ durable §16 substitutes; "n/a" = the operator performs none):
 ```text
 f1 = 4H − 2
 f2 = visits 36H − 4 / rotations 18H − 4 / links 72H − 3
-f3 = reads 406H − 39 / writes 168H − 24
+f3 = reads 406H − 34 / writes 168H − 24
 f4 = 2H + 4k + Q
 f5 = unchanged (retire ≤ Δ_old; payload = P_removed;
      frames ≤ Δ_old + P_removed; depth ≤ max(H_detached, D_payload))
@@ -592,7 +660,7 @@ d = 2 : remove_max (5, 2, 8, 5, 44, 20) — 1 detach + 1 relink + ≤6
         rotation links; 1 + ≤4 recomputes.
 H = 1 : split actuals (spine 1 visit, terminals only, 0 joins, ≤2 reads)
         ⊆ (10, 5, 22, 11, 104, 44); f2/f3 forms evaluate positive
-        (32 / 14 / 69 / 367 / 144) and dominate every term monotonic in H.
+        (32 / 14 / 69 / 372 / 144) and dominate every term monotonic in H.
 H = 2 : same domination (every §6.3 substitution is monotone in H and in
         its own δ/d operand bounds).
 ```
@@ -841,9 +909,18 @@ authority base           master @ 9dc365ed878ba9f0fda877dc6daf6d300c292d73
 first candidate          PR #72 @ 39de28e075477f99d241f170f771ac344b1b5993
                          (independently reviewed: P0=0 / P1=2 / P2=2 / P3=1;
                          closed by the review-fix pass in §0/§6.2/§7/§9)
-review-fix pass          this commit (operator/composition internal
-                         consistency restored; durable spec single active
-                         formula set; no code, no collection)
+review-fix pass          PR #72 @ 7f8322f43309b4d73dba88896ad5b1f67d1b0dce
+                         (operator/composition internal consistency
+                         restored; durable spec single active formula set;
+                         no code, no collection). Focused re-review of this
+                         head: P0=0 / P1=1 / P2=1 / P3=0 — every operator
+                         lemma and composition accepted except the five
+                         omitted fixed primary-path reads in f3.
+final closure pass       this commit (the single remaining P1 closed:
+                         +5 fixed primary-path aggregate reads in §6.3;
+                         f3 reads 406H−39 → 406H−34, cells
+                         5,645/7,269/9,705 → 5,650/7,274/9,710; no
+                         operator lemma, coefficient, code, or collection)
 frozen authorities       #55 / #59 (§7, §9, §10, §20, §21) / #60 (§9, §13,
                          §14) / docs/research/horse-a-v1-algorithm.md
 diagnostic (non-decision-bearing) fact_range_node_visits 19/25/33 vs ≤H
