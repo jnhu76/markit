@@ -1111,6 +1111,26 @@ Each full predicate evaluation is one `candidate_check` and one `certificate_rea
 
 The restart cut itself is NOT a candidate and therefore generates no candidate check. Candidate walking begins strictly after restart.
 
+### 15.6.1 Fact-range traversal charging (corrected by ACCOUNTING-CORRECTION-1)
+
+`fact_range_node_visits` charges the complete fact-range navigation of the
+old replacement interval: 1 visit per weighted-descent path node (same rule
+as locate) plus 1 visit per successor-walk node entering the fact cursor
+stack during the exactly Δ_old sequential advances. Consuming Δ_old
+consecutive-rank Owners requires those advances in any realization; they
+are the fact-range operator's own work (never `cursor_node_visits`, whose
+budget belongs to the convergence candidate cursor). Corrected bound:
+`fact_range_node_visits ≤ H + Δ_old·(H − 1)`.
+
+### 15.6.2 Certificate presence filtering (wording clarification)
+
+The §15.5 unit ("inspection … or its presence … sufficient for one
+mechanism decision") is bounded by the #59 §8 cursor policy: the candidate
+walk's certification **presence filtering** while crossing non-certified
+Owners is cursor mechanics (the frozen `k` term, charged as cursor visits),
+not a `certificate_read`. Certificate reads are charged for eligibility /
+selection / predicate inspections only.
+
 ## 15.7 Decision integrity
 
 No decision-bearing counter may treat Unknown/missing as zero.
@@ -1150,20 +1170,34 @@ Primary cells:
 16 MiB   -> Hmax = 24
 ```
 
-Frozen symbolic upper bounds:
+Frozen symbolic upper bounds (as corrected by ACCOUNTING-CORRECTION-1 —
+see §16.1; the pre-correction values are retained there):
 
 ```text
-safe_predecessor <= 3H - 2
+safe_predecessor visits <= 3H - 2
+safe_predecessor reads  <= 6H        (corrected; was 3H - 2)
+locate reads            <= 2H + 1    (corrected; was H)
 f1                <= 4H - 2
 
-f2 visits         <= 32H + 2
-f2 rotations      <= 16H + 1
-f2 link writes    <= 68H + 25
+f2 visits         <= 36H - 4         (corrected; was 32H + 2)
+f2 rotations      <= 18H + 4         (corrected; was 16H + 1)
+f2 link writes    <= 74H - 5         (corrected; was 68H + 25)
 
-f3 aggregate reads  <= 279H + 101
-f3 aggregate writes <= 128H + 40
+f3 aggregate reads  <= 492H + 142    (corrected; was 279H + 101)
+f3 aggregate writes <= 208H + 56     (corrected; was 128H + 40)
 
 f4 cursor allowance <= 2H + 10
+
+fact-range visits <= H + Δ_old·(H - 1)
+fact-range reads  <= 1 + 2H + 2Δ_old·(H - 1)
+
+join_with_pivot(δ)  visits <= 4δ + 3;  rotations <= 2δ + 2
+                    link writes <= 8δ - 7
+                    reads <= 46δ + 54;  writes <= 20δ + 24
+remove_max(d)       visits <= 4d - 3;   rotations <= 2(d-1)
+                    link writes <= 7d - 6
+                    reads <= 44(d-1);   writes <= 20(d-1)
+split(T)            reads <= 147H + 1;  writes <= 64H
 
 f5 is separated:
   retire_node_visits        <= Δ_old
@@ -1174,22 +1208,22 @@ f5 is separated:
 
 Numerical primary thresholds. Each row carries its frozen formula; every formula is a #59 §21 authority formula (or an exact witness-fixed value), and there are no unexplained constants:
 
-| counter | frozen formula | 128 KiB | 1 MiB | 16 MiB |
+| counter | frozen formula (corrected by ACCOUNTING-CORRECTION-1) | 128 KiB | 1 MiB | 16 MiB |
 |---|---|---:|---:|---:|
 | locate visits | ≤ H | 14 | 18 | 24 |
 | safe predecessor visits | ≤ 3H − 2 | 40 | 52 | 70 |
 | f1 (locate + safe predecessor) | ≤ 4H − 2 | 54 | 70 | 94 |
 | cursor visits | ≤ 2H + 4k + Q, k = 2, Q = 2 | 38 | 46 | 58 |
-| fact-range visits | ≤ H | 14 | 18 | 24 |
+| fact-range visits | ≤ H + Δ_old(H−1) = 3H − 2 (Δ_old = 2) | 40 | 52 | 70 |
 | split visits ×2 | ≤ 2 × 10H (retained threshold) = 20H | 280 | 360 | 480 |
 | pivot extraction visits ×2 | ≤ (4H−3) + (4(H+1)−3) = 8H − 2 | 110 | 142 | 190 |
-| top-level join visits ×2 | ≤ (2H+1) + (2(H+1)+1) = 4H + 4 | 60 | 76 | 100 |
-| f2 visits (replace_range total) | ≤ 32H + 2 | 450 | 578 | 770 |
+| top-level join visits ×2 | ≤ (4H−3) + (4(H+1)−3) = 8H − 2 (corrected; was 4H + 4) | 110 | 142 | 190 |
+| f2 visits (replace_range total) | ≤ 36H − 4 (corrected; was 32H + 2) | 500 | 644 | 860 |
 | bulk_build_node_visits | = Δ_new | 2 | 2 | 2 |
-| AVL rotations | ≤ 16H + 1 | 225 | 289 | 385 |
-| sequence link writes | ≤ 68H + 25 | 977 | 1249 | 1657 |
-| aggregate reads | ≤ 279H + 101 | 4007 | 5123 | 6797 |
-| aggregate writes | ≤ 128H + 40 | 1832 | 2344 | 3112 |
+| AVL rotations | ≤ 18H + 4 (corrected; was 16H + 1) | 256 | 328 | 436 |
+| sequence link writes | ≤ 74H − 5 (corrected; was 68H + 25) | 1,031 | 1,327 | 1,771 |
+| aggregate reads | ≤ 492H + 142 (corrected; was 279H + 101) | 7,030 | 8,998 | 11,950 |
+| aggregate writes | ≤ 208H + 56 (corrected; was 128H + 40) | 2,968 | 3,800 | 5,048 |
 | certificate reads | ≤ 5 (witness derivation below) | 5 | 5 | 5 |
 | certificate writes | ≤ 2 (witness derivation below) | 2 | 2 | 2 |
 | candidate_check | = Q | 2 | 2 | 2 |
@@ -1199,6 +1233,52 @@ Numerical primary thresholds. Each row carries its frozen formula; every formula
 | max_retirement_depth | ≤ max(H_detached, D_payload) ≤ H | 14 | 18 | 24 |
 | old fact Owner visits | ≤ Δ_old + Δ_new | 4 | 4 | 4 |
 | RefTable entries visited | exact | 0 | 0 | 0 |
+
+## 16.1 ACCOUNTING-CORRECTION-1 (pre-collection mechanical correction)
+
+Full record: `docs/research/horse-a-accounting-correction-1.md` (authoritative;
+includes the derivation lemmas, event ledgers, falsification checks and
+provenance). Summary of what changed and why:
+
+```text
+TRIGGER          fact_range_node_visits measured 19/25/33 vs frozen ≤ H
+                 (correctness-only conformance probe; diagnostic only)
+
+CORRECTED
+  fact-range     §20/§21.1 charged descent-only; consuming Δ_old Owners
+                 requires Δ_old successor advances in any realization.
+                 Broadened (Option A): ≤ H + Δ_old(H−1).
+  read formulas  locate ≤ 2H+1, safe_predecessor ≤ 6H, fact-range
+                 ≤ 1+2H+2Δ_old(H−1): the frozen derivations assumed ≤ 1
+                 field per visit; the algorithm itself requires
+                 bytes+records per descent node plus has_safe steering.
+  remove_max     link writes ≤ 7d−6 (was 6d−5): the frozen formula omitted
+                 the d−1 unwind relinks the by-value recursion performs
+                 (persistent-slot installs under §15.2). Recompute/read/
+                 write constants corrected for double rotations
+                 (4 recomputes, not 2, per rebalance action):
+                 recomputes ≤ 5(d−1), reads ≤ 44(d−1), writes ≤ 20(d−1).
+  join_with_pivot visits ≤ 4δ+3 (adds the §20 rotation-participant term
+                 its own formula omitted); rotations ≤ 2δ+2 (double = 2
+                 units per level); links ≤ 8δ−7 (unwind relinks);
+                 reads ≤ 46δ+54; writes ≤ 20δ+24.
+  split          reads ≤ 147H+1 (was 86H); writes ≤ 64H (was 40H).
+                 Visits/rotations/link thresholds unchanged (re-verified
+                 to contain the corrected compositions).
+  f2/f3, table   regenerated in §16 above; certificate ≤5/≤2 and
+                 retirement rows audited and UNCHANGED (clarifications:
+                 §15.6.1/§15.6.2).
+
+NOT CHANGED      mechanism identity, operator algorithms, restart/
+                 convergence/coverage/facts/retirement semantics,
+                 W-A1/W-A2/W-A3, counter schema (v1), witness geometry.
+
+PRE-COLLECTION   no structural/performance collection authorized or run;
+                 corrected before any treatment cell is collected.
+
+OLD FORMULAS     retained verbatim in the correction record and in the
+                 frozen issues' history (superseded, never deleted).
+```
 
 Witness certificate derivation (frozen in #60 §9.3.1):
 
