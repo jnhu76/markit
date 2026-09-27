@@ -22,6 +22,7 @@ use crate::certificate::RestartCertificate;
 use crate::state::{Aggregate, AvlNode, Owner, OwnerSeq};
 use crate::structural::{HorseAStructuralSink, StructuralOp};
 
+
 /// The visit route of an internal `join_with_pivot`: split-internal joins
 /// charge `split_node_visits`, top-level-join joins charge
 /// `join_node_visits` — never both (#59 §20 routing).
@@ -135,7 +136,10 @@ impl OwnerSeq {
         loop {
             // One logical processing of this non-empty node by locate.
             sink.node_visit(StructuralOp::Locate);
-            let (_, lb, lr, _) = child_meta(&node.left, sink);
+            // The mechanism-required descent reads only: bytes + records of
+            // the left child (locate reads ≤ 2H + 1, spec §16 as corrected
+            // by ACCOUNTING-CORRECTION-1 §6.1).
+            let (lb, lr) = child_bytes_records(&node.left, sink);
             let owner_end = base + lb + node.owner.coverage_len;
             if x < base + lb {
                 node = node
@@ -228,9 +232,10 @@ pub(crate) fn recompute(node: &mut AvlNode, sink: &mut dyn HorseAStructuralSink)
 }
 
 /// `(height, bytes, records, has_safe)` of one child slot — four
-/// aggregate field reads per non-empty child. An empty child has no node
-/// and contributes no aggregate-field reads (`h(empty) = 0` comes from
-/// the null check, spec §15.4).
+/// aggregate field reads per non-empty child. Reserved for the shared
+/// `recompute` seam, which genuinely derives all four persistent fields
+/// (spec §15.4). An empty child has no node and contributes no
+/// aggregate-field reads (`h(empty) = 0` comes from the null check).
 #[inline]
 fn child_meta(
     child: &Option<Box<AvlNode>>,
@@ -247,6 +252,27 @@ fn child_meta(
             )
         }
         None => (0, 0, 0, false),
+    }
+}
+
+/// `(subtree_bytes, subtree_records)` of one child slot — the two fields a
+/// weighted byte/rank descent's decision needs. Two aggregate field reads
+/// per non-empty child (the mechanism-required reads of the corrected
+/// locate/safe-predecessor/fact-range read authority,
+/// ACCOUNTING-CORRECTION-1 §6.1: `subtree_bytes` and `subtree_records` of
+/// each descent node's left child; `height`/`subtree_has_safe` are read
+/// only where they steer — `height_of`/`has_safe_of`).
+#[inline]
+fn child_bytes_records(
+    child: &Option<Box<AvlNode>>,
+    sink: &mut dyn HorseAStructuralSink,
+) -> (usize, usize) {
+    match child {
+        Some(n) => {
+            sink.aggregate_reads(2);
+            (n.agg.subtree_bytes, n.agg.subtree_records)
+        }
+        None => (0, 0),
     }
 }
 
@@ -434,11 +460,17 @@ fn rebalance_box(
 /// recomputes it (contract §17); nothing else may inspect a detached
 /// pivot.
 ///
-/// Frozen charging (#59 §7.3): one descent visit per call entered, one
-/// link write for the pivot detachment (the parent's right slot takes
-/// `p.left`; the pivot's own isolation is the same logical detach), one
-/// unwind visit per ancestor that reprocesses its node, and the
-/// rotation participants charged by the rotation primitives.
+/// Frozen charging (spec §12.1.1/§16 as corrected by
+/// ACCOUNTING-CORRECTION-1 §6.2.1, under the uniform §15.2 link-write
+/// ledger): one descent visit per node entered; the terminal pivot
+/// isolation is ONE link write (rule L2 — the detached child handed out
+/// of the frame); each unwind level is ONE link write (rule L1 — the
+/// `node.right` take/reinstall pair of that frame) plus one reprocessing
+/// visit, one recompute and the rotation primitives' own charges.
+/// Totals for descent length `d ≥ 1`: visits ≤ 4d − 3, rotations ≤
+/// 2(d−1), links ≤ 7d − 6, recomputes ≤ 5(d−1), reads ≤ 44(d−1),
+/// writes ≤ 20(d−1). This is the same pairing convention
+/// `join_with_pivot` uses — one unit for every operator.
 pub(crate) fn remove_max(
     root: Box<AvlNode>,
     sink: &mut dyn HorseAStructuralSink,
@@ -449,19 +481,19 @@ pub(crate) fn remove_max(
     let mut node = root;
     match node.right.take() {
         None => {
+            // Terminal: this node IS the maximum. Isolating the pivot
+            // detaches its left subtree — the frozen 1-link-write logical
+            // operation (rule L2).
             let mut pivot = node;
             let left = pivot.left.take();
-            // The detach of the extracted pivot: the parent's right slot
-            // (or the caller's root slot) takes `p.left` — the frozen
-            // 1-link-write logical operation.
             sink.link_writes(1);
             (left, pivot)
         }
         Some(right) => {
             let (rest, pivot) = remove_max(right, sink);
             node.right = rest;
-            // The unwind: one reprocessing visit of this ancestor plus
-            // its relink and metadata repair.
+            // The unwind: one reprocessing visit of this ancestor plus its
+            // take/reinstall pair link write (rule L1) and metadata repair.
             sink.node_visit(StructuralOp::PivotExtract);
             sink.link_writes(1);
             recompute(&mut node, sink);
@@ -480,6 +512,17 @@ pub(crate) fn remove_max(
 /// height stays in the frozen window `[max(h(L), h(R)), max + 1]`.
 /// Visits route to `route` (`Split` when called inside split, `Join`
 /// when called by a top-level join).
+///
+/// Charging follows the frozen piecewise operator lemma (spec §12.1.1 /
+/// §16, as corrected by ACCOUNTING-CORRECTION-1 §6.2.2) under the
+/// uniform §15.2 link-write ledger: compatible `δ ≤ 1` charges ≤ 1
+/// visit / 0 rotations / 2 link writes / 1 recompute / ≤ 10 reads /
+/// 4 writes; recursive `δ ≥ 2` with spine depth `t ≤ δ − 1` charges
+/// ≤ 4t+1 ≤ 4δ−3 visits, ≤ 2t ≤ 2δ−2 rotations, ≤ 7t+2 ≤ 7δ−5 link
+/// writes, ≤ 5t+1 ≤ 5δ−4 recomputes, ≤ 46t+10 ≤ 46δ−36 reads and
+/// ≤ 20t+4 ≤ 20δ−16 writes. The terminal pivot attach is 3 link writes
+/// total (two pivot-slot installs + the `node.<inner>` same-frame pair);
+/// every non-terminal unwind level is 1.
 pub(crate) fn join_with_pivot(
     left: Option<Box<AvlNode>>,
     pivot: Box<AvlNode>,
@@ -544,15 +587,22 @@ fn join_right(
         let mut mid = pivot;
         mid.left = c;
         mid.right = right;
-        // The pivot attach: one visit for the pivot, two persistent
-        // slot installations into it.
+        // The pivot attach: one visit for the pivot, two persistent slot
+        // installations into it; the `node.right` take/`Some(mid)` pair is
+        // the unwind tail's single charge (rule L1) — 3 link writes total
+        // for this frame, per the frozen lemma.
         sink.node_visit(route);
         sink.link_writes(2);
         recompute(&mut mid, sink);
         node.right = Some(mid);
     } else {
         let c = node.right.take().expect("the inner spine continues");
-        sink.link_writes(1);
+        // The take here and the `node.right = Some(joined)` reinstall in
+        // the common unwind tail below are ONE logical persistent-slot
+        // reassignment of `node.right` (the §15.2 same-frame pairing rule
+        // L1): the unwind tail charges the pair's single link write — the
+        // take itself is not an independent charge (ACCOUNTING-CORRECTION-1
+        // §10.6a; links ≤ 7t + 2 ≤ 7δ − 5, spec §12.1.1).
         let joined = join_right(c, pivot, right, sink, route);
         node.right = Some(joined);
     }
@@ -580,15 +630,18 @@ fn join_left(
         let mut mid = pivot;
         mid.left = left;
         mid.right = c;
-        // The pivot attach: one visit for the pivot, two persistent
-        // slot installations into it.
+        // The pivot attach: one visit for the pivot, two persistent slot
+        // installations into it; the `node.left` take/`Some(mid)` pair is
+        // the unwind tail's single charge (rule L1).
         sink.node_visit(route);
         sink.link_writes(2);
         recompute(&mut mid, sink);
         node.left = Some(mid);
     } else {
         let c = node.left.take().expect("the inner spine continues");
-        sink.link_writes(1);
+        // Same-frame take/reinstall pair of `node.left` (§15.2 rule L1):
+        // the unwind tail's single charge covers both — the take is not an
+        // independent link write (ACCOUNTING-CORRECTION-1 §10.6a).
         let joined = join_left(left, pivot, c, sink, route);
         node.left = Some(joined);
     }
@@ -636,20 +689,43 @@ pub(crate) fn join(
 /// accepted §12.3.1 proof core; the withdrawn output-height window is
 /// deliberately NOT assumed anywhere). All work — including the internal
 /// `join_with_pivot` joins — charges `split_node_visits` (#59 §20).
+///
+/// Spine aggregate reads: the entry reads the root's `subtree_records`
+/// once for the precondition; every deeper frame already holds its
+/// subtree's record count from the parent frame (`left_records`, or
+/// `total - left_records - 1`), so no frame re-reads it
+/// (ACCOUNTING-CORRECTION-1 §10.3: the per-spine-node `total` re-read was
+/// an implementation convenience over-read, not mechanism work).
 pub(crate) fn split(
     root: Option<Box<AvlNode>>,
     k: usize,
     sink: &mut dyn HorseAStructuralSink,
 ) -> (Option<Box<AvlNode>>, Option<Box<AvlNode>>) {
-    let Some(mut node) = root else {
+    let Some(node) = root else {
         assert_eq!(k, 0, "split rank {k} out of range for an empty sequence");
         return (None, None);
     };
+    // The spine entry's single aggregate read: the precondition rank bound.
+    sink.aggregate_reads(1);
+    let total = node.agg.subtree_records;
+    split_known_total(node, k, total, sink)
+}
+
+/// The split spine with each frame's subtree record count already known
+/// (`total` = `subtree_records` of `node`, established by the caller
+/// without a re-read). One logical processing per spine node; the child
+/// takes hand the subtrees to the recursive split / the reconstruction
+/// join (rule L2, spec §15.2); the reconstruction `join_with_pivot` calls
+/// and their order are exactly the frozen recursion's.
+fn split_known_total(
+    mut node: Box<AvlNode>,
+    k: usize,
+    total: usize,
+    sink: &mut dyn HorseAStructuralSink,
+) -> (Option<Box<AvlNode>>, Option<Box<AvlNode>>) {
     // One logical processing of this spine node (the rank comparisons,
     // including the terminal cases).
     sink.node_visit(StructuralOp::Split);
-    sink.aggregate_reads(1);
-    let total = node.agg.subtree_records;
     assert!(k <= total, "split rank {k} out of range 0..={total}");
     if k == 0 {
         return (None, Some(node));
@@ -665,7 +741,13 @@ pub(crate) fn split(
     if k < left_records {
         // k lands inside the left subtree: the pivot joins the right
         // output between the abandoned left part and the old right subtree.
-        let (a, b) = split(left, k, sink);
+        // The child's record count IS `left_records` — already read.
+        let (a, b) = split_known_total(
+            left.expect("k < left_records implies a left child"),
+            k,
+            left_records,
+            sink,
+        );
         let right_out = join_with_pivot(b, node, right, sink, StructuralOp::Split);
         (a, Some(right_out))
     } else if k == left_records {
@@ -678,7 +760,14 @@ pub(crate) fn split(
         (Some(left_out), right)
     } else {
         // k lands inside the right subtree: descend with the adjusted rank.
-        let (c, d) = split(right, k - left_records - 1, sink);
+        // The child's record count is `total - left_records - 1` — the
+        // parent's own frame already holds it.
+        let (c, d) = split_known_total(
+            right.expect("k > left_records + 1 implies a right child"),
+            k - left_records - 1,
+            total - left_records - 1,
+            sink,
+        );
         let left_out = join_with_pivot(left, node, c, sink, StructuralOp::Split);
         (Some(left_out), d)
     }
@@ -700,6 +789,7 @@ impl OwnerSeq {
     /// structurally by ownership — no record-by-record reinsertion, no
     /// clone, no rebuild (I3 task contract §24). Retirement of B is the
     /// caller's (commit's) concern; here it is returned intact.
+    ///
     pub(crate) fn replace_range(
         &mut self,
         lo: usize,
@@ -716,8 +806,12 @@ impl OwnerSeq {
             lo <= hi && hi <= records,
             "replace_range [{lo}, {hi}) out of range 0..={records}"
         );
-        // Emptying the persistent root slot to dissect the sequence.
-        sink.link_writes(1);
+        // Emptying the persistent root slot to dissect the sequence: the
+        // take here and the final `self.root = root` installation below are
+        // ONE logical root-slot reassignment (the §15.2 same-frame pairing
+        // rule; #59 §20 freezes the final root installation as the single
+        // root-slot write — the temporary by-value move is not an
+        // independent charge, ACCOUNTING-CORRECTION-1 §10.6b).
         let (a, bc) = split(self.root.take(), lo, sink);
         let (b, c) = split(bc, hi - lo, sink);
         let with_middle = join(a, middle.root, sink);
@@ -809,9 +903,11 @@ impl OwnerSeq {
         let mut path: Vec<Step> = Vec::new();
         let target = before - 1;
         loop {
-            // One phase-1 descent visit per processed node.
+            // One phase-1 descent visit per processed node. The descent
+            // steers on bytes + records only (safe_predecessor reads ≤ 6H,
+            // spec §16 as corrected by ACCOUNTING-CORRECTION-1 §6.1).
             sink.node_visit(StructuralOp::SafePredecessor);
-            let (_, lb, lr, _) = child_meta(&node.left, sink);
+            let (lb, lr) = child_bytes_records(&node.left, sink);
             let owner_end = base + lb + node.owner.coverage_len;
             if target < base + lb {
                 path.push(Step {
@@ -863,19 +959,21 @@ impl OwnerSeq {
             // One phase-2 examination visit (reprocessing counts again).
             sink.node_visit(StructuralOp::SafePredecessor);
             let p = step.node;
-            let (_, lb, lr, _) = child_meta(&p.left, sink);
-            let p_base = step.base + lb;
-            let p_rank = step.rank + lr;
             // The ancestor's own certificate presence/content inspection
-            // drives the selection — one certificate read.
+            // drives the selection — one certificate read. The base/rank
+            // aggregate reads happen only for the boundary actually
+            // selected (the corrected phase-2 read decomposition: one
+            // `has_safe_of(left)` per examined ancestor, two reads for the
+            // selected boundary; ACCOUNTING-CORRECTION-1 §6.1).
             sink.certificate_read();
             if let Some(cert) = &p.owner.outgoing_restart {
+                let (lb, lr) = child_bytes_records(&p.left, sink);
                 return Some(SafeBoundary {
                     owner: &p.owner,
                     cert,
-                    rank: p_rank,
-                    base: p_base,
-                    boundary: p_base + p.owner.coverage_len,
+                    rank: step.rank + lr,
+                    base: step.base + lb,
+                    boundary: step.base + lb + p.owner.coverage_len,
                 });
             }
             if has_safe_of(&p.left, sink) {
@@ -903,9 +1001,12 @@ fn rightmost_certified<'a>(
     let mut b = base;
     let mut r = rank;
     loop {
-        // One guided-descent visit per processed node.
+        // One guided-descent visit per processed node. The steering reads
+        // are exactly `has_safe_of(right)` + bytes/records of the left
+        // child (3 per node; ACCOUNTING-CORRECTION-1 §6.1 guided-descent
+        // decomposition).
         sink.node_visit(StructuralOp::SafePredecessor);
-        let (_, lb, lr, _) = child_meta(&n.left, sink);
+        let (lb, lr) = child_bytes_records(&n.left, sink);
         if has_safe_of(&n.right, sink) {
             b += lb + n.owner.coverage_len;
             r += lr + 1;

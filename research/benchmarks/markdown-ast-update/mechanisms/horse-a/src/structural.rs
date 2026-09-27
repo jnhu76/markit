@@ -90,7 +90,11 @@ pub enum StructuralOp {
     /// Candidate-walk cursor: positioning descent, successor-walk stack
     /// entries, and each candidate boundary whose predicate is evaluated.
     Cursor,
-    /// The replacement-facts rank-range lookup and its sequential advance.
+    /// The replacement-facts rank-range navigation: its weighted-descent
+    /// seek plus the successor-walk nodes entering the fact cursor's stack
+    /// during the exactly Δ_old sequential advances (the corrected §20
+    /// charging rule, ACCOUNTING-CORRECTION-1 §5.1 / spec §15.6.1 — the
+    /// fact cursor's own work, never the convergence-cursor budget).
     FactRange,
     /// `split` spine nodes, including its internal `join_with_pivot` work.
     Split,

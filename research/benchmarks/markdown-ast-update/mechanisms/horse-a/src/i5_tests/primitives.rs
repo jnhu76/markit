@@ -149,8 +149,9 @@ fn locate_charges_one_visit_per_descent_node_on_known_shapes() {
     assert_eq!(c.locate_node_visits, Observed::known(1));
     assert_eq!(
         c.aggregate_reads,
-        Observed::known(1 + 4),
-        "root read + left child_meta"
+        Observed::known(1 + 2),
+        "root read + left child bytes/records (narrowed descent reads; \
+         ACCOUNTING-CORRECTION-1 §6.1: locate reads ≤ 2H + 1)"
     );
     assert_eq!(c.sequence_link_writes, Observed::Unknown);
     assert_eq!(c.aggregate_writes, Observed::Unknown);
@@ -181,17 +182,21 @@ fn safe_predecessor_aggregate_pruning_charges_no_linear_enumeration() {
     let c = sink.counters();
     let found = found.expect("a certified predecessor exists");
     assert_eq!(found.boundary, 40, "the rightmost certified boundary < 60");
-    // Phase 1 descent: root + right leaf = 2 visits.
-    // Guided descent into the located Owner's left subtree: 1 visit.
+    // Phase 1 descent: root + right leaf = 2 visits. Phase 2: one
+    // examined abandoned right-descent ancestor (the root) = 1 visit.
     assert_eq!(c.safe_predecessor_node_visits, Observed::known(3));
     // Exactly one certificate inspection: the finally selected node's —
     // the located leaf's left subtree is empty, so the answer comes from
     // the nearest abandoned right-descent region (the root's own
     // certificate), not from a guided descent.
     assert_eq!(c.certificate_reads, Observed::known(1));
-    // Aggregate reads: 2 root reads + 2 phase-1 child_meta (4 + 0)
-    // + 1 examination child_meta (4) = 10.
-    assert_eq!(c.aggregate_reads, Observed::known(10));
+    // Narrowed to the mechanism-required reads (ACCOUNTING-CORRECTION-1
+    // §6.1, safe_predecessor reads ≤ 6H): 2 root reads (bytes bound +
+    // has_safe prune) + 2 phase-1 descent reads (root's left child
+    // bytes/records; the leaf's empty left child reads nothing) + 2 reads
+    // for the selected boundary's base/rank. The examined-but-rejected
+    // ancestors would add one has_safe_of(left) each — none run here.
+    assert_eq!(c.aggregate_reads, Observed::known(6));
 }
 
 #[test]
