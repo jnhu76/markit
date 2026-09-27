@@ -34,10 +34,9 @@
 //! the global allocator of this test binary and simply delegates to
 //! `System` outside the guard.
 
-use std::alloc::{GlobalAlloc, Layout, System};
-use std::cell::Cell;
-
 use markit_mdbench_common::{CanonicalEdit, NoopWorkSink, Source, SourceId};
+
+use super::alloc_probe::{attempts, reset_attempts, DenyGuard};
 
 use crate::full_build::full_build;
 use crate::structural::{
@@ -100,45 +99,6 @@ fn untouched(o: &Observed) -> bool {
 // (#59 §9.2, §11: drops only, no allocation, no panic).
 // ---------------------------------------------------------------------------
 
-thread_local! {
-    static DENY_ALLOC: Cell<bool> = const { Cell::new(false) };
-    static ALLOC_ATTEMPTS: Cell<u64> = const { Cell::new(0) };
-}
-
-struct FrontierAllocProbe;
-
-unsafe impl GlobalAlloc for FrontierAllocProbe {
-    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        if DENY_ALLOC.with(Cell::get) {
-            ALLOC_ATTEMPTS.with(|c| c.set(c.get() + 1));
-        }
-        System.alloc(layout)
-    }
-
-    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
-        System.dealloc(ptr, layout)
-    }
-}
-
-#[global_allocator]
-static FRONTIER_ALLOC_PROBE: FrontierAllocProbe = FrontierAllocProbe;
-
-/// Guard RAII: the flag is always restored, even on panic.
-struct DenyGuard;
-
-impl DenyGuard {
-    fn deny() -> Self {
-        DENY_ALLOC.with(|d| d.set(true));
-        DenyGuard
-    }
-}
-
-impl Drop for DenyGuard {
-    fn drop(&mut self) {
-        DENY_ALLOC.with(|d| d.set(false));
-    }
-}
-
 /// T8: the frontier is real. `commit` is infallible by type (the binding
 /// below is a `ReadyDocument`, not a `Result`), and a staging failure
 /// leaves the old state owned, coherent and reusable.
@@ -180,7 +140,7 @@ fn t08_frontier_is_infallible_and_stage_failure_leaves_old_owned() {
     )
     .expect("the corrected staging succeeds")
     .prepare(old, &mut NoopHorseAStructuralSink)
-        .expect("the bounded commit workspace prepares");
+    .expect("the bounded commit workspace prepares");
     let next: crate::state::ReadyDocument = prepared.commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.source_id, SourceId(2));
     assert_eq!(next.owners.records(), 3);
@@ -206,9 +166,9 @@ fn t09_post_frontier_region_attempts_zero_allocations() {
     )
     .expect("staging succeeds")
     .prepare(old, &mut NoopHorseAStructuralSink)
-        .expect("the bounded commit workspace prepares");
+    .expect("the bounded commit workspace prepares");
 
-    ALLOC_ATTEMPTS.with(|c| c.set(0));
+    reset_attempts();
     let mut recording = RecordingHorseAStructuralSink::new();
     {
         let _guard = DenyGuard::deny();
@@ -217,7 +177,7 @@ fn t09_post_frontier_region_attempts_zero_allocations() {
         assert_eq!(next.source_len, post.len_bytes());
     }
 
-    let attempts = ALLOC_ATTEMPTS.with(Cell::get);
+    let attempts = attempts();
     assert_eq!(
         attempts, 0,
         "the post-frontier region attempted {attempts} allocation(s); \
@@ -250,7 +210,7 @@ fn t10_t11_commit_only_ledger_is_event_bounded_and_retirement_exact() {
     )
     .expect("staging succeeds")
     .prepare(old, &mut NoopHorseAStructuralSink)
-        .expect("the bounded commit workspace prepares");
+    .expect("the bounded commit workspace prepares");
 
     let mut commit_only = RecordingHorseAStructuralSink::new();
     let next = prepared.commit(&mut commit_only);

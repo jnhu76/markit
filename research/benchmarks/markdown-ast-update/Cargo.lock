@@ -972,6 +972,7 @@ name = "markit-mdbench-horse-a"
 version = "0.1.0"
 dependencies = [
  "markit-mdbench-common",
+ "markit-mdbench-corpusgen",
  "markit-mdbench-oracle",
  "markit-mdbench-shared-grammar",
 ]

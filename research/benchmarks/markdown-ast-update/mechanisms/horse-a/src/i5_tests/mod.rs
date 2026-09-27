@@ -9,8 +9,11 @@
 //! the literal byte layout of the fixtures — never read back from the
 //! implementation.
 
+mod adversarial;
+mod alloc_probe;
 mod conformance;
 mod counters;
 mod frontier;
+mod frozen60;
 mod primitives;
 mod retirement;
