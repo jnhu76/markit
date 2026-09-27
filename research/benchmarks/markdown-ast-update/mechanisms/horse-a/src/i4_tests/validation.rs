@@ -21,8 +21,15 @@ fn stage_with(
     old_source: &Source,
     post: &Source,
     edit: &CanonicalEdit,
-) -> Result<crate::update::StagedUpdate, UpdateError> {
-    stage(old, old_source, post, edit, &mut NoopWorkSink)
+) -> Result<crate::prepared::UpdateStaging, UpdateError> {
+    stage(
+        old,
+        old_source,
+        post,
+        edit,
+        &mut NoopWorkSink,
+        &mut crate::structural::NoopHorseAStructuralSink,
+    )
 }
 
 #[test]

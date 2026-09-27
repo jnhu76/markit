@@ -28,7 +28,8 @@ use markit_mdbench_shared_grammar::parse_full;
 
 use crate::full_build::full_build;
 use crate::state::ReadyDocument;
-use crate::update::{commit, stage, StagedUpdate};
+use crate::structural::NoopHorseAStructuralSink;
+use crate::update::stage;
 
 /// One update fixture: the READY state built for a literal source plus
 /// that source (the update's `old_source` association).
@@ -53,22 +54,37 @@ impl Fixture {
             .expect("the edit applies to the old source")
     }
 
-    /// Stage one update, handing back the staging record and the post
+    /// Stage one update, handing back the staging state and the post
     /// source (the old READY state stays untouched and borrowable).
-    pub(crate) fn staged(&self, edit: &CanonicalEdit) -> (StagedUpdate, Source) {
+    pub(crate) fn staged(&self, edit: &CanonicalEdit) -> (crate::prepared::UpdateStaging, Source) {
         let post = self.post(edit, 2);
-        let staged = stage(&self.old, &self.old_source, &post, edit, &mut NoopWorkSink)
-            .expect("the update stages");
+        let staged = stage(
+            &self.old,
+            &self.old_source,
+            &post,
+            edit,
+            &mut NoopWorkSink,
+            &mut NoopHorseAStructuralSink,
+        )
+        .expect("the update stages");
         (staged, post)
     }
 
-    /// Run the complete I4 update (stage + commit) and hand back the READY
-    /// result plus the post source.
+    /// Run the complete update (stage → prepare → commit) and hand back
+    /// the READY result plus the post source.
     pub(crate) fn run(self, edit: &CanonicalEdit) -> (ReadyDocument, Source) {
         let post = self.post(edit, 2);
-        let staged = stage(&self.old, &self.old_source, &post, edit, &mut NoopWorkSink)
-            .expect("the update stages");
-        let next = commit(self.old, staged);
+        let staged = stage(
+            &self.old,
+            &self.old_source,
+            &post,
+            edit,
+            &mut NoopWorkSink,
+            &mut NoopHorseAStructuralSink,
+        )
+        .expect("the update stages");
+        let prepared = staged.prepare(self.old, &mut NoopHorseAStructuralSink);
+        let next = prepared.commit(&mut NoopHorseAStructuralSink);
         (next, post)
     }
 }

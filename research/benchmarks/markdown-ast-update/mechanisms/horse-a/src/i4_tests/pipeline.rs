@@ -17,6 +17,8 @@
 
 use markit_mdbench_common::{NoopWorkSink, SourceId};
 
+use crate::structural::NoopHorseAStructuralSink;
+
 use crate::candidate::AcceptedConvergence;
 use crate::update::{ReplacementIntervals, RestartSelection, UpdatePath};
 
@@ -89,7 +91,9 @@ fn a_simple_paragraph_edit_converges_on_the_local_path() {
     assert!(record.facts_equal, "no definitions on either side");
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
     assert_eq!(post.as_str(), "alpXha\n\nbeta\n\ngamma\n");
 }
@@ -130,7 +134,9 @@ fn an_edit_at_bof_restarts_at_the_distinguished_bof_authority() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -170,7 +176,9 @@ fn an_edit_at_eof_terminates_at_real_eof() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -208,7 +216,9 @@ fn a_paragraph_deletion_merges_blocks_and_converges_at_a_later_boundary() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -249,7 +259,9 @@ fn a_length_preserving_replacement_converges_and_shifts_nothing() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -283,7 +295,9 @@ fn an_insertion_at_an_owner_boundary_locates_with_right_affinity() {
     assert_eq!(record.convergence, None);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -314,7 +328,9 @@ fn the_restart_is_the_nearest_eligible_certified_predecessor() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -363,7 +379,9 @@ fn the_conservative_left_guard_owner_precedes_the_damaged_owner() {
     assert!(record.facts_equal);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -408,7 +426,9 @@ fn the_guarded_restart_finds_a_convergence_the_bare_damage_start_cannot() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -451,7 +471,9 @@ fn an_insertion_inside_the_certificate_support_invalidates_that_candidate() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -487,7 +509,9 @@ fn multiple_valid_convergence_points_accept_the_first_one() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -526,7 +550,9 @@ fn without_a_convergence_the_replacement_ends_at_real_eof() {
     assert_eq!(record.intervals.new.end, post.len_bytes(), "L_new");
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -565,7 +591,9 @@ fn a_blockless_replacement_prefix_is_not_a_legal_coverage_cut() {
     );
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -587,8 +615,15 @@ fn two_consecutive_updates_on_the_same_returned_state() {
         .expect("the second edit applies");
     assert_eq!(post2.as_str(), "a\n\n\nb\n\nYc\n");
 
-    let staged = crate::update::stage(&state1, &source1, &post2, &second, &mut NoopWorkSink)
-        .expect("the second update stages on the returned state");
+    let staged = crate::update::stage(
+        &state1,
+        &source1,
+        &post2,
+        &second,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("the second update stages on the returned state");
     assert_eq!(
         staged.record.restart,
         RestartSelection {
@@ -609,7 +644,9 @@ fn two_consecutive_updates_on_the_same_returned_state() {
     assert_eq!(staged.record.convergence, None);
     assert_eq!(staged.record.path, UpdatePath::Local);
 
-    let state2 = crate::update::commit(state1, staged);
+    let state2 = staged
+        .prepare(state1, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&state2, &post2);
 }
 
@@ -673,6 +710,8 @@ fn a_witness_shaped_geometry_keeps_the_guard_and_damage_replacement_at_two_owner
     assert!(record.facts_equal);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }

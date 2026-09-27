@@ -37,6 +37,11 @@ impl OwnerSeq {
         self.root.as_ref().map_or(0, |n| n.agg.subtree_records)
     }
 
+    /// Height of the retained sequence (`h(empty) = 0`; O(1) root read).
+    pub fn height(&self) -> u32 {
+        self.root.as_ref().map_or(0, |n| n.height)
+    }
+
     /// Whether the sequence contains at least one persistent eligible
     /// outgoing RestartCertificate (the root `subtree_has_safe`).
     pub fn has_safe(&self) -> bool {
