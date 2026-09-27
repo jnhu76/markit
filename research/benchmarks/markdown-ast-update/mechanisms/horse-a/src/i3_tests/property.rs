@@ -6,6 +6,7 @@
 
 use super::*;
 use crate::sequence::{join, split};
+use crate::workspace::CommitWorkspace;
 
 fn sorted(mut v: Vec<usize>) -> Vec<usize> {
     v.sort_unstable();
@@ -71,7 +72,12 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                         let records = pool[i].0.records();
                         let k = rng.below(records + 1);
                         let (root, model) = pool.swap_remove(i);
-                        let (a, b) = split(root.root, k);
+                        let (a, b) = split(
+                            root.root,
+                            k,
+                            &mut crate::structural::NoopHorseAStructuralSink,
+                            &mut CommitWorkspace::for_tests(16),
+                        );
                         pool.push((OwnerSeq { root: a }, model[..k].to_vec()));
                         pool.push((OwnerSeq { root: b }, model[k..].to_vec()));
                     }
@@ -88,7 +94,12 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                         model.extend(model_j);
                         pool.push((
                             OwnerSeq {
-                                root: join(root_i.root, root_j.root),
+                                root: join(
+                                    root_i.root,
+                                    root_j.root,
+                                    &mut crate::structural::NoopHorseAStructuralSink,
+                                    &mut CommitWorkspace::for_tests(16),
+                                ),
                             },
                             model,
                         ));
@@ -107,7 +118,13 @@ fn deterministic_mixed_sequences_preserve_every_invariant() {
                         let mid_model: Model =
                             mid_w.iter().copied().zip(mid_c.iter().copied()).collect();
                         let (mut seq, mut model) = pool.swap_remove(i);
-                        let removed = seq.replace_range(lo, hi, middle);
+                        let removed = seq.replace_range(
+                            lo,
+                            hi,
+                            middle,
+                            &mut crate::structural::NoopHorseAStructuralSink,
+                            &mut CommitWorkspace::for_tests(16),
+                        );
                         let removed_model = model_of(&removed);
                         model.splice(lo..hi, mid_model);
                         pool.push((seq, model));
@@ -139,7 +156,12 @@ fn retained_node_identity_survives_split_join_and_replace() {
     // split at 3: P/S address sequences are exact slices of the original.
     let seq = make(&weights, &certs);
     let addrs = addresses(&seq);
-    let (a, b) = split(seq.root, 3);
+    let (a, b) = split(
+        seq.root,
+        3,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    );
     let seq_a = OwnerSeq { root: a };
     let seq_b = OwnerSeq { root: b };
     assert_eq!(addresses(&seq_a), addrs[..3]);
@@ -147,7 +169,12 @@ fn retained_node_identity_survives_split_join_and_replace() {
 
     // join back: identical in-order node sequence.
     let rejoined = OwnerSeq {
-        root: join(seq_a.root, seq_b.root),
+        root: join(
+            seq_a.root,
+            seq_b.root,
+            &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
+        ),
     };
     assert_eq!(
         addresses(&rejoined),
@@ -160,7 +187,13 @@ fn retained_node_identity_survives_split_join_and_replace() {
     // the removed range keeps its own, in order.
     let mut seq2 = make(&weights, &certs);
     let original = addresses(&seq2);
-    let removed = seq2.replace_range(2, 5, make(&[90, 91], &[true, false]));
+    let removed = seq2.replace_range(
+        2,
+        5,
+        make(&[90, 91], &[true, false]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    );
     let after = addresses(&seq2);
     assert_eq!(&after[..2], &original[..2], "retained prefix identity");
     assert_eq!(&after[4..], &original[5..], "retained suffix identity");

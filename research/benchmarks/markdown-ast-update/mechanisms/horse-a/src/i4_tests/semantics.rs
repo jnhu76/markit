@@ -9,6 +9,7 @@
 //! the suffix still takes the local path, which a document-global
 //! recollection (a forbidden sentinel) could not conclude.
 
+use crate::structural::NoopHorseAStructuralSink;
 use crate::update::{ReplacementIntervals, RestartSelection, UpdatePath};
 
 use super::{assert_ready_equals_h0, edit, Fixture};
@@ -45,7 +46,10 @@ fn equal_definition_facts_keep_the_local_path() {
         }
     );
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(
         next.refs.entries(),
         &[("a".to_string(), "/x".to_string())],
@@ -87,7 +91,10 @@ fn a_new_definition_forces_the_same_target_full_build() {
         "the full branch is the semantic decision, not a failed convergence"
     );
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(
         next.refs.entries(),
         &[
@@ -119,7 +126,10 @@ fn a_deleted_definition_forces_the_same_target_full_build() {
     assert!(!record.facts_equal);
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert!(next.refs.is_empty());
     assert_ready_equals_h0(&next, &post);
 }
@@ -143,7 +153,10 @@ fn a_changed_definition_destination_forces_the_same_target_full_build() {
     assert!(!record.facts_equal);
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.refs.entries(), &[("a".to_string(), "/zz".to_string())]);
     assert_ready_equals_h0(&next, &post);
 }
@@ -174,7 +187,10 @@ fn a_shadowed_definition_change_forces_a_conservative_full_build() {
         "conservative full build: inequality only means preservation was not proven"
     );
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(
         next.refs.entries(),
         &[
@@ -204,7 +220,10 @@ fn an_unresolved_reference_becoming_resolved_forces_the_full_build() {
     assert!(!record.facts_equal);
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.refs.entries(), &[("a".to_string(), "/u".to_string())]);
     assert_ready_equals_h0(&next, &post);
 }
@@ -240,7 +259,10 @@ fn a_resolved_reference_becoming_unresolved_forces_the_full_build() {
     assert!(!record.facts_equal);
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert!(next.refs.is_empty());
     assert_ready_equals_h0(&next, &post);
 }
@@ -259,7 +281,10 @@ fn removing_a_fence_opener_exposes_a_definition_and_forces_the_full_build() {
     );
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.refs.entries(), &[("a".to_string(), "/x".to_string())]);
     assert_ready_equals_h0(&next, &post);
 }
@@ -274,7 +299,10 @@ fn inserting_a_fence_opener_hides_a_definition_and_forces_the_full_build() {
     assert!(!record.facts_equal);
     assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert!(next.refs.is_empty());
     assert_ready_equals_h0(&next, &post);
 }
@@ -321,7 +349,10 @@ fn the_local_path_compares_only_the_replacement_region_facts() {
     assert!(record.facts_equal);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(
         next.refs.entries(),
         &[

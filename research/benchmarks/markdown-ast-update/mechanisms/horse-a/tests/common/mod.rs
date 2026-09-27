@@ -9,7 +9,7 @@
 #![allow(dead_code)]
 
 use markit_mdbench_common::{NoopWorkSink, Source, SourceId};
-use markit_mdbench_horse_a::{full_build, ReadyDocument};
+use markit_mdbench_horse_a::{full_build, NoopHorseAStructuralSink, ReadyDocument};
 use markit_mdbench_oracle::{validate_normalized, NormalizeV1};
 use markit_mdbench_shared_grammar::parse_full;
 
@@ -35,14 +35,16 @@ pub fn h0(src: &[u8]) -> markit_mdbench_oracle::normalized::NormalizedDocument {
 pub fn build(src: &[u8]) -> ReadyDocument {
     let text = String::from_utf8(src.to_vec()).expect("test sources are UTF-8");
     let source = Source::new(SourceId(1), text);
-    full_build(&source, &mut NoopWorkSink).expect("I2 full build must succeed on test sources")
+    full_build(&source, &mut NoopWorkSink, &mut NoopHorseAStructuralSink)
+        .expect("I2 full build must succeed on test sources")
 }
 
 /// Full-build a READY document carrying an explicit source identity.
 pub fn build_with_id(id: SourceId, src: &[u8]) -> ReadyDocument {
     let text = String::from_utf8(src.to_vec()).expect("test sources are UTF-8");
     let source = Source::new(id, text);
-    full_build(&source, &mut NoopWorkSink).expect("I2 full build must succeed on test sources")
+    full_build(&source, &mut NoopWorkSink, &mut NoopHorseAStructuralSink)
+        .expect("I2 full build must succeed on test sources")
 }
 
 /// The H0 equality gate: full normalized structural equality (never a

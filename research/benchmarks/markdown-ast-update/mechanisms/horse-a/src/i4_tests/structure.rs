@@ -12,6 +12,8 @@
 
 use markit_mdbench_common::NoopWorkSink;
 
+use crate::structural::NoopHorseAStructuralSink;
+
 use crate::state::{Owner, ReadyDocument};
 use crate::update::{ReplacementIntervals, UpdatePath};
 
@@ -74,7 +76,10 @@ fn a_local_replacement_retains_the_prefix_and_suffix_nodes_structurally() {
             old_ranks: 1..3
         }
     );
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     let after = nodes(&next);
 
     assert_eq!(
@@ -105,7 +110,10 @@ fn a_retained_suffix_owner_survives_a_base_shift_unchanged() {
     assert_eq!(before_bases, vec![0, 9, 13, 17]);
 
     let (staged, _post) = fixture.staged(&edit(14, 14, "X"));
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     let after_values = owner_values(&next);
     let after_bases = bases(&next);
 
@@ -135,7 +143,10 @@ fn the_ref_table_is_moved_not_rebuilt_on_the_local_path() {
     let before = fixture.old.refs.entries().as_ptr();
 
     let (staged, _post) = fixture.staged(&edit(14, 14, "X"));
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
 
     assert_eq!(
         next.refs.entries().as_ptr(),
@@ -167,7 +178,10 @@ fn retained_suffix_certificates_are_inherited_not_regenerated() {
             old_ranks: 1..3
         }
     );
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     let after_values = owner_values(&next);
     let after_nodes = nodes(&next);
 
@@ -188,7 +202,10 @@ fn every_ready_invariant_holds_after_a_local_replacement() {
     let fixture = Fixture::new(S4);
     let (staged, post) = fixture.staged(&edit(14, 14, "X"));
     assert_eq!(staged.record.path, UpdatePath::Local);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
 
     // The I4 task contract §28 invariant set, checked explicitly.
     crate::validate::validate_coverage(&next).expect("coverage partition");
@@ -211,7 +228,10 @@ fn every_ready_invariant_holds_after_a_local_replacement() {
 fn the_fresh_replacement_owners_carry_parser_derived_certificates() {
     let fixture = Fixture::new(S4);
     let (staged, post) = fixture.staged(&edit(14, 14, "X"));
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     let values = owner_values(&next);
 
     // Fresh Owner 1 (p1): the barrier at new cut 13, made Owner-relative to
@@ -259,7 +279,10 @@ fn no_budget_selector_keeps_a_large_new_replacement_on_the_local_path() {
     assert!(record.facts_equal);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.owners.records(), 5);
     assert_ready_equals_h0(&next, &post);
 }
@@ -285,7 +308,10 @@ fn no_budget_selector_keeps_a_large_old_replacement_on_the_local_path() {
     assert!(record.facts_equal);
     assert_eq!(record.path, UpdatePath::Local);
 
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -303,7 +329,10 @@ fn empty_trivia_and_content_documents_round_trip_through_the_local_path() {
         }
     );
     assert_eq!(staged.record.path, UpdatePath::Local);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.owners.records(), 1);
     assert_ready_equals_h0(&next, &post);
 
@@ -311,7 +340,10 @@ fn empty_trivia_and_content_documents_round_trip_through_the_local_path() {
     let fixture = Fixture::new("hello\n");
     let (staged, post) = fixture.staged(&edit(0, 6, ""));
     assert_eq!(staged.record.path, UpdatePath::Local);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert!(next.owners.is_empty(), "the frozen empty document");
     assert_ready_equals_h0(&next, &post);
 
@@ -327,7 +359,10 @@ fn empty_trivia_and_content_documents_round_trip_through_the_local_path() {
         }
     );
     assert_eq!(staged.record.path, UpdatePath::Local);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert!(next.owners.records() == 1);
     assert!(next.owners.owners_in_order()[0].is_trivia_only());
     assert_ready_equals_h0(&next, &post);
@@ -336,7 +371,10 @@ fn empty_trivia_and_content_documents_round_trip_through_the_local_path() {
     let fixture = Fixture::new("\n\n");
     let (staged, post) = fixture.staged(&edit(0, 0, "hi"));
     assert_eq!(staged.record.path, UpdatePath::Local);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
 }
 
@@ -348,7 +386,10 @@ fn a_full_branch_commit_installs_the_same_target_state() {
     let fixture = Fixture::new(S4);
     let (staged, post) = fixture.staged(&edit(13, 13, "[b]: /y\n\n"));
     assert_eq!(staged.record.path, UpdatePath::SameTargetFullBuild);
-    let next = crate::update::commit(fixture.old, staged);
+    let next = staged
+        .prepare(fixture.old, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&next, &post);
     assert_eq!(post.as_str(), "[a]: /x\n\np1\n\n[b]: /y\n\np2\n\np3\n");
 
@@ -358,9 +399,19 @@ fn a_full_branch_commit_installs_the_same_target_state() {
         .apply(&post, markit_mdbench_common::SourceId(3))
         .expect("edit applies");
     assert_eq!(post2.as_str(), "[a]: /x\n\np1\n\n[b]: /y\n\np2\n\npQ3\n");
-    let staged2 = crate::update::stage(&next, &post, &post2, &follow_up, &mut NoopWorkSink)
-        .expect("the state after a full branch stages the next update");
+    let staged2 = crate::update::stage(
+        &next,
+        &post,
+        &post2,
+        &follow_up,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("the state after a full branch stages the next update");
     assert_eq!(staged2.record.path, UpdatePath::Local);
-    let after = crate::update::commit(next, staged2);
+    let after = staged2
+        .prepare(next, &mut NoopHorseAStructuralSink)
+        .expect("the bounded commit workspace prepares")
+        .commit(&mut NoopHorseAStructuralSink);
     assert_ready_equals_h0(&after, &post2);
 }

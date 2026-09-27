@@ -8,7 +8,9 @@
 //! returned.
 
 use markit_mdbench_common::{CanonicalEdit, NoopWorkSink, Source, SourceId};
-use markit_mdbench_horse_a::{full_build, update, validate_ready, NormalizeV1, ReadyDocument};
+use markit_mdbench_horse_a::{
+    full_build, update, validate_ready, NoopHorseAStructuralSink, NormalizeV1, ReadyDocument,
+};
 use markit_mdbench_oracle::validate_normalized;
 use markit_mdbench_shared_grammar::parse_full;
 
@@ -45,13 +47,23 @@ fn source(id: u64, text: &str) -> Source {
 }
 
 fn build(text: &str) -> ReadyDocument {
-    full_build(&source(1, text), &mut NoopWorkSink).expect("initial full build")
+    full_build(
+        &source(1, text),
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial full build")
 }
 
 /// Run one update from a fresh initial state and return the READY result.
 fn run_case(old_text: &str, start: usize, end: usize, inserted: &str) -> (ReadyDocument, Source) {
     let old_source = source(1, old_text);
-    let old = full_build(&old_source, &mut NoopWorkSink).expect("initial full build");
+    let old = full_build(
+        &old_source,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial full build");
     let edit = CanonicalEdit::new(start, end, inserted).expect("edit geometry");
     edit.validate_against(&old_source)
         .expect("edit vs old source");
@@ -66,7 +78,12 @@ fn run_case(old_text: &str, start: usize, end: usize, inserted: &str) -> (ReadyD
 /// returned, checking the oracle after every step.
 fn run_chain(old_text: &str, edits: &[(usize, usize, &str)]) -> (ReadyDocument, Source) {
     let mut current_source = source(1, old_text);
-    let mut current_state = full_build(&current_source, &mut NoopWorkSink).expect("initial build");
+    let mut current_state = full_build(
+        &current_source,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial build");
     for (step, &(start, end, inserted)) in edits.iter().enumerate() {
         let edit = CanonicalEdit::new(start, end, inserted).expect("edit geometry");
         edit.validate_against(&current_source)
@@ -175,7 +192,12 @@ fn the_c3_restore_probe_recovers_the_original_document() {
     // recover the clean pre-source result.
     let old_text = "[a]: /x\n\np1\n\np2\n\np3\n";
     let old_source = source(1, old_text);
-    let old = full_build(&old_source, &mut NoopWorkSink).expect("initial build");
+    let old = full_build(
+        &old_source,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial build");
 
     let insertion = CanonicalEdit::new(3, 3, "xxxx").expect("edit");
     let middle = insertion

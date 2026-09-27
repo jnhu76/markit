@@ -27,15 +27,15 @@
 //! `facts differ OR preservation unknown`.
 //!
 //! Staging (`stage`) is fallible and leaves the old READY state untouched
-//! and coherent. `commit` is the pre-I5 commit boundary: consuming
-//! ownership moves, one structural splice, exactly one RefTable move, and
-//! the retirement of the detached middle. I5 owns the formal
-//! `PreparedCommit` frontier, the retirement discipline and the structural
-//! counters; nothing here counts anything.
+//! and coherent, producing an [`prepared::UpdateStaging`]. The caller then
+//! forms a [`prepared::PreparedCommit`] (consuming the old state by
+//! ownership) and crosses the formal commit frontier — module `prepared`
+//! owns that boundary and everything after it; nothing here counts
+//! anything beyond the frozen geometry record.
 
 use std::ops::Range;
 
-use markit_mdbench_common::{CanonicalEdit, Source, SourceId, WorkSink};
+use markit_mdbench_common::{CanonicalEdit, Source, WorkSink};
 use markit_mdbench_shared_grammar::{
     parse_region_observed, ObserverControl, RefTable, RegionObserver, RegionOutcome,
     RootBlankEvent, TopLevelEvent,
@@ -45,8 +45,12 @@ use crate::candidate::{AcceptedConvergence, CandidateWalk, ConvergencePolicy, Wa
 use crate::facts::OrderedFacts;
 use crate::fresh::{build_replacement_owners, SealedRegion};
 use crate::full_build::{full_build, BuildError};
+use crate::prepared::{CommitPlan, UpdateStaging};
 use crate::sequence::Located;
 use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
+use crate::structural::{
+    ForbiddenKind, FullBuildReason, HorseAStructuralSink, NoopHorseAStructuralSink,
+};
 
 /// Why an update refused to return a state. Every variant is a
 /// pre-frontier refusal: staging never mutates or partially consumes the
@@ -141,28 +145,6 @@ pub(crate) struct UpdateRecord {
     pub(crate) path: UpdatePath,
 }
 
-/// Which commit plan staging produced. Both are complete before the commit
-/// boundary: the local plan carries the eager fresh Owners, the full plan
-/// carries an already-READY state.
-#[derive(Debug)]
-pub(crate) enum CommitPlan {
-    Local {
-        fresh: OwnerSeq,
-        post_id: SourceId,
-        post_len: usize,
-    },
-    Full(ReadyDocument),
-}
-
-/// The staged update: everything decided and prepared while the old READY
-/// state was still untouched (the pre-I5 shape of the frozen staging state;
-/// I5 owns the formal `PreparedCommit` frontier and its no-fail proof).
-#[derive(Debug)]
-pub(crate) struct StagedUpdate {
-    pub(crate) record: UpdateRecord,
-    pub(crate) plan: CommitPlan,
-}
-
 /// The validated association of `(old state, edit, old source, post source)`
 /// (I4 task contract §7).
 struct Association {
@@ -187,6 +169,7 @@ fn validate_association(
     old_source: &Source,
     post_source: &Source,
     edit: &CanonicalEdit,
+    structural: &mut dyn HorseAStructuralSink,
 ) -> Result<Association, UpdateError> {
     let invalid = |detail: String| UpdateError::InvalidAssociation { detail };
 
@@ -211,7 +194,10 @@ fn validate_association(
         )));
     }
     // O(1) aggregate consistency: the retained sequence must still cover the
-    // source it claims.
+    // source it claims. The root read is charged to the structural ledger.
+    if old.owners.root.is_some() {
+        structural.aggregate_reads(1);
+    }
     if old.owners.total_bytes() != old.source_len {
         return Err(invalid(format!(
             "the retained sequence covers {} bytes but the state claims {}",
@@ -274,8 +260,12 @@ fn validate_association(
 /// needs no separate LEFT view: the candidate predicate tests the raw
 /// canonical edit interval, and every candidate must lie at or after
 /// `edit_end`.
-fn locate_damage(owners: &OwnerSeq, edit_start: usize) -> usize {
-    match owners.locate_by_byte(edit_start) {
+fn locate_damage(
+    owners: &OwnerSeq,
+    edit_start: usize,
+    structural: &mut dyn HorseAStructuralSink,
+) -> usize {
+    match owners.locate_by_byte(edit_start, structural) {
         Located::Owner(located) => located.base,
         Located::Eof => owners.total_bytes(),
     }
@@ -289,8 +279,12 @@ fn locate_damage(owners: &OwnerSeq, edit_start: usize) -> usize {
 /// whether the edit invalidated its support is decided by the convergence
 /// predicate, and whether it can be reused at all is decided by this round's
 /// own forward parse.
-fn select_restart(owners: &OwnerSeq, damage_base: usize) -> RestartSelection {
-    match owners.safe_predecessor(damage_base) {
+fn select_restart(
+    owners: &OwnerSeq,
+    damage_base: usize,
+    structural: &mut dyn HorseAStructuralSink,
+) -> RestartSelection {
+    match owners.safe_predecessor(damage_base, structural) {
         Some(boundary) => RestartSelection {
             cut: boundary.boundary,
             certified_rank: Some(boundary.rank),
@@ -382,6 +376,7 @@ fn forward_parse<W: WorkSink>(
     restart: RestartSelection,
     first_rank: usize,
     sink: &mut W,
+    structural: &mut dyn HorseAStructuralSink,
 ) -> ForwardParse {
     let src = post_source.as_bytes();
     let new_len = src.len();
@@ -392,7 +387,7 @@ fn forward_parse<W: WorkSink>(
         delta: association.delta,
     };
     let mut observer = ForwardObserver {
-        walk: CandidateWalk::begin(&old.owners, first_rank, policy),
+        walk: CandidateWalk::begin(&old.owners, first_rank, policy, structural),
         starts: Vec::new(),
         barriers: Vec::new(),
         accepted: None,
@@ -480,45 +475,73 @@ fn complete_intervals(
 /// then the environment choice — and only then is any reference-sensitive
 /// payload materialized (spec §9: no payload may be built under an
 /// environment the facts decision has not yet fixed).
+///
+/// The structural sink rides the whole staging pipeline so the frozen
+/// geometry/route record and every later charge land in one ledger; the
+/// no-op and recording lanes run this identical code.
 pub(crate) fn stage<W: WorkSink>(
     old: &ReadyDocument,
     old_source: &Source,
     post_source: &Source,
     edit: &CanonicalEdit,
     sink: &mut W,
-) -> Result<StagedUpdate, UpdateError> {
+    structural: &mut dyn HorseAStructuralSink,
+) -> Result<UpdateStaging, UpdateError> {
     // Phase 1 — validation.
-    let association = validate_association(old, old_source, post_source, edit)?;
+    let association = validate_association(old, old_source, post_source, edit, structural)?;
 
     // Phase 2 — weighted damage locate (RIGHT affinity).
-    let damage_base = locate_damage(&old.owners, association.edit_start);
+    let damage_base = locate_damage(&old.owners, association.edit_start, structural);
     debug_assert!(damage_base <= old.source_len);
 
     // Phase 3 — nearest eligible certified restart predecessor.
-    let restart = select_restart(&old.owners, damage_base);
+    let restart = select_restart(&old.owners, damage_base, structural);
+    structural.record_restart_old(restart.cut as u64);
 
     // Phase 4 — conservative left guard: the first replaced Owner starts at
     // the restart cut.
     let first_rank = first_replaced_rank(restart);
 
     // Phases 5–7 — forward parse + monotone candidate walk.
-    let forward = forward_parse(old, post_source, &association, restart, first_rank, sink);
+    let forward = forward_parse(
+        old,
+        post_source,
+        &association,
+        restart,
+        first_rank,
+        sink,
+        structural,
+    );
 
     // Phase 8 — complete old/new replacement intervals (byte and rank spaces
     // made explicit).
     let intervals = complete_intervals(old, restart, first_rank, &forward);
+    structural.record_replace_interval(
+        intervals.old_ranks.start as u64,
+        intervals.old_ranks.end as u64,
+    );
+    // The replacement end on both sides: the accepted convergence cuts, or
+    // the real L_old/L_new when the parse ran to EOF.
+    structural.record_convergence(intervals.old.end as u64, intervals.new.end as u64);
 
     // Phase 9 — complete ordered replacement facts on both sides, before any
     // semantic materialization.
-    let old_facts = OrderedFacts::of_old_replacement(&old.owners, intervals.old_ranks.clone());
-    let new_facts = OrderedFacts::of_fresh_region(&forward.defs);
-    let facts_equal = old_facts == new_facts;
+    let old_facts =
+        OrderedFacts::of_old_replacement(&old.owners, intervals.old_ranks.clone(), structural);
+    let new_facts = OrderedFacts::of_fresh_region(&forward.defs, structural);
+    let facts_equal = old_facts.eq_with_recording(&new_facts, structural);
     debug_assert_eq!(
         facts_equal,
         old_facts.entries() == new_facts.entries(),
         "preservation is decided by the complete ordered fact sequences, \
          never by a derived flag"
     );
+    // Defended-site sentinel assertion: the preservation decision compared
+    // exactly the replacement region's facts (old side from the detached
+    // Owners, new side from the region table) — no document-wide
+    // recollection occurred. A regression that recollected globally would
+    // charge this site.
+    structural.forbidden(ForbiddenKind::GlobalFactRecollection, 0);
 
     // Phase 10 — the semantic-preservation decision. Exactly two outcomes:
     // proven (facts equal) and not proven (differ, or unknown — and in this
@@ -529,8 +552,13 @@ pub(crate) fn stage<W: WorkSink>(
         // replacement Owners under it. No document-wide definition
         // recollection, no per-Owner rewrite of retained payload, no patch
         // of the table.
-        let fresh =
-            build_replacement_owners(post_source.as_bytes(), forward.region, &old.refs, sink)?;
+        let fresh = build_replacement_owners(
+            post_source.as_bytes(),
+            forward.region,
+            &old.refs,
+            sink,
+            structural,
+        )?;
         (
             UpdatePath::Local,
             CommitPlan::Local {
@@ -544,11 +572,16 @@ pub(crate) fn stage<W: WorkSink>(
         // same-target READY state. Not a weaker state, not a repair of
         // selected Owners, and never selected by anything except this
         // semantic decision.
-        let full = full_build(post_source, sink).map_err(UpdateError::FullBuild)?;
+        let full = full_build(post_source, sink, structural).map_err(UpdateError::FullBuild)?;
         (UpdatePath::SameTargetFullBuild, CommitPlan::Full(full))
     };
+    let (selected, reason) = match path {
+        UpdatePath::Local => (false, FullBuildReason::None),
+        UpdatePath::SameTargetFullBuild => (true, FullBuildReason::FactsDiffer),
+    };
+    structural.record_full_build(selected, reason);
 
-    Ok(StagedUpdate {
+    Ok(UpdateStaging {
         record: UpdateRecord {
             damage_base,
             restart,
@@ -562,6 +595,10 @@ pub(crate) fn stage<W: WorkSink>(
 }
 
 /// The frozen update entry point: stage, then cross the commit boundary.
+///
+/// This is the timing/no-op structural lane: the identical mechanism runs
+/// with a no-op structural sink. The recording lane is
+/// [`update_with_structural`]; the two differ only in sink identity.
 ///
 /// # Precondition — caller/host trust boundary
 ///
@@ -588,68 +625,29 @@ pub fn update<W: WorkSink>(
     edit: &CanonicalEdit,
     sink: &mut W,
 ) -> Result<ReadyDocument, UpdateError> {
-    let staged = stage(&old, old_source, post_source, edit, sink)?;
-    Ok(commit(old, staged))
+    update_with_structural(
+        old,
+        old_source,
+        post_source,
+        edit,
+        sink,
+        &mut NoopHorseAStructuralSink,
+    )
 }
 
-/// The commit boundary (pre-I5 shape): consume the old representation and
-/// produce the next READY state.
-///
-/// Local plan: two rank splits, the fresh middle spliced in, the old
-/// RefTable moved exactly once, and exactly the detached middle retired —
-/// retained prefix/suffix ownership is transferred structurally, never
-/// reinserted record-by-record. Full plan: install the already-complete
-/// same-target state and retire the whole old representation.
-pub(crate) fn commit(old: ReadyDocument, staged: StagedUpdate) -> ReadyDocument {
-    let StagedUpdate { record, plan } = staged;
-    match plan {
-        CommitPlan::Local {
-            fresh,
-            post_id,
-            post_len,
-        } => {
-            debug_assert_eq!(record.path, UpdatePath::Local);
-            debug_assert!(record.facts_equal);
-            debug_assert_eq!(record.intervals.old.start, record.restart.cut);
-            debug_assert_eq!(record.intervals.new.start, record.restart.cut);
-            debug_assert!(record.convergence.is_none_or(|accepted| {
-                accepted.old_cut == record.intervals.old.end
-                    && accepted.new_cut == record.intervals.new.end
-            }));
-
-            let ranks = record.intervals.old_ranks;
-            let ReadyDocument { owners, refs, .. } = old;
-            let mut owners: OwnerSeq = owners;
-            // The one structural splice: called with the explicit rank
-            // interval, so the retained prefix and suffix are transferred by
-            // ownership and the detached middle comes back intact rather
-            // than being dropped inside the operator.
-            let detached = owners.replace_range(ranks.start, ranks.end, fresh);
-            let next = ReadyDocument {
-                source_id: post_id,
-                source_len: post_len,
-                interpretation: InterpretationId::HORSE_A_V1,
-                owners,
-                refs,
-            };
-            // Retire the detached middle only — the retained prefix/suffix
-            // payload is never traversed (I5 owns the accounting for this
-            // drop walk; this slice owns doing it before READY).
-            drop(detached);
-
-            #[cfg(debug_assertions)]
-            if let Err(detail) = crate::validate::validate_ready(&next) {
-                panic!("a local replacement produced an invalid READY state: {detail}");
-            }
-            next
-        }
-        CommitPlan::Full(fresh) => {
-            debug_assert_eq!(record.path, UpdatePath::SameTargetFullBuild);
-            debug_assert!(!record.facts_equal);
-            // The full branch explicitly replaces the complete document
-            // state, so the whole old representation retires here.
-            drop(old);
-            fresh
-        }
-    }
+/// The recording structural lane: the identical staged pipeline and
+/// frontier crossing with a caller-provided [`HorseAStructuralSink`], so
+/// one `HORSE-A-STRUCTURAL-COUNTERS-v1` record accumulates the whole
+/// update's attribution.
+pub fn update_with_structural<W: WorkSink>(
+    old: ReadyDocument,
+    old_source: &Source,
+    post_source: &Source,
+    edit: &CanonicalEdit,
+    sink: &mut W,
+    structural: &mut dyn HorseAStructuralSink,
+) -> Result<ReadyDocument, UpdateError> {
+    let staged = stage(&old, old_source, post_source, edit, sink, structural)?;
+    let prepared = staged.prepare(old, structural)?;
+    Ok(prepared.commit(structural))
 }

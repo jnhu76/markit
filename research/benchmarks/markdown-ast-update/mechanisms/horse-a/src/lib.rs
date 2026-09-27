@@ -1,14 +1,18 @@
 //! markit-mdbench-horse-a — the frozen Horse-A v1 mechanism.
 //!
-//! **Slice I4** of the `HORSE-A-IMPL-1` umbrella (issue #62): the complete
-//! incremental update, on top of the merged I3 weighted-AVL substrate
-//! (PR #68), the I2 retained READY state (PR #64) and the I1 parser
-//! observation seam (PR #63). Authority:
+//! **Slice I5** of the `HORSE-A-IMPL-1` umbrella (issue #62): the formal
+//! `PreparedCommit` frontier, the no-normal-failure post-frontier resource
+//! discipline, ownership-proportional retirement, and the
+//! `HORSE-A-STRUCTURAL-COUNTERS-v1` attribution record — on top of the
+//! merged I4 complete incremental update (PR #69), the I3 weighted-AVL
+//! substrate (PR #68), the I2 retained READY state (PR #64) and the I1
+//! parser observation seam (PR #63). Authority:
 //! `docs/research/horse-a-v1-algorithm.md` (frozen; source authorities
 //! #55/PR #54, #59, #60).
 //!
-//! What I4 establishes — one update is exactly the frozen pipeline, with
-//! every phase a distinguishable function ([`update::stage`] owns it):
+//! What I4 established before it — one update is exactly the frozen
+//! pipeline, with every phase a distinguishable function
+//! ([`update::stage`] owns it):
 //!
 //! - **edit/source association** — the shared canonical-edit contract
 //!   validates identity, range, UTF-8 boundaries and length arithmetic;
@@ -39,7 +43,29 @@
 //! The returned state is a normal READY state, immediately usable for the
 //! next update.
 //!
-//! What I3 established before it (spec §12; #59 §7.2–§7.6, §8; all
+//! What I5 establishes on top of it (#59 §6.1, §9–§11, §14; #60 §9):
+//!
+//! - [`prepared::UpdateStaging`] — the pre-frontier staging state: every
+//!   fallible phase complete, both candidate plans materialized, the old
+//!   READY state still owned by the caller;
+//! - [`prepared::PreparedCommit`] — the frontier-crossing state: the old
+//!   READY document consumed by ownership, the frozen geometry record
+//!   set, every ordinary recoverable/fallible operation complete. Crossing
+//!   ([`prepared::PreparedCommit::commit`]) is infallible: structural
+//!   ownership moves, split/join/relink, rotations, aggregate
+//!   recomputation, fixed scalar counter updates, the single RefTable
+//!   move, state installation and retirement — nothing else. There is no
+//!   post-frontier algorithmic fallback, and a process-level panic is an
+//!   implementation bug, not a branch;
+//! - [`structural::HorseAStructuralCountersV1`] — the explicitly
+//!   versioned structural attribution record, charged at the point of
+//!   work through a [`structural::HorseAStructuralSink`]; the no-op lane
+//!   ([`update`]) and the recording lane ([`update_with_structural`])
+//!   execute the identical algorithm and differ only in sink identity.
+//!   Fields distinguish `Unknown` from `Known(0)`/`Known(n)`; forbidden
+//!   sentinels are charged `Known(0)` at their defended sites.
+//!
+//! What I3 established before that (spec §12; #59 §7.2–§7.6, §8; all
 //! `pub(crate)` — mechanism substrate, not a reusable AVL library):
 //!
 //! - [`sequence::locate_by_byte`] — weighted `O(H)` byte locate with the
@@ -88,14 +114,13 @@
 //!
 //! What no slice has implemented yet (later slices):
 //!
-//! - I5: `PreparedCommit`, the formal no-fail commit frontier, the
-//!   retirement discipline, and the structural/visit/link-write/rotation
-//!   counter schema (the operators keep relink/rotation/recompute events
-//!   explicit and countable, but no counters exist);
 //! - any #60 treatment registration or collection lane, and no
-//!   performance measurement of any kind.
+//!   performance measurement of any kind. The frozen #60 bounds are
+//!   adjudication instruments for a later explicitly authorized
+//!   collection; nothing here encodes them into the mechanism path.
+//!   STRUCTURAL_COLLECTION_RUN=NO, PERFORMANCE_COLLECTION_RUN=NO.
 //!
-//! What I4 deliberately does NOT do (frozen weaknesses preserved, not
+//! What I5 deliberately does NOT do (frozen weaknesses preserved, not
 //! repaired): W-A1 stays root-only restart plus atomic top-level Owner plus
 //! the conservative left guard; W-A2 stays "facts differ or preservation
 //! unknown → same-target full build"; W-A3 stays one Owner per AVL node. No
@@ -111,11 +136,15 @@ pub mod export;
 pub mod facts;
 mod fresh;
 pub mod full_build;
-pub mod payload;
+mod payload;
+mod prepared;
+mod retirement;
 pub mod sequence;
 pub mod state;
+pub mod structural;
 pub mod update;
 pub mod validate;
+mod workspace;
 
 #[cfg(test)]
 mod i3_tests;
@@ -123,12 +152,19 @@ mod i3_tests;
 #[cfg(test)]
 mod i4_tests;
 
+#[cfg(test)]
+mod i5_tests;
+
 pub use certificate::{RestartCertificate, RestartSupport};
 pub use full_build::{full_build, BuildError};
 pub use state::{
     Aggregate, AstPayload, AvlNode, InterpretationId, Owner, OwnerPayload, OwnerSeq, ReadyDocument,
 };
-pub use update::{update, UpdateError};
+pub use structural::{
+    FullBuildReason, HorseAStructuralCountersV1, HorseAStructuralSink, NoopHorseAStructuralSink,
+    Observed, RecordingHorseAStructuralSink,
+};
+pub use update::{update, update_with_structural, UpdateError};
 pub use validate::{
     validate_certificates, validate_coverage, validate_full_build_tree,
     validate_owner_relative_payload, validate_ready, validate_ref_table_projection,

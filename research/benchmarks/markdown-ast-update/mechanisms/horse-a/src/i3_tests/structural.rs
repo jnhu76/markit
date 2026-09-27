@@ -9,6 +9,7 @@
 
 use super::*;
 use crate::sequence::{join, join_with_pivot, rebalance, remove_max};
+use crate::workspace::CommitWorkspace;
 
 fn addr(node: &AvlNode) -> usize {
     node as *const AvlNode as usize
@@ -26,7 +27,11 @@ fn remove_max_on_a_single_owner_yields_an_isolated_pivot() {
     let seq = make(&[4], &[true]);
     let root = seq.root.expect("non-empty");
     let root_addr = addr(&root);
-    let (rest, pivot) = remove_max(root);
+    let (rest, pivot) = remove_max(
+        root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    );
     assert!(
         rest.is_none(),
         "nothing remains after removing the only Owner"
@@ -48,7 +53,11 @@ fn remove_max_on_balanced_trees_keeps_order_and_validity() {
         let model: Model = weights.iter().copied().zip(certs.iter().copied()).collect();
         let seq = make(&weights, &certs);
         let original_addrs = addresses(&seq);
-        let (rest, pivot) = remove_max(seq.root.expect("non-empty"));
+        let (rest, pivot) = remove_max(
+            seq.root.expect("non-empty"),
+            &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
+        );
 
         // The pivot is exactly the original final Owner node.
         assert_eq!(addr(&pivot), original_addrs[n_owners - 1]);
@@ -84,7 +93,11 @@ fn remove_max_rebalances_after_a_right_spine_removal() {
         let a = addresses(&seq);
         (seq, a)
     };
-    let (rest, pivot) = remove_max(original_addrs.0.root.expect("non-empty"));
+    let (rest, pivot) = remove_max(
+        original_addrs.0.root.expect("non-empty"),
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    );
     assert_eq!(
         pivot.owner.coverage_len, 1,
         "pivot is the chain's last leaf"
@@ -111,7 +124,14 @@ fn join_with_pivot_attaches_directly_at_compatible_heights() {
         r.root.as_ref().unwrap().height,
     );
     let pivot = n(None, 9, true, None).expect("pivot");
-    let joined = join_with_pivot(l.root, pivot, r.root);
+    let joined = join_with_pivot(
+        l.root,
+        pivot,
+        r.root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        crate::structural::StructuralOp::Join,
+        &mut CommitWorkspace::for_tests(16),
+    );
     // Compatible heights: the pivot IS the subtree root, attached under it.
     assert_eq!(joined.owner.coverage_len, 9);
     assert_eq!(
@@ -150,7 +170,14 @@ fn join_with_pivot_preserves_every_node_across_uneven_joins() {
 
         let pivot = n(None, 9, true, None).expect("pivot");
         let pivot_addr = addr(&pivot);
-        let joined = join_with_pivot(l.root, pivot, r.root);
+        let joined = join_with_pivot(
+            l.root,
+            pivot,
+            r.root,
+            &mut crate::structural::NoopHorseAStructuralSink,
+            crate::structural::StructuralOp::Join,
+            &mut CommitWorkspace::for_tests(16),
+        );
 
         assert!(
             (lh.max(rh)..=lh.max(rh) + 1).contains(&joined.height),
@@ -179,23 +206,48 @@ fn join_with_pivot_requires_a_structurally_isolated_pivot() {
     let l = make(&[1, 2], &[false; 2]);
     let r = make(&[3, 4], &[false; 2]);
     let dirty_pivot = n(None, 9, false, n(None, 8, false, None)).expect("pivot with a child");
-    let _ = join_with_pivot(l.root, dirty_pivot, r.root);
+    let _ = join_with_pivot(
+        l.root,
+        dirty_pivot,
+        r.root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        crate::structural::StructuralOp::Join,
+        &mut CommitWorkspace::for_tests(16),
+    );
 }
 
 // ----------------------------------------------------------------------- join
 
 #[test]
 fn join_empty_variants_return_the_other_side() {
-    assert!(join(None, None).is_none());
+    assert!(join(
+        None,
+        None,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    )
+    .is_none());
 
     let r = make(&[1, 2, 3], &[false; 3]);
     let r_addrs = addresses(&r);
-    let joined = join(None, r.root).expect("right side");
+    let joined = join(
+        None,
+        r.root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    )
+    .expect("right side");
     assert_eq!(addresses(&OwnerSeq { root: Some(joined) }), r_addrs);
 
     let l = make(&[1, 2, 3], &[false; 3]);
     let l_addrs = addresses(&l);
-    let joined = join(l.root, None).expect("left side");
+    let joined = join(
+        l.root,
+        None,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    )
+    .expect("left side");
     assert_eq!(addresses(&OwnerSeq { root: Some(joined) }), l_addrs);
 }
 
@@ -211,7 +263,13 @@ fn join_takes_its_pivot_from_the_left_maximum() {
     let r_addrs = addresses(&r);
     let left_max_addr = l_addrs[l_addrs.len() - 1];
 
-    let joined = join(l.root, r.root).expect("both sides non-empty");
+    let joined = join(
+        l.root,
+        r.root,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        &mut CommitWorkspace::for_tests(16),
+    )
+    .expect("both sides non-empty");
     let seq = OwnerSeq { root: Some(joined) };
     let result_addrs = addresses(&seq);
     assert_eq!(result_addrs.len(), l_addrs.len() + r_addrs.len());
@@ -242,7 +300,13 @@ fn join_covers_similar_and_uneven_heights() {
         let r = make(&rw, &certs(rw.len()));
         let l_addrs = addresses(&l);
         let r_addrs = addresses(&r);
-        let joined = join(l.root, r.root).expect("both non-empty");
+        let joined = join(
+            l.root,
+            r.root,
+            &mut crate::structural::NoopHorseAStructuralSink,
+            &mut CommitWorkspace::for_tests(16),
+        )
+        .expect("both non-empty");
         let seq = OwnerSeq { root: Some(joined) };
         let mut expected: Model = lw.iter().map(|&w| (w, false)).collect();
         expected.extend(rw.iter().map(|&w| (w, false)));
@@ -260,7 +324,11 @@ fn join_covers_similar_and_uneven_heights() {
 fn rebalanced(seq: OwnerSeq) -> (Vec<usize>, OwnerSeq) {
     let before = addresses(&seq);
     let mut slot = seq.root;
-    rebalance(&mut slot);
+    rebalance(
+        &mut slot,
+        &mut crate::structural::NoopHorseAStructuralSink,
+        crate::structural::StructuralOp::PivotExtract,
+    );
     let after_seq = OwnerSeq { root: slot };
     (before, after_seq)
 }

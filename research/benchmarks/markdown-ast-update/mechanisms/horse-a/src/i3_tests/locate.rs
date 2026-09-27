@@ -34,7 +34,7 @@ fn locate_hits_every_byte_and_boundary_on_uneven_trees() {
         let total: usize = weights.iter().sum();
         for x in 0..total {
             let (rank, base, offset) = expected_at(&model, x);
-            match seq.locate_by_byte(x) {
+            match seq.locate_by_byte(x, &mut crate::structural::NoopHorseAStructuralSink) {
                 crate::sequence::Located::Owner(loc) => {
                     assert_eq!(loc.rank, rank, "rank at byte {x} of {weights:?}");
                     assert_eq!(loc.base, base, "base at byte {x} of {weights:?}");
@@ -50,7 +50,10 @@ fn locate_hits_every_byte_and_boundary_on_uneven_trees() {
             }
         }
         assert!(
-            matches!(seq.locate_by_byte(total), crate::sequence::Located::Eof),
+            matches!(
+                seq.locate_by_byte(total, &mut crate::structural::NoopHorseAStructuralSink),
+                crate::sequence::Located::Eof
+            ),
             "x == L must be EOF in {weights:?}"
         );
     }
@@ -64,7 +67,7 @@ fn locate_owner_boundaries_resolve_to_the_next_owner_at_offset_zero() {
     let seq = make(&weights, &[false; 3]);
     let mut base = 0;
     for (rank, &w) in weights.iter().enumerate() {
-        match seq.locate_by_byte(base) {
+        match seq.locate_by_byte(base, &mut crate::structural::NoopHorseAStructuralSink) {
             crate::sequence::Located::Owner(loc) => {
                 assert_eq!(loc.rank, rank);
                 assert_eq!(loc.base, base);
@@ -81,13 +84,13 @@ fn locate_eof_is_explicit_including_the_empty_sequence() {
     // Empty sequence: L = 0, x = 0 → EOF (I3 task contract §11).
     let empty = OwnerSeq::default();
     assert!(matches!(
-        empty.locate_by_byte(0),
+        empty.locate_by_byte(0, &mut crate::structural::NoopHorseAStructuralSink),
         crate::sequence::Located::Eof
     ));
 
     let seq = make(&[3, 9], &[false; 2]);
     assert!(matches!(
-        seq.locate_by_byte(12),
+        seq.locate_by_byte(12, &mut crate::structural::NoopHorseAStructuralSink),
         crate::sequence::Located::Eof
     ));
 }
@@ -96,7 +99,7 @@ fn locate_eof_is_explicit_including_the_empty_sequence() {
 #[should_panic(expected = "out of range")]
 fn locate_beyond_total_is_a_precondition_error() {
     let seq = make(&[3, 9], &[false; 2]);
-    let _ = seq.locate_by_byte(13);
+    let _ = seq.locate_by_byte(13, &mut crate::structural::NoopHorseAStructuralSink);
 }
 
 #[test]
@@ -106,7 +109,7 @@ fn locate_rank_and_base_stay_exact_on_a_deep_tree() {
     let weights = [1usize; 64];
     let seq = make(&weights, &[false; 64]);
     for x in 0..64usize {
-        match seq.locate_by_byte(x) {
+        match seq.locate_by_byte(x, &mut crate::structural::NoopHorseAStructuralSink) {
             crate::sequence::Located::Owner(loc) => {
                 assert_eq!(loc.rank, x, "rank at byte {x}");
                 assert_eq!(loc.base, x, "base at byte {x}");
@@ -116,7 +119,7 @@ fn locate_rank_and_base_stay_exact_on_a_deep_tree() {
         }
     }
     assert!(matches!(
-        seq.locate_by_byte(64),
+        seq.locate_by_byte(64, &mut crate::structural::NoopHorseAStructuralSink),
         crate::sequence::Located::Eof
     ));
 }

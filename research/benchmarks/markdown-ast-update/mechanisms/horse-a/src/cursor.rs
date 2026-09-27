@@ -6,6 +6,7 @@
 //! restart, convergence, and candidate eligibility stay in I4.
 
 use crate::state::{AvlNode, Owner, OwnerSeq};
+use crate::structural::{HorseAStructuralSink, StructuralOp};
 
 /// One path entry: an ancestor whose right subtree is still pending,
 /// with the byte base and rank at which its Owner begins.
@@ -43,9 +44,19 @@ pub(crate) struct CursorItem<'s> {
 impl OwnerSeq {
     /// Position a cursor at the Owner with source-order rank `rank`
     /// (`0 <= rank <= records`; `rank == records` is the exact EOF
-    /// start). One weighted rank descent — never a full traversal.
+    /// start). One weighted rank descent — never a full traversal. The
+    /// caller attributes the positioning visits (candidate-walk cursor or
+    /// fact-range lookup, #59 §20).
     #[allow(dead_code)] // I4 composes the navigation surface (slice staging)
-    pub(crate) fn cursor_at_rank(&self, rank: usize) -> OwnerCursor<'_> {
+    pub(crate) fn cursor_at_rank(
+        &self,
+        rank: usize,
+        op: StructuralOp,
+        sink: &mut dyn HorseAStructuralSink,
+    ) -> OwnerCursor<'_> {
+        if self.root.is_some() {
+            sink.aggregate_reads(1);
+        }
         let records = self.records();
         assert!(
             rank <= records,
@@ -56,7 +67,8 @@ impl OwnerSeq {
         let mut base = 0usize;
         let mut r = 0usize;
         while let Some(n) = node {
-            let (lb, lr) = child_sums(&n.left);
+            sink.node_visit(op);
+            let (lb, lr) = child_sums(&n.left, sink);
             if rank < r + lr {
                 // The target sits inside the left subtree; this node is a
                 // pending successor of everything yielded there.
@@ -88,7 +100,15 @@ impl OwnerSeq {
     /// (`0 <= x <= total_bytes`; `x == total` is the exact EOF start,
     /// including the empty sequence). One weighted byte descent.
     #[allow(dead_code)] // I4 composes the navigation surface (slice staging)
-    pub(crate) fn cursor_at_byte(&self, x: usize) -> OwnerCursor<'_> {
+    pub(crate) fn cursor_at_byte(
+        &self,
+        x: usize,
+        op: StructuralOp,
+        sink: &mut dyn HorseAStructuralSink,
+    ) -> OwnerCursor<'_> {
+        if self.root.is_some() {
+            sink.aggregate_reads(1);
+        }
         let total = self.total_bytes();
         assert!(x <= total, "cursor byte {x} out of range 0..={total}");
         let mut stack = Vec::new();
@@ -96,7 +116,8 @@ impl OwnerSeq {
         let mut base = 0usize;
         let mut rank = 0usize;
         while let Some(n) = node {
-            let (lb, lr) = child_sums(&n.left);
+            sink.node_visit(op);
+            let (lb, lr) = child_sums(&n.left, sink);
             let owner_end = base + lb + n.owner.coverage_len;
             if x < base + lb {
                 stack.push(Frame {
@@ -125,9 +146,15 @@ impl OwnerSeq {
 impl<'s> OwnerCursor<'s> {
     /// Advance to and yield the next Owner in source order. Amortized
     /// O(1): each node enters the path stack at most once per walk
-    /// (monotone forward, no revisits — #59 §8).
+    /// (monotone forward, no revisits — #59 §8). Every successor-walk node
+    /// entering the stack is one visit charged to `op` (#59 §20 cursor
+    /// advancement).
     #[allow(dead_code)] // I4 composes the navigation surface (slice staging)
-    pub(crate) fn next(&mut self) -> Option<CursorItem<'s>> {
+    pub(crate) fn next(
+        &mut self,
+        op: StructuralOp,
+        sink: &mut dyn HorseAStructuralSink,
+    ) -> Option<CursorItem<'s>> {
         let frame = self.stack.pop()?;
         let item = CursorItem {
             owner: &frame.node.owner,
@@ -144,7 +171,8 @@ impl<'s> OwnerCursor<'s> {
             // Each pushed ancestor's Owner begins only after its whole
             // left subtree; descending left keeps the running position
             // (the next un-yielded Owner's position) unchanged.
-            let (lb, lr) = child_sums(&n.left);
+            sink.node_visit(op);
+            let (lb, lr) = child_sums(&n.left, sink);
             self.stack.push(Frame {
                 node: n,
                 base: base + lb,
@@ -156,11 +184,16 @@ impl<'s> OwnerCursor<'s> {
     }
 }
 
-/// `(subtree_bytes, subtree_records)` of one child slot.
+/// `(subtree_bytes, subtree_records)` of one child slot — two aggregate
+/// field reads per non-empty child (#59 §7.1; empty children contribute
+/// no reads).
 #[inline]
-fn child_sums(child: &Option<Box<AvlNode>>) -> (usize, usize) {
+fn child_sums(child: &Option<Box<AvlNode>>, sink: &mut dyn HorseAStructuralSink) -> (usize, usize) {
     match child {
-        Some(n) => (n.agg.subtree_bytes, n.agg.subtree_records),
+        Some(n) => {
+            sink.aggregate_reads(2);
+            (n.agg.subtree_bytes, n.agg.subtree_records)
+        }
         None => (0, 0),
     }
 }
