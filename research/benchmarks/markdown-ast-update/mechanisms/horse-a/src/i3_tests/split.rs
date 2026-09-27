@@ -33,7 +33,11 @@ fn split_is_exact_at_every_rank_for_n_zero_through_64() {
         for k in 0..=n {
             let fresh = make(&weights, &certs);
             let original_addrs = addresses(&fresh);
-            let (a, b) = split(fresh.root, k);
+            let (a, b) = split(
+                fresh.root,
+                k,
+                &mut crate::structural::NoopHorseAStructuralSink,
+            );
             let seq_a = OwnerSeq { root: a };
             let seq_b = OwnerSeq { root: b };
 
@@ -72,7 +76,11 @@ fn split_is_exact_at_every_rank_for_n_zero_through_64() {
             // not part of the identity — the frozen #59 §7.2 window
             // governs it and is asserted in the structural suite.
             let rejoined = OwnerSeq {
-                root: join(seq_a.root, seq_b.root),
+                root: join(
+                    seq_a.root,
+                    seq_b.root,
+                    &mut crate::structural::NoopHorseAStructuralSink,
+                ),
             };
             assert_seq(&rejoined, &model);
         }
@@ -88,7 +96,11 @@ fn adversarial_split_heights_regist_the_withdrawn_window() {
     let weights = [1usize; 64];
     let tree = make(&weights, &[false; 64]);
     let tree_height = tree.root.as_ref().unwrap().height; // 7 for 64 unit records
-    let (a, b) = split(tree.root, 1);
+    let (a, b) = split(
+        tree.root,
+        1,
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     let seq_a = OwnerSeq { root: a };
     let seq_b = OwnerSeq { root: b };
     assert_eq!(
@@ -110,12 +122,16 @@ fn split_precondition_violations_are_not_fallbacks() {
     // k > records is a precondition error, not an algorithmic fallback
     // (I3 task contract §30).
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = split(tree.root, 4);
+        let _ = split(
+            tree.root,
+            4,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
     }));
     assert!(result.is_err(), "k > records must fail loudly");
 
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = split(None, 1);
+        let _ = split(None, 1, &mut crate::structural::NoopHorseAStructuralSink);
     }));
     assert!(
         result.is_err(),

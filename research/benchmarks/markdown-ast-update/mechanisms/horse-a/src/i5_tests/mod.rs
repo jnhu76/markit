@@ -9,4 +9,6 @@
 //! the literal byte layout of the fixtures — never read back from the
 //! implementation.
 
+mod counters;
 mod frontier;
+mod primitives;

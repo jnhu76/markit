@@ -166,7 +166,7 @@ impl PreparedCommit {
                 // are transferred by ownership and the detached middle
                 // comes back intact rather than being dropped inside the
                 // operator.
-                let detached = owners.replace_range(ranks.start, ranks.end, fresh);
+                let detached = owners.replace_range(ranks.start, ranks.end, fresh, sink);
                 sink.owners_removed((ranks.end - ranks.start) as u64);
 
                 // Defended-site sentinel assertions: the splice transferred

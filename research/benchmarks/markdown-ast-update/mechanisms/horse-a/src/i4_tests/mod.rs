@@ -43,7 +43,12 @@ impl Fixture {
     /// this whole-document construction from primary update work).
     pub(crate) fn new(text: &str) -> Self {
         let old_source = Source::new(SourceId(1), text);
-        let old = full_build(&old_source, &mut NoopWorkSink).expect("initial full build");
+        let old = full_build(
+            &old_source,
+            &mut NoopWorkSink,
+            &mut NoopHorseAStructuralSink,
+        )
+        .expect("initial full build");
         Self { old, old_source }
     }
 

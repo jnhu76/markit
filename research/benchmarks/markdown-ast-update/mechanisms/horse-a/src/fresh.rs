@@ -17,8 +17,9 @@ use markit_mdbench_shared_grammar::{materialize_one_with_sink, RefTable, RootBla
 use crate::certificate::persist_interior_certificates;
 use crate::coverage::CoveragePlan;
 use crate::full_build::is_root_blank_class;
-use crate::payload::shift_spans;
+use crate::payload::shift_spans_recorded;
 use crate::state::{AstPayload, Owner, OwnerPayload, OwnerSeq};
+use crate::structural::HorseAStructuralSink;
 use crate::update::UpdateError;
 
 /// Everything the forward parse sealed for one replacement region.
@@ -46,6 +47,7 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
     region: SealedRegion,
     refs: &RefTable,
     sink: &mut W,
+    structural: &mut dyn HorseAStructuralSink,
 ) -> Result<OwnerSeq, UpdateError> {
     let SealedRegion {
         base,
@@ -85,6 +87,7 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
             // The frozen empty document: an empty OwnerSeq.
             return Ok(OwnerSeq::default());
         }
+
         if !is_root_blank_class(&src[..end]) {
             return Err(UpdateError::InconsistentObservation {
                 detail: format!(
@@ -93,11 +96,15 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
                 ),
             });
         }
-        return Ok(OwnerSeq::bulk_build(vec![Owner {
-            coverage_len: end,
-            payload: OwnerPayload::TriviaOnly,
-            outgoing_restart: None,
-        }]));
+        structural.owners_created(1);
+        return Ok(OwnerSeq::bulk_build(
+            vec![Owner {
+                coverage_len: end,
+                payload: OwnerPayload::TriviaOnly,
+                outgoing_restart: None,
+            }],
+            structural,
+        ));
     }
 
     // Canonical region coverage: `base`, then the 2nd..k-th blocks' physical
@@ -131,8 +138,10 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
         }
         // Every retained coordinate becomes Owner-relative (spec §4), so a
         // later edit that shifts this Owner's absolute base does not have to
-        // rewrite its payload.
-        shift_spans(&mut node, -(owner_base as isize));
+        // rewrite its payload. The rebase traversal records each fresh
+        // payload node at the materialization→retained seam.
+        shift_spans_recorded(&mut node, -(owner_base as isize), structural);
+        structural.owners_created(1);
         staged.push(Owner {
             coverage_len: plan.coverage_len(i),
             payload: OwnerPayload::Syntax(AstPayload { root: node }),
@@ -152,8 +161,9 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
         &plan.cuts,
         &barriers,
         last_boundary_is_interior,
+        structural,
     )
     .map_err(|detail| UpdateError::InconsistentObservation { detail })?;
 
-    Ok(OwnerSeq::bulk_build(staged))
+    Ok(OwnerSeq::bulk_build(staged, structural))
 }

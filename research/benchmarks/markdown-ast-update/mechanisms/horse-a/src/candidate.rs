@@ -19,6 +19,7 @@
 
 use crate::cursor::{CursorItem, OwnerCursor};
 use crate::state::OwnerSeq;
+use crate::structural::{HorseAStructuralSink, StructuralOp};
 
 /// The frozen convergence-policy inputs (spec §7.3). Every value comes from
 /// the validated edit association and the selected restart; none of them is
@@ -75,6 +76,12 @@ pub(crate) struct CandidateWalk<'s> {
     /// The walk only ever moves forward; a regression here would mean a
     /// re-seek.
     last_offered_rank: Option<usize>,
+    /// The structural ledger: candidate checks, cursor advances, cursor
+    /// visits and predicate certificate reads are charged here as they
+    /// occur. The certification filter below is cursor mechanics (#59 §8:
+    /// non-certified crossed Owners are `k`, charged as visits), not a
+    /// certificate read; the predicate's own inspection charges one.
+    sink: &'s mut dyn HorseAStructuralSink,
 }
 
 impl<'s> CandidateWalk<'s> {
@@ -86,14 +93,16 @@ impl<'s> CandidateWalk<'s> {
         owners: &'s OwnerSeq,
         first_rank: usize,
         policy: ConvergencePolicy,
+        sink: &'s mut dyn HorseAStructuralSink,
     ) -> Self {
-        let cursor = owners.cursor_at_rank(first_rank);
+        let cursor = owners.cursor_at_rank(first_rank, StructuralOp::Cursor, sink);
         let mut walk = Self {
             cursor,
             next: None,
             policy,
             accepted: None,
             last_offered_rank: None,
+            sink,
         };
         walk.seek_next_certified();
         walk
@@ -131,7 +140,11 @@ impl<'s> CandidateWalk<'s> {
                 // next candidate.
                 return WalkOutcome::Continue;
             }
-            // One full predicate evaluation for one offered candidate.
+            // One full predicate evaluation for one offered candidate:
+            // one candidate check, one cursor visit for the evaluated
+            // boundary (the Q term, #59 §20), and the candidate
+            // certificate's own inspection (clause 3) as one certificate
+            // read — charged where they occur.
             if let Some(accepted) = self.evaluate(item, mapped, new_cut, replacement_has_block) {
                 self.accepted = Some(accepted);
                 return WalkOutcome::Converged(accepted);
@@ -141,7 +154,8 @@ impl<'s> CandidateWalk<'s> {
     }
 
     /// The complete frozen convergence predicate (spec §7.3). Every clause
-    /// is a frozen requirement; all of them must hold.
+    /// is a frozen requirement; all of them must hold. One call = one
+    /// full predicate evaluation.
     fn evaluate(
         &mut self,
         item: CursorItem<'s>,
@@ -149,6 +163,14 @@ impl<'s> CandidateWalk<'s> {
         new_cut: usize,
         replacement_has_block: bool,
     ) -> Option<AcceptedConvergence> {
+        // One full predicate evaluation (#59 §20 / #60 §9.3.1): one
+        // candidate check, one cursor visit for the evaluated boundary,
+        // and one certificate read — each full predicate evaluation
+        // inspects the candidate certificate once, charged with the
+        // evaluation it belongs to, never split per clause.
+        self.sink.candidate_check();
+        self.sink.node_visit(StructuralOp::Cursor);
+        self.sink.certificate_read();
         debug_assert!(
             item.boundary_cut > self.policy.restart_cut,
             "the restart cut is never offered as a convergence candidate"
@@ -174,7 +196,8 @@ impl<'s> CandidateWalk<'s> {
         // (3) the candidate's persistent certificate is not invalidated by
         //     the edit: a touched support is conservatively refused (spec
         //     §6; E24). The stored support is Owner-relative, the edit is
-        //     document-absolute.
+        //     document-absolute. Its certificate read was charged with the
+        //     evaluation above.
         if let Some(cert) = item.owner.outgoing_restart.as_ref() {
             if cert.support.touches_absolute(
                 item.base,
@@ -215,7 +238,7 @@ impl<'s> CandidateWalk<'s> {
 
     fn seek_next_certified(&mut self) {
         loop {
-            let Some(item) = self.cursor.next() else {
+            let Some(item) = self.cursor.next(StructuralOp::Cursor, self.sink) else {
                 self.next = None;
                 return;
             };
@@ -224,9 +247,19 @@ impl<'s> CandidateWalk<'s> {
             if item.boundary_cut <= self.policy.restart_cut {
                 continue;
             }
+            // Cursor mechanics (#59 §8): finding the next certified
+            // boundary filters by certificate presence; the crossed Owners
+            // are the frozen `k` term and are charged as cursor visits by
+            // the traversal itself. The presence filter here is not a
+            // `certificate_read` in the frozen ledger (#59 §20; #60
+            // §9.3.1) — the predicate's inspection is.
             if item.owner.outgoing_restart.is_none() {
                 continue;
             }
+            // One monotone movement to the next offered candidate
+            // boundary (the initial positioning to the first candidate
+            // included).
+            self.sink.cursor_advance();
             self.next = Some(item);
             return;
         }

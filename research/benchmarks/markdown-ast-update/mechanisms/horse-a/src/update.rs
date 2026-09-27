@@ -48,7 +48,9 @@ use crate::full_build::{full_build, BuildError};
 use crate::prepared::{CommitPlan, UpdateStaging};
 use crate::sequence::Located;
 use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
-use crate::structural::{FullBuildReason, HorseAStructuralSink, NoopHorseAStructuralSink};
+use crate::structural::{
+    ForbiddenKind, FullBuildReason, HorseAStructuralSink, NoopHorseAStructuralSink,
+};
 
 /// Why an update refused to return a state. Every variant is a
 /// pre-frontier refusal: staging never mutates or partially consumes the
@@ -167,6 +169,7 @@ fn validate_association(
     old_source: &Source,
     post_source: &Source,
     edit: &CanonicalEdit,
+    structural: &mut dyn HorseAStructuralSink,
 ) -> Result<Association, UpdateError> {
     let invalid = |detail: String| UpdateError::InvalidAssociation { detail };
 
@@ -191,7 +194,10 @@ fn validate_association(
         )));
     }
     // O(1) aggregate consistency: the retained sequence must still cover the
-    // source it claims.
+    // source it claims. The root read is charged to the structural ledger.
+    if old.owners.root.is_some() {
+        structural.aggregate_reads(1);
+    }
     if old.owners.total_bytes() != old.source_len {
         return Err(invalid(format!(
             "the retained sequence covers {} bytes but the state claims {}",
@@ -254,8 +260,12 @@ fn validate_association(
 /// needs no separate LEFT view: the candidate predicate tests the raw
 /// canonical edit interval, and every candidate must lie at or after
 /// `edit_end`.
-fn locate_damage(owners: &OwnerSeq, edit_start: usize) -> usize {
-    match owners.locate_by_byte(edit_start) {
+fn locate_damage(
+    owners: &OwnerSeq,
+    edit_start: usize,
+    structural: &mut dyn HorseAStructuralSink,
+) -> usize {
+    match owners.locate_by_byte(edit_start, structural) {
         Located::Owner(located) => located.base,
         Located::Eof => owners.total_bytes(),
     }
@@ -269,8 +279,12 @@ fn locate_damage(owners: &OwnerSeq, edit_start: usize) -> usize {
 /// whether the edit invalidated its support is decided by the convergence
 /// predicate, and whether it can be reused at all is decided by this round's
 /// own forward parse.
-fn select_restart(owners: &OwnerSeq, damage_base: usize) -> RestartSelection {
-    match owners.safe_predecessor(damage_base) {
+fn select_restart(
+    owners: &OwnerSeq,
+    damage_base: usize,
+    structural: &mut dyn HorseAStructuralSink,
+) -> RestartSelection {
+    match owners.safe_predecessor(damage_base, structural) {
         Some(boundary) => RestartSelection {
             cut: boundary.boundary,
             certified_rank: Some(boundary.rank),
@@ -362,6 +376,7 @@ fn forward_parse<W: WorkSink>(
     restart: RestartSelection,
     first_rank: usize,
     sink: &mut W,
+    structural: &mut dyn HorseAStructuralSink,
 ) -> ForwardParse {
     let src = post_source.as_bytes();
     let new_len = src.len();
@@ -372,7 +387,7 @@ fn forward_parse<W: WorkSink>(
         delta: association.delta,
     };
     let mut observer = ForwardObserver {
-        walk: CandidateWalk::begin(&old.owners, first_rank, policy),
+        walk: CandidateWalk::begin(&old.owners, first_rank, policy, structural),
         starts: Vec::new(),
         barriers: Vec::new(),
         accepted: None,
@@ -473,14 +488,14 @@ pub(crate) fn stage<W: WorkSink>(
     structural: &mut dyn HorseAStructuralSink,
 ) -> Result<UpdateStaging, UpdateError> {
     // Phase 1 — validation.
-    let association = validate_association(old, old_source, post_source, edit)?;
+    let association = validate_association(old, old_source, post_source, edit, structural)?;
 
     // Phase 2 — weighted damage locate (RIGHT affinity).
-    let damage_base = locate_damage(&old.owners, association.edit_start);
+    let damage_base = locate_damage(&old.owners, association.edit_start, structural);
     debug_assert!(damage_base <= old.source_len);
 
     // Phase 3 — nearest eligible certified restart predecessor.
-    let restart = select_restart(&old.owners, damage_base);
+    let restart = select_restart(&old.owners, damage_base, structural);
     structural.record_restart_old(restart.cut as u64);
 
     // Phase 4 — conservative left guard: the first replaced Owner starts at
@@ -488,7 +503,15 @@ pub(crate) fn stage<W: WorkSink>(
     let first_rank = first_replaced_rank(restart);
 
     // Phases 5–7 — forward parse + monotone candidate walk.
-    let forward = forward_parse(old, post_source, &association, restart, first_rank, sink);
+    let forward = forward_parse(
+        old,
+        post_source,
+        &association,
+        restart,
+        first_rank,
+        sink,
+        structural,
+    );
 
     // Phase 8 — complete old/new replacement intervals (byte and rank spaces
     // made explicit).
@@ -503,15 +526,22 @@ pub(crate) fn stage<W: WorkSink>(
 
     // Phase 9 — complete ordered replacement facts on both sides, before any
     // semantic materialization.
-    let old_facts = OrderedFacts::of_old_replacement(&old.owners, intervals.old_ranks.clone());
-    let new_facts = OrderedFacts::of_fresh_region(&forward.defs);
-    let facts_equal = old_facts == new_facts;
+    let old_facts =
+        OrderedFacts::of_old_replacement(&old.owners, intervals.old_ranks.clone(), structural);
+    let new_facts = OrderedFacts::of_fresh_region(&forward.defs, structural);
+    let facts_equal = old_facts.eq_with_recording(&new_facts, structural);
     debug_assert_eq!(
         facts_equal,
         old_facts.entries() == new_facts.entries(),
         "preservation is decided by the complete ordered fact sequences, \
          never by a derived flag"
     );
+    // Defended-site sentinel assertion: the preservation decision compared
+    // exactly the replacement region's facts (old side from the detached
+    // Owners, new side from the region table) — no document-wide
+    // recollection occurred. A regression that recollected globally would
+    // charge this site.
+    structural.forbidden(ForbiddenKind::GlobalFactRecollection, 0);
 
     // Phase 10 — the semantic-preservation decision. Exactly two outcomes:
     // proven (facts equal) and not proven (differ, or unknown — and in this
@@ -522,8 +552,13 @@ pub(crate) fn stage<W: WorkSink>(
         // replacement Owners under it. No document-wide definition
         // recollection, no per-Owner rewrite of retained payload, no patch
         // of the table.
-        let fresh =
-            build_replacement_owners(post_source.as_bytes(), forward.region, &old.refs, sink)?;
+        let fresh = build_replacement_owners(
+            post_source.as_bytes(),
+            forward.region,
+            &old.refs,
+            sink,
+            structural,
+        )?;
         (
             UpdatePath::Local,
             CommitPlan::Local {
@@ -537,7 +572,7 @@ pub(crate) fn stage<W: WorkSink>(
         // same-target READY state. Not a weaker state, not a repair of
         // selected Owners, and never selected by anything except this
         // semantic decision.
-        let full = full_build(post_source, sink).map_err(UpdateError::FullBuild)?;
+        let full = full_build(post_source, sink, structural).map_err(UpdateError::FullBuild)?;
         (UpdatePath::SameTargetFullBuild, CommitPlan::Full(full))
     };
     let (selected, reason) = match path {

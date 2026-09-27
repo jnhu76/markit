@@ -20,10 +20,17 @@ fn a_full_cursor_walk_matches_the_model_from_rank_zero() {
         let seq = make(&weights, &certs);
         assert_seq(&seq, &model);
 
-        let mut cursor = seq.cursor_at_rank(0);
+        let mut cursor = seq.cursor_at_rank(
+            0,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
         let mut seen: Model = Vec::new();
         let mut prev_rank = None;
-        while let Some(item) = cursor.next() {
+        while let Some(item) = cursor.next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        ) {
             // rank monotone, no duplicates, no skips
             assert_eq!(item.rank, seen.len(), "rank at position {}", seen.len());
             assert!(prev_rank.is_none_or(|p| item.rank > p), "rank monotone");
@@ -59,9 +66,16 @@ fn a_cursor_started_at_every_rank_yields_the_exact_suffix() {
     let seq = make(&weights, &certs);
 
     for start in 0..=model.len() {
-        let mut cursor = seq.cursor_at_rank(start);
+        let mut cursor = seq.cursor_at_rank(
+            start,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
         let mut seen: Model = Vec::new();
-        while let Some(item) = cursor.next() {
+        while let Some(item) = cursor.next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        ) {
             seen.push((
                 item.owner.coverage_len,
                 item.owner.outgoing_restart.is_some(),
@@ -71,8 +85,20 @@ fn a_cursor_started_at_every_rank_yields_the_exact_suffix() {
     }
 
     // Starting at records == N is the exact EOF: nothing follows.
-    let mut exhausted = seq.cursor_at_rank(model.len());
-    assert!(exhausted.next().is_none(), "EOF start yields nothing");
+    let mut exhausted = seq.cursor_at_rank(
+        model.len(),
+        crate::structural::StructuralOp::Cursor,
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
+    assert!(
+        exhausted
+            .next(
+                crate::structural::StructuralOp::Cursor,
+                &mut crate::structural::NoopHorseAStructuralSink
+            )
+            .is_none(),
+        "EOF start yields nothing"
+    );
 }
 
 #[test]
@@ -84,9 +110,16 @@ fn a_byte_positioned_cursor_starts_at_the_containing_owner() {
     let total: usize = weights.iter().sum();
 
     for x in 0..=total {
-        let mut cursor = seq.cursor_at_byte(x);
+        let mut cursor = seq.cursor_at_byte(
+            x,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
         let expected_start = expected_at_rank(&model, x);
-        match cursor.next() {
+        match cursor.next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        ) {
             None => assert_eq!(expected_start, model.len(), "x == L is EOF at x={x}"),
             Some(item) => {
                 assert_eq!(item.rank, expected_start, "first Owner at x={x}");
@@ -96,7 +129,10 @@ fn a_byte_positioned_cursor_starts_at_the_containing_owner() {
         }
         // The remainder is the exact suffix after the starting Owner.
         let mut rest: Model = Vec::new();
-        while let Some(item) = cursor.next() {
+        while let Some(item) = cursor.next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        ) {
             rest.push((
                 item.owner.coverage_len,
                 item.owner.outgoing_restart.is_some(),
@@ -125,11 +161,19 @@ fn expected_at_rank(model: &Model, x: usize) -> usize {
 fn cursor_preconditions_are_loud() {
     let seq = make(&[1, 2], &[false; 2]);
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = seq.cursor_at_rank(3);
+        let _ = seq.cursor_at_rank(
+            3,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
     }));
     assert!(result.is_err(), "rank > records must fail loudly");
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = seq.cursor_at_byte(4);
+        let _ = seq.cursor_at_byte(
+            4,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
     }));
     assert!(result.is_err(), "byte > total must fail loudly");
 }
@@ -137,6 +181,26 @@ fn cursor_preconditions_are_loud() {
 #[test]
 fn an_empty_sequence_cursors_directly_to_eof() {
     let empty = OwnerSeq::default();
-    assert!(empty.cursor_at_rank(0).next().is_none());
-    assert!(empty.cursor_at_byte(0).next().is_none());
+    assert!(empty
+        .cursor_at_rank(
+            0,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink
+        )
+        .next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink
+        )
+        .is_none());
+    assert!(empty
+        .cursor_at_byte(
+            0,
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink
+        )
+        .next(
+            crate::structural::StructuralOp::Cursor,
+            &mut crate::structural::NoopHorseAStructuralSink
+        )
+        .is_none());
 }

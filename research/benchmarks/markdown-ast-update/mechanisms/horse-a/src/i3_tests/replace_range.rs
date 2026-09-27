@@ -34,7 +34,12 @@ fn replace_range_is_exact_for_every_lo_hi_and_middle_shape() {
                     let middle = make(&mid_weights, &mid_certs);
                     let middle_addrs = addresses(&middle);
 
-                    let removed = seq.replace_range(lo, hi, middle);
+                    let removed = seq.replace_range(
+                        lo,
+                        hi,
+                        middle,
+                        &mut crate::structural::NoopHorseAStructuralSink,
+                    );
                     let removed_seq = removed;
 
                     // New sequence = old prefix + middle + old suffix.
@@ -83,13 +88,23 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
 
     // Insertion into an empty sequence (lo == hi == 0).
     let mut empty = OwnerSeq::default();
-    let removed = empty.replace_range(0, 0, make(&[9, 9], &[true, false]));
+    let removed = empty.replace_range(
+        0,
+        0,
+        make(&[9, 9], &[true, false]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     assert_seq(&empty, &[(9, true), (9, false)]);
     assert!(removed.is_empty());
 
     // lo == hi inside a sequence: pure insertion.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(2, 2, make(&[42], &[true]));
+    let removed = seq.replace_range(
+        2,
+        2,
+        make(&[42], &[true]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     let mut expected = model.clone();
     expected.insert(2, (42, true));
     assert_seq(&seq, &expected);
@@ -97,31 +112,56 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
 
     // lo = 0: replace the prefix.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(0, 2, make(&[50], &[false]));
+    let removed = seq.replace_range(
+        0,
+        2,
+        make(&[50], &[false]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     assert_seq(&seq, &[(50, false), (3, false), (4, true), (5, false)]);
     assert_seq(&removed, &model[..2]);
 
     // hi = records: replace the suffix.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(3, 5, OwnerSeq::default());
+    let removed = seq.replace_range(
+        3,
+        5,
+        OwnerSeq::default(),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     assert_seq(&seq, &model[..3]);
     assert_seq(&removed, &model[3..]);
 
     // lo = 0, hi = records: replace everything.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(0, 5, make(&[60, 61], &[false, false]));
+    let removed = seq.replace_range(
+        0,
+        5,
+        make(&[60, 61], &[false, false]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     assert_seq(&seq, &[(60, false), (61, false)]);
     assert_seq(&removed, &model);
 
     // middle empty: pure deletion of exactly one Owner.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(1, 2, OwnerSeq::default());
+    let removed = seq.replace_range(
+        1,
+        2,
+        OwnerSeq::default(),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     assert_seq(&seq, &[model[0], model[2], model[3], model[4]]);
     assert_seq(&removed, &model[1..2]);
 
     // middle non-empty: replace exactly one Owner.
     let mut seq = make(&weights, &certs);
-    let removed = seq.replace_range(4, 5, make(&[70, 71, 72], &[true, false, true]));
+    let removed = seq.replace_range(
+        4,
+        5,
+        make(&[70, 71, 72], &[true, false, true]),
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
     let mut expected = model[..4].to_vec();
     expected.extend([(70, true), (71, false), (72, true)]);
     assert_seq(&seq, &expected);
@@ -132,12 +172,22 @@ fn replace_range_named_edge_cases_match_the_frozen_list() {
 fn replace_range_precondition_violations_are_not_fallbacks() {
     let mut seq = make(&[1, 2, 3], &[false; 3]);
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = seq.replace_range(2, 1, OwnerSeq::default());
+        let _ = seq.replace_range(
+            2,
+            1,
+            OwnerSeq::default(),
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
     }));
     assert!(result.is_err(), "lo > hi must fail loudly");
 
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = seq.replace_range(0, 4, OwnerSeq::default());
+        let _ = seq.replace_range(
+            0,
+            4,
+            OwnerSeq::default(),
+            &mut crate::structural::NoopHorseAStructuralSink,
+        );
     }));
     assert!(result.is_err(), "hi > records must fail loudly");
 }

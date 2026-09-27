@@ -21,7 +21,12 @@ fn edit(start: usize, end: usize, inserted: &str) -> CanonicalEdit {
 #[test]
 fn the_frontier_pipeline_preserves_the_frozen_ownership_shape() {
     let old_source = Source::new(SourceId(1), "alpha\n\nbeta\n\ngamma\n");
-    let old = full_build(&old_source, &mut NoopWorkSink).expect("initial full build");
+    let old = full_build(
+        &old_source,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial full build");
 
     let e = edit(3, 3, "X");
     let post = e.apply(&old_source, SourceId(2)).expect("edit applies");
@@ -54,7 +59,12 @@ fn the_frontier_pipeline_preserves_the_frozen_ownership_shape() {
 #[test]
 fn the_local_route_records_geometry_and_zero_sentinels() {
     let old_source = Source::new(SourceId(1), "alpha\n\nbeta\n\ngamma\n");
-    let old = full_build(&old_source, &mut NoopWorkSink).expect("initial full build");
+    let old = full_build(
+        &old_source,
+        &mut NoopWorkSink,
+        &mut NoopHorseAStructuralSink,
+    )
+    .expect("initial full build");
 
     let e = edit(13, 13, "X"); // insert at the physical start of "gamma"
     let post = e.apply(&old_source, SourceId(2)).expect("edit applies");

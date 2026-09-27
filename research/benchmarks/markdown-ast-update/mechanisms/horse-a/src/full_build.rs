@@ -28,8 +28,9 @@ use markit_mdbench_shared_grammar::{
 };
 
 use crate::coverage::CoveragePlan;
-use crate::payload::shift_spans;
+use crate::payload::shift_spans_recorded;
 use crate::state::{AstPayload, InterpretationId, Owner, OwnerPayload, OwnerSeq, ReadyDocument};
+use crate::structural::HorseAStructuralSink;
 use crate::validate;
 
 /// Why a full build refused to return a state. A full-build failure is
@@ -89,7 +90,11 @@ impl RegionObserver for FullBuildObserver {
 /// (spec §13). The returned state is READY: complete, self-contained,
 /// and next-edit-capable even though the incremental update algorithm
 /// itself belongs to later slices.
-pub fn full_build<W: WorkSink>(source: &Source, sink: &mut W) -> Result<ReadyDocument, BuildError> {
+pub fn full_build<W: WorkSink>(
+    source: &Source,
+    sink: &mut W,
+    structural: &mut dyn HorseAStructuralSink,
+) -> Result<ReadyDocument, BuildError> {
     let src = source.as_bytes();
     let source_len = src.len();
 
@@ -149,6 +154,7 @@ pub fn full_build<W: WorkSink>(source: &Source, sink: &mut W) -> Result<ReadyDoc
                     ),
                 });
             }
+            structural.owners_created(1);
             staged.push(Owner {
                 coverage_len: source_len,
                 payload: OwnerPayload::TriviaOnly,
@@ -183,20 +189,23 @@ pub fn full_build<W: WorkSink>(source: &Source, sink: &mut W) -> Result<ReadyDoc
                 });
             }
             // All retained coordinates become Owner-relative, recursively
-            // (spec §4; FencedCode.content included).
-            shift_spans(&mut node, -(base as isize));
+            // (spec §4; FencedCode.content included). The rebase traversal
+            // records each fresh payload node at the
+            // materialization→retained seam.
+            shift_spans_recorded(&mut node, -(base as isize), structural);
+            structural.owners_created(1);
             staged.push(Owner {
                 coverage_len: plan.coverage_len(owner_index),
                 payload: OwnerPayload::Syntax(AstPayload { root: node }),
                 outgoing_restart: None,
             });
         }
-        attach_interior_certificates(&mut staged, &plan, &observer.barriers)?;
+        attach_interior_certificates(&mut staged, &plan, &observer.barriers, structural)?;
     }
 
     // Retained sequence: construction-only balanced build (spec §12.5);
     // I3 owns the mutation/navigation operators.
-    let owners = OwnerSeq::bulk_build(staged);
+    let owners = OwnerSeq::bulk_build(staged, structural);
 
     let document = ReadyDocument {
         source_id: source.id(),
@@ -241,8 +250,11 @@ fn attach_interior_certificates(
     owners: &mut [Owner],
     plan: &CoveragePlan,
     barriers: &[RootBlankEvent],
+    structural: &mut dyn HorseAStructuralSink,
 ) -> Result<(), BuildError> {
     // The full builder's last cut is the document EOF: never certified.
-    crate::certificate::persist_interior_certificates(owners, &plan.cuts, barriers, false)
-        .map_err(|detail| BuildError::InconsistentObservation { detail })
+    crate::certificate::persist_interior_certificates(
+        owners, &plan.cuts, barriers, false, structural,
+    )
+    .map_err(|detail| BuildError::InconsistentObservation { detail })
 }

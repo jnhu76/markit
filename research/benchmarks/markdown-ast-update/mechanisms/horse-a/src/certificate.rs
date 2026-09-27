@@ -77,6 +77,7 @@ fn touches_span(span: std::ops::Range<usize>, start: usize, end: usize) -> bool 
 }
 
 use crate::state::Owner;
+use crate::structural::{ForbiddenKind, HorseAStructuralSink};
 use markit_mdbench_shared_grammar::RootBlankEvent;
 
 /// Install the persistent outgoing certificates of one Owner sequence from
@@ -114,12 +115,15 @@ use markit_mdbench_shared_grammar::RootBlankEvent;
 /// `cuts[i]..cuts[i + 1]` is Owner `i`'s coverage, so `cuts.len()` must be
 /// `owners.len() + 1`. Shared by the full builder and the local replacement
 /// path (spec §24: the fresh boundaries are certified from this round's own
-/// parser evidence).
+/// parser evidence). Callers always pass exactly the FRESH Owners being
+/// assembled — retained suffix certificates are never rewritten here, and
+/// the site charges that sentinel zero on every execution.
 pub(crate) fn persist_interior_certificates(
     owners: &mut [Owner],
     cuts: &[usize],
     barriers: &[RootBlankEvent],
     last_boundary_is_interior: bool,
+    sink: &mut dyn HorseAStructuralSink,
 ) -> Result<(), String> {
     if owners.len() + 1 != cuts.len() {
         return Err(format!(
@@ -166,13 +170,22 @@ pub(crate) fn persist_interior_certificates(
             },
         };
         let rel_blank_end = ev.cut - base;
+        // The persistence seam itself: installation of one persistent
+        // outgoing certificate. A transient RootBlankEvent observed by the
+        // parser is not a write; this assignment is.
         owners[i].outgoing_restart = Some(RestartCertificate {
             support: RestartSupport {
                 preceding_lf: rel_preceding,
                 blank_line: rel_blank_start..rel_blank_end,
             },
         });
+        sink.certificate_write();
     }
+    // Defended-site sentinel assertion: only the fresh Owners passed in
+    // were touched; the retained suffix's certificates are structurally
+    // retained and never rewritten. A regression that rewrote them would
+    // charge this site.
+    sink.forbidden(ForbiddenKind::UnaffectedCertificateWrites, 0);
     Ok(())
 }
 

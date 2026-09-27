@@ -25,7 +25,10 @@ fn expected_safe(model: &Model, before: usize) -> Option<(usize, usize, usize)> 
 
 fn assert_nearest(seq: &OwnerSeq, model: &Model, before: usize) {
     let owners = seq.owners_in_order();
-    match (seq.safe_predecessor(before), expected_safe(model, before)) {
+    match (
+        seq.safe_predecessor(before, &mut crate::structural::NoopHorseAStructuralSink),
+        expected_safe(model, before),
+    ) {
         (None, None) => {}
         (Some(found), Some((rank, base, boundary))) => {
             assert_eq!(found.rank, rank, "rank at before={before}");
@@ -56,11 +59,17 @@ fn assert_nearest(seq: &OwnerSeq, model: &Model, before: usize) {
 #[test]
 fn no_certified_boundaries_yield_none() {
     let empty = OwnerSeq::default();
-    assert!(empty.safe_predecessor(0).is_none());
+    assert!(empty
+        .safe_predecessor(0, &mut crate::structural::NoopHorseAStructuralSink)
+        .is_none());
 
     let seq = make(&[2, 3, 4], &[false; 3]);
     for before in [0usize, 1, 2, 5, 9] {
-        assert!(seq.safe_predecessor(before).is_none(), "before={before}");
+        assert!(
+            seq.safe_predecessor(before, &mut crate::structural::NoopHorseAStructuralSink)
+                .is_none(),
+            "before={before}"
+        );
     }
 }
 
@@ -103,7 +112,7 @@ fn a_boundary_at_the_exclusive_bound_yields_the_earlier_certified() {
     let seq = make(&weights, &certs);
 
     let found = seq
-        .safe_predecessor(5)
+        .safe_predecessor(5, &mut crate::structural::NoopHorseAStructuralSink)
         .expect("owner 0 is certified at cut 2");
     assert_eq!(
         found.rank, 0,
@@ -113,7 +122,7 @@ fn a_boundary_at_the_exclusive_bound_yields_the_earlier_certified() {
 
     // One byte further, owner 1's boundary is strictly below the bound.
     let found = seq
-        .safe_predecessor(6)
+        .safe_predecessor(6, &mut crate::structural::NoopHorseAStructuralSink)
         .expect("owner 1 is certified at cut 5");
     assert_eq!(found.rank, 1);
     assert_eq!(found.boundary, 5);
@@ -131,7 +140,11 @@ fn the_eof_boundary_is_never_eligible_below_the_total() {
     let model: Model = weights.iter().copied().zip(certs).collect();
     let seq = make(&weights, &certs);
     for before in 0..=5usize {
-        assert!(seq.safe_predecessor(before).is_none(), "before={before}");
+        assert!(
+            seq.safe_predecessor(before, &mut crate::structural::NoopHorseAStructuralSink)
+                .is_none(),
+            "before={before}"
+        );
     }
     assert_nearest(&seq, &model, 5);
 }
@@ -153,7 +166,7 @@ fn nearest_prior_eligible_holds_on_a_deep_uneven_tree() {
 fn safe_predecessor_bounds_are_preconditions() {
     let seq = make(&[2, 3], &[true, false]);
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let _ = seq.safe_predecessor(6);
+        let _ = seq.safe_predecessor(6, &mut crate::structural::NoopHorseAStructuralSink);
     }));
     assert!(result.is_err(), "before > total must fail loudly");
 }
