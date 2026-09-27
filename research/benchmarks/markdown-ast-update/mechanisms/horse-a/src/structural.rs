@@ -101,8 +101,6 @@ pub enum StructuralOp {
     Join,
     /// `bulk_build` node creation.
     BulkBuild,
-    /// Retirement's drop walk over one retired AVL record.
-    Retire,
 }
 
 /// Why the same-target full build was selected. The frozen semantic rule
@@ -500,7 +498,6 @@ impl HorseAStructuralSink for RecordingHorseAStructuralSink {
             StructuralOp::PivotExtract => &mut self.counters.pivot_extract_node_visits,
             StructuralOp::Join => &mut self.counters.join_node_visits,
             StructuralOp::BulkBuild => &mut self.counters.bulk_build_node_visits,
-            StructuralOp::Retire => &mut self.counters.retire_node_visits,
         };
         *field = field.add(1);
     }

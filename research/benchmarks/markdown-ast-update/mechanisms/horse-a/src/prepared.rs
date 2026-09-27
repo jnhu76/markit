@@ -187,10 +187,12 @@ impl PreparedCommit {
                 };
 
                 // Retire the detached middle only — the retained prefix and
-                // suffix payload is never traversed. The retirement cannot
-                // touch P/S structurally: it receives exactly the detached
-                // tree and nothing else.
-                drop(detached);
+                // suffix payload is never traversed. The retirement is
+                // explicit and attributable (module `retirement`, #59 §11):
+                // it receives exactly the detached tree and nothing else,
+                // so it structurally cannot touch P/S, and each destroyed
+                // record/payload node is charged at its own recursion frame.
+                crate::retirement::retire_detached(detached, sink);
                 sink.forbidden(ForbiddenKind::UnaffectedOldRetirement, 0);
 
                 // H_new is an O(1) root read on the installed state.
@@ -214,7 +216,7 @@ impl PreparedCommit {
                 // retirement — the sentinel below is charged on the local
                 // route only.
                 sink.owners_removed(old.owners.records() as u64);
-                drop(old);
+                crate::retirement::retire_document(old, sink);
 
                 let h_new = fresh.owners.height();
                 if fresh.owners.root.is_some() {

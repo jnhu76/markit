@@ -118,8 +118,9 @@
 //!   performance measurement of any kind. The frozen #60 bounds are
 //!   adjudication instruments for a later explicitly authorized
 //!   collection; nothing here encodes them into the mechanism path.
+//!   STRUCTURAL_COLLECTION_RUN=NO, PERFORMANCE_COLLECTION_RUN=NO.
 //!
-//! What I4 deliberately does NOT do (frozen weaknesses preserved, not
+//! What I5 deliberately does NOT do (frozen weaknesses preserved, not
 //! repaired): W-A1 stays root-only restart plus atomic top-level Owner plus
 //! the conservative left guard; W-A2 stays "facts differ or preservation
 //! unknown → same-target full build"; W-A3 stays one Owner per AVL node. No
@@ -137,6 +138,7 @@ mod fresh;
 pub mod full_build;
 mod payload;
 mod prepared;
+mod retirement;
 pub mod sequence;
 pub mod state;
 pub mod structural;
