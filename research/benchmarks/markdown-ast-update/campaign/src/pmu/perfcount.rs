@@ -58,6 +58,11 @@ struct PerfEventAttr {
 }
 
 /// What one event read returns under `READ_FORMAT_TIMES`.
+///
+/// `#[repr(C)]` is load-bearing: this is the direct `read()` buffer for
+/// the kernel's `(value, time_enabled, time_running)` layout, so field
+/// order must never be compiler-chosen.
+#[repr(C)]
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct EventReading {
     pub value: u64,
@@ -155,15 +160,22 @@ impl EventCounterGroup {
         })
     }
 
-    fn scope_ioctl(&self, request: libc::c_ulong) {
-        if self.standalone {
-            for counter in &self.counters {
-                unsafe { libc::ioctl(counter.fd, request, 0) };
-            }
+    fn scope_ioctl(&self, request: libc::c_ulong, what: &str) -> Result<(), String> {
+        let failed = if self.standalone {
+            self.counters
+                .iter()
+                .any(|counter| unsafe { libc::ioctl(counter.fd, request, 0) != 0 })
         } else {
             // Grouped mode: the leader's ioctl controls the whole group.
-            unsafe { libc::ioctl(self.counters[0].fd, request, 0) };
+            unsafe { libc::ioctl(self.counters[0].fd, request, 0) != 0 }
+        };
+        if failed {
+            return Err(format!(
+                "ioctl {what} failed: {}",
+                std::io::Error::last_os_error()
+            ));
         }
+        Ok(())
     }
 
     fn read_one(fd: i32) -> Result<EventReading, String> {
@@ -187,19 +199,19 @@ impl EventCounterGroup {
     /// Reset the group and snapshot the (disabled) baseline, then enable
     /// every counter atomically via the leader.
     pub fn begin(&mut self) -> Result<(), String> {
-        self.scope_ioctl(IOC_RESET);
+        self.scope_ioctl(IOC_RESET, "PERF_EVENT_IOC_RESET")?;
         let mut before = Vec::with_capacity(self.counters.len());
         for counter in &self.counters {
             before.push(Self::read_one(counter.fd)?);
         }
         self.before = before;
-        self.scope_ioctl(IOC_ENABLE);
+        self.scope_ioctl(IOC_ENABLE, "PERF_EVENT_IOC_ENABLE")?;
         Ok(())
     }
 
     /// Disable the group and return the per-event region deltas.
     pub fn end(&mut self) -> Result<Vec<EventReading>, String> {
-        self.scope_ioctl(IOC_DISABLE);
+        self.scope_ioctl(IOC_DISABLE, "PERF_EVENT_IOC_DISABLE")?;
         let mut after = Vec::with_capacity(self.counters.len());
         for counter in &self.counters {
             after.push(Self::read_one(counter.fd)?);

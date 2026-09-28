@@ -28,7 +28,7 @@ use std::process::ExitCode;
 use markit_mdbench_campaign::pmu::events;
 use markit_mdbench_campaign::pmu::panel::{self, PMU_PANEL_MANIFEST_SHA256};
 use markit_mdbench_campaign::pmu::panel::{PMU_SEED, PMU_STUDY_ID};
-use markit_mdbench_campaign::pmu::perfcount::{EventCounterGroup, EventReading};
+use markit_mdbench_campaign::pmu::perfcount::EventCounterGroup;
 use markit_mdbench_campaign::pmu::region;
 use markit_mdbench_campaign::pmu::schedule::{self, PmuScheduleEntry, PmuScheduleHeader};
 use markit_mdbench_campaign::pmu::schema::{
@@ -99,7 +99,29 @@ fn require_release_profile() -> Result<(), String> {
     Ok(())
 }
 
-fn host_identity() -> HostIdentityV1 {
+/// Why one observation failed before producing a qualified row.
+/// Setup failures are MECHANISM-LEVEL events (reference gate, fresh
+/// pre-state construction) and must be recorded as INVALID; counter
+/// failures are instrumentation events. Never silently dropped.
+enum RunError {
+    Setup(String),
+    Counter(String),
+}
+
+impl RunError {
+    fn counter(message: String) -> Self {
+        RunError::Counter(message)
+    }
+}
+
+fn hostname_only() -> String {
+    let mut hostname = std::fs::read_to_string("/proc/sys/kernel/hostname")
+        .unwrap_or_else(|_| "unavailable".to_string());
+    hostname.retain(|c| c != '\n');
+    hostname
+}
+
+fn host_identity(pinned_cpu: u32) -> HostIdentityV1 {
     let read =
         |path: &str| std::fs::read_to_string(path).unwrap_or_else(|_| "unavailable".to_string());
     let mut hostname = read("/proc/sys/kernel/hostname");
@@ -122,6 +144,7 @@ fn host_identity() -> HostIdentityV1 {
         kernel,
         cpu,
         perf_event_paranoid: paranoid,
+        pinned_cpu,
     }
 }
 
@@ -251,6 +274,15 @@ fn load_entry(
         std::fs::read(schedule_path).map_err(|e| format!("read schedule {schedule_path}: {e}"))?;
     let (header, entries) = schedule::verify_schedule_file(&bytes)?;
     schedule::entries_match_panel(&entries, &panel)?;
+    // The schedule file must BE the frozen materialization of this panel
+    // under the frozen seed — not merely a self-consistent file. A
+    // trimmed or rebuilt schedule can never pass this gate.
+    let (expected_header, expected_entries) = schedule::materialize(&panel)?;
+    if header != expected_header || entries != expected_entries {
+        return Err(
+            "schedule file is not the frozen materialization of the verified panel".to_string(),
+        );
+    }
     let entry = schedule::entry_by_ordinal(&entries, ordinal)?.clone();
     // Materialize ONLY this entry's case (filtered loader; identical
     // per-case identity semantics as the full load).
@@ -330,11 +362,8 @@ fn cmd_run(root: &Path, flags: &[String]) -> Result<bool, String> {
     markit_mdbench_campaign::machine::apply_affinity(cpu)?;
 
     let driver_sha256 = markit_mdbench_campaign::identity::current_executable_sha256()?;
-    let hostname = {
-        let mut h = host_identity().hostname;
-        h.truncate(64);
-        h
-    };
+    let mut hostname = hostname_only();
+    hostname.truncate(64);
     let run_id = schema::pmu_run_id(
         &driver_sha256,
         PMU_PANEL_MANIFEST_SHA256,
@@ -349,28 +378,37 @@ fn cmd_run(root: &Path, flags: &[String]) -> Result<bool, String> {
         entry.repetition,
     );
 
-    let outcome: Result<PmuObservationV1, String> = (|| {
-        let group_def = events::group_by_id(&entry.event_group)?;
-        let mut counters = EventCounterGroup::open(group_def.events, group_def.standalone)
-            .map_err(|error| format!("counter open failed: {error}"))?;
-        let observation = dispatch_region(
-            &loaded,
-            &mut counters,
-            entry,
-            &run_id,
-            &observation_id,
-            &driver_sha256,
-            &loaded.header,
-        )?;
-        Ok(observation)
-    })();
+    let pinned_cpu = cpu;
+    let outcome: Result<PmuObservationV1, RunError> = dispatch_region(
+        &loaded,
+        entry,
+        &run_id,
+        &observation_id,
+        &driver_sha256,
+        &loaded.header,
+        pinned_cpu,
+    );
 
     let observation = match outcome {
         Ok(observation) => observation,
         Err(error) => {
-            // Counter instrumentation was unavailable: the observation is
-            // retained with COUNTER_UNAVAILABLE, correctness NOT checked —
-            // never silently dropped.
+            let (qualification, failure_label, execution, correctness_label) = match &error {
+                RunError::Setup(message) => (
+                    QUAL_INVALID,
+                    format!("setup failed: {message}"),
+                    "failed",
+                    "not_checked",
+                ),
+                RunError::Counter(message) => (
+                    QUAL_COUNTER_UNAVAILABLE,
+                    format!("counter instrumentation unavailable: {message}"),
+                    "instrumentation_unavailable",
+                    "not_checked",
+                ),
+            };
+            // The observation is retained (never silently dropped); a
+            // mechanism-level setup failure is INVALID, an instrumentation
+            // failure is COUNTER_UNAVAILABLE.
             PmuObservationV1 {
                 schema: PMU_OBSERVATION_SCHEMA.to_string(),
                 pmu_study_id: PMU_STUDY_ID.to_string(),
@@ -397,14 +435,14 @@ fn cmd_run(root: &Path, flags: &[String]) -> Result<bool, String> {
                 repetition: entry.repetition,
                 events: Vec::new(),
                 low_count_events: Vec::new(),
-                qualification: QUAL_COUNTER_UNAVAILABLE.to_string(),
+                qualification: qualification.to_string(),
                 correctness: CorrectnessV1 {
-                    execution_status: "instrumentation_unavailable".to_string(),
-                    correctness_status: "not_checked".to_string(),
+                    execution_status: execution.to_string(),
+                    correctness_status: correctness_label.to_string(),
                     result_checksum: None,
-                    failure: Some(error),
+                    failure: Some(failure_label),
                 },
-                host: host_identity(),
+                host: host_identity(pinned_cpu),
                 toolchain: toolchain_identity(),
             }
         }
@@ -443,81 +481,83 @@ fn cmd_run(root: &Path, flags: &[String]) -> Result<bool, String> {
 #[allow(clippy::too_many_arguments)]
 fn dispatch_region(
     loaded: &LoadedEntry,
-    counters: &mut EventCounterGroup,
     entry: &PmuScheduleEntry,
     run_id: &str,
     observation_id: &str,
     driver_sha256: &str,
     header: &PmuScheduleHeader,
-) -> Result<PmuObservationV1, String> {
+    pinned_cpu: u32,
+) -> Result<PmuObservationV1, RunError> {
     match entry.horse.as_str() {
         "H0" => build_observation(
             markit_mdbench_full_rebuild::H0_MECHANISM_ID,
             &markit_mdbench_full_rebuild::FullRebuildMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
         "H1" => build_observation(
             markit_mdbench_block_local::H1_MECHANISM_ID,
             &markit_mdbench_block_local::BlockLocalMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
         "H2" => build_observation(
             markit_mdbench_fragment_reuse::H2_MECHANISM_ID,
             &markit_mdbench_fragment_reuse::FragmentReuseMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
         "H3" => build_observation(
             markit_mdbench_old_tree_subtree_reuse::H3_MECHANISM_ID,
             &markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
         "H4" => build_observation(
             markit_mdbench_restart_convergence::H4_MECHANISM_ID,
             &markit_mdbench_restart_convergence::RestartConvergenceMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
         "HorseA" => build_observation(
             markit_mdbench_horse_a::HORSE_A_MECHANISM_ID,
             &markit_mdbench_horse_a::HorseAMechanism::new(),
             loaded,
-            counters,
             entry,
             run_id,
             observation_id,
             driver_sha256,
             header,
+            pinned_cpu,
         ),
-        other => Err(format!("unknown horse {other:?} in PMU schedule entry")),
+        other => Err(RunError::Setup(format!(
+            "unknown horse {other:?} in PMU schedule entry"
+        ))),
     }
 }
 
@@ -526,56 +566,105 @@ fn build_observation<M>(
     mechanism_id: &str,
     mechanism: &M,
     loaded: &LoadedEntry,
-    counters: &mut EventCounterGroup,
     entry: &PmuScheduleEntry,
     run_id: &str,
     observation_id: &str,
     driver_sha256: &str,
     header: &PmuScheduleHeader,
-) -> Result<PmuObservationV1, String>
+    pinned_cpu: u32,
+) -> Result<PmuObservationV1, RunError>
 where
     M: Mechanism,
     M::State: NormalizeV1 + ResultChecksum,
 {
-    let group_defs = counters.defs();
-    let outcome = if let Some(clean) = loaded.clean.as_ref() {
+    // ---- setup stage: OUTSIDE the counters, MECHANISM-LEVEL semantics ---
+    // Everything here mirrors the campaign cell loop: source construction,
+    // the H0 reference oracle (built once per case), and SINGLE_RESET
+    // fresh pre-state construction. Failures are Setup errors -> INVALID.
+    enum Region<M: Mechanism> {
+        Clean {
+            source: markit_mdbench_common::Source,
+        },
+        Edit {
+            pre: markit_mdbench_common::Source,
+            post: markit_mdbench_common::Source,
+            edit: markit_mdbench_common::CanonicalEdit,
+            old_state: M::State,
+        },
+    }
+    let setup: Result<Region<M>, RunError> = if let Some(clean) = loaded.clean.as_ref() {
         let source = markit_mdbench_common::Source::new(
             markit_mdbench_common::SourceId(0),
             clean.source_text.clone(),
         );
-        // Correctness authority: H0 clean parse of the same source, ONCE,
-        // outside the counter window (same authority as the campaign cell).
-        let reference = markit_mdbench_full_rebuild::parse_document(source.as_bytes());
-        validate_normalized(&reference, None)
-            .map_err(|e| format!("clean-state reference gate: {e:?}"))?;
-        let hook = ReferenceOracle::new(reference);
-        region::run_clean_state_region(mechanism, &source, counters, &hook)
+        Ok(Region::Clean { source })
     } else if let Some(edit_case) = loaded.edit.as_ref() {
         let (pre, post) = markit_mdbench_campaign::workload::edit_case_sources(edit_case);
-        let reference = markit_mdbench_full_rebuild::parse_document(post.as_bytes());
-        validate_normalized(&reference, None).map_err(|e| format!("edit reference gate: {e:?}"))?;
-        let hook = ReferenceOracle::new(reference);
         // SINGLE_RESET: fresh pre-edit state OUTSIDE the counter window,
         // never retained across processes (there is only one region per
         // process on this path).
         let old_state = markit_mdbench_runner::orchestrate::build_initial_state(mechanism, &pre)
-            .map_err(|failure| format!("fresh pre-state construction failed: {failure:?}"))?;
-        region::run_edit_write_region(
-            mechanism,
-            &pre,
-            &post,
-            &edit_case.edit,
+            .map_err(|failure| {
+                RunError::Setup(format!("fresh pre-state construction failed: {failure:?}"))
+            })?;
+        Ok(Region::Edit {
+            pre,
+            post,
+            edit: edit_case.edit.clone(),
             old_state,
-            counters,
-            &hook,
-        )
+        })
     } else {
-        return Err("entry has neither a clean nor an edit case".to_string());
+        Err(RunError::Setup(
+            "entry has neither a clean nor an edit case".to_string(),
+        ))
+    };
+    let setup = setup?;
+
+    // ---- counter stage -------------------------------------------------
+    let group_def = events::group_by_id(&entry.event_group).map_err(RunError::counter)?;
+    let mut counters = EventCounterGroup::open(group_def.events, group_def.standalone)
+        .map_err(|error| RunError::counter(format!("counter open failed: {error}")))?;
+    let group_defs = counters.defs();
+    let outcome = match setup {
+        Region::Clean { source } => {
+            // Correctness authority: H0 clean parse of the same source, ONCE,
+            // outside the counter window (same authority as the campaign
+            // cell).
+            let reference = markit_mdbench_full_rebuild::parse_document(source.as_bytes());
+            validate_normalized(&reference, None)
+                .map_err(|e| RunError::Setup(format!("clean-state reference gate: {e:?}")))?;
+            let hook = ReferenceOracle::new(reference);
+            region::run_clean_state_region(mechanism, &source, &mut counters, &hook)
+        }
+        Region::Edit {
+            pre,
+            post,
+            edit,
+            old_state,
+        } => {
+            let reference = markit_mdbench_full_rebuild::parse_document(post.as_bytes());
+            validate_normalized(&reference, None)
+                .map_err(|e| RunError::Setup(format!("edit reference gate: {e:?}")))?;
+            let hook = ReferenceOracle::new(reference);
+            region::run_edit_write_region(
+                mechanism,
+                &pre,
+                &post,
+                &edit,
+                old_state,
+                &mut counters,
+                &hook,
+            )
+        }
     };
 
-    let readings: Vec<EventReading> = outcome
-        .counts
-        .map_err(|e| format!("counter read failed: {e}"))?;
+    // A failed counter READ keeps the row (correctness facts preserved);
+    // only the qualification degrades — never the other way around.
+    let counts = outcome.counts;
+    let (counts_error, readings) = match counts {
+        Ok(readings) => (None, readings),
+        Err(error) => (Some(error), Vec::new()),
+    };
     let event_counts: Vec<EventCountV1> = group_defs
         .iter()
         .zip(readings)
@@ -595,16 +684,24 @@ where
         && outcome.correctness_status == markit_mdbench_common::CorrectnessStatus::Pass;
     let qualification = if !correctness_pass {
         QUAL_INVALID
+    } else if counts_error.is_some() {
+        QUAL_COUNTER_UNAVAILABLE
     } else if multiplexed {
         QUAL_UNQUALIFIED_MULTIPLEXED
     } else {
         QUAL_QUALIFIED
     };
+    let mut failure = outcome.failure.map(|f| format!("{f:?}"));
+    if failure.is_none() {
+        if let Some(error) = counts_error {
+            failure = Some(format!("counter read failed: {error}"));
+        }
+    }
     let correctness_block = CorrectnessV1 {
         execution_status: format!("{:?}", outcome.execution_status).to_lowercase(),
         correctness_status: format!("{:?}", outcome.correctness_status).to_lowercase(),
         result_checksum: outcome.result_checksum,
-        failure: outcome.failure.map(|f| format!("{f:?}")),
+        failure,
     };
     Ok(PmuObservationV1 {
         schema: PMU_OBSERVATION_SCHEMA.to_string(),
@@ -631,7 +728,7 @@ where
         low_count_events,
         qualification: qualification.to_string(),
         correctness: correctness_block,
-        host: host_identity(),
+        host: host_identity(pinned_cpu),
         toolchain: toolchain_identity(),
     })
 }
@@ -652,13 +749,17 @@ fn cmd_finalize(root: &Path, flags: &[String]) -> Result<bool, String> {
         std::fs::read(&schedule_path).map_err(|e| format!("read schedule {schedule_path}: {e}"))?;
     let (header, entries) = schedule::verify_schedule_file(&bytes)?;
     schedule::entries_match_panel(&entries, &panel)?;
+    // Same gate as `run`: the file must BE the frozen materialization.
+    let (expected_header, expected_entries) = schedule::materialize(&panel)?;
+    if header != expected_header || entries != expected_entries {
+        return Err(
+            "schedule file is not the frozen materialization of the verified panel".to_string(),
+        );
+    }
 
     let driver_sha256 = markit_mdbench_campaign::identity::current_executable_sha256()?;
-    let hostname = {
-        let mut h = host_identity().hostname;
-        h.truncate(64);
-        h
-    };
+    let mut hostname = hostname_only();
+    hostname.truncate(64);
     let run_id = schema::pmu_run_id(
         &driver_sha256,
         PMU_PANEL_MANIFEST_SHA256,

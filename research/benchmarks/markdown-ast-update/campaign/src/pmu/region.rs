@@ -80,10 +80,10 @@ where
     M::State: ResultChecksum,
 {
     let source = black_box(source);
+    let mut sink = NoopWorkSink;
+    let mut cx = markit_mdbench_common::MechanismContext::new(&mut sink);
     let begin_error = group.begin().err();
     let outcome = {
-        let mut sink = NoopWorkSink;
-        let mut cx = markit_mdbench_common::MechanismContext::new(&mut sink);
         catch_phase(|| {
             let pending = mechanism.full_parse::<NoopWorkSink>(source, &mut cx)?;
             let done = mechanism.complete(pending)?;
@@ -112,10 +112,10 @@ where
     M::State: ResultChecksum,
 {
     let (pre, post, edit) = (black_box(pre), black_box(post), black_box(edit));
+    let mut sink = NoopWorkSink;
+    let mut cx = markit_mdbench_common::MechanismContext::new(&mut sink);
     let begin_error = group.begin().err();
     let outcome = {
-        let mut sink = NoopWorkSink;
-        let mut cx = markit_mdbench_common::MechanismContext::new(&mut sink);
         let prepared =
             catch_phase(|| mechanism.prepare_update(pre, post, edit, &old_state, &mut cx));
         prepared.and_then(|prep| {

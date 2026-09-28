@@ -51,8 +51,9 @@ pub struct PanelCell {
     pub trigger_statistic: Option<String>,
 }
 
-/// The panel manifest (only the fields the driver needs; unknown fields
-/// are rejected so a mutated manifest cannot slip through).
+/// The panel manifest (only the fields the driver needs; the byte-hash
+/// check above pins the file, so unknown extra fields cannot change
+/// meaning).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct PanelManifest {

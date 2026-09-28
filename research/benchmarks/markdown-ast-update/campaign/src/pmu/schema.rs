@@ -106,6 +106,9 @@ pub struct HostIdentityV1 {
     pub kernel: String,
     pub cpu: String,
     pub perf_event_paranoid: String,
+    /// The frozen single-CPU affinity this process pinned itself to
+    /// (same benchmark-free selection rule as the primary campaign).
+    pub pinned_cpu: u32,
 }
 
 /// Toolchain identity recorded per observation.
