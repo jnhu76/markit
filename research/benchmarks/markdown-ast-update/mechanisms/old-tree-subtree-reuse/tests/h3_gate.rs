@@ -502,16 +502,30 @@ fn h3_reuse_pass_patch_and_cursor_probes() {
     let e1 = long.len() * 2 + 10;
     reuse_probe("local edit deep in doc", &doc, e1, e1 + 2, "XY", 8);
 
-    // Nested reuse: an edit inside a quote's THIRD paragraph; the earlier
-    // sibling paragraph inside the same quote is unmarked and context-
-    // agreeing, so the cursor takes it at the nested level.
+    // Nested reuse (#80 corrective — this probe now genuinely exercises
+    // damaged-ancestor interior descent): ONE blockquote with three
+    // `>`-blank-separated paragraphs; the edit sits inside the THIRD
+    // paragraph, so the QUOTE ancestor carries the changed flag. The
+    // cursor refuses the changed ancestor, descends, and takes the
+    // unmarked SECOND paragraph at the live interior level (the first
+    // paragraph is reparsed: at the quote's opening line the live key
+    // is pre-quote, a declared state mismatch).
     let q1 = "> alpha beta gamma delta epsilon zeta eta theta iota kappa\n";
+    let qb = ">\n";
     let q2 = "> second line with some more words to fill the fragment size out\n";
     let q3 = "> third line with even more filler words to get safely past minGap\n";
     let tail = "tail para with additional words so the right fragment survives too\n\n";
-    let nested_doc = format!("{q1}\n{q2}\n{q3}\n{tail}{tail}");
-    let npos = q1.len() + 1 + q2.len() + 1 + q3.len() + 2;
-    reuse_probe("nested quote edit", &nested_doc, npos, npos + 6, "TWEAK", 1);
+    let nested_doc = format!("{q1}{qb}{q2}{qb}{q3}{tail}{tail}");
+    let q2_at = q1.len() + qb.len();
+    let npos = q2_at + 2 + "second line".len();
+    reuse_probe(
+        "nested quote edit (interior descent)",
+        &nested_doc,
+        npos,
+        npos + 6,
+        "TWEAK",
+        1,
+    );
 
     // A changed candidate is refused: editing the SECOND block leaves the
     // suffix reusable but the damaged block itself must reparse (W2
@@ -907,15 +921,26 @@ fn h3_patch_margins_report_source_inspection() {
             events.contains(&(SourceVersion::Post, 23, 27)),
             "edited-span definition probe must be reported, events: {events:?}"
         );
-        // Consult-time paragraph margins. The unmarked alpha+beta run is
-        // taken at pos 0 (no margin — pos is 0), so the consults whose
-        // margins must appear are gamma's (19, 20) and delta's (33, 34):
-        // (prev content line's LF, blank LF) pairs, neither of which a
-        // parser line report emits.
+        // (#80 corrective: the pre-#80 consult-time paragraph margins —
+        // the (19, 20) / (33, 34) one-line-back reads at every consult —
+        // are REMOVED, replaced by the scanner-side `starts_block` gate;
+        // the corrected cursor consults with zero source reads of its
+        // own, so those pairs must NOT appear as consult events. The
+        // parsed-line reports still cover the blank bytes the parse
+        // actually processes.)
         for pair in [(19u64, 20u64), (33, 34)] {
+            let consult_only = events
+                .iter()
+                .filter(|&&(v, s, e)| v == SourceVersion::Post && (s, e) == pair)
+                .count();
+            // The blank lines at [19,20) and [33,34) are parsed lines
+            // (their per-line reports are [19,20) etc.), so presence is
+            // the parser's report; the consult lane contributes nothing
+            // beyond it. This pins the removal: no SECOND reporting of
+            // the pair (the pre-#80 consult margin added a duplicate).
             assert!(
-                events.contains(&(SourceVersion::Post, pair.0, pair.1)),
-                "consult margin {pair:?} must be reported, events: {events:?}"
+                consult_only <= 1,
+                "consult margin {pair:?} reported {consult_only} times — the consult lane must not re-read (events: {events:?})"
             );
         }
     }

@@ -1,21 +1,29 @@
 //! markit-mdbench-old-tree-subtree-reuse — H3 OLD_TREE_SUBTREE_REUSE
-//! (#22, stage R5).
+//! (#22, stage R5; #80 donor-fidelity corrective).
 //!
 //! Mechanism identity (frozen in
-//! `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §8; tree-sitter-inspired —
-//! ts_tree_edit change flags on the edited path, the ReusableNode
-//! forward cursor, position-alignment + state-agreement splice, and
-//! suffix reuse gated on context agreement): retain the OLD TREE with
-//! edit/change flags; map the edit onto the tree by patching ONLY the
-//! affected ancestry (copy-on-write: sizes along the path absorb the
-//! delta, relative offsets of children after the edit shift, nodes
-//! overlapping the edit are marked changed — the change flags ARE the
-//! damage map); parse the post source in one forward pass consulting
-//! the patched tree through a forward-only cursor: unmarked subtrees
-//! whose line aligns with the parse position and whose entry
-//! `ContextKey` equals the live parser state are spliced whole (shared
-//! Arc identity); rejected candidates descend (children) or are advanced
-//! past and reparsed. No fragment table.
+//! `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §8 + the #80 amendment;
+//! tree-sitter-inspired — ts_tree_edit change flags on the edited path,
+//! the ReusableNode forward cursor, position-alignment + state-agreement
+//! splice, and suffix reuse gated on context agreement): retain the OLD
+//! TREE with edit/change flags; map the edit onto the tree by patching
+//! ONLY the affected ancestry (copy-on-write: sizes along the path
+//! absorb the delta, relative offsets of children after the edit shift,
+//! nodes overlapping the edit are marked changed — the change flags ARE
+//! the damage map); parse the post source in one forward pass
+//! consulting the tree through a PERSISTENT FORWARD-ONLY PRE-ORDER
+//! CURSOR (the reusable_node.h advance/descend shape: per-level child
+//! indices that never move backward; no per-consult stateless table
+//! rebuild): unmarked subtrees whose line aligns with the parse
+//! position and whose entry `ContextKey` equals the live parser state
+//! are spliced whole (shared Arc identity) — at ANY nesting level,
+//! including INSIDE a damaged (changed-flag) ancestor: the rejected
+//! composite DESCENDS to its unmarked children (ts_parser__reuse_node
+//! parser.c:808-811), so damage is a path, not a wall. Rejected or
+//! damaged candidates descend (children) or are advanced past and
+//! reparsed. Open-edge exclusion windows refuse runs whose termination
+//! boundary consumed bytes the edit changed (the H2 window analogue).
+//! No fragment table.
 //!
 //! Position strategy (R2-H09 class "patch-path + derive-at-read",
 //! reproduced honestly): top-level entries carry `{gap, node}` with NO
@@ -235,11 +243,24 @@ pub struct H3Prepared {
 // ---------------------------------------------------------------------------
 
 #[derive(Debug, Default)]
-pub struct OldTreeSubtreeReuseMechanism;
+pub struct OldTreeSubtreeReuseMechanism {
+    /// The discovery-shape summary of the LAST `update` call (#80 §21:
+    /// structural observability of the forward-cursor discovery work —
+    /// diagnostic export only, never mechanism state). Interior
+    /// mutability because the frozen `Mechanism` trait takes `&self`.
+    last_discovery: std::cell::Cell<DiscoverySummary>,
+}
 
 impl OldTreeSubtreeReuseMechanism {
     pub fn new() -> Self {
-        Self
+        Self::default()
+    }
+
+    /// Discovery accounting of the most recent `update` (#80 §21):
+    /// consults, entry visits, per-consult maximum, and table rebuilds
+    /// (always 0 — the pre-#80 per-consult rebuild is removed).
+    pub fn discovery_summary(&self) -> DiscoverySummary {
+        self.last_discovery.get()
     }
 
     /// Clean parse into H3 state + result.
@@ -365,37 +386,27 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         };
         declare_not_applicable(cx);
 
-        // Forward pass with the reusable-node cursor. (The third hook
-        // argument — `starts_block` — is the #79 scanner-protocol
-        // addition; H3's own margin still gates takes, so it is not yet
-        // consumed here. The H3 corrective is #80.)
-        let mut cursor = Cursor {
-            tree: &prepared.tree,
-            post,
-            es,
-            ee_new,
-            definition_changing,
-            takes: Vec::new(),
-            consultations: 0,
-            reused: 0,
-            margin_checks: Vec::new(),
-        };
-        let mut hook: Box<SpliceHook<'_>> =
-            Box::new(|pos, key, _starts_block| cursor.consult(pos, key));
-        let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
-        let (takes, consultations, reused, margin_checks) = {
+        // Forward pass with the reusable-node cursor (#80 corrective:
+        // post-closure consults, persistent forward-only pre-order
+        // descent, damaged-ancestor interior descent — no per-consult
+        // stateless table rebuild). The hook NEVER decides grammar — it
+        // only executes takes the cursor vouched.
+        let mut cursor = Cursor::new(&prepared.tree, es, ee_new, definition_changing);
+        let (rp, slot_count, takes, consultations, reused, discovery) = {
+            let mut hook: Box<SpliceHook<'_>> =
+                Box::new(|pos, key, starts_block| cursor.consult(pos, key, starts_block));
+            let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
             drop(hook); // end the cursor borrow before reading the take record
             (
+                rp,
+                slot_count,
                 cursor.takes,
                 cursor.consultations,
                 cursor.reused,
-                cursor.margin_checks,
+                cursor.discovery,
             )
         };
-        for (a, b) in &margin_checks {
-            cx.sink
-                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, *a, *b);
-        }
+        self.last_discovery.set(discovery);
 
         // Rebuild the document-global first-wins table from the assembled
         // structure (fresh Def entries + taken runs' recorded facts).
@@ -440,8 +451,12 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         // kept their identity and still count as reused.
         cx.sink
             .add_nodes_reused(reused - built.rematerialized_members + built.rematerialized_kept);
-        cx.sink
-            .add_metadata_records_touched(consultations + slot_count as u64);
+        // Discovery accounting (D11, #80): every consultation AND every
+        // old-tree entry visit is attributed — the pre-#80 stateless
+        // enumeration was invisible behind one consultation count.
+        cx.sink.add_metadata_records_touched(
+            consultations + discovery.total_visits + slot_count as u64,
+        );
 
         let tree = TTree {
             entries,
@@ -669,6 +684,92 @@ fn hit_index(first_hit: Option<usize>, i: Option<usize>) -> bool {
     first_hit == i
 }
 
+/// Deepest node whose derived (post-coordinate) span contains `p` —
+/// returns `(start, node)`. The open-edge window boundary (#80): the
+/// block adjacent to the edit consumed bytes the edit changed, so its
+/// termination decision is not vouched (the H2 window analogue).
+fn deepest_node_containing(tree: &TTree, p: usize) -> Option<(usize, Arc<TNode>)> {
+    fn walk(entries: &[(usize, Arc<TNode>)], p: usize) -> Option<(usize, Arc<TNode>)> {
+        for (start, node) in entries {
+            if *start <= p && p < start + node.size {
+                let children: Vec<(usize, Arc<TNode>)> = node
+                    .children
+                    .iter()
+                    .map(|(rel, c)| (start + rel, c.clone()))
+                    .collect();
+                return walk(&children, p).or(Some((*start, node.clone())));
+            }
+        }
+        None
+    }
+    let mut entries = Vec::new();
+    let mut cursor = 0usize;
+    for e in &tree.entries {
+        let start = cursor + e.gap;
+        entries.push((start, e.node.clone()));
+        cursor = start + e.node.size;
+    }
+    walk(&entries, p)
+}
+
+/// Derived (post-coordinate) END of the deepest node whose span
+/// contains `p`.
+fn block_end_containing(tree: &TTree, p: usize) -> Option<usize> {
+    deepest_node_containing(tree, p).map(|(start, node)| start + node.size)
+}
+
+/// LEFT open-edge window (#80): a run entirely before the edited span
+/// must end at/before the START of the deepest block containing the
+/// last unchanged byte before the edit — that adjacent block's
+/// termination consumed bytes the edit changed. When that byte falls in
+/// a gap, the boundary is the last block's END: a blank separation
+/// terminates every continuation deterministically, and a NO-blank
+/// separation is already refused by the patch-time continuation margin
+/// (the changed flag), so the window does not need to double-exclude.
+fn left_window_end(tree: &TTree, es: usize) -> usize {
+    if es == 0 {
+        return 0;
+    }
+    if let Some((boundary_start, _)) = deepest_node_containing(tree, es - 1) {
+        return boundary_start;
+    }
+    let mut best = 0usize;
+    let mut cursor = 0usize;
+    for e in &tree.entries {
+        let start = cursor + e.gap;
+        let end = start + e.node.size;
+        if end <= es {
+            best = end;
+        }
+        cursor = end;
+    }
+    best
+}
+
+/// RIGHT open-edge window (#80): a run entirely after the edited span
+/// must start at/after the END of the deepest block containing the
+/// edit's last post byte. When that byte falls in a gap, the boundary
+/// is the next block's START (blank separations are deterministic; a
+/// no-blank separation is already refused by the patch-time margin's
+/// changed flag).
+fn right_window_start(tree: &TTree, ee_new: usize, post_len: usize) -> usize {
+    if ee_new >= post_len {
+        return post_len;
+    }
+    if let Some(end) = block_end_containing(tree, ee_new) {
+        return end;
+    }
+    let mut cursor = 0usize;
+    for e in &tree.entries {
+        let start = cursor + e.gap;
+        if start >= ee_new {
+            return start;
+        }
+        cursor = start + e.node.size;
+    }
+    post_len
+}
+
 fn lfs(src: &[u8], a: usize, b: usize) -> usize {
     if a >= b || b > src.len() {
         return 0;
@@ -746,26 +847,117 @@ fn damaged_has_def(tree: &TTree) -> bool {
 }
 
 // ---------------------------------------------------------------------------
-// Reusable-node cursor (the forward-only consultation)
+// Reusable-node cursor (#80 corrective: the persistent forward-only
+// pre-order cursor of tree-sitter reusable_node.h — advance/descend
+// only, monotone with the parse position; damaged-ancestor interior
+// descent is a real operative path)
 // ---------------------------------------------------------------------------
+
+/// Discovery-shape accounting (#80 §21; structural, never timing):
+/// every old-tree entry visit during candidate discovery is counted,
+/// so the forward-progress property is observable rather than hidden
+/// behind one consultation count (the pre-#80 D11 attribution blind
+/// spot).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct DiscoverySummary {
+    /// Line-start consultations received.
+    pub consultations: u64,
+    /// Total old-tree entry visits over the whole update (skip/descend/
+    /// candidate reads). Forward-only: bounded by forward traversal.
+    pub total_visits: u64,
+    /// The largest number of entry visits any single consult performed.
+    pub max_consult_visits: u64,
+    /// Top-level tables rebuilt after cursor construction. The cursor
+    /// materializes the top level ONCE per update; any further rebuild
+    /// would be the pre-#80 stateless-enumeration shape.
+    pub table_rebuilds: u64,
+}
+
+/// One persistent descent level of the forward cursor: the entries of
+/// one old-tree level (borrowed — no per-consult cloning), with the
+/// current entry index and its absolute derived position. The top level
+/// walks the Document's entries (gaps folded into the running
+/// position); nested levels walk a container node's `children`
+/// (relative starts over the parent's patched span start).
+struct LevelCursor<'a> {
+    entries: Option<&'a [TEntry]>,
+    children: &'a [(usize, Arc<TNode>)],
+    /// Parent span start (nested levels; entries are `base + rel`).
+    base: usize,
+    /// The current entry's absolute derived position — maintained
+    /// incrementally on advance (top: prefix-summed with gaps).
+    cur: usize,
+    /// The current entry index (monotone; never moves backward).
+    idx: usize,
+}
+
+impl<'a> LevelCursor<'a> {
+    fn top(entries: &'a [TEntry]) -> Self {
+        LevelCursor {
+            entries: Some(entries),
+            children: &[],
+            base: 0,
+            cur: entries.first().map_or(0, |e| e.gap),
+            idx: 0,
+        }
+    }
+    fn nested(base: usize, children: &'a [(usize, Arc<TNode>)]) -> Self {
+        LevelCursor {
+            entries: None,
+            children,
+            base,
+            cur: children.first().map_or(base, |(rel, _)| base + rel),
+            idx: 0,
+        }
+    }
+    fn len(&self) -> usize {
+        match self.entries {
+            Some(entries) => entries.len(),
+            None => self.children.len(),
+        }
+    }
+    fn node(&self) -> &'a Arc<TNode> {
+        match self.entries {
+            Some(entries) => &entries[self.idx].node,
+            None => &self.children[self.idx].1,
+        }
+    }
+    /// Advance past the current entry (forward-only).
+    fn advance(&mut self) {
+        let size = self.node().size;
+        self.idx += 1;
+        if self.idx < self.len() {
+            self.cur = match self.entries {
+                Some(entries) => self.cur + size + entries[self.idx].gap,
+                None => self.base + self.children[self.idx].0,
+            };
+        }
+    }
+}
 
 struct Cursor<'a> {
     tree: &'a TTree,
-    /// The post source, for the live-side paragraph margin at take start.
-    post: &'a [u8],
     /// The edited span in POST coordinates: `[es, ee_new)`. A take may
     /// never cover any of these bytes (they have no old-tree origin).
     es: usize,
     ee_new: usize,
+    /// Open-edge exclusion windows (#80): the block adjacent to each
+    /// side of the edit is excluded — its termination/entry decision
+    /// consumed bytes the edit changed (the H2 window analogue, in the
+    /// patched tree's post coordinates).
+    left_window_end: usize,
+    right_window_start: usize,
     definition_changing: bool,
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
-    /// Inspected byte ranges of the consult-time paragraph margins,
-    /// buffered during the parse (the cursor borrow excludes the sink)
-    /// and reported by the caller afterwards (R5-CORRECTIVE-2). Every
-    /// consult that performs the read reports it, pass or fail.
-    margin_checks: Vec<(u64, u64)>,
+    discovery: DiscoverySummary,
+    /// The persistent forward pre-order path (top level first). The
+    /// donor's ReusableNode advance/descend become index advances and
+    /// level pushes here; every consult only moves FORWARD from where
+    /// the previous one left the path. No per-consult top-level table
+    /// rebuild — the pre-#80 stateless-enumeration shape is gone.
+    path: Vec<LevelCursor<'a>>,
 }
 
 /// One taken run: the placeholder covers POST bytes `[pos, pos + len)`;
@@ -777,133 +969,100 @@ struct TakeRun {
     members: Vec<(usize, Arc<TNode>)>,
 }
 
-impl Cursor<'_> {
-    /// Consultation at a block-start line: find a run of unmarked
-    /// old-tree blocks whose line aligns with the live position and whose
-    /// entry state agrees with the live parser. Returns the take end
-    /// (exclusive) or `None` (the line parses normally — natural
-    /// degradation).
-    fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
-        self.consultations += 1;
-        // LIVE-SIDE PARAGRAPH MARGIN at take start (the ContextKey
-        // deliberately excludes paragraph state, R5 freeze section 2;
-        // found by the adversarial small-model generator): the line
-        // immediately before the splice must be blank, so no paragraph is
-        // open in the live parse. The edit-adjacent continuation margin
-        // (patch_tree) covers entries NEXT to the edit; this covers the
-        // take whose run starts BEHIND a damaged interruptor — e.g. an
-        // edit that turns a `>` marker line into paragraph text merges it
-        // with the following block, and a vouched take there would splice
-        // with a live paragraph still open. Conservative: takes at
-        // interruptor lines degrade to reparse.
-        if pos > 0 {
-            let prev_ls = line_start_of(self.post, pos - 1);
-            // The margin read happens on every consult that reaches it
-            // (pass or fail): buffer the inspected range — the backward
-            // scan [prev_ls-1, pos-1) covers the blank check's span.
-            self.margin_checks
-                .push((prev_ls.saturating_sub(1) as u64, (pos - 1) as u64));
-            if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
-                return None;
-            }
+impl<'a> Cursor<'a> {
+    fn new(tree: &'a TTree, es: usize, ee_new: usize, definition_changing: bool) -> Self {
+        let left_window_end = left_window_end(tree, es);
+        let right_window_start = right_window_start(tree, ee_new, tree.src_len);
+        Cursor {
+            tree,
+            es,
+            ee_new,
+            left_window_end,
+            right_window_start,
+            definition_changing,
+            takes: Vec::new(),
+            consultations: 0,
+            reused: 0,
+            discovery: DiscoverySummary::default(),
+            path: vec![LevelCursor::top(&tree.entries)],
         }
-        let run = self.find_run(pos, key)?;
+    }
+
+    /// Consultation at a line start (post-closure live state — the
+    /// donor's consultation point): find a run of unmarked old-tree
+    /// blocks whose line aligns with the live position and whose entry
+    /// state agrees with the live parser, AT THE LIVE LEVEL — including
+    /// INSIDE a damaged (changed-flag) ancestor, whose rejection
+    /// descends to its unmarked children (tree-sitter
+    /// `ts_parser__reuse_node` parser.c:808-811). Returns the take end
+    /// (span end — the scanner rounds it to the next line start) or
+    /// `None` (the line parses normally — natural degradation).
+    fn consult(&mut self, pos: usize, key: &ContextKey, starts_block: bool) -> Option<usize> {
+        self.consultations += 1;
+        self.discovery.consultations += 1;
+        // SOUNDNESS GATE (the blank-line margin's donor-faithful
+        // replacement, #80): an open live paragraph absorbs a
+        // plain-text line, so no old block boundary at this line is
+        // live — refuse (the ContextKey deliberately excludes paragraph
+        // state, R5 freeze §2). At every other line the live parse
+        // starts a fresh block, exactly where a run may splice.
+        if !starts_block {
+            return None;
+        }
+        let visits_before = self.discovery.total_visits;
+        let level = self.seek(pos)?;
+        // Vouch gates on the candidate the descent settled on.
+        let (cstart, cnode) = {
+            let lvl = self.path.last().expect("non-empty path");
+            (lvl.cur, lvl.node())
+        };
+        let _ = level;
+        if cnode.changed || cnode.ctx != *key {
+            // A damaged candidate is not taken whole — the descent in
+            // `seek` already went past changed ancestry; a leaf that is
+            // still changed here reparses. A state disagreement refuses
+            // the line (the donor's entry-state mismatch: advance /
+            // ordinary lexing); the cursor stays for the next line.
+            self.bump_max(visits_before);
+            return None;
+        }
         // STALE-POSITION GUARD (found by the adversarial small-model
         // generator): a patched tree's derived positions can go stale
-        // (clamped sizes, residual shifts). A run whose extent or members
-        // do not tile monotonically inside the post document is refused —
-        // natural degradation, never a correctness risk — so no take with
-        // a stale origin can reach the assembled state.
-        let len = run.end.checked_sub(pos)?;
-        if pos + len > self.post.len() {
+        // (clamped sizes, residual shifts). A run whose members do not
+        // tile monotonically inside the post document is refused —
+        // natural degradation, never a correctness risk.
+        if cstart.checked_sub(cnode.line_offset) != Some(pos) {
+            self.bump_max(visits_before);
             return None;
         }
-        let mut expect = pos;
-        for (ms, m) in &run.members {
-            if *ms < expect {
-                return None; // stale: member starts before the covered range
-            }
-            let mend = ms.checked_add(m.size)?;
-            if mend > self.post.len() {
-                return None;
-            }
-            expect = mend;
-        }
-        let new_end = pos + len;
-        // The covered range must be disjoint from the edited span.
-        if pos < self.ee_new && new_end > self.es {
+        // OPEN-EDGE WINDOW (#80): the run must lie fully inside its
+        // side's safe window — the block adjacent to the edit is
+        // excluded (its termination consumed bytes the edit changed).
+        let (win_start, win_end) = if cstart < self.ee_new {
+            (0, self.left_window_end)
+        } else {
+            (self.right_window_start, self.post_len())
+        };
+        if cstart < win_start || cstart + cnode.size > win_end {
+            self.bump_max(visits_before);
             return None;
         }
-        self.reused += run.members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
-        self.takes.push(TakeRun {
-            pos,
-            members: run.members,
-        });
-        Some(new_end)
-    }
-
-    /// Find a run of sibling blocks living on the line starting at
-    /// `pos` (LINE-aligned; blocks nested in containers start mid-line).
-    /// The OUTERMOST same-line block whose entry `ContextKey` equals the
-    /// live key and which carries no changed flag is the candidate;
-    /// deeper levels are tried only through a rejected shell. The run
-    /// extends over following siblings while they stay unmarked, fit the
-    /// reference clause, and keep their own line alignment meaningful
-    /// (contiguity by construction — the unchanged bytes between members
-    /// ride inside the placeholder).
-    fn find_run(&self, pos: usize, key: &ContextKey) -> Option<Run> {
-        let mut entries: Vec<(usize, Arc<TNode>)> = Vec::new();
-        let mut cursor = 0usize;
-        for e in &self.tree.entries {
-            let start = cursor + e.gap;
-            entries.push((start, e.node.clone()));
-            cursor = start + e.node.size;
-        }
-        self.search_level(&entries, pos, key)
-    }
-
-    fn search_level(
-        &self,
-        entries: &[(usize, Arc<TNode>)],
-        pos: usize,
-        key: &ContextKey,
-    ) -> Option<Run> {
-        // LINE-aligned: the entry whose first line starts at `pos`.
-        // Checked: patched (clamped) sizes can leave a candidate's derived
-        // position stale; a stale position fails to align and the entry
-        // reparses naturally.
-        let idx = entries
-            .iter()
-            .position(|(start, n)| start.checked_sub(n.line_offset) == Some(pos))?;
-        let (start, node) = &entries[idx];
-        if node.changed {
-            // Damaged ancestry: descend — sibling children NOT on the
-            // edited path are unmarked and may still be vouched.
-            let children: Vec<(usize, Arc<TNode>)> = node
-                .children
-                .iter()
-                .map(|(rel, c)| (start + rel, c.clone()))
-                .collect();
-            return self.search_level(&children, pos, key);
-        }
-        if node.ctx != *key {
-            // State disagreement: descend (the freeze's "rejected
-            // composite candidates descend"); a leaf is advanced past.
-            let children: Vec<(usize, Arc<TNode>)> = node
-                .children
-                .iter()
-                .map(|(rel, c)| (start + rel, c.clone()))
-                .collect();
-            return self.search_level(&children, pos, key);
-        }
-        // Vouched candidate (disjoint from the edited span by !changed).
-        if self.definition_changing && node.has_ref {
-            return None;
-        }
-        let mut members = vec![(*start, node.clone())];
-        let mut end = start + node.size;
-        for (s2, n2) in entries.iter().skip(idx + 1) {
-            if n2.changed || (self.definition_changing && n2.has_ref) {
+        let mut members = vec![(cstart, cnode.clone())];
+        let mut end = cstart + cnode.size;
+        let mut last_idx = self.path.last().expect("path").idx;
+        let lvl_len = self.path.last().expect("path").len();
+        // Running position of the next entry (top level: prefix-summed
+        // with the inter-member gaps — O(1) per extension step).
+        let mut next_pos = end;
+        for i in (last_idx + 1)..lvl_len {
+            let (s2, n2) = {
+                let lvl = self.path.last().expect("path");
+                match lvl.entries {
+                    Some(entries) => (next_pos + entries[i].gap, &entries[i].node),
+                    None => (lvl.base + lvl.children[i].0, &lvl.children[i].1),
+                }
+            };
+            if n2.changed || (self.definition_changing && n2.has_ref) || s2 + n2.size > win_end {
                 break;
             }
             // Extending covers the bytes up to this member's end; the
@@ -914,16 +1073,158 @@ impl Cursor<'_> {
             if end < self.ee_new && s2 + n2.size > self.es {
                 break;
             }
-            members.push((*s2, n2.clone()));
+            members.push((s2, n2.clone()));
             end = s2 + n2.size;
+            next_pos = end;
+            self.discovery.total_visits += 1;
+            last_idx = i;
         }
-        Some(Run { end, members })
+        let len = end.checked_sub(pos)?;
+        if pos + len > self.post_len() {
+            self.bump_max(visits_before);
+            return None;
+        }
+        let mut expect = pos;
+        for (ms, m) in &members {
+            if *ms < expect {
+                self.bump_max(visits_before);
+                return None; // stale: member starts before the covered range
+            }
+            let mend = ms.checked_add(m.size)?;
+            if mend > self.post_len() {
+                self.bump_max(visits_before);
+                return None;
+            }
+            expect = mend;
+        }
+        let new_end = pos + len;
+        // The covered range must be disjoint from the edited span.
+        if pos < self.ee_new && new_end > self.es {
+            self.bump_max(visits_before);
+            return None;
+        }
+        // Consume the run (forward-only): the level index moves past
+        // the last taken member.
+        for _ in 0..=(last_idx - self.path.last().expect("path").idx) {
+            self.path.last_mut().expect("path").advance();
+        }
+        self.bump_max(visits_before);
+        self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        self.takes.push(TakeRun { pos, members });
+        Some(new_end)
     }
-}
 
-struct Run {
-    end: usize,
-    members: Vec<(usize, Arc<TNode>)>,
+    fn post_len(&self) -> usize {
+        self.tree.src_len
+    }
+
+    fn bump_max(&mut self, visits_before: u64) {
+        let delta = self.discovery.total_visits - visits_before;
+        self.discovery.max_consult_visits = self.discovery.max_consult_visits.max(delta);
+    }
+
+    /// Synchronize the persistent descent path to `pos` (POST
+    /// coordinates — the patched tree's derived positions ARE post
+    /// coordinates) and leave the cursor AT the candidate the descent
+    /// settles on. This is tree-sitter's ReusableNode position gate
+    /// (parser.c:770-811) adapted to the local line-alignment
+    /// contract:
+    ///
+    /// - entries ending at/before `pos` are skipped (monotone
+    ///   forward); an exhausted level pops and advances its parent;
+    /// - an entry whose span CONTAINS `pos` is descended into when it
+    ///   is damaged (the changed flag — the interior-descent path:
+    ///   damage is a path, not a wall) or when its line starts before
+    ///   `pos` (an interior line of the container);
+    /// - an aligned entry — damaged or not — is the candidate: a
+    ///   damaged one descends (children first); the consult's ctx gate
+    ///   then decides the take;
+    /// - an entry whose line starts after `pos` stays in place for the
+    ///   next line (the donor's wait / per-line retry).
+    fn seek(&mut self, pos: usize) -> Option<usize> {
+        loop {
+            let exhausted = {
+                let level = self.path.last_mut()?;
+                // Monotone skip: entries ending at/before pos are gone.
+                while level.idx < level.len() {
+                    let (s, n) = (level.cur, level.node());
+                    if s + n.size <= pos {
+                        level.advance();
+                        self.discovery.total_visits += 1;
+                    } else {
+                        break;
+                    }
+                }
+                level.idx >= level.len()
+            };
+            if exhausted {
+                // Level exhausted: pop and continue at the parent,
+                // advancing past the child we were inside.
+                self.path.pop();
+                self.discovery.total_visits += 1;
+                if let Some(parent) = self.path.last_mut() {
+                    parent.advance();
+                }
+                if self.path.is_empty() {
+                    return None;
+                }
+                continue;
+            }
+            let (cstart, cnode) = {
+                let level = self.path.last().expect("non-empty path");
+                (level.cur, level.node())
+            };
+            let aligned = cstart
+                .checked_sub(cnode.line_offset)
+                .is_some_and(|ls| ls == pos);
+            // The containment test is LINE-start-based: a child living
+            // on a prefixed line (quote/list content) has its LINE
+            // start before its span start — the consult sits on the
+            // line, and the prefix bytes belong to the ancestor's span.
+            let line_contains = cstart
+                .checked_sub(cnode.line_offset)
+                .is_some_and(|ls| ls <= pos)
+                && cstart + cnode.size > pos;
+            if aligned {
+                if cnode.changed && !cnode.children.is_empty() {
+                    // DAMAGED-ANCESTOR INTERIOR DESCENT (the #80
+                    // repair): reject the changed composite and
+                    // descend to its children — unmarked descendants
+                    // at aligned interior positions are still
+                    // reusable (donor parser.c:808-811).
+                    self.discovery.total_visits += 1;
+                    let child_entries: &'a [(usize, Arc<TNode>)] = &cnode.children[..];
+                    let base = cstart;
+                    self.path.push(LevelCursor::nested(base, child_entries));
+                    continue;
+                }
+                // Undamaged aligned candidate (or a damaged leaf):
+                // settle here — the consult's gates decide.
+                self.discovery.total_visits += 1;
+                return Some(self.path.len() - 1);
+            }
+            if line_contains {
+                // An INTERIOR line of this entry: descend to the child
+                // living at/after pos (containers only — an interior
+                // line of a leaf has no candidates).
+                if !cnode.children.is_empty() {
+                    self.discovery.total_visits += 1;
+                    let child_entries: &'a [(usize, Arc<TNode>)] = &cnode.children[..];
+                    let base = cstart;
+                    self.path.push(LevelCursor::nested(base, child_entries));
+                    continue;
+                }
+                self.discovery.total_visits += 1;
+                return None;
+            }
+            // The entry's line starts after pos (unaligned, later —
+            // e.g. the consult sits in the gap before it): no candidate
+            // at this consult; the cursor stays AT the entry and the
+            // next line retries (the donor's per-line retry).
+            self.discovery.total_visits += 1;
+            return None;
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1580,13 +1881,6 @@ fn project_node(node: &TNode, base: usize) -> Node {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-fn line_start_of(src: &[u8], pos: usize) -> usize {
-    src[..pos]
-        .iter()
-        .rposition(|&b| b == b'\n')
-        .map_or(0, |p| p + 1)
-}
 
 fn ref_table(defs: &[(String, String)]) -> sg::RefTable {
     let mut t = sg::RefTable::new();
