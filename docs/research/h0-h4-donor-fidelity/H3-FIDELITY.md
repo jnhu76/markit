@@ -119,3 +119,85 @@ Gate-A consequence: H3 is a Gate-A BLOCKER (candidate discovery + reuse
 granularity + misleading claim boundary). Corrective issue: see
 FIDELITY-MATRIX.md and the #76 status record. Repair requires a separate
 PR + fresh fidelity re-review (not this PR).
+
+---
+
+## Corrective re-evaluation — 2026-09-28 (#80)
+
+The initial Gate-A verdict above (`MATERIAL_DEVIATION`, reviewer R3) is
+preserved as history. The H3 corrective cycle was executed separately and
+re-reviewed by a fresh-context reviewer. The repair branch was taken —
+interior descent was restored as operative code, not re-frozen away.
+
+```text
+CORRECTIVE_ISSUE   = #80 (H3 old-tree-subtree-reuse donor-fidelity corrective)
+CORRECTIVE_PR      = PR #83 (branch fix/80-h3-donor-fidelity, head
+                     532fd5278995199de761facd1f7c8af4526ad323)
+MERGE_COMMIT       = a8327fb (PR #83; LIVE_HEAD == REVIEWED_HEAD verified)
+FRESH_REVIEW       = RH3 (fresh-context, not an author); verbatim record:
+                     ../reviews/gate-a-rh3-h3-recheck-2026-09-28.md
+NEW_VERDICT        = FAITHFUL_WITH_DECLARED_SIMPLIFICATION
+                     (P0=0, P1=0; P1_1_INTERIOR_DESCENT = PASS,
+                      P1_2_DISCOVERY_COST_SHAPE = PASS; D3/D5/D11 raised
+                      from MATERIAL_DEVIATION; H3_GATE_A_READY = YES)
+```
+
+What was repaired (maps to R3's P1-1 / P1-2):
+
+- **P1-1 (D3/D5 interior descent + misleading boundary)**: damaged-ancestor
+  interior descent is now operative — alignment-first seek on a persistent
+  forward-only pre-order cursor; flag-rejected composites descend (line-
+  start containment); unmarked interior members splice with shared Arc
+  identity inside fresh container wrappers (donor D5/D12 shape). The
+  decisive H3-F4 shape is pinned by unspoofable identity witnesses
+  (`tests/interior_reuse.rs`: one quote, five `>`-separated paragraphs,
+  edit in para 2 → ≥2 interior paragraphs shared, damaged one not shared —
+  unsatisfiable by top-level takes; list variant likewise), reproduced by
+  an independent reviewer probe, and re-anchored against the donor by
+  rebuilding the frozen C harness at the pinned SHAs on the clean-room
+  server (F4/F4b reproduced; qualitative only). Misleading docs/fixtures
+  (freeze §8 wording, README/lib header, the mislabeled h3_gate
+  "nested quote" fixture) were corrected to a genuine single-quote
+  interior descent.
+- **P1-2 (D3/D11 enumeration-shaped discovery)**: the stateless
+  per-consult top-level rebuild + linear scan is gone (borrowed persistent
+  path, monotone indices, zero per-consult allocation); discovery cost is
+  now attributed — `DiscoverySummary {consultations, total_visits,
+  max_consult_visits, table_rebuilds}` exported and included in
+  `metadata_records_touched`; the audit fixture was re-derived exactly
+  (11 → 17 records) to pin it.
+- Supporting repairs: `starts_block` consult argument (shared-scanner
+  protocol per #79) replaces the R5 blank-line consult margin; open-edge
+  exclusion windows cover the 64k DeepContainer M-CS-ITEM-INDENT case
+  (gap fallbacks delegate no-blank adjacency to patch_tree continuation
+  margins); a 14-line cross-horse touch to H2's cursor (line-start
+  containment mirroring) is acknowledged on PR #83 with H2 suites rerun
+  green by the reviewer.
+
+Corrective evidence: H3 32 + full regression sweep (fragment-reuse 34,
+shared-grammar 45, block-local 32, restart-convergence 36, horse-a 232)
+— 0 failures; every probe == H0; no timing collected.
+
+Residual findings recorded by RH3 (non-blocking):
+
+- P2-1 (carried): no fragile/error/missing rejection analogues (declared
+  no-GLR boundary) — donor degrades composite reuse to token level under
+  `is_fragile` where H3 takes whole blocks; over-reuse in H3's favor;
+  must accompany any H3-vs-donor comparison.
+- P2-2 (new, conservative, against-H3): interior reuse is directionally
+  limited — the first interior block of a damaged container is never
+  reused (opening-line consult key is pre-container-push vs the child's
+  frame-carrying recorded ctx), and pre-damage interior reuse is
+  additionally blocked by the left window inside containers; the donor
+  reuses those tokens. This declaration is now completed in the R5 §8
+  addendum of this corrective cycle (it was previously stated only in a
+  test comment).
+- P3×3: h3_gate.rs comment off-by-one (the decisive interior-descent
+  witnesses live in interior_reuse.rs, which the freeze cites); the
+  in-repo forward-discovery witness scenario is non-discriminating on its
+  own (reviewer's discriminating probe — 40 inserted paragraphs among 100
+  top-level blocks — passes; the structural repair is verified) and
+  `table_rebuilds` is not incremented by any code path (declared
+  diagnostic, always 0 by construction); the once-per-update open-edge
+  window-setup walk is horse-added discovery-adjacent work not yet
+  attributed in a counter (recorded as accepted debt below).

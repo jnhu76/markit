@@ -95,3 +95,62 @@ executable comparison).
   observed outputs `PROBE-OUTPUT.txt`, `TEST-RESULT.txt` for H2).
 - These artifacts are as-run records for evidence reproduction; they are
   not maintained tooling and are exempt from workspace lint/fmt policy.
+
+## Corrective-cycle challenge evidence — 2026-09-28 (#79, #80)
+
+New decisive evidence produced by the H2/H3 corrective cycle (mechanism
+observations only — no timing). Initial H2-F2/H2-F5 and H3-F4 records
+above are preserved unchanged; the new records supersede the
+*MATERIAL_DEVIATION observations*, not the frozen history.
+
+### H2 (RH2 re-review; #79, PR #82, merge a3a551f)
+
+| Case | Donor observed (pinned npm re-run) | Local observed (post-#82) | Verdict |
+|---|---|---|---|
+| H2-MID 30-item list, edit inside item 3 (re-run of the R2 decisive probe, `f_midcontainer.ts`/`f_deep.ts` lineage) | **25/30 ListItem objects shared**, byte-identical to frozen `UPSTREAM-OBSERVED-OUTPUT.txt` | **27/30 ListItem Arc identities shared** (positions 4–30), damaged item 3 reparsed, new List identity NOT shared (0/1) — unsatisfiable by top-level takes; == H0 | repaired (delta = declared absent NotLast trailing pop) |
+| H2-QUOTE nested quote interior (`mid_container_reuse.rs`) | — (donor takes nested-level runs per pinned-source reading) | ≥5/12 nodes shared inside the damaged quote; == H0 | repaired |
+| H2-DISCOVERY refusal-heavy regime (definition-changing replacement, 100 collapsed-ref paragraphs) | donor `reuseFragment` consults per line at pinned source | 202 consultations → **202 total visits** on a 501-entry tree; `table_rebuilds = 0`; witness bound `total_visits ≤ 2·entries + 8·consults`; == H0 | repaired (pre-#82 shape ≈ 20,402 visits) |
+| H2-INTERRUPTOR `starts_block` soundness (reviewer adversarial: `>`-marker destroyed ahead of a vouched run) | donor takes runs up to interruptor lines | take refused at the absorbed line, == H0; interruptor-line takes restored where sound (splice flushes the open paragraph) | repaired margin replacement |
+
+Reviewer probes: 7 independent `/tmp` scenarios, every one == H0 clean
+parse. Suites: fragment-reuse 34 + shared-grammar 45 + neighbors
+(29+36+32+241), 0 failures.
+
+### H3 (RH3 re-review; #80, PR #83, merge a8327fb)
+
+| Case | Donor observed (frozen C harness REBUILT at pinned SHAs, server) | Local observed (post-#83) | Verdict |
+|---|---|---|---|
+| H3-F4 re-run: damaged ancestor, reusable descendant | F4 = 60 reuse_node events inside damaged quote; F4b list_item reuse inside damaged list (numbers match the frozen record; qualitative only) | ONE quote, five `>`-separated paragraphs, edit in para 2 → quote flagged changed; **paras 3–5 Arc-shared inside the rebuilt wrapper**, paras 1–2 rebuilt; == H0 (identity witness unsatisfiable by top-level takes; `tests/interior_reuse.rs`) | repaired |
+| H3-LIST damaged list interior | F4b lineage | ≥6/12 items shared inside the changed List, damaged item not shared; == H0 | repaired |
+| H3-DISCOVERY forward cursor | donor single forward ReusableNode pass (pinned-source + harness) | persistent monotone path, zero per-consult allocation; reviewer's discriminating probe (40 inserted paragraphs among 100 top-level blocks) passes where the pre-#83 shape would not; visits attributed into `metadata_records_touched` | repaired |
+| H3-WINDOW open-edge exclusion (64k DeepContainer M-CS-ITEM-INDENT lineage) | — (local-substrate guard) | stale-termination member refused; popped-back suffix reused; gap fallbacks covered by patch-time margins; == H0 | sound (reviewer probe) |
+
+Suites: H3 32 + regression sweep (fragment-reuse 34, shared-grammar 45,
+block-local 32, restart-convergence 36, horse-a 232), 0 failures; 3
+independent reviewer probes pass. The frozen `gate_h3.c` harness was
+rebuilt in the server's `/tmp` at tree-sitter 6070dbf /
+ts-markdown f969cd3 — as-run artifacts unchanged; no repo tooling
+touched.
+
+### Upstream probe output annotation (R5 hygiene item)
+
+The as-run upstream outputs are annotated as follows — do not edit the
+artifacts themselves:
+
+- `r2-h2-lezer/UPSTREAM-OBSERVED-OUTPUT.txt`: lines beginning with `$`
+  or `> ` are the **commands** that produced the following block; blocks
+  beginning `NODES`/`SHARED`/`ListItem objects:` are **observations**
+  (verbatim program output); the frozen donor models
+  (`DONOR-D1-D12-MODEL-FROZEN.md`, `donor-model-H3.md`,
+  `donor-model-frozen.md`) contain the **interpretation** — observed
+  outputs carry no interpretation of their own.
+- `r2-h2-lezer/TEST-RESULT.txt` and `*/PROBE-OUTPUT.txt`: program output
+  plus the exact execution command header recorded at the top of each
+  file; pass/fail lines are observations, prose in the fidelity
+  contracts is interpretation.
+- The C harness (`r3-h3-treesitter/gate_h3.c`): build line recorded in
+  `CHALLENGE-CASES.md` §H3 above (gcc -O0 against the pinned core +
+  pre-generated parser/scanner); its stdout event log is observation.
+  The 2026-09-28 server re-run reproduced the recorded event counts but
+  left no new artifacts (rebuilt in the server's `/tmp`, qualitative
+  re-verification only).

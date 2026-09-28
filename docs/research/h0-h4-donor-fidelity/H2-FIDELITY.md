@@ -110,3 +110,80 @@ live-level candidate discovery and the claim boundary is re-frozen, or
 stronger-vouching" and container-axis results are bounded accordingly.
 Corrective issue: see FIDELITY-MATRIX.md and the #76 status record.
 Repair requires a separate PR + fresh fidelity re-review (not this PR).
+
+---
+
+## Corrective re-evaluation — 2026-09-28 (#79)
+
+The initial Gate-A verdict above (`MATERIAL_DEVIATION`, reviewer R2) is
+preserved as history. The H2 corrective cycle was executed separately and
+re-reviewed by a fresh-context reviewer. Path (a) was taken: the mechanism
+was repaired — no claim-boundary downgrade.
+
+```text
+CORRECTIVE_ISSUE   = #79 (H2 fragment-reuse donor-fidelity corrective)
+CORRECTIVE_PR      = PR #82 (branch fix/79-h2-donor-fidelity, head
+                     367060aff624c35fbbad96bc5be72f35702ec487)
+MERGE_COMMIT       = a3a551f (PR #82; LIVE_HEAD == REVIEWED_HEAD verified)
+FRESH_REVIEW       = RH2 (fresh-context, not an author); verbatim record:
+                     ../reviews/gate-a-rh2-h2-recheck-2026-09-28.md
+NEW_VERDICT        = FAITHFUL_MECHANISM_MODEL
+                     (P0=0, P1=0; P1_1_MID_CONTAINER_DISCOVERY = PASS,
+                      P1_2_DISCOVERY_COST_SHAPE = PASS; D3/D5/D11 raised
+                      from MATERIAL_DEVIATION; H2_GATE_A_READY = YES)
+```
+
+What was repaired (maps to R2's P1-1 / P1-2):
+
+- **P1-1 (D3/D5 mid-container discovery/granularity)**: the shared-scanner
+  consult point moved to the donor-faithful post-closure/pre-dispatch
+  position (`run` phase 2 — after prefix-driven frame closure, before the
+  new-frame push/dispatch; the `markdown.ts advance()` ordering of
+  readLine/finishContext before reuseFragment), with a `starts_block` hook
+  argument (false only where a live open paragraph would absorb the line —
+  the sound, donor-faithful replacement of the R5 blank-line consult
+  margin; interruptor-line takes restored). `fragment-reuse` gained a
+  persistent forward-only monotone descent path (per-level monotone child
+  indices; `seek` = the moveTo childAfter/parent analogue with line
+  alignment). Frozen mid-container witness now shares 27/30 ListItem
+  identities inside the damaged List with the List identity itself
+  unshared (donor runtime re-reproduced at the pinned npm versions:
+  25/30, byte-identical to the frozen record; the 2-item delta is exactly
+  the declared absent NotLast trailing pop). The frozen §7 "taking runs
+  of sibling blocks at nested levels … not a strict subset" claim is now
+  delivered.
+- **P1-2 (D11 discovery-cost shape)**: the per-consult entries rebuild and
+  linear scan are gone (borrowed slices, zero per-consult allocation);
+  discovery is amortized-forward with exact structural accounting
+  (`metadata_records_touched = consultations + total_visits + slot_count`,
+  `DiscoverySummary` exported; `table_rebuilds = 0` in every reviewer
+  regime). Refusal-heavy regime: 202 consultations → 202 total visits on
+  a 501-entry tree (pre-corrective shape ≈ 20,402 visits) — the O(B²)
+  shape is excluded by an order of magnitude.
+- Supporting repairs: take ends round to the next line start (donor steps
+  past the last taken line's LF) while the Spliced placeholder keeps the
+  raw span end for frame closure; lazy consult-lane line reads; new
+  witness suite `mechanisms/fragment-reuse/tests/mid_container_reuse.rs`
+  (4 witnesses, incl. the unspoofable identity witness and the
+  forward-discovery-shape bound `total_visits ≤ 2·entries + 8·consults`).
+
+Corrective evidence: all suites green (fragment-reuse 34, shared-grammar
+45, neighbors 29+36+32+241; `matrix_r5` correctly left ignored), 7
+independent reviewer probes == H0 clean parse; no timing collected.
+
+Residual findings recorded by RH2 (non-blocking, declared):
+
+- P2×4: left-edge continuation margin (against-H2); open-edge one-whole-
+  block exclusion vs donor ~one line (against-H2); missing
+  NotLast/trailing-partial-line/openEnd−1 guards → bounded over-reuse
+  (27/30 vs 25/30, for-H2, declared); exact line-alignment + line-granular
+  consult refuses gap-positioned candidates + the `fragment.from ≤ pos−1`
+  step-back not modeled (conservative, ≤1 line).
+- P3×5: symmetric minGap right-piece drop not yet noted as a donor
+  asymmetry in R5 §7 DAMAGE text (completed in the R5 §7 addendum of this
+  corrective cycle); single-edit contract (substrate); `max_consult_visits`
+  omits failed-seek visits (informational only; total_visits attribution
+  exact); h2_gate "nested quote edit" probe's comment claim now pinned by
+  mid_container_reuse.rs instead; shared-scanner protocol change re-baselined
+  H3/H4 attribution expectations (handled in #82/#83 with documented
+  rationale).

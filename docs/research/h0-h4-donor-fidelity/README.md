@@ -36,6 +36,30 @@ repair needs a separate PR + fresh fidelity re-review):
   top-level-entry granularity as a declared simplification with its
   under-reuse quantified.
 
+## Corrective-cycle status — 2026-09-28
+
+Both corrective tracks completed as **mechanism repairs** (no
+claim-boundary downgrade), each with its own PR and fresh-context
+re-review; the initial FAIL verdicts above are preserved as history.
+
+```text
+H2: #79  ->  PR #82 (367060a)  ->  merge a3a551f  ->  RH2
+    NEW VERDICT = FAITHFUL_MECHANISM_MODEL (P0=0, P1=0)
+H3: #80  ->  PR #83 (532fd52)  ->  merge a8327fb  ->  RH3
+    NEW VERDICT = FAITHFUL_WITH_DECLARED_SIMPLIFICATION (P0=0, P1=0)
+
+GATE_A_VERDICT       = still FAIL / BLOCKED (frozen) until the fresh
+                       synthesis re-evaluation (R6) of the merged master
+GATE_B_AUTHORIZED    = NO
+PERFORMANCE_COLLECTION_AUTHORIZED = NO
+PERFORMANCE_COLLECTION_RUN        = NO
+```
+
+Per-horse dated corrective sections: `H2-FIDELITY.md`, `H3-FIDELITY.md`;
+cross-horse status + accepted hygiene debt: `FIDELITY-MATRIX.md`;
+new decisive witnesses + upstream-output annotation:
+`CHALLENGE-CASES.md`.
+
 ## Contents
 
 | File | Content |
@@ -46,7 +70,10 @@ repair needs a separate PR + fresh fidelity re-review):
 | `CHALLENGE-CASES.md` | per-horse F1–F5 challenge-case execution record (mechanism behavior only — no timing) |
 | `challenge-evidence/` | frozen donor-side models, upstream probe scripts + observed outputs, local probe crates (as-run records) |
 
-Reviewer records (verbatim): `../reviews/gate-a-r{1..4}-*-2026-09-28.md`.
+Reviewer records (verbatim): initial Gate-A
+`../reviews/gate-a-r{1..4}-*-2026-09-28.md`; corrective re-reviews
+`../reviews/gate-a-rh2-h2-recheck-2026-09-28.md` (H2, #79) and
+`../reviews/gate-a-rh3-h3-recheck-2026-09-28.md` (H3, #80).
 
 ## What this directory is NOT
 

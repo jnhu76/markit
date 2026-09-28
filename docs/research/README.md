@@ -152,6 +152,17 @@ manifest, challenge-case record) and
 Gate B and performance collection remain unauthorized; H2/H3 corrective
 decisions are recorded in the fidelity matrix.
 
+**Corrective cycle (2026-09-28, same Gate A):** both blockers were
+repaired as mechanism repairs (no claim-boundary downgrade) and
+re-reviewed by fresh-context reviewers — H2 (#79, PR #82, merge a3a551f,
+RH2) → **FAITHFUL_MECHANISM_MODEL**; H3 (#80, PR #83, merge a8327fb,
+RH3) → **FAITHFUL_WITH_DECLARED_SIMPLIFICATION** (P0=0, P1=0 both).
+The initial FAIL verdicts are preserved; the frozen GATE A = FAIL /
+BLOCKED stands until the fresh synthesis re-evaluation (R6) of the
+merged master. Corrective re-review records:
+[reviews/gate-a-rh2-h2-recheck-2026-09-28.md](reviews/gate-a-rh2-h2-recheck-2026-09-28.md),
+[reviews/gate-a-rh3-h3-recheck-2026-09-28.md](reviews/gate-a-rh3-h3-recheck-2026-09-28.md).
+
 ## Active workspace
 
 `research/benchmarks/markdown-ast-update/` is the only active Markdown parser
