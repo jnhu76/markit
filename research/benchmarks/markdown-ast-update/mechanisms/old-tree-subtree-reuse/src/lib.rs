@@ -365,7 +365,10 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         };
         declare_not_applicable(cx);
 
-        // Forward pass with the reusable-node cursor.
+        // Forward pass with the reusable-node cursor. (The third hook
+        // argument — `starts_block` — is the #79 scanner-protocol
+        // addition; H3's own margin still gates takes, so it is not yet
+        // consumed here. The H3 corrective is #80.)
         let mut cursor = Cursor {
             tree: &prepared.tree,
             post,
@@ -377,7 +380,8 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
             reused: 0,
             margin_checks: Vec::new(),
         };
-        let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
+        let mut hook: Box<SpliceHook<'_>> =
+            Box::new(|pos, key, _starts_block| cursor.consult(pos, key));
         let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
         let (takes, consultations, reused, margin_checks) = {
             drop(hook); // end the cursor borrow before reading the take record

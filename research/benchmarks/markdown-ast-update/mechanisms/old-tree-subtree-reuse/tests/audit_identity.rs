@@ -153,15 +153,17 @@ fn assert_matches_h0(state: &H3State, post: &[u8], context: &str) {
 /// Forward cursor: take {p1} at 0 (extension stops at the changed p2),
 /// take {p3} at 20; p2' fresh. reused = 4, rebuilt = 2, blocks = 1.
 ///
-/// POST-source coverage is the FULL document (31/31), and that is the
-/// derived value, not a discrepancy: the hook fires at every line start
-/// (0, 8, 9, 10, 19, 20, 30) and each consult's live-side paragraph
-/// margin reports `[prev_line_start - 1, pos - 1)` (R5-CORRECTIVE-2
-/// closure, pass or fail). The blank-line consults reach back over the
-/// neighboring lines — consult(8) reads [0,7) (p1's own content) and
-/// consult(9) reads [0,8) — so taken bytes are re-read by the margin
-/// machinery even when the take itself adds zero parser reads. This is
-/// the H3 attribution profile: structure reuse with line-granular
+/// POST-source coverage after the #79 scanner-protocol change (consult
+/// point post-closure; take jumps rounded to the next line start): the
+/// hook fires at the dispatched line starts (0, 9, 10, 19, 20) and each
+/// consult's live-side paragraph margin reports `[prev_line_start - 1,
+/// pos - 1)` (R5-CORRECTIVE-2 closure, pass or fail). The blank-line
+/// consult at 9 reads [0,8) (p1's own content), so taken p1 is re-read
+/// by the margin machinery; the take of p3 now jumps to EOF directly
+/// (the pre-#79 jump landed mid-line at 30, whose follow-up consult
+/// margin re-read [19,29)), so p3's taken content [20,30) is genuinely
+/// never inspected: coverage = 21/31 (all but the taken suffix block).
+/// This is the H3 attribution profile: structure reuse with line-granular
 /// consult reads. OLD coverage = [8,15) exactly (the prev margin).
 #[test]
 fn h3_exact_reuse_and_change_flags() {
@@ -188,13 +190,14 @@ fn h3_exact_reuse_and_change_flags() {
     );
     assert_eq!(
         counters.unique_post_source_bytes,
-        Observed::Known(31),
-        "full POST coverage: consult-time margins read one line back at \
-         every line start, overlapping taken content (see doc comment)"
+        Observed::Known(21),
+        "POST coverage minus the taken suffix block: line-rounded take jumps \
+         no longer land mid-line, so no follow-up consult margin re-reads \
+         the taken last line (see doc comment)"
     );
-    // metadata: prepare = 3 scanned + 1 patched; update = 7 hook
-    // consultations (line starts 0,8,9,10,19,20,30) + 2 take slots.
-    assert_eq!(counters.metadata_records_touched, Observed::Known(13));
+    // metadata: prepare = 3 scanned + 1 patched; update = 5 hook
+    // consultations (line starts 0,9,10,19,20) + 2 take slots.
+    assert_eq!(counters.metadata_records_touched, Observed::Known(11));
     // The damage map is observable on the prepared tree: the linear scan
     // touched all 3 entries, and exactly the patched p2 ancestry carries
     // the changed flag (both margins saw blank-line separations).

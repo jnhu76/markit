@@ -477,7 +477,11 @@ impl Mechanism for RestartConvergenceMechanism {
             consultations: 0,
             blank_checks: Vec::new(),
         };
-        let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
+        // (The third hook argument — `starts_block` — is the #79
+        // scanner-protocol addition; H4's restart margins gate takes
+        // independently, so it is not consumed here.)
+        let mut hook: Box<SpliceHook<'_>> =
+            Box::new(|pos, key, _starts_block| cursor.consult(pos, key));
         let (rp, slot_count) = parse_region_with_hook(post, r, post.len(), cx.sink, &mut hook);
         let (take, consultations, blank_checks) = {
             drop(hook); // end the cursor borrow before reading the take record

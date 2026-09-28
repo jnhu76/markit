@@ -202,15 +202,43 @@ struct OpenFence {
     ctx: ContextKey,
 }
 
+/// The deferred List-level sibling-item push (see
+/// [`BlockScanner::strip_prefixes`]): recorded post-closure, applied
+/// only after the splice consult declines the line — a take at the live
+/// list level replaces the push (the taken members include the item the
+/// push would have opened).
+struct PendingSibling {
+    start: usize,
+    marker: u8,
+    strip: usize,
+    entry: ContextKey,
+    content_col: usize,
+}
+
 /// The splice hook a horse may install: called at every line start
-/// BEFORE the line's container prefixes are consumed, with the parse
-/// position and the live entry [`ContextKey`]. Returning `Some(new_pos)`
-/// (with `pos < new_pos <= end`) makes the scanner flush an open
-/// paragraph, emit one [`Skel::Spliced`] placeholder covering
-/// `[pos, new_pos)` into the innermost frame, advance every open frame's
-/// last-consumed-line bookkeeping to `new_pos`, and jump. The scanner
-/// never decides reuse — the hook does.
-pub type SpliceHook<'h> = dyn FnMut(usize, &ContextKey) -> Option<usize> + 'h;
+/// AFTER the line's stale container frames are closed (prefix-driven
+/// closure) but BEFORE the line opens any new frame or dispatches a
+/// block — the donor-faithful consultation point (@lezer/markdown
+/// `advance()`: `readLine` consumes markup and closes non-carried
+/// contexts, `finishContext`, then `reuseFragment`). Arguments: the
+/// parse position (the line start), the live entry [`ContextKey`] as
+/// the new block would enter it, and `starts_block` — whether the live
+/// parse would start a NEW block at this line (`false` only when an
+/// open paragraph would absorb the line as continuation text; the
+/// `ContextKey` deliberately excludes paragraph state, so a horse that
+/// takes whole blocks must refuse there — the sound replacement of the
+/// pre-#79 blank-line margin).
+///
+/// Returning `Some(raw_end)` (with `pos < raw_end <= end`) makes the
+/// scanner flush an open paragraph, emit one [`Skel::Spliced`]
+/// placeholder covering `[pos, new_pos)` into the innermost frame,
+/// advance every open frame's last-consumed-line bookkeeping to
+/// `new_pos`, and jump. `new_pos` is the take end ROUNDED UP to the
+/// next line start (the donor's `reuseFragment` steps past the last
+/// taken line's LF; a raw block-span end is mid-line, and processing
+/// its remnant as a blank line would spuriously close containers).
+/// The scanner never decides reuse — the hook does.
+pub type SpliceHook<'h> = dyn FnMut(usize, &ContextKey, bool) -> Option<usize> + 'h;
 
 /// The block pass.
 struct BlockScanner<'a, 'h, 'o, W: WorkSink> {
@@ -235,6 +263,9 @@ struct BlockScanner<'a, 'h, 'o, W: WorkSink> {
     /// Cut of the certified root blank barrier the observer stopped at.
     /// `Some` means the parse ended there, sealed, without EOF closure.
     stop_requested: Option<usize>,
+    /// The deferred sibling-item push of the line being processed (see
+    /// `strip_prefixes`); `None` outside the phase-1/phase-3 window.
+    pending_sibling: Option<PendingSibling>,
     slots: u32,
 }
 
@@ -454,6 +485,7 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
             observer,
             prev_lf: None,
             stop_requested: None,
+            pending_sibling: None,
             slots: 0,
         }
     }
@@ -462,15 +494,40 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
         let mut pos = self.base;
         let end = self.end;
         while pos < end {
-            // Splice point: the horse may take over the range starting
-            // at this line start. (Never fired while a fence is open —
-            // a fence body has no block boundaries to align with.)
+            // Phase 1 — prefix consumption with LAZY bounds: close every
+            // stale frame the line does not carry (the only mutation
+            // before the consult), deferring the sibling-item push.
+            // Reads stop at the first byte that decides a case (never at
+            // the line's content), so a taken line's interior stays
+            // uninspected; `read_end` tracks the furthest byte touched.
+            self.pending_sibling = None;
+            let (mut col, mut read_end) = self.strip_prefixes(pos);
+            // Phase 2 — the splice consult at the donor-faithful point:
+            // post-closure, pre-push, pre-dispatch. Never fired while a
+            // fence is open (a fence body has no block boundaries to
+            // align with).
             if self.fence.is_none() {
                 let key = self.state_key();
-                let take = self.hook.as_deref_mut().and_then(|h| h(pos, &key));
-                if let Some(new_pos) = take {
-                    debug_assert!(pos < new_pos && new_pos <= end);
-                    self.splice_to(pos, new_pos);
+                let starts_block =
+                    self.para.is_none() || self.line_starts_new_block_lazy(col, &mut read_end);
+                let take = self
+                    .hook
+                    .as_deref_mut()
+                    .and_then(|h| h(pos, &key, starts_block));
+                if let Some(raw_end) = take {
+                    let new_pos = self.round_take_end(pos, raw_end);
+                    debug_assert!(pos < raw_end && raw_end <= new_pos && new_pos <= end);
+                    if read_end > pos {
+                        // The consult's prefix/closure reads are real
+                        // mechanism work over the taken range's first
+                        // line: report them exactly (R5-CORRECTIVE-2).
+                        self.sink.record_source_inspection(
+                            markit_mdbench_common::SourceVersion::Post,
+                            pos as u64,
+                            read_end as u64,
+                        );
+                    }
+                    self.splice_to(pos, raw_end, new_pos);
                     pos = new_pos;
                     continue;
                 }
@@ -482,8 +539,19 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                 line_start as u64,
                 (line_lf + 1).min(self.end) as u64,
             );
-            // 1. consume container prefixes (§6/§7); may close frames.
-            let col = self.strip_prefixes(line_start, line_lf);
+            // Every frame still open was carried by this line (the walk
+            // closes non-carried frames): settle their bookkeeping now
+            // that the line extent is known.
+            for frame in &mut self.frames {
+                match frame {
+                    Frame::Quote { last_end, .. } | Frame::Item { last_end, .. } => {
+                        *last_end = line_lf;
+                    }
+                    Frame::List { .. } => {}
+                }
+            }
+            // Phase 3 — apply the deferred sibling push and dispatch.
+            col = self.apply_pending_sibling(col, line_lf);
             // 2. classify the remainder at the (possibly new) innermost
             //    level; container pushes re-dispatch the same line.
             self.classify(line_start, line_lf, col);
@@ -504,25 +572,29 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
     }
 
     /// Flush an open paragraph, emit one Spliced placeholder covering
-    /// `[pos, new_pos)`, and carry every open frame's last-consumed-line
-    /// bookkeeping to `new_pos`. Under the horse's vouching, every line
-    /// in `[pos, new_pos)` carried the prefixes of every still-open
-    /// frame, so each frame's last consumed line is the line before
-    /// `new_pos`. The placeholder span is bookkeeping only — the horse
-    /// replaces placeholders with its retained pieces before
-    /// materialization.
+    /// `[pos, take_end)` (the taken blocks' span extent), and carry
+    /// every open frame's last-consumed-line bookkeeping to the JUMP
+    /// target `new_pos` (the take end rounded up to the next line
+    /// start — where the parse resumes). Under the horse's vouching,
+    /// every line in `[pos, new_pos)` carried the prefixes of every
+    /// still-open frame, so each frame's last consumed line is the line
+    /// before `new_pos`. The placeholder span is bookkeeping only —
+    /// the horse replaces placeholders with its retained pieces before
+    /// materialization — but it stays at the SPAN end (not the rounded
+    /// jump) so frame closure derives parent extents from the taken
+    /// blocks' real ends.
     ///
     /// The carried check reads the taken range's last byte — the only
     /// source byte this method inspects, and one the per-line reports
     /// never cover because the taken range is skipped outright — so it
     /// is reported to the sink (source-inspection closure).
-    fn splice_to(&mut self, pos: usize, new_pos: usize) {
+    fn splice_to(&mut self, pos: usize, take_end: usize, new_pos: usize) {
         self.flush_para();
         let slot = self.slots;
         self.slots += 1;
         let spliced = Skel::Spliced {
             start: pos,
-            end: new_pos,
+            end: take_end,
             slot,
         };
         self.push_into_innermost(spliced);
@@ -663,16 +735,26 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
         }
     }
 
-    /// Consume quote/list-item prefixes for one line. Returns the content
-    /// column. Lines that can no longer carry an open container's prefix
-    /// close that container (and everything inside it) and the line is
-    /// re-dispatched at the surviving level (no lazy continuation, D4).
-    /// Frames BELOW the closed one already carried their prefixes on this
-    /// line, so prefix consumption stops there; the one exception is the
-    /// closed item's parent List, which still owes the sibling-vs-close
-    /// decision (§7) at the current column.
-    fn strip_prefixes(&mut self, line_start: usize, line_lf: usize) -> usize {
+    /// Consume quote/list-item prefixes for one line, with LAZY bounds:
+    /// every read stops at the first byte that decides its case, so the
+    /// walk never touches the line's content. Lines that can no longer
+    /// carry an open container's prefix close that container (and
+    /// everything inside it); the line is re-dispatched at the surviving
+    /// level (no lazy continuation, D4). Frames BELOW the closed one
+    /// already carried their prefixes on this line, so prefix
+    /// consumption stops there; the one exception is the closed item's
+    /// parent List, which still owes the sibling-vs-close decision (§7)
+    /// at the current column.
+    ///
+    /// Returns the content column reached and the furthest byte read.
+    /// The List-level sibling-item push is DEFERRED (`pending_sibling`)
+    /// so the splice consult (phase 2 of `run`) sees the post-closure,
+    /// pre-push state — the donor's consultation point. Bookkeeping for
+    /// carried frames (`last_end`) is settled by the caller once the
+    /// line extent is known (on decline) or by `splice_to` (on take).
+    fn strip_prefixes(&mut self, line_start: usize) -> (usize, usize) {
         let src = self.src;
+        let mut read_end = line_start;
         let mut col = line_start;
         let mut idx = 0usize;
         while idx < self.frames.len() {
@@ -686,15 +768,17 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                 // blockquote: up to 3 leading spaces, then '>' (§6 marker
                 // rule), then one optional space.
                 0 => {
-                    let s = count_spaces(src, col, line_lf);
+                    let s = count_spaces_lazy(src, col, &mut read_end);
                     let marker_col = col + s.min(3);
-                    let carries = marker_col < line_lf && src[marker_col] == b'>';
+                    // Lazy-bound: the space run stops at the LF (it is
+                    // not a space), so `marker_col` can never read past
+                    // this line's terminator.
+                    let carries = src.get(marker_col) == Some(&b'>');
                     if carries {
-                        if let Some(Frame::Quote { last_end, .. }) = self.frames.get_mut(idx) {
-                            *last_end = line_lf;
-                        }
+                        read_end = read_end.max(marker_col + 1);
                         col = marker_col + 1;
-                        if col < line_lf && src[col] == b' ' {
+                        if src.get(col) == Some(&b' ') {
+                            read_end = read_end.max(col + 1);
                             col += 1;
                         }
                         idx += 1;
@@ -710,11 +794,8 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                         Some(Frame::Item { strip, .. }) => *strip,
                         _ => unreachable!("tag mismatch"),
                     };
-                    let s = count_spaces(src, col, line_lf);
+                    let s = count_spaces_lazy(src, col, &mut read_end);
                     if s >= strip {
-                        if let Some(Frame::Item { last_end, .. }) = self.frames.get_mut(idx) {
-                            *last_end = line_lf;
-                        }
                         col += strip;
                         idx += 1;
                     } else {
@@ -729,7 +810,8 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                 // still open above it, the list decides nothing. Once the
                 // item has been popped for this line, the list either
                 // takes the line as a sibling item at exactly its marker
-                // indent (§7 sibling rule) or ends.
+                // indent (§7 sibling rule) or ends. The sibling PUSH is
+                // deferred past the splice consult (`pending_sibling`).
                 _ => {
                     if idx + 1 < self.frames.len() {
                         idx += 1;
@@ -739,23 +821,21 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                         Some(Frame::List { indent, .. }) => *indent,
                         _ => unreachable!("tag mismatch"),
                     };
-                    let s = count_spaces(src, col, line_lf);
+                    let s = count_spaces_lazy(src, col, &mut read_end);
                     let mut sibling = None;
                     if s == indent {
-                        sibling = parse_marker(src, col + s, line_lf);
+                        sibling = parse_marker_lazy(src, col + s, &mut read_end);
                     }
                     match sibling {
                         Some((marker, delta)) => {
                             let entry = self.entry_key();
-                            self.frames.push(Frame::Item {
+                            self.pending_sibling = Some(PendingSibling {
                                 start: col + s,
                                 marker,
                                 strip: s + delta,
-                                last_end: line_lf,
-                                children: Vec::new(),
                                 entry,
+                                content_col: col + s + delta,
                             });
-                            col = col + s + delta;
                             break;
                         }
                         None => {
@@ -766,7 +846,144 @@ impl<'a, 'h, 'o, W: WorkSink> BlockScanner<'a, 'h, 'o, W> {
                 }
             }
         }
-        col
+        (col, read_end)
+    }
+
+    /// Apply the deferred sibling-item push after the splice consult
+    /// declined the line; returns the content column to classify at.
+    fn apply_pending_sibling(&mut self, col: usize, line_lf: usize) -> usize {
+        match self.pending_sibling.take() {
+            Some(p) => {
+                let PendingSibling {
+                    start,
+                    marker,
+                    strip,
+                    entry,
+                    content_col,
+                } = p;
+                self.frames.push(Frame::Item {
+                    start,
+                    marker,
+                    strip,
+                    last_end: line_lf,
+                    children: Vec::new(),
+                    entry,
+                });
+                content_col
+            }
+            None => col,
+        }
+    }
+
+    /// Round a take end (a block-span end — mid-line by construction,
+    /// spans exclude their terminator LF) up to the next line start:
+    /// the donor's `reuseFragment` explicitly steps past the last taken
+    /// line's LF; processing the span-end remnant as a blank line would
+    /// spuriously close containers mid-take.
+    fn round_take_end(&self, pos: usize, raw_end: usize) -> usize {
+        debug_assert!(pos < raw_end && raw_end <= self.end);
+        if self.src.get(raw_end - 1) == Some(&b'\n') {
+            return raw_end; // already line-aligned
+        }
+        let lf = memchr_lf(self.src, raw_end);
+        (lf + 1).min(self.end)
+    }
+
+    /// Whether the live parse would start a NEW block at this line's
+    /// content column — i.e. the line at `col` is anything but paragraph
+    /// continuation text (B1 blank, B2 fence opener, B3 heading, B4
+    /// quote marker, B5 list marker, or B6 reference definition all
+    /// flush an open paragraph before dispatching). Lazy-bounded reads
+    /// only; a ParagraphText verdict costs the first non-space byte.
+    fn line_starts_new_block_lazy(&self, col: usize, read_end: &mut usize) -> bool {
+        let src = self.src;
+        let s = count_spaces_lazy(src, col, read_end);
+        let cls = col + s.min(3);
+        let b = src.get(cls);
+        // B1: blank at this level (spaces only to the terminator).
+        let mut n = cls;
+        while n < src.len() && src[n] == b' ' {
+            n += 1;
+        }
+        *read_end = (*read_end).max(n);
+        if src.get(n).is_none() || src[n] == b'\n' {
+            return true;
+        }
+        // B2: fenced-code opener (run of >= 3 backticks, then no
+        // backtick before the terminator).
+        if b == Some(&b'`') {
+            let mut n = cls;
+            while n < src.len() && src[n] == b'`' {
+                n += 1;
+            }
+            *read_end = (*read_end).max(n);
+            if n - cls >= 3 {
+                let mut m = n;
+                while m < src.len() && src[m] != b'\n' && src[m] != b'`' {
+                    m += 1;
+                }
+                *read_end = (*read_end).max(m);
+                return m >= src.len() || src[m] == b'\n';
+            }
+            return false; // run < 3: '`' heads no other construct
+        }
+        // B3: ATX heading (1..=6 '#', then terminator or 1+ spaces).
+        if b == Some(&b'#') {
+            let mut n = cls;
+            while n < src.len() && src[n] == b'#' {
+                n += 1;
+            }
+            *read_end = (*read_end).max(n);
+            let run = n - cls;
+            if run <= 6 {
+                return matches!(src.get(n), None | Some(b'\n') | Some(b' '));
+            }
+            return false;
+        }
+        // B4: blockquote marker.
+        if b == Some(&b'>') {
+            *read_end = (*read_end).max(cls + 1);
+            return true;
+        }
+        // B5: list marker.
+        if b == Some(&b'-') || b == Some(&b'*') {
+            return parse_marker_lazy(src, cls, read_end).is_some();
+        }
+        // B6: reference definition.
+        if b == Some(&b'[') {
+            *read_end = (*read_end).max(cls + 1);
+            let mut n = cls + 1;
+            while n < src.len() && src[n] != b']' && src[n] != b'\n' {
+                n += 1;
+            }
+            *read_end = (*read_end).max(n);
+            if src.get(n) == Some(&b']') && src.get(n + 1) == Some(&b':') {
+                *read_end = (*read_end).max(n + 2);
+                let mut d = n + 2;
+                while d < src.len() && src[d] == b' ' {
+                    d += 1;
+                }
+                *read_end = (*read_end).max(d);
+                if d > n + 2 {
+                    // destination: non-space run, then only spaces to
+                    // the terminator.
+                    let mut e = d;
+                    while e < src.len() && src[e] != b' ' && src[e] != b'\n' {
+                        e += 1;
+                    }
+                    *read_end = (*read_end).max(e);
+                    let mut f = e;
+                    while f < src.len() && src[f] == b' ' {
+                        f += 1;
+                    }
+                    *read_end = (*read_end).max(f);
+                    return f >= src.len() || src[f] == b'\n';
+                }
+            }
+            return false;
+        }
+        // B7: paragraph continuation text.
+        false
     }
 
     /// Dispatch one line at the given content column. Container pushes
@@ -1322,6 +1539,48 @@ pub fn count_spaces(src: &[u8], from: usize, to: usize) -> usize {
     n - from
 }
 
+/// `count_spaces` with LAZY bounds (the splice-consult lane): the run
+/// stops at the first non-space — the LF terminates it exactly as the
+/// explicit bound would — and never reads past `src.len()`. `read_end`
+/// accumulates the furthest byte inspected (R5-CORRECTIVE-2).
+fn count_spaces_lazy(src: &[u8], from: usize, read_end: &mut usize) -> usize {
+    let mut n = from;
+    while n < src.len() && src[n] == b' ' {
+        n += 1;
+    }
+    *read_end = (*read_end).max(n);
+    n - from
+}
+
+/// `parse_marker` with LAZY bounds (the splice-consult lane): the
+/// terminator-LF bound is enforced by stopping at any non-space (the
+/// LF included) and by `src.get` EOF guards; decisions are identical
+/// to the bounded form for every line.
+fn parse_marker_lazy(src: &[u8], p: usize, read_end: &mut usize) -> Option<(u8, usize)> {
+    let marker = *src.get(p)?;
+    if marker != b'-' && marker != b'*' {
+        return None;
+    }
+    *read_end = (*read_end).max(p + 1);
+    let mut n = p + 1;
+    while n < src.len() && src[n] == b' ' {
+        n += 1;
+    }
+    *read_end = (*read_end).max(n);
+    let k = n - (p + 1);
+    if k == 0 {
+        match src.get(n) {
+            // marker alone at end of line (LF or EOF tail)
+            None | Some(b'\n') => Some((marker, 1)),
+            _ => None,
+        }
+    } else if k <= 4 {
+        Some((marker, 1 + k))
+    } else {
+        Some((marker, 2))
+    }
+}
+
 pub fn all_spaces(src: &[u8], from: usize, to: usize) -> bool {
     src[from..to].iter().all(|&b| b == b' ')
 }
@@ -1622,7 +1881,7 @@ mod tests {
         let src = b"aaa\n\nbbb\n\nccc\n";
         let mut noop = NoopWorkSink;
         let mut taken = 0usize;
-        let mut hook = |pos: usize, key: &ContextKey| -> Option<usize> {
+        let mut hook = |pos: usize, key: &ContextKey, _starts_block: bool| -> Option<usize> {
             assert!(key.fence.is_none());
             if pos == 5 {
                 taken += 1;
@@ -1664,7 +1923,7 @@ mod tests {
         let src = b"aaa\n\nbbb\n\nccc\n";
         let mut counters = WorkCounters::all_unknown();
         let mut sink = CounterSink::new(&mut counters);
-        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+        let mut hook = |pos: usize, _key: &ContextKey, _starts_block: bool| -> Option<usize> {
             if pos == 5 {
                 Some(9) // take "bbb\n" = [5, 9)
             } else {
@@ -1745,7 +2004,7 @@ mod tests {
         let mut noop = NoopWorkSink;
         let mut rec = Rec(Vec::new());
         let mut taken = false;
-        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+        let mut hook = |pos: usize, _key: &ContextKey, _starts_block: bool| -> Option<usize> {
             if !taken && pos == 0 {
                 taken = true;
                 Some(5)
@@ -1774,7 +2033,7 @@ mod tests {
         // its own provenance at the next real blank line.
         let mut rec = Rec(Vec::new());
         let mut taken = false;
-        let mut hook = |pos: usize, _key: &ContextKey| -> Option<usize> {
+        let mut hook = |pos: usize, _key: &ContextKey, _starts_block: bool| -> Option<usize> {
             if !taken && pos == 0 {
                 taken = true;
                 Some(4)
@@ -1797,5 +2056,130 @@ mod tests {
                 preceding_lf: Some(4),
             }]
         );
+    }
+
+    /// #79 corrective — the donor-faithful consultation point: the hook
+    /// fires AFTER stale frames close (prefix-driven closure) and
+    /// BEFORE any new frame opens. At a sibling-item line the live key
+    /// is therefore the LIST level — the state the new block enters —
+    /// not the pre-closure key that still carries the previous item.
+    #[test]
+    fn splice_consult_sees_post_closure_keys_at_sibling_lines() {
+        let src = b"- a\n- b\n- c\n";
+        let mut noop = NoopWorkSink;
+        let mut seen: Vec<(usize, Vec<FrameKey>)> = Vec::new();
+        let mut hook = |pos: usize, key: &ContextKey, _s: bool| -> Option<usize> {
+            seen.push((pos, key.frames.clone()));
+            None
+        };
+        let mut hook_ref: &mut SpliceHook<'_> = &mut hook;
+        let mut scan =
+            BlockScanner::new_region(src, 0, src.len(), &mut noop, Some(&mut hook_ref), None);
+        scan.run();
+        scan.finish();
+        // One consult per dispatched line: 0 ("- a"), 4 ("- b"), 8
+        // ("- c"). At 0 the list is not open yet; at 4 and 8 the
+        // previous item has CLOSED (its prefix is not carried by a
+        // marker line) and the sibling push has not happened: the key
+        // is exactly [List{indent: 0}] — the donor's live composite
+        // level for takeNodes.
+        assert_eq!(seen.len(), 3, "one consult per dispatched line: {seen:?}");
+        assert_eq!(seen[0], (0, vec![]));
+        for (pos, frames) in &seen[1..] {
+            assert_eq!(
+                *frames,
+                vec![FrameKey::List { indent: 0 }],
+                "consult at {pos} must see the post-closure list-level key"
+            );
+        }
+    }
+
+    /// #79 corrective — the take jump rounds up to the next line start
+    /// (the donor's `reuseFragment` steps past the last taken line's
+    /// LF): a mid-line raw take end never leaves a remnant that the
+    /// scanner would process as a blank line (which would spuriously
+    /// close containers mid-take).
+    #[test]
+    fn a_mid_line_take_end_jumps_to_the_next_line_start() {
+        // "- a\n- b\n": item a [0,3), item b [4,7), LFs at 3 and 7.
+        // Taking item b at its line start (the post-closure consult:
+        // the list frame is open, the key is [List]) with the RAW span
+        // end 7 must jump to 8 (EOF) and keep the splice INSIDE the
+        // list — never process [7,8) as a blank line that would close
+        // it.
+        let src = b"- a\n- b\n";
+        let mut noop = NoopWorkSink;
+        let mut took = false;
+        let mut hook = |pos: usize, _key: &ContextKey, _s: bool| -> Option<usize> {
+            if !took && pos == 4 {
+                took = true;
+                Some(7) // raw span end of item b (excludes its LF)
+            } else {
+                None
+            }
+        };
+        let (region, slots) = parse_region_with_hook(src, 0, src.len(), &mut noop, &mut hook);
+        assert_eq!(slots, 1);
+        // One list with two children: the freshly parsed item a plus
+        // the Spliced placeholder (span end 7 — the blocks' extent).
+        let list = &region.blocks[0];
+        match list {
+            Skel::List {
+                items, start, end, ..
+            } => {
+                assert_eq!(*start, 0);
+                assert_eq!(*end, 7, "the list spans both items");
+                assert_eq!(items.len(), 2);
+                assert!(matches!(items[0], Skel::Item { .. }));
+                assert!(matches!(
+                    items[1],
+                    Skel::Spliced {
+                        start: 4,
+                        end: 7,
+                        slot: 0
+                    }
+                ));
+            }
+            other => panic!("expected a list, got {other:?}"),
+        }
+    }
+
+    /// #79 corrective — the `starts_block` consult argument: true at
+    /// every line that starts a new block (blank, interruptor,
+    /// container marker, fresh content), false only where an open
+    /// paragraph would absorb the line as continuation text.
+    #[test]
+    fn starts_block_is_false_only_at_live_paragraph_continuations() {
+        let src =
+            b"para open\nstill open\n> quote\n- item\n```\nbody\n```\n[l]: d\n\nnext\n# head\n";
+        let mut noop = NoopWorkSink;
+        let mut flags: Vec<(usize, bool)> = Vec::new();
+        let mut hook = |pos: usize, _key: &ContextKey, s: bool| -> Option<usize> {
+            flags.push((pos, s));
+            None
+        };
+        let (region, _) = parse_region_with_hook(src, 0, src.len(), &mut noop, &mut hook);
+        assert_eq!(
+            region.blocks.len(),
+            7,
+            "para, quote, list, fence, def, para, head — starts {:#?}",
+            region.blocks.iter().map(|b| b.start()).collect::<Vec<_>>()
+        );
+        let get = |pos: usize| {
+            flags
+                .iter()
+                .find(|(p, _)| *p == pos)
+                .unwrap_or_else(|| panic!("no consult at {pos}: {flags:?}"))
+                .1
+        };
+        assert!(get(0), "fresh content starts a block");
+        assert!(!get(10), "a plain continuation line is absorbed");
+        assert!(get(21), "a quote marker interrupts");
+        assert!(get(29), "a list marker interrupts");
+        assert!(get(36), "a fence opener interrupts");
+        assert!(get(49), "a reference definition interrupts");
+        assert!(get(56), "a blank line flushes");
+        assert!(get(57), "fresh content after the blank");
+        assert!(get(62), "a heading interrupts");
     }
 }

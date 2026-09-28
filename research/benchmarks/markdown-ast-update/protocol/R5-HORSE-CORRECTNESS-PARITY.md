@@ -461,6 +461,48 @@ started; refinements of the §7 fields, all conservative):
   first line (e.g. breaking a ``` fence opener into paragraph text), the
   left fragment is dropped entirely and the merge happens inside the
   live parse. Both margins cost reuse, never correctness.
+- §7 amendment #79 (recorded at the Gate-A H2 corrective, 2026-09-28;
+  RESTORATIVE, not conservative — it repairs the two MATERIAL_DEVIATION
+  blockers of the Gate-A R2 review, see
+  `docs/research/reviews/gate-a-r2-h2-2026-09-28.md` D3/D5/D11 and
+  issue #79):
+  (1) CONSULT POINT moved to the donor-faithful position — the shared
+  scanner consults the hook AFTER the line's prefix-driven frame
+  CLOSURES and BEFORE any new frame opens or the line dispatches
+  (@lezer/markdown `advance()`: readLine consumes markup and closes
+  non-carried contexts, finishContext, THEN reuseFragment). The live
+  key at a consult is therefore the state the NEXT BLOCK ENTERS —
+  e.g. [List] at a sibling-item line — which is exactly the level
+  whose old-tree entries carry the matching recorded entry key.
+  (2) LIVE-LEVEL CANDIDATE DISCOVERY: the cursor keeps a persistent
+  forward-only descent path into the old tree (fragment index +
+  per-level monotone child indices — the TreeCursor parent/childAfter
+  analogue), skips entries ending before the mapped position, descends
+  into the entry whose span contains it, and vouches the first entry
+  whose LINE aligns at the position when its entry ContextKey equals
+  the live key — at ANY nesting level. Mid-container sibling runs
+  (undamaged items inside a damaged list; blocks inside a damaged
+  quote) are therefore taken at their own level, restoring the donor's
+  D3/D5 shape (frozen witness: donor identity-shares 25/30 ListItems
+  after an in-item edit; the pre-amendment cursor shared 0). No
+  per-consult top-level table rebuild exists anymore: discovery is
+  amortized-forward (D11), structurally accounted
+  (`metadata_records_touched` now includes every entry visit) and
+  exposed via `FragmentReuseMechanism::discovery_summary` for
+  witnesses (structural counters only; no timing).
+  (3) Amendment (a) above is REPLACED by its precise form: the consult
+  is refused only when the live paragraph would ABSORB the line as
+  continuation text (the scanner's `starts_block` hook argument —
+  false only for plain-text lines under an open paragraph). Takes at
+  interruptor lines (undamaged tight lists after a damaged paragraph,
+  headings/fences/markers under an open paragraph) are sound — the
+  splice flushes the open paragraph first — and match the donor.
+  (4) Take jumps round up to the NEXT LINE START (the donor's
+  `reuseFragment` steps past the last taken line's LF); the Spliced
+  placeholder keeps the blocks' span end. The scanner's consult-lane
+  reads (prefix closure + starts_block classification) are lazy-bounded
+  and reported exactly (R5-CORRECTIVE-2); the taken range's interior
+  stays uninspected.
 
 ## 8. H3 — OLD_TREE_SUBTREE_REUSE (`mechanisms/old-tree-subtree-reuse`)
 
