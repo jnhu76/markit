@@ -186,7 +186,7 @@ fn the_facts_comparison_charges_only_what_it_actually_compares() {
 
 #[test]
 fn the_old_fact_extraction_charges_exactly_the_replacement_owners() {
-    let seq = OwnerSeq::bulk_build(
+    let (seq, _) = OwnerSeq::bulk_build(
         vec![
             owner(10, None),
             owner(10, None),

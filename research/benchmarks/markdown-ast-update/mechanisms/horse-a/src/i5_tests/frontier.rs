@@ -16,8 +16,11 @@ fn edit(start: usize, end: usize, inserted: &str) -> CanonicalEdit {
 }
 
 /// `stage → prepare → commit` is the frozen pipeline: staging is fallible
-/// and leaves the old state owned and coherent; `prepare` consumes the old
-/// state by ownership; `commit` is infallible and returns READY.
+/// (including the workspace's fallible reservation) and leaves the old
+/// state owned and coherent; `prepare` consumes the old state by
+/// ownership — a pure move, infallible by type, because every fallible
+/// work already completed during staging; `commit` is infallible and
+/// returns READY.
 #[test]
 fn the_frontier_pipeline_preserves_the_frozen_ownership_shape() {
     let old_source = Source::new(SourceId(1), "alpha\n\nbeta\n\ngamma\n");
@@ -41,13 +44,13 @@ fn the_frontier_pipeline_preserves_the_frozen_ownership_shape() {
         &mut NoopWorkSink,
         &mut NoopHorseAStructuralSink,
     )
-    .expect("the update stages");
+    .expect("the update stages (workspace reserved)");
     assert_eq!(old.source_len, old_source.len_bytes(), "old stays coherent");
 
-    // Formation consumes the old document by ownership (it is moved in).
-    let prepared = staged
-        .prepare(old, &mut NoopHorseAStructuralSink)
-        .expect("the bounded commit workspace prepares");
+    // Formation consumes the old document by ownership (it is moved in);
+    // it is infallible by type — no Result, because there is no fallible
+    // work left between staging and the frontier.
+    let prepared = staged.prepare(old);
 
     // Crossing is infallible — no Result, no fallback branch.
     let next = prepared.commit(&mut NoopHorseAStructuralSink);

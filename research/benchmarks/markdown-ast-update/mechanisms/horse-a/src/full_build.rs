@@ -204,8 +204,10 @@ pub fn full_build<W: WorkSink>(
     }
 
     // Retained sequence: construction-only balanced build (spec §12.5);
-    // I3 owns the mutation/navigation operators.
-    let owners = OwnerSeq::bulk_build(staged, structural);
+    // I3 owns the mutation/navigation operators. The transient
+    // construction height is not needed on this route (H_new is an O(1)
+    // root read at commit).
+    let (owners, _) = OwnerSeq::bulk_build(staged, structural);
 
     let document = ReadyDocument {
         source_id: source.id(),

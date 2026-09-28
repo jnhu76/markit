@@ -32,14 +32,15 @@ pub(crate) fn owner(len: usize, blank_line: Option<std::ops::Range<usize>>) -> O
 /// A balanced 3-record sequence: left (20), root (20), right (20).
 pub(crate) fn three_node_sequence(certs: [bool; 3]) -> OwnerSeq {
     let blank = |certified: bool| certified.then_some(17..20);
-    OwnerSeq::bulk_build(
+    let (seq, _) = OwnerSeq::bulk_build(
         vec![
             owner(20, blank(certs[0])),
             owner(20, blank(certs[1])),
             owner(20, blank(certs[2])),
         ],
         &mut RecordingHorseAStructuralSink::new(),
-    )
+    );
+    seq
 }
 
 /// One fresh node with exact metadata (children already exact).
@@ -354,12 +355,16 @@ fn join_with_pivot_routes_its_visits_to_the_callers_counter() {
 #[test]
 fn bulk_build_charges_one_visit_per_created_node() {
     let mut sink = RecordingHorseAStructuralSink::new();
-    let seq = OwnerSeq::bulk_build(
+    let (seq, height) = OwnerSeq::bulk_build(
         vec![owner(10, None), owner(10, None), owner(10, None)],
         &mut sink,
     );
     let c = sink.counters();
     assert_eq!(seq.records(), 3);
+    // The transient construction height is carried out of the seam and
+    // matches the persistent root metadata without a re-read being
+    // charged (no extra aggregate read appears above).
+    assert_eq!(height, seq.height());
     assert_eq!(c.bulk_build_node_visits, Observed::known(3));
     // n recomputes: leaf recomputes read nothing, the root reads 8.
     assert_eq!(c.aggregate_writes, Observed::known(12));

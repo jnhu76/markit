@@ -139,16 +139,15 @@ fn t08_frontier_is_infallible_and_stage_failure_leaves_old_owned() {
         &mut NoopHorseAStructuralSink,
     )
     .expect("the corrected staging succeeds")
-    .prepare(old, &mut NoopHorseAStructuralSink)
-    .expect("the bounded commit workspace prepares");
+    .prepare(old);
     let next: crate::state::ReadyDocument = prepared.commit(&mut NoopHorseAStructuralSink);
     assert_eq!(next.source_id, SourceId(2));
     assert_eq!(next.owners.records(), 3);
 }
 
 /// T9: the frontier-crossing region attempts zero allocations. Staging and
-/// formation (which materialize fresh Owners) run outside the guard; only
-/// `commit` runs inside it.
+/// formation (which materialize fresh Owners and reserve the bounded
+/// workspace) run outside the guard; only `commit` runs inside it.
 #[test]
 fn t09_post_frontier_region_attempts_zero_allocations() {
     let old_source = Source::new(SourceId(1), WITNESS_SOURCE);
@@ -165,8 +164,7 @@ fn t09_post_frontier_region_attempts_zero_allocations() {
         &mut NoopHorseAStructuralSink,
     )
     .expect("staging succeeds")
-    .prepare(old, &mut NoopHorseAStructuralSink)
-    .expect("the bounded commit workspace prepares");
+    .prepare(old);
 
     reset_attempts();
     let mut recording = RecordingHorseAStructuralSink::new();
@@ -209,8 +207,7 @@ fn t10_t11_commit_only_ledger_is_event_bounded_and_retirement_exact() {
         &mut NoopHorseAStructuralSink,
     )
     .expect("staging succeeds")
-    .prepare(old, &mut NoopHorseAStructuralSink)
-    .expect("the bounded commit workspace prepares");
+    .prepare(old);
 
     let mut commit_only = RecordingHorseAStructuralSink::new();
     let next = prepared.commit(&mut commit_only);

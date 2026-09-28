@@ -21,12 +21,13 @@ fn ws() -> CommitWorkspace {
 
 /// An `n`-record trivia-only sequence (no certificates).
 fn seq_of(n: usize) -> OwnerSeq {
-    crate::state::OwnerSeq::bulk_build(
+    let (seq, _) = crate::state::OwnerSeq::bulk_build(
         (0..n)
             .map(|_| crate::i5_tests::primitives::owner(20, None))
             .collect(),
         &mut RecordingHorseAStructuralSink::new(),
-    )
+    );
+    seq
 }
 
 // ------------------------------------------------ join δ edges (§12.1.1)

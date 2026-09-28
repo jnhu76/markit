@@ -42,13 +42,19 @@ pub(crate) struct SealedRegion {
 /// the region's own physical-first-line provenance, complete eager payload
 /// under `refs`, this round's parser-derived certificates, and an O(Δ_new)
 /// balanced build.
+///
+/// Returns the built sequence AND its height as transient construction
+/// metadata (carried out of the bulk-build seam — never re-read from the
+/// persistent root): the staging workspace sizing consumes that
+/// already-derived scalar, so no unaccounted persistent aggregate read is
+/// added for it.
 pub(crate) fn build_replacement_owners<W: WorkSink>(
     src: &[u8],
     region: SealedRegion,
     refs: &RefTable,
     sink: &mut W,
     structural: &mut dyn HorseAStructuralSink,
-) -> Result<OwnerSeq, UpdateError> {
+) -> Result<(OwnerSeq, u32), UpdateError> {
     let SealedRegion {
         base,
         end,
@@ -85,7 +91,7 @@ pub(crate) fn build_replacement_owners<W: WorkSink>(
         }
         if end == 0 {
             // The frozen empty document: an empty OwnerSeq.
-            return Ok(OwnerSeq::default());
+            return Ok((OwnerSeq::default(), 0));
         }
 
         if !is_root_blank_class(&src[..end]) {

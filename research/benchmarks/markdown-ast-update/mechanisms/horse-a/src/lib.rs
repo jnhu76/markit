@@ -46,10 +46,14 @@
 //! What I5 establishes on top of it (#59 §6.1, §9–§11, §14; #60 §9):
 //!
 //! - [`prepared::UpdateStaging`] — the pre-frontier staging state: every
-//!   fallible phase complete, both candidate plans materialized, the old
-//!   READY state still owned by the caller;
+//!   fallible phase complete, both candidate plans materialized, the
+//!   bounded explicit commit workspace's logical limits derived and its
+//!   capacity fallibly reserved (`try_reserve_exact` — a resource
+//!   refusal is an ordinary pre-frontier error and the old READY state
+//!   survives it), the old READY state still owned by the caller;
 //! - [`prepared::PreparedCommit`] — the frontier-crossing state: the old
-//!   READY document consumed by ownership, the frozen geometry record
+//!   READY document consumed by ownership (a pure move — formation is
+//!   infallible by type), the frozen geometry record
 //!   set, every ordinary recoverable/fallible operation complete. Crossing
 //!   ([`prepared::PreparedCommit::commit`]) is infallible: structural
 //!   ownership moves, split/join/relink, rotations, aggregate
