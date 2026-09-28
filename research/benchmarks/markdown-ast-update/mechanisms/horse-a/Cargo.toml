@@ -4,10 +4,22 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+# The frozen #60 structural-collection producer (readiness record §8; the
+# #60 authorization record's P2-1). One process = one cell × one
+# repetition × one raw observation; the 3×3 schedule is launched
+# externally as nine independent OS processes.
+[[bin]]
+name = "mdbench-horse-a-structural"
+path = "src/bin/mdbench-horse-a-structural/main.rs"
+
 [dependencies]
 markit-mdbench-common = { workspace = true }
 markit-mdbench-oracle = { workspace = true }
 markit-mdbench-shared-grammar = { workspace = true }
-
-[dev-dependencies]
+# Promoted from dev-dependencies by the producer (readiness record §14:
+# the promotion stays inside the frozen Horse-A dependency closure —
+# corpusgen::filler is the frozen controlled-N construction authority).
 markit-mdbench-corpusgen = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }

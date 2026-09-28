@@ -1,8 +1,11 @@
 # HORSE-A-ACCOUNTING-CORRECTION-1 — mechanically correct structural attribution bounds before collection
 
 ```text
-STATUS                     = FINAL ARITHMETIC CLOSURE COMPLETE, AWAITING
-                            NARROW INDEPENDENT FINAL ARITHMETIC CHECK
+STATUS                     = FINAL — ACTIVE ACCOUNTING AUTHORITY
+                            (P2-5 bookkeeping closure, pre-treatment:
+                             FINAL INDEPENDENT ARITHMETIC REVIEW = PASS;
+                             PR #72 = MERGED @ 04b6496, 2026-09-27T16:53:51Z;
+                             see §0.2. Derivations below are unchanged.)
 CORRECTION_TYPE            = PRE-COLLECTION_MECHANICAL_ACCOUNTING_CORRECTION
 IMPLEMENTATION_BASELINE    = PR #70 @ 653d5a4f10605fe17ded6f6d703656f9950c97c4
 IMPLEMENTATION_BASE_BASE   = master @ 9dc365ed878ba9f0fda877dc6daf6d300c292d73
@@ -22,15 +25,17 @@ SCHEMA_VERSION_CHANGE      = NO   (HORSE-A-STRUCTURAL-COUNTERS-v1 unchanged)
 
 STRUCTURAL_COLLECTION_RUN   = NO
 PERFORMANCE_COLLECTION_RUN  = NO
-STRUCTURAL_COLLECTION_AUTHORIZED = NO
+STRUCTURAL_COLLECTION_AUTHORIZED = YES (raised separately on #60 by the
+                            fresh-context authorization review 2026-09-28;
+                            this document does not grant it)
 PERFORMANCE_COLLECTION_AUTHORIZED = NO
 
 PR_70_CODE_MODIFIED        = NO   (authority first; implementation follows in a
                                    separate task after independent review)
 METHODOLOGY_FAIL           = NO   (every bound below is derived from the frozen
                                    algorithm + symbolic geometry only; the
-                                   observed 19/25/33 diagnostic is used ONLY as
-                                   a post-derivation consistency check)
+                                   observed 19/25/33 diagnostic is used ONLY as a
+                                   post-derivation consistency check)
 ```
 
 ## 0. REVIEW FIX (this pass)
@@ -127,6 +132,39 @@ other active formula (reads only; the writes bound and every lower bound
 are untouched); the complete PR #70 `aggregate_reads` call-site census
 (update.rs:1, prepared.rs:5, sequence.rs:8, cursor.rs:3 non-test sites)
 shows no further uncovered primary-lane read.
+
+### 0.2 FINAL AUTHORITY CLOSURE (P2-5 bookkeeping, pre-treatment — no derivation changed)
+
+```text
+FINAL INDEPENDENT ARITHMETIC REVIEW = PASS
+  (the #60 final pre-treatment authorization review, fresh context,
+   2026-09-28, reviewed master f7fdcdaabc5d761435f3c0e8c17611973642934b /
+   tree 9ec58ed228972c323da5cccf0b991235a0bc0e8a — which CONTAINS the
+   merged PR #72 — returned AUTHORITY: ONE_ACTIVE_ACCOUNTING_AUTHORITY =
+   YES, ACCOUNTING_CORRECTION_BOUND = YES,
+   SUPERSEDED_FORMULAS_NEUTRALIZED = YES, with P0=0 / P1=0; the full
+   verdict lives in the authorization record comment on #60)
+
+PR #72                     = MERGED @ 04b649655983414d2e9c0297c64208c5bf292d27
+                             (2026-09-27T16:53:51Z; head closure commit
+                             134cd95 after the final arithmetic closure
+                             §0.1; review-fix head 7f8322f; first
+                             candidate 39de28e)
+
+ACTIVE ACCOUNTING AUTHORITY = FINAL
+  = this record (as merged by PR #72) as reflected in
+    docs/research/horse-a-v1-algorithm.md §16 and transcribed into the
+    synchronized #60 §9 execution table. Nothing in §2–§13 changed.
+
+ISSUE #71                  = closed / completed with this closure
+                             provenance once the repository cleanup
+                             carrying this status fix is merged.
+```
+
+This section is bookkeeping only: the review chronology above (§0, §0.1)
+is preserved verbatim, no formula, lemma, composition or cell value was
+rederived, and no treatment observation existed before or after this
+edit.
 
 ## 1. TRIGGER
 

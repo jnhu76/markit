@@ -202,10 +202,15 @@ fields charged at defended mechanism sites:
 
 ## 8. Producer / build identity policy
 
-The producer does **not** exist yet; this record freezes the policy and recipe
-it must satisfy. Implementing it is the first step of the (separately
-authorized) collection task, and no raw treatment row may be produced before
-its executable identity is captured.
+> Status note (pre-treatment, same PR as the producer): the producer NOW
+> EXISTS as `mechanisms/horse-a` bin `mdbench-horse-a-structural`
+> (module `producer`), implementing exactly the policy and recipe frozen
+> below; every other word of this section is unchanged from the frozen
+> record. The policy below remains binding on it.
+
+The producer policy and recipe it must satisfy were frozen by this
+record before implementation; no raw treatment row may be produced
+before its executable identity is captured.
 
 ```text
 REQUIRED BINARY  markit-mdbench-horse-a bin (new), e.g.
@@ -264,8 +269,11 @@ explicit, never omitted):
 ```text
 study_id                  (§3 StudyId)
 protocol                  "HORSE-A-FAILURE-FIRST-1 / #60"
+frozen_contract_revision  (pre-treatment P2-4 extension — see below)
+study_mechanism_baseline  (pre-treatment P2-2 extension — see below)
+authorization_baseline    (pre-treatment P2-2 extension — see below)
 repository_commit, repository_tree
-mechanism                 "HORSE-A-v1"
+mechanism                 "HORSE-A_v1"
 mechanism_design_head, mechanism_merge
 cell_id                   H4N-128KiB | H4N-1MiB | H4N-16MiB
 case_id_hex, n_bytes, m, target, edit_start, edit_end
@@ -283,6 +291,43 @@ correctness               c1/c2/c3 status + normalized-structural-equality
                           provenance only)
 result_checksum           oracle/result checksum (provenance, not the oracle)
 ```
+
+### 9.1 Pre-treatment schema extensions (P2-2 / P2-4 of the #60 authorization record)
+
+Frozen BEFORE the first decision-bearing raw row (no treatment
+observation existed when these values were fixed; they are never derived
+from results and never changed after the first row):
+
+```text
+frozen_contract_revision
+  = HORSE-A-FAILURE-FIRST-1/#60@sync-20260928T021211Z
+    /master-f7fdcdaabc5d761435f3c0e8c17611973642934b
+    /tree-9ec58ed228972c323da5cccf0b991235a0bc0e8a
+
+  Identifies the synchronized #60 contract authority (the
+  authority-synchronized issue body, 2026-09-28T02:12:11Z, as reviewed by
+  the authorization record at that master/tree) DISTINCTLY from the
+  StudyId (a content hash), from the PR #72 accounting authority
+  (04b6496…) and from the repository execution commit (which changes
+  when the producer lands).
+
+study_mechanism_baseline
+  = 8e40932239273cc798795a625244ffb3e12b5f0e
+  (the StudyId-bound reviewed mechanism revision, §1 MASTER_SHA)
+
+authorization_baseline
+  = f7fdcdaabc5d761435f3c0e8c17611973642934b
+  (the authorization master, §1; differs from the study baseline by this
+   readiness record only)
+
+repository_commit / repository_tree
+  (the ACTUAL execution revision — the merged producer commit — captured
+   per row; distinct from both baselines above)
+```
+
+The external collection schedule's 1-based repetition index
+(`--repetition 1|2|3`) maps to the schema repetition as `value − 1`
+(recorded 0 | 1 | 2).
 
 Raw rows are immutable; derived tables must be regenerable from them.
 

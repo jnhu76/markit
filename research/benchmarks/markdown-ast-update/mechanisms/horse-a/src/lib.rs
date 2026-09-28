@@ -118,11 +118,13 @@
 //!
 //! What no slice has implemented yet (later slices):
 //!
-//! - any #60 treatment registration or collection lane, and no
-//!   performance measurement of any kind. The frozen #60 bounds are
-//!   adjudication instruments for a later explicitly authorized
-//!   collection; nothing here encodes them into the mechanism path.
-//!   STRUCTURAL_COLLECTION_RUN=NO, PERFORMANCE_COLLECTION_RUN=NO.
+//! - performance measurement of any kind. The frozen #60 bounds are
+//!   adjudication instruments; nothing here encodes them into the
+//!   mechanism path. STRUCTURAL_COLLECTION is implemented by slice I6
+//!   (module [`producer`]) strictly under the authorized frozen #60
+//!   protocol — producer/adjudicator/schema surface only, no mechanism
+//!   or counter-semantics change; PERFORMANCE_COLLECTION_RUN=NO stays
+//!   true repository-wide until a separate authorization.
 //!
 //! What I5 deliberately does NOT do (frozen weaknesses preserved, not
 //! repaired): W-A1 stays root-only restart plus atomic top-level Owner plus
@@ -142,6 +144,7 @@ mod fresh;
 pub mod full_build;
 mod payload;
 mod prepared;
+pub mod producer;
 mod retirement;
 pub mod sequence;
 pub mod state;
