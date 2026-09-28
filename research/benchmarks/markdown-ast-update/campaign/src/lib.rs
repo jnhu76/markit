@@ -53,6 +53,7 @@ pub mod identity;
 pub mod machine;
 pub mod manifest;
 pub mod memory_smoke;
+pub mod pmu;
 pub mod preflight;
 pub mod receipt;
 pub mod runsupport;
