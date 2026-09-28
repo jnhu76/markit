@@ -150,7 +150,7 @@ const CELLS: &[Cell] = &[
 /// Campaign-2 generator draws it from): `N/128` blocks of
 /// `filler(126, b) + "\\n\\n"`. Byte identity is then PROVEN against
 /// the frozen anchor hashes below, not assumed.
-fn frozen_pre_source(n: usize) -> String {
+pub(crate) fn frozen_pre_source(n: usize) -> String {
     assert_eq!(n % 128, 0, "frozen C-N sizes are multiples of 128");
     let blocks = n / 128;
     let mut pre = String::with_capacity(n);
@@ -164,7 +164,7 @@ fn frozen_pre_source(n: usize) -> String {
 
 /// The frozen local-text edit: insert "zzzzzzzz" at `target*128 + 63`
 /// (the middle of the middle block's 126-byte line).
-fn frozen_edit(n: usize) -> CanonicalEdit {
+pub(crate) fn frozen_edit(n: usize) -> CanonicalEdit {
     let target = n / 128 / 2;
     let edit_start = target * 128 + 63;
     CanonicalEdit::new(edit_start, edit_start, INSERTED).expect("frozen edit geometry")
