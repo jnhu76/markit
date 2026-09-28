@@ -26,10 +26,7 @@ pub fn nearest_rank(values: &[u64], p: f64) -> Option<u64> {
 
 /// p50 / p95 pair.
 pub fn p50_p95(values: &[u64]) -> Option<(u64, u64)> {
-    Some((
-        nearest_rank(values, 0.50)?,
-        nearest_rank(values, 0.95)?,
-    ))
+    Some((nearest_rank(values, 0.50)?, nearest_rank(values, 0.95)?))
 }
 
 /// Median of three session p50s (the case estimate).
@@ -75,7 +72,9 @@ pub fn aa_noise(pairs: &[(u64, u64)]) -> (Option<f64>, usize) {
     if rel.is_empty() {
         return (None, skipped);
     }
-    nearest_rank(&rel, 0.95).map(|v| (Some(v as f64 / 1e9), skipped)).unwrap_or((None, skipped))
+    nearest_rank(&rel, 0.95)
+        .map(|v| (Some(v as f64 / 1e9), skipped))
+        .unwrap_or((None, skipped))
 }
 
 /// `max(5%, noise)`, the practical effect threshold (Issue #50 §14).

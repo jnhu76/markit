@@ -13,7 +13,7 @@
 
 use markit_mdbench_campaign2::exec::{reference_for, run_update_chain_step, CaseSpec};
 use markit_mdbench_campaign2::generators::{self, Axis};
-use markit_mdbench_campaign2::lifecycle::{self, TracePlan};
+use markit_mdbench_campaign2::lifecycle;
 use markit_mdbench_common::{Source, SourceId};
 use markit_mdbench_instrumentation::InstantClock;
 use markit_mdbench_oracle::ReferenceOracle;
@@ -29,10 +29,20 @@ fn generators_are_byte_exact_and_admissible() {
         assert_eq!(cases.len(), axis.points().len());
         for case in &cases {
             generators::verify_case(case).expect("generator self-check");
-            reference_for(&case.pre_source)
-                .unwrap_or_else(|e| panic!("{} {}: pre inadmissible: {e}", axis.as_str(), case.axis_label));
-            reference_for(&case.post_source)
-                .unwrap_or_else(|e| panic!("{} {}: post inadmissible: {e}", axis.as_str(), case.axis_label));
+            reference_for(&case.pre_source).unwrap_or_else(|e| {
+                panic!(
+                    "{} {}: pre inadmissible: {e}",
+                    axis.as_str(),
+                    case.axis_label
+                )
+            });
+            reference_for(&case.post_source).unwrap_or_else(|e| {
+                panic!(
+                    "{} {}: post inadmissible: {e}",
+                    axis.as_str(),
+                    case.axis_label
+                )
+            });
         }
     }
 }
@@ -44,24 +54,39 @@ fn controlled_edits_are_fixed_size_across_each_axis() {
     // exactly three backticks; F removes exactly the 32-byte definition.
     let n = generators::generate_axis(Axis::N).unwrap();
     for case in &n {
-        assert_eq!(case.post_source.len() as i64 - case.pre_source.len() as i64, 8);
+        assert_eq!(
+            case.post_source.len() as i64 - case.pre_source.len() as i64,
+            8
+        );
     }
     let b = generators::generate_axis(Axis::B).unwrap();
     for case in &b {
-        assert_eq!(case.post_source.len() as i64 - case.pre_source.len() as i64, 8);
+        assert_eq!(
+            case.post_source.len() as i64 - case.pre_source.len() as i64,
+            8
+        );
     }
     let d = generators::generate_axis(Axis::D).unwrap();
     for case in &d {
-        assert_eq!(case.pre_source.len() as i64 - case.post_source.len() as i64, 3);
+        assert_eq!(
+            case.pre_source.len() as i64 - case.post_source.len() as i64,
+            3
+        );
         assert_eq!(case.edit_start, generators::C_D_EDIT_OFFSET as u64);
     }
     let f = generators::generate_axis(Axis::F).unwrap();
     for case in &f {
-        assert_eq!(case.pre_source.len() as i64 - case.post_source.len() as i64, 32);
+        assert_eq!(
+            case.pre_source.len() as i64 - case.post_source.len() as i64,
+            32
+        );
     }
     let k = generators::generate_axis(Axis::K).unwrap();
     for case in &k {
-        assert_eq!(case.post_source.len() as i64 - case.pre_source.len() as i64, 8);
+        assert_eq!(
+            case.post_source.len() as i64 - case.pre_source.len() as i64,
+            8
+        );
     }
 }
 
@@ -108,7 +133,10 @@ fn chain_step_matches_the_frozen_runner_facts() {
         assert_eq!(chained.report.execution_status, frozen.execution_status);
         assert_eq!(chained.report.correctness_status, frozen.correctness_status);
         assert_eq!(chained.report.result_checksum, frozen.result_checksum);
-        assert!(chained.new_state.is_some(), "a passing step seals a new state");
+        assert!(
+            chained.new_state.is_some(),
+            "a passing step seals a new state"
+        );
         Ok::<(), String>(())
     })
     .expect("H3 exists");
@@ -129,8 +157,17 @@ fn chained_state_advances_across_steps() {
     for step in 0..4u32 {
         let (edit, _, _) = plan.next_edit(step, &current).expect("trace edit");
         let pre = Source::new(SourceId(0), current.clone());
-        let post = edit.apply(&pre, SourceId(1)).expect("apply").as_str().to_string();
-        steps.push((pre, Source::new(SourceId(1), post.clone()), edit, current.clone()));
+        let post = edit
+            .apply(&pre, SourceId(1))
+            .expect("apply")
+            .as_str()
+            .to_string();
+        steps.push((
+            pre,
+            Source::new(SourceId(1), post.clone()),
+            edit,
+            current.clone(),
+        ));
         current = post;
     }
     let clock = InstantClock::new();
@@ -171,7 +208,11 @@ fn lifecycle_traces_replay_to_their_frozen_digests() {
         for step in &trace.steps {
             let edit = step.edit();
             let pre = Source::new(SourceId(0), current.clone());
-            let post = edit.apply(&pre, SourceId(1)).expect("apply").as_str().to_string();
+            let post = edit
+                .apply(&pre, SourceId(1))
+                .expect("apply")
+                .as_str()
+                .to_string();
             assert_eq!(
                 markit_mdbench_campaign2::sha256_hex(post.as_bytes()),
                 step.post_source_sha256,
@@ -200,8 +241,14 @@ fn identities_are_deterministic_and_binding_sensitive() {
     assert_ne!(study, markit_mdbench_campaign2::identity::study_id("bbbb"));
 
     let seed = markit_mdbench_campaign2::identity::campaign_seed("aaaa");
-    assert_eq!(seed, markit_mdbench_campaign2::identity::campaign_seed("aaaa"));
-    assert_ne!(seed, markit_mdbench_campaign2::identity::campaign_seed("bbbb"));
+    assert_eq!(
+        seed,
+        markit_mdbench_campaign2::identity::campaign_seed("aaaa")
+    );
+    assert_ne!(
+        seed,
+        markit_mdbench_campaign2::identity::campaign_seed("bbbb")
+    );
     assert_ne!(
         markit_mdbench_campaign2::identity::session_seed(seed, "lifecycle", 0),
         markit_mdbench_campaign2::identity::session_seed(seed, "lifecycle", 1)
@@ -211,8 +258,24 @@ fn identities_are_deterministic_and_binding_sensitive() {
         markit_mdbench_campaign2::identity::session_seed(seed, "construction", 0)
     );
 
-    let a = markit_mdbench_campaign2::identity::observation_id("r", "s", "lifecycle", "c", "H1", "lifecycle_step", 0);
-    let b = markit_mdbench_campaign2::identity::observation_id("r", "s", "lifecycle", "c", "H1", "lifecycle_step", 1);
+    let a = markit_mdbench_campaign2::identity::observation_id(
+        "r",
+        "s",
+        "lifecycle",
+        "c",
+        "H1",
+        "lifecycle_step",
+        0,
+    );
+    let b = markit_mdbench_campaign2::identity::observation_id(
+        "r",
+        "s",
+        "lifecycle",
+        "c",
+        "H1",
+        "lifecycle_step",
+        1,
+    );
     assert_ne!(a, b);
 }
 

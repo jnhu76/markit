@@ -70,8 +70,12 @@ pub struct TraceStepV1 {
 
 impl TraceStepV1 {
     pub fn edit(&self) -> CanonicalEdit {
-        CanonicalEdit::new(self.edit_start as usize, self.edit_end as usize, &self.inserted_text)
-            .expect("frozen trace step is a valid canonical edit")
+        CanonicalEdit::new(
+            self.edit_start as usize,
+            self.edit_end as usize,
+            &self.inserted_text,
+        )
+        .expect("frozen trace step is a valid canonical edit")
     }
 }
 
@@ -118,7 +122,11 @@ pub trait TracePlan {
     fn initial_source(&self) -> String;
     fn step_count(&self) -> u32;
     /// The `step`-th edit against the CURRENT source.
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String>;
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String>;
 }
 
 /// Materialize a plan: replay every edit, record post-source hashes and
@@ -133,7 +141,12 @@ pub fn materialize(plan: &dyn TracePlan) -> Result<LifecycleTraceV1, String> {
             markit_mdbench_common::Source::new(markit_mdbench_common::SourceId(0), current.clone());
         let post = edit
             .apply(&current_source, markit_mdbench_common::SourceId(1))
-            .map_err(|e| format!("{} step {step}: applying the trace edit: {e:?}", plan.trace_id()))?
+            .map_err(|e| {
+                format!(
+                    "{} step {step}: applying the trace edit: {e:?}",
+                    plan.trace_id()
+                )
+            })?
             .as_str()
             .to_string();
         let expected = expected_checksum(&post)?;
@@ -237,7 +250,11 @@ pub fn base_reference_document() -> String {
     out.push_str(&para_region(4_096, 0x98));
     for i in 0..64usize {
         let link = format!("[t{i:03}][rd] ");
-        out.push_str(&format!("{}{}\n\n", link.repeat(5), markit_mdbench_corpusgen::filler(7, i)));
+        out.push_str(&format!(
+            "{}{}\n\n",
+            link.repeat(5),
+            markit_mdbench_corpusgen::filler(7, i)
+        ));
     }
     let used = out.len();
     out.push_str(&para_region(CONTROLLED_TRACE_BASE_BYTES - used, 0x99));
@@ -290,14 +307,22 @@ impl TracePlan for L1RepeatedLocalText {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, _current: &str) -> Result<(CanonicalEdit, String, String), String> {
+    fn next_edit(
+        &self,
+        step: u32,
+        _current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
         // Rotating 8-byte payload over the frozen alphabet; byte 0 encodes
         // the step so consecutive edits differ deterministically.
         let a = (b'a' + (step % 26) as u8) as char;
         let payload = format!("{a}{}", "yyyyyyy");
         let edit = CanonicalEdit::new(self.offset, self.offset + 8, payload)
             .map_err(|e| format!("L1 step {step}: {e:?}"))?;
-        Ok((edit, format!("step{step}"), "C2-L1-LOCAL-TEXT-REPLACE".to_string()))
+        Ok((
+            edit,
+            format!("step{step}"),
+            "C2-L1-LOCAL-TEXT-REPLACE".to_string(),
+        ))
     }
 }
 
@@ -310,6 +335,12 @@ impl TracePlan for L1RepeatedLocalText {
 pub struct L2MovingLocalEdit {
     base: String,
     blocks: usize,
+}
+
+impl Default for L2MovingLocalEdit {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl L2MovingLocalEdit {
@@ -337,7 +368,11 @@ impl TracePlan for L2MovingLocalEdit {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, _current: &str) -> Result<(CanonicalEdit, String, String), String> {
+    fn next_edit(
+        &self,
+        step: u32,
+        _current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
         // Advance through the document from the first block, wrapping.
         let block = (step as usize) % self.blocks;
         let offset = block * 128 + 59;
@@ -345,7 +380,11 @@ impl TracePlan for L2MovingLocalEdit {
         let payload = format!("{a}{}", "xxxxxxx");
         let edit = CanonicalEdit::new(offset, offset + 8, payload)
             .map_err(|e| format!("L2 step {step}: {e:?}"))?;
-        Ok((edit, format!("block{block}"), "C2-L2-LOCAL-TEXT-REPLACE".to_string()))
+        Ok((
+            edit,
+            format!("block{block}"),
+            "C2-L2-LOCAL-TEXT-REPLACE".to_string(),
+        ))
     }
 }
 
@@ -358,6 +397,12 @@ impl TracePlan for L2MovingLocalEdit {
 pub struct L3ParagraphSplitRestore {
     base: String,
     offset: usize,
+}
+
+impl Default for L3ParagraphSplitRestore {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl L3ParagraphSplitRestore {
@@ -384,8 +429,12 @@ impl TracePlan for L3ParagraphSplitRestore {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
-        let split = step % 2 == 0;
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
+        let split = step.is_multiple_of(2);
         // Guard: the split edit is only valid while the window is still a
         // paragraph interior.
         if !split {
@@ -402,7 +451,11 @@ impl TracePlan for L3ParagraphSplitRestore {
         .map_err(|e| format!("L3 step {step}: {e:?}"))?;
         Ok((
             edit,
-            if split { "split".to_string() } else { "restore".to_string() },
+            if split {
+                "split".to_string()
+            } else {
+                "restore".to_string()
+            },
             if split {
                 "C2-L3-PARAGRAPH-SPLIT".to_string()
             } else {
@@ -421,6 +474,12 @@ impl TracePlan for L3ParagraphSplitRestore {
 pub struct L4ContainerMutation {
     base: String,
     offset: usize,
+}
+
+impl Default for L4ContainerMutation {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl L4ContainerMutation {
@@ -449,8 +508,12 @@ impl TracePlan for L4ContainerMutation {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
-        let deepen = step % 2 == 0;
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
+        let deepen = step.is_multiple_of(2);
         if !deepen {
             let bytes = current.as_bytes();
             if self.offset + 2 > bytes.len() || &bytes[self.offset..self.offset + 2] != b"> " {
@@ -465,7 +528,11 @@ impl TracePlan for L4ContainerMutation {
         .map_err(|e| format!("L4 step {step}: {e:?}"))?;
         Ok((
             edit,
-            if deepen { "deepen".to_string() } else { "restore".to_string() },
+            if deepen {
+                "deepen".to_string()
+            } else {
+                "restore".to_string()
+            },
             if deepen {
                 "C2-L4-CONTAINER-DEEPEN".to_string()
             } else {
@@ -486,13 +553,22 @@ pub struct L5FenceOpenRestore {
     closer_offset: usize,
 }
 
+impl Default for L5FenceOpenRestore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl L5FenceOpenRestore {
     pub fn new() -> Self {
         let base = base_fence_document();
         // "```\n" opener at 32768, then `para_block(510)` = 512 bytes of
         // body, so the closer starts at 32768 + 4 + 512.
         let closer_offset = 32_768 + 4 + 512;
-        Self { base, closer_offset }
+        Self {
+            base,
+            closer_offset,
+        }
     }
 }
 
@@ -512,8 +588,12 @@ impl TracePlan for L5FenceOpenRestore {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
-        let remove = step % 2 == 0;
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
+        let remove = step.is_multiple_of(2);
         let bytes = current.as_bytes();
         if self.closer_offset + 3 > bytes.len() {
             return Err(format!("L5 step {step}: closer anchor out of range"));
@@ -534,7 +614,11 @@ impl TracePlan for L5FenceOpenRestore {
         .map_err(|e| format!("L5 step {step}: {e:?}"))?;
         Ok((
             edit,
-            if remove { "close_break".to_string() } else { "close_restore".to_string() },
+            if remove {
+                "close_break".to_string()
+            } else {
+                "close_restore".to_string()
+            },
             if remove {
                 "C2-L5-FENCE-CLOSER-REMOVE".to_string()
             } else {
@@ -556,6 +640,12 @@ pub struct L6ReferenceDefineRestore {
 }
 
 const C2_L6_DEST_BYTES: usize = 24;
+
+impl Default for L6ReferenceDefineRestore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl L6ReferenceDefineRestore {
     pub fn new() -> Self {
@@ -582,8 +672,12 @@ impl TracePlan for L6ReferenceDefineRestore {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
-        let changed = step % 2 == 0;
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
+        let changed = step.is_multiple_of(2);
         if !changed {
             let bytes = current.as_bytes();
             if self.dest_offset + C2_L6_DEST_BYTES > bytes.len() {
@@ -603,7 +697,11 @@ impl TracePlan for L6ReferenceDefineRestore {
         .map_err(|e| format!("L6 step {step}: {e:?}"))?;
         Ok((
             edit,
-            if changed { "change".to_string() } else { "restore".to_string() },
+            if changed {
+                "change".to_string()
+            } else {
+                "restore".to_string()
+            },
             if changed {
                 "C2-L6-REFDEF-DEST-CHANGE".to_string()
             } else {
@@ -621,6 +719,12 @@ impl TracePlan for L6ReferenceDefineRestore {
 /// positions: the editor-style "not one kind of edit" sequence.
 pub struct L7MixedSequence {
     base: String,
+}
+
+impl Default for L7MixedSequence {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl L7MixedSequence {
@@ -648,7 +752,11 @@ impl TracePlan for L7MixedSequence {
     fn step_count(&self) -> u32 {
         TRACE_STEPS
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
         let blocks = CONTROLLED_TRACE_BASE_BYTES / 128;
         // One 4-step cycle per block: the insert (phase 1) and its paired
         // delete (phase 2) always land on the SAME block and offset, so
@@ -663,12 +771,20 @@ impl TracePlan for L7MixedSequence {
                 let payload = format!("{a}wwwwwww");
                 let edit = CanonicalEdit::new(base_offset + 40, base_offset + 48, payload)
                     .map_err(|e| format!("L7 step {step}: {e:?}"))?;
-                Ok((edit, format!("block{block}/replace_eq"), "C2-L7-REPLACE-EQ".to_string()))
+                Ok((
+                    edit,
+                    format!("block{block}/replace_eq"),
+                    "C2-L7-REPLACE-EQ".to_string(),
+                ))
             }
             1 => {
                 let edit = CanonicalEdit::new(base_offset + 30, base_offset + 30, "qqqq")
                     .map_err(|e| format!("L7 step {step}: {e:?}"))?;
-                Ok((edit, format!("block{block}/insert"), "C2-L7-INSERT".to_string()))
+                Ok((
+                    edit,
+                    format!("block{block}/insert"),
+                    "C2-L7-INSERT".to_string(),
+                ))
             }
             2 => {
                 let bytes = current.as_bytes();
@@ -679,14 +795,23 @@ impl TracePlan for L7MixedSequence {
                 }
                 let edit = CanonicalEdit::new(base_offset + 30, base_offset + 34, "")
                     .map_err(|e| format!("L7 step {step}: {e:?}"))?;
-                Ok((edit, format!("block{block}/delete"), "C2-L7-DELETE".to_string()))
+                Ok((
+                    edit,
+                    format!("block{block}/delete"),
+                    "C2-L7-DELETE".to_string(),
+                ))
             }
             _ => {
                 // Same-length replace over a wider window at a third
                 // position of the same block (disjoint from phases 0-2).
-                let edit = CanonicalEdit::new(base_offset + 20, base_offset + 36, "vvvvvvvvvvvvvvvv")
-                    .map_err(|e| format!("L7 step {step}: {e:?}"))?;
-                Ok((edit, format!("block{block}/replace_eq_wide"), "C2-L7-REPLACE-EQ-WIDE".to_string()))
+                let edit =
+                    CanonicalEdit::new(base_offset + 20, base_offset + 36, "vvvvvvvvvvvvvvvv")
+                        .map_err(|e| format!("L7 step {step}: {e:?}"))?;
+                Ok((
+                    edit,
+                    format!("block{block}/replace_eq_wide"),
+                    "C2-L7-REPLACE-EQ-WIDE".to_string(),
+                ))
             }
         }
     }
@@ -744,9 +869,17 @@ impl TracePlan for RealPairChain {
     fn step_count(&self) -> u32 {
         self.steps
     }
-    fn next_edit(&self, step: u32, current: &str) -> Result<(CanonicalEdit, String, String), String> {
-        let breaking = step % 2 == 0;
-        let expected = if breaking { &self.base_source } else { &self.broken_source };
+    fn next_edit(
+        &self,
+        step: u32,
+        current: &str,
+    ) -> Result<(CanonicalEdit, String, String), String> {
+        let breaking = step.is_multiple_of(2);
+        let expected = if breaking {
+            &self.base_source
+        } else {
+            &self.broken_source
+        };
         if current != expected.as_str() {
             return Err(format!(
                 "real pair {} step {step}: chain state diverged from the frozen pair",
@@ -792,7 +925,10 @@ pub fn select_real_pair_traces(
     let mut by_trace: BTreeMap<&str, Vec<&markit_mdbench_campaign::workload::EditWriteCase>> =
         BTreeMap::new();
     for case in &workload.edit_write {
-        by_trace.entry(case.trace_id.as_str()).or_default().push(case);
+        by_trace
+            .entry(case.trace_id.as_str())
+            .or_default()
+            .push(case);
     }
     let mut counts: BTreeMap<String, usize> = BTreeMap::new();
     let mut out = Vec::new();
@@ -830,7 +966,10 @@ pub fn select_real_pair_traces(
         if break_case.pre_source_text.len() > max_base_bytes {
             continue;
         }
-        let key = format!("{}|{}", break_case.edit_family, break_case.expected_transition);
+        let key = format!(
+            "{}|{}",
+            break_case.edit_family, break_case.expected_transition
+        );
         let taken = counts.entry(key).or_insert(0);
         if *taken >= per_transition {
             continue;
@@ -841,9 +980,7 @@ pub fn select_real_pair_traces(
             base_source: break_case.pre_source_text.clone(),
             base_sha256: crate::sha256_hex(break_case.pre_source_text.as_bytes()),
             broken_source: break_case.post_source_text.clone(),
-            broken_source_sha256: crate::sha256_hex(
-                break_case.post_source_text.as_bytes(),
-            ),
+            broken_source_sha256: crate::sha256_hex(break_case.post_source_text.as_bytes()),
             break_edit: break_case.edit.clone(),
             restore_edit: restore_case.edit.clone(),
             break_transition: break_case.expected_transition.clone(),
@@ -852,5 +989,4 @@ pub fn select_real_pair_traces(
         });
     }
     out
-
 }

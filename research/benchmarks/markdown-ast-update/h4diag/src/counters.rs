@@ -193,9 +193,7 @@ impl DiagCounters {
             "restart_margin_steps" => self.restart_margin_steps,
             "damaged_entries" => self.damaged_entries,
             "convergence_hook_calls" => self.convergence_hook_calls,
-            "convergence_binary_search_comparisons" => {
-                self.convergence_binary_search_comparisons
-            }
+            "convergence_binary_search_comparisons" => self.convergence_binary_search_comparisons,
             "convergence_key_comparisons" => self.convergence_key_comparisons,
             "convergence_generation_checks" => self.convergence_generation_checks,
             "convergence_damage_checks" => self.convergence_damage_checks,

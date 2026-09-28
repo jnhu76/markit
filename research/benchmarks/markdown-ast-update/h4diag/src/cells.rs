@@ -21,9 +21,7 @@
 //! are not modified.
 
 use markit_mdbench_campaign2::generators::{self, Axis};
-use markit_mdbench_common::{
-    CanonicalEdit, CaseId, CaseKeyV1, OperationKind, PayloadShape,
-};
+use markit_mdbench_common::{CanonicalEdit, CaseId, CaseKeyV1, OperationKind, PayloadShape};
 
 /// Cell labels in frozen ascending order.
 pub const CELL_LABELS: [&str; 8] = [
@@ -161,7 +159,7 @@ fn label_to_bytes(label: &str) -> Result<u64, String> {
 /// Build the Campaign-2 controlled-N bytes for an arbitrary size, using
 /// the frozen public helpers.
 fn build_pre(n_bytes: u64) -> Result<(String, u64, u64), String> {
-    if n_bytes % BLOCK_UNIT_BYTES != 0 || n_bytes < 512 {
+    if !n_bytes.is_multiple_of(BLOCK_UNIT_BYTES) || n_bytes < 512 {
         return Err(format!(
             "N = {n_bytes} is not a positive multiple of {BLOCK_UNIT_BYTES} (>= 512)"
         ));
@@ -170,10 +168,7 @@ fn build_pre(n_bytes: u64) -> Result<(String, u64, u64), String> {
     let target = blocks / 2;
     let mut pre = String::with_capacity(n_bytes as usize);
     for b in 0..blocks {
-        pre.push_str(&generators::para_block(
-            BLOCK_CONTENT_BYTES,
-            b as usize,
-        ));
+        pre.push_str(&generators::para_block(BLOCK_CONTENT_BYTES, b as usize));
     }
     if pre.len() as u64 != n_bytes {
         return Err(format!(

@@ -32,13 +32,17 @@ use markit_mdbench_campaign2::envelope::{
 };
 use markit_mdbench_campaign2::exec::{reference_for, CaseSpec};
 use markit_mdbench_campaign2::generators::{self, Axis, ControlledCase};
-use markit_mdbench_campaign2::lifecycle::{self, LifecycleTraceV1, RealPairChain, TracePlan, TraceStepV1};
+use markit_mdbench_campaign2::lifecycle::{
+    self, LifecycleTraceV1, RealPairChain, TracePlan, TraceStepV1,
+};
 use markit_mdbench_campaign2::spec::{self, SubCampaignBinding};
 use markit_mdbench_campaign2::{
     current_executable_sha256, horse_mechanism_id, identity, sha256_hex, store, EvidenceClass,
     Surface2, HORSE_IDS,
 };
-use markit_mdbench_common::{CaseId, CaseKeyV1, Observed, OperationKind, PayloadShape, Source, SourceId};
+use markit_mdbench_common::{
+    CaseId, CaseKeyV1, Observed, OperationKind, PayloadShape, Source, SourceId,
+};
 use markit_mdbench_instrumentation::{InstantClock, LaneMeasurement};
 use markit_mdbench_oracle::ReferenceOracle;
 use markit_mdbench_runner::{current_build_identity, BuildIdentityV1, MeasurementV1};
@@ -137,7 +141,10 @@ fn write_toml<T: serde::Serialize>(path: &Path, value: &T) -> Result<(), String>
 
 fn count_lines(path: &Path) -> Result<u64, String> {
     let bytes = std::fs::read(path).map_err(|e| format!("read {}: {e}", path.display()))?;
-    Ok(bytes.split(|b| *b == b'\n').filter(|l| !l.is_empty()).count() as u64)
+    Ok(bytes
+        .split(|b| *b == b'\n')
+        .filter(|l| !l.is_empty())
+        .count() as u64)
 }
 
 // ---------------------------------------------------------------------------
@@ -161,8 +168,11 @@ pub fn build_spec(
     };
     let (machine_cpu, machine_core, machine_siblings) =
         markit_mdbench_campaign::machine::select_primary_cpu()?;
-    let families: std::collections::BTreeSet<&str> =
-        workload.edit_write.iter().map(|c| c.edit_family.as_str()).collect();
+    let families: std::collections::BTreeSet<&str> = workload
+        .edit_write
+        .iter()
+        .map(|c| c.edit_family.as_str())
+        .collect();
     let trace_records = count_lines(&paths.payload("trace-manifest-v1.jsonl"))?;
     let envelope_sha = markit_mdbench_campaign2::sha256_file(
         &benchmark_root.join("protocol/result-schema-v2.json"),
@@ -201,7 +211,10 @@ pub fn build_spec(
         controlled_generator_identity: spec::ControlledGeneratorIdentity {
             generator_id: generators::GENERATOR_ID.to_string(),
             generator_version: generators::GENERATOR_VERSION.to_string(),
-            axes: ["N", "B", "D", "F", "K"].iter().map(|s| s.to_string()).collect(),
+            axes: ["N", "B", "D", "F", "K"]
+                .iter()
+                .map(|s| s.to_string())
+                .collect(),
             n_scale_points: label_list(Axis::N),
             b_scale_points: label_list(Axis::B),
             d_scale_points: label_list(Axis::D),
@@ -262,7 +275,8 @@ pub fn build_spec(
                         derived and never presented as a directly measured wall-clock trace"
                 .to_string(),
             instability_flag: "max(session p50)/min(session p50) > 1.5".to_string(),
-            instability_action: "diagnostic flag only; never delete, downweight or rerun".to_string(),
+            instability_action: "diagnostic flag only; never delete, downweight or rerun"
+                .to_string(),
         },
         correctness: spec::CorrectnessPolicy {
             oracle: "normalize(Hx result) == normalize(H0 clean full parse(post-edit source))"
@@ -281,7 +295,11 @@ pub fn build_spec(
                 .to_string(),
             on_code_change: "new executable SHA, new RunId, restart the affected sub-campaign"
                 .to_string(),
-            forbidden: vec!["delete".to_string(), "impute".to_string(), "retry invisibly".to_string()],
+            forbidden: vec![
+                "delete".to_string(),
+                "impute".to_string(),
+                "retry invisibly".to_string(),
+            ],
             performance_driven_adaptation: "forbidden once formal rows start".to_string(),
         },
         profiling: spec::ProfilingPolicy {
@@ -353,14 +371,12 @@ fn cmd_spec_bind(root: &Path, flags: &[String]) -> Result<(), String> {
     let lifecycle_trace_count = load_frozen_traces(root).map(|t| t.len()).unwrap_or(0);
     let mut subs = Vec::new();
     for tag in identity::SUB_CAMPAIGNS {
-        let binding = sub_campaign_binding(
-            tag,
-            &campaign_spec,
-            &workload,
-            lifecycle_trace_count,
-        );
+        let binding = sub_campaign_binding(tag, &campaign_spec, &workload, lifecycle_trace_count);
         let sub_id = identity::sub_campaign_spec_id(&spec_id, tag, &binding);
-        write_toml(&manifests.join(format!("sub-campaign-{tag}-v1.toml")), &binding)?;
+        write_toml(
+            &manifests.join(format!("sub-campaign-{tag}-v1.toml")),
+            &binding,
+        )?;
         subs.push(identity::SubCampaignIdentity {
             tag: tag.to_string(),
             sub_campaign_spec_id: sub_id,
@@ -376,7 +392,8 @@ fn cmd_spec_bind(root: &Path, flags: &[String]) -> Result<(), String> {
         campaign_seed: identity::campaign_seed(AUTHORITY_SHA),
         sub_campaigns: subs,
     };
-    let bytes = serde_json::to_vec_pretty(&block).map_err(|e| format!("serialize identity: {e}"))?;
+    let bytes =
+        serde_json::to_vec_pretty(&block).map_err(|e| format!("serialize identity: {e}"))?;
     std::fs::write(manifests.join("campaign-2-identity-v1.json"), bytes)
         .map_err(|e| format!("write identity block: {e}"))?;
     println!("CAMPAIGN2_SPEC_OK study_id={study} campaign_spec_id={spec_id}");
@@ -398,7 +415,14 @@ fn sub_campaign_binding(
     workload: &CampaignWorkload,
     lifecycle_traces: usize,
 ) -> SubCampaignBinding {
-    let (surface, cardinality, classes, lane, axis_values, raw_path): (String, u64, Vec<String>, &str, Vec<String>, String) = match tag {
+    let (surface, cardinality, classes, lane, axis_values, raw_path): (
+        String,
+        u64,
+        Vec<String>,
+        &str,
+        Vec<String>,
+        String,
+    ) = match tag {
         "construction" => (
             "construction".to_string(),
             workload.clean_state.len() as u64,
@@ -478,7 +502,8 @@ fn cmd_spec_verify(root: &Path) -> Result<(), String> {
     let frozen = markit_mdbench_campaign2::load_frozen_identity(root)?;
     let manifests = store::campaign_root(root).join("manifests");
     let spec_path = manifests.join("campaign-2-spec-v1.toml");
-    let text = std::fs::read_to_string(&spec_path).map_err(|e| format!("read {}: {e}", spec_path.display()))?;
+    let text = std::fs::read_to_string(&spec_path)
+        .map_err(|e| format!("read {}: {e}", spec_path.display()))?;
     let frozen_spec: spec::Campaign2Spec =
         toml::from_str(&text).map_err(|e| format!("parse {}: {e}", spec_path.display()))?;
     let spec_id = identity::campaign_spec_id(&frozen_spec);
@@ -491,11 +516,15 @@ fn cmd_spec_verify(root: &Path) -> Result<(), String> {
     }
     let expected_study = identity::study_id(AUTHORITY_SHA);
     if expected_study != frozen.study_id {
-        blockers.push(format!("re-derived study id {expected_study} != frozen {}", frozen.study_id));
+        blockers.push(format!(
+            "re-derived study id {expected_study} != frozen {}",
+            frozen.study_id
+        ));
     }
     for sub in &frozen.sub_campaigns {
         let path = manifests.join(format!("sub-campaign-{}-v1.toml", sub.tag));
-        let text = std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
+        let text =
+            std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
         let binding: SubCampaignBinding =
             toml::from_str(&text).map_err(|e| format!("parse {}: {e}", path.display()))?;
         let re_derived = identity::sub_campaign_spec_id(&spec_id, &sub.tag, &binding);
@@ -527,8 +556,8 @@ fn cmd_spec_verify(root: &Path) -> Result<(), String> {
 // ---------------------------------------------------------------------------
 
 fn cmd_machine_capture(root: &Path, flags: &[String]) -> Result<(), String> {
-    let machine_id = flag_value(flags, "--machine-id")
-        .unwrap_or_else(|| "campaign2-primary".to_string());
+    let machine_id =
+        flag_value(flags, "--machine-id").unwrap_or_else(|| "campaign2-primary".to_string());
     let notes = flag_value(flags, "--notes").unwrap_or_else(|| {
         "governor/turbo/SMT are inspected and recorded, never modified by tooling".to_string()
     });
@@ -549,7 +578,8 @@ fn cmd_machine_capture(root: &Path, flags: &[String]) -> Result<(), String> {
 
 fn cmd_machine_verify(root: &Path) -> Result<(), String> {
     let path = store::campaign_root(root).join("manifests/campaign-2-machine-v1.toml");
-    let text = std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
+    let text =
+        std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
     let frozen: markit_mdbench_campaign2::machine::MachineManifest =
         toml::from_str(&text).map_err(|e| format!("parse {}: {e}", path.display()))?;
     let diagnostics = markit_mdbench_campaign2::machine::transient_diagnostics();
@@ -559,7 +589,10 @@ fn cmd_machine_verify(root: &Path) -> Result<(), String> {
     );
     match markit_mdbench_campaign::machine::match_current_host(&frozen, root) {
         Ok(()) => {
-            println!("CAMPAIGN2_MACHINE_VERIFY_PASS machine_id={}", frozen.machine_id);
+            println!(
+                "CAMPAIGN2_MACHINE_VERIFY_PASS machine_id={}",
+                frozen.machine_id
+            );
             Ok(())
         }
         Err(blockers) => {
@@ -576,10 +609,16 @@ fn cmd_workload_verify(root: &Path) -> Result<(), String> {
     let mut full_read_bytes = 0u64;
     for case in &workload.clean_state {
         if sha256_hex(case.source_text.as_bytes()) != case.source_sha256 {
-            return Err(format!("FULL_READ source {} drifted from the frozen digest", case.source_key));
+            return Err(format!(
+                "FULL_READ source {} drifted from the frozen digest",
+                case.source_key
+            ));
         }
         if case.source_text.len() as u64 != case.file_bytes {
-            return Err(format!("FULL_READ source {} byte count drifted", case.source_key));
+            return Err(format!(
+                "FULL_READ source {} byte count drifted",
+                case.source_key
+            ));
         }
         full_read_bytes += case.file_bytes;
     }
@@ -611,10 +650,18 @@ fn cmd_generators_verify(root: &Path, _flags: &[String]) -> Result<(), String> {
         for case in generators::generate_axis(axis)? {
             generators::verify_case(&case)?;
             reference_for(&case.pre_source).map_err(|e| {
-                format!("{} {}: pre source inadmissible: {e}", axis.as_str(), case.axis_label)
+                format!(
+                    "{} {}: pre source inadmissible: {e}",
+                    axis.as_str(),
+                    case.axis_label
+                )
             })?;
             reference_for(&case.post_source).map_err(|e| {
-                format!("{} {}: post source inadmissible: {e}", axis.as_str(), case.axis_label)
+                format!(
+                    "{} {}: post source inadmissible: {e}",
+                    axis.as_str(),
+                    case.axis_label
+                )
             })?;
             notes.push(format!(
                 "CELL axis={} label={} value={} pre_bytes={} post_bytes={} edit_start={} edit_end={} target_relative={:.6} transition={} cell_id={} construction={}",
@@ -744,7 +791,10 @@ fn cmd_lifecycle_freeze(root: &Path, _flags: &[String]) -> Result<(), String> {
         let trace = lifecycle::materialize(plan.as_ref())?;
         summary.push(format!(
             "TRACE family={} trace_id={} steps={} base_bytes={} base_sha256={}",
-            trace.family, trace.trace_id, trace.step_count, trace.initial_source_bytes,
+            trace.family,
+            trace.trace_id,
+            trace.step_count,
+            trace.initial_source_bytes,
             trace.initial_source_sha256
         ));
         records.push(serde_json::to_string(&trace).map_err(|e| format!("serialize trace: {e}"))?);
@@ -782,18 +832,28 @@ fn load_frozen_traces(root: &Path) -> Result<Vec<LifecycleTraceV1>, String> {
     Ok(out)
 }
 
-fn trace_initial_source(trace: &LifecycleTraceV1, workload: &CampaignWorkload) -> Result<String, String> {
+fn trace_initial_source(
+    trace: &LifecycleTraceV1,
+    workload: &CampaignWorkload,
+) -> Result<String, String> {
     match &trace.initial_source_origin {
-        lifecycle::TraceOriginV1::RealPayloadChain { workload_trace_id, base_source_sha256 } => {
+        lifecycle::TraceOriginV1::RealPayloadChain {
+            workload_trace_id,
+            base_source_sha256,
+        } => {
             for case in &workload.edit_write {
                 if &case.trace_id == workload_trace_id {
                     if sha256_hex(case.pre_source_text.as_bytes()) != *base_source_sha256 {
-                        return Err(format!("real trace {workload_trace_id}: workload base drifted"));
+                        return Err(format!(
+                            "real trace {workload_trace_id}: workload base drifted"
+                        ));
                     }
                     return Ok(case.pre_source_text.clone());
                 }
             }
-            Err(format!("real trace {workload_trace_id}: base not in the frozen workload"))
+            Err(format!(
+                "real trace {workload_trace_id}: base not in the frozen workload"
+            ))
         }
         lifecycle::TraceOriginV1::Controlled { family, .. } => {
             for plan in lifecycle::controlled_plans() {
@@ -840,8 +900,9 @@ fn cmd_schedule_generate(root: &Path, flags: &[String]) -> Result<(), String> {
     let traces = load_frozen_traces(root)?;
     let mut all_rows = Vec::new();
 
+    type ShimCase = (CaseId, String, Option<(String, String)>, Option<String>);
     for session in 0..SESSION_COUNT {
-        let shim = |cases: Vec<(CaseId, String, Option<(String, String)>, Option<String>)>| {
+        let shim = |cases: Vec<ShimCase>| {
             cases
                 .into_iter()
                 .map(|(case_id, payload_id, axis, trace_id)| {
@@ -874,7 +935,14 @@ fn cmd_schedule_generate(root: &Path, flags: &[String]) -> Result<(), String> {
             workload
                 .edit_write
                 .iter()
-                .map(|c| (c.case_id, c.payload_id.clone(), None, Some(c.trace_id.clone())))
+                .map(|c| {
+                    (
+                        c.case_id,
+                        c.payload_id.clone(),
+                        None,
+                        Some(c.trace_id.clone()),
+                    )
+                })
                 .collect(),
         );
         all_rows.extend(markit_mdbench_campaign2::schedule::build_schedule(
@@ -1010,8 +1078,10 @@ impl Emitter {
             state_repr,
             result_row_v2: row,
         };
-        let line = serde_json::to_string(&observation).map_err(|e| format!("serialize observation: {e}"))?;
-        out.write_all(line.as_bytes()).map_err(|e| format!("write: {e}"))?;
+        let line = serde_json::to_string(&observation)
+            .map_err(|e| format!("serialize observation: {e}"))?;
+        out.write_all(line.as_bytes())
+            .map_err(|e| format!("write: {e}"))?;
         out.write_all(b"\n").map_err(|e| format!("write: {e}"))
     }
 }
@@ -1065,9 +1135,11 @@ fn identity_for(
             }
         })
         .map_err(|e| format!("spawn id thread: {e}"))?;
-    let run_id = thread.join().map_err(|_| "run id thread panicked".to_string())?;
-    let session_id = session_ordinal
-        .map(|s| identity::session_id(&frozen.campaign_spec_id, tag, s, lane));
+    let run_id = thread
+        .join()
+        .map_err(|_| "run id thread panicked".to_string())?;
+    let session_id =
+        session_ordinal.map(|s| identity::session_id(&frozen.campaign_spec_id, tag, s, lane));
     Ok((
         ExecutionIdentity2 {
             study_id: frozen.study_id.clone(),
@@ -1100,7 +1172,12 @@ fn cmd_run_construction(root: &Path, flags: &[String]) -> Result<(), String> {
         "timing",
     )?;
     let workload = load_campaign_workload(root)?;
-    let out_path = out_path(root, flags, "construction", &format!("session-{session}-construction.jsonl"))?;
+    let out_path = out_path(
+        root,
+        flags,
+        "construction",
+        &format!("session-{session}-construction.jsonl"),
+    )?;
     let mut out = new_writer(&out_path)?;
     let emitter = Emitter {
         exec_identity,
@@ -1110,7 +1187,11 @@ fn cmd_run_construction(root: &Path, flags: &[String]) -> Result<(), String> {
         build: current_build_identity(),
     };
     let clock = InstantClock::new();
-    let seed = identity::session_seed(identity::campaign_seed(AUTHORITY_SHA), "construction", session);
+    let seed = identity::session_seed(
+        identity::campaign_seed(AUTHORITY_SHA),
+        "construction",
+        session,
+    );
     let mut observations = 0u64;
 
     for (ordinal, case) in workload.clean_state.iter().enumerate() {
@@ -1174,7 +1255,12 @@ fn cmd_run_resident_update(root: &Path, flags: &[String]) -> Result<(), String> 
         "timing",
     )?;
     let workload = load_campaign_workload(root)?;
-    let out_path = out_path(root, flags, "resident-update", &format!("session-{session}-resident-update.jsonl"))?;
+    let out_path = out_path(
+        root,
+        flags,
+        "resident-update",
+        &format!("session-{session}-resident-update.jsonl"),
+    )?;
     let mut out = new_writer(&out_path)?;
     let emitter = Emitter {
         exec_identity,
@@ -1184,7 +1270,11 @@ fn cmd_run_resident_update(root: &Path, flags: &[String]) -> Result<(), String> 
         build: current_build_identity(),
     };
     let clock = InstantClock::new();
-    let seed = identity::session_seed(identity::campaign_seed(AUTHORITY_SHA), "resident_update", session);
+    let seed = identity::session_seed(
+        identity::campaign_seed(AUTHORITY_SHA),
+        "resident_update",
+        session,
+    );
     let mut observations = 0u64;
     for (ordinal, case) in workload.edit_write.iter().enumerate() {
         let spec_case = CaseSpec::update(
@@ -1247,18 +1337,29 @@ fn cmd_run_lifecycle(root: &Path, flags: &[String]) -> Result<(), String> {
         Some(session),
         "lifecycle",
     )?;
-    let spec_text = std::fs::read_to_string(store::campaign_root(root).join("manifests/campaign-2-spec-v1.toml"))
-        .map_err(|e| format!("read spec: {e}"))?;
+    let spec_text = std::fs::read_to_string(
+        store::campaign_root(root).join("manifests/campaign-2-spec-v1.toml"),
+    )
+    .map_err(|e| format!("read spec: {e}"))?;
     let campaign_spec: spec::Campaign2Spec =
         toml::from_str(&spec_text).map_err(|e| format!("parse spec: {e}"))?;
-    let reps = flag_u32(flags, "--reps", campaign_spec.sampling.lifecycle_repetitions);
+    let reps = flag_u32(
+        flags,
+        "--reps",
+        campaign_spec.sampling.lifecycle_repetitions,
+    );
     let only_trace = flag_value(flags, "--trace");
     let workload = load_campaign_workload(root)?;
     let mut traces = load_frozen_traces(root)?;
     if let Some(trace) = &only_trace {
         traces.retain(|t| &t.trace_id == trace);
     }
-    let out_path = out_path(root, flags, "lifecycle", &format!("session-{session}-lifecycle.jsonl"))?;
+    let out_path = out_path(
+        root,
+        flags,
+        "lifecycle",
+        &format!("session-{session}-lifecycle.jsonl"),
+    )?;
     let mut out = new_writer(&out_path)?;
     let emitter = Emitter {
         exec_identity,
@@ -1270,7 +1371,8 @@ fn cmd_run_lifecycle(root: &Path, flags: &[String]) -> Result<(), String> {
     let clock = InstantClock::new();
     let seed = identity::session_seed(identity::campaign_seed(AUTHORITY_SHA), "lifecycle", session);
     let mut observations = 0u64;
-    let checkpoints: std::collections::BTreeSet<u32> = lifecycle::K_CHECKPOINTS.iter().copied().collect();
+    let checkpoints: std::collections::BTreeSet<u32> =
+        lifecycle::K_CHECKPOINTS.iter().copied().collect();
 
     for (ordinal, trace) in traces.iter().enumerate() {
         let trace_case_id = sha256_hex(trace.trace_id.as_bytes());
@@ -1327,8 +1429,11 @@ fn cmd_run_lifecycle(root: &Path, flags: &[String]) -> Result<(), String> {
                 .collect::<Result<Vec<_>, String>>()?;
             for rep in 0..reps {
                 let outcome = markit_mdbench_campaign2::with_horse!(horse_id, |mech| {
-                    let hooks: Vec<ReferenceOracle> =
-                        references.iter().cloned().map(ReferenceOracle::new).collect();
+                    let hooks: Vec<ReferenceOracle> = references
+                        .iter()
+                        .cloned()
+                        .map(ReferenceOracle::new)
+                        .collect();
                     markit_mdbench_campaign2::exec::lifecycle_run(
                         &mech,
                         &initial_source,
@@ -1351,7 +1456,9 @@ fn cmd_run_lifecycle(root: &Path, flags: &[String]) -> Result<(), String> {
                         step: step.step,
                         step_count: trace.step_count,
                         rep,
-                        checkpoint: checkpoints.contains(&(step.step + 1)).then_some(step.step + 1),
+                        checkpoint: checkpoints
+                            .contains(&(step.step + 1))
+                            .then_some(step.step + 1),
                         cumulative_edits: step.step + 1,
                         step_label: step.label.clone(),
                         transition_label: step.transition_label.clone(),
@@ -1489,11 +1596,16 @@ fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), St
                 .map_err(|e| format!("trace {} step {}: {e:?}", trace.trace_id, step.step))?
                 .as_str()
                 .to_string();
-            step_sources.push((Source::new(SourceId(0), current.clone()), Source::new(SourceId(1), post.clone()), edit));
+            step_sources.push((
+                Source::new(SourceId(0), current.clone()),
+                Source::new(SourceId(1), post.clone()),
+                edit,
+            ));
             current = post;
         }
         let initial_source = Source::new(SourceId(9), initial.clone());
-        let checkpoints: std::collections::BTreeSet<u32> = lifecycle::K_CHECKPOINTS.iter().copied().collect();
+        let checkpoints: std::collections::BTreeSet<u32> =
+            lifecycle::K_CHECKPOINTS.iter().copied().collect();
 
         for (horse_ordinal, horse_id) in HORSE_IDS.iter().copied().enumerate() {
             let mechanism_id = horse_mechanism_id(horse_id)?;
@@ -1522,12 +1634,14 @@ fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), St
                     Ok(state) => Ok(state),
                     Err(failure) => Err(format!("{failure:?}")),
                 };
-                let mut state = match initial_state {
-                    Ok(state) => Some(state),
-                    Err(message) => return Err(message),
+                let mut state = {
+                    let state = initial_state?;
+                    Some(state)
                 };
-                let mut produced: Vec<(markit_mdbench_runner::ResultRowV1, Option<markit_mdbench_campaign2::envelope::StateReprV1>)> =
-                    Vec::with_capacity(step_sources.len());
+                let mut produced: Vec<(
+                    markit_mdbench_runner::ResultRowV1,
+                    Option<markit_mdbench_campaign2::envelope::StateReprV1>,
+                )> = Vec::with_capacity(step_sources.len());
                 // A chain that fails must stop WITHOUT a `return`: inside a
                 // `with_horse!` arm a `return` would leave the enclosing
                 // function, not this arm.
@@ -1540,11 +1654,17 @@ fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), St
                         break;
                     };
                     let outcome = markit_mdbench_campaign2::exec::lifecycle_step_attributed(
-                        &mech, pre, post, edit, current_state, &hook,
+                        &mech,
+                        pre,
+                        post,
+                        edit,
+                        current_state,
+                        &hook,
                     );
-                    let repr = outcome.new_state.as_ref().map(
-                        markit_mdbench_campaign2::exec::StateReprExport::state_repr,
-                    );
+                    let repr = outcome
+                        .new_state
+                        .as_ref()
+                        .map(markit_mdbench_campaign2::exec::StateReprExport::state_repr);
                     let report = markit_mdbench_campaign2::exec::attribution_report(&outcome);
                     let row = markit_mdbench_runner::assemble_row(
                         &fact_list[index],
@@ -1583,7 +1703,9 @@ fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), St
                         step: step.step,
                         step_count: trace.step_count,
                         rep: 0,
-                        checkpoint: checkpoints.contains(&(step.step + 1)).then_some(step.step + 1),
+                        checkpoint: checkpoints
+                            .contains(&(step.step + 1))
+                            .then_some(step.step + 1),
                         cumulative_edits: step.step + 1,
                         step_label: step.label.clone(),
                         transition_label: step.transition_label.clone(),
@@ -1599,7 +1721,8 @@ fn cmd_run_lifecycle_attribution(root: &Path, flags: &[String]) -> Result<(), St
 }
 
 fn cmd_run_controlled(root: &Path, flags: &[String]) -> Result<(), String> {
-    let axis = Axis::parse(&flag_value(flags, "--axis").ok_or_else(|| "--axis is required".to_string())?)?;
+    let axis =
+        Axis::parse(&flag_value(flags, "--axis").ok_or_else(|| "--axis is required".to_string())?)?;
     let session = flag_u32(flags, "--session", 0);
     let (exec_identity, session_id) = identity_for(
         root,
@@ -1608,11 +1731,17 @@ fn cmd_run_controlled(root: &Path, flags: &[String]) -> Result<(), String> {
         Some(session),
         "timing",
     )?;
-    let spec_text = std::fs::read_to_string(store::campaign_root(root).join("manifests/campaign-2-spec-v1.toml"))
-        .map_err(|e| format!("read spec: {e}"))?;
+    let spec_text = std::fs::read_to_string(
+        store::campaign_root(root).join("manifests/campaign-2-spec-v1.toml"),
+    )
+    .map_err(|e| format!("read spec: {e}"))?;
     let campaign_spec: spec::Campaign2Spec =
         toml::from_str(&spec_text).map_err(|e| format!("parse spec: {e}"))?;
-    let measured = flag_u32(flags, "--reps", campaign_spec.sampling.controlled_repetitions);
+    let measured = flag_u32(
+        flags,
+        "--reps",
+        campaign_spec.sampling.controlled_repetitions,
+    );
     let warmup = campaign_spec.sampling.warmup_iterations;
     let cells: Vec<ControlledCase> = match flag_value(flags, "--cell") {
         Some(label) => vec![generators::generate_cell(axis, &label)?],
@@ -1622,7 +1751,10 @@ fn cmd_run_controlled(root: &Path, flags: &[String]) -> Result<(), String> {
         root,
         flags,
         &format!("controlled/{}", axis_tag(axis)),
-        &format!("session-{session}-{}-controlled.jsonl", axis.as_str().to_lowercase()),
+        &format!(
+            "session-{session}-{}-controlled.jsonl",
+            axis.as_str().to_lowercase()
+        ),
     )?;
     let mut out = new_writer(&out_path)?;
     let emitter = Emitter {
@@ -1889,7 +2021,8 @@ fn cmd_run_memory(root: &Path, flags: &[String]) -> Result<(), String> {
     let mut out = new_writer(&path)?;
     for sample in &probe.samples {
         let line = serde_json::to_string(sample).map_err(|e| format!("serialize: {e}"))?;
-        out.write_all(line.as_bytes()).map_err(|e| format!("write: {e}"))?;
+        out.write_all(line.as_bytes())
+            .map_err(|e| format!("write: {e}"))?;
         out.write_all(b"\n").map_err(|e| format!("write: {e}"))?;
     }
     out.flush().map_err(|e| format!("flush: {e}"))?;
@@ -1915,8 +2048,9 @@ fn cmd_pilot(root: &Path, flags: &[String]) -> Result<(), String> {
     let frozen = markit_mdbench_campaign2::load_frozen_identity(root)?;
     let build = current_build_identity();
     let executable = current_executable_sha256()?;
-    let machine_sha =
-        markit_mdbench_campaign2::sha256_file(&out_dir.join("manifests/campaign-2-machine-v1.toml"))?;
+    let machine_sha = markit_mdbench_campaign2::sha256_file(
+        &out_dir.join("manifests/campaign-2-machine-v1.toml"),
+    )?;
     let pilot_spec_id = sha256_hex(format!("{}-PILOT", frozen.campaign_spec_id).as_bytes());
     let pilot_run_id = identity::run_id(
         &frozen.study_id,
@@ -1950,8 +2084,9 @@ fn cmd_pilot(root: &Path, flags: &[String]) -> Result<(), String> {
         markit_mdbench_campaign2::with_horse!(horse, |mech| {
             let mut best = u64::MAX;
             for _ in 0..lines {
-                let report_row =
-                    markit_mdbench_runner::orchestrate::run_full_parse_timed(&mech, &source, &clock, &hook);
+                let report_row = markit_mdbench_runner::orchestrate::run_full_parse_timed(
+                    &mech, &source, &clock, &hook,
+                );
                 if let LaneMeasurement::Timing(t) = &report_row.measurement {
                     if let Observed::Known(ns) = t.total_ns {
                         best = best.min(ns);
@@ -2021,7 +2156,11 @@ fn cmd_pilot(root: &Path, flags: &[String]) -> Result<(), String> {
                 .as_str()
                 .to_string();
             references.push(reference_for(&post)?);
-            step_sources.push((Source::new(SourceId(0), current.clone()), Source::new(SourceId(1), post.clone()), edit));
+            step_sources.push((
+                Source::new(SourceId(0), current.clone()),
+                Source::new(SourceId(1), post.clone()),
+                edit,
+            ));
             current = post;
         }
         let initial_source = Source::new(SourceId(9), initial.clone());
@@ -2045,8 +2184,11 @@ fn cmd_pilot(root: &Path, flags: &[String]) -> Result<(), String> {
                 })
                 .collect();
             markit_mdbench_campaign2::with_horse!(horse, |mech| {
-                let hooks: Vec<ReferenceOracle> =
-                    references.iter().cloned().map(ReferenceOracle::new).collect();
+                let hooks: Vec<ReferenceOracle> = references
+                    .iter()
+                    .cloned()
+                    .map(ReferenceOracle::new)
+                    .collect();
                 let outcome = markit_mdbench_campaign2::exec::lifecycle_run(
                     &mech,
                     &initial_source,
@@ -2150,11 +2292,16 @@ fn cmd_pilot(root: &Path, flags: &[String]) -> Result<(), String> {
     }
 
     let path = pilot_dir.join("pilot-report-v1.txt");
-    std::fs::write(&path, report.join("\n") + "\n").map_err(|e| format!("write {}: {e}", path.display()))?;
+    std::fs::write(&path, report.join("\n") + "\n")
+        .map_err(|e| format!("write {}: {e}", path.display()))?;
     for line in &report {
         println!("{line}");
     }
-    println!("CAMPAIGN2_PILOT_COMPLETE rows={} path={} NON_RESEARCH=YES", report.len(), path.display());
+    println!(
+        "CAMPAIGN2_PILOT_COMPLETE rows={} path={} NON_RESEARCH=YES",
+        report.len(),
+        path.display()
+    );
     Ok(())
 }
 
@@ -2206,7 +2353,8 @@ fn finish_lane<W: std::io::Write>(
     path: &Path,
     observations: u64,
 ) -> Result<(), String> {
-    out.flush().map_err(|e| format!("flush {}: {e}", path.display()))?;
+    out.flush()
+        .map_err(|e| format!("flush {}: {e}", path.display()))?;
     drop(out);
     let sha = markit_mdbench_campaign2::sha256_file(path)?;
     println!(
@@ -2214,6 +2362,9 @@ fn finish_lane<W: std::io::Write>(
         path.display(),
         observations
     );
-    println!("LANE_COMPLETE observations={observations} path={}", path.display());
+    println!(
+        "LANE_COMPLETE observations={observations} path={}",
+        path.display()
+    );
     Ok(())
 }

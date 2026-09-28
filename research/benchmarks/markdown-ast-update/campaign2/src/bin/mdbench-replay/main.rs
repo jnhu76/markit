@@ -70,12 +70,14 @@ fn has_flag(flags: &[String], name: &str) -> bool {
 }
 
 fn flag_u32(flags: &[String], name: &str, default: u32) -> u32 {
-    flag_value(flags, name).and_then(|v| v.parse().ok()).unwrap_or(default)
+    flag_value(flags, name)
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(default)
 }
 
 fn run(root: &Path, flags: &[String]) -> Result<(), String> {
-    let surface = flag_value(flags, "--surface")
-        .ok_or_else(|| "--surface is required".to_string())?;
+    let surface =
+        flag_value(flags, "--surface").ok_or_else(|| "--surface is required".to_string())?;
     let horse = flag_value(flags, "--horse").ok_or_else(|| "--horse is required".to_string())?;
     if !markit_mdbench_campaign2::HORSE_IDS.contains(&horse.as_str()) {
         return Err(format!("unknown horse {horse:?}"));
@@ -90,10 +92,7 @@ fn run(root: &Path, flags: &[String]) -> Result<(), String> {
     let build = markit_mdbench_runner::current_build_identity();
     let facts = case
         .spec
-        .facts(
-            markit_mdbench_campaign2::horse_mechanism_id(&horse)?,
-            0,
-        );
+        .facts(markit_mdbench_campaign2::horse_mechanism_id(&horse)?, 0);
 
     println!(
         "{}",
@@ -147,7 +146,9 @@ fn run(root: &Path, flags: &[String]) -> Result<(), String> {
                     &Source::new(SourceId(0), case.spec.pre_source.clone()),
                 ) {
                     Ok(state) => Some(state),
-                    Err(failure) => return Err(format!("fresh pre-state build failed: {failure:?}")),
+                    Err(failure) => {
+                        return Err(format!("fresh pre-state build failed: {failure:?}"))
+                    }
                 }
             } else {
                 None
@@ -296,8 +297,8 @@ fn resolve_case(root: &Path, surface: &str, flags: &[String]) -> Result<ReplayCa
             let axis = Axis::parse(
                 &flag_value(flags, "--axis").ok_or_else(|| "--axis is required".to_string())?,
             )?;
-            let label = flag_value(flags, "--cell")
-                .ok_or_else(|| "--cell is required".to_string())?;
+            let label =
+                flag_value(flags, "--cell").ok_or_else(|| "--cell is required".to_string())?;
             let cell = generators::generate_cell(axis, &label)?;
             generators::verify_case(&cell)?;
             Ok(ReplayCase {
@@ -306,8 +307,8 @@ fn resolve_case(root: &Path, surface: &str, flags: &[String]) -> Result<ReplayCa
             })
         }
         "lifecycle" => {
-            let trace_filter = flag_value(flags, "--trace")
-                .ok_or_else(|| "--trace is required".to_string())?;
+            let trace_filter =
+                flag_value(flags, "--trace").ok_or_else(|| "--trace is required".to_string())?;
             let step_index = flag_u32(flags, "--step", 0) as usize;
             let traces = load_traces(root)?;
             let trace = traces
@@ -320,10 +321,17 @@ fn resolve_case(root: &Path, surface: &str, flags: &[String]) -> Result<ReplayCa
             for step in trace.steps.iter().take(step_index + 1) {
                 let edit = step.edit();
                 let pre = Source::new(SourceId(0), current.clone());
-                let post = edit.apply(&pre, SourceId(1)).map_err(|e| format!("{e:?}"))?.as_str().to_string();
+                let post = edit
+                    .apply(&pre, SourceId(1))
+                    .map_err(|e| format!("{e:?}"))?
+                    .as_str()
+                    .to_string();
                 if step.step as usize == step_index {
                     let spec = lifecycle_spec(&trace.trace_id, &current, &post, &edit, step)?;
-                    return Ok(ReplayCase { spec, cell_id: Some(format!("{}#{}", trace.trace_id, step_index)) });
+                    return Ok(ReplayCase {
+                        spec,
+                        cell_id: Some(format!("{}#{}", trace.trace_id, step_index)),
+                    });
                 }
                 current = post;
             }
@@ -352,7 +360,9 @@ fn trace_initial(
     workload: &markit_mdbench_campaign::workload::CampaignWorkload,
 ) -> Result<String, String> {
     match &trace.initial_source_origin {
-        lifecycle::TraceOriginV1::RealPayloadChain { workload_trace_id, .. } => workload
+        lifecycle::TraceOriginV1::RealPayloadChain {
+            workload_trace_id, ..
+        } => workload
             .edit_write
             .iter()
             .find(|c| &c.trace_id == workload_trace_id)

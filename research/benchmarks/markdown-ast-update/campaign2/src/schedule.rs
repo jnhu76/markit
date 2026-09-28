@@ -102,8 +102,8 @@ pub fn schedule_from_jsonl(bytes: &[u8]) -> Result<Vec<ScheduleRow2>, String> {
         if line.is_empty() {
             continue;
         }
-        let row: ScheduleRow2 = serde_json::from_slice(line)
-            .map_err(|e| format!("schedule row {index}: {e}"))?;
+        let row: ScheduleRow2 =
+            serde_json::from_slice(line).map_err(|e| format!("schedule row {index}: {e}"))?;
         rows.push(row);
     }
     Ok(rows)

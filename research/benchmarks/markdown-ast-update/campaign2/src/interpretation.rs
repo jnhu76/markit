@@ -39,8 +39,12 @@ pub fn rules() -> [&'static str; 4] {
 
 /// Rule identifiers paired with their text (stable order).
 pub fn tagged_rules() -> Vec<(String, String)> {
-    [("R1", R1_BLOCKS_REPARSED), ("R2", R2_H3_SOURCE_COVERAGE),
-     ("R3", R3_H4_CONVERGENCE_DISTANCE), ("R4", R4_H1_FULL_PARSE_FALLBACK)]
+    [
+        ("R1", R1_BLOCKS_REPARSED),
+        ("R2", R2_H3_SOURCE_COVERAGE),
+        ("R3", R3_H4_CONVERGENCE_DISTANCE),
+        ("R4", R4_H1_FULL_PARSE_FALLBACK),
+    ]
     .into_iter()
     .map(|(id, text)| (id.to_string(), text.to_string()))
     .collect()

@@ -64,7 +64,10 @@ pub fn key_of(row: &Campaign2ObservationV1) -> (String, String, String, u32) {
 
 /// Verify one raw file against its expectation. Returns every blocker
 /// found (bounded detail is the caller's job).
-pub fn verify(rows: &[Campaign2ObservationV1], expected: &RawExpectation2) -> Result<(), Vec<String>> {
+pub fn verify(
+    rows: &[Campaign2ObservationV1],
+    expected: &RawExpectation2,
+) -> Result<(), Vec<String>> {
     let mut blockers = Vec::new();
     let mut seen: BTreeSet<(String, String, String, u32)> = BTreeSet::new();
     let mut duplicates: Vec<(String, String, String, u32)> = Vec::new();
@@ -113,7 +116,10 @@ pub fn verify(rows: &[Campaign2ObservationV1], expected: &RawExpectation2) -> Re
             _ => {}
         }
         if index == 0 && row.schema != crate::envelope::SCHEMA {
-            blockers.push(format!("first row schema {:?} is not the campaign-2 schema", row.schema));
+            blockers.push(format!(
+                "first row schema {:?} is not the campaign-2 schema",
+                row.schema
+            ));
         }
     }
     if identity_problems > 0 {

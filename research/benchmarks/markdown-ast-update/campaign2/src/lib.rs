@@ -51,7 +51,9 @@ pub const ENVELOPE_SCHEMA_ID: &str = "campaign2-observation-v1";
 pub const RESULT_SCHEMA_VERSION: u16 = markit_mdbench_runner::RESULT_SCHEMA_VERSION_V2;
 
 /// The four Campaign-2 surfaces (task §13-§25).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, serde::Serialize, serde::Deserialize,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum Surface2 {
     /// A — source -> valid native state.

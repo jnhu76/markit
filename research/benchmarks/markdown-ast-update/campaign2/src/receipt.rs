@@ -104,7 +104,8 @@ pub fn build_receipt(
     surface: &str,
     complete_marker: &str,
 ) -> Result<RawReceiptV1, String> {
-    let meta = std::fs::metadata(raw_path).map_err(|e| format!("stat {}: {e}", raw_path.display()))?;
+    let meta =
+        std::fs::metadata(raw_path).map_err(|e| format!("stat {}: {e}", raw_path.display()))?;
     Ok(RawReceiptV1 {
         schema: RECEIPT_SCHEMA.to_string(),
         study_id: study_id.to_string(),
@@ -127,9 +128,13 @@ pub fn build_receipt(
 }
 
 /// Write a receipt next to its raw file (`<raw>.receipt.json`).
-pub fn write_receipt(raw_path: &Path, receipt: &RawReceiptV1) -> Result<std::path::PathBuf, String> {
+pub fn write_receipt(
+    raw_path: &Path,
+    receipt: &RawReceiptV1,
+) -> Result<std::path::PathBuf, String> {
     let path = std::path::PathBuf::from(format!("{}.receipt.json", raw_path.display()));
-    let bytes = serde_json::to_vec_pretty(receipt).map_err(|e| format!("serialize receipt: {e}"))?;
+    let bytes =
+        serde_json::to_vec_pretty(receipt).map_err(|e| format!("serialize receipt: {e}"))?;
     std::fs::write(&path, bytes).map_err(|e| format!("write {}: {e}", path.display()))?;
     Ok(path)
 }
