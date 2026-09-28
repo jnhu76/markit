@@ -126,9 +126,10 @@ parse. Suites: fragment-reuse 34 + shared-grammar 45 + neighbors
 | H3-WINDOW open-edge exclusion (64k DeepContainer M-CS-ITEM-INDENT lineage) | — (local-substrate guard) | stale-termination member refused; popped-back suffix reused; gap fallbacks covered by patch-time margins; == H0 | sound (reviewer probe) |
 
 Suites: H3 32 + regression sweep (fragment-reuse 34, shared-grammar 45,
-block-local 32, restart-convergence 36, horse-a 232), 0 failures; 3
-independent reviewer probes pass. The frozen `gate_h3.c` harness was
-rebuilt in the server's `/tmp` at tree-sitter 6070dbf /
+block-local 32, restart-convergence 36, horse-a 241 [errata 2026-09-28,
+R6: verbatim RH3 record said 232; actual at merged master = 241]), 0
+failures; 3 independent reviewer probes pass. The frozen `gate_h3.c`
+harness was rebuilt in the server's `/tmp` at tree-sitter 6070dbf /
 ts-markdown f969cd3 — as-run artifacts unchanged; no repo tooling
 touched.
 

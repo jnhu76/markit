@@ -95,20 +95,28 @@ detail: the dated corrective sections in `H2-FIDELITY.md` /
 `H3-FIDELITY.md`; challenge evidence: the corrective-cycle section of
 `CHALLENGE-CASES.md`.
 
-Gate-A status after the correctives (still governed by this frozen
-record until re-evaluated):
+Gate-A status after the correctives (re-evaluated 2026-09-28 by R6 —
+`../reviews/gate-a-r6-synthesis-2026-09-28.md`):
 
 ```text
-GATE_A_VERDICT            = FAIL / BLOCKED   (frozen above — unchanged)
+GATE_A_VERDICT (initial, frozen above) = FAIL / BLOCKED  — preserved as history
 CORRECTIVE_CYCLE          = COMPLETE (both P1 pairs repaired, merged,
                             fresh-reviewed; #79/#80 closed as completed)
-GATE_A_RE_EVALUATION      = PENDING — requires a fresh synthesis reviewer
-                            (R6: not R5/RH2/RH3, not any author) evaluating
-                            from the merged master; only a documented R6
-                            PASS may update GATE_A_VERDICT
-GATE_B_AUTHORIZED         = NO
-PERFORMANCE_COLLECTION_AUTHORIZED = NO
-PERFORMANCE_COLLECTION_RUN       = NO
+GATE_A_RE_EVALUATION      = COMPLETE — R6 fresh synthesis reviewer
+                            (not R5/RH2/RH3, not any author), from merged
+                            master 252bd6c: adversarial H2/H3 checks HELD,
+                            record integrity OK, governance OK
+GATE_A_VERDICT (re-evaluated) = PASS
+  five-horse: H0 FAITHFUL_MECHANISM_MODEL, H1
+  FAITHFUL_WITH_DECLARED_SIMPLIFICATION, H2 FAITHFUL_MECHANISM_MODEL,
+  H3 FAITHFUL_WITH_DECLARED_SIMPLIFICATION, H4
+  FAITHFUL_MECHANISM_MODEL — P0=0, P1=0 on all five; no horse carries
+  MATERIAL_DEVIATION; decisive witnesses independently reproduced
+GATE_B_AUTHORIZED         = YES (R6) — Gate B itself is a separate,
+                            not-yet-started campaign; this closure STOPS
+                            before any Gate B work
+PERFORMANCE_COLLECTION_AUTHORIZED = NO   (for this corrective cycle)
+PERFORMANCE_COLLECTION_RUN        = NO
 ```
 
 Residual (non-blocking) findings carried into the record: H2 P2×4 /

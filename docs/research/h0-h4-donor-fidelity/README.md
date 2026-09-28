@@ -48,9 +48,12 @@ H2: #79  ->  PR #82 (367060a)  ->  merge a3a551f  ->  RH2
 H3: #80  ->  PR #83 (532fd52)  ->  merge a8327fb  ->  RH3
     NEW VERDICT = FAITHFUL_WITH_DECLARED_SIMPLIFICATION (P0=0, P1=0)
 
-GATE_A_VERDICT       = still FAIL / BLOCKED (frozen) until the fresh
-                       synthesis re-evaluation (R6) of the merged master
-GATE_B_AUTHORIZED    = NO
+R6 SYNTHESIS RE-EVALUATION (fresh reviewer, merged master 252bd6c):
+    adversarial H2/H3 checks HELD; five horses P0=0 P1=0; no
+    MATERIAL_DEVIATION
+    GATE_A_VERDICT (re-evaluated) = PASS
+    GATE_B_AUTHORIZED = YES (Gate B not started — this record STOPS
+    before any Gate B work)
 PERFORMANCE_COLLECTION_AUTHORIZED = NO
 PERFORMANCE_COLLECTION_RUN        = NO
 ```
