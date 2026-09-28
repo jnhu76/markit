@@ -920,14 +920,18 @@ impl<'a> Cursor<'a> {
                 let level = self.path.last().expect("non-empty path");
                 (level.cur, level.node())
             };
-            if cstart
-                .checked_sub(cnode.line_offset)
-                .is_some_and(|ls| ls == p_old)
-            {
+            let line_start = cstart.checked_sub(cnode.line_offset);
+            if line_start.is_some_and(|ls| ls == p_old) {
                 // Line-aligned candidate at this level.
                 return Some(self.path.len() - 1);
             }
-            if cstart <= p_old && cstart + cnode.size > p_old {
+            // The containment test is LINE-start-based: a child living
+            // on a prefixed line (quote/list content) has its LINE
+            // start before its span start — the consult sits on the
+            // line, and the prefix bytes belong to the ancestor's span.
+            let line_contains = line_start.is_some_and(|ls| ls < p_old)
+                && cstart + cnode.size > p_old;
+            if line_contains {
                 // The entry's span contains p_old (its line starts
                 // earlier): descend into its children.
                 self.discovery.total_visits += 1;

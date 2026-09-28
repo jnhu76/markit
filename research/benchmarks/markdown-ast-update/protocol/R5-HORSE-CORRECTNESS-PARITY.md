@@ -645,6 +645,42 @@ started; refinements of the §8 fields, all conservative):
   acceptance use checked arithmetic plus a monotonic-membership guard, so
   a run derived from stale (clamped) patched positions is refused —
   natural degradation — instead of poisoning the assembled state.
+- §8 amendment #80 (recorded at the Gate-A H3 corrective, 2026-09-28;
+  RESTORATIVE — it repairs the two MATERIAL_DEVIATION blockers of the
+  Gate-A R3 review, see
+  `docs/research/reviews/gate-a-r3-h3-2026-09-28.md` D3/D5/D11 and
+  issue #80):
+  (1) DAMAGED-ANCESTOR INTERIOR DESCENT is a real operative path (the
+  pre-#80 descent was dead code — verified four ways in the Gate-A
+  review): the consult point is the donor-faithful post-closure live
+  state (#79's scanner protocol change), so at an interior line of a
+  damaged container the live key equals the recorded entry key of the
+  container's children; the cursor descends positionally into the entry
+  whose LINE contains the consult (and, for an aligned changed
+  composite, past the changed ancestor itself — ts_parser__reuse_node
+  parser.c:808-811), and takes the unmarked aligned descendant with an
+  agreeing entry key. Damage is a path, not a wall.
+  (2) The per-consult STATELESS ENUMERATION is removed: the cursor is a
+  persistent forward-only pre-order path (reusable_node.h shape —
+  fragment-free; per-level monotone child indices). Discovery is
+  amortized-forward (D11), structurally accounted
+  (`metadata_records_touched` includes every entry visit) and exported
+  via `OldTreeSubtreeReuseMechanism::discovery_summary` for witnesses
+  (structural counters only; no timing).
+  (3) Amendment (a) above is REPLACED by its precise form: the consult
+  is refused only when the live paragraph would ABSORB the line as
+  continuation text (the scanner's `starts_block` hook argument). The
+  per-consult one-line-back margin reads are GONE — the corrected
+  cursor consults with zero source reads of its own.
+  (4) OPEN-EDGE EXCLUSION WINDOWS: a run's termination boundary must
+  not have consumed bytes the edit changed — runs before the edit end
+  at/before the start of the deepest node containing the last unchanged
+  byte before the edit; runs after it start at/after the end of the
+  deepest node containing the edit's last post byte; gap fallbacks rely
+  on the patch-time continuation margins for the no-blank case (the
+  H2 window analogue, in the patched tree's post coordinates; found by
+  the frozen structural-recipe grid: an indent edit adjacent to an
+  interior run's end made the old list's termination stale).
 
 ## 9. H4 — RESTART_CONVERGENCE (`mechanisms/restart-convergence`)
 
