@@ -391,7 +391,13 @@ impl Mechanism for OldTreeSubtreeReuseMechanism {
         // descent, damaged-ancestor interior descent — no per-consult
         // stateless table rebuild). The hook NEVER decides grammar — it
         // only executes takes the cursor vouched.
-        let mut cursor = Cursor::new(&prepared.tree, es, ee_new, definition_changing);
+        let mut cursor = Cursor::new(
+            &prepared.tree,
+            es,
+            ee_new,
+            definition_changing,
+            cx.sink.attribution_active(),
+        );
         let (rp, slot_count, takes, consultations, reused, discovery) = {
             let mut hook: Box<SpliceHook<'_>> =
                 Box::new(|pos, key, starts_block| cursor.consult(pos, key, starts_block));
@@ -951,6 +957,12 @@ struct Cursor<'a> {
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
+    /// Attribution-only counting gate (see common::WorkSink::
+    /// attribution_active): the `reused` total and rematerialization
+    /// counts feed only WorkSink counters, so their walks run in
+    /// recording lanes only. Counter VALUES are identical whenever a
+    /// recording sink is present.
+    count: bool,
     discovery: DiscoverySummary,
     /// The persistent forward pre-order path (top level first). The
     /// donor's ReusableNode advance/descend become index advances and
@@ -970,7 +982,13 @@ struct TakeRun {
 }
 
 impl<'a> Cursor<'a> {
-    fn new(tree: &'a TTree, es: usize, ee_new: usize, definition_changing: bool) -> Self {
+    fn new(
+        tree: &'a TTree,
+        es: usize,
+        ee_new: usize,
+        definition_changing: bool,
+        count: bool,
+    ) -> Self {
         let left_window_end = left_window_end(tree, es);
         let right_window_start = right_window_start(tree, ee_new, tree.src_len);
         Cursor {
@@ -983,6 +1001,7 @@ impl<'a> Cursor<'a> {
             takes: Vec::new(),
             consultations: 0,
             reused: 0,
+            count,
             discovery: DiscoverySummary::default(),
             path: vec![LevelCursor::top(&tree.entries)],
         }
@@ -1109,7 +1128,9 @@ impl<'a> Cursor<'a> {
             self.path.last_mut().expect("path").advance();
         }
         self.bump_max(visits_before);
-        self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        if self.count {
+            self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        }
         self.takes.push(TakeRun { pos, members });
         Some(new_end)
     }
@@ -1457,7 +1478,9 @@ fn rematerialize<W: WorkSink>(
                 .map(|(a, b)| (base + a, base + b))
                 .collect();
             let inline = rebased(scan_inlines_abs(post, &segments, table, sink), base);
-            rebuilt += count_forest(&inline);
+            if sink.attribution_active() {
+                rebuilt += count_forest(&inline);
+            }
             TPayload::Para {
                 inline,
                 segments_rel: segments_rel.clone(),
@@ -1471,7 +1494,9 @@ fn rematerialize<W: WorkSink>(
                 scan_inlines_abs(post, std::slice::from_ref(&content), table, sink),
                 base,
             );
-            rebuilt += count_forest(&inline);
+            if sink.attribution_active() {
+                rebuilt += count_forest(&inline);
+            }
             TPayload::Heading {
                 level: *level,
                 content_rel: *content_rel,
@@ -1498,7 +1523,9 @@ fn rematerialize<W: WorkSink>(
             kept += sub.kept;
             children.push((*rel, sub.node));
         } else {
-            kept += count_node(child);
+            if sink.attribution_active() {
+                kept += count_node(child);
+            }
             children.push((*rel, child.clone()));
         }
     }
@@ -1671,7 +1698,9 @@ fn assemble_level<W: WorkSink>(
                     {
                         let rebuilt = rematerialize(node, post, new_start, table, sink);
                         built.nodes += rebuilt.rebuilt;
-                        built.rematerialized_members += count_node(node);
+                        if sink.attribution_active() {
+                            built.rematerialized_members += count_node(node);
+                        }
                         built.rematerialized_kept += rebuilt.kept;
                         out.push((new_start, rebuilt.node));
                     } else {

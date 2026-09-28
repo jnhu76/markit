@@ -29,10 +29,10 @@ use crate::{CAMPAIGN_ID, ENVELOPE_SCHEMA_ID, MEASUREMENT_CORRECTIVE_VERSION};
 pub const CAMPAIGN_SEED_ALGORITHM_ID: &str = "sha256-first64-bigendian-v1";
 
 /// Domain of the per-(surface, session) case-order seed derivation.
-pub const SESSION_SEED_DOMAIN: &str = "MARKIT-31-CAMPAIGN-SESSION-SEED-v1";
+pub const SESSION_SEED_DOMAIN: &str = "MARKIT-76-SIX-HORSE-SESSION-SEED-v1";
 
 /// Domain of the seeded base horse permutation seed (task §15).
-pub const HORSE_BASE_SEED_DOMAIN: &str = "MARKIT-31-CAMPAIGN-HORSE-PERMUTATION-SEED-v1";
+pub const HORSE_BASE_SEED_DOMAIN: &str = "MARKIT-76-SIX-HORSE-HORSE-PERMUTATION-SEED-v1";
 
 /// Derivation string frozen by task §13:
 ///
@@ -218,16 +218,18 @@ mod tests {
 
     #[test]
     fn campaign_seed_is_documented_derivation() {
-        // SHA256("MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-v1\n911788a...")
+        // SHA256("MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1\nefa3927...")
         // first 64 bits big-endian. Pinned by recomputation, not by a
         // magic constant: this test proves the derivation is stable for
         // the frozen base authority SHA.
-        let a = campaign_seed("911788a2ad5fcb5b939d8bc3576d3aea77f7df62");
-        let b = campaign_seed("911788a2ad5fcb5b939d8bc3576d3aea77f7df62");
+        let a = campaign_seed("efa392752bfb2604e3d2fdfabaf0ba9825f70b74");
+        let b = campaign_seed("efa392752bfb2604e3d2fdfabaf0ba9825f70b74");
         assert_eq!(a, b);
+        // The frozen manifest seed value is this exact derivation.
+        assert_eq!(a, 15542238002486738101);
         // Independent recomputation through the raw primitives.
         let material =
-            "MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-v1\n911788a2ad5fcb5b939d8bc3576d3aea77f7df62";
+            "MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1\nefa392752bfb2604e3d2fdfabaf0ba9825f70b74";
         let digest = sha256_digest(material.as_bytes());
         assert_eq!(a, first64_big_endian(&digest));
         // A different base authority must move the seed.
@@ -236,7 +238,7 @@ mod tests {
 
     #[test]
     fn session_and_horse_seeds_are_distinct_per_inputs() {
-        let root = campaign_seed("911788a2ad5fcb5b939d8bc3576d3aea77f7df62");
+        let root = campaign_seed("efa392752bfb2604e3d2fdfabaf0ba9825f70b74");
         let s0 = session_seed(root, "edit_write", 0);
         let s1 = session_seed(root, "edit_write", 1);
         let s0c = session_seed(root, "clean_state", 0);

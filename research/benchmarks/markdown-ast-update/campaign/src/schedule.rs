@@ -341,7 +341,7 @@ pub fn verify_schedule(
                 }
                 if row.horse_order.len() != HORSE_IDS.len() {
                     blockers.push(format!(
-                        "{surface_name} session {s} ordinal {j}: horse order has {} entries != 5",
+                        "{surface_name} session {s} ordinal {j}: horse order has {} entries != 6",
                         row.horse_order.len()
                     ));
                 }
@@ -445,7 +445,7 @@ mod tests {
     #[test]
     fn horse_order_is_position_balanced_and_deterministic() {
         let base = base_horse_permutation(0x5EED_0000_0000_0005);
-        assert_eq!(base.len(), 5);
+        assert_eq!(base.len(), 6);
         let mut sorted = base.clone();
         sorted.sort();
         assert_eq!(
@@ -453,9 +453,9 @@ mod tests {
             HORSE_IDS.to_vec(),
             "base permutation is a permutation"
         );
-        // Rotation by (j + s): for a full cycle of 5 consecutive (j+s)
+        // Rotation by (j + s): for a full cycle of 6 consecutive (j+s)
         // values each horse occupies each position exactly once.
-        for m in 0..5 {
+        for m in 0..6 {
             let order = horse_order_for(&base, m, 0);
             let mut sorted_order = order.clone();
             sorted_order.sort();
@@ -463,7 +463,7 @@ mod tests {
         }
         // (j + s) arithmetic: s advances the rotation like j does.
         assert_eq!(horse_order_for(&base, 0, 2), horse_order_for(&base, 2, 0));
-        assert_eq!(horse_order_for(&base, 4, 1), horse_order_for(&base, 0, 0));
+        assert_eq!(horse_order_for(&base, 5, 1), horse_order_for(&base, 0, 0));
     }
 
     #[test]

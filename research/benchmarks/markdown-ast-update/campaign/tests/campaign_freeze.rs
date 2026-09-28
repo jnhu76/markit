@@ -225,7 +225,8 @@ fn attribution_counters_are_deterministic_on_representative_cases() {
             surface,
             session_ordinal: None,
             session_id: session_id.clone(),
-            session_seed: manifest.seed.value,
+            session_seed: markit_mdbench_campaign::manifest::parse_seed_value(&manifest.seed.value)
+                .unwrap(),
             build_identity: build.clone(),
             warmup: 0,
             measured: 0,

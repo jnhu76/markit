@@ -456,11 +456,9 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     };
     let session_id =
         markit_mdbench_campaign::identity::session_id(&spec_id, surface.as_str(), session);
-    let session_seed = markit_mdbench_campaign::identity::session_seed(
-        manifest.seed.value,
-        surface.as_str(),
-        session,
-    );
+    let session_seed = markit_mdbench_campaign::manifest::parse_seed_value(&manifest.seed.value)?;
+    let session_seed =
+        markit_mdbench_campaign::identity::session_seed(session_seed, surface.as_str(), session);
     let subset: Vec<&markit_mdbench_campaign::schedule::ScheduleRow> = schedule
         .iter()
         .filter(|row| row.surface == surface.as_str() && row.session_ordinal == session)
@@ -766,7 +764,7 @@ fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
         surface,
         session_ordinal: None,
         session_id,
-        session_seed: manifest.seed.value,
+        session_seed: markit_mdbench_campaign::manifest::parse_seed_value(&manifest.seed.value)?,
         build_identity: build,
         warmup: 0,
         measured: 0,

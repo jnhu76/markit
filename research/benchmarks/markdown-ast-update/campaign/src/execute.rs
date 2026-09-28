@@ -409,6 +409,15 @@ impl<'a> SessionExecutor<'a> {
                         clock,
                         sink,
                     )?,
+                    "HorseA" => self.run_cell(
+                        markit_mdbench_horse_a::HORSE_A_MECHANISM_ID,
+                        &markit_mdbench_horse_a::HorseAMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        clock,
+                        sink,
+                    )?,
                     other => return Err(format!("unknown horse {other:?} in schedule")),
                 };
                 if outcome.is_invalid() {

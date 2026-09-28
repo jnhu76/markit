@@ -198,7 +198,7 @@ pub fn expectation_from_schedule(
         frozen.sort();
         if ordered != frozen {
             return Err(format!(
-                "schedule row {} does not dispatch exactly H0-H4",
+                "schedule row {} does not dispatch exactly the frozen six-horse roster",
                 row.case_id
             ));
         }
@@ -754,8 +754,8 @@ mod tests {
         let summary = verify_raw_file(&path, &expectation).expect("complete session verifies");
         assert_eq!(summary.verdict, "FINAL_RAW_FILE_PASS");
         assert_eq!(summary.rows, expectation.expected_rows());
-        assert_eq!(summary.warmup_rows, 3 * 5 * 2);
-        assert_eq!(summary.measured_rows, 3 * 5 * 2);
+        assert_eq!(summary.warmup_rows, 3 * 6 * 2);
+        assert_eq!(summary.measured_rows, 3 * 6 * 2);
         assert_eq!(summary.attribution_rows, 0);
         assert_eq!(summary.unique_observation_ids, summary.rows);
         let _ = std::fs::remove_file(&path);
@@ -766,7 +766,7 @@ mod tests {
         let expectation = expectation(Surface::EditWrite, RawLane::Attribution);
         let path = write_rows("attribution", &complete_rows(&expectation));
         let summary = verify_raw_file(&path, &expectation).expect("complete lane verifies");
-        assert_eq!(summary.attribution_rows, 3 * 5);
+        assert_eq!(summary.attribution_rows, 3 * 6);
         assert_eq!(summary.session_ordinal, None);
         let _ = std::fs::remove_file(&path);
     }
@@ -859,7 +859,7 @@ mod tests {
                 row.result_row_v2.schema_version = 1
             }),
             ("reordered", |row: &mut CampaignObservationV1| {
-                row.horse_order_ordinal = (row.horse_order_ordinal + 1) % 5
+                row.horse_order_ordinal = (row.horse_order_ordinal + 1) % 6
             }),
         ] {
             let expectation =

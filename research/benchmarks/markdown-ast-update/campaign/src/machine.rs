@@ -200,7 +200,7 @@ pub fn select_primary_cpu() -> Result<(u32, u32, String), String> {
 
 /// Capture the CURRENT host as a machine manifest (task §24). Used once,
 /// on the actual primary benchmark machine, to write
-/// `results/manifests/primary-machine-v1.toml`.
+/// `results/manifests/six-horse-machine-v1.toml`.
 pub fn capture_machine(
     machine_id: &str,
     benchmark_root: &std::path::Path,

@@ -20,9 +20,9 @@ use crate::{sha256_file, CAMPAIGN_RECEIPT_SCHEMA};
 /// toolchain: binding only `Cargo.lock` would let a post-freeze profile
 /// edit (opt-level/lto/codegen-units) pass unnoticed.
 pub const BOUND_ARTIFACTS: [&str; 14] = [
-    "results/manifests/primary-performance-campaign-v1.toml",
-    "results/manifests/primary-machine-v1.toml",
-    "results/manifests/primary-schedule-v1.jsonl",
+    "results/manifests/six-horse-performance-campaign-v1.toml",
+    "results/manifests/six-horse-machine-v1.toml",
+    "results/manifests/six-horse-schedule-v1.jsonl",
     "protocol/campaign-observation-schema-v1.json",
     "workloads/payloads/freeze-receipt-v1.json",
     "workloads/payloads/full-read-manifest-v1.jsonl",
@@ -94,7 +94,7 @@ pub fn build_spec_binding(
         session_count: manifest.sessions.count,
         warmup_iterations: manifest.sessions.warmup_iterations,
         measured_iterations: manifest.sessions.measured_iterations,
-        campaign_seed: manifest.seed.value,
+        campaign_seed: crate::manifest::parse_seed_value(&manifest.seed.value)?,
         campaign_seed_algorithm: crate::identity::CAMPAIGN_SEED_ALGORITHM_ID.to_string(),
         case_order_algorithm: markit_mdbench_runner::SHUFFLE_ALGORITHM_ID.to_string(),
         horse_order_policy: crate::schedule::HORSE_ORDER_POLICY_ID.to_string(),
@@ -173,7 +173,7 @@ pub fn generate_receipt(benchmark_root: &std::path::Path) -> Result<CampaignRece
     Ok(CampaignReceipt {
         schema: CAMPAIGN_RECEIPT_SCHEMA.to_string(),
         campaign_spec_id: spec_id,
-        campaign_seed: manifest.seed.value,
+        campaign_seed: crate::manifest::parse_seed_value(&manifest.seed.value)?,
         produced_before_primary_timing: true,
         artifacts,
     })
@@ -282,7 +282,7 @@ pub fn regenerate_schedule(
     let rows = crate::schedule::generate_schedule(
         &spec_id,
         manifest.sessions.count,
-        manifest.seed.value,
+        crate::manifest::parse_seed_value(&manifest.seed.value)?,
         &inputs,
     )?;
     crate::schedule::schedule_to_jsonl(&rows)
@@ -313,13 +313,11 @@ pub fn verify_schedule_on_disk(benchmark_root: &std::path::Path) -> Result<(), V
     };
     let spec_id = crate::identity::campaign_spec_id(&binding);
     let inputs = crate::workload::schedule_inputs(&workload);
-    crate::schedule::verify_schedule(
-        &rows,
-        &spec_id,
-        manifest.sessions.count,
-        manifest.seed.value,
-        &inputs,
-    )
+    let seed = match crate::manifest::parse_seed_value(&manifest.seed.value) {
+        Ok(seed) => seed,
+        Err(error) => return Err(vec![error]),
+    };
+    crate::schedule::verify_schedule(&rows, &spec_id, manifest.sessions.count, seed, &inputs)
 }
 
 /// The canonical path of the campaign manifest (re-exported for the

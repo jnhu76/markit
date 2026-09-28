@@ -4,10 +4,12 @@
 //! timer or clock type from this crate. Lane records (T/M/A) are the
 //! stable measurement vocabulary shared with the result schema.
 
+pub mod alloc;
 pub mod clock;
 pub mod lanes;
 pub mod timer;
 
+pub use alloc::{AllocReporter, CountingAllocator};
 pub use clock::{Clock, InstantClock, ManualClock};
 pub use lanes::{
     CaseMemoryProbe, Lane, LaneMeasurement, ManualMemoryReporter, MemoryRecord, MemoryReporter,

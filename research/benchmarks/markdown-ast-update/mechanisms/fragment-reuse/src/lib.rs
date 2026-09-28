@@ -429,6 +429,9 @@ impl Mechanism for FragmentReuseMechanism {
             old.len(),
             definition_changing,
         );
+        // Attribution-only counting gate: set post-construction (see
+        // common::WorkSink::attribution_active).
+        cursor.count = cx.sink.attribution_active();
         let (rp, slot_count, takes, consultations, reused, discovery) = {
             let mut hook: Box<SpliceHook<'_>> =
                 Box::new(|pos, key, starts_block| cursor.consult(pos, key, starts_block));
@@ -723,6 +726,11 @@ struct Cursor<'a> {
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
+    /// Attribution-only counting gate: the `reused` total and the
+    /// rematerialization counts feed only WorkSink counters, so the
+    /// counting walks run in recording lanes only. Counter VALUES are
+    /// identical whenever a recording sink is present.
+    count: bool,
     discovery: DiscoverySummary,
     /// Persistent forward state (the FragmentCursor analogue):
     /// the fragment index advances monotonically as the parse position
@@ -765,6 +773,7 @@ impl<'a> Cursor<'a> {
             takes: Vec::new(),
             consultations: 0,
             reused: 0,
+            count: false,
             discovery: DiscoverySummary::default(),
             frag_idx: 0,
             path: vec![LevelCursor::top(&tree.slots)],
@@ -862,7 +871,9 @@ impl<'a> Cursor<'a> {
         }
         self.bump_max(visits_before);
         let new_end = pos + (end - p_old);
-        self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        if self.count {
+            self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        }
         self.takes.push(TakeRun {
             pos,
             old_start: p_old,
@@ -929,8 +940,8 @@ impl<'a> Cursor<'a> {
             // on a prefixed line (quote/list content) has its LINE
             // start before its span start — the consult sits on the
             // line, and the prefix bytes belong to the ancestor's span.
-            let line_contains = line_start.is_some_and(|ls| ls < p_old)
-                && cstart + cnode.size > p_old;
+            let line_contains =
+                line_start.is_some_and(|ls| ls < p_old) && cstart + cnode.size > p_old;
             if line_contains {
                 // The entry's span contains p_old (its line starts
                 // earlier): descend into its children.
@@ -1273,7 +1284,9 @@ fn rematerialize<W: WorkSink>(
                 .map(|(a, b)| (base + a, base + b))
                 .collect();
             let inline = rebased(scan_inlines_abs(post, &segments, table, sink), base);
-            rebuilt += count_forest(&inline);
+            if sink.attribution_active() {
+                rebuilt += count_forest(&inline);
+            }
             FPayload::Para {
                 inline,
                 segments_rel: segments_rel.clone(),
@@ -1287,7 +1300,9 @@ fn rematerialize<W: WorkSink>(
                 scan_inlines_abs(post, std::slice::from_ref(&content), table, sink),
                 base,
             );
-            rebuilt += count_forest(&inline);
+            if sink.attribution_active() {
+                rebuilt += count_forest(&inline);
+            }
             FPayload::Heading {
                 level: *level,
                 content_rel: *content_rel,
@@ -1314,7 +1329,9 @@ fn rematerialize<W: WorkSink>(
             kept += sub.kept;
             children.push((*rel, sub.node));
         } else {
-            kept += count_node(child);
+            if sink.attribution_active() {
+                kept += count_node(child);
+            }
             children.push((*rel, child.clone()));
         }
     }
@@ -1495,7 +1512,9 @@ fn assemble_level<W: WorkSink>(
                     {
                         let rebuilt = rematerialize(node, post, new_start, table, sink);
                         built.nodes += rebuilt.rebuilt;
-                        built.rematerialized_members += count_node(node);
+                        if sink.attribution_active() {
+                            built.rematerialized_members += count_node(node);
+                        }
                         built.rematerialized_kept += rebuilt.kept;
                         out.push((new_start, rebuilt.node));
                     } else {
