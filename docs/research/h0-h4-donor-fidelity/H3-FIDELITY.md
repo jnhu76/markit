@@ -175,8 +175,11 @@ What was repaired (maps to R3's P1-1 / P1-2):
   green by the reviewer.
 
 Corrective evidence: H3 32 + full regression sweep (fragment-reuse 34,
-shared-grammar 45, block-local 32, restart-convergence 36, horse-a 232)
-— 0 failures; every probe == H0; no timing collected.
+shared-grammar 45, block-local 32, restart-convergence 36, horse-a 241
+[errata 2026-09-28, R6: the verbatim RH3 record says 232, but the suite
+at the merged master measures 241 — horse-a was untouched by #83;
+RH2's count is the correct one]) — 0 failures; every probe == H0; no
+timing collected.
 
 Residual findings recorded by RH3 (non-blocking):
 

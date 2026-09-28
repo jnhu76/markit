@@ -245,7 +245,10 @@ fn h2_interruptor_boundary_take_witness() {
 #[test]
 fn h2_discovery_shape_forward_cursor_witness() {
     // Many top-level blocks + a container-heavy damaged region: a
-    // refusal-heavy regime for the old per-consult full-table scan.
+    // consult-heavy regime for the old per-consult full-table scan
+    // (comment errata 2026-09-28, R6: this scenario is take-heavy, not
+    // refusal-heavy; the O(B²)-discriminating refusal-heavy evidence is
+    // the definition-changing regime in the Gate-A re-review records).
     let mut blocks = Vec::new();
     for i in 0..200 {
         blocks.push(format!("block {i:03} plain text\n\n"));

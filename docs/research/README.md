@@ -157,9 +157,14 @@ repaired as mechanism repairs (no claim-boundary downgrade) and
 re-reviewed by fresh-context reviewers — H2 (#79, PR #82, merge a3a551f,
 RH2) → **FAITHFUL_MECHANISM_MODEL**; H3 (#80, PR #83, merge a8327fb,
 RH3) → **FAITHFUL_WITH_DECLARED_SIMPLIFICATION** (P0=0, P1=0 both).
-The initial FAIL verdicts are preserved; the frozen GATE A = FAIL /
-BLOCKED stands until the fresh synthesis re-evaluation (R6) of the
-merged master. Corrective re-review records:
+The fresh synthesis re-evaluation (R6, from merged master 252bd6c:
+[reviews/gate-a-r6-synthesis-2026-09-28.md](reviews/gate-a-r6-synthesis-2026-09-28.md))
+held both adversarial checks, confirmed record integrity and governance,
+and returned five horses with P0=0 P1=0 and no MATERIAL_DEVIATION →
+**GATE A = PASS (as later re-evaluation; the initial FAIL verdict is
+preserved above)**. GATE_B_AUTHORIZED = YES, but Gate B has NOT been
+started — the closure record stops before any Gate B work. Corrective
+re-review records:
 [reviews/gate-a-rh2-h2-recheck-2026-09-28.md](reviews/gate-a-rh2-h2-recheck-2026-09-28.md),
 [reviews/gate-a-rh3-h3-recheck-2026-09-28.md](reviews/gate-a-rh3-h3-recheck-2026-09-28.md).
 
