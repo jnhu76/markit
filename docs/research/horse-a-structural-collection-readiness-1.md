@@ -372,6 +372,15 @@ deferred retirement             retirement stays inside commit (no semantic
                                 completion after READY)
 ```
 
+Known non-blocking build observation (P3, recorded not repaired): a plain
+`cargo build --release -p markit-mdbench-horse-a` (no test cfg) emits one
+`unused_imports` warning for `use crate::validate;` in `full_build.rs`,
+because that validator call is intentionally `#[cfg(debug_assertions)]`-gated
+("validators are test/debug gates only"). `cargo clippy --all-targets --
+-D warnings` is clean and no test, counter, oracle or mechanism behaviour
+differs. It is left unrepaired because touching the crate would move the
+reviewed baseline; a fix belongs to a separately reviewed change.
+
 Conformance evidence on the frozen master: `cargo test -p
 markit-mdbench-horse-a` (debug: 142 lib + 78 integration tests PASS; release:
 141 lib + 78 integration tests PASS), including `i5_tests::frozen60` (C1–C5
@@ -386,15 +395,37 @@ debug 3/3 and release 3/3). The one-test debug/release difference is the
 collection relevance:
 
 ```text
-OBSERVED
-  campaign/src/preflight.rs tests fail because materialized corpus files are
-  absent (e.g. workloads/sources/cpp-core-guidelines/files/CppCoreGuidelines.md);
-  the repo's design is that candidate-stage source bytes are NOT tracked in
-  Git (workloads/.gitignore) and are deterministically reconstructed with
-  `python3 tools/acquire.py materialize` and verified against the hash-pinned
-  SOURCE.json manifests.
-  A stale workloads/pilots/semantic-pilot-results-v1.json is likewise
-  unrelated.
+OBSERVED (full workspace run, --no-fail-fast, on the reviewed master)
+
+  exactly three test binaries fail, all outside the Horse-A crate:
+
+  1. markit-mdbench-campaign --lib
+     preflight::tests::real_scopes_enumerate_the_frozen_campaign_cardinalities
+     preflight::tests::timing_scope_rejects_a_session_outside_the_frozen_count
+     root cause: materialized corpus missing, e.g.
+     workloads/sources/cpp-core-guidelines/files/CppCoreGuidelines.md
+
+  2. markit-mdbench-campaign --test campaign_freeze  (7 tests)
+     frozen_workload_consumes_exactly_22_and_362,
+     campaign_manifest_verifies_against_live_state,
+     schedule_is_deterministic_and_verifies,
+     campaign_receipt_binds_every_artifact,
+     preflight_passes_and_enumerates_unique_observation_ids,
+     attribution_counters_are_deterministic_on_representative_cases,
+     non_research_fake_clock_smoke_end_to_end
+     root cause: same corpus materialization (the frozen G0-strict
+     clean_state/edit_write workload loads source bytes)
+
+  3. markit-mdbench-semantics --test contracts
+     committed_pilot_artifacts_match_the_driver
+     root cause: stale workloads/pilots/semantic-pilot-results-v1.json
+     ("is stale; re-run ... mdbench-semantic-pilot --write")
+
+  These are a documented storage state, not corruption: candidate-stage
+  source bytes are deliberately NOT tracked in Git (workloads/.gitignore) and
+  are deterministically reconstructed with `python3 tools/acquire.py
+  materialize` and verified against the hash-pinned SOURCE.json manifests.
+  Every Horse-A test target passes in the same run (debug and release).
 
 RELEVANCE TO #60
   COLLECTION_IRRELEVANT.
@@ -412,6 +443,12 @@ BINDING CONDITION
   that routes through the campaign preflight or requires the real-project
   corpus is out of contract and must not be used for this study.
 ```
+
+Note: #62's closure recorded the same three environment-only failures as a
+non-blocking P2. This record does not inherit that classification by
+inheritance: it is re-derived here from the actual failing targets and their
+root causes against the #60 primary-cell path, and the binding condition
+above is what keeps it `COLLECTION_IRRELEVANT`.
 
 ## 15. Fresh-clone execution path
 
