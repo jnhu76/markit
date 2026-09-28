@@ -5,12 +5,18 @@
 //!
 //! ```text
 //! stage()  — fallible; the old READY state stays owned by the caller,
-//!            coherent and borrowable; every fallible phase completes here
-//! prepare() — the last pre-frontier preparation: the old READY document
-//!            is consumed BY OWNERSHIP into the prepared state, the fixed
-//!            scalar scale diagnostics are frozen, and the bounded
-//!            explicit commit workspace is reserved (the one remaining
-//!            pre-frontier refusal is the checked capacity derivation)
+//!            coherent and borrowable; every fallible phase completes
+//!            here, INCLUDING the bounded commit workspace's logical
+//!            bound derivation and its fallible try_reserve_exact
+//!            reservation — no operation that can return an ordinary
+//!            pre-frontier error may require irrevocably consuming the
+//!            old READY state first (#59 §9.1 resource table)
+//! prepare() — consume the old READY document BY OWNERSHIP into the
+//!             prepared state: a pure ownership move of already-complete
+//!             parts (record, plan, reserved workspace). It is
+//!             infallible BY TYPE — there is no fallible work left to
+//!             do, so there is no branch that could return to the
+//!             caller with the old state consumed
 //! commit() — CROSS THE FRONTIER: infallible, no Result, no return to
 //!            staging, no allocation; only structural ownership moves,
 //!            split/join/relink on the pre-staged stacks, rotations,
@@ -33,7 +39,7 @@
 
 use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
 use crate::structural::{ForbiddenKind, HorseAStructuralSink};
-use crate::update::{UpdateError, UpdateRecord};
+use crate::update::UpdateRecord;
 use crate::workspace::CommitWorkspace;
 
 /// Which route the prepared commit will cross the frontier with. Both
@@ -43,9 +49,14 @@ use crate::workspace::CommitWorkspace;
 pub(crate) enum CommitPlan {
     /// The frozen facts-preserved route (spec §8 10a): the old RefTable is
     /// REUSED (intent marker — never cloned), the fresh replacement Owners
-    /// were materialized under it during staging.
+    /// were materialized under it during staging. `fresh_height` is
+    /// transient construction metadata carried out of the bulk-build seam
+    /// — the staging workspace sizing consumed it; it is never re-read
+    /// from the persistent root (which would be an unaccounted aggregate
+    /// read).
     Local {
         fresh: crate::state::OwnerSeq,
+        fresh_height: u32,
         post_id: markit_mdbench_common::SourceId,
         post_len: usize,
     },
@@ -54,103 +65,42 @@ pub(crate) enum CommitPlan {
     Full(ReadyDocument),
 }
 
-/// The pre-frontier staging state: every fallible phase has completed and
-/// both candidate plans are fully materialized, while the old READY state
-/// is still owned by the caller and remains coherent and borrowable.
+/// The pre-frontier staging state: every fallible phase has completed,
+/// both candidate plans are fully materialized, and the bounded explicit
+/// commit workspace is already reserved — while the old READY state is
+/// still owned by the caller and remains coherent and borrowable.
 /// Staging holds no borrow of the old document and no duplicate of its
 /// RefTable.
 #[derive(Debug)]
 pub(crate) struct UpdateStaging {
     pub(crate) record: UpdateRecord,
     pub(crate) plan: CommitPlan,
+    /// The pre-staged bounded explicit commit workspace (#59 §9.1):
+    /// logical limits derived and capacity fallibly reserved during
+    /// staging, so formation below is a pure move.
+    pub(crate) workspace: CommitWorkspace,
 }
 
 impl UpdateStaging {
     /// Form the [`PreparedCommit`]: consume the old READY document by
-    /// ownership, freeze the remaining fixed scalar preparation, and
-    /// reserve the bounded explicit commit workspace (#59 §9.1;
-    /// ACCOUNTING-CORRECTION-1 §9 resolution A).
+    /// ownership.
     ///
-    /// This is the last pre-frontier work. It performs only O(1)
-    /// root-aggregate reads on the old sequence and the prepared candidate
-    /// (charged to the structural ledger), computes the scale
-    /// diagnostics, and reserves every variable-size resource the
-    /// post-frontier structural operators need — after the frontier there
-    /// is no allocation, no `reserve`, and no fallible branch. The one
-    /// refusal is the workspace capacity derivation itself (checked
-    /// arithmetic over the old/fresh heights): it can only fail here,
-    /// BEFORE the frontier, through the existing staging error authority.
-    pub(crate) fn prepare(
-        self,
-        old: ReadyDocument,
-        sink: &mut dyn HorseAStructuralSink,
-    ) -> Result<PreparedCommit, UpdateError> {
-        // Old-state scale/height diagnostics: O(1) root aggregate reads
-        // (charged where they occur). The candidate's record count is read
-        // from the prepared plan; its height is only known once the new
-        // root is installed past the frontier, so `H_new` is recorded at
-        // the end of `commit`.
-        let m_old = old.owners.records();
-        let h_old = old.owners.height();
-        if old.owners.root.is_some() {
-            sink.aggregate_reads(2);
-        }
-        sink.record_scale_old(m_old as u64, h_old as u64);
-
-        let workspace = match &self.plan {
-            CommitPlan::Local {
-                fresh,
-                post_len: _,
-                post_id: _,
-            } => {
-                let m_new = m_old - old_replaced_records(&self.record) + fresh.records();
-                if fresh.root.is_some() {
-                    sink.aggregate_reads(1);
-                }
-                // The local splice's bounded explicit stacks, reserved
-                // here (capacity derivation over h_old/h_fresh — the
-                // possible H + 1 intermediate join height included; see
-                // `workspace`). Checked arithmetic: an overflow refuses
-                // BEFORE the frontier.
-                let h_fresh = fresh.height();
-                let ws = CommitWorkspace::prepare(h_old, h_fresh).ok_or_else(|| {
-                    UpdateError::InconsistentObservation {
-                        detail: format!(
-                            "the commit workspace capacity derivation overflowed \
-                             (h_old = {h_old}, h_fresh = {h_fresh})"
-                        ),
-                    }
-                })?;
-                sink.record_scale_new(m_new as u64);
-                ws
-            }
-            CommitPlan::Full(fresh) => {
-                // The full route performs no post-frontier structural
-                // operator work (no splice — retirement is frozen
-                // recursion Option B and installs nothing), so no
-                // workspace is reserved for it.
-                let m_new = fresh.owners.records();
-                if fresh.owners.root.is_some() {
-                    sink.aggregate_reads(1);
-                }
-                sink.record_scale_new(m_new as u64);
-                CommitWorkspace::empty()
-            }
-        };
-
-        Ok(PreparedCommit {
+    /// Infallible BY TYPE and by construction: every fallible pre-frontier
+    /// operation — all staging phases, the workspace logical-bound
+    /// derivation, the scale diagnostics, and the workspace's fallible
+    /// `try_reserve_exact` reservation — already completed inside
+    /// `stage()`, while the caller still owned the old READY document.
+    /// This function performs no work beyond moving already-complete
+    /// parts; there is no branch that can fail, and therefore no path
+    /// that could consume the old state and then return an error.
+    pub(crate) fn prepare(self, old: ReadyDocument) -> PreparedCommit {
+        PreparedCommit {
             old,
             record: self.record,
             plan: self.plan,
-            workspace,
-        })
+            workspace: self.workspace,
+        }
     }
-}
-
-/// The old replacement interval's Owner-record count (the records this
-/// commit detaches on the local route).
-fn old_replaced_records(record: &UpdateRecord) -> usize {
-    record.intervals.old_ranks.end - record.intervals.old_ranks.start
 }
 
 /// The frontier-crossing state (#59 §6.1): owns the old READY document by
@@ -173,7 +123,7 @@ impl PreparedCommit {
     ///
     /// Infallible by construction: no `Result`, no fallible branch, no
     /// return to staging, and no allocation (the bounded explicit stacks
-    /// were reserved before the frontier and a within-capacity push never
+    /// were reserved before the frontier and a within-limit push never
     /// allocates). The only failure mode is a process-level panic on a
     /// violated internal invariant, which is an implementation bug, not
     /// a mechanism branch.
@@ -187,6 +137,7 @@ impl PreparedCommit {
         match plan {
             CommitPlan::Local {
                 fresh,
+                fresh_height: _,
                 post_id,
                 post_len,
             } => {

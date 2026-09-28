@@ -38,14 +38,15 @@ fn owner(len: usize, blank_line: Option<Range<usize>>) -> Owner {
 /// given certificate blank-line intervals, all near the end of their own
 /// coverage so the synthetic supports are distinct in absolute space.
 fn sequence(certs: [Option<Range<usize>>; 3]) -> OwnerSeq {
-    OwnerSeq::bulk_build(
+    let (seq, _) = OwnerSeq::bulk_build(
         vec![
             owner(20, certs[0].clone()),
             owner(20, certs[1].clone()),
             owner(20, certs[2].clone()),
         ],
         &mut crate::structural::NoopHorseAStructuralSink,
-    )
+    );
+    seq
 }
 
 /// The default fixture: every boundary certified, support at relative

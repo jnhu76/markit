@@ -27,11 +27,14 @@
 //! `facts differ OR preservation unknown`.
 //!
 //! Staging (`stage`) is fallible and leaves the old READY state untouched
-//! and coherent, producing an [`prepared::UpdateStaging`]. The caller then
-//! forms a [`prepared::PreparedCommit`] (consuming the old state by
-//! ownership) and crosses the formal commit frontier — module `prepared`
-//! owns that boundary and everything after it; nothing here counts
-//! anything beyond the frozen geometry record.
+//! and coherent, producing an [`prepared::UpdateStaging`] that already
+//! owns the reserved commit workspace. The caller then forms a
+//! [`prepared::PreparedCommit`] (consuming the old state by ownership — a
+//! pure move; every fallible work, including the workspace's fallible
+//! `try_reserve_exact` reservation, completed during staging while the
+//! caller still owned the old state) and crosses the formal commit
+//! frontier — module `prepared` owns that boundary and everything after
+//! it; nothing here counts anything beyond the frozen geometry record.
 
 use std::ops::Range;
 
@@ -51,6 +54,7 @@ use crate::state::{InterpretationId, OwnerSeq, ReadyDocument};
 use crate::structural::{
     ForbiddenKind, FullBuildReason, HorseAStructuralSink, NoopHorseAStructuralSink,
 };
+use crate::workspace::{CommitWorkspace, WorkspaceError};
 
 /// Why an update refused to return a state. Every variant is a
 /// pre-frontier refusal: staging never mutates or partially consumes the
@@ -67,6 +71,13 @@ pub enum UpdateError {
     /// Parser/structural evidence contradicts the frozen contracts. An
     /// implementation/invariant failure — never an algorithmic fallback.
     InconsistentObservation { detail: String },
+    /// An ordinary pre-frontier resource the commit requires could not be
+    /// reserved — e.g. the bounded commit workspace's fallible
+    /// `try_reserve_exact` reservation was refused by the allocator
+    /// (#59 §9.1 resource table: resource/allocation failure before
+    /// `PreparedCommit` is a pre-frontier error; the old READY state was
+    /// never consumed and remains usable). Never a fallback trigger.
+    ResourceRefused { detail: String },
     /// The same-target full builder refused to produce a state.
     FullBuild(BuildError),
 }
@@ -79,6 +90,9 @@ impl std::fmt::Display for UpdateError {
             }
             UpdateError::InconsistentObservation { detail } => {
                 write!(f, "inconsistent parser observation: {detail}")
+            }
+            UpdateError::ResourceRefused { detail } => {
+                write!(f, "pre-frontier resource refused: {detail}")
             }
             UpdateError::FullBuild(e) => write!(f, "same-target full build failed: {e}"),
         }
@@ -474,7 +488,11 @@ fn complete_intervals(
 /// first, then the complete ordered facts on both sides, then the comparison,
 /// then the environment choice — and only then is any reference-sensitive
 /// payload materialized (spec §9: no payload may be built under an
-/// environment the facts decision has not yet fixed).
+/// environment the facts decision has not yet fixed). Phase 11 last:
+/// the bounded commit workspace's logical limits are derived and its
+/// capacity FALLIBLY reserved (`try_reserve_exact`) while `old` is still
+/// only borrowed — a resource refusal is an ordinary pre-frontier error
+/// and the caller's old READY state survives it.
 ///
 /// The structural sink rides the whole staging pipeline so the frozen
 /// geometry/route record and every later charge land in one ledger; the
@@ -551,8 +569,10 @@ pub(crate) fn stage<W: WorkSink>(
         // 10a — retain the old RefTable and eager-materialize the fresh
         // replacement Owners under it. No document-wide definition
         // recollection, no per-Owner rewrite of retained payload, no patch
-        // of the table.
-        let fresh = build_replacement_owners(
+        // of the table. The build returns the fresh tree AND its height as
+        // transient construction metadata (carried out of the bulk-build
+        // seam — never re-read from the persistent root).
+        let (fresh, fresh_height) = build_replacement_owners(
             post_source.as_bytes(),
             forward.region,
             &old.refs,
@@ -563,6 +583,7 @@ pub(crate) fn stage<W: WorkSink>(
             UpdatePath::Local,
             CommitPlan::Local {
                 fresh,
+                fresh_height,
                 post_id: post_source.id(),
                 post_len: forward.new_len,
             },
@@ -581,17 +602,95 @@ pub(crate) fn stage<W: WorkSink>(
     };
     structural.record_full_build(selected, reason);
 
+    let record = UpdateRecord {
+        damage_base,
+        restart,
+        convergence: forward.accepted,
+        intervals,
+        facts_equal,
+        path,
+    };
+
+    // Phase 11 — prepare every ordinary fallible resource required by
+    // commit (spec §10 step 11, BEFORE step 12 forms PreparedCommit):
+    // the fixed scalar scale diagnostics freeze and the local splice's
+    // bounded explicit workspace is derived and FALLIBLY RESERVED, all
+    // while `old` is still borrowed from the caller. A refusal here is an
+    // ordinary pre-frontier error (#59 §9.1 resource table) and the
+    // caller's old READY state survives it untouched — no operation that
+    // can return an ordinary error may require consuming `old` first.
+    //
+    // Old-state scale/height diagnostics: O(1) root aggregate reads
+    // (charged where they occur). The candidate's record count is read
+    // from the prepared plan; its height is only known once the new root
+    // is installed past the frontier, so `H_new` is recorded at the end
+    // of `commit`.
+    let m_old = old.owners.records();
+    let h_old = old.owners.height();
+    if old.owners.root.is_some() {
+        structural.aggregate_reads(2);
+    }
+    structural.record_scale_old(m_old as u64, h_old as u64);
+
+    let workspace = match &plan {
+        CommitPlan::Local {
+            fresh,
+            fresh_height,
+            post_id: _,
+            post_len: _,
+        } => {
+            let m_new = m_old - old_replaced_records(&record) + fresh.records();
+            if fresh.root.is_some() {
+                structural.aggregate_reads(1);
+            }
+            structural.record_scale_new(m_new as u64);
+            // The local splice's bounded explicit stacks: logical limits
+            // derived over h_old/h_fresh (the possible H + 1 intermediate
+            // join height included; see `workspace`) and the capacity
+            // fallibly reserved via try_reserve_exact. `fresh_height` is
+            // the already-derived construction scalar — the persistent
+            // fresh root is NOT re-read for it. Both refusal modes return
+            // BEFORE the frontier, with the old READY state still owned
+            // by the caller.
+            CommitWorkspace::prepare(h_old, *fresh_height).map_err(|e| match e {
+                WorkspaceError::CapacityOverflow => UpdateError::InconsistentObservation {
+                    detail: format!(
+                        "the commit workspace capacity derivation overflowed \
+                         (h_old = {h_old}, h_fresh = {fresh_height})"
+                    ),
+                },
+                WorkspaceError::ReservationRefused => UpdateError::ResourceRefused {
+                    detail: "the bounded commit workspace reservation was refused by the \
+                             allocator (try_reserve_exact)"
+                        .to_string(),
+                },
+            })?
+        }
+        CommitPlan::Full(fresh) => {
+            // The full route performs no post-frontier structural
+            // operator work (no splice — retirement is frozen recursion
+            // Option B and installs nothing), so no workspace is reserved
+            // for it.
+            let m_new = fresh.owners.records();
+            if fresh.owners.root.is_some() {
+                structural.aggregate_reads(1);
+            }
+            structural.record_scale_new(m_new as u64);
+            CommitWorkspace::empty()
+        }
+    };
+
     Ok(UpdateStaging {
-        record: UpdateRecord {
-            damage_base,
-            restart,
-            convergence: forward.accepted,
-            intervals,
-            facts_equal,
-            path,
-        },
+        record,
         plan,
+        workspace,
     })
+}
+
+/// The old replacement interval's Owner-record count (the records this
+/// commit detaches on the local route).
+fn old_replaced_records(record: &UpdateRecord) -> usize {
+    record.intervals.old_ranks.end - record.intervals.old_ranks.start
 }
 
 /// The frozen update entry point: stage, then cross the commit boundary.
@@ -648,6 +747,6 @@ pub fn update_with_structural<W: WorkSink>(
     structural: &mut dyn HorseAStructuralSink,
 ) -> Result<ReadyDocument, UpdateError> {
     let staged = stage(&old, old_source, post_source, edit, sink, structural)?;
-    let prepared = staged.prepare(old, structural)?;
+    let prepared = staged.prepare(old);
     Ok(prepared.commit(structural))
 }

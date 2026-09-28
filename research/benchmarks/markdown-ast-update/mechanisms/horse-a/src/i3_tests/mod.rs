@@ -60,7 +60,11 @@ pub fn make(weights: &[usize], certs: &[bool]) -> OwnerSeq {
         .zip(certs)
         .map(|(&w, &c)| owner(w, c))
         .collect();
-    crate::state::OwnerSeq::bulk_build(owners, &mut crate::structural::NoopHorseAStructuralSink)
+    let (seq, _) = crate::state::OwnerSeq::bulk_build(
+        owners,
+        &mut crate::structural::NoopHorseAStructuralSink,
+    );
+    seq
 }
 
 /// Read the current in-order model back through the read-only traversal.

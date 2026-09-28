@@ -245,9 +245,7 @@ fn run_cell(cell: &Cell) {
         &mut recording,
     )
     .expect("the frozen update stages on the local path");
-    let prepared = staged
-        .prepare(old, &mut recording)
-        .expect("the bounded commit workspace prepares");
+    let prepared = staged.prepare(old);
     reset_attempts();
     let next = {
         let _guard = DenyGuard::deny();

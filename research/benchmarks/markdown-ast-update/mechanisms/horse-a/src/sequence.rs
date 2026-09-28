@@ -21,9 +21,7 @@
 use crate::certificate::RestartCertificate;
 use crate::state::{Aggregate, AvlNode, Owner, OwnerSeq};
 use crate::structural::{HorseAStructuralSink, StructuralOp};
-use crate::workspace::{
-    push_bounded, CommitWorkspace, ExtractFrame, JoinFrame, SplitFrame, SplitSide,
-};
+use crate::workspace::{CommitWorkspace, ExtractFrame, JoinFrame, SplitFrame, SplitSide};
 
 /// The visit route of an internal `join_with_pivot`: split-internal joins
 /// charge `split_node_visits`, top-level-join joins charge
@@ -35,13 +33,22 @@ impl OwnerSeq {
     /// (spec §12.5: O(M), one pass — never a repeated O(log M)
     /// insertion loop). Middle-split construction keeps sibling heights
     /// within one, so the AVL balance holds by construction.
-    pub(crate) fn bulk_build(owners: Vec<Owner>, sink: &mut dyn HorseAStructuralSink) -> OwnerSeq {
+    ///
+    /// Returns the built sequence AND its height as transient
+    /// construction metadata: the height each recursion level derives
+    /// from its children while assembling is carried out of the seam
+    /// instead of being re-read from the persistent root afterwards
+    /// (which would be an unaccounted aggregate read). Workspace sizing
+    /// consumes this already-derived scalar.
+    pub(crate) fn bulk_build(
+        owners: Vec<Owner>,
+        sink: &mut dyn HorseAStructuralSink,
+    ) -> (OwnerSeq, u32) {
         // Each slot is taken exactly once; total element movement is O(M).
         let mut slots: Vec<Option<Owner>> = owners.into_iter().map(Some).collect();
         let slot_count = slots.len();
-        OwnerSeq {
-            root: build_range(&mut slots, 0, slot_count, sink),
-        }
+        let (root, height) = build_range(&mut slots, 0, slot_count, sink);
+        (OwnerSeq { root }, height)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -194,13 +201,13 @@ fn build_range(
     lo: usize,
     hi: usize,
     sink: &mut dyn HorseAStructuralSink,
-) -> Option<Box<AvlNode>> {
+) -> (Option<Box<AvlNode>>, u32) {
     if lo >= hi {
-        return None;
+        return (None, 0);
     }
     let mid = lo + (hi - lo) / 2;
-    let left = build_range(slots, lo, mid, sink);
-    let right = build_range(slots, mid + 1, hi, sink);
+    let (left, left_height) = build_range(slots, lo, mid, sink);
+    let (right, right_height) = build_range(slots, mid + 1, hi, sink);
     let owner = slots[mid]
         .take()
         .expect("each Owner slot is taken exactly once");
@@ -209,7 +216,12 @@ fn build_range(
     // fields at construction — no persistent slot is reassigned, so the
     // frozen link-write ledger charges 0 here.
     sink.node_visit(StructuralOp::BulkBuild);
-    Some(Box::new(assemble(left, right, owner, sink)))
+    // The subtree height handed out of the construction recursion — the
+    // same value the recompute seam installs (`1 + max(child heights)`),
+    // derived here from the recursion's own returns so it leaves the seam
+    // as transient construction metadata without a persistent re-read.
+    let height = 1 + left_height.max(right_height);
+    (Some(Box::new(assemble(left, right, owner, sink))), height)
 }
 
 /// The one authoritative local metadata recomputation (spec §12, §15.4;
@@ -511,7 +523,7 @@ pub(crate) fn remove_max(
                 break;
             }
             Some(right) => {
-                push_bounded(&mut ws.extract, ExtractFrame { node });
+                ws.extract.push_bounded(ExtractFrame { node });
                 node = right;
             }
         }
@@ -651,7 +663,7 @@ fn join_right(
         // L1): the unwind charges the pair's single link write — the take
         // itself is not an independent charge (ACCOUNTING-CORRECTION-1
         // §10.6a; links ≤ 7t + 2 ≤ 7δ − 5, spec §12.1.1).
-        push_bounded(&mut ws.join, JoinFrame { node });
+        ws.join.push_bounded(JoinFrame { node });
         node = child;
     }
     // Phase 2 — reverse unwind, terminal frame included: one
@@ -713,7 +725,7 @@ fn join_left(
         // (§15.2 rule L1): the unwind tail's single charge covers both —
         // the take is not an independent link write
         // (ACCOUNTING-CORRECTION-1 §10.6a).
-        push_bounded(&mut ws.join, JoinFrame { node });
+        ws.join.push_bounded(JoinFrame { node });
         node = child;
     }
     // Phase 2 — reverse unwind, terminal frame included.
@@ -848,13 +860,10 @@ fn split_known_total(
             // k lands inside the left subtree: the pivot will join the
             // right output between the abandoned left part and the old
             // right subtree. The child's record count IS `left_records`.
-            push_bounded(
-                &mut ws.split,
-                SplitFrame {
-                    node,
-                    side: SplitSide::Left { right },
-                },
-            );
+            ws.split.push_bounded(SplitFrame {
+                node,
+                side: SplitSide::Left { right },
+            });
             total = left_records;
             node = left.expect("k < left_records implies a left child");
         } else if k == left_records {
@@ -873,13 +882,10 @@ fn split_known_total(
             // k lands inside the right subtree: descend with the adjusted
             // rank; the child's record count is `total - left_records -
             // 1` — this frame already holds it.
-            push_bounded(
-                &mut ws.split,
-                SplitFrame {
-                    node,
-                    side: SplitSide::Right { left },
-                },
-            );
+            ws.split.push_bounded(SplitFrame {
+                node,
+                side: SplitSide::Right { left },
+            });
             k -= left_records + 1;
             total -= left_records + 1;
             node = right.expect("k > left_records + 1 implies a right child");
