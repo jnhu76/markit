@@ -293,6 +293,10 @@ impl Mechanism for BlockLocalMechanism {
         debug_assert_eq!(es, edit.start_byte() as usize);
         debug_assert_eq!(ee, edit.end_byte() as usize);
         declare_gauges_not_applicable(cx);
+        // Attribution-only counting (per-entry node walks, region block
+        // count) runs only in a recording lane; the mechanism work below
+        // is identical in every lane.
+        let count = cx.sink.attribution_active();
         // MAJOR-1 (R5-CORRECTIVE-1): the old state is consumed. All
         // fallback decisions below are made while only borrowing
         // `entries`; the vector is moved out of only after the last
@@ -364,7 +368,8 @@ impl Mechanism for BlockLocalMechanism {
         // definitions are empty, so prefix/suffix contain no Def entries
         // and the new table is exactly the region's table.)
         if !old_defs.is_empty() || !rp.defs.is_empty() {
-            return Ok(self.total_fallback(post, count_blocks(&rp.blocks), cx));
+            let discarded = if count { count_blocks(&rp.blocks) } else { 0 };
+            return Ok(self.total_fallback(post, discarded, cx));
         }
 
         // Soundness guards F2–F6 (left/right edge continuation + fence
@@ -381,7 +386,8 @@ impl Mechanism for BlockLocalMechanism {
             delta,
             cx,
         ) {
-            return Ok(self.total_fallback(post, count_blocks(&rp.blocks), cx));
+            let discarded = if count { count_blocks(&rp.blocks) } else { 0 };
+            return Ok(self.total_fallback(post, discarded, cx));
         }
 
         // MAJOR-1 (R5-CORRECTIVE-1): CONSUME the old tiling. Prefix
@@ -392,16 +398,21 @@ impl Mechanism for BlockLocalMechanism {
         // avoidance but representation rebuild -> `nodes_rebuilt`, never
         // `nodes_reused`. Every fallback decision above is complete
         // before the vector is consumed.
+        //
         let mut moved_prefix: Vec<TopEntry> = Vec::with_capacity(prefix_len);
         let mut suffix_entries: Vec<TopEntry> = Vec::new();
         let mut reused_nodes = 0u64;
         let mut suffix_nodes = 0u64;
         for (i, e) in entries.into_iter().enumerate() {
             if i < prefix_len {
-                reused_nodes += entry_native_nodes(&e);
+                if count {
+                    reused_nodes += entry_native_nodes(&e);
+                }
                 moved_prefix.push(e);
             } else if i >= suffix_from {
-                suffix_nodes += entry_native_nodes(&e);
+                if count {
+                    suffix_nodes += entry_native_nodes(&e);
+                }
                 suffix_entries.push(shift_entry_owned(e, delta));
             }
         }
@@ -430,7 +441,9 @@ impl Mechanism for BlockLocalMechanism {
                 sem,
                 facts: block_facts(sk, post, cx.sink),
             };
-            region_nodes += entry_native_nodes(&entry);
+            if count {
+                region_nodes += entry_native_nodes(&entry);
+            }
             new_entries.push(entry);
             cursor = e;
         }
@@ -442,7 +455,8 @@ impl Mechanism for BlockLocalMechanism {
         }
         let suffix_count = suffix_entries.len() as u64;
         new_entries.extend(suffix_entries);
-        let region_blocks = count_blocks(&rp.blocks);
+        // Region block count feeds only the attribution counters.
+        let region_blocks = if count { count_blocks(&rp.blocks) } else { 0 };
         let region_inserted = (new_entries.len() - prefix_len) as u64 - suffix_count;
 
         cx.sink.add_blocks_reparsed(region_blocks);

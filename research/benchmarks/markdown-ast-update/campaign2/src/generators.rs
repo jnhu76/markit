@@ -111,8 +111,8 @@ impl Axis {
     pub fn point_labels(self) -> &'static [&'static str] {
         match self {
             Axis::N => &[
-                "512B", "1KiB", "2KiB", "4KiB", "8KiB", "16KiB", "32KiB", "64KiB", "128KiB", "1MiB",
-                "16MiB",
+                "512B", "1KiB", "2KiB", "4KiB", "8KiB", "16KiB", "32KiB", "64KiB", "128KiB",
+                "1MiB", "16MiB",
             ],
             Axis::B => &[
                 "128B", "512B", "1KiB", "2KiB", "4KiB", "8KiB", "16KiB", "32KiB", "64KiB",
@@ -128,17 +128,7 @@ impl Axis {
     pub fn points(self) -> &'static [u64] {
         match self {
             Axis::N => &[
-                512,
-                1024,
-                2048,
-                4096,
-                8192,
-                16384,
-                32768,
-                65536,
-                131072,
-                1_048_576,
-                16_777_216,
+                512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 1_048_576, 16_777_216,
             ],
             Axis::B => &[128, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536],
             Axis::D => &[64, 256, 1024, 4096, 16384, 32768, 65536],
@@ -290,10 +280,16 @@ fn finish(
     seed: u64,
     construction: Vec<(String, String)>,
 ) -> Result<ControlledCase, String> {
-    let pre_source = markit_mdbench_common::Source::new(markit_mdbench_common::SourceId(0), pre.clone());
+    let pre_source =
+        markit_mdbench_common::Source::new(markit_mdbench_common::SourceId(0), pre.clone());
     let post = edit
         .apply(&pre_source, markit_mdbench_common::SourceId(1))
-        .map_err(|e| format!("{} {label}: applying the controlled edit: {e:?}", axis.as_str()))?
+        .map_err(|e| {
+            format!(
+                "{} {label}: applying the controlled edit: {e:?}",
+                axis.as_str()
+            )
+        })?
         .as_str()
         .to_string();
     let operation = OperationKind::classify(&edit);
@@ -388,8 +384,10 @@ fn local_text_edit(offset: usize) -> CanonicalEdit {
 /// the middle of that block's line.
 fn case_n(index: u32, n: u64, label: &str) -> Result<ControlledCase, String> {
     let n = n as usize;
-    if n % 128 != 0 || n < 512 {
-        return Err(format!("C-N size {n} is not a positive multiple of 128 (>= 512)"));
+    if !n.is_multiple_of(128) || n < 512 {
+        return Err(format!(
+            "C-N size {n} is not a positive multiple of 128 (>= 512)"
+        ));
     }
     let blocks = n / 128;
     let target = blocks / 2;
@@ -434,7 +432,7 @@ fn case_n(index: u32, n: u64, label: &str) -> Result<ControlledCase, String> {
 fn case_b(index: u32, b: u64, label: &str) -> Result<ControlledCase, String> {
     let b = b as usize;
     let n = FIXED_N_BYTES as usize;
-    if b < 128 || b > n || (n - b) % 128 != 0 {
+    if b < 128 || b > n || !(n - b).is_multiple_of(128) {
         return Err(format!("C-B block size {b} is not usable at N = {n}"));
     }
     let pad_blocks = (n - b) / 128;
@@ -444,7 +442,7 @@ fn case_b(index: u32, b: u64, label: &str) -> Result<ControlledCase, String> {
     for i in 0..before {
         pre.push_str(&para_block(PAD128_TEXT, i));
     }
-    let target_start = pre.len() as usize;
+    let target_start = pre.len();
     pre.push_str(&content_block(b, 0x51));
     for i in 0..after {
         pre.push_str(&para_block(PAD128_TEXT, i));
@@ -514,7 +512,9 @@ fn case_d(index: u32, d: u64, label: &str) -> Result<ControlledCase, String> {
     let n = FIXED_N_BYTES as usize;
     let closet_b_len = C_D_CLOSER_B.len();
     if d <= closet_b_len || d >= n {
-        return Err(format!("C-D span {d} must satisfy {closet_b_len} < D < {n}"));
+        return Err(format!(
+            "C-D span {d} must satisfy {closet_b_len} < D < {n}"
+        ));
     }
     let mut pre = String::with_capacity(n);
     pre.push_str(&para_region(C_D_PREFIX, 0x11));
@@ -555,7 +555,10 @@ fn case_d(index: u32, d: u64, label: &str) -> Result<ControlledCase, String> {
         ("interior_bytes".to_string(), interior.to_string()),
         ("suffix_bytes".to_string(), suffix.to_string()),
         ("opener_backticks".to_string(), "3".to_string()),
-        ("reconvergence_closer_backticks".to_string(), "5".to_string()),
+        (
+            "reconvergence_closer_backticks".to_string(),
+            "5".to_string(),
+        ),
     ];
     finish(
         Axis::D,
@@ -648,12 +651,17 @@ fn case_f(index: u32, f: u64, label: &str) -> Result<ControlledCase, String> {
         ("definition_offset".to_string(), def_start.to_string()),
         ("definition_bytes".to_string(), C_F_DEF_BYTES.to_string()),
         ("definition_label".to_string(), C_F_DEF_LABEL.to_string()),
-        ("definition_environment_bytes".to_string(),
-         (C_F_ENV_PAD + C_F_DEF_BYTES).to_string()),
+        (
+            "definition_environment_bytes".to_string(),
+            (C_F_ENV_PAD + C_F_DEF_BYTES).to_string(),
+        ),
         ("slot_count".to_string(), C_F_SLOT_COUNT.to_string()),
         ("slot_bytes".to_string(), C_F_SLOT_BYTES.to_string()),
         ("occupied_slots".to_string(), f.to_string()),
-        ("use_distance_distribution".to_string(), "fixed-slot-index".to_string()),
+        (
+            "use_distance_distribution".to_string(),
+            "fixed-slot-index".to_string(),
+        ),
         ("tail_bytes".to_string(), tail.to_string()),
     ];
     finish(

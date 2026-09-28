@@ -856,6 +856,7 @@ dependencies = [
  "markit-mdbench-common",
  "markit-mdbench-fragment-reuse",
  "markit-mdbench-full-rebuild",
+ "markit-mdbench-horse-a",
  "markit-mdbench-instrumentation",
  "markit-mdbench-old-tree-subtree-reuse",
  "markit-mdbench-oracle",

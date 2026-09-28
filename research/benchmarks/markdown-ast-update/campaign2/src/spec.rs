@@ -12,7 +12,7 @@ use crate::{CAMPAIGN2_ID, ENVELOPE_SCHEMA_ID, METRIC_QUALIFICATION, STUDY_ID};
 /// Timer boundaries (task §13-§15). Recorded so a reader can see, from
 /// the spec alone, what was inside each timer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
- #[serde(deny_unknown_fields)]
+#[serde(deny_unknown_fields)]
 pub struct TimerBoundaries {
     /// Surface A: source resident -> start -> clean parse -> native state
     /// construction -> seal -> usable -> stop. (Excludes filesystem IO,

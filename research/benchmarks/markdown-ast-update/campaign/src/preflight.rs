@@ -581,9 +581,9 @@ fn check_campaign_totals(
     let cells = manifest.cells_per_session();
     let per_session = manifest.timing_rows_per_session();
     let expected_frozen = crate::schedule::expected_frozen_schedule_rows(manifest.sessions.count);
-    if cells != 1920 || per_session != 76_800 || expected_frozen != 1152 {
+    if cells != 2304 || per_session != 92_160 || expected_frozen != 1152 {
         blockers.push(format!(
-            "cardinality guard: cells/session {cells} != 1920 or rows/session {per_session} != 76800 or schedule rows {expected_frozen} != 1152"
+            "cardinality guard: cells/session {cells} != 2304 or rows/session {per_session} != 92160 or schedule rows {expected_frozen} != 1152"
         ));
     }
     let timing_rows = per_session * manifest.sessions.count as usize;
@@ -666,10 +666,10 @@ mod tests {
 
     #[test]
     fn attribution_lane_passes_the_frozen_shape_without_blockers() {
-        // 22 x 5 = 110 and 362 x 5 = 1810 (task §10).
+        // 22 x 6 = 132 and 362 x 6 = 2,172 (#76 six-horse cardinality).
         for (surface, count, rows) in [
-            (Surface::CleanState, 22, 110),
-            (Surface::EditWrite, 362, 1810),
+            (Surface::CleanState, 22, 132),
+            (Surface::EditWrite, 362, 2_172),
         ] {
             let case_ids = cases(count);
             assert!(attribution_blockers(surface, &case_ids).is_empty());
@@ -708,7 +708,7 @@ mod tests {
             "missing case must block; got {blockers:?}"
         );
         assert!(
-            blockers.iter().any(|b| b.contains("!= expected 110")),
+            blockers.iter().any(|b| b.contains("!= expected 132")),
             "short attribution lane must block on cardinality; got {blockers:?}"
         );
     }
@@ -726,13 +726,13 @@ mod tests {
 
     #[test]
     fn timing_session_passes_the_frozen_shape_and_blocks_duplicates() {
-        // 22 x 5 x (10 + 30) = 4,400 rows per CLEAN_STATE session.
+        // 22 x 6 x (10 + 30) = 5,280 rows per CLEAN_STATE session.
         let case_ids = cases(22);
         assert!(timing_blockers(Surface::CleanState, &case_ids, 0).is_empty());
         let lane = enumerate_timing_session("test-run", Surface::CleanState, &case_ids, 0, 10, 30);
-        assert_eq!(lane.summary.rows, 4_400);
-        assert_eq!(lane.summary.warmup_rows, 1_100);
-        assert_eq!(lane.summary.measured_rows, 3_300);
+        assert_eq!(lane.summary.rows, 5_280);
+        assert_eq!(lane.summary.warmup_rows, 1_320);
+        assert_eq!(lane.summary.measured_rows, 3_960);
         assert_eq!(lane.summary.attribution_rows, 0);
 
         let mut duplicated = case_ids.clone();
@@ -754,8 +754,8 @@ mod tests {
         let mut union = BTreeSet::new();
         let mut total = 0usize;
         for (surface, count, rows) in [
-            (Surface::CleanState, 22, 110),
-            (Surface::EditWrite, 362, 1810),
+            (Surface::CleanState, 22, 132),
+            (Surface::EditWrite, 362, 2_172),
         ] {
             let case_ids = cases(count);
             for session in 0..3u32 {
@@ -772,7 +772,7 @@ mod tests {
             }
             total += rows;
         }
-        assert_eq!(total, 3 * 76_800 + 1_920);
+        assert_eq!(total, 3 * 92_160 + 2_304);
         assert_eq!(union.len(), total);
     }
 
@@ -817,7 +817,7 @@ mod tests {
             all_blockers.is_empty(),
             "All scope blockers: {all_blockers:?}"
         );
-        assert_eq!(all.rows, 230_400 + 1_920);
+        assert_eq!(all.rows, 276_480 + 2_304);
         assert_eq!(all.unique_ids, all.rows);
         assert_eq!(all.duplicate_ids, 0);
         // 3 sessions x 2 surfaces + 2 attribution lanes.
@@ -833,8 +833,8 @@ mod tests {
             &mut attribution_blockers,
         );
         assert!(attribution_blockers.is_empty());
-        assert_eq!(attribution.rows, 1_810);
-        assert_eq!(attribution.lanes[0].attribution_rows, 1_810);
+        assert_eq!(attribution.rows, 2_172);
+        assert_eq!(attribution.lanes[0].attribution_rows, 2_172);
         assert_eq!(attribution.lanes[0].warmup_rows, 0);
         assert_eq!(attribution.lanes[0].measured_rows, 0);
 
@@ -849,8 +849,8 @@ mod tests {
             &mut timing_blockers,
         );
         assert!(timing_blockers.is_empty());
-        assert_eq!(timing.rows, 4_400);
-        assert_eq!(timing.lanes[0].warmup_rows, 1_100);
-        assert_eq!(timing.lanes[0].measured_rows, 3_300);
+        assert_eq!(timing.rows, 5_280);
+        assert_eq!(timing.lanes[0].warmup_rows, 1_320);
+        assert_eq!(timing.lanes[0].measured_rows, 3_960);
     }
 }

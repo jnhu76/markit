@@ -21,7 +21,9 @@ use markit_mdbench_common::{
 };
 use markit_mdbench_instrumentation::{Clock, LaneMeasurement, PhaseGuard, TimingRecord};
 use markit_mdbench_oracle::{validate_normalized, CorrectnessHook, NormalizeV1, ReferenceOracle};
-use markit_mdbench_runner::orchestrate::{build_initial_state, run_full_parse_timed, run_update_timed};
+use markit_mdbench_runner::orchestrate::{
+    build_initial_state, run_full_parse_timed, run_update_timed,
+};
 use markit_mdbench_runner::{assemble_row, failure_row, CaseFacts, PayloadMetaV1, ResultRowV1};
 
 use crate::envelope::{ExecutionIdentity2, StateReprV1};
@@ -76,8 +78,7 @@ impl StateReprExport for markit_mdbench_full_rebuild::H0State {
             fragment_metadata_entries: "UNAVAILABLE".to_string(),
             old_tree_index_entries: "UNAVAILABLE".to_string(),
             retained_source_bytes: self.source_len_bytes.to_string(),
-            provenance: "H0State::node_count + source_len_bytes (post-timer pure read)"
-                .to_string(),
+            provenance: "H0State::node_count + source_len_bytes (post-timer pure read)".to_string(),
         }
     }
 }
@@ -90,9 +91,8 @@ impl StateReprExport for markit_mdbench_block_local::H1State {
             fragment_metadata_entries: self.definitions().len().to_string(),
             old_tree_index_entries: "UNAVAILABLE".to_string(),
             retained_source_bytes: self.source_len_bytes().to_string(),
-            provenance:
-                "H1State::entries/definitions/source_len_bytes (post-timer pure read)"
-                    .to_string(),
+            provenance: "H1State::entries/definitions/source_len_bytes (post-timer pure read)"
+                .to_string(),
         }
     }
 }
@@ -153,7 +153,12 @@ pub struct CaseSpec {
 
 impl CaseSpec {
     /// Construction of a full-parse case (`post_source` is ignored).
-    pub fn full_parse(case_id: CaseId, case_id_hex: String, payload_id: String, source: String) -> Self {
+    pub fn full_parse(
+        case_id: CaseId,
+        case_id_hex: String,
+        payload_id: String,
+        source: String,
+    ) -> Self {
         let len = source.len() as u64;
         Self {
             case_id,
@@ -217,7 +222,9 @@ impl CaseSpec {
 /// The correctness authority for a case: the H0 clean full parse of the
 /// POST-edit source, normalized and validated. Computed ONCE per case,
 /// strictly outside every timer (task §12).
-pub fn reference_for(post_source: &str) -> Result<markit_mdbench_oracle::NormalizedDocument, String> {
+pub fn reference_for(
+    post_source: &str,
+) -> Result<markit_mdbench_oracle::NormalizedDocument, String> {
     let doc = markit_mdbench_full_rebuild::parse_document(post_source.as_bytes());
     validate_normalized(&doc, None).map_err(|e| format!("reference gate: {e:?}"))?;
     Ok(doc)
@@ -358,7 +365,10 @@ where
 /// not disposable correctness).
 pub fn verify_report(report: &markit_mdbench_runner::RunReport) -> Result<(), String> {
     if report.execution_status != ExecutionStatus::Pass {
-        return Err(format!("execution_status != pass: {:?}", report.execution_status));
+        return Err(format!(
+            "execution_status != pass: {:?}",
+            report.execution_status
+        ));
     }
     if report.correctness_status != CorrectnessStatus::Pass {
         return Err(format!(
@@ -371,7 +381,9 @@ pub fn verify_report(report: &markit_mdbench_runner::RunReport) -> Result<(), St
             let unknown = |v: &markit_mdbench_common::Observed<u64>| {
                 *v == markit_mdbench_common::Observed::Unknown
             };
-            if unknown(&timing.prepare_ns) || unknown(&timing.native_ns) || unknown(&timing.total_ns)
+            if unknown(&timing.prepare_ns)
+                || unknown(&timing.native_ns)
+                || unknown(&timing.total_ns)
             {
                 return Err("qualified timing metric UNKNOWN".to_string());
             }
@@ -472,6 +484,7 @@ pub struct LifecycleRunOutcome {
     pub final_state_repr: Option<StateReprV1>,
 }
 
+#[allow(clippy::too_many_arguments)] // frozen historical signature (#31 campaign-2 tooling)
 pub fn lifecycle_run<M, C>(
     mechanism: &M,
     initial_source: &Source,
@@ -514,8 +527,15 @@ where
         let Some(current_state) = state.take() else {
             break;
         };
-        let outcome =
-            run_update_chain_step(mechanism, pre, post, edit, current_state, clock, &hooks[index]);
+        let outcome = run_update_chain_step(
+            mechanism,
+            pre,
+            post,
+            edit,
+            current_state,
+            clock,
+            &hooks[index],
+        );
         let row = assemble_row(
             facts,
             &outcome.report,
@@ -638,11 +658,7 @@ where
     M: Mechanism,
     M::State: ResultChecksum,
 {
-    let (old, post, edit) = (
-        black_box(pre),
-        black_box(post),
-        black_box(edit),
-    );
+    let (old, post, edit) = (black_box(pre), black_box(post), black_box(edit));
     let mut counters = WorkCounters::all_unknown();
     let outcome = {
         let mut sink = CounterSink::new(&mut counters);
@@ -694,7 +710,9 @@ pub struct RunAttributionOutcome<State> {
 
 /// Build the `RunReport` a chained attributed step would have produced,
 /// so it can flow through the SAME `assemble_row` path.
-pub fn attribution_report(report: &RunAttributionOutcome<impl Sized>) -> markit_mdbench_runner::RunReport {
+pub fn attribution_report(
+    report: &RunAttributionOutcome<impl Sized>,
+) -> markit_mdbench_runner::RunReport {
     markit_mdbench_runner::RunReport {
         execution_status: report.execution_status,
         correctness_status: report.correctness_status,

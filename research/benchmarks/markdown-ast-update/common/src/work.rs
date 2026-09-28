@@ -220,6 +220,19 @@ pub enum NotApplicableSlot {
 /// lane) and a discarding sink ([`NoopWorkSink`], timing lane), so the
 /// same mechanism code runs in every lane.
 pub trait WorkSink {
+    /// Whether this sink records counter values. `false` (the default)
+    /// means every observation handed to this sink is discarded.
+    ///
+    /// Measurement-boundary rule (Gate-B parity preflight, #76): a
+    /// mechanism must not perform work whose ONLY product is a counter
+    /// value when this returns `false` — attribution-only traversals
+    /// (counting retained or freshly built subtrees purely to report
+    /// `add_*` values) stay out of the timing lane. Counter facts
+    /// themselves never change: when this returns `true`, the reported
+    /// values are exactly what the mechanism would always have reported.
+    fn attribution_active(&self) -> bool {
+        false
+    }
     /// Cumulative: blocks re-entered by a local reparse. Multiple calls
     /// accumulate; they never overwrite. Discarded attempts accumulate
     /// too: work that happened is reported (MEASUREMENT-CORRECTIVE-1
@@ -366,6 +379,9 @@ impl<'a> CounterSink<'a> {
 }
 
 impl WorkSink for CounterSink<'_> {
+    fn attribution_active(&self) -> bool {
+        true
+    }
     fn add_blocks_reparsed(&mut self, n: u64) {
         accumulate(&mut self.counters.blocks_reparsed, n);
     }

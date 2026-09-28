@@ -134,6 +134,7 @@
 //! cross-edit IDs, persistent locator map, global subtree reuse index,
 //! packed/chunked sequence, COW snapshot, or budget selector exists here.
 
+mod adapter;
 mod candidate;
 pub mod certificate;
 pub mod coverage;
@@ -162,6 +163,7 @@ mod i4_tests;
 #[cfg(test)]
 mod i5_tests;
 
+pub use adapter::{HorseAMechanism, HORSE_A_MECHANISM_ID};
 pub use certificate::{RestartCertificate, RestartSupport};
 pub use full_build::{full_build, BuildError};
 pub use state::{

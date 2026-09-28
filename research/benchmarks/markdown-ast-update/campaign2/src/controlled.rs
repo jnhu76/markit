@@ -12,7 +12,11 @@ pub fn case_spec(case: &ControlledCase) -> CaseSpec {
     CaseSpec::update(
         case.case_id,
         case.case_id_hex.clone(),
-        format!("c2:{}:{}", case.axis.as_str().to_lowercase(), case.axis_label),
+        format!(
+            "c2:{}:{}",
+            case.axis.as_str().to_lowercase(),
+            case.axis_label
+        ),
         case.pre_source.clone(),
         case.post_source.clone(),
         case.edit.clone(),

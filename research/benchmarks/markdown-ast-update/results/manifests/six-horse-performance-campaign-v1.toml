@@ -1,0 +1,199 @@
+# results/manifests/six-horse-performance-campaign-v1.toml
+#
+# MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1 (#76 Gate B performance
+# freeze). The frozen SIX-HORSE performance campaign execution contract:
+# WHAT runs, HOW sessions/iterations run, HOW case and horse order are
+# determined, WHAT machine/profile is allowed, WHAT metrics are
+# qualified, HOW raw rows are identified, HOW failures are handled, HOW
+# quantiles are computed, and HOW cases/traces/files/projects are
+# aggregated.
+#
+# This manifest binds NO measured value. It is produced before any
+# primary timing; the campaign receipt SHA256-binds it. Changing a bound
+# input after the freeze invalidates the CampaignSpecId.
+#
+# Authority: #35 frozen workload (22 G0-strict FULL_READ files, 362
+# G0_PRIMARY EDIT_WRITE cases; never reselected) + #41 frozen measurement
+# substrate + R7 campaign freeze (protocol/R7-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-v1.md)
+# + Gate-A closure (all six mechanisms accepted; #76) + the #76 Gate-B
+# parity preflight (docs/research/h0-h4-a-performance-freeze.md).
+#
+# Subject set change vs R7: SIX horses. H0-H4 are the Gate-A-accepted
+# controlled mechanism models; Horse-A is the Gate-A-complete Markit
+# candidate (docs/research/horse-a-v1-algorithm.md; #62). The horse
+# roster, permutation modulus, and all cardinalities are six-horse
+# values; every other policy is inherited from R7 unchanged.
+
+schema = "primary-performance-campaign-v1"
+campaign_id = "MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1"
+# Gate-A closure merge SHA: the frozen subject-fidelity authority this
+# campaign is rooted at (all six mechanisms accepted at this commit).
+base_authority_sha = "efa392752bfb2604e3d2fdfabaf0ba9825f70b74"
+# Primary trace semantics: unchanged from R7 §3 — each measured
+# EDIT_WRITE iteration starts from the exact frozen pre-edit source and a
+# freshly constructed valid pre-edit horse state. No chained editing, no
+# state reuse. (Chained-history behavior is a separate future surface.)
+trace_semantics = "SINGLE_RESET"
+
+# Aggregation policy: inherited from R7 §aggregation unchanged.
+aggregation = [
+  "CASE_WEIGHTED: descriptive of the frozen case population only; never external replication",
+  "PROJECT_MACRO: session ratios -> geo-mean per CaseId -> geo-mean per trace (BREAK/RESTORE related) -> geo-mean per file -> geo-mean per project -> equal-weight projects; speedups pair per session BEFORE aggregation",
+  "FAMILY_MACRO: equal E1-E6 family weight; SECONDARY only",
+  "ABSOLUTE_LATENCY: retain distributions; no geo-mean-of-nanoseconds throughput; throughput only as specified total work / specified total time",
+  "HIERARCHY: iteration -> session -> case/trace -> file -> project; 362 cases are NOT 362 independent samples",
+  "SESSION_FIRST: per workload / per regime / per horse summaries and session variability precede any global aggregate; three sessions are three process-level realizations, never 90 independent samples",
+]
+
+# Failure policy: inherited from R7 fail-closed rules unchanged.
+# timeout / incorrect-result / unsupported-case / failed-run outcomes are
+# PRESERVED and REPORTED per horse, never silently excluded; a horse with
+# a preserved failure class is described by that class, and an overall
+# result may be INCONCLUSIVE when uncertainty prevents a defensible
+# ranking.
+failure_policy = [
+  "fail-closed: stop cleanly after recording the failure",
+  "no-outlier-deletion: all successful measured observations remain",
+  "PRIMARY_CAMPAIGN_INVALID on any failed qualified sample",
+  "warmup failures abort the session (warmups are not disposable correctness)",
+  "raw files append/create-only; finalized files are checksummed in a run receipt and never overwritten",
+  "substrate change after failure requires a new CampaignSpecId and RunId",
+  "preserve timeout/incorrect/unsupported/failed outcome classes in every summary; INCONCLUSIVE is a legal campaign outcome",
+]
+
+[surfaces.clean_state]
+kind = "clean_state"
+case_count = 22
+horse_count = 6
+
+[surfaces.edit_write]
+kind = "edit_write"
+case_count = 362
+horse_count = 6
+
+[sessions]
+count = 3
+warmup_iterations = 10
+measured_iterations = 30
+# One session = a fresh campaign worker process on the same frozen
+# binary/build/machine/profile with a new deterministic case order and
+# no shared state. CLEAN_STATE and EDIT_WRITE sessions never interleave
+# inside one process.
+separate_processes_per_surface = true
+
+# The frozen six-horse roster (identity order H0, H1, H2, H3, H4,
+# HorseA). Per-case EXECUTION order is a seeded rotation, never identity
+# order.
+[[horses]]
+id = "H0"
+mechanism_id = "h0-full-rebuild"
+
+[[horses]]
+id = "H1"
+mechanism_id = "block-local-reparse-h1"
+
+[[horses]]
+id = "H2"
+mechanism_id = "fragment-reuse-h2"
+
+[[horses]]
+id = "H3"
+mechanism_id = "old-tree-subtree-reuse-h3"
+
+[[horses]]
+id = "H4"
+mechanism_id = "restart-convergence-h4"
+
+[[horses]]
+id = "HorseA"
+mechanism_id = "horse-a-v1"
+
+[seed]
+# Chosen before any timing exists; never regenerated after results are
+# seen.
+derivation = "first 64 bits (big-endian) of SHA256(\"MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1\\n\" + base_authority_sha)"
+algorithm = "sha256-first64-bigendian-v1"
+byte_order = "big-endian"
+base_authority_sha = "efa392752bfb2604e3d2fdfabaf0ba9825f70b74"
+value = "0xd7b11f1df0cc7cb5"
+
+[ordering]
+# Reused from the runner, never re-implemented.
+case_algorithm = "splitmix64-v1+fisher-yates-lemire-rejection-v2"
+# Seeded base six-horse permutation, rotated by (case ordinal j +
+# session s) mod 6 per scheduled case: deterministic near-exact position
+# balance with no adaptive procedure and no dependence on observed
+# latency. The frozen campaign NEVER runs H0 -> H1 -> H2 -> H3 -> H4 ->
+# HorseA in every block.
+horse_policy = "seeded-base-permutation-rotate-v1"
+session_seed_domain = "MARKIT-76-SIX-HORSE-SESSION-SEED-v1"
+horse_base_seed_domain = "MARKIT-76-SIX-HORSE-HORSE-PERMUTATION-SEED-v1"
+
+[quantiles]
+method = "nearest-rank"
+sample_size = 30
+p50_rank = 15
+p95_rank = 29
+indexing = "1-indexed"
+interpolation = false
+note = "p50 rank = ceil(0.50*30) = 15, p95 rank = ceil(0.95*30) = 29. With n = 30, p95 is a DESCRIPTIVE tail indicator, not a high-confidence tail claim. The 90 observations of three sessions are never pooled as 90 independent replications; summaries are per session first, then medians of the three session values."
+
+# Frozen metric qualification. Memory metrics became QUALIFIED with the
+# six-horse campaign: a real counting-allocator backend exists and is
+# measured in SEPARATE M-LANE instrumented runs (a dedicated
+# memory-lane binary; the timing and attribution lanes always run under
+# the plain system allocator). QUALIFIED_M_LANE = qualified ONLY in its
+# dedicated lane; a memory metric is never reported from a timing or
+# attribution session, and blanks are never printed as zero.
+[[metric]]
+name = "LATENCY"
+status = "QUALIFIED"
+
+[[metric]]
+name = "WORK_COUNTERS"
+status = "QUALIFIED"
+
+[[metric]]
+name = "PARSE_AMPLIFICATION"
+status = "QUALIFIED"
+
+[[metric]]
+name = "CPU_TIME"
+status = "UNAVAILABLE"
+
+[[metric]]
+name = "ALLOC_COUNT"
+status = "QUALIFIED_M_LANE"
+
+[[metric]]
+name = "ALLOC_BYTES"
+status = "QUALIFIED_M_LANE"
+
+[[metric]]
+name = "PEAK_MEMORY"
+status = "QUALIFIED_M_LANE"
+
+[[metric]]
+name = "RETAINED_MEMORY"
+status = "QUALIFIED_M_LANE"
+
+[cardinality]
+# Exact arithmetic from the surfaces/sessions above, SIX horses:
+# (22 + 362) x 6 = 2,304 logical cells per session.
+logical_cells_per_session = 2304
+timing_rows_per_session = 92160
+total_timing_rows = 276480
+measured_rows_total = 207360
+warmup_rows_total = 69120
+attribution_rows = 2304
+
+[refs]
+machine_manifest = "results/manifests/six-horse-machine-v1.toml"
+schedule_manifest = "results/manifests/six-horse-schedule-v1.jsonl"
+campaign_receipt = "results/manifests/six-horse-campaign-receipt-v1.json"
+envelope_schema = "protocol/campaign-observation-schema-v1.json"
+result_schema_json = "protocol/result-schema-v2.json"
+result_schema_doc = "protocol/result-schema.md"
+environment_record = "manifest/environment.toml"
+workload_freeze_receipt = "workloads/payloads/freeze-receipt-v1.json"
+protocol_doc = "protocol/R7-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-v1.md"

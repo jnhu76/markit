@@ -46,8 +46,7 @@ pub fn ensure_layout(benchmark_root: &Path) -> Result<PathBuf, String> {
     let root = campaign_root(benchmark_root);
     for sub in SUBDIRS.iter().chain(AUX_SUBDIRS.iter()) {
         let path = root.join(sub);
-        std::fs::create_dir_all(&path)
-            .map_err(|e| format!("create {}: {e}", path.display()))?;
+        std::fs::create_dir_all(&path).map_err(|e| format!("create {}: {e}", path.display()))?;
     }
     Ok(root)
 }

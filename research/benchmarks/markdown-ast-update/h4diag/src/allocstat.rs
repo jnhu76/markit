@@ -213,8 +213,8 @@ pub fn on_alloc(size: usize) {
 /// bytes.
 #[inline]
 pub fn on_realloc(old: usize, new: usize) {
-    let live = LIVE.fetch_add(new as i64 - old as i64, Ordering::Relaxed)
-        + (new as i64 - old as i64);
+    let live =
+        LIVE.fetch_add(new as i64 - old as i64, Ordering::Relaxed) + (new as i64 - old as i64);
     if !ARMED.load(Ordering::Relaxed) {
         return;
     }
@@ -274,9 +274,9 @@ impl AllocWindow {
 
     pub fn to_json(&self) -> serde_json::Value {
         let mut cat = serde_json::Map::new();
-        for i in 0..CATEGORY_COUNT {
+        for (i, name) in CATEGORY_NAMES.iter().enumerate().take(CATEGORY_COUNT) {
             cat.insert(
-                CATEGORY_NAMES[i].to_string(),
+                name.to_string(),
                 serde_json::json!({
                     "calls": self.cat_alloc_calls[i],
                     "requested_bytes": self.cat_alloc_bytes[i],

@@ -74,8 +74,8 @@ fn out_writer(flags: &[String], default_name: &str) -> Result<Box<dyn Write>, St
                 std::fs::create_dir_all(parent)
                     .map_err(|e| format!("create {}: {e}", parent.display()))?;
             }
-            let file =
-                std::fs::File::create(&path).map_err(|e| format!("create {}: {e}", path.display()))?;
+            let file = std::fs::File::create(&path)
+                .map_err(|e| format!("create {}: {e}", path.display()))?;
             Ok(Box::new(std::io::BufWriter::new(file)))
         }
         None => {
@@ -100,7 +100,8 @@ fn write_schedule(flags: &[String], slots: &[schedule::Slot]) -> Result<(), Stri
 
 fn emit(out: &mut dyn Write, value: &serde_json::Value) -> Result<(), String> {
     serde_json::to_writer(&mut *out, value).map_err(|e| format!("serialize row: {e}"))?;
-    out.write_all(b"\n").map_err(|e| format!("write row: {e}"))?;
+    out.write_all(b"\n")
+        .map_err(|e| format!("write row: {e}"))?;
     Ok(())
 }
 
@@ -125,8 +126,7 @@ fn known(v: &Observed<u64>) -> Option<u64> {
 
 /// SHA256 of the currently running executable (fails closed).
 pub fn current_executable_sha256() -> Result<String, String> {
-    let path = std::env::current_exe()
-        .map_err(|e| format!("resolve current executable: {e}"))?;
+    let path = std::env::current_exe().map_err(|e| format!("resolve current executable: {e}"))?;
     let bytes = std::fs::read(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
     Ok(crate::cells::sha256_hex(&bytes))
 }
@@ -300,14 +300,11 @@ fn preflight_one(cell: &Cell) -> Result<Preflight, String> {
             Cell::EXPECTED_UNIQUE_POST_BYTES
         ));
     }
-    if convergence_distance.map(|d| d < cell.n_bytes as u64) != Some(true) {
+    if convergence_distance.map(|d| d < cell.n_bytes) != Some(true) {
         problems.push("convergence is not before EOF".to_string());
     }
     if diag_report.correctness_status != CorrectnessStatus::Pass {
-        problems.push(format!(
-            "correctness {:?}",
-            diag_report.correctness_status
-        ));
+        problems.push(format!("correctness {:?}", diag_report.correctness_status));
     }
     if diag_report.execution_status != ExecutionStatus::Pass {
         problems.push(format!("execution {:?}", diag_report.execution_status));
@@ -372,7 +369,10 @@ fn cmd_preflight(flags: &[String]) -> Result<(), String> {
 
 fn cmd_verify_equivalence(flags: &[String]) -> Result<(), String> {
     let mut out = out_writer(flags, "verify-equivalence")?;
-    emit(&mut out, &receipt("verify-equivalence", serde_json::json!({}))?)?;
+    emit(
+        &mut out,
+        &receipt("verify-equivalence", serde_json::json!({}))?,
+    )?;
     let mut failures = 0usize;
     for cell in all_cells()? {
         let p = preflight_one(&cell)?;
@@ -448,15 +448,10 @@ fn cmd_run_plain(flags: &[String]) -> Result<(), String> {
         let post = Source::new(SourceId(1), cell.post_source.clone());
         let reference = markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?;
         let hook = ReferenceOracle::new(reference);
-        let old_state = build_initial_state(&mechanism, &old).map_err(|f| format!("build_initial_state: {f:?}"))?;
+        let old_state = build_initial_state(&mechanism, &old)
+            .map_err(|f| format!("build_initial_state: {f:?}"))?;
         let report = run_update_timed(
-            &mechanism,
-            &old,
-            &post,
-            &cell.edit,
-            old_state,
-            &clock,
-            &hook,
+            &mechanism, &old, &post, &cell.edit, old_state, &clock, &hook,
         );
         let timing = match &report.measurement {
             LaneMeasurement::Timing(t) => t,
@@ -538,16 +533,11 @@ fn cmd_run_phase(flags: &[String]) -> Result<(), String> {
         let post = Source::new(SourceId(1), cell.post_source.clone());
         let reference = markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?;
         let hook = ReferenceOracle::new(reference);
-        let old_state = build_initial_state(&mechanism, &old).map_err(|f| format!("build_initial_state: {f:?}"))?;
+        let old_state = build_initial_state(&mechanism, &old)
+            .map_err(|f| format!("build_initial_state: {f:?}"))?;
         crate::phases::arm();
         let report = run_update_timed(
-            &mechanism,
-            &old,
-            &post,
-            &cell.edit,
-            old_state,
-            &clock,
-            &hook,
+            &mechanism, &old, &post, &cell.edit, old_state, &clock, &hook,
         );
         let phases = crate::phases::disarm();
         let timing = match &report.measurement {
@@ -621,7 +611,8 @@ fn cmd_run_counters(flags: &[String]) -> Result<(), String> {
         let reference = markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?;
         let hook = ReferenceOracle::new(reference);
         let mut frozen = WorkCounters::all_unknown();
-        let old_state = build_initial_state(&mechanism, &old).map_err(|f| format!("build_initial_state: {f:?}"))?;
+        let old_state = build_initial_state(&mechanism, &old)
+            .map_err(|f| format!("build_initial_state: {f:?}"))?;
         crate::counters::reset();
         let report = run_update_attributed(
             &mechanism,
@@ -726,15 +717,10 @@ fn cmd_run_ablations(flags: &[String]) -> Result<(), String> {
         let post = Source::new(SourceId(1), cell.post_source.clone());
         let reference = markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?;
         let hook = ReferenceOracle::new(reference);
-        let old_state = build_initial_state(&mechanism, &old).map_err(|f| format!("build_initial_state: {f:?}"))?;
+        let old_state = build_initial_state(&mechanism, &old)
+            .map_err(|f| format!("build_initial_state: {f:?}"))?;
         let report = run_update_timed(
-            &mechanism,
-            &old,
-            &post,
-            &cell.edit,
-            old_state,
-            &clock,
-            &hook,
+            &mechanism, &old, &post, &cell.edit, old_state, &clock, &hook,
         );
         let timing = match &report.measurement {
             LaneMeasurement::Timing(t) => t,
@@ -900,7 +886,6 @@ fn cmd_run_alloc(_flags: &[String]) -> Result<(), String> {
     Err("run-alloc requires a binary built with --features allocator".to_string())
 }
 
-
 // ---------------------------------------------------------------------------
 // PMU lane — resident-update-scoped `perf stat` (Issue #50 §12)
 // ---------------------------------------------------------------------------
@@ -954,9 +939,10 @@ impl PerfControl {
     }
 }
 
-/// The resident-update region only: `prepare_update` + `update` + `complete`
-/// + `black_box`, with the frozen timer boundary. No checksum, no oracle, no
-/// export — those run after the PMU window has been closed.
+/// The resident-update region only: `prepare_update`, then `update` and
+/// `complete` plus the `black_box`, with the frozen timer boundary. No
+/// checksum, no oracle, no export — those run after the PMU window has
+/// been closed.
 fn run_update_region_only<M>(
     mechanism: &M,
     old: &Source,
@@ -964,7 +950,11 @@ fn run_update_region_only<M>(
     edit: &CanonicalEdit,
     old_state: M::State,
     clock: &InstantClock,
-) -> (Result<markit_mdbench_common::Completed<M::State>, FailureStatus>, u64, u64)
+) -> (
+    Result<markit_mdbench_common::Completed<M::State>, FailureStatus>,
+    u64,
+    u64,
+)
 where
     M: markit_mdbench_common::Mechanism,
 {
@@ -995,10 +985,10 @@ where
 
 fn cmd_pmu_run(flags: &[String]) -> Result<(), String> {
     let rounds = flag_u32(flags, "--rounds", 15);
-    let ctl_path = flag_value(flags, "--ctl-fifo")
-        .ok_or_else(|| "--ctl-fifo is required".to_string())?;
-    let ack_path = flag_value(flags, "--ack-fifo")
-        .ok_or_else(|| "--ack-fifo is required".to_string())?;
+    let ctl_path =
+        flag_value(flags, "--ctl-fifo").ok_or_else(|| "--ctl-fifo is required".to_string())?;
+    let ack_path =
+        flag_value(flags, "--ack-fifo").ok_or_else(|| "--ack-fifo is required".to_string())?;
     let cells_arg = flag_value(flags, "--cells");
     let empty_window = flags.iter().any(|f| f == "--empty-window");
     // Diagnostic-only switch: run the FROZEN mechanism under an identical
@@ -1048,7 +1038,9 @@ fn cmd_pmu_run(flags: &[String]) -> Result<(), String> {
             .ok_or_else(|| format!("unknown cell {label}"))?;
         references.insert(
             label.clone(),
-            ReferenceOracle::new(markit_mdbench_campaign2::exec::reference_for(&cell.post_source)?),
+            ReferenceOracle::new(markit_mdbench_campaign2::exec::reference_for(
+                &cell.post_source,
+            )?),
         );
     }
 
@@ -1086,7 +1078,13 @@ fn cmd_pmu_run(flags: &[String]) -> Result<(), String> {
         control.enable()?;
         let (execution, correctness, checksum, prepare_ns, native_ns) = if empty_window {
             control.disable()?;
-            (0u64, 0u64, "EmptyWindowControl".to_string(), "NotChecked".to_string(), None)
+            (
+                0u64,
+                0u64,
+                "EmptyWindowControl".to_string(),
+                "NotChecked".to_string(),
+                None,
+            )
                 .into_pmu_row()
         } else if use_original {
             let (outcome, p, n) = run_update_region_only(

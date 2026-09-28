@@ -138,8 +138,11 @@ pub fn run_smoke(
     for surface in [Surface::CleanState, Surface::EditWrite] {
         let session_ordinal = 0u32;
         let session_id = crate::identity::session_id(&spec_id, surface.as_str(), session_ordinal);
-        let session_seed =
-            crate::identity::session_seed(manifest.seed.value, surface.as_str(), session_ordinal);
+        let session_seed = crate::identity::session_seed(
+            crate::manifest::parse_seed_value(&manifest.seed.value)?,
+            surface.as_str(),
+            session_ordinal,
+        );
         let subset: Vec<&crate::schedule::ScheduleRow> = schedule
             .iter()
             .filter(|row| row.surface == surface.as_str() && row.session_ordinal == session_ordinal)
@@ -197,7 +200,7 @@ pub fn run_smoke(
             surface,
             session_ordinal: None,
             session_id,
-            session_seed: manifest.seed.value,
+            session_seed: crate::manifest::parse_seed_value(&manifest.seed.value)?,
             build_identity: build.clone(),
             warmup: 0,
             measured: 0,
@@ -255,7 +258,7 @@ pub fn run_smoke(
             surface,
             session_ordinal: Some(99),
             session_id,
-            session_seed: manifest.seed.value,
+            session_seed: crate::manifest::parse_seed_value(&manifest.seed.value)?,
             build_identity: build.clone(),
             warmup: 1,
             measured: 1,
@@ -396,9 +399,11 @@ fn validate_output(
         count += 1;
     }
     let expected = if timing {
-        (options.cases_per_surface * 5 * (options.warmup + options.measured) as usize) as u64
+        (options.cases_per_surface
+            * crate::HORSE_IDS.len()
+            * (options.warmup + options.measured) as usize) as u64
     } else {
-        (options.cases_per_surface * 5) as u64
+        (options.cases_per_surface * crate::HORSE_IDS.len()) as u64
     };
     if count != expected {
         return Err(format!(

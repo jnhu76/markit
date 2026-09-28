@@ -200,7 +200,7 @@ pub fn select_primary_cpu() -> Result<(u32, u32, String), String> {
 
 /// Capture the CURRENT host as a machine manifest (task §24). Used once,
 /// on the actual primary benchmark machine, to write
-/// `results/manifests/primary-machine-v1.toml`.
+/// `results/manifests/six-horse-machine-v1.toml`.
 pub fn capture_machine(
     machine_id: &str,
     benchmark_root: &std::path::Path,
@@ -994,8 +994,10 @@ mod tests {
         // The recorded value stays exactly as captured (not replaced by
         // today's MemTotal).
         assert_eq!(
-            frozen.total_ram_bytes, 67_252_445_184,
-            "frozen recorded MemTotal must stay as captured"
+            frozen.total_ram_bytes, 67_252_449_280,
+            "frozen recorded MemTotal must stay as captured (the #76 six-horse
+             capture on the formal host; MemTotal legitimately moves between
+             boots, MACHINE-BINDING-CORRECTIVE-1)"
         );
 
         // Live capture still reads a nonzero MemTotal where /proc exists.

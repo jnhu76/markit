@@ -16,16 +16,16 @@ use crate::{
 };
 
 /// Path of the campaign manifest below the benchmark root.
-pub const CAMPAIGN_MANIFEST_PATH: &str = "results/manifests/primary-performance-campaign-v1.toml";
+pub const CAMPAIGN_MANIFEST_PATH: &str = "results/manifests/six-horse-performance-campaign-v1.toml";
 
 /// Path of the machine manifest below the benchmark root.
-pub const MACHINE_MANIFEST_PATH: &str = "results/manifests/primary-machine-v1.toml";
+pub const MACHINE_MANIFEST_PATH: &str = "results/manifests/six-horse-machine-v1.toml";
 
 /// Path of the schedule manifest below the benchmark root.
-pub const SCHEDULE_MANIFEST_PATH: &str = "results/manifests/primary-schedule-v1.jsonl";
+pub const SCHEDULE_MANIFEST_PATH: &str = "results/manifests/six-horse-schedule-v1.jsonl";
 
 /// Path of the campaign receipt below the benchmark root.
-pub const CAMPAIGN_RECEIPT_PATH: &str = "results/manifests/primary-campaign-receipt-v1.json";
+pub const CAMPAIGN_RECEIPT_PATH: &str = "results/manifests/six-horse-campaign-receipt-v1.json";
 
 /// Path of the raw observation envelope schema below the benchmark root.
 pub const ENVELOPE_SCHEMA_PATH: &str = "protocol/campaign-observation-schema-v1.json";
@@ -62,6 +62,15 @@ pub struct HorseSpec {
     pub mechanism_id: String,
 }
 
+/// Parse the frozen hex seed spelling (`0x…`, case-insensitive).
+pub fn parse_seed_value(text: &str) -> Result<u64, String> {
+    let digits = text
+        .strip_prefix("0x")
+        .or_else(|| text.strip_prefix("0X"))
+        .ok_or_else(|| format!("seed value {text:?} must be a 0x-prefixed hex string"))?;
+    u64::from_str_radix(digits, 16).map_err(|e| format!("seed value {text:?}: {e}"))
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SeedSpec {
@@ -70,7 +79,11 @@ pub struct SeedSpec {
     /// First 64 bits of the SHA256 digest, big-endian.
     pub byte_order: String,
     pub base_authority_sha: String,
-    pub value: u64,
+    /// Hex form (`0x…`) of the 64-bit seed. A plain TOML integer cannot
+    /// carry the full unsigned 64-bit range (TOML integers are i64), so
+    /// the frozen value is spelled in hex; verification compares the
+    /// recomputed u64 against the parsed value.
+    pub value: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -230,8 +243,9 @@ impl CampaignManifest {
                 self.surfaces.edit_write.kind, self.surfaces.edit_write.case_count
             ));
         }
-        if self.surfaces.clean_state.horse_count != 5 || self.surfaces.edit_write.horse_count != 5 {
-            blockers.push("both surfaces must dispatch all five horses H0-H4".to_string());
+        if self.surfaces.clean_state.horse_count != 6 || self.surfaces.edit_write.horse_count != 6 {
+            blockers
+                .push("both surfaces must dispatch all six horses H0-H4 and HorseA".to_string());
         }
 
         // Sessions: the frozen R0 sampling policy (task §9).
@@ -252,7 +266,7 @@ impl CampaignManifest {
         // Horses: exactly the frozen roster with the crates' own ids.
         if self.horses.len() != HORSE_ROSTER.len() {
             blockers.push(format!(
-                "horse roster has {} entries != 5",
+                "horse roster has {} entries != 6",
                 self.horses.len()
             ));
         } else {
@@ -268,11 +282,13 @@ impl CampaignManifest {
 
         // Seed: recomputation must match the recorded value.
         let recomputed = crate::identity::campaign_seed(&self.base_authority_sha);
-        if self.seed.value != recomputed {
-            blockers.push(format!(
+        match parse_seed_value(&self.seed.value) {
+            Ok(stated) if stated == recomputed => {}
+            Ok(stated) => blockers.push(format!(
                 "campaign seed {} != recomputed {recomputed} for base authority {}",
-                self.seed.value, self.base_authority_sha
-            ));
+                stated, self.base_authority_sha
+            )),
+            Err(e) => blockers.push(e),
         }
         if self.seed.base_authority_sha != self.base_authority_sha {
             blockers.push(format!(
@@ -348,8 +364,9 @@ impl CampaignManifest {
             cells * self.sessions.measured_iterations as usize * self.sessions.count as usize;
         let warmup =
             cells * self.sessions.warmup_iterations as usize * self.sessions.count as usize;
-        let attribution =
-            (self.surfaces.clean_state.case_count + self.surfaces.edit_write.case_count) * 5;
+        let attribution = (self.surfaces.clean_state.case_count
+            + self.surfaces.edit_write.case_count)
+            * crate::HORSE_IDS.len();
         let c = &self.cardinality;
         if (
             c.logical_cells_per_session,

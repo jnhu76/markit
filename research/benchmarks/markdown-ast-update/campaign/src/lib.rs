@@ -52,6 +52,7 @@ pub mod finalize;
 pub mod identity;
 pub mod machine;
 pub mod manifest;
+pub mod memory_smoke;
 pub mod preflight;
 pub mod receipt;
 pub mod schedule;
@@ -62,22 +63,22 @@ pub mod workload;
 use serde::{Deserialize, Serialize};
 
 /// Identifier of the frozen campaign (matches the task/protocol name).
-pub const CAMPAIGN_ID: &str = "MARKIT-31-PRIMARY-PERFORMANCE-CAMPAIGN-v1";
+pub const CAMPAIGN_ID: &str = "MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1";
 
 /// Schema tag of the campaign manifest
-/// (`results/manifests/primary-performance-campaign-v1.toml`).
+/// (`results/manifests/six-horse-performance-campaign-v1.toml`).
 pub const CAMPAIGN_MANIFEST_SCHEMA: &str = "primary-performance-campaign-v1";
 
 /// Schema tag of the machine manifest
-/// (`results/manifests/primary-machine-v1.toml`).
+/// (`results/manifests/six-horse-machine-v1.toml`).
 pub const MACHINE_MANIFEST_SCHEMA: &str = "primary-machine-v1";
 
 /// Schema tag of the schedule manifest
-/// (`results/manifests/primary-schedule-v1.jsonl`).
+/// (`results/manifests/six-horse-schedule-v1.jsonl`).
 pub const SCHEDULE_SCHEMA: &str = "primary-schedule-v1";
 
 /// Schema tag of the campaign receipt
-/// (`results/manifests/primary-campaign-receipt-v1.json`).
+/// (`results/manifests/six-horse-campaign-receipt-v1.json`).
 pub const CAMPAIGN_RECEIPT_SCHEMA: &str = "primary-campaign-receipt-v1";
 
 /// Schema tag of the raw campaign observation envelope
@@ -104,9 +105,9 @@ pub struct HorseEntry {
     pub mechanism_id: &'static str,
 }
 
-/// The frozen horse roster (identity order H0-H4; per-case EXECUTION
-/// order is a seeded rotation, see [`schedule`]).
-pub const HORSE_ROSTER: [HorseEntry; 5] = [
+/// The frozen horse roster (identity order H0, H1, H2, H3, H4, Horse-A;
+/// per-case EXECUTION order is a seeded rotation, see [`schedule`]).
+pub const HORSE_ROSTER: [HorseEntry; 6] = [
     HorseEntry {
         id: "H0",
         mechanism_id: markit_mdbench_full_rebuild::H0_MECHANISM_ID,
@@ -127,10 +128,14 @@ pub const HORSE_ROSTER: [HorseEntry; 5] = [
         id: "H4",
         mechanism_id: markit_mdbench_restart_convergence::H4_MECHANISM_ID,
     },
+    HorseEntry {
+        id: "HorseA",
+        mechanism_id: markit_mdbench_horse_a::HORSE_A_MECHANISM_ID,
+    },
 ];
 
 /// Horse labels in identity order.
-pub const HORSE_IDS: [&str; 5] = ["H0", "H1", "H2", "H3", "H4"];
+pub const HORSE_IDS: [&str; 6] = ["H0", "H1", "H2", "H3", "H4", "HorseA"];
 
 /// The two primary timing surfaces (task §6).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
@@ -194,10 +199,15 @@ pub const METRIC_QUALIFICATION: [(&str, &str); 8] = [
     ("WORK_COUNTERS", "QUALIFIED"),
     ("PARSE_AMPLIFICATION", "QUALIFIED"),
     ("CPU_TIME", "UNAVAILABLE"),
-    ("ALLOC_COUNT", "UNAVAILABLE"),
-    ("ALLOC_BYTES", "UNAVAILABLE"),
-    ("PEAK_MEMORY", "UNAVAILABLE"),
-    ("RETAINED_MEMORY", "UNAVAILABLE"),
+    // Memory metrics became QUALIFIED with the six-horse campaign
+    // (#76 Gate B): a real counting-allocator backend now exists and is
+    // measured in SEPARATE M-LANE instrumented runs, never inside a
+    // timing or attribution session. Unqualified would be dishonest now
+    // that the backend is wired; the lane separation stays frozen.
+    ("ALLOC_COUNT", "QUALIFIED_M_LANE"),
+    ("ALLOC_BYTES", "QUALIFIED_M_LANE"),
+    ("PEAK_MEMORY", "QUALIFIED_M_LANE"),
+    ("RETAINED_MEMORY", "QUALIFIED_M_LANE"),
 ];
 
 /// SHA256 of a byte slice as lowercase hex.

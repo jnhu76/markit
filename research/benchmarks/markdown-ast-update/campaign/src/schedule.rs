@@ -14,11 +14,11 @@
 //! position-balanced WITHOUT adaptivity):
 //!
 //! ```text
-//! 1. one seeded base permutation of H0-H4, derived from the campaign
-//!    root seed (identity order sorted by horse label, then the same
-//!    frozen shuffle);
+//! 1. one seeded base permutation of the six horses (H0-H4 + HorseA),
+//!    derived from the campaign root seed (identity order sorted by
+//!    horse label, then the same frozen shuffle);
 //! 2. for case order ordinal j (0-based) in session s (0-based):
-//!    execution order = base permutation rotated by (j + s) mod 5.
+//!    execution order = base permutation rotated by (j + s) mod 6.
 //! ```
 //!
 //! Because the case order itself is a uniform shuffle, the rotation
@@ -81,7 +81,7 @@ pub struct ScheduleRow {
     pub horse_order: Vec<String>,
 }
 
-/// Derive the seeded base H0-H4 permutation (sorted identity order ->
+/// Derive the seeded base six-horse permutation (sorted identity order ->
 /// frozen seeded shuffle).
 pub fn base_horse_permutation(horse_base_seed: u64) -> Vec<String> {
     // Lexically sorted identity order first, so the input enumeration
@@ -101,7 +101,8 @@ pub fn rotate<T: Clone>(base: &[T], k: usize) -> Vec<T> {
 }
 
 /// Execution horse order for case order ordinal `j` (0-based) in session
-/// `s` (0-based): `rotate(base, (j + s) mod 5)` (task §15).
+/// `s` (0-based): `rotate(base, (j + s) mod base.len())` — six horses for
+/// this campaign (task §15).
 pub fn horse_order_for(base: &[String], j: u32, s: u32) -> Vec<String> {
     rotate(base, (j as usize + s as usize) % base.len())
 }
@@ -341,7 +342,7 @@ pub fn verify_schedule(
                 }
                 if row.horse_order.len() != HORSE_IDS.len() {
                     blockers.push(format!(
-                        "{surface_name} session {s} ordinal {j}: horse order has {} entries != 5",
+                        "{surface_name} session {s} ordinal {j}: horse order has {} entries != 6",
                         row.horse_order.len()
                     ));
                 }
@@ -445,7 +446,7 @@ mod tests {
     #[test]
     fn horse_order_is_position_balanced_and_deterministic() {
         let base = base_horse_permutation(0x5EED_0000_0000_0005);
-        assert_eq!(base.len(), 5);
+        assert_eq!(base.len(), 6);
         let mut sorted = base.clone();
         sorted.sort();
         assert_eq!(
@@ -453,9 +454,9 @@ mod tests {
             HORSE_IDS.to_vec(),
             "base permutation is a permutation"
         );
-        // Rotation by (j + s): for a full cycle of 5 consecutive (j+s)
+        // Rotation by (j + s): for a full cycle of 6 consecutive (j+s)
         // values each horse occupies each position exactly once.
-        for m in 0..5 {
+        for m in 0..6 {
             let order = horse_order_for(&base, m, 0);
             let mut sorted_order = order.clone();
             sorted_order.sort();
@@ -463,7 +464,7 @@ mod tests {
         }
         // (j + s) arithmetic: s advances the rotation like j does.
         assert_eq!(horse_order_for(&base, 0, 2), horse_order_for(&base, 2, 0));
-        assert_eq!(horse_order_for(&base, 4, 1), horse_order_for(&base, 0, 0));
+        assert_eq!(horse_order_for(&base, 5, 1), horse_order_for(&base, 0, 0));
     }
 
     #[test]

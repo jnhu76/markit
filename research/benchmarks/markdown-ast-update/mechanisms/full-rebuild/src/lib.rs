@@ -175,7 +175,14 @@ fn parse_with_attribution<W: WorkSink>(
     cx: &mut MechanismContext<'_, W>,
 ) -> (NormalizedDocument, u64, u64) {
     let document = markit_mdbench_shared_grammar::parse_full(src, cx.sink);
-    let (blocks, nodes) = count_blocks_nodes(&document.root);
+    // The counting walk exists only to feed attribution counters; in a
+    // discarding lane (timing) it is skipped entirely. Counter VALUES are
+    // unchanged: when a recording sink is present, every node is counted.
+    let (blocks, nodes) = if cx.sink.attribution_active() {
+        count_blocks_nodes(&document.root)
+    } else {
+        (0, 0)
+    };
     (document, blocks, nodes)
 }
 

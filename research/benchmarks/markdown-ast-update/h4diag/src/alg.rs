@@ -65,9 +65,10 @@ pub const H4DIAG_MECHANISM_ID: &str = "restart-convergence-h4-diag-copy";
 ///
 /// `A0` is the faithful copy. The others change exactly one thing each
 /// (Issue #50 §8) and must produce the same normalized result.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum Variant {
     /// Faithful copy of the frozen H4 algorithm. The control.
+    #[default]
     A0,
     /// `Adefs` — skip the global definition traversal / table build /
     /// comparison only when already-maintained state proves the assembled
@@ -222,12 +223,6 @@ pub struct H4Diag {
     variant: Variant,
 }
 
-impl Default for Variant {
-    fn default() -> Self {
-        Variant::A0
-    }
-}
-
 impl H4Diag {
     pub fn new(variant: Variant) -> Self {
         Self { variant }
@@ -317,11 +312,7 @@ fn restart_at_zero<W: WorkSink>(
 /// element-by-element so the actual handle releases and payload
 /// destructions are counted. That is strictly more work than A0 runs, and
 /// the counter lane is never timed.
-fn retire_old_state(
-    state: H4DiagState,
-    variant: Variant,
-    handles_kept_shared: u64,
-) {
+fn retire_old_state(state: H4DiagState, variant: Variant, handles_kept_shared: u64) {
     if variant == Variant::ADrop {
         deferred::set_inventory(deferred::RetirementInventory {
             old_block_slots: state.blocks.len() as u64,
@@ -508,11 +499,8 @@ impl Mechanism for H4Diag {
 
         // The reparsed region may itself create a definition.
         let definition_changing = prepared.damaged_has_def || {
-            cx.sink.record_source_inspection(
-                SourceVersion::Post,
-                es as u64,
-                ee_new as u64,
-            );
+            cx.sink
+                .record_source_inspection(SourceVersion::Post, es as u64, ee_new as u64);
             post[es..ee_new].windows(3).any(|w| w == b"]: ")
         };
 
@@ -541,7 +529,12 @@ impl Mechanism for H4Diag {
                     consultations: 0,
                     blank_checks: Vec::new(),
                 };
-                let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
+                // Compile-compatibility only (#80 corrective added the
+                // parser's starts_block fact to SpliceHook): this frozen
+                // #50 diagnostic's consult decision is deliberately kept
+                // exactly as it ran — the new flag is ignored.
+                let mut hook: Box<SpliceHook<'_>> =
+                    Box::new(|pos, key, _starts_block| cursor.consult(pos, key));
                 let (rp, slot_count) =
                     parse_region_with_hook(post, r, post.len(), cx.sink, &mut hook);
                 let (take, consultations, blank_checks) = {
@@ -549,11 +542,8 @@ impl Mechanism for H4Diag {
                     (cursor.take, cursor.consultations, cursor.blank_checks)
                 };
                 for (a, b) in &blank_checks {
-                    cx.sink.record_source_inspection(
-                        SourceVersion::Post,
-                        *a,
-                        *b,
-                    );
+                    cx.sink
+                        .record_source_inspection(SourceVersion::Post, *a, *b);
                 }
                 (rp, slot_count, take, consultations, blank_checks)
             });
@@ -567,9 +557,7 @@ impl Mechanism for H4Diag {
         let mut pairs: Vec<(DiagBlockSlot, Option<DiagCheckpoint>)> = if self.variant
             == Variant::ACapacity
         {
-            let suffix_len = take.map_or(0usize, |(old_idx, _)| {
-                old_state.blocks.len() - old_idx
-            });
+            let suffix_len = take.map_or(0usize, |(old_idx, _)| old_state.blocks.len() - old_idx);
             let fresh_len = rp
                 .blocks
                 .iter()
@@ -863,9 +851,7 @@ impl Cursor<'_> {
     /// inside the scanner, hence inside P2, and its time is a sub-interval
     /// of P2 that is never added to the disjoint sum.
     fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
-        phase_inclusive!(HookInclusiveSubMeasure, {
-            self.consult_inner(pos, key)
-        })
+        phase_inclusive!(HookInclusiveSubMeasure, { self.consult_inner(pos, key) })
     }
 
     fn consult_inner(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
@@ -993,7 +979,10 @@ fn registers(slots: &[DiagBlockSlot], gen: u64) -> Vec<DiagCheckpoint> {
 
 fn skel_count(sk: &Skel) -> u64 {
     let children: &[Skel] = match sk {
-        Skel::Quote { children, .. } | Skel::List { items: children, .. } => children,
+        Skel::Quote { children, .. }
+        | Skel::List {
+            items: children, ..
+        } => children,
         Skel::Item { children, .. } => children,
         _ => &[],
     };
@@ -1003,9 +992,10 @@ fn skel_count(sk: &Skel) -> u64 {
 fn skel_has_def(sk: &Skel) -> bool {
     match sk {
         Skel::Def { .. } => true,
-        Skel::Quote { children, .. } | Skel::List { items: children, .. } => {
-            children.iter().any(skel_has_def)
-        }
+        Skel::Quote { children, .. }
+        | Skel::List {
+            items: children, ..
+        } => children.iter().any(skel_has_def),
         Skel::Item { children, .. } => children.iter().any(skel_has_def),
         _ => false,
     }
@@ -1025,7 +1015,10 @@ fn collect_defs_skel(sk: &Skel, defs: &mut Vec<(String, String)>) {
             }
             defs.push((label.clone(), destination.clone()));
         }
-        Skel::Quote { children, .. } | Skel::List { items: children, .. } => {
+        Skel::Quote { children, .. }
+        | Skel::List {
+            items: children, ..
+        } => {
             for c in children {
                 collect_defs_skel(c, defs);
             }

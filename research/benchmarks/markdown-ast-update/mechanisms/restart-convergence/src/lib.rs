@@ -512,7 +512,9 @@ impl Mechanism for RestartConvergenceMechanism {
             .iter()
             .zip(&old_state.checkpoints[..prepared.restart_slot])
         {
-            prefix_reused += retained_block_nodes(&s.block);
+            if cx.sink.attribution_active() {
+                prefix_reused += retained_block_nodes(&s.block);
+            }
             pairs.push((
                 BlockSlot {
                     base_shift: s.base_shift,
@@ -580,12 +582,15 @@ impl Mechanism for RestartConvergenceMechanism {
             //   already reported through the sink as the pass ran.
             // The delivered result is the restart's, and ITS counters
             // accumulate on top of this.
-            let discarded_fnodes: u64 = rp
-                .blocks
-                .iter()
-                .filter(|sk| !matches!(sk, Skel::Spliced { .. }))
-                .map(skel_count)
-                .sum();
+            let discarded_fnodes: u64 = if cx.sink.attribution_active() {
+                rp.blocks
+                    .iter()
+                    .filter(|sk| !matches!(sk, Skel::Spliced { .. }))
+                    .map(skel_count)
+                    .sum()
+            } else {
+                0
+            };
             cx.sink
                 .add_metadata_records_touched(consultations + slot_count as u64);
             cx.sink.add_blocks_reparsed(discarded_fnodes);
@@ -607,7 +612,9 @@ impl Mechanism for RestartConvergenceMechanism {
                         .iter()
                         .zip(&old_state.checkpoints[old_idx..])
                     {
-                        reused += retained_block_nodes(&s.block);
+                        if cx.sink.attribution_active() {
+                            reused += retained_block_nodes(&s.block);
+                        }
                         rebased += 1;
                         pairs.push((
                             BlockSlot {
@@ -624,12 +631,16 @@ impl Mechanism for RestartConvergenceMechanism {
                     }
                 }
                 other => {
-                    built.fnodes += skel_count(other);
+                    if cx.sink.attribution_active() {
+                        built.fnodes += skel_count(other);
+                    }
                     let start = other.start();
                     let sem =
                         sg::inline::materialize_one_with_sink(post, other.clone(), &table, cx.sink);
-                    built.nodes +=
-                        skel_count(other) + inline_forest_count(std::slice::from_ref(&sem));
+                    if cx.sink.attribution_active() {
+                        built.nodes +=
+                            skel_count(other) + inline_forest_count(std::slice::from_ref(&sem));
+                    }
                     pairs.push((
                         BlockSlot {
                             base_shift: 0,
@@ -824,11 +835,19 @@ fn fresh_slots<W: WorkSink>(
     blocks
         .iter()
         .map(|sk| {
-            let k = skel_count(sk);
-            built.fnodes += k;
+            // Counting exists only to feed attribution counters; the
+            // skeleton/inline walks are skipped in discarding lanes.
+            // Counter VALUES are unchanged in recording lanes.
+            let count = sink.attribution_active();
+            let k = if count { skel_count(sk) } else { 0 };
+            if count {
+                built.fnodes += k;
+            }
             let start = sk.start();
             let sem = sg::inline::materialize_one_with_sink(src, sk.clone(), table, sink);
-            built.nodes += k + inline_forest_count(std::slice::from_ref(&sem));
+            if count {
+                built.nodes += k + inline_forest_count(std::slice::from_ref(&sem));
+            }
             BlockSlot {
                 base_shift: 0,
                 // The line-offset derivation is a mechanism source read:

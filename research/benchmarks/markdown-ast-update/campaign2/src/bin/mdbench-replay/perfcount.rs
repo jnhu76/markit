@@ -109,7 +109,10 @@ impl PerfCounters {
         for (index, event) in EVENTS.iter().enumerate() {
             match open_one(hardware_config(index)) {
                 Ok(fd) => {
-                    counters.push(Counter { fd, slot: Some(slots) });
+                    counters.push(Counter {
+                        fd,
+                        slot: Some(slots),
+                    });
                     slots += 1;
                 }
                 Err(error) => {
@@ -121,7 +124,11 @@ impl PerfCounters {
         for error in &errors {
             eprintln!("PERF_COUNTER_UNAVAILABLE {error}");
         }
-        Ok(Self { counters, slots, errors })
+        Ok(Self {
+            counters,
+            slots,
+            errors,
+        })
     }
 
     /// True when every requested counter is live.
