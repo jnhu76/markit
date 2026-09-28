@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@lezer/common": "^1.5.2",
+    "@lezer/lr": "^1.4.8",
+    "@lezer/markdown": "^1.6.3"
+  }
+}

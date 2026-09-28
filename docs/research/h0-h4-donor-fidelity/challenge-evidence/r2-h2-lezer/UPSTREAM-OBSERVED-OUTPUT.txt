@@ -1,0 +1,100 @@
+doc0 length = 304
+
+== F0 initial addTree (full parse) (1 fragments)
+   frag[doc 0,304] off=0 openStart=false openEnd=false treeLen=304 treeType=Document
+
+== F1 applyChanges after insertion inside paragraph (1 fragments)
+   frag[doc 19,314] off=-10 openStart=true openEnd=false treeLen=304 treeType=Document
+F1 incremental==clean (toString): true
+F1 FencedCode object identity preserved: true
+F1 top-level child counts old/new: 5 5
+F1 top-level child 2 SHARED (object identity) len=34
+F1 top-level child 3 SHARED (object identity) len=31
+
+== F2 applyChanges after replacement spanning list item (2 fragments)
+   frag[doc 0,138] off=0 openStart=false openEnd=true treeLen=304 treeType=Document
+   frag[doc 145,303] off=1 openStart=true openEnd=false treeLen=304 treeType=Document
+
+== F2 same edit, minGap=2 (upstream tests use 2) (2 fragments)
+   frag[doc 0,138] off=0 openStart=false openEnd=true treeLen=304 treeType=Document
+   frag[doc 145,303] off=1 openStart=true openEnd=false treeLen=304 treeType=Document
+F2 incremental==clean: true
+
+== F3 applyChanges after list-marker change (1 fragments)
+   frag[doc 135,304] off=0 openStart=true openEnd=false treeLen=304 treeType=Document
+F3 incremental==clean: true
+F3 top-level shared objects: 1/6 (expect list NOT shared, code/final shared)
+F3-control top-level shared objects: 4/5
+
+== F4 applyChanges after deletion (delta shift) (1 fragments)
+   frag[doc 9,284] off=20 openStart=true openEnd=false treeLen=304 treeType=Document
+F4 incremental==clean: true
+F4 top-level shared objects: 2/5
+
+== F5 applyChanges, two edits, default minGap=128 (2 fragments)
+   frag[doc 10,165] off=0 openStart=true openEnd=true treeLen=304 treeType=Document
+   frag[doc 167,305] off=-1 openStart=true openEnd=false treeLen=304 treeType=Document
+
+== F5 applyChanges, two edits, minGap=2 (3 fragments)
+   frag[doc 0,9] off=0 openStart=false openEnd=true treeLen=304 treeType=Document
+   frag[doc 10,165] off=0 openStart=true openEnd=true treeLen=304 treeType=Document
+   frag[doc 167,305] off=-1 openStart=true openEnd=false treeLen=304 treeType=Document
+F5 incremental==clean: true
+F3 old children: 0:ATXHeading1[?,?] 1:Paragraph[?,?] 2:BulletList[?,?] 3:FencedCode[?,?] 4:Paragraph[?,?]
+F3 new children: 0:ATXHeading1[?,?] 1:Paragraph[?,?] 2:BulletList[?,?] 3:BulletList[?,?] 4:FencedCode=SHARED[?,?] 5:Paragraph[?,?]
+
+fence-edit fragments:
+   frag[0,165] off=0 openStart=false openEnd=true
+   frag[180,308] off=-4 openStart=true openEnd=false
+fence-edit incremental==clean: true
+fence-edit new children: 0:ATXHeading1=SHARED 1:Paragraph=SHARED 2:BulletList 3:FencedCode 4:Paragraph
+
+last-para edit fragments:
+   frag[0,210] off=0 openStart=false openEnd=true
+   frag[214,304] off=0 openStart=true openEnd=false
+last-para incremental==clean: true
+last-para new children: 0:ATXHeading1=SHARED 1:Paragraph=SHARED 2:BulletList=SHARED 3:FencedCode=SHARED 4:Paragraph
+MID-CONTAINER fragments:
+   frag[0,198] off=0 openStart=false openEnd=true
+   frag[202,1499] off=-2 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph=SHARED BulletList Paragraph
+   new BulletList: 6 items, 0 shared with old list
+   old items reused: 0/6
+
+INTERRUPTOR fragments:
+   frag[21,250] off=-8 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph BulletList
+
+SHORT-TAIL fragments:
+   frag[4,96] off=0 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph Paragraph
+
+TIGHT-LIST-EDGE fragments:
+   frag[0,138] off=0 openStart=false openEnd=true
+   frag[145,303] off=1 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: ATXHeading1=SHARED Paragraph=SHARED BulletList FencedCode=SHARED Paragraph
+MID-CONTAINER(corr) fragments:
+   frag[0,222] off=0 openStart=false openEnd=true
+   frag[224,1541] off=0 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph=SHARED BulletList Paragraph=SHARED
+   new BulletList: 6 items, 0 shared
+   old items reused: 0/6
+
+INTERRUPTOR(corr) fragments:
+   frag[21,251] off=-8 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph BulletList=SHARED Paragraph=SHARED
+
+SHORT-TAIL(+LF) fragments:
+   frag[4,97] off=0 openStart=true openEnd=false
+   incremental==clean: true
+   top-level: Paragraph Paragraph=SHARED
+MID-CONTAINER deep sharing: 77/100 old node objects shared
+   shared by type: {"Paragraph":27,"ListItem":25,"ListMark":25}
+   ListItem objects: 25/30 shared
+   incremental==clean: true

@@ -1,0 +1,26 @@
+test matrix_case_544 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_545 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_546 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test matrix_case_547 ... ignored, matrix case; run with --release (verify-r5.sh, or nextest for parallel/retry/resume)
+test r5_case_inventory_frozen_counts ... ignored, frozen inventory counts; verify-r5.sh runs it with --release
+
+test result: ok. 0 passed; 0 failed; 549 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_environment.rs (target/debug/deps/reference_environment-94ada36dc5452871)
+
+running 5 tests
+test fence_closer_removal_refreshes_a_reused_payload ... ok
+test fence_closer_restoration_refreshes_a_reused_payload ... ok
+test reference_definition_removal_refreshes_a_reused_payload ... ok
+test safe_local_edits_still_reuse_fragments ... ok
+test reference_definition_restore_refreshes_a_reused_payload ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests markit_mdbench_fragment_reuse
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0
