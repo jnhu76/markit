@@ -1,0 +1,17 @@
+{
+  "repository_commit": "745098f112e559d930c5242e43b71f08bf514560",
+  "repository_tree": "bb98ce87f2cd50471460c15ab6e06d59acbdf525",
+  "executable_path": "/home/hoo/Source/markit/research/benchmarks/markdown-ast-update/target/release/mdbench-horse-a-structural",
+  "executable_sha256": "fc41cb49a9b869973955db569efb91b513fdfe17d91ba5120a8b976e0d9a4e3b",
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+  "toolchain_channel": "1.97.1",
+  "build_profile": "release-primary-v1",
+  "features": "none",
+  "host": {
+    "os": "linux",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "arch": "x86_64",
+    "cpu_model": "12th Gen Intel(R) Core(TM) i7-12700H"
+  }
+}

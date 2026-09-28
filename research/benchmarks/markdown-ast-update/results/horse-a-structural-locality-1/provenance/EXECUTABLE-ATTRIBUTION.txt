@@ -1,0 +1,99 @@
+=== EXECUTABLE-ATTRIBUTION (readiness record §8/§15) ===
+
+HORSE-A-STRUCTURAL-LOCALITY-1 — EXECUTION MANIFEST (frozen pre-treatment, #60)
+
+IMMUTABLE: created before the FIRST decision-bearing raw row; must not be
+altered after the first row exists (task §34). Hash recorded separately
+as EXECUTION_MANIFEST_SHA256.
+
+IDENTITY
+
+  StudyId                     = 2e061da9cb6fbe57f9ce139ca02382fda4cad672fd9422e6c7d7b885f42f4e17
+  frozen_contract_revision    = HORSE-A-FAILURE-FIRST-1/#60@sync-20260928T021211Z/master-f7fdcdaabc5d761435f3c0e8c17611973642934b/tree-9ec58ed228972c323da5cccf0b991235a0bc0e8a
+  protocol                    = HORSE-A-FAILURE-FIRST-1 / #60
+
+  STUDY_MECHANISM_BASELINE    = 8e40932239273cc798795a625244ffb3e12b5f0e
+  AUTHORIZATION_BASELINE      = f7fdcdaabc5d761435f3c0e8c17611973642934b
+
+  PRODUCER_REVIEWED_HEAD      = 70e6c83971f715847eb62c7874065dec0c4f96f7
+                               (PR #77 head; independent execution review
+                                2026-09-28: P0=0 / P1=0 / P2=0 / P3=4,
+                                COLLECTION_EXECUTION_READY = YES)
+  PRODUCER_MERGE_COMMIT       = 745098f112e559d930c5242e43b71f08bf514560
+                               (merge of PR #77 into master)
+  EXECUTION_MASTER            = 745098f112e559d930c5242e43b71f08bf514560
+  EXECUTION_TREE              = bb98ce87f2cd50471460c15ab6e06d59acbdf525
+                               (== the reviewed PR tree; the merge
+                                introduced no tree change)
+
+EXECUTABLE
+
+  EXECUTABLE_PATH             = research/benchmarks/markdown-ast-update/target/release/mdbench-horse-a-structural
+  EXECUTABLE_SHA256           = fc41cb49a9b869973955db569efb91b513fdfe17d91ba5120a8b976e0d9a4e3b
+  BUILD COMMAND               = cargo build --release -p markit-mdbench-horse-a --bin mdbench-horse-a-structural
+  RUSTC_VERSION               = rustc 1.97.1 (8bab26f4f 2026-07-14)
+  CARGO_VERSION               = cargo 1.97.1 (c980f4866 2026-06-30)
+  TOOLCHAIN                   = 1.97.1 (rust-toolchain.toml pin)
+  PROFILE                     = release-primary-v1 (workspace [profile.release]:
+                                opt-level 3, lto "thin", codegen-units 1,
+                                incremental false, panic "unwind")
+  FEATURES                    = none
+  RUSTFLAGS                   = (empty; default target-cpu; system allocator)
+
+HOST
+
+  OS                          = linux
+  KERNEL                      = 6.18.33.2-microsoft-standard-WSL2
+  ARCH                        = x86_64
+  CPU_MODEL                   = 12th Gen Intel(R) Core(TM) i7-12700H
+
+SCHEMAS
+
+  RAW_SCHEMA                  = HORSE-A-STRUCTURAL-RAW-v1
+  COUNTER_SCHEMA              = HORSE-A-STRUCTURAL-COUNTERS-v1
+  MECHANISM                   = HORSE-A_v1 (design head d44f32345674f1e1db88fb832adb40e291da0120,
+                                merge 3b9ff484e5da73f3f4510afdbcc1f3bc3d877a48)
+
+CELLS (frozen; readiness record §4)
+
+  H4N-128KiB  N=131,072    M=1,024    target=512    edit_start=65,599    H_max=14
+  H4N-1MiB    N=1,048,576  M=8,192    target=4,096  edit_start=524,351   H_max=18
+  H4N-16MiB   N=16,777,216 M=131,072  target=65,536 edit_start=8,388,671  H_max=24
+
+REPETITION POLICY (frozen; readiness record §10)
+
+  3 independent process invocations per primary cell; fresh READY-state
+  construction in each invocation; identical source/edit identities;
+  exact agreement required across repetitions (counters never averaged).
+  The CLI schedule index --repetition is 1-based; the raw row records
+  the schema repetition = value - 1 (0 | 1 | 2).
+
+EXACT NINE COMMANDS (each a distinct OS process; cwd = research/benchmarks/markdown-ast-update)
+
+  ./target/release/mdbench-horse-a-structural --cell H4N-128KiB --repetition 1 --output results/horse-a-structural-locality-1/raw/H4N-128KiB-rep0.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-128KiB --repetition 2 --output results/horse-a-structural-locality-1/raw/H4N-128KiB-rep1.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-128KiB --repetition 3 --output results/horse-a-structural-locality-1/raw/H4N-128KiB-rep2.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-1MiB   --repetition 1 --output results/horse-a-structural-locality-1/raw/H4N-1MiB-rep0.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-1MiB   --repetition 2 --output results/horse-a-structural-locality-1/raw/H4N-1MiB-rep1.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-1MiB   --repetition 3 --output results/horse-a-structural-locality-1/raw/H4N-1MiB-rep2.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-16MiB  --repetition 1 --output results/horse-a-structural-locality-1/raw/H4N-16MiB-rep0.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-16MiB  --repetition 2 --output results/horse-a-structural-locality-1/raw/H4N-16MiB-rep1.json
+  ./target/release/mdbench-horse-a-structural --cell H4N-16MiB  --repetition 3 --output results/horse-a-structural-locality-1/raw/H4N-16MiB-rep2.json
+
+  Exit codes: 0 = row PASS (continue); 3 = valid structural FAIL
+  (continue the remaining frozen observations); 4 = INVALID/producer
+  failure (stop); 5 = correctness/identity failure (stop).
+
+  One executable SHA is used for all nine runs; the executable is NOT
+  rebuilt between observations.
+
+EVIDENCE LAYOUT
+
+  results/horse-a-structural-locality-1/
+    raw/          nine immutable raw rows (never rewritten)
+    derived/      mechanical derivations (reproducible from raw + frozen authority)
+    provenance/   executable/build/host provenance captured pre-treatment
+
+NO PERFORMANCE DATA: this study adjudicates structural locality only;
+no wall-clock, cycles, PMU, cache-miss or allocator data are collected
+or interpreted (#60 §16). PERFORMANCE_COLLECTION_AUTHORIZED = NO.
