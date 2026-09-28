@@ -45,12 +45,12 @@ fn campaign_manifest_verifies_against_live_state() {
         .verify(&benchmark_root())
         .expect("campaign manifest verifies against live repository state");
     // Frozen arithmetic (task §10).
-    assert_eq!(manifest.cells_per_session(), 1920);
-    assert_eq!(manifest.timing_rows_per_session(), 76_800);
-    assert_eq!(manifest.cardinality.total_timing_rows, 230_400);
-    assert_eq!(manifest.cardinality.measured_rows_total, 172_800);
-    assert_eq!(manifest.cardinality.warmup_rows_total, 57_600);
-    assert_eq!(manifest.cardinality.attribution_rows, 1920);
+    assert_eq!(manifest.cells_per_session(), 2304);
+    assert_eq!(manifest.timing_rows_per_session(), 92_160);
+    assert_eq!(manifest.cardinality.total_timing_rows, 276_480);
+    assert_eq!(manifest.cardinality.measured_rows_total, 207_360);
+    assert_eq!(manifest.cardinality.warmup_rows_total, 69_120);
+    assert_eq!(manifest.cardinality.attribution_rows, 2304);
 }
 
 #[test]
@@ -60,7 +60,7 @@ fn schedule_is_deterministic_and_verifies() {
     let first = markit_mdbench_campaign::receipt::regenerate_schedule(&root, &manifest).unwrap();
     let second = markit_mdbench_campaign::receipt::regenerate_schedule(&root, &manifest).unwrap();
     assert_eq!(first, second, "two regenerations must be byte-identical");
-    let on_disk = std::fs::read(root.join("results/manifests/primary-schedule-v1.jsonl"))
+    let on_disk = std::fs::read(root.join(markit_mdbench_campaign::manifest::SCHEDULE_MANIFEST_PATH))
         .expect("frozen schedule on disk");
     assert_eq!(on_disk, first, "on-disk schedule must equal regeneration");
     // 3 sessions x (22 + 362) scheduled cases.
@@ -84,7 +84,7 @@ fn campaign_receipt_binds_every_artifact() {
         "14 bound artifacts (task §41 incl. profile-defining Cargo.toml/rust-toolchain.toml)"
     );
     assert!(receipt.produced_before_primary_timing);
-    assert_eq!(receipt.campaign_seed, 6000671815411757117);
+    assert_eq!(receipt.campaign_seed, 15542238002486738101);
 }
 
 #[test]
@@ -156,8 +156,8 @@ fn preflight_passes_and_enumerates_unique_observation_ids() {
         markit_mdbench_campaign::preflight::PreflightScope::All,
     );
     let enumeration = &report.diagnostics["observation_enumeration"];
-    assert_eq!(enumeration["rows"], 232_320);
-    assert_eq!(enumeration["unique_ids"], 232_320);
+    assert_eq!(enumeration["rows"], 278_784);
+    assert_eq!(enumeration["unique_ids"], 278_784);
     assert_eq!(enumeration["duplicate_ids"], 0);
     assert_eq!(enumeration["lanes"].as_array().unwrap().len(), 8);
     // Attribution lanes report their own frozen cardinalities, not a
@@ -174,7 +174,7 @@ fn preflight_passes_and_enumerates_unique_observation_ids() {
         .map(|lane| lane["rows"].as_u64().unwrap())
         .collect();
     rows.sort();
-    assert_eq!(rows, vec![110, 1_810]);
+    assert_eq!(rows, vec![132, 2_172]);
     for lane in attribution {
         assert_eq!(lane["attribution_rows"], lane["rows"]);
         assert_eq!(lane["warmup_rows"], 0);
@@ -271,10 +271,10 @@ fn non_research_fake_clock_smoke_end_to_end() {
         .expect("fake-clock smoke runs end to end");
     assert!(report.non_research);
     assert_eq!(report.verdict, "NON_RESEARCH_SMOKE_PASS");
-    // 2 surfaces x (1 case x 5 horses x (1+1) iterations) = 20 timing
-    // rows; 2 surfaces x 5 attribution rows = 10.
-    assert_eq!(report.timing_rows, 20);
-    assert_eq!(report.attribution_rows, 10);
+    // 2 surfaces x (1 case x 6 horses x (1+1) iterations) = 24 timing
+    // rows; 2 surfaces x 6 attribution rows = 12.
+    assert_eq!(report.timing_rows, 24);
+    assert_eq!(report.attribution_rows, 12);
     assert!(report.failure_propagated, "poisoned run must invalidate");
     let _ = std::fs::remove_dir_all(&dir);
 }

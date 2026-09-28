@@ -399,9 +399,11 @@ fn validate_output(
         count += 1;
     }
     let expected = if timing {
-        (options.cases_per_surface * 5 * (options.warmup + options.measured) as usize) as u64
+        (options.cases_per_surface
+            * crate::HORSE_IDS.len()
+            * (options.warmup + options.measured) as usize) as u64
     } else {
-        (options.cases_per_surface * 5) as u64
+        (options.cases_per_surface * crate::HORSE_IDS.len()) as u64
     };
     if count != expected {
         return Err(format!(

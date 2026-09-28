@@ -1,0 +1,64 @@
+{
+  "schema": "primary-campaign-receipt-v1",
+  "campaign_spec_id": "43e08d056bb36288d7acd513871c729f8b5dae763f647431694106fc95238df6",
+  "campaign_seed": 15542238002486738101,
+  "produced_before_primary_timing": true,
+  "artifacts": [
+    {
+      "artifact": "results/manifests/six-horse-performance-campaign-v1.toml",
+      "sha256": "566bb34c676ecab65b591d41d708f3ae6c2f188c41615d68b0d2ec49d3bc4cdf"
+    },
+    {
+      "artifact": "results/manifests/six-horse-machine-v1.toml",
+      "sha256": "d306fe767b0b49322c2fc649ea208c299625a1abdd7987f9c589bc7acacd91b6"
+    },
+    {
+      "artifact": "results/manifests/six-horse-schedule-v1.jsonl",
+      "sha256": "484e0d470abda082bc76877a2561f165054b38a459f6ce9842774a2951c38c93"
+    },
+    {
+      "artifact": "protocol/campaign-observation-schema-v1.json",
+      "sha256": "834eaf8fd1f8a69b360d68ddc253670edef298e6fa5d38722ff852e1b06e6a93"
+    },
+    {
+      "artifact": "workloads/payloads/freeze-receipt-v1.json",
+      "sha256": "35a6f99a3842c1a5cf9fbadf7a7aefc80db4606adcbe6331ecd8a91f62c62cf7"
+    },
+    {
+      "artifact": "workloads/payloads/full-read-manifest-v1.jsonl",
+      "sha256": "dbcaf40cc83015faeb4590f35e4f773013548224611f4fadf7aaec208c802443"
+    },
+    {
+      "artifact": "workloads/payloads/edit-write-manifest-v1.jsonl",
+      "sha256": "1480c1da1bb2b284f2302f054e0c9b28f58b8980c84b8331ca9b5f44d3a34146"
+    },
+    {
+      "artifact": "workloads/payloads/transition-registry-v1.json",
+      "sha256": "3e52d214f31808099e4787699f52aff8f5712b05c9c9a43f877dbd342abe9045"
+    },
+    {
+      "artifact": "workloads/profiles/strict-surface-profile-v1.jsonl",
+      "sha256": "5312fe833708ade4885e02a39a238b5c769964356aa89025d092fe73ab2e6602"
+    },
+    {
+      "artifact": "protocol/result-schema-v2.json",
+      "sha256": "e457f7ddb64aebeee882af8987f48da2870442327c064d51325eb46cbb17e9e8"
+    },
+    {
+      "artifact": "Cargo.lock",
+      "sha256": "f7b17ba7c989965d17514f925b2d733335c6ae56d9ce8ece8e6a51889febd7bc"
+    },
+    {
+      "artifact": "Cargo.toml",
+      "sha256": "dc8b90a1ab891f4a522ad20ee03465f7d062367dc7f0eda09df3e4d09fd4055e"
+    },
+    {
+      "artifact": "rust-toolchain.toml",
+      "sha256": "c8c457db00318d37befe3da283e3be0ed91da63fb1d7b8cac50826ae4a4dca25"
+    },
+    {
+      "artifact": "manifest/environment.toml",
+      "sha256": "723ff512e69e199824dbe546524593e0b3ebad2fc6c045478531b657cae73278"
+    }
+  ]
+}

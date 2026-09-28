@@ -994,8 +994,10 @@ mod tests {
         // The recorded value stays exactly as captured (not replaced by
         // today's MemTotal).
         assert_eq!(
-            frozen.total_ram_bytes, 67_252_445_184,
-            "frozen recorded MemTotal must stay as captured"
+            frozen.total_ram_bytes, 67_252_449_280,
+            "frozen recorded MemTotal must stay as captured (the #76 six-horse
+             capture on the formal host; MemTotal legitimately moves between
+             boots, MACHINE-BINDING-CORRECTIVE-1)"
         );
 
         // Live capture still reads a nonzero MemTotal where /proc exists.
