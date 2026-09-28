@@ -409,6 +409,9 @@ fn require_release_profile() -> Result<(), String> {
     Ok(())
 }
 
+/// One `CampaignSpecId` carries exactly ONE `RunId` per execution
+/// binary (see [`runsupport`]): the shared lane-aware check rejects a
+/// rebuilt executable continuing this binary's timing/attribution runs.
 fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     require_release_profile()?;
     let surface =
@@ -550,9 +553,6 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     }
 }
 
-/// One `CampaignSpecId` carries exactly ONE `RunId` per execution
-/// binary (see [`runsupport`]): the shared lane-aware check rejects a
-/// rebuilt executable continuing this binary's timing/attribution runs.
 fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
     require_release_profile()?;
     let surface = Surface::parse(

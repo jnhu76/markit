@@ -394,7 +394,8 @@ mdbench-memory run-memory --surface S --session N [root]
   executor consumes the SAME frozen schedule rows as the timing
   sessions (same case order, same seeded horse rotation). M-LANE raw
   cardinality therefore equals T-LANE cardinality: 92,160 rows per
-  session per surface, 276,480 total;
+  session across both surfaces (5,280 clean_state + 86,880
+  edit_write), 276,480 total;
 - measurement windows are the already-reviewed runner functions
   `run_full_parse_memory` / `run_update_memory` over `AllocReporter`
   (window = the frozen timing-boundary mirror; retained-memory window
