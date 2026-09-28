@@ -40,6 +40,14 @@ const IOC_ENABLE: libc::c_ulong = 0x2400;
 const IOC_DISABLE: libc::c_ulong = 0x2401;
 const IOC_RESET: libc::c_ulong = 0x2403;
 
+/// `PERF_IOC_FLAG_GROUP`: with this bit in the ioctl argument, the
+/// RESET/ENABLE/DISABLE applies to EVERY member of the leader's group.
+/// Without it the kernel touches the leader event ONLY — members stay
+/// dead (enabled=0, running=0, count=0). Proven on the formal host
+/// 2026-09-29 with a minimal C probe: arg 0 leaves the member at
+/// 0/0/0 while arg 1 counts it with running == enabled.
+const PERF_IOC_FLAG_GROUP: libc::c_ulong = 1;
+
 /// The leading bytes of `struct perf_event_attr` the kernel reads.
 #[repr(C, align(8))]
 #[derive(Default, Clone, Copy)]
@@ -166,8 +174,9 @@ impl EventCounterGroup {
                 .iter()
                 .any(|counter| unsafe { libc::ioctl(counter.fd, request, 0) != 0 })
         } else {
-            // Grouped mode: the leader's ioctl controls the whole group.
-            unsafe { libc::ioctl(self.counters[0].fd, request, 0) != 0 }
+            // Grouped mode: the leader's ioctl with PERF_IOC_FLAG_GROUP
+            // controls the whole group.
+            unsafe { libc::ioctl(self.counters[0].fd, request, PERF_IOC_FLAG_GROUP) != 0 }
         };
         if failed {
             return Err(format!(

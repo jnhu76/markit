@@ -179,9 +179,12 @@ fn cmd_probe_events() -> Result<bool, String> {
         // optimized away).
         let mut accumulator: u64 = 0;
         for i in 0u64..2_000_000 {
-            accumulator = accumulator.wrapping_add(i.wrapping_mul(2654435761));
+            // black_box per iteration: the loop must survive optimization
+            // (a folded loop counts nothing and proves nothing).
+            accumulator =
+                accumulator.wrapping_add(std::hint::black_box(i).wrapping_mul(2654435761));
         }
-        std::hint::black_box(&mut accumulator);
+        std::hint::black_box(accumulator);
         let readings = counters
             .end()
             .map_err(|e| format!("end {}: {e}", group.id))?;
