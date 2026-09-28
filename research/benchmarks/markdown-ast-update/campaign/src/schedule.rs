@@ -14,11 +14,11 @@
 //! position-balanced WITHOUT adaptivity):
 //!
 //! ```text
-//! 1. one seeded base permutation of H0-H4, derived from the campaign
-//!    root seed (identity order sorted by horse label, then the same
-//!    frozen shuffle);
+//! 1. one seeded base permutation of the six horses (H0-H4 + HorseA),
+//!    derived from the campaign root seed (identity order sorted by
+//!    horse label, then the same frozen shuffle);
 //! 2. for case order ordinal j (0-based) in session s (0-based):
-//!    execution order = base permutation rotated by (j + s) mod 5.
+//!    execution order = base permutation rotated by (j + s) mod 6.
 //! ```
 //!
 //! Because the case order itself is a uniform shuffle, the rotation
@@ -81,7 +81,7 @@ pub struct ScheduleRow {
     pub horse_order: Vec<String>,
 }
 
-/// Derive the seeded base H0-H4 permutation (sorted identity order ->
+/// Derive the seeded base six-horse permutation (sorted identity order ->
 /// frozen seeded shuffle).
 pub fn base_horse_permutation(horse_base_seed: u64) -> Vec<String> {
     // Lexically sorted identity order first, so the input enumeration
@@ -101,7 +101,8 @@ pub fn rotate<T: Clone>(base: &[T], k: usize) -> Vec<T> {
 }
 
 /// Execution horse order for case order ordinal `j` (0-based) in session
-/// `s` (0-based): `rotate(base, (j + s) mod 5)` (task §15).
+/// `s` (0-based): `rotate(base, (j + s) mod base.len())` — six horses for
+/// this campaign (task §15).
 pub fn horse_order_for(base: &[String], j: u32, s: u32) -> Vec<String> {
     rotate(base, (j as usize + s as usize) % base.len())
 }

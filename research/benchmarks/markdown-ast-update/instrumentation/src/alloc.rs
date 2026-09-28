@@ -140,7 +140,11 @@ unsafe impl GlobalAlloc for CountingAllocator {
 
     unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
         // Frozen semantics: one dealloc of the old block + one alloc of
-        // the new block.
+        // the new block. Charging the dealloc before the realloc call
+        // means a FAILING realloc (null return) under-counts the still-
+        // live old block until it is actually freed; accepted because a
+        // failed realloc is an OOM path in an M-LANE-only binary and has
+        // no timing-lane effect.
         self.note_dealloc(layout.size());
         let new_ptr = System.realloc(ptr, layout, new_size);
         if !new_ptr.is_null() {

@@ -28,9 +28,12 @@ history. It binds no measured value.
 ```text
 LIVE_MASTER_AT_PREFLIGHT_START = efa392752bfb2604e3d2fdfabaf0ba9825f70b74
 LIVE_TREE_AT_PREFLIGHT_START   = ccbae20a29b0a060532ff014187a98b798d30595
-PERFORMANCE_FREEZE_COMMIT      = <the merge commit of the Gate-B parity
-                                 preflight PR (recorded after review)>
-PERFORMANCE_FREEZE_TREE        = <recorded with the freeze commit>
+PERFORMANCE_FREEZE_COMMIT      = the reviewed pre-merge head of PR #86;
+                                 recorded verbatim in the merge commit
+                                 message and in issue #76 (a merge commit
+                                 cannot contain its own hash)
+PERFORMANCE_FREEZE_TREE        = git tree of PERFORMANCE_FREEZE_COMMIT
+                                 (recorded at the same sites)
 ```
 
 Six implementation identities (all Gate-A accepted; verdicts in
@@ -290,6 +293,11 @@ scheduled.
   the shared parser seam and the common schema slots stay honest
   (Unknown) where no exact equivalent exists. Its own structural record
   remains its attribution authority.
+- Reading the freeze verification accurately: `cargo test --workspace`
+  covers the default profile only. The frozen R5 mechanism matrix suites
+  (549 tests per H1/H2/H3 crate) are `#[ignore]`d by pre-existing frozen
+  policy and run separately via `verify-r5.sh --release`; unchanged by
+  this branch.
 ```
 
 ## 10. Formal campaign contract (frozen BEFORE any result)

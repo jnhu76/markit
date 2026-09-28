@@ -60,8 +60,9 @@ fn schedule_is_deterministic_and_verifies() {
     let first = markit_mdbench_campaign::receipt::regenerate_schedule(&root, &manifest).unwrap();
     let second = markit_mdbench_campaign::receipt::regenerate_schedule(&root, &manifest).unwrap();
     assert_eq!(first, second, "two regenerations must be byte-identical");
-    let on_disk = std::fs::read(root.join(markit_mdbench_campaign::manifest::SCHEDULE_MANIFEST_PATH))
-        .expect("frozen schedule on disk");
+    let on_disk =
+        std::fs::read(root.join(markit_mdbench_campaign::manifest::SCHEDULE_MANIFEST_PATH))
+            .expect("frozen schedule on disk");
     assert_eq!(on_disk, first, "on-disk schedule must equal regeneration");
     // 3 sessions x (22 + 362) scheduled cases.
     assert_eq!(
