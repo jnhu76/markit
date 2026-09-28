@@ -144,6 +144,78 @@ pub fn clean_state_case_id(record: &FullReadRecord) -> Result<CaseId, String> {
 pub fn load_campaign_workload(
     benchmark_root: &std::path::Path,
 ) -> Result<CampaignWorkload, String> {
+    let workload = load_campaign_workload_with_filter(benchmark_root, None)?;
+    if workload.clean_state.len() != EXPECTED_CLEAN_STATE_CASES {
+        return Err(format!(
+            "G0-strict FULL_READ cases {} != frozen {EXPECTED_CLEAN_STATE_CASES}",
+            workload.clean_state.len()
+        ));
+    }
+    if workload.edit_write.len() != EXPECTED_EDIT_WRITE_CASES {
+        return Err(format!(
+            "G0_PRIMARY EDIT_WRITE cases {} != frozen {EXPECTED_EDIT_WRITE_CASES}",
+            workload.edit_write.len()
+        ));
+    }
+    // No duplicate case ids (identity collision would break ObservationId
+    // uniqueness).
+    let unique: std::collections::BTreeSet<&str> = workload
+        .edit_write
+        .iter()
+        .map(|c| c.case_id_hex.as_str())
+        .collect();
+    if unique.len() != workload.edit_write.len() {
+        return Err("duplicate EDIT_WRITE case ids in frozen workload".to_string());
+    }
+    let unique_clean: std::collections::BTreeSet<&str> = workload
+        .clean_state
+        .iter()
+        .map(|c| c.case_id_hex.as_str())
+        .collect();
+    if unique_clean.len() != workload.clean_state.len() {
+        return Err("duplicate CLEAN_STATE case ids in frozen workload".to_string());
+    }
+    Ok(workload)
+}
+
+/// Load ONLY the cases whose payload id is in `filter` (#76 PMU driver:
+/// one fresh process per observation materializes only its own case).
+///
+/// Per-case identity semantics are IDENTICAL to the full load — same
+/// hash verification, same reconstruction, same re-validation, same
+/// CaseId derivation with the dry-run equality assert — so a filtered
+/// case is byte-identical to the same case inside a full load. Only the
+/// population differs; cardinality checks are the caller's business.
+pub fn load_campaign_workload_filtered(
+    benchmark_root: &std::path::Path,
+    filter: &std::collections::BTreeSet<String>,
+) -> Result<CampaignWorkload, String> {
+    let workload = load_campaign_workload_with_filter(benchmark_root, Some(filter))?;
+    for case in &workload.clean_state {
+        if !filter.contains(&case.payload_id) {
+            return Err(format!(
+                "filtered load returned case {} outside the filter",
+                case.payload_id
+            ));
+        }
+    }
+    for case in &workload.edit_write {
+        if !filter.contains(&case.payload_id) {
+            return Err(format!(
+                "filtered load returned case {} outside the filter",
+                case.payload_id
+            ));
+        }
+    }
+    Ok(workload)
+}
+
+/// The shared materializer behind the full and filtered loaders.
+fn load_campaign_workload_with_filter(
+    benchmark_root: &std::path::Path,
+    filter: Option<&std::collections::BTreeSet<String>>,
+) -> Result<CampaignWorkload, String> {
+    let selected = |payload_id: &str| filter.map(|f| f.contains(payload_id)).unwrap_or(true);
     // Hash-verified source materialization (shared with #35 tooling).
     let files: Vec<SelectedFile> =
         markit_mdbench_workload_freeze::load_selected_files(benchmark_root)?;
@@ -162,6 +234,10 @@ pub fn load_campaign_workload(
             .iter()
             .any(|lane| lane.case_class == "G0_STRICT_FULL_READ");
         if !strict {
+            continue;
+        }
+        let payload_id = format!("full-read:{}", record.source_key);
+        if !selected(&payload_id) {
             continue;
         }
         let source_text = sources
@@ -184,7 +260,7 @@ pub fn load_campaign_workload(
         clean_state.push(CleanStateCase {
             case_id: clean_state_case_id(record)?,
             case_id_hex: String::new(),
-            payload_id: format!("full-read:{}", record.source_key),
+            payload_id,
             source_key: record.source_key.clone(),
             source_id: record.source_id.clone(),
             file_bytes: record.file_bytes,
@@ -199,12 +275,6 @@ pub fn load_campaign_workload(
             case
         })
         .collect::<Vec<_>>();
-    if clean_state.len() != EXPECTED_CLEAN_STATE_CASES {
-        return Err(format!(
-            "G0-strict FULL_READ cases {} != frozen {EXPECTED_CLEAN_STATE_CASES}",
-            clean_state.len()
-        ));
-    }
 
     // ---- Surface B: EDIT_WRITE (362 G0_PRIMARY payloads) --------------
     let payloads: Vec<PayloadRecord> =
@@ -241,6 +311,9 @@ pub fn load_campaign_workload(
             continue;
         }
         for payload in &group {
+            if !selected(&payload.payload_id) {
+                continue;
+            }
             let pre_source_text = if payload.step == 0 {
                 (*base_source).to_string()
             } else {
@@ -334,24 +407,6 @@ pub fn load_campaign_workload(
             case
         })
         .collect::<Vec<_>>();
-    if edit_write.len() != EXPECTED_EDIT_WRITE_CASES {
-        return Err(format!(
-            "G0_PRIMARY EDIT_WRITE cases {} != frozen {EXPECTED_EDIT_WRITE_CASES}",
-            edit_write.len()
-        ));
-    }
-    // No duplicate case ids (identity collision would break ObservationId
-    // uniqueness).
-    let unique: std::collections::BTreeSet<&str> =
-        edit_write.iter().map(|c| c.case_id_hex.as_str()).collect();
-    if unique.len() != edit_write.len() {
-        return Err("duplicate EDIT_WRITE case ids in frozen workload".to_string());
-    }
-    let unique_clean: std::collections::BTreeSet<&str> =
-        clean_state.iter().map(|c| c.case_id_hex.as_str()).collect();
-    if unique_clean.len() != clean_state.len() {
-        return Err("duplicate CLEAN_STATE case ids in frozen workload".to_string());
-    }
 
     Ok(CampaignWorkload {
         clean_state,
