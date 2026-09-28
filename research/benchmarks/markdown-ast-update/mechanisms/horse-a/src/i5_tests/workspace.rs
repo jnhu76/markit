@@ -15,13 +15,17 @@
 //!    trips the bounded-stack invariant even when the allocator holds
 //!    spare capacity.
 //!
-//! Deterministic allocation refusal is induced through a TEST-ONLY
+//! A deterministic reservation refusal is SIMULATED through a TEST-ONLY
 //! one-shot thread-local seam compiled out of every non-test build
-//! (`crate::workspace::arm_reservation_failure_for_tests`) — there is no
-//! production fault-injection mechanism. A genuinely refusing global
-//! allocator cannot be used here: staging legitimately performs many
-//! infallible `Vec` allocations before reaching the workspace
-//! reservation, and those abort rather than error.
+//! (`crate::workspace::arm_reservation_failure_for_tests`): the next
+//! workspace formation on the armed thread fails at the CommitWorkspace
+//! formation boundary, immediately before the production reservation
+//! sequence. There is no production fault-injection mechanism, and the
+//! operating system allocator's real refusal path is NOT exercised. A
+//! genuinely refusing global allocator cannot be used here: staging
+//! legitimately performs many infallible `Vec` allocations before
+//! reaching the workspace reservation, and those abort rather than
+//! error.
 
 use markit_mdbench_common::{CanonicalEdit, NoopWorkSink, Source, SourceId};
 use markit_mdbench_shared_grammar::parse_full;
@@ -39,6 +43,14 @@ fn edit(start: usize, end: usize, inserted: &str) -> CanonicalEdit {
 /// The #60 witness-shape fixture (three paragraph Owners, local route).
 const WITNESS_SOURCE: &str = "alpha\n\nbeta\n\ngamma\n";
 
+// Type-level regression for the P1 remediation: `ResourceRefused` is a
+// unit variant — no payload at all, so constructing, cloning, dropping or
+// `Display`-ing it cannot touch the allocator (the production-side const
+// in `update.rs` enforces the same shape at every build; this pins it to
+// the failure-path regression as well). Adding any heap-backed payload
+// back stops this const from compiling.
+const _: UpdateError = UpdateError::ResourceRefused;
+
 /// P1-1 regression: a workspace formation refusal happens BEFORE the
 /// frontier — staging (which reserves the workspace) only borrows the old
 /// READY document, returns `UpdateError::ResourceRefused`, and the old
@@ -55,9 +67,12 @@ fn workspace_reservation_failure_preserves_old_ready() {
     let e = edit(13, 13, "X");
     let post = e.apply(&old_source, SourceId(2)).expect("edit applies");
 
-    // Arm the TEST-ONLY one-shot seam: the NEXT workspace reservation on
-    // this thread refuses exactly where the fallible try_reserve_exact
-    // runs. The refusal must surface as an ordinary pre-frontier error.
+    // Arm the TEST-ONLY one-shot seam: the NEXT workspace formation on
+    // this thread returns a deterministic SIMULATED refusal at the
+    // CommitWorkspace formation boundary, immediately before the
+    // production reservation sequence. The refusal must surface as an
+    // ordinary pre-frontier error; this does NOT exercise the operating
+    // system allocator's real refusal path.
     arm_reservation_failure_for_tests();
     match stage(
         &old,
@@ -67,7 +82,7 @@ fn workspace_reservation_failure_preserves_old_ready() {
         &mut NoopWorkSink,
         &mut NoopHorseAStructuralSink,
     ) {
-        Err(UpdateError::ResourceRefused { .. }) => {}
+        Err(UpdateError::ResourceRefused) => {}
         other => panic!(
             "a refused workspace reservation must be a pre-frontier \
              UpdateError::ResourceRefused, got: {other:?}"

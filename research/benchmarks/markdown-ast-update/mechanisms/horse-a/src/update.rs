@@ -72,15 +72,26 @@ pub enum UpdateError {
     /// implementation/invariant failure — never an algorithmic fallback.
     InconsistentObservation { detail: String },
     /// An ordinary pre-frontier resource the commit requires could not be
-    /// reserved — e.g. the bounded commit workspace's fallible
+    /// reserved — the bounded commit workspace's fallible
     /// `try_reserve_exact` reservation was refused by the allocator
     /// (#59 §9.1 resource table: resource/allocation failure before
     /// `PreparedCommit` is a pre-frontier error; the old READY state was
     /// never consumed and remains usable). Never a fallback trigger.
-    ResourceRefused { detail: String },
+    ///
+    /// Deliberately payload-free: an allocator refusal must be reportable
+    /// without performing another allocation, so constructing, cloning and
+    /// `Display`-ing this variant are allocation-free by construction (the
+    /// const assertion below pins the unit-variant shape).
+    ResourceRefused,
     /// The same-target full builder refused to produce a state.
     FullBuild(BuildError),
 }
+
+// Type-level guarantee that the allocator-refusal variant stays
+// allocation-free: it is a unit variant, so no construction, clone or drop
+// of it can touch the allocator, and `Display` is static text below. If a
+// payload is ever added back, this const stops compiling.
+const _: UpdateError = UpdateError::ResourceRefused;
 
 impl std::fmt::Display for UpdateError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -91,8 +102,8 @@ impl std::fmt::Display for UpdateError {
             UpdateError::InconsistentObservation { detail } => {
                 write!(f, "inconsistent parser observation: {detail}")
             }
-            UpdateError::ResourceRefused { detail } => {
-                write!(f, "pre-frontier resource refused: {detail}")
+            UpdateError::ResourceRefused => {
+                f.write_str("pre-frontier commit workspace reservation was refused")
             }
             UpdateError::FullBuild(e) => write!(f, "same-target full build failed: {e}"),
         }
@@ -659,11 +670,9 @@ pub(crate) fn stage<W: WorkSink>(
                          (h_old = {h_old}, h_fresh = {fresh_height})"
                     ),
                 },
-                WorkspaceError::ReservationRefused => UpdateError::ResourceRefused {
-                    detail: "the bounded commit workspace reservation was refused by the \
-                             allocator (try_reserve_exact)"
-                        .to_string(),
-                },
+                // Allocation-free by construction: the allocator just
+                // refused, so reporting that refusal must not allocate.
+                WorkspaceError::ReservationRefused => UpdateError::ResourceRefused,
             })?
         }
         CommitPlan::Full(fresh) => {

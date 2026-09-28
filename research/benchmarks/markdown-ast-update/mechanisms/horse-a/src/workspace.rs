@@ -30,15 +30,33 @@
 //!
 //! Capacity derivation (checked, pre-frontier; `prepare` returns
 //! [`WorkspaceError`] so the caller fails before the frontier with the
-//! existing error authority): the replace_range splice operates on the
-//! old root (height `h_old`), its subtrees, and the fresh replacement
-//! tree (height `h_fresh`); the intermediate `join(A, middle)` result
-//! can reach `max(h_old, h_fresh) + 1` (a general AVL join property:
-//! the join of two AVL trees of heights a and b has height in
-//! `[max(a, b), max(a, b) + 1]`). With `Hmax = max(h_old, h_fresh) + 1`,
-//! each operator's stack depth is ≤ its operand's height ≤ Hmax, and
-//! the frozen #59 §9.1 rows allow `Hmax + 1` — logical limit
-//! `max(h_old, h_fresh) + 2` covers every stack with one spare frame.
+//! existing error authority). Provenance is stated explicitly, because
+//! the frozen authority and this implementation's frame-depth proof are
+//! DIFFERENT claims:
+//!
+//! * Frozen authority (#59 §9.1 resource table) gives a CONSERVATIVE
+//!   post-frontier workspace ceiling per operator — explicit stack
+//!   ≤ Hmax + 1 for `split`, right-spine unwind ≤ Hmax + 1 for
+//!   `remove_max`, and descent/unwind ≤ 2(Hmax + 2) + 1 for
+//!   `join_with_pivot` (notably more conservative for the join). It
+//!   does not state the implementation's exact simultaneously-live
+//!   frame depth, and it is not the proof of that tighter depth.
+//! * This concrete iterative realization stores only simultaneously
+//!   LIVE frames, which gives the tighter bound: the iterative join
+//!   descent follows the inner spine of the taller operand with depth
+//!   `t ≤ δ − 1` (δ = |h(L) − h(R)|; the frozen spine-depth lemma, with
+//!   no spine at all in the δ ≤ 1 compatible case), so
+//!   `simultaneously_live_join_frames ≤ operand height`; the split
+//!   descent and the remove_max right spine each hold one frame per
+//!   level, likewise ≤ operand height.
+//!
+//! The two are bridged by the general AVL join height property:
+//! `h(join(A, B)) ≤ max(h(A), h(B)) + 1`, so the replace-range
+//! intermediate tree is bounded by `Hmax = max(h_old, h_fresh) + 1`,
+//! every operand height is ≤ Hmax, and the implementation's logical
+//! stack limit `max(h_old, h_fresh) + 2 = Hmax + 1` provides the
+//! required spare frame past the deepest possible live depth while
+//! remaining within the frozen conservative resource ceiling.
 //! Two splits, two remove_max and two join_with_pivot calls run
 //! sequentially (each drains its own stack completely before the next
 //! begins), so one stack per operator shape suffices; `split`'s unwind
@@ -200,17 +218,23 @@ impl CommitWorkspace {
     /// while the caller still owns the old READY state.
     pub(crate) fn prepare(h_old: u32, h_fresh: u32) -> Result<Self, WorkspaceError> {
         let hmax = h_old.max(h_fresh);
-        // Hmax = hmax + 1 (the general AVL join intermediate height); +1
-        // spare frame per the frozen "depth <= Hmax + 1" rows.
+        // Hmax = hmax + 1 (the general AVL join intermediate height). The
+        // logical limit is Hmax + 1: one spare frame past the
+        // implementation's simultaneously-live-frame depth (≤ operand
+        // height ≤ Hmax) — a tighter bound than, and remaining within,
+        // the frozen conservative #59 §9.1 ceilings (see the module docs
+        // for the provenance split).
         let limit = usize::try_from(hmax)
             .ok()
             .and_then(|h| h.checked_add(2))
             .ok_or(WorkspaceError::CapacityOverflow)?;
 
-        // TEST-ONLY deterministic reservation-refusal seam: consumes the
-        // one-shot thread-local flag exactly where the fallible
-        // reservation runs. Compiled out of every non-test build — this
-        // is not a production fault-injection mechanism.
+        // TEST-ONLY deterministic simulation of reservation refusal at
+        // the CommitWorkspace formation boundary, immediately BEFORE the
+        // production try_reserve_exact sequence runs. Compiled out of
+        // every non-test build — this is not a production
+        // fault-injection mechanism, and it does NOT exercise the
+        // operating system allocator's real refusal path.
         #[cfg(test)]
         if take_test_reservation_failure() {
             return Err(WorkspaceError::ReservationRefused);
@@ -312,11 +336,13 @@ impl<T> BoundedStack<T> {
 
 /// TEST-ONLY deterministic reservation-refusal seam (#62 post-merge
 /// corrective pass): a thread-local one-shot flag that makes the NEXT
-/// `CommitWorkspace::prepare` on this thread refuse exactly where the
-/// fallible `try_reserve_exact` runs. Thread-local so parallel test
-/// threads cannot arm each other's failures; one-shot so a test that
-/// arms it fails exactly one staging attempt. Gated behind `#[cfg(test)]`
-/// — no production fault-injection mechanism exists.
+/// `CommitWorkspace::prepare` on this thread return a SIMULATED refusal
+/// at the workspace-formation boundary, immediately BEFORE the
+/// production `try_reserve_exact` sequence. Thread-local so parallel
+/// test threads cannot arm each other's failures; one-shot so a test
+/// that arms it fails exactly one staging attempt. Gated behind
+/// `#[cfg(test)]` — no production fault-injection mechanism exists, and
+/// the operating system allocator's real refusal path is NOT exercised.
 #[cfg(test)]
 mod reservation_failure_gate {
     use std::cell::Cell;
