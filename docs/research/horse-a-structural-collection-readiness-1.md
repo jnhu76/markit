@@ -417,14 +417,19 @@ OBSERVED (full workspace run, --no-fail-fast, on the reviewed master)
      non_research_fake_clock_smoke_end_to_end
      root causes — TWO, independently present:
        (a) corpus materialization (the frozen G0-strict clean_state/
-           edit_write workload loads real source bytes) — the cause of the
-           first four tests listed;
+           edit_write workload loads real source bytes) — the SOLE cause in
+           frozen_workload_consumes_exactly_22_and_362,
+           campaign_manifest_verifies_against_live_state,
+           schedule_is_deterministic_and_verifies and
+           attribution_counters_are_deterministic_on_representative_cases;
        (b) stale receipt-bound artifact hashes: the frozen campaign receipt
            binds Cargo.lock = e42e1a91… / Cargo.toml = 3ad241ff… while the
-           tracked master files hash to b78e67b8… / ce1531f7… — present in
-           the last three tests (receipt verification, preflight observation
-           ids, fake-clock smoke), which fail on (a) AND (b) together.
-           Materializing the corpus alone will NOT clear those three.
+           tracked master files hash to b78e67b8… / ce1531f7… — present
+           TOGETHER WITH (a) in campaign_receipt_binds_every_artifact,
+           preflight_passes_and_enumerates_unique_observation_ids and
+           non_research_fake_clock_smoke_end_to_end, which fail on both
+           causes at once; materializing the corpus alone will NOT clear
+           those three.
 
   3. markit-mdbench-semantics --test contracts
      committed_pilot_artifacts_match_the_driver
