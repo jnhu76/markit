@@ -68,3 +68,71 @@ donor-level interpretation.
   ~/research/markit-gate76/donors/` at the pinned commits above;
   Markit clean clone at `~/research/markit-gate76/markit` @
   `ad115bd12301a926aa1c3c19603f2a72fc1d183b`
+
+---
+
+## Corrective re-evaluation — 2026-09-28 (#79, #80)
+
+The frozen Gate-A FAIL above is preserved as history. Both blockers were
+repaired by their own corrective issues/PRs and re-reviewed by independent
+fresh-context reviewers (neither an author of the repaired code):
+
+| Horse | Corrective issue | Corrective PR (head) | Merge commit | Fresh review | New verdict | P0/P1 |
+|---|---|---|---|---|---|---|
+| H2 | **#79** | PR #82 (367060a) | **a3a551f** | RH2 — `../reviews/gate-a-rh2-h2-recheck-2026-09-28.md` | **FAITHFUL_MECHANISM_MODEL** | 0 / 0 |
+| H3 | **#80** | PR #83 (532fd52) | **a8327fb** | RH3 — `../reviews/gate-a-rh3-h3-recheck-2026-09-28.md` | **FAITHFUL_WITH_DECLARED_SIMPLIFICATION** | 0 / 0 |
+
+Both repairs took the mechanism-repair branch (no claim-boundary
+downgrade): H2 gained live-level (mid-container) candidate discovery
+(post-closure consult point, `starts_block` margin replacement,
+persistent forward cursor) and H3 gained operative damaged-ancestor
+interior descent plus attributed persistent-cursor discovery. Decisive
+witnesses: H2 27/30 mid-container ListItem identity sharing (donor 25/30,
+byte-identical re-run at the pinned npm versions); H3 interior-paragraph
+identity sharing inside a flagged BlockQuote (donor F4/F4b reproduced by
+rebuilding the frozen C harness at the pinned SHAs). Full per-horse
+detail: the dated corrective sections in `H2-FIDELITY.md` /
+`H3-FIDELITY.md`; challenge evidence: the corrective-cycle section of
+`CHALLENGE-CASES.md`.
+
+Gate-A status after the correctives (still governed by this frozen
+record until re-evaluated):
+
+```text
+GATE_A_VERDICT            = FAIL / BLOCKED   (frozen above — unchanged)
+CORRECTIVE_CYCLE          = COMPLETE (both P1 pairs repaired, merged,
+                            fresh-reviewed; #79/#80 closed as completed)
+GATE_A_RE_EVALUATION      = PENDING — requires a fresh synthesis reviewer
+                            (R6: not R5/RH2/RH3, not any author) evaluating
+                            from the merged master; only a documented R6
+                            PASS may update GATE_A_VERDICT
+GATE_B_AUTHORIZED         = NO
+PERFORMANCE_COLLECTION_AUTHORIZED = NO
+PERFORMANCE_COLLECTION_RUN       = NO
+```
+
+Residual (non-blocking) findings carried into the record: H2 P2×4 /
+P3×5 and H3 P2-1 (fragility over-reuse, H3's favor) / P2-2 (first-
+interior-block under-reuse, against H3; declaration completed in the R5
+§8 addendum) / P3×3 — see the dated sections of the per-horse contracts.
+H3-vs-donor comparisons must always state P2-1.
+
+R5-review hygiene debt accepted in this cycle (all documentation-level,
+non-blocking; recorded here so the debt is explicit):
+
+- H1 accepted debt: the R5 §6 insertion-gap justification misdescribes
+  the donor's `(i,i+1)` mechanics (P2-1), and the P3 set (no early break
+  in the damage scan; deeper-suffix-shift declaration gap; stale
+  `mechanisms/full-rebuild/README.md`) — implementation sound; accepted
+  as documented debt in `H1-FIDELITY.md` "Open findings", not repaired
+  in this cycle.
+- H4 caveats: P2-1 (convergence clause (b) decisive role unwitnessed),
+  P2-2 (clause (c) vacuous + R5 §9 semantic-dependency narrative
+  misdescribes the implemented restart path), P2-3 (damage-detection
+  linear scan divergence undeclared) and P3 wording items — accepted as
+  documented caveats in `H4-FIDELITY.md` "Open findings"; any later H4
+  comparison must restate them.
+- Upstream probe outputs in `challenge-evidence/` are annotated (see the
+  corrective-cycle section of `CHALLENGE-CASES.md`) so commands,
+  observations, and interpretation are distinguishable without opening
+  the scripts.

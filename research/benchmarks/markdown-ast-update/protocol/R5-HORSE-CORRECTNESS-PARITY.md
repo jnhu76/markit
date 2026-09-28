@@ -503,6 +503,15 @@ started; refinements of the §7 fields, all conservative):
   reads (prefix closure + starts_block classification) are lazy-bounded
   and reported exactly (R5-CORRECTIVE-2); the taken range's interior
   stays uninspected.
+- §7 re-review addendum (recorded at the RH2 fresh re-review of #82,
+  2026-09-28; DECLARATION ONLY — no mechanism change): the DAMAGE rule's
+  "minGap = 128 bytes: a surviving piece shorter than 128 bytes is
+  dropped" applies SYMMETRICALLY to the split pieces, while
+  @lezer/common applies minGap only before/between changes and NEVER
+  drops the after-last-change piece. The asymmetry bounds the divergence
+  at ≤127 bytes of old tail per edit (conservative, against-H2) and was
+  declared in the frozen H2-FIDELITY D2 record; it is restated here so
+  the freeze text itself carries it.
 
 ## 8. H3 — OLD_TREE_SUBTREE_REUSE (`mechanisms/old-tree-subtree-reuse`)
 
@@ -681,6 +690,22 @@ started; refinements of the §8 fields, all conservative):
   H2 window analogue, in the patched tree's post coordinates; found by
   the frozen structural-recipe grid: an indent edit adjacent to an
   interior run's end made the old list's termination stale).
+- §8 re-review addendum (recorded at the RH3 fresh re-review of #83,
+  2026-09-28; DECLARATION ONLY — no mechanism change; completes the
+  RH3 P2-2 residual that was previously stated only in a test
+  comment): interior reuse is DIRECTIONALLY LIMITED relative to the
+  donor. (a) The FIRST interior block of any damaged container is never
+  reusable: its opening-line consult carries the pre-container-push
+  live key, while the child's recorded entry key includes the
+  container's frame — the donor (token-granular, non-line-aligned)
+  accepts those tokens (RH3 harness rerun: `block_quote_marker` +
+  earlier-paragraph token reuse inside a damaged quote). (b) Interior
+  reuse entirely BEFORE the edit is additionally blocked by the left
+  open-edge window inside containers. Both limits UNDER-REUSE
+  (conservative, against-H3): they cost reuse, never correctness, and
+  were present in every == H0-verified run of the post-#80 mechanism.
+  Any H3-vs-donor comparison must state this limit alongside the P2-1
+  fragility over-reuse (which runs in the opposite direction).
 
 ## 9. H4 — RESTART_CONVERGENCE (`mechanisms/restart-convergence`)
 
