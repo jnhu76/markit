@@ -675,6 +675,14 @@ impl<'a> SessionExecutor<'a> {
                         horse_id,
                         sink,
                     )?,
+                    "HorseA" => self.run_attribution_cell(
+                        markit_mdbench_horse_a::HORSE_A_MECHANISM_ID,
+                        &markit_mdbench_horse_a::HorseAMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        sink,
+                    )?,
                     other => {
                         return Err(format!("unknown horse {other:?} in attribution schedule"))
                     }
