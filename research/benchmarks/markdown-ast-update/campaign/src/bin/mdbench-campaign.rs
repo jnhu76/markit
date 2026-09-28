@@ -11,7 +11,7 @@
 //!   schedule-determinism   regenerate twice + byte-compare (and vs disk)
 //!   receipt-generate       write the campaign freeze receipt (freeze action)
 //!   receipt-verify         verify every bound hash + spec id + schedule
-//!   preflight [--timing S --session N | --attribution S]
+//!   preflight [--timing S --session N | --memory S --session N | --attribution S]
 //!                           non-measuring session preflight (fail-closed);
 //!                           no flags = the whole campaign (All scope)
 //!   gen-envelope-schema <out>
@@ -27,16 +27,19 @@
 //! PERFORMANCE-RUN-1 has a frozen execution path; THIS task never runs
 //! them over the campaign (task §50). Both bind the executable SHA256
 //! into the `RunId` and verify the finalized raw file before writing a
-//! run receipt or declaring the session complete.
+//! run receipt or declaring the session complete. The formal M-LANE
+//! (`run-memory`) lives in the DEDICATED `mdbench-memory` binary: this
+//! binary must never install a counting allocator.
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-use markit_mdbench_campaign::finalize::{RawFileSummary, RawLane};
+use markit_mdbench_campaign::finalize::RawLane;
 use markit_mdbench_campaign::manifest::{
     CampaignManifest, ENVELOPE_SCHEMA_PATH, MACHINE_MANIFEST_PATH, SCHEDULE_MANIFEST_PATH,
 };
 use markit_mdbench_campaign::preflight::{HostBinding, PreflightScope};
+use markit_mdbench_campaign::runsupport;
 use markit_mdbench_campaign::Surface;
 
 fn main() -> ExitCode {
@@ -282,43 +285,61 @@ fn cmd_preflight(root: &Path, flags: &[String]) -> Result<bool, String> {
     Ok(report.pass)
 }
 
-/// The preflight scope is EXPLICIT: a timing session, an attribution
-/// lane, and the whole campaign check different identity sets, so an
-/// unstated scope must never be guessed (it used to be inferred from
-/// which flags happened to be present).
+/// The preflight scope is EXPLICIT: a timing session, a formal memory
+/// session, an attribution lane, and the whole campaign check different
+/// identity sets, so an unstated scope must never be guessed (it used
+/// to be inferred from which flags happened to be present).
 fn parse_preflight_scope(flags: &[String]) -> Result<PreflightScope, String> {
     let timing = flag_value(flags, "--timing");
+    let memory = flag_value(flags, "--memory");
     let attribution = flag_value(flags, "--attribution");
     let session = flag_value(flags, "--session");
     if flag_value(flags, "--surface").is_some() {
         return Err(
             "--surface is not a preflight scope flag; use --timing <surface> --session <n>, \
-             --attribution <surface>, or no flags for the whole campaign"
+             --memory <surface> --session <n>, --attribution <surface>, or no flags for the \
+             whole campaign"
                 .to_string(),
         );
     }
-    match (timing, attribution, session) {
-        (None, None, None) => Ok(PreflightScope::All),
-        (Some(_), Some(_), _) => {
-            Err("--timing and --attribution are mutually exclusive".to_string())
-        }
-        (Some(timing), None, None) => Err(format!(
+    let lane_count = [&timing, &memory, &attribution]
+        .iter()
+        .filter(|lane| lane.is_some())
+        .count();
+    if lane_count > 1 {
+        return Err("--timing, --memory, and --attribution are mutually exclusive".to_string());
+    }
+    match (timing, memory, attribution, session) {
+        (None, None, None, None) => Ok(PreflightScope::All),
+        (Some(timing), None, None, None) => Err(format!(
             "--timing {timing} needs --session <n>: one timing session is preflighted at a time"
         )),
-        (Some(timing), None, Some(session)) => Ok(PreflightScope::Timing {
+        (Some(timing), None, None, Some(session)) => Ok(PreflightScope::Timing {
             surface: Surface::parse(&timing)?,
             session: session
                 .parse::<u32>()
                 .map_err(|e| format!("--session: {e}"))?,
         }),
-        (None, Some(attribution), None) => Ok(PreflightScope::Attribution {
+        (None, Some(memory), None, None) => Err(format!(
+            "--memory {memory} needs --session <n>: one memory session is preflighted at a time"
+        )),
+        (None, Some(memory), None, Some(session)) => Ok(PreflightScope::Memory {
+            surface: Surface::parse(&memory)?,
+            session: session
+                .parse::<u32>()
+                .map_err(|e| format!("--session: {e}"))?,
+        }),
+        (None, None, Some(attribution), None) => Ok(PreflightScope::Attribution {
             surface: Surface::parse(&attribution)?,
         }),
-        (None, Some(_), Some(_)) => Err(
+        (None, None, Some(_), Some(_)) => Err(
             "--session does not apply to --attribution (the lane has no timing session)"
                 .to_string(),
         ),
-        (None, None, Some(_)) => Err("--session requires --timing <surface>".to_string()),
+        (None, None, None, Some(_)) => {
+            Err("--session requires --timing <surface> or --memory <surface>".to_string())
+        }
+        _ => unreachable!("mutually exclusive lanes rejected above"),
     }
 }
 
@@ -432,7 +453,11 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     // Raw layout (task §39): append/create-only; an existing file for
     // this session is a hard error, and one spec never spans two runs.
     let spec_root = root.join("results/raw").join(&spec_id);
-    ensure_single_run_identity(&spec_root, &run_id)?;
+    runsupport::ensure_single_run_identity(
+        &spec_root,
+        &run_id,
+        &runsupport::CAMPAIGN_BINARY_LANES,
+    )?;
     let out_path = spec_root
         .join(&run_id)
         .join("timing")
@@ -503,7 +528,7 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     drop(file);
     // Finalization (task §26, §39): the raw file is re-read and checked
     // against the frozen contract; only a passing file gets a receipt.
-    let finalized = finalize_raw_file(&out_path, &expectation, &executable_sha256)?;
+    let finalized = runsupport::finalize_raw_file(&out_path, &expectation, &executable_sha256)?;
     match outcome {
         markit_mdbench_campaign::execute::SessionOutcome::Completed { observations, .. }
             if finalized =>
@@ -525,162 +550,9 @@ fn cmd_run_session(root: &Path, flags: &[String]) -> Result<bool, String> {
     }
 }
 
-/// One `CampaignSpecId` carries exactly ONE `RunId`.
-///
-/// A rebuilt executable, a changed machine manifest, or a different
-/// runner commit all produce a different `RunId`. A campaign run must
-/// never be silently split across binaries — the operator either keeps
-/// the frozen binary or archives the previous run directory
-/// deliberately.
-fn ensure_single_run_identity(spec_root: &Path, run_id: &str) -> Result<(), String> {
-    if !spec_root.exists() {
-        return Ok(());
-    }
-    let entries =
-        std::fs::read_dir(spec_root).map_err(|e| format!("read {}: {e}", spec_root.display()))?;
-    for entry in entries {
-        let entry = entry.map_err(|e| format!("read {}: {e}", spec_root.display()))?;
-        let name = entry.file_name();
-        let Some(name) = name.to_str() else { continue };
-        if name != run_id {
-            return Err(format!(
-                "{} already holds raw data for run {name}, but this binary/commit/machine binds run \
-                 {run_id}: a rebuilt executable is a NEW RunId, and one campaign run is never split \
-                 across two binaries. Archive the existing run directory (a deliberate act) before \
-                 starting a new campaign run.",
-                spec_root.display()
-            ));
-        }
-    }
-    Ok(())
-}
-
-/// Read a finalized raw file back and check it against the frozen
-/// contract. On success the verified facts enter the run receipt; on
-/// failure the file is retained as evidence and marked invalid — it
-/// NEVER gets a success receipt.
-fn finalize_raw_file(
-    raw_path: &Path,
-    expectation: &markit_mdbench_campaign::finalize::RawFileExpectation,
-    run_executable_sha256: &str,
-) -> Result<bool, String> {
-    match markit_mdbench_campaign::finalize::verify_raw_file(raw_path, expectation) {
-        Ok(summary) => {
-            write_run_receipt(raw_path, &summary, run_executable_sha256)?;
-            println!(
-                "FINAL_RAW_FILE_PASS file={} rows={} sha256={}",
-                raw_path
-                    .file_name()
-                    .and_then(|n| n.to_str())
-                    .unwrap_or_default(),
-                summary.rows,
-                summary.sha256
-            );
-            Ok(true)
-        }
-        Err(blockers) => {
-            let marker = write_invalid_marker(raw_path, &blockers)?;
-            eprintln!(
-                "FINAL_RAW_FILE_INVALID file={} detail={}",
-                raw_path.display(),
-                marker.display()
-            );
-            for blocker in &blockers {
-                eprintln!("RAW_BLOCKER {blocker}");
-            }
-            Ok(false)
-        }
-    }
-}
-
-/// Write `<raw file>.invalid.json`: the failure evidence marker for a raw
-/// file that did not pass finalization. Written once, never overwritten.
-fn write_invalid_marker(raw_path: &Path, blockers: &[String]) -> Result<PathBuf, String> {
-    let marker_path = raw_path.with_extension("jsonl.invalid.json");
-    if marker_path.exists() {
-        return Ok(marker_path);
-    }
-    let marker = serde_json::json!({
-        "schema": "run-file-invalid-v1",
-        "verdict": "PRIMARY_CAMPAIGN_INVALID",
-        "file": raw_path.file_name().and_then(|n| n.to_str()).unwrap_or(""),
-        "producer_pid": std::process::id(),
-        "blockers": blockers,
-    });
-    std::fs::write(&marker_path, format!("{marker}\n"))
-        .map_err(|e| format!("write {}: {e}", marker_path.display()))?;
-    Ok(marker_path)
-}
-
-/// Write `<raw file>.receipt.json` binding the VERIFIED finalized raw
-/// file: SHA256, row counts, first/last observation id, campaign/run/
-/// session identity (task §26/§39).
-fn write_run_receipt(
-    raw_path: &Path,
-    summary: &RawFileSummary,
-    run_executable_sha256: &str,
-) -> Result<(), String> {
-    // Process identity: the frozen session semantics require a FRESH
-    // worker process per session (task §11); recording pid + kernel
-    // start-time makes that auditable after the fact.
-    let producer_pid = std::process::id();
-    let producer_start_ticks = std::fs::read_to_string("/proc/self/stat")
-        .ok()
-        .and_then(|text| {
-            // Field 22 (1-indexed) is starttime; the comm field may
-            // contain spaces, so split after the last ')'.
-            let after_comm = text.rsplit_once(')').map(|(_, rest)| rest.to_string())?;
-            after_comm
-                .split_whitespace()
-                .nth(19)
-                .map(|value| value.to_string())
-        });
-    // The receipt is written by the binary that produced the rows; if
-    // that binary changed mid-run the RunId would name a different
-    // executable, which is a hard error rather than a recorded footnote.
-    let executable_sha256 = markit_mdbench_campaign::identity::current_executable_sha256()?;
-    if executable_sha256 != run_executable_sha256 {
-        return Err(format!(
-            "the receipt-writing executable {executable_sha256} is not the executable bound into the \
-             RunId ({run_executable_sha256})"
-        ));
-    }
-    let receipt = serde_json::json!({
-        "schema": "run-file-receipt-v1",
-        "verdict": summary.verdict,
-        "file": raw_path.file_name().and_then(|n| n.to_str()).unwrap_or(""),
-        "sha256": summary.sha256,
-        "row_count": summary.rows,
-        "warmup_rows": summary.warmup_rows,
-        "measured_rows": summary.measured_rows,
-        "attribution_rows": summary.attribution_rows,
-        "expected_rows": summary.expected_rows,
-        "unique_observation_ids": summary.unique_observation_ids,
-        "case_count": summary.case_count,
-        "lane": summary.lane,
-        "surface": summary.surface,
-        "session_ordinal": summary.session_ordinal,
-        "campaign_spec_id": summary.campaign_spec_id,
-        "run_id": summary.run_id,
-        "session_id": summary.session_id,
-        "first_observation_id": summary.first_observation_id,
-        "last_observation_id": summary.last_observation_id,
-        "producer_pid": producer_pid,
-        "producer_start_ticks": producer_start_ticks,
-        "executable_sha256": executable_sha256,
-    });
-    let receipt_path = raw_path.with_extension("jsonl.receipt.json");
-    if receipt_path.exists() {
-        return Err(format!(
-            "{} already exists: run receipts are written once",
-            receipt_path.display()
-        ));
-    }
-    std::fs::write(&receipt_path, format!("{receipt}\n"))
-        .map_err(|e| format!("write {}: {e}", receipt_path.display()))?;
-    Ok(())
-}
-
+/// One `CampaignSpecId` carries exactly ONE `RunId` per execution
+/// binary (see [`runsupport`]): the shared lane-aware check rejects a
+/// rebuilt executable continuing this binary's timing/attribution runs.
 fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
     require_release_profile()?;
     let surface = Surface::parse(
@@ -714,7 +586,11 @@ fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
         &executable_sha256,
     );
     let spec_root = root.join("results/raw").join(&spec_id);
-    ensure_single_run_identity(&spec_root, &run_id)?;
+    runsupport::ensure_single_run_identity(
+        &spec_root,
+        &run_id,
+        &runsupport::CAMPAIGN_BINARY_LANES,
+    )?;
     let out_path = spec_root
         .join(&run_id)
         .join("attribution")
@@ -780,7 +656,7 @@ fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
     file.flush().map_err(|e| format!("flush: {e}"))?;
     drop(file);
     // Finalization (task §26, §39): verify before any completion verdict.
-    let finalized = finalize_raw_file(&out_path, &expectation, &executable_sha256)?;
+    let finalized = runsupport::finalize_raw_file(&out_path, &expectation, &executable_sha256)?;
     match outcome {
         markit_mdbench_campaign::execute::SessionOutcome::Completed { observations, .. }
             if finalized =>
@@ -863,6 +739,13 @@ mod tests {
             }
         );
         assert_eq!(
+            parse_preflight_scope(&flags(&["--memory", "edit_write", "--session", "1"])).unwrap(),
+            PreflightScope::Memory {
+                surface: Surface::EditWrite,
+                session: 1
+            }
+        );
+        assert_eq!(
             parse_preflight_scope(&flags(&["--attribution", "clean_state"])).unwrap(),
             PreflightScope::Attribution {
                 surface: Surface::CleanState
@@ -871,6 +754,7 @@ mod tests {
         for ambiguous in [
             &["--surface", "clean_state"][..],
             &["--timing", "clean_state"][..],
+            &["--memory", "clean_state"][..],
             &["--session", "1"][..],
             &["--attribution", "edit_write", "--session", "0"][..],
             &[
@@ -881,27 +765,21 @@ mod tests {
                 "--attribution",
                 "clean_state",
             ][..],
+            &[
+                "--memory",
+                "edit_write",
+                "--session",
+                "0",
+                "--timing",
+                "clean_state",
+            ][..],
             &["--timing", "edit_write", "--session", "not-a-number"][..],
+            &["--memory", "edit_write", "--session", "not-a-number"][..],
         ] {
             assert!(
                 parse_preflight_scope(&flags(ambiguous)).is_err(),
                 "{ambiguous:?} must not silently resolve to a scope"
             );
         }
-    }
-
-    /// One CampaignSpecId carries exactly one RunId, so a rebuilt binary
-    /// cannot quietly continue an existing run.
-    #[test]
-    fn one_spec_carries_one_run_identity() {
-        let dir = std::env::temp_dir().join(format!("mdbench-runid-{}", std::process::id()));
-        let _ = std::fs::remove_dir_all(&dir);
-        // A spec with no raw data yet has nothing to contradict.
-        assert!(ensure_single_run_identity(&dir, "run-a").is_ok());
-        std::fs::create_dir_all(dir.join("run-a")).unwrap();
-        assert!(ensure_single_run_identity(&dir, "run-a").is_ok());
-        let error = ensure_single_run_identity(&dir, "run-b").expect_err("run-b must be refused");
-        assert!(error.contains("never split"), "got {error}");
-        let _ = std::fs::remove_dir_all(&dir);
     }
 }

@@ -34,11 +34,13 @@ use serde::{Deserialize, Serialize};
 use markit_mdbench_common::{
     CorrectnessStatus, ExecutionStatus, MechanismId, Observed, Seed, WorkCounters,
 };
-use markit_mdbench_instrumentation::{Clock, InstantClock, LaneMeasurement, ManualClock};
+use markit_mdbench_instrumentation::{
+    Clock, InstantClock, LaneMeasurement, ManualClock, MemoryReporter,
+};
 use markit_mdbench_oracle::{validate_normalized, NormalizeV1, ReferenceOracle};
 use markit_mdbench_runner::orchestrate::{
-    build_initial_state, run_full_parse_attributed, run_full_parse_timed, run_update_attributed,
-    run_update_timed,
+    build_initial_state, run_full_parse_attributed, run_full_parse_memory, run_full_parse_timed,
+    run_update_attributed, run_update_memory, run_update_timed,
 };
 use markit_mdbench_runner::{assemble_row, failure_row, CaseFacts, ResultRowV1};
 
@@ -48,6 +50,13 @@ use crate::{SampleKind, Surface, ENVELOPE_SCHEMA_ID};
 /// Provenance tags.
 pub const PROVENANCE_TIMING: &str = "PRIMARY-PERFORMANCE-CAMPAIGN-v1/TIMING";
 pub const PROVENANCE_ATTRIBUTION: &str = "PRIMARY-PERFORMANCE-CAMPAIGN-v1/ATTRIBUTION";
+/// Formal M-LANE rows (#76 M-COLLECTOR-1). Distinct from the
+/// NON_RESEARCH memory smoke tag
+/// (`CAMPAIGN_MEMORY_SMOKE/NON_RESEARCH_RESULT`): only this tag plus the
+/// memory session-id derivation can pass memory-lane finalization, so a
+/// smoke artifact can never satisfy the formal collector's acceptance
+/// path.
+pub const PROVENANCE_MEMORY: &str = "PRIMARY-PERFORMANCE-CAMPAIGN-v1/MEMORY";
 pub const PROVENANCE_NON_RESEARCH_SMOKE: &str = "CAMPAIGN_SMOKE/NON_RESEARCH_RESULT";
 
 /// The raw campaign observation envelope (task §21): a narrow scheduling
@@ -822,6 +831,351 @@ impl<'a> SessionExecutor<'a> {
             measured_rows: self.measured_rows,
         })
     }
+
+    /// Formal M-LANE (#76 M-COLLECTOR-1): the frozen memory sessions of
+    /// one `surface × session`, executed in a DEDICATED instrumented
+    /// binary that installs the `CountingAllocator` as its process
+    /// allocator. Cadence, case order, and horse order are INHERITED
+    /// from the frozen contract unchanged — the manifest's `[sessions]`
+    /// policy (3 sessions × (10 warmup + 30 measured) per case × horse
+    /// per surface) is campaign-wide with no memory-lane exception, and
+    /// the schedule the executor consumes is the SAME frozen schedule
+    /// manifest the timing sessions consume. The reporter is generic:
+    /// the formal binary passes the real [`AllocReporter`] over the
+    /// process counters; deterministic NON_RESEARCH tests inject a
+    /// manual reporter. No timing value is produced or emitted on this
+    /// path (lane separation, Gate-B §2).
+    pub fn run_memory<R>(
+        mut self,
+        cases: &[ScheduledCase<'_>],
+        reporter: &R,
+        sink: &mut dyn ObservationSink,
+    ) -> Result<SessionOutcome, String>
+    where
+        R: MemoryReporter,
+    {
+        let tagged_non_research = self.identity.provenance.contains("NON_RESEARCH");
+        if tagged_non_research != self.identity.non_research {
+            return Err(format!(
+                "provenance {:?} contradicts non_research={}",
+                self.identity.provenance, self.identity.non_research
+            ));
+        }
+        for case in cases {
+            for (horse_order_ordinal, horse_id) in case.horse_order().iter().enumerate() {
+                let horse_order_ordinal = horse_order_ordinal as u32;
+                let outcome = match horse_id.as_str() {
+                    "H0" => self.run_memory_cell(
+                        markit_mdbench_full_rebuild::H0_MECHANISM_ID,
+                        &markit_mdbench_full_rebuild::FullRebuildMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    "H1" => self.run_memory_cell(
+                        markit_mdbench_block_local::H1_MECHANISM_ID,
+                        &markit_mdbench_block_local::BlockLocalMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    "H2" => self.run_memory_cell(
+                        markit_mdbench_fragment_reuse::H2_MECHANISM_ID,
+                        &markit_mdbench_fragment_reuse::FragmentReuseMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    "H3" => self.run_memory_cell(
+                        markit_mdbench_old_tree_subtree_reuse::H3_MECHANISM_ID,
+                        &markit_mdbench_old_tree_subtree_reuse::OldTreeSubtreeReuseMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    "H4" => self.run_memory_cell(
+                        markit_mdbench_restart_convergence::H4_MECHANISM_ID,
+                        &markit_mdbench_restart_convergence::RestartConvergenceMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    "HorseA" => self.run_memory_cell(
+                        markit_mdbench_horse_a::HORSE_A_MECHANISM_ID,
+                        &markit_mdbench_horse_a::HorseAMechanism::new(),
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        reporter,
+                        sink,
+                    )?,
+                    other => return Err(format!("unknown horse {other:?} in memory schedule")),
+                };
+                if outcome.is_invalid() {
+                    return Ok(outcome);
+                }
+            }
+        }
+        Ok(SessionOutcome::Completed {
+            observations: self.observations,
+            warmup_rows: self.warmup_rows,
+            measured_rows: self.measured_rows,
+        })
+    }
+
+    /// M-LANE verification: execution and correctness must pass (warmups
+    /// are not disposable correctness, exactly like the timing lane), and
+    /// a completed run must carry QUALIFIED memory evidence — every slot
+    /// `Known` and at least one allocation event. A window that observed
+    /// nothing means the process allocator is not the counting one (or
+    /// the byte counters overflowed to an honest `Unknown`): the row can
+    /// never be summarized as qualified M-LANE evidence, so the session
+    /// fails closed instead.
+    fn verify_memory_report(report: &markit_mdbench_runner::RunReport) -> Result<(), String> {
+        if report.execution_status != ExecutionStatus::Pass {
+            return Err(format!(
+                "execution_status != pass: {:?}",
+                report.execution_status
+            ));
+        }
+        if report.correctness_status != CorrectnessStatus::Pass {
+            return Err(format!(
+                "correctness_status != pass: {:?}",
+                report.correctness_status
+            ));
+        }
+        let LaneMeasurement::Memory(record) = &report.measurement else {
+            return Err("memory lane session produced a non-memory measurement".to_string());
+        };
+        let unknown = |value: &Observed<u64>| *value == Observed::Unknown;
+        if unknown(&record.allocated_bytes)
+            || unknown(&record.allocation_count)
+            || unknown(&record.peak_bytes)
+            || unknown(&record.retained_bytes)
+        {
+            return Err("qualified memory metric UNKNOWN on a completed run".to_string());
+        }
+        if record.allocation_count == Observed::Known(0) {
+            return Err(
+                "memory window observed no allocations on a completed run (allocator not \
+                 installed?)"
+                    .to_string(),
+            );
+        }
+        Ok(())
+    }
+
+    /// One `case × horse` cell of the M-LANE: `warmup` warmups then
+    /// `measured` measured iterations with IDENTICAL setup semantics —
+    /// the same per-iteration structure as the timing cell, with the
+    /// per-case allocation window as the only measurement.
+    #[allow(clippy::too_many_arguments)]
+    fn run_memory_cell<M, R>(
+        &mut self,
+        mechanism_id: &str,
+        mechanism: &M,
+        case: &ScheduledCase<'_>,
+        horse_order_ordinal: u32,
+        horse_id: &str,
+        reporter: &R,
+        sink: &mut dyn ObservationSink,
+    ) -> Result<SessionOutcome, String>
+    where
+        M: markit_mdbench_common::Mechanism,
+        M::State: NormalizeV1 + markit_mdbench_common::ResultChecksum,
+        R: MemoryReporter,
+    {
+        match case {
+            ScheduledCase::CleanState {
+                case: clean_case, ..
+            } => {
+                let source = markit_mdbench_common::Source::new(
+                    markit_mdbench_common::SourceId(0),
+                    clean_case.source_text.clone(),
+                );
+                // Correctness authority: identical to the timing cell —
+                // H0 clean parse of the same source, once per case,
+                // outside every window.
+                let reference = markit_mdbench_full_rebuild::parse_document(source.as_bytes());
+                validate_normalized(&reference, None)
+                    .map_err(|e| format!("memory reference gate: {e:?}"))?;
+                let reference_hook = ReferenceOracle::new(reference);
+                let poison = AlwaysWrongHook;
+                let hook: &dyn markit_mdbench_oracle::CorrectnessHook<M::State> =
+                    if self.poison_correctness {
+                        &poison
+                    } else {
+                        &reference_hook
+                    };
+                let facts = clean_state_facts(clean_case, mechanism_id, Seed(self.session_seed));
+                for iteration in 0..(self.warmup + self.measured) {
+                    let (sample_kind, iteration_ordinal) = if iteration < self.warmup {
+                        (SampleKind::Warmup, iteration)
+                    } else {
+                        (SampleKind::Measured, iteration - self.warmup)
+                    };
+                    // The window covers full_parse + complete/seal +
+                    // black_box — the memory mirror of the frozen
+                    // CLEAN_STATE timing boundary (the untimed pre-state
+                    // construction does not exist on this surface).
+                    let report = run_full_parse_memory(mechanism, &source, reporter, hook);
+                    let row = assemble_row(
+                        &facts,
+                        &report,
+                        &self.build_identity,
+                        &self.identity.machine_environment_ref,
+                        self.identity.provenance,
+                    );
+                    if let Err(reason) = Self::verify_memory_report(&report) {
+                        let reason = format!(
+                            "memory clean_state case {} horse {horse_id} {} iter {iteration_ordinal}: {reason}",
+                            clean_case.case_id_hex,
+                            sample_kind.as_str()
+                        );
+                        self.emit(
+                            sink,
+                            case,
+                            horse_order_ordinal,
+                            horse_id,
+                            sample_kind,
+                            iteration_ordinal,
+                            row,
+                        )?;
+                        return Ok(self.fail(reason));
+                    }
+                    self.emit(
+                        sink,
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        sample_kind,
+                        iteration_ordinal,
+                        row,
+                    )?;
+                }
+            }
+            ScheduledCase::EditWrite {
+                case: edit_case, ..
+            } => {
+                let (pre, post) = crate::workload::edit_case_sources(edit_case);
+                // Correctness authority: identical to the timing cell —
+                // H0 clean full parse of the POST source, once per case,
+                // outside every window.
+                let reference = markit_mdbench_full_rebuild::parse_document(post.as_bytes());
+                validate_normalized(&reference, None)
+                    .map_err(|e| format!("memory edit reference gate: {e:?}"))?;
+                let reference_hook = ReferenceOracle::new(reference);
+                let poison = AlwaysWrongHook;
+                let hook: &dyn markit_mdbench_oracle::CorrectnessHook<M::State> =
+                    if self.poison_correctness {
+                        &poison
+                    } else {
+                        &reference_hook
+                    };
+                let facts = edit_write_facts(edit_case, mechanism_id, Seed(self.session_seed));
+                for iteration in 0..(self.warmup + self.measured) {
+                    let (sample_kind, iteration_ordinal) = if iteration < self.warmup {
+                        (SampleKind::Warmup, iteration)
+                    } else {
+                        (SampleKind::Measured, iteration - self.warmup)
+                    };
+                    // FRESH-STATE RULE (SINGLE_RESET): a NEW clean
+                    // pre-edit state per iteration, outside every window
+                    // (its allocation cost belongs to the CLEAN_STATE
+                    // surface), never retained across iterations.
+                    let old_state = match build_initial_state(mechanism, &pre) {
+                        Ok(state) => state,
+                        Err(failure) => {
+                            let row = failure_row(
+                                &facts,
+                                failure,
+                                &self.build_identity,
+                                &self.identity.machine_environment_ref,
+                                self.identity.provenance,
+                            );
+                            let reason = format!(
+                                "memory edit_write case {} horse {horse_id}: fresh pre-state construction failed: {failure:?}",
+                                edit_case.case_id_hex
+                            );
+                            self.emit(
+                                sink,
+                                case,
+                                horse_order_ordinal,
+                                horse_id,
+                                sample_kind,
+                                iteration_ordinal,
+                                row,
+                            )?;
+                            return Ok(self.fail(reason));
+                        }
+                    };
+                    // The window covers prepare_update + update +
+                    // complete/seal + black_box — the memory mirror of
+                    // the frozen EDIT_WRITE T_prepare + T_native
+                    // boundary — and closes strictly after the sealed
+                    // state was black_boxed while it remains alive (the
+                    // frozen retained-memory lifecycle point).
+                    let report = run_update_memory(
+                        mechanism,
+                        &pre,
+                        &post,
+                        &edit_case.edit,
+                        old_state,
+                        reporter,
+                        hook,
+                    );
+                    let row = assemble_row(
+                        &facts,
+                        &report,
+                        &self.build_identity,
+                        &self.identity.machine_environment_ref,
+                        self.identity.provenance,
+                    );
+                    if let Err(reason) = Self::verify_memory_report(&report) {
+                        let reason = format!(
+                            "memory edit_write case {} horse {horse_id} {} iter {iteration_ordinal}: {reason}",
+                            edit_case.case_id_hex,
+                            sample_kind.as_str()
+                        );
+                        self.emit(
+                            sink,
+                            case,
+                            horse_order_ordinal,
+                            horse_id,
+                            sample_kind,
+                            iteration_ordinal,
+                            row,
+                        )?;
+                        return Ok(self.fail(reason));
+                    }
+                    self.emit(
+                        sink,
+                        case,
+                        horse_order_ordinal,
+                        horse_id,
+                        sample_kind,
+                        iteration_ordinal,
+                        row,
+                    )?;
+                }
+            }
+        }
+        Ok(SessionOutcome::Completed {
+            observations: self.observations,
+            warmup_rows: self.warmup_rows,
+            measured_rows: self.measured_rows,
+        })
+    }
 }
 
 /// Case facts for a CLEAN_STATE dispatch (full-read payload meta, no
@@ -875,5 +1229,16 @@ pub fn horse_id_to_mechanism(horse_id: &str) -> Result<&'static str, String> {
 /// Derive the session id of an attribution lane (no timing session).
 pub fn attribution_session_id(spec_id: &str, surface: &str) -> String {
     let material = format!("{spec_id}\n{surface}\nattribution");
+    crate::sha256_hex(material.as_bytes())
+}
+
+/// Derive the session id of a formal M-LANE session: same per-session
+/// shape as the timing derivation plus an explicit memory domain line,
+/// so a memory ObservationId can never collide with a timing
+/// ObservationId of the same (surface, session, case, horse, kind,
+/// iteration) — the cross-lane collision the `All` preflight union
+/// guards.
+pub fn memory_session_id(spec_id: &str, surface: &str, session_ordinal: u32) -> String {
+    let material = format!("{spec_id}\n{surface}\n{session_ordinal}\nmemory");
     crate::sha256_hex(material.as_bytes())
 }

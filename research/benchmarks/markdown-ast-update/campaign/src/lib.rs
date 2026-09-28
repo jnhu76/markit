@@ -55,6 +55,7 @@ pub mod manifest;
 pub mod memory_smoke;
 pub mod preflight;
 pub mod receipt;
+pub mod runsupport;
 pub mod schedule;
 pub mod smoke;
 pub mod stats;

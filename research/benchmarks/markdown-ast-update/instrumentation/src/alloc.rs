@@ -220,6 +220,25 @@ fn end_window(snapshot: WindowSnapshot) -> MemoryRecord {
     record
 }
 
+/// Fail-closed M-LANE binary guard: prove that THIS process actually
+/// runs under the [`CountingAllocator`] before any formal memory window
+/// opens. A dedicated memory-lane binary that lost its
+/// `#[global_allocator]` installation would otherwise emit rows whose
+/// every counter is an honest zero — formal rows the contract cannot
+/// accept. The probe allocates and frees a small buffer inside one
+/// window; the counting allocator makes that window non-empty, the plain
+/// system allocator leaves it empty.
+pub fn counting_allocator_active() -> bool {
+    let Ok(snapshot) = begin_window(0) else {
+        return false;
+    };
+    let probe: Vec<u8> = vec![0u8; 64];
+    std::hint::black_box(&probe);
+    drop(probe);
+    let record = end_window(snapshot);
+    matches!(record.allocation_count, Observed::Known(count) if count > 0)
+}
+
 /// M-LANE reporter over the [`CountingAllocator`] process counters.
 ///
 /// Exactly one window per case, opened before the mechanism runs and
@@ -324,5 +343,12 @@ mod tests {
         // restore a clean level for any later window
         LIVE_BYTES.store(0, Ordering::Relaxed);
         PEAK_BYTES.store(0, Ordering::Relaxed);
+
+        // -- liveness guard: without the global allocator installed (this
+        // test binary), a real heap allocation inside a window is not
+        // observed and the guard must report false --
+        let before = ALLOC_EVENTS.load(Ordering::Relaxed);
+        assert!(!counting_allocator_active());
+        assert_eq!(ALLOC_EVENTS.load(Ordering::Relaxed), before);
     }
 }

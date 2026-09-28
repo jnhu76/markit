@@ -132,6 +132,10 @@ fn preflight_passes_and_enumerates_unique_observation_ids() {
             surface: markit_mdbench_campaign::Surface::EditWrite,
             session: 0,
         },
+        markit_mdbench_campaign::preflight::PreflightScope::Memory {
+            surface: markit_mdbench_campaign::Surface::EditWrite,
+            session: 0,
+        },
         markit_mdbench_campaign::preflight::PreflightScope::Attribution {
             surface: markit_mdbench_campaign::Surface::CleanState,
         },
@@ -148,19 +152,22 @@ fn preflight_passes_and_enumerates_unique_observation_ids() {
             report.blockers
         );
     }
-    // The All scope really does enumerate the whole campaign: 3 sessions
-    // x 2 surfaces x 76,800 timing rows + 1,920 attribution rows, with
-    // no duplicate and no missing identity (task §10).
+    // The All scope really does enumerate the whole campaign: 276,480
+    // timing rows + 276,480 memory rows (each = 3 sessions x 2 surfaces
+    // x 92,160 rows/session) + 2,304 attribution rows, with no
+    // duplicate and no missing identity — the memory ids join the
+    // campaign-wide union since M-COLLECTOR-1 wired the lane.
     let report = markit_mdbench_campaign::preflight::preflight(
         &root,
         markit_mdbench_campaign::preflight::HostBinding::SkipForNonResearch,
         markit_mdbench_campaign::preflight::PreflightScope::All,
     );
     let enumeration = &report.diagnostics["observation_enumeration"];
-    assert_eq!(enumeration["rows"], 278_784);
-    assert_eq!(enumeration["unique_ids"], 278_784);
+    assert_eq!(enumeration["rows"], 555_264);
+    assert_eq!(enumeration["unique_ids"], 555_264);
     assert_eq!(enumeration["duplicate_ids"], 0);
-    assert_eq!(enumeration["lanes"].as_array().unwrap().len(), 8);
+    // 6 timing sessions + 6 memory sessions + 2 attribution lanes.
+    assert_eq!(enumeration["lanes"].as_array().unwrap().len(), 14);
     // Attribution lanes report their own frozen cardinalities, not a
     // timing session's (the defect the explicit scope fixes).
     let attribution: Vec<&serde_json::Value> = enumeration["lanes"]
@@ -181,6 +188,22 @@ fn preflight_passes_and_enumerates_unique_observation_ids() {
         assert_eq!(lane["warmup_rows"], 0);
         assert_eq!(lane["measured_rows"], 0);
     }
+    // Memory lanes mirror the timing sessions' frozen cardinalities
+    // (22 x 6 x 40 = 5,280; 362 x 6 x 40 = 86,880) with the memory
+    // session-id derivation.
+    let memory: Vec<&serde_json::Value> = enumeration["lanes"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|lane| lane["lane"].as_str().unwrap().starts_with("memory:"))
+        .collect();
+    assert_eq!(memory.len(), 6);
+    let mut rows: Vec<u64> = memory
+        .iter()
+        .map(|lane| lane["rows"].as_u64().unwrap())
+        .collect();
+    rows.sort();
+    assert_eq!(rows, vec![5_280, 5_280, 5_280, 86_880, 86_880, 86_880]);
 }
 
 #[test]
@@ -278,4 +301,242 @@ fn non_research_fake_clock_smoke_end_to_end() {
     assert_eq!(report.attribution_rows, 12);
     assert!(report.failure_propagated, "poisoned run must invalidate");
     let _ = std::fs::remove_dir_all(&dir);
+}
+
+// ---------------------------------------------------------------------------
+// Formal M-LANE collector plumbing (#76 M-COLLECTOR-1). Deterministic,
+// NON_RESEARCH: the allocator backend is either a fixed-value test
+// reporter (dispatch/envelope/identity) or the real AllocReporter
+// WITHOUT the counting allocator installed (the negative lane-isolation
+// proof). No qualified research observation is produced here.
+// ---------------------------------------------------------------------------
+
+/// Test-only reporter: the `ManualClock` analogue for the M-LANE — every
+/// window returns the same completed record, so the campaign-layer
+/// dispatch/envelope/verification path runs deterministically without
+/// an allocator backend (whose real path the NON_RESEARCH memory smoke
+/// already validated instrument-side for all six horses).
+struct FixedMemoryRecord;
+
+impl markit_mdbench_instrumentation::MemoryReporter for FixedMemoryRecord {
+    fn begin_case(&self) -> markit_mdbench_instrumentation::CaseMemoryProbe {
+        markit_mdbench_instrumentation::CaseMemoryProbe::new(0)
+    }
+
+    fn end_case(
+        &self,
+        _probe: markit_mdbench_instrumentation::CaseMemoryProbe,
+    ) -> markit_mdbench_instrumentation::MemoryRecord {
+        use markit_mdbench_common::Observed;
+        markit_mdbench_instrumentation::MemoryRecord {
+            allocated_bytes: Observed::Known(4_096),
+            allocation_count: Observed::Known(7),
+            peak_bytes: Observed::Known(2_048),
+            retained_bytes: Observed::Known(1_024),
+        }
+    }
+}
+
+#[test]
+fn memory_lane_dispatches_all_six_horses_on_both_surfaces() {
+    let root = benchmark_root();
+    let manifest = markit_mdbench_campaign::manifest::CampaignManifest::load(&root).unwrap();
+    let workload = markit_mdbench_campaign::workload::load_campaign_workload(&root).unwrap();
+    let binding = markit_mdbench_campaign::receipt::build_spec_binding(&root, &manifest).unwrap();
+    let spec_id = markit_mdbench_campaign::identity::campaign_spec_id(&binding);
+    let build = markit_mdbench_runner::current_build_identity();
+    let identity = markit_mdbench_campaign::execute::ExecutionIdentity {
+        campaign_spec_id: spec_id.clone(),
+        run_id: "memory-dispatch-test".to_string(),
+        machine_environment_ref: "test".to_string(),
+        // NON_RESEARCH identity: this dispatch test is plumbing proof,
+        // never qualified memory evidence.
+        provenance: "MEMORY_DISPATCH_TEST/NON_RESEARCH_RESULT",
+        non_research: true,
+    };
+    use markit_mdbench_campaign::execute::{ScheduledCase, SessionExecutor};
+    let six: Vec<String> = markit_mdbench_campaign::HORSE_IDS
+        .iter()
+        .map(|h| h.to_string())
+        .collect();
+    for surface in [
+        markit_mdbench_campaign::Surface::CleanState,
+        markit_mdbench_campaign::Surface::EditWrite,
+    ] {
+        let session_ordinal = 0u32;
+        let session_id = markit_mdbench_campaign::execute::memory_session_id(
+            &spec_id,
+            surface.as_str(),
+            session_ordinal,
+        );
+        let scheduled: Vec<ScheduledCase> = match surface {
+            markit_mdbench_campaign::Surface::CleanState => vec![ScheduledCase::CleanState {
+                order_ordinal: 0,
+                horse_order: six.clone(),
+                case: &workload.clean_state[0],
+            }],
+            markit_mdbench_campaign::Surface::EditWrite => vec![ScheduledCase::EditWrite {
+                order_ordinal: 0,
+                horse_order: six.clone(),
+                case: &workload.edit_write[0],
+            }],
+        };
+        let executor = SessionExecutor {
+            identity: &identity,
+            surface,
+            session_ordinal: Some(session_ordinal),
+            session_id: session_id.clone(),
+            session_seed: markit_mdbench_campaign::manifest::parse_seed_value(&manifest.seed.value)
+                .unwrap(),
+            build_identity: build.clone(),
+            warmup: 1,
+            measured: 2,
+            observations: 0,
+            warmup_rows: 0,
+            measured_rows: 0,
+            poison_correctness: false,
+        };
+        let mut buffer: Vec<u8> = Vec::new();
+        let reporter = FixedMemoryRecord;
+        let outcome = executor
+            .run_memory(&scheduled, &reporter, &mut buffer)
+            .unwrap();
+        assert!(
+            !outcome.is_invalid(),
+            "memory dispatch failed on {surface:?}: {outcome:?}"
+        );
+        let text = String::from_utf8(buffer).unwrap();
+        let rows: Vec<serde_json::Value> = text
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        // 1 case x 6 horses x (1 warmup + 2 measured) = 18 rows.
+        assert_eq!(rows.len(), 18);
+        let mut mechanisms = std::collections::BTreeSet::new();
+        let mut ids = std::collections::BTreeSet::new();
+        for row in &rows {
+            assert_eq!(row["session_ordinal"], 0);
+            // The executor stamps ITS identity's provenance (this test is
+            // NON_RESEARCH; the formal binary stamps PROVENANCE_MEMORY,
+            // whose acceptance is enforced by memory-lane finalization).
+            assert_eq!(
+                row["result_row_v2"]["provenance_ref"],
+                "MEMORY_DISPATCH_TEST/NON_RESEARCH_RESULT"
+            );
+            // Every row is a MEMORY-lane schema-v2 row with a completed
+            // window — the qualified M-LANE evidence shape.
+            assert_eq!(row["result_row_v2"]["measurement"]["lane"], "memory");
+            assert_eq!(
+                row["result_row_v2"]["measurement"]["metrics"]["allocation_count"],
+                7
+            );
+            mechanisms.insert(row["result_row_v2"]["mechanism_id"].as_str().unwrap());
+            ids.insert(row["observation_id"].as_str().unwrap());
+        }
+        // All six frozen mechanisms dispatched (C1).
+        assert_eq!(mechanisms.len(), 6);
+        assert_eq!(ids.len(), 18, "observation ids are unique per iteration");
+        // The warmup/measured split is exact (1 + 2 per cell).
+        assert_eq!(
+            rows.iter().filter(|r| r["sample_kind"] == "warmup").count(),
+            6
+        );
+    }
+}
+
+#[test]
+fn memory_lane_refuses_a_process_without_the_counting_allocator() {
+    // C3 negative proof, deterministic: this test process does NOT
+    // install the CountingAllocator, so the REAL AllocReporter windows
+    // observe zero allocations — exactly the wrong-binary case — and
+    // the formal lane must fail closed rather than emit all-zero rows.
+    let root = benchmark_root();
+    let manifest = markit_mdbench_campaign::manifest::CampaignManifest::load(&root).unwrap();
+    let workload = markit_mdbench_campaign::workload::load_campaign_workload(&root).unwrap();
+    let binding = markit_mdbench_campaign::receipt::build_spec_binding(&root, &manifest).unwrap();
+    let spec_id = markit_mdbench_campaign::identity::campaign_spec_id(&binding);
+    let build = markit_mdbench_runner::current_build_identity();
+    let identity = markit_mdbench_campaign::execute::ExecutionIdentity {
+        campaign_spec_id: spec_id,
+        run_id: "memory-lane-guard-test".to_string(),
+        machine_environment_ref: "test".to_string(),
+        provenance: "MEMORY_GUARD_TEST/NON_RESEARCH_RESULT",
+        non_research: true,
+    };
+    use markit_mdbench_campaign::execute::{ScheduledCase, SessionExecutor};
+    let six: Vec<String> = markit_mdbench_campaign::HORSE_IDS
+        .iter()
+        .map(|h| h.to_string())
+        .collect();
+    let scheduled = vec![ScheduledCase::CleanState {
+        order_ordinal: 0,
+        horse_order: six,
+        case: &workload.clean_state[0],
+    }];
+    let executor = SessionExecutor {
+        identity: &identity,
+        surface: markit_mdbench_campaign::Surface::CleanState,
+        session_ordinal: Some(0),
+        session_id: "memory-guard-test-session".to_string(),
+        session_seed: 1,
+        build_identity: build,
+        warmup: 1,
+        measured: 0,
+        observations: 0,
+        warmup_rows: 0,
+        measured_rows: 0,
+        poison_correctness: false,
+    };
+    let reporter = markit_mdbench_instrumentation::AllocReporter::new();
+    let mut buffer: Vec<u8> = Vec::new();
+    let outcome = executor
+        .run_memory(&scheduled, &reporter, &mut buffer)
+        .unwrap();
+    match outcome {
+        markit_mdbench_campaign::execute::SessionOutcome::Invalid { reason, .. } => {
+            assert!(
+                reason.contains("no allocations"),
+                "guard must name the missing allocator; got {reason}"
+            );
+            // The failing row is RETAINED as evidence, then a clean stop.
+            let text = String::from_utf8(buffer).unwrap();
+            assert_eq!(text.lines().filter(|l| !l.trim().is_empty()).count(), 1);
+        }
+        other => panic!("non-instrumented process must not complete: {other:?}"),
+    }
+}
+
+#[test]
+fn memory_session_ids_never_collide_with_other_lanes() {
+    // C5 cross-lane identity: the memory session-id derivation keeps
+    // memory ObservationIds disjoint from timing and attribution ids of
+    // the same (spec, surface, case, horse, kind, iteration).
+    let spec = "spec-fixture";
+    for surface in ["clean_state", "edit_write"] {
+        for session in 0..3u32 {
+            let memory =
+                markit_mdbench_campaign::execute::memory_session_id(spec, surface, session);
+            let timing = markit_mdbench_campaign::identity::session_id(spec, surface, session);
+            let attribution =
+                markit_mdbench_campaign::execute::attribution_session_id(spec, surface);
+            assert_ne!(memory, timing);
+            assert_ne!(memory, attribution);
+            let base = markit_mdbench_campaign::identity::observation_id(
+                "run", &memory, surface, "case", "H0", "measured", 0,
+            );
+            assert_ne!(
+                base,
+                markit_mdbench_campaign::identity::observation_id(
+                    "run", &timing, surface, "case", "H0", "measured", 0
+                )
+            );
+            assert_eq!(
+                base,
+                markit_mdbench_campaign::identity::observation_id(
+                    "run", &memory, surface, "case", "H0", "measured", 0
+                )
+            );
+        }
+    }
 }

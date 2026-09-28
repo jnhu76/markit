@@ -41,6 +41,13 @@ const MAX_BLOCKER_DETAIL: usize = 20;
 pub enum RawLane {
     /// A timing session: warmup + measured iterations per case × horse.
     Timing { session_ordinal: u32 },
+    /// A formal M-LANE session (#76 M-COLLECTOR-1): the frozen memory
+    /// sessions of one `surface × session`, produced by the dedicated
+    /// counting-allocator binary. Same per-cell iteration structure as
+    /// the timing lane (the manifest's `[sessions]` policy is
+    /// campaign-wide), with the per-case allocation window as the
+    /// measurement.
+    Memory { session_ordinal: u32 },
     /// The attribution lane: one dispatch per case × horse.
     Attribution,
 }
@@ -49,13 +56,16 @@ impl RawLane {
     pub fn as_str(self) -> &'static str {
         match self {
             RawLane::Timing { .. } => "timing",
+            RawLane::Memory { .. } => "memory",
             RawLane::Attribution => "attribution",
         }
     }
 
     pub fn session_ordinal(self) -> Option<u32> {
         match self {
-            RawLane::Timing { session_ordinal } => Some(session_ordinal),
+            RawLane::Timing { session_ordinal } | RawLane::Memory { session_ordinal } => {
+                Some(session_ordinal)
+            }
             RawLane::Attribution => None,
         }
     }
@@ -84,11 +94,13 @@ pub struct RawFileExpectation {
 }
 
 impl RawFileExpectation {
-    /// Exact total rows (timing: cases × horses × (warmup + measured);
-    /// attribution: cases × horses).
+    /// Exact total rows (timing/memory: cases × horses × (warmup +
+    /// measured); attribution: cases × horses).
     pub fn expected_rows(&self) -> usize {
         match self.lane {
-            RawLane::Timing { .. } => self.expected_warmup_rows() + self.expected_measured_rows(),
+            RawLane::Timing { .. } | RawLane::Memory { .. } => {
+                self.expected_warmup_rows() + self.expected_measured_rows()
+            }
             RawLane::Attribution => self.expected_attribution_rows(),
         }
     }
@@ -170,7 +182,9 @@ pub fn expectation_from_schedule(
             ));
         }
         let expected_session = match lane {
-            RawLane::Timing { session_ordinal } => session_ordinal,
+            RawLane::Timing { session_ordinal } | RawLane::Memory { session_ordinal } => {
+                session_ordinal
+            }
             // The attribution lane always derives its case set from
             // session 0 of the frozen schedule (task §18).
             RawLane::Attribution => 0,
@@ -229,7 +243,7 @@ pub fn expectation_from_schedule(
     };
     let rows = expectation.expected_rows();
     let frozen_rows = match lane {
-        RawLane::Timing { .. } => {
+        RawLane::Timing { .. } | RawLane::Memory { .. } => {
             surface.frozen_case_count()
                 * crate::HORSE_IDS.len()
                 * (warmup_iterations + measured_iterations) as usize
@@ -308,7 +322,7 @@ pub fn verify_raw_file(
     for case in &expectation.cases {
         for horse in &case.horse_order {
             match expectation.lane {
-                RawLane::Timing { .. } => {
+                RawLane::Timing { .. } | RawLane::Memory { .. } => {
                     for iteration in 0..expectation.warmup_iterations {
                         expected_keys.insert((
                             case.case_id.clone(),
@@ -426,7 +440,7 @@ pub fn verify_raw_file(
 
         // 3. Sample kind + iteration belonging to this lane.
         let lane_ok = match expectation.lane {
-            RawLane::Timing { .. } => {
+            RawLane::Timing { .. } | RawLane::Memory { .. } => {
                 observation.sample_kind == SampleKind::Warmup.as_str()
                     || observation.sample_kind == SampleKind::Measured.as_str()
             }
@@ -445,6 +459,50 @@ pub fn verify_raw_file(
             "measured" => measured_rows += 1,
             "attribution" => attribution_rows += 1,
             _ => {}
+        }
+
+        // 3b. Memory-lane rows must carry QUALIFIED M-LANE evidence:
+        // the memory measurement lane, the formal MEMORY provenance
+        // (a NON_RESEARCH smoke tag can never pass here), and completed
+        // window facts on every slot. This is the formal-vs-smoke
+        // separation guard (#76 M-COLLECTOR-1).
+        if let RawLane::Memory { .. } = expectation.lane {
+            if observation.result_row_v2.provenance_ref != crate::execute::PROVENANCE_MEMORY {
+                blockers.push(format!(
+                    "row {}: provenance {:?} is not the formal memory-lane provenance {}",
+                    line_index + 1,
+                    observation.result_row_v2.provenance_ref,
+                    crate::execute::PROVENANCE_MEMORY
+                ));
+            }
+            match &observation.result_row_v2.measurement {
+                markit_mdbench_runner::MeasurementV1::Memory(metrics) => {
+                    use markit_mdbench_common::Observed;
+                    let unknown = |value: &Observed<u64>| *value == Observed::Unknown;
+                    if unknown(&metrics.allocated_bytes)
+                        || unknown(&metrics.allocation_count)
+                        || unknown(&metrics.peak_bytes)
+                        || unknown(&metrics.retained_bytes)
+                    {
+                        blockers.push(format!(
+                            "row {}: qualified memory metric UNKNOWN on a completed run",
+                            line_index + 1
+                        ));
+                    }
+                    if metrics.allocation_count == markit_mdbench_common::Observed::Known(0) {
+                        blockers.push(format!(
+                            "row {}: memory window observed no allocations on a completed run \
+                             (allocator not installed?)",
+                            line_index + 1
+                        ));
+                    }
+                }
+                other => blockers.push(format!(
+                    "row {}: measurement {:?} does not belong to the memory lane",
+                    line_index + 1,
+                    other
+                )),
+            }
         }
 
         // 4. Case identity: the row must belong to a scheduled case, in
@@ -622,8 +680,12 @@ mod tests {
 
     fn expectation(surface: Surface, lane: RawLane) -> RawFileExpectation {
         let session_id = match lane {
-            RawLane::Timing { session_ordinal } => {
-                crate::identity::session_id(SPEC, surface.as_str(), session_ordinal)
+            RawLane::Timing { session_ordinal } | RawLane::Memory { session_ordinal } => {
+                if matches!(lane, RawLane::Memory { .. }) {
+                    crate::execute::memory_session_id(SPEC, surface.as_str(), session_ordinal)
+                } else {
+                    crate::identity::session_id(SPEC, surface.as_str(), session_ordinal)
+                }
             }
             RawLane::Attribution => crate::execute::attribution_session_id(SPEC, surface.as_str()),
         };
@@ -639,12 +701,17 @@ mod tests {
         }
     }
 
+    /// `provenance_override` exercises the memory lane's formal-vs-smoke
+    /// separation: a row stamped with a NON_RESEARCH smoke tag must not
+    /// pass memory finalization even when every other field is perfect.
+    /// `None` produces the lane's own formal provenance.
     fn row_for(
         expectation: &RawFileExpectation,
         case: &ScheduledCaseIdentity,
         horse: &str,
         kind: &str,
         iteration: u32,
+        provenance_override: Option<&str>,
     ) -> CampaignObservationV1 {
         let mechanism_id = crate::execute::horse_id_to_mechanism(horse)
             .unwrap()
@@ -654,6 +721,30 @@ mod tests {
             .iter()
             .position(|h| h == horse)
             .expect("horse is scheduled");
+        let (provenance, measurement) = match expectation.lane {
+            RawLane::Memory { .. } => (
+                provenance_override
+                    .unwrap_or(crate::execute::PROVENANCE_MEMORY)
+                    .to_string(),
+                MeasurementV1::Memory(
+                    markit_mdbench_instrumentation::MemoryRecord {
+                        allocated_bytes: markit_mdbench_common::Observed::Known(4_096),
+                        allocation_count: markit_mdbench_common::Observed::Known(7),
+                        peak_bytes: markit_mdbench_common::Observed::Known(2_048),
+                        retained_bytes: markit_mdbench_common::Observed::Known(1_024),
+                    }
+                    .into(),
+                ),
+            ),
+            _ => (
+                crate::execute::PROVENANCE_TIMING.to_string(),
+                MeasurementV1::Timing(TimingMetricsV1 {
+                    prepare_ns: markit_mdbench_common::Observed::Known(1),
+                    native_ns: markit_mdbench_common::Observed::Known(2),
+                    total_ns: markit_mdbench_common::Observed::Known(3),
+                }),
+            ),
+        };
         CampaignObservationV1 {
             schema: ENVELOPE_SCHEMA_ID.to_string(),
             campaign_spec_id: expectation.campaign_spec_id.clone(),
@@ -696,32 +787,56 @@ mod tests {
                 correctness_status: markit_mdbench_common::CorrectnessStatus::Pass,
                 result_checksum: None,
                 environment_ref: "fixture".to_string(),
-                provenance_ref: crate::execute::PROVENANCE_TIMING.to_string(),
-                measurement: MeasurementV1::Timing(TimingMetricsV1 {
-                    prepare_ns: markit_mdbench_common::Observed::Known(1),
-                    native_ns: markit_mdbench_common::Observed::Known(2),
-                    total_ns: markit_mdbench_common::Observed::Known(3),
-                }),
+                provenance_ref: provenance,
+                measurement,
             },
         }
     }
 
     /// A complete, valid raw file for the expectation's lane.
     fn complete_rows(expectation: &RawFileExpectation) -> Vec<CampaignObservationV1> {
+        complete_rows_with(expectation, None)
+    }
+
+    fn complete_rows_with(
+        expectation: &RawFileExpectation,
+        provenance_override: Option<&str>,
+    ) -> Vec<CampaignObservationV1> {
         let mut rows = Vec::new();
         for case in &expectation.cases {
             for horse in &case.horse_order {
                 match expectation.lane {
-                    RawLane::Timing { .. } => {
+                    RawLane::Timing { .. } | RawLane::Memory { .. } => {
                         for iteration in 0..expectation.warmup_iterations {
-                            rows.push(row_for(expectation, case, horse, "warmup", iteration));
+                            rows.push(row_for(
+                                expectation,
+                                case,
+                                horse,
+                                "warmup",
+                                iteration,
+                                provenance_override,
+                            ));
                         }
                         for iteration in 0..expectation.measured_iterations {
-                            rows.push(row_for(expectation, case, horse, "measured", iteration));
+                            rows.push(row_for(
+                                expectation,
+                                case,
+                                horse,
+                                "measured",
+                                iteration,
+                                provenance_override,
+                            ));
                         }
                     }
                     RawLane::Attribution => {
-                        rows.push(row_for(expectation, case, horse, "attribution", 0));
+                        rows.push(row_for(
+                            expectation,
+                            case,
+                            horse,
+                            "attribution",
+                            0,
+                            provenance_override,
+                        ));
                     }
                 }
             }
@@ -905,5 +1020,105 @@ mod tests {
         )
         .expect_err("2 cases are not the frozen 22");
         assert!(error.contains("not the frozen 22"), "got {error}");
+    }
+
+    /// C4: a complete formal M-LANE file finalizes with the memory lane
+    /// facts, the same warmup/measured split as a timing session.
+    #[test]
+    fn a_complete_memory_session_passes() {
+        let expectation = expectation(Surface::EditWrite, RawLane::Memory { session_ordinal: 2 });
+        let path = write_rows("memory", &complete_rows(&expectation));
+        let summary =
+            verify_raw_file(&path, &expectation).expect("complete memory session verifies");
+        assert_eq!(summary.verdict, "FINAL_RAW_FILE_PASS");
+        assert_eq!(summary.lane, "memory");
+        assert_eq!(summary.session_ordinal, Some(2));
+        assert_eq!(summary.rows, 3 * 6 * (2 + 2));
+        assert_eq!(summary.warmup_rows, 3 * 6 * 2);
+        assert_eq!(summary.measured_rows, 3 * 6 * 2);
+        assert_eq!(summary.attribution_rows, 0);
+        assert_eq!(summary.unique_observation_ids, summary.rows);
+        let _ = std::fs::remove_file(&path);
+    }
+
+    /// C4: NON_RESEARCH smoke provenance can never pass as a formal
+    /// QUALIFIED_M_LANE row, even with every other field perfect.
+    #[test]
+    fn smoke_provenance_never_passes_memory_finalization() {
+        let expectation = expectation(Surface::CleanState, RawLane::Memory { session_ordinal: 0 });
+        let rows = complete_rows_with(
+            &expectation,
+            Some("CAMPAIGN_MEMORY_SMOKE/NON_RESEARCH_RESULT"),
+        );
+        let path = write_rows("memory-smoke-tag", &rows);
+        let blockers = verify_raw_file(&path, &expectation).unwrap_err();
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.contains("is not the formal memory-lane provenance")),
+            "smoke provenance must block; got {blockers:?}"
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    /// A memory file whose rows carry a non-memory measurement (e.g. a
+    /// timing row misrouted into the memory lane) is blocked.
+    #[test]
+    fn a_timing_row_never_passes_memory_finalization() {
+        let expectation = expectation(Surface::CleanState, RawLane::Memory { session_ordinal: 0 });
+        let mut rows = complete_rows(&expectation);
+        // Replace one row's measurement with a Timing payload (keeping
+        // every identity field intact).
+        let timing_measurement = MeasurementV1::Timing(TimingMetricsV1 {
+            prepare_ns: markit_mdbench_common::Observed::Known(1),
+            native_ns: markit_mdbench_common::Observed::Known(2),
+            total_ns: markit_mdbench_common::Observed::Known(3),
+        });
+        rows[0].result_row_v2.measurement = timing_measurement;
+        let path = write_rows("memory-timing-row", &rows);
+        let blockers = verify_raw_file(&path, &expectation).unwrap_err();
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.contains("does not belong to the memory lane")),
+            "misrouted measurement must block; got {blockers:?}"
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    /// A completed memory row with an all-zero / Unknown window (the
+    /// wrong-binary signature) is blocked at finalization too.
+    #[test]
+    fn an_uninstrumented_memory_row_is_blocked() {
+        let expectation = expectation(Surface::CleanState, RawLane::Memory { session_ordinal: 0 });
+        let mut rows = complete_rows(&expectation);
+        rows[0].result_row_v2.measurement = MeasurementV1::Memory(
+            markit_mdbench_instrumentation::MemoryRecord {
+                allocated_bytes: markit_mdbench_common::Observed::Known(0),
+                allocation_count: markit_mdbench_common::Observed::Known(0),
+                peak_bytes: markit_mdbench_common::Observed::Known(0),
+                retained_bytes: markit_mdbench_common::Observed::Known(0),
+            }
+            .into(),
+        );
+        let path = write_rows("memory-zero-row", &rows);
+        let blockers = verify_raw_file(&path, &expectation).unwrap_err();
+        assert!(
+            blockers
+                .iter()
+                .any(|b| b.contains("observed no allocations")),
+            "all-zero window must block; got {blockers:?}"
+        );
+        let mut rows = complete_rows(&expectation);
+        if let MeasurementV1::Memory(metrics) = &mut rows[0].result_row_v2.measurement {
+            metrics.allocated_bytes = markit_mdbench_common::Observed::Unknown;
+        }
+        let path = write_rows("memory-unknown-row", &rows);
+        let blockers = verify_raw_file(&path, &expectation).unwrap_err();
+        assert!(
+            blockers.iter().any(|b| b.contains("metric UNKNOWN")),
+            "Unknown slot must block; got {blockers:?}"
+        );
+        let _ = std::fs::remove_file(&path);
     }
 }

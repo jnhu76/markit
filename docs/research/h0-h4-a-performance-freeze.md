@@ -370,3 +370,88 @@ performance numbers were collected here, and no mechanism changed.
 
 FORMAL_PERFORMANCE_COLLECTION_STARTED = NO
 ```
+
+## 13. M-COLLECTOR-1 — formal M-LANE collector + execution revision
+
+Task M-COLLECTOR-1 (post-Gate-B, #76) wired the ONE missing execution
+piece: the formal M-LANE collector. This section is the execution-
+revision record; it changes NO Gate-B fact, NO campaign identity, and NO
+frozen semantic.
+
+**Collector.** `mdbench-memory` (`campaign/src/bin/mdbench-memory.rs`),
+the DEDICATED counting-allocator binary:
+
+```text
+mdbench-memory run-memory --surface S --session N [root]
+```
+
+- installs `CountingAllocator` as its process allocator (guard: the run
+  fails closed if the allocator is not observed active before any
+  window opens); `mdbench-campaign` never installs it;
+- cadence/order INHERITED, not chosen: the campaign manifest's
+  `[sessions]` policy (3 × (10 warmup + 30 measured) per case × horse
+  per surface) is campaign-wide with no memory-lane exception, and the
+  executor consumes the SAME frozen schedule rows as the timing
+  sessions (same case order, same seeded horse rotation). M-LANE raw
+  cardinality therefore equals T-LANE cardinality: 92,160 rows per
+  session per surface, 276,480 total;
+- measurement windows are the already-reviewed runner functions
+  `run_full_parse_memory` / `run_update_memory` over `AllocReporter`
+  (window = the frozen timing-boundary mirror; retained-memory window
+  closes strictly after the sealed state is black_boxed while alive;
+  fresh SINGLE_RESET pre-state built outside every window);
+- session identity: dedicated `memory_session_id` derivation (cross-
+  lane collision-free, guarded by the preflight `All` union which now
+  enumerates timing + memory + attribution = 555,264 ids); rows carry
+  provenance `PRIMARY-PERFORMANCE-CAMPAIGN-v1/MEMORY`;
+  `RunId` binds THIS binary's SHA256 — one RunId per execution binary;
+  the memory lane lives under `results/raw/<spec>/<RunId>/memory/` and
+  is never split across two memory binaries;
+- verification fail-closes at execution AND finalization: a completed
+  run must carry all-Known window facts with a non-zero allocation
+  count; memory finalization additionally rejects any row whose
+  provenance is not the formal MEMORY tag — a NON_RESEARCH
+  `CAMPAIGN_MEMORY_SMOKE` artifact can never pass as QUALIFIED_M_LANE
+  evidence (deterministic tests pin both separations);
+  `mdbench-memory-smoke` remains NON_RESEARCH instrument validation
+  only.
+
+No six-horse mechanism code, workload, edit identity, timing boundary,
+allocator counting semantic, retained-memory lifecycle point, sampling
+count, horse order, seed, campaign id, or aggregation rule changed.
+
+**Execution revision (filled at merge; see also issue #76):**
+
+```text
+AUTHORIZATION_BASELINE_COMMIT      = 57eb2abf62c3e89ea3b3037caeabb711d6984608
+PERFORMANCE_FREEZE_COMMIT          = b49eb3cf633ddfb3d8f8513fd1f8e7af7a5b2b79
+PERFORMANCE_FREEZE_TREE            = f7770bc646a443444577ef53e60c2ad1fa7c5526
+FORMAL_COLLECTION_EXECUTION_REVISION = <merge commit of the M-COLLECTOR-1 PR;
+                                       a merge commit cannot contain its own
+                                       hash — recorded verbatim in the merge
+                                       commit message, in issue #76, and in
+                                       the formal-host preflight output>
+FORMAL_COLLECTION_EXECUTION_TREE    = <tree of the revision above>
+
+CAMPAIGN_ID       = MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1  (UNCHANGED)
+CAMPAIGN_SEED     = 0xd7b11f1df0cc7cb5                           (UNCHANGED)
+```
+
+**Frozen formal collection command surface** (for the NEXT task only;
+NOT executed by M-COLLECTOR-1):
+
+```text
+# T-LANE (per surface × session 0..2, fresh process each)
+mdbench-campaign run-session --surface clean_state --session <N>
+mdbench-campaign run-session --surface edit_write  --session <N>
+# A-LANE (per surface)
+mdbench-campaign run-attribution --surface clean_state
+mdbench-campaign run-attribution --surface edit_write
+# M-LANE (per surface × session 0..2, dedicated instrumented binary)
+mdbench-memory run-memory --surface clean_state --session <N>
+mdbench-memory run-memory --surface edit_write  --session <N>
+```
+
+```text
+FORMAL_PERFORMANCE_COLLECTION_STARTED = NO
+```

@@ -9,7 +9,7 @@ pub mod clock;
 pub mod lanes;
 pub mod timer;
 
-pub use alloc::{AllocReporter, CountingAllocator};
+pub use alloc::{counting_allocator_active, AllocReporter, CountingAllocator};
 pub use clock::{Clock, InstantClock, ManualClock};
 pub use lanes::{
     CaseMemoryProbe, Lane, LaneMeasurement, ManualMemoryReporter, MemoryRecord, MemoryReporter,

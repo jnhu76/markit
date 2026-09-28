@@ -60,22 +60,27 @@ pub enum HostBinding {
 
 /// Which observation identities a preflight enumerates and guards.
 ///
-/// The three scopes are structurally distinct — they enumerate different
+/// The four scopes are structurally distinct — they enumerate different
 /// id sets with different cardinalities — so each execution path states
 /// its own:
 ///
 /// ```text
-/// All                             whole campaign (both lanes, all sessions)
+/// All                             whole campaign (every lane, all sessions)
 /// Timing  { surface, session }    one timing session
+/// Memory  { surface, session }    one formal M-LANE session
 /// Attribution { surface }         one attribution lane
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PreflightScope {
-    /// Every timing session of both surfaces PLUS both attribution
-    /// lanes, unioned into one campaign-wide id set.
+    /// Every timing session AND every formal M-LANE session of both
+    /// surfaces PLUS both attribution lanes, unioned into one
+    /// campaign-wide id set.
     All,
     /// Exactly one timing session of one surface.
     Timing { surface: Surface, session: u32 },
+    /// Exactly one formal M-LANE session of one surface (the memory
+    /// sessions of the dedicated counting-allocator binary).
+    Memory { surface: Surface, session: u32 },
     /// Exactly one attribution lane (no timing session).
     Attribution { surface: Surface },
 }
@@ -87,6 +92,9 @@ impl PreflightScope {
             PreflightScope::All => "all".to_string(),
             PreflightScope::Timing { surface, session } => {
                 format!("timing:{}:{session}", surface.as_str())
+            }
+            PreflightScope::Memory { surface, session } => {
+                format!("memory:{}:{session}", surface.as_str())
             }
             PreflightScope::Attribution { surface } => {
                 format!("attribution:{}", surface.as_str())
@@ -348,13 +356,29 @@ fn check_observation_uniqueness(
                     );
                     check_timing_cardinality(manifest, surface, session, &lane, blockers);
                     record(lane, &mut union, &mut enumeration, blockers);
+                    // The formal M-LANE runs the same frozen sessions in
+                    // its dedicated binary (#76 M-COLLECTOR-1); its ids
+                    // join the campaign-wide union so cross-lane
+                    // collisions are caught here, never at collection
+                    // time.
+                    let memory_lane = enumerate_memory_session(
+                        fake_run,
+                        surface,
+                        &cases,
+                        session,
+                        manifest.sessions.warmup_iterations,
+                        manifest.sessions.measured_iterations,
+                    );
+                    check_memory_cardinality(manifest, surface, session, &memory_lane, blockers);
+                    record(memory_lane, &mut union, &mut enumeration, blockers);
                 }
                 let lane = enumerate_attribution(fake_run, surface, &cases);
                 check_attribution_cardinality(surface, &lane, blockers);
                 record(lane, &mut union, &mut enumeration, blockers);
             }
-            // Campaign-wide totals (task §10): 230,400 timing rows across
-            // 3 sessions x 2 surfaces + 1,920 attribution rows = 232,320.
+            // Campaign-wide totals: 276,480 timing rows + 276,480 memory
+            // rows (each 3 sessions × 2 surfaces × 92,160) + 2,304
+            // attribution rows.
             check_campaign_totals(manifest, &enumeration, blockers);
         }
         PreflightScope::Timing { surface, session } => {
@@ -376,6 +400,27 @@ fn check_observation_uniqueness(
                 manifest.sessions.measured_iterations,
             );
             check_timing_cardinality(manifest, surface, session, &lane, blockers);
+            record(lane, &mut union, &mut enumeration, blockers);
+        }
+        PreflightScope::Memory { surface, session } => {
+            if session >= manifest.sessions.count {
+                blockers.push(format!(
+                    "memory scope session {session} is outside the frozen session count {}",
+                    manifest.sessions.count
+                ));
+                return enumeration;
+            }
+            let cases = case_ids(surface);
+            check_frozen_case_count(surface, cases.len(), blockers);
+            let lane = enumerate_memory_session(
+                fake_run,
+                surface,
+                &cases,
+                session,
+                manifest.sessions.warmup_iterations,
+                manifest.sessions.measured_iterations,
+            );
+            check_memory_cardinality(manifest, surface, session, &lane, blockers);
             record(lane, &mut union, &mut enumeration, blockers);
         }
         PreflightScope::Attribution { surface } => {
@@ -412,6 +457,32 @@ fn enumerate_timing_session(
             measured: measured_iterations,
         },
         format!("timing:{}:{session_ordinal}", surface.as_str()),
+    )
+}
+
+/// Enumerate one formal M-LANE session of one surface: the same frozen
+/// case × horse × iteration structure as a timing session, under the
+/// memory session-id derivation, so the enumerated ids are exactly the
+/// ids the dedicated memory binary will emit.
+fn enumerate_memory_session(
+    run: &str,
+    surface: Surface,
+    case_ids: &[String],
+    session_ordinal: u32,
+    warmup_iterations: u32,
+    measured_iterations: u32,
+) -> LaneEnumerationIds {
+    let session_id = crate::execute::memory_session_id(run, surface.as_str(), session_ordinal);
+    enumerate_lane(
+        run,
+        surface,
+        &session_id,
+        case_ids,
+        LaneKind::Timing {
+            warmup: warmup_iterations,
+            measured: measured_iterations,
+        },
+        format!("memory:{}:{session_ordinal}", surface.as_str()),
     )
 }
 
@@ -571,8 +642,48 @@ fn check_attribution_cardinality(
     }
 }
 
+/// Memory-lane expectations are the frozen timing cardinalities — the
+/// M-LANE runs the same frozen sessions (manifest `[sessions]` policy,
+/// no memory exception) under the memory session-id derivation.
+fn check_memory_cardinality(
+    manifest: &CampaignManifest,
+    surface: Surface,
+    session: u32,
+    lane: &LaneEnumerationIds,
+    blockers: &mut Vec<String>,
+) {
+    let horses = crate::HORSE_IDS.len();
+    let cases = surface.frozen_case_count();
+    let warmup = cases * horses * manifest.sessions.warmup_iterations as usize;
+    let measured = cases * horses * manifest.sessions.measured_iterations as usize;
+    let rows = warmup + measured;
+    if lane.summary.duplicate_ids != 0 {
+        blockers.push(format!(
+            "duplicate ObservationId in memory {} session {session}: {} rows, {} distinct ids",
+            surface.as_str(),
+            lane.summary.rows,
+            lane.summary.unique_ids
+        ));
+    }
+    if lane.summary.rows != rows
+        || lane.summary.warmup_rows != warmup
+        || lane.summary.measured_rows != measured
+        || lane.summary.attribution_rows != 0
+    {
+        blockers.push(format!(
+            "memory {} session {session}: enumerated {} rows ({} warmup / {} measured / {} attribution) != expected {rows} ({warmup} / {measured} / 0)",
+            surface.as_str(),
+            lane.summary.rows,
+            lane.summary.warmup_rows,
+            lane.summary.measured_rows,
+            lane.summary.attribution_rows
+        ));
+    }
+}
+
 /// Whole-campaign totals for [`PreflightScope::All`]: the frozen
-/// cardinalities AND a duplicate-free union across every lane.
+/// cardinalities AND a duplicate-free union across every lane (timing,
+/// memory, attribution).
 fn check_campaign_totals(
     manifest: &CampaignManifest,
     enumeration: &ObservationEnumeration,
@@ -587,11 +698,14 @@ fn check_campaign_totals(
         ));
     }
     let timing_rows = per_session * manifest.sessions.count as usize;
+    // The M-LANE mirrors the timing structure session-for-session
+    // (#76 M-COLLECTOR-1): one memory row per timing row.
+    let memory_rows = timing_rows;
     let attribution_rows = cells;
-    let rows = timing_rows + attribution_rows;
+    let rows = timing_rows + memory_rows + attribution_rows;
     if enumeration.rows != rows {
         blockers.push(format!(
-            "campaign-wide enumeration: {} rows != expected {rows} ({timing_rows} timing + {attribution_rows} attribution)",
+            "campaign-wide enumeration: {} rows != expected {rows} ({timing_rows} timing + {memory_rows} memory + {attribution_rows} attribution)",
             enumeration.rows
         ));
     }
@@ -748,9 +862,9 @@ mod tests {
 
     #[test]
     fn attribution_ids_never_collide_with_timing_ids_or_each_other() {
-        // The attribution lane must not reuse a timing session id space
-        // (the defect this scope split fixes) and the two surfaces must
-        // not collide either.
+        // No lane may reuse another lane's session id space (the defect
+        // this scope split fixes) and the surfaces must not collide
+        // either — the memory lane joins the same guarantee.
         let mut union = BTreeSet::new();
         let mut total = 0usize;
         for (surface, count, rows) in [
@@ -765,6 +879,12 @@ mod tests {
                     assert!(union.insert(id.clone()), "timing id collided: {id}");
                 }
                 total += lane.summary.rows;
+                let lane =
+                    enumerate_memory_session("test-run", surface, &case_ids, session, 10, 30);
+                for id in &lane.ids {
+                    assert!(union.insert(id.clone()), "memory id collided: {id}");
+                }
+                total += lane.summary.rows;
             }
             let lane = enumerate_attribution("test-run", surface, &case_ids);
             for id in &lane.ids {
@@ -772,7 +892,7 @@ mod tests {
             }
             total += rows;
         }
-        assert_eq!(total, 3 * 92_160 + 2_304);
+        assert_eq!(total, 2 * 3 * 92_160 + 2_304);
         assert_eq!(union.len(), total);
     }
 
@@ -817,11 +937,14 @@ mod tests {
             all_blockers.is_empty(),
             "All scope blockers: {all_blockers:?}"
         );
-        assert_eq!(all.rows, 276_480 + 2_304);
+        // Timing + memory (each 276,480) + attribution (2,304); the
+        // memory lane joined the campaign-wide union with M-COLLECTOR-1.
+        assert_eq!(all.rows, 276_480 + 276_480 + 2_304);
         assert_eq!(all.unique_ids, all.rows);
         assert_eq!(all.duplicate_ids, 0);
-        // 3 sessions x 2 surfaces + 2 attribution lanes.
-        assert_eq!(all.lanes.len(), 8);
+        // 3 timing sessions + 3 memory sessions per surface + 2
+        // attribution lanes.
+        assert_eq!(all.lanes.len(), 14);
 
         let mut attribution_blockers = Vec::new();
         let attribution = check_observation_uniqueness(
@@ -852,5 +975,40 @@ mod tests {
         assert_eq!(timing.rows, 5_280);
         assert_eq!(timing.lanes[0].warmup_rows, 1_320);
         assert_eq!(timing.lanes[0].measured_rows, 3_960);
+
+        let mut memory_blockers = Vec::new();
+        let memory = check_observation_uniqueness(
+            &manifest,
+            &workload,
+            PreflightScope::Memory {
+                surface: Surface::EditWrite,
+                session: 1,
+            },
+            &mut memory_blockers,
+        );
+        assert!(memory_blockers.is_empty());
+        // The M-LANE mirrors the timing session cardinality exactly.
+        assert_eq!(memory.rows, 86_880);
+        assert_eq!(memory.lanes[0].lane, "memory:edit_write:1");
+        assert_eq!(memory.lanes[0].warmup_rows, 21_720);
+        assert_eq!(memory.lanes[0].measured_rows, 65_160);
+        assert_eq!(memory.lanes[0].attribution_rows, 0);
+
+        let mut memory_range_blockers = Vec::new();
+        check_observation_uniqueness(
+            &manifest,
+            &workload,
+            PreflightScope::Memory {
+                surface: Surface::CleanState,
+                session: 3,
+            },
+            &mut memory_range_blockers,
+        );
+        assert!(
+            memory_range_blockers
+                .iter()
+                .any(|b| b.contains("outside the frozen session count")),
+            "out-of-range memory session must block; got {memory_range_blockers:?}"
+        );
     }
 }
