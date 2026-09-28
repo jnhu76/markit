@@ -11,6 +11,7 @@
 
 mod adversarial;
 mod alloc_probe;
+mod c123;
 mod conformance;
 mod counters;
 mod frontier;
