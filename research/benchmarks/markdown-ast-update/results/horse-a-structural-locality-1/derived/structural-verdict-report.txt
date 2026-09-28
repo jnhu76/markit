@@ -1,0 +1,59 @@
+HORSE-A #60 FIRST STRUCTURAL COLLECTION — MECHANICAL DERIVATION (from immutable raw rows + frozen #60 table)
+
+CELL = H4N-128KiB
+  REP1 = PASS   REP2 = PASS   REP3 = PASS
+  COUNTERS_DETERMINISTIC = YES
+  locate = Known(1)
+  safe = Known(11)
+  cursor = Known(21)
+  fact_range = Known(19)
+  split = Known(48)
+  pivot = Known(31)
+  join = Known(14)
+  rotations = Known(1)
+  links = Known(105)
+  reads = Known(618)
+  writes = Known(200)
+  h = Known(11)/Known(11)
+  CORRECTNESS = C1/C2/C3 PASS + normalized equality (all reps)
+  CELL_STRUCTURAL_VERDICT = PASS
+
+CELL = H4N-1MiB
+  REP1 = PASS   REP2 = PASS   REP3 = PASS
+  COUNTERS_DETERMINISTIC = YES
+  locate = Known(1)
+  safe = Known(14)
+  cursor = Known(27)
+  fact_range = Known(25)
+  split = Known(66)
+  pivot = Known(43)
+  join = Known(20)
+  rotations = Known(1)
+  links = Known(141)
+  reads = Known(846)
+  writes = Known(272)
+  h = Known(14)/Known(14)
+  CORRECTNESS = C1/C2/C3 PASS + normalized equality (all reps)
+  CELL_STRUCTURAL_VERDICT = PASS
+
+CELL = H4N-16MiB
+  REP1 = PASS   REP2 = PASS   REP3 = PASS
+  COUNTERS_DETERMINISTIC = YES
+  locate = Known(1)
+  safe = Known(18)
+  cursor = Known(35)
+  fact_range = Known(33)
+  split = Known(90)
+  pivot = Known(59)
+  join = Known(28)
+  rotations = Known(1)
+  links = Known(189)
+  reads = Known(1150)
+  writes = Known(368)
+  h = Known(18)/Known(18)
+  CORRECTNESS = C1/C2/C3 PASS + normalized equality (all reps)
+  CELL_STRUCTURAL_VERDICT = PASS
+
+OVERALL_STRUCTURAL_VERDICT = STRUCTURAL_PASS
+(all three cells PASS and deterministic; no weighting, no averaging, no latency rescue)
+
