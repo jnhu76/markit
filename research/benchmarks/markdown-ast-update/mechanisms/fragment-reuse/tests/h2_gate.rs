@@ -957,21 +957,22 @@ fn h2_margins_report_source_inspection() {
             "edited-span definition probe must be reported, events: {events:?}"
         );
         // The pair (gpos-2, gpos-1) — beta's LF byte — is reported by
-        // TWO independent mechanism paths: the left-edge margin's
-        // backward scan (before the boundary line) AND the consult-time
-        // paragraph margin at the damaged gamma block start. No parser
-        // line report is that pair, so multiplicity >= 2 pins both
-        // reporting paths at once. (The alpha/beta line starts are
-        // swallowed by the taken run — the scanner consults only at
-        // lines it actually dispatches.)
+        // the left-edge margin's backward scan (before the boundary
+        // line). (#79 corrective: the pre-corrective consult-time
+        // paragraph margin — the second historical reporting path for
+        // this pair — is REMOVED; the corrected cursor consults with
+        // the scanner-side `starts_block` classification and reads no
+        // preceding line at the take point. Its reads, when any, are
+        // the scanner's own consult-lane report over the taken line's
+        // prefix bytes.)
         let pair = (gpos as u64 - 2, gpos as u64 - 1);
         let count = events
             .iter()
             .filter(|&&(v, s, e)| v == SourceVersion::Post && (s, e) == pair)
             .count();
         assert!(
-            count >= 2,
-            "left-edge margin backward scan AND the consult margin must both be reported, events: {events:?}"
+            count >= 1,
+            "the left-edge margin backward scan must be reported, events: {events:?}"
         );
     }
     match counters.nodes_reused {

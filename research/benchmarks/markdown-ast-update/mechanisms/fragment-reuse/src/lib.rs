@@ -1,28 +1,41 @@
-//! markit-mdbench-fragment-reuse — H2 FRAGMENT_REUSE (#22, stage R5).
+//! markit-mdbench-fragment-reuse — H2 FRAGMENT_REUSE (#22, stage R5;
+//! #79 donor-fidelity corrective).
 //!
 //! Mechanism identity (frozen in
-//! `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §7; lezer-inspired —
-//! @lezer/common `TreeFragment.applyChanges` lifecycle with openStart/
-//! openEnd edges, offset deltas and minGap, plus the @lezer/markdown
-//! FragmentCursor block-run reuse shape): retain the old tree as
-//! parent-relative `Arc<FNode>` block nodes plus a fragment table; map
-//! the edit through the fragment table (split / drop-below-minGap /
-//! shift / open edges); parse the post source line-driven, consulting a
-//! cursor at every block-start line — whole old BLOCK runs whose start
-//! aligns with the live position, whose entry `ContextKey` vouches the
-//! live container/fence state, and which fit the fragment's safe window
-//! are taken whole (shared Arc identity); everything else parses
-//! normally. Reuse authority comes ONLY from the fragment table.
+//! `protocol/R5-HORSE-CORRECTNESS-PARITY.md` §7 + the #79 amendment;
+//! lezer-inspired — @lezer/common `TreeFragment.applyChanges` lifecycle
+//! with openStart/openEnd edges, offset deltas and minGap, plus the
+//! @lezer/markdown FragmentCursor block-run reuse shape): retain the
+//! old tree as parent-relative `Arc<FNode>` block nodes plus a fragment
+//! table; map the edit through the fragment table (split /
+//! drop-below-minGap / shift / open edges); parse the post source
+//! line-driven, consulting a cursor at every dispatched line start AT
+//! THE POST-CLOSURE LIVE LEVEL (the donor's consultation point: stale
+//! container frames have closed, no new frame has opened — the state
+//! the next block enters): the cursor keeps a PERSISTENT FORWARD-ONLY
+//! descent path into the old tree (fragment index + per-level child
+//! indices that never move backward — the TreeCursor analogue; no
+//! per-consult table rebuild), skips consumed entries, descends into
+//! the entry whose span contains the position, and vouches the first
+//! entry whose LINE aligns with the live position when its entry
+//! `ContextKey` equals the live key — at ANY nesting level, so
+//! mid-container sibling runs (undamaged items inside a damaged list;
+//! blocks inside a damaged quote) are taken whole (shared Arc
+//! identity); everything else parses normally. A consult where the
+//! live paragraph would absorb the line (the scanner's `starts_block`
+//! argument) is refused — the blank-line margin's sound replacement.
+//! Reuse authority comes ONLY from the fragment table.
 //!
 //! Soundness rests on the termination-input argument: a taken run entered
-//! the live parse under a vouched-identical `ContextKey`, consists of
-//! unchanged bytes inside an undamaged fragment window, and ends at an
-//! old tree block boundary — so the deterministic BENCH-GRAMMAR-v1 line
-//! loop reproduces the old parse's boundary decisions inside and after
-//! the run. The one block adjacent to each open edge is excluded from
-//! reuse (its termination consumed bytes the edit changed). Reuse
-//! failure is natural degradation (the line parses normally), never a
-//! fallback — `fallback_to_full_count` is NotApplicable to H2.
+//! the live parse under a vouched-identical `ContextKey` at a line where
+//! the live parse starts a fresh block, consists of unchanged bytes
+//! inside an undamaged fragment window, and ends at an old tree block
+//! boundary — so the deterministic BENCH-GRAMMAR-v1 line loop reproduces
+//! the old parse's boundary decisions inside and after the run. The one
+//! block adjacent to each open edge is excluded from reuse (its
+//! termination consumed bytes the edit changed). Reuse failure is
+//! natural degradation (the line parses normally), never a fallback —
+//! `fallback_to_full_count` is NotApplicable to H2.
 //!
 //! This crate owns ONLY H2 mechanism state and policy. Grammar semantics
 //! live in `markit-mdbench-shared-grammar` (the splice hook is
@@ -235,11 +248,24 @@ pub struct H2Prepared {
 // ---------------------------------------------------------------------------
 
 #[derive(Debug, Default)]
-pub struct FragmentReuseMechanism;
+pub struct FragmentReuseMechanism {
+    /// The discovery-shape summary of the LAST `update` call (#79 §13:
+    /// structural observability of the forward-cursor discovery work —
+    /// diagnostic export only, never mechanism state). Interior
+    /// mutability because the frozen `Mechanism` trait takes `&self`.
+    last_discovery: std::cell::Cell<DiscoverySummary>,
+}
 
 impl FragmentReuseMechanism {
     pub fn new() -> Self {
-        Self
+        Self::default()
+    }
+
+    /// Discovery accounting of the most recent `update` (#79 §13):
+    /// consults, entry visits, per-consult maximum, and table rebuilds
+    /// (always 0 — the pre-#79 per-consult rebuild is removed).
+    pub fn discovery_summary(&self) -> DiscoverySummary {
+        self.last_discovery.get()
     }
 
     /// Clean parse into H2 state + result: block pass over the shared
@@ -389,24 +415,23 @@ impl Mechanism for FragmentReuseMechanism {
         let region_may_create_def = post[es..ee_new].windows(3).any(|w| w == b"]: ");
         let definition_changing = damaged_has_def || region_may_create_def;
 
-        // Line-driven parse with the fragment cursor. The hook NEVER
-        // decides grammar — it only executes takes the cursor vouched.
-        let mut cursor = Cursor {
-            fragments: &fragments,
-            tree: &old_state.tree,
-            post,
+        // Line-driven parse with the fragment cursor (#79 corrective:
+        // post-closure consults, live-level discovery, persistent
+        // forward-only descent — no per-consult table rebuild). The hook
+        // NEVER decides grammar — it only executes takes the cursor
+        // vouched.
+        let mut cursor = Cursor::new(
+            &fragments,
+            &old_state.tree,
             ee_new,
             left_window_end,
             right_window_start,
-            old_len: old.len(),
+            old.len(),
             definition_changing,
-            takes: Vec::new(),
-            consultations: 0,
-            reused: 0,
-            margin_checks: Vec::new(),
-        };
-        let (rp, slot_count, takes, consultations, reused, margin_checks) = {
-            let mut hook: Box<SpliceHook<'_>> = Box::new(|pos, key| cursor.consult(pos, key));
+        );
+        let (rp, slot_count, takes, consultations, reused, discovery) = {
+            let mut hook: Box<SpliceHook<'_>> =
+                Box::new(|pos, key, starts_block| cursor.consult(pos, key, starts_block));
             let (rp, slot_count) = parse_region_with_hook(post, 0, post.len(), cx.sink, &mut hook);
             drop(hook); // end the cursor borrow before reading the take record
             (
@@ -415,13 +440,10 @@ impl Mechanism for FragmentReuseMechanism {
                 cursor.takes,
                 cursor.consultations,
                 cursor.reused,
-                cursor.margin_checks,
+                cursor.discovery,
             )
         };
-        for (a, b) in &margin_checks {
-            cx.sink
-                .record_source_inspection(markit_mdbench_common::SourceVersion::Post, *a, *b);
-        }
+        self.last_discovery.set(discovery);
 
         // Rebuild the document-global first-wins table from the assembled
         // structure (surviving fragments' recorded facts + new facts), in
@@ -467,8 +489,12 @@ impl Mechanism for FragmentReuseMechanism {
         // kept their identity and still count as reused.
         cx.sink
             .add_nodes_reused(reused - built.rematerialized_members + built.rematerialized_kept);
-        cx.sink
-            .add_metadata_records_touched(consultations + slot_count as u64);
+        // Discovery accounting (D11, #79): every consultation AND every
+        // old-tree entry visit is attributed — the pre-#79 per-consult
+        // scan was invisible behind one consultation count.
+        cx.sink.add_metadata_records_touched(
+            consultations + discovery.total_visits + slot_count as u64,
+        );
 
         let tree = FTree {
             slots,
@@ -603,14 +629,92 @@ fn right_window_start(tree: &FTree, ee: usize, old_len: usize) -> usize {
 }
 
 // ---------------------------------------------------------------------------
-// Fragment cursor (the FragmentCursor.moveTo analogue)
+// Fragment cursor (the FragmentCursor.moveTo analogue, #79 corrective)
 // ---------------------------------------------------------------------------
+
+/// Discovery-shape accounting (#79 §13; structural, never timing):
+/// every old-tree entry visit during candidate discovery is counted,
+/// so the amortized-forward property is observable rather than hidden
+/// behind one consultation count (the pre-#79 D11 blind spot).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct DiscoverySummary {
+    /// Line-start consultations received.
+    pub consultations: u64,
+    /// Total old-tree entry visits over the whole update (skip/descend/
+    /// candidate reads). Forward-only: bounded by forward traversal.
+    pub total_visits: u64,
+    /// The largest number of entry visits any single consult performed.
+    pub max_consult_visits: u64,
+    /// Top-level tables rebuilt after cursor construction. The cursor
+    /// materializes the top level ONCE per update (the donor's
+    /// per-parse TreeCursor analogue); any further rebuild would be the
+    /// pre-#79 per-consult scan shape.
+    pub table_rebuilds: u64,
+}
+
+/// One persistent descent level of the forward cursor: the entries of
+/// one old-tree level (borrowed — no per-consult cloning), with the
+/// current entry index and its absolute old start. The top level walks
+/// the Document's slots (gaps folded into the running position);
+/// nested levels walk a container node's `children` (relative starts).
+struct LevelCursor<'a> {
+    slots: Option<&'a [FSlot]>,
+    children: &'a [(usize, Arc<FNode>)],
+    /// Parent span start (nested levels; entries are `base + rel`).
+    base: usize,
+    /// The current entry's absolute old start — maintained
+    /// incrementally on advance (top: prefix-summed with gaps).
+    cur: usize,
+    /// The current entry index (monotone; never moves backward).
+    idx: usize,
+}
+
+impl<'a> LevelCursor<'a> {
+    fn top(slots: &'a [FSlot]) -> Self {
+        LevelCursor {
+            slots: Some(slots),
+            children: &[],
+            base: 0,
+            cur: slots.first().map_or(0, |s| s.gap),
+            idx: 0,
+        }
+    }
+    fn nested(base: usize, children: &'a [(usize, Arc<FNode>)]) -> Self {
+        LevelCursor {
+            slots: None,
+            children,
+            base,
+            cur: children.first().map_or(base, |(rel, _)| base + rel),
+            idx: 0,
+        }
+    }
+    fn len(&self) -> usize {
+        match self.slots {
+            Some(slots) => slots.len(),
+            None => self.children.len(),
+        }
+    }
+    fn node(&self) -> &'a Arc<FNode> {
+        match self.slots {
+            Some(slots) => &slots[self.idx].node,
+            None => &self.children[self.idx].1,
+        }
+    }
+    /// Advance past the current entry (forward-only).
+    fn advance(&mut self) {
+        let size = self.node().size;
+        self.idx += 1;
+        if self.idx < self.len() {
+            self.cur = match self.slots {
+                Some(slots) => self.cur + size + slots[self.idx].gap,
+                None => self.base + self.children[self.idx].0,
+            };
+        }
+    }
+}
 
 struct Cursor<'a> {
     fragments: &'a [Fragment],
-    tree: &'a FTree,
-    /// The post source, for the live-side paragraph margin at take start.
-    post: &'a [u8],
     ee_new: usize,
     left_window_end: usize,
     right_window_start: usize,
@@ -619,11 +723,17 @@ struct Cursor<'a> {
     takes: Vec<TakeRun>,
     consultations: u64,
     reused: u64,
-    /// Inspected byte ranges of the consult-time paragraph margins,
-    /// buffered during the parse (the cursor borrow excludes the sink)
-    /// and reported by the caller afterwards (R5-CORRECTIVE-2). Every
-    /// consult that performs the read reports it, pass or fail.
-    margin_checks: Vec<(u64, u64)>,
+    discovery: DiscoverySummary,
+    /// Persistent forward state (the FragmentCursor analogue):
+    /// the fragment index advances monotonically as the parse position
+    /// passes fragments; consumed fragments are gone.
+    frag_idx: usize,
+    /// The persistent old-tree descent path (top level first). The
+    /// donor's TreeCursor `parent()`/`childAfter()` moves become
+    /// index advances and level pushes here; every consult only moves
+    /// FORWARD from where the previous one left the path. No per-consult
+    /// table rebuild — the pre-#79 D11 shape is gone.
+    path: Vec<LevelCursor<'a>>,
 }
 
 /// One taken run: the placeholder covers POST bytes `[pos, pos + len)`;
@@ -635,137 +745,205 @@ struct TakeRun {
     members: Vec<(usize, Arc<FNode>)>,
 }
 
-impl Cursor<'_> {
-    /// Consultation at a block-start line: find a vouched run of old-tree
-    /// blocks starting exactly here. Returns the take end (exclusive) or
-    /// `None` (the line parses normally — natural degradation).
-    fn consult(&mut self, pos: usize, key: &ContextKey) -> Option<usize> {
-        self.consultations += 1;
-        // PARAGRAPH MARGIN at take start (the ContextKey deliberately
-        // excludes paragraph state, R5 freeze section 2): the line
-        // immediately before the splice must be blank (>= the blank-line
-        // separation that terminates every continuation), so no paragraph
-        // is open in the live parse. A blank-separated line start is the
-        // only splice point where a taken fragment's first block is
-        // guaranteed to start a fresh block in the live parse too.
-        // Conservative: takes at interruptor lines (legal but
-        // para-state-dependent) degrade to reparse instead.
-        if pos > 0 {
-            let prev_ls = line_start_of(self.post, pos - 1);
-            // The margin read happens on every consult that reaches it
-            // (pass or fail): buffer the inspected range — the backward
-            // scan [prev_ls-1, pos-1) covers the blank check's span.
-            self.margin_checks
-                .push((prev_ls.saturating_sub(1) as u64, (pos - 1) as u64));
-            if !sg::parser::all_spaces(self.post, prev_ls, pos - 1) {
-                return None;
-            }
+impl<'a> Cursor<'a> {
+    fn new(
+        fragments: &'a [Fragment],
+        tree: &'a FTree,
+        ee_new: usize,
+        left_window_end: usize,
+        right_window_start: usize,
+        old_len: usize,
+        definition_changing: bool,
+    ) -> Self {
+        Cursor {
+            fragments,
+            ee_new,
+            left_window_end,
+            right_window_start,
+            old_len,
+            definition_changing,
+            takes: Vec::new(),
+            consultations: 0,
+            reused: 0,
+            discovery: DiscoverySummary::default(),
+            frag_idx: 0,
+            path: vec![LevelCursor::top(&tree.slots)],
         }
-        // The fragment whose range covers the live position; positions in
-        // the edited span belong to no fragment.
-        let frag = self
-            .fragments
-            .iter()
-            .find(|f| pos >= f.new_start && pos < f.new_end)?;
+    }
+
+    /// Consultation at a line start (post-closure live state — the
+    /// donor's consultation point): find a vouched run of old-tree
+    /// blocks starting exactly here, at the LIVE composite level.
+    /// Returns the take end (exclusive, block-span end — the scanner
+    /// rounds it to the next line start) or `None` (the line parses
+    /// normally — natural degradation).
+    fn consult(&mut self, pos: usize, key: &ContextKey, starts_block: bool) -> Option<usize> {
+        self.consultations += 1;
+        self.discovery.consultations += 1;
+        // SOUNDNESS GATE (the blank-line margin's donor-faithful
+        // replacement): an open live paragraph absorbs a plain-text
+        // line, so no old block boundary at this line is live — refuse
+        // (the ContextKey deliberately excludes paragraph state, R5
+        // freeze §2). At every other line the live parse starts a fresh
+        // block, exactly where a run may splice.
+        if !starts_block {
+            return None;
+        }
+        // The active fragment (monotone advance: consumed fragments are
+        // gone; positions in the edited span belong to no fragment).
+        let visits_before = self.discovery.total_visits;
+        while self.frag_idx < self.fragments.len() && self.fragments[self.frag_idx].new_end <= pos {
+            self.frag_idx += 1;
+            self.discovery.total_visits += 1;
+        }
+        let frag = self.fragments.get(self.frag_idx)?;
+        if pos < frag.new_start {
+            self.bump_max(visits_before);
+            return None;
+        }
         let p_old = (pos as isize + frag.to_old) as usize;
         let (win_start, win_end) = if pos < self.ee_new {
             (0, self.left_window_end)
         } else {
             (self.right_window_start, self.old_len)
         };
-        let run = self.find_run(p_old, key, win_start, win_end)?;
-        let new_end = pos + (run.old_end - run.old_start);
-        self.reused += run.members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
+        let level = self.seek(p_old)?;
+        // The vouch: the candidate's recorded entry key must equal the
+        // live key (the run enters under the live container state).
+        let (cstart, cnode) = {
+            let lvl = &self.path[level];
+            (lvl.cur, lvl.node())
+        };
+        if cnode.ctx != *key {
+            // State disagreement at the candidate: no take (the donor's
+            // matches() refusal — the line parses normally). The cursor
+            // stays AT the candidate: a later line may align to it.
+            self.bump_max(visits_before);
+            return None;
+        }
+        // Vouched candidate. Window + reference clause on the whole run
+        // (span-based: the run may begin mid-line, after the prefix).
+        if cstart < win_start || cstart + cnode.size > win_end {
+            self.bump_max(visits_before);
+            return None;
+        }
+        if self.definition_changing && cnode.has_ref {
+            self.bump_max(visits_before);
+            return None;
+        }
+        let mut members = vec![(cstart, cnode.clone())];
+        let mut end = cstart + cnode.size;
+        let mut last_idx = self.path[level].idx;
+        let lvl_len = self.path[level].len();
+        // Running position of the next entry (top level: prefix-summed
+        // with the inter-member gaps — O(1) per extension step).
+        let mut next_pos = end;
+        for i in (last_idx + 1)..lvl_len {
+            let (s2, n2) = {
+                let lvl = &self.path[level];
+                match lvl.slots {
+                    Some(slots) => (next_pos + slots[i].gap, &slots[i].node),
+                    None => (lvl.base + lvl.children[i].0, &lvl.children[i].1),
+                }
+            };
+            if s2 + n2.size > win_end || (self.definition_changing && n2.has_ref) {
+                break;
+            }
+            members.push((s2, n2.clone()));
+            end = s2 + n2.size;
+            next_pos = end;
+            self.discovery.total_visits += 1;
+            last_idx = i;
+        }
+        // Consume the run (forward-only): the level index moves past
+        // the last taken member.
+        for _ in self.path[level].idx..=last_idx {
+            self.path[level].advance();
+        }
+        self.bump_max(visits_before);
+        let new_end = pos + (end - p_old);
+        self.reused += members.iter().map(|(_, n)| count_node(n)).sum::<u64>();
         self.takes.push(TakeRun {
             pos,
-            old_start: run.old_start,
-            members: run.members,
+            old_start: p_old,
+            members,
         });
         Some(new_end)
     }
 
-    /// Find a run of sibling blocks starting exactly at `p_old`: the
-    /// OUTERMOST block starting there whose entry `ContextKey` equals the
-    /// live key is the candidate (the root is never reused — the search
-    /// starts below the Document wrapper); deeper levels are tried only
-    /// through a non-matching shell. The run extends over following
-    /// siblings (their inter-block gaps included) while they fit the safe
-    /// window and pass the reference clause. Sibling blocks of one parent
-    /// share their entry ContextKey in BENCH-GRAMMAR-v1, so vouching the
-    /// candidate vouches the run.
-    fn find_run(
-        &self,
-        p_old: usize,
-        key: &ContextKey,
-        win_start: usize,
-        win_end: usize,
-    ) -> Option<Run> {
-        let mut entries: Vec<(usize, Arc<FNode>)> = Vec::new();
-        let mut cursor = 0usize;
-        for slot in &self.tree.slots {
-            let start = cursor + slot.gap;
-            entries.push((start, slot.node.clone()));
-            cursor = start + slot.node.size;
-        }
-        self.search_level(&entries, p_old, key, win_start, win_end)
+    fn bump_max(&mut self, visits_before: u64) {
+        let delta = self.discovery.total_visits - visits_before;
+        self.discovery.max_consult_visits = self.discovery.max_consult_visits.max(delta);
     }
 
-    fn search_level(
-        &self,
-        entries: &[(usize, Arc<FNode>)],
-        p_old: usize,
-        key: &ContextKey,
-        win_start: usize,
-        win_end: usize,
-    ) -> Option<Run> {
-        // LINE-aligned matching: a block nested in containers starts
-        // mid-line (after its container prefix), so the candidate is the
-        // entry whose first LINE starts at the live position.
-        let idx = entries
-            .iter()
-            .position(|(start, n)| start - n.line_offset == p_old)?;
-        let (start, node) = &entries[idx];
-        if node.ctx != *key {
-            // Context mismatch at this level: descend into this node and
-            // try the child living on the same line.
-            let children: Vec<(usize, Arc<FNode>)> = node
-                .children
-                .iter()
-                .map(|(rel, c)| (start + rel, c.clone()))
-                .collect();
-            return self.search_level(&children, p_old, key, win_start, win_end);
-        }
-        // Vouched candidate. Window + reference clause on the whole run
-        // (span-based: the run may begin mid-line, after the prefix).
-        if *start < win_start || *start + node.size > win_end {
-            return None;
-        }
-        if self.definition_changing && node.has_ref {
-            return None;
-        }
-        let mut members = vec![(*start, node.clone())];
-        let mut end = start + node.size;
-        for (s2, n2) in entries.iter().skip(idx + 1) {
-            if s2 + n2.size > win_end || (self.definition_changing && n2.has_ref) {
-                break;
+    /// Synchronize the persistent descent path to `p_old` and return
+    /// the path level holding the line-aligned candidate, if any. This
+    /// is the donor's `moveTo` descend adapted to the local
+    /// line-alignment contract: skip entries that end before `p_old`
+    /// (monotone forward), descend into the entry whose span CONTAINS
+    /// `p_old` (the donor's `childAfter`), and stop at the first entry
+    /// whose LINE starts exactly at `p_old` — the outermost aligned
+    /// node within the containing chain (the donor's `c.from >= rPos`).
+    /// An entry whose line starts after `p_old` is left in place for a
+    /// later consult (natural degradation; the donor retries every
+    /// line).
+    fn seek(&mut self, p_old: usize) -> Option<usize> {
+        loop {
+            let exhausted = {
+                let level = self.path.last_mut()?;
+                // Monotone skip: entries ending at/before p_old are gone.
+                while level.idx < level.len() {
+                    let (s, n) = (level.cur, level.node());
+                    if s + n.size <= p_old {
+                        level.advance();
+                        self.discovery.total_visits += 1;
+                    } else {
+                        break;
+                    }
+                }
+                level.idx >= level.len()
+            };
+            if exhausted {
+                // Level exhausted: pop and continue at the parent,
+                // advancing past the child we were inside.
+                self.path.pop();
+                self.discovery.total_visits += 1;
+                if let Some(parent) = self.path.last_mut() {
+                    parent.advance();
+                }
+                if self.path.is_empty() {
+                    return None;
+                }
+                continue;
             }
-            members.push((*s2, n2.clone()));
-            end = s2 + n2.size;
+            let (cstart, cnode) = {
+                let level = self.path.last().expect("non-empty path");
+                (level.cur, level.node())
+            };
+            if cstart
+                .checked_sub(cnode.line_offset)
+                .is_some_and(|ls| ls == p_old)
+            {
+                // Line-aligned candidate at this level.
+                return Some(self.path.len() - 1);
+            }
+            if cstart <= p_old && cstart + cnode.size > p_old {
+                // The entry's span contains p_old (its line starts
+                // earlier): descend into its children.
+                self.discovery.total_visits += 1;
+                let child_entries: &'a [(usize, Arc<FNode>)] = &cnode.children[..];
+                let base = cstart;
+                self.path.push(LevelCursor::nested(base, child_entries));
+                continue;
+            }
+            // The entry's line starts after p_old (unaligned, later —
+            // e.g. the consult sits in the gap before it): no candidate
+            // at this consult; the cursor stays AT the entry and the
+            // next line retries (the donor's per-line retry).
+            self.discovery.total_visits += 1;
+            return None;
         }
-        Some(Run {
-            // The take starts at the LINE start; the prefix bytes between
-            // the line start and the first member's span are unchanged.
-            old_start: p_old,
-            old_end: end,
-            members,
-        })
     }
-}
-
-struct Run {
-    old_start: usize,
-    old_end: usize,
-    members: Vec<(usize, Arc<FNode>)>,
 }
 
 /// Absolute old-tree span of the deepest block whose span contains `p`.
@@ -1522,13 +1700,6 @@ fn project_node(node: &FNode, base: usize) -> Node {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-fn line_start_of(src: &[u8], pos: usize) -> usize {
-    src[..pos]
-        .iter()
-        .rposition(|&b| b == b'\n')
-        .map_or(0, |p| p + 1)
-}
 
 fn ref_table(defs: &[(String, String)]) -> sg::RefTable {
     let mut t = sg::RefTable::new();
