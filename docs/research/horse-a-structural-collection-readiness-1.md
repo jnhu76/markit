@@ -12,9 +12,11 @@ TREATMENT_OBSERVATIONS_CONSULTED   = NONE (none exists)
 ```
 
 This document freezes the pre-treatment facts a future structural-collection
-task must obey. It contains no treatment observation: no structural counter
-value from any of the three primary cells, no timing, no PMU data, no
-allocator economics. Its only numeric content is mechanical transcription of
+task must obey. It is not a treatment observation: it contains no counter
+value produced by a recording-mode run of any primary cell, no timing, no
+PMU data, no allocator economics. The only implementation-side diagnostic
+quoted anywhere below is the correctness-only fact-range value in §6, which
+is explicitly non-decision-bearing and was never used to set a bound. Its only numeric content is mechanical transcription of
 already merged authority (`docs/research/horse-a-v1-algorithm.md` §16 as
 corrected by merged `ACCOUNTING-CORRECTION-1` / PR #72) and the frozen
 workload identities.
@@ -413,8 +415,16 @@ OBSERVED (full workspace run, --no-fail-fast, on the reviewed master)
      preflight_passes_and_enumerates_unique_observation_ids,
      attribution_counters_are_deterministic_on_representative_cases,
      non_research_fake_clock_smoke_end_to_end
-     root cause: same corpus materialization (the frozen G0-strict
-     clean_state/edit_write workload loads source bytes)
+     root causes — TWO, independently present:
+       (a) corpus materialization (the frozen G0-strict clean_state/
+           edit_write workload loads real source bytes) — the cause of the
+           first four tests listed;
+       (b) stale receipt-bound artifact hashes: the frozen campaign receipt
+           binds Cargo.lock = e42e1a91… / Cargo.toml = 3ad241ff… while the
+           tracked master files hash to b78e67b8… / ce1531f7… — present in
+           the last three tests (receipt verification, preflight observation
+           ids, fake-clock smoke), which fail on (a) AND (b) together.
+           Materializing the corpus alone will NOT clear those three.
 
   3. markit-mdbench-semantics --test contracts
      committed_pilot_artifacts_match_the_driver
@@ -437,6 +447,10 @@ RELEVANCE TO #60
   The Horse-A crate's dependency closure is
   markit-mdbench-{common,oracle,shared-grammar,corpusgen} — none of which
   reads workloads/sources/*/files/, the campaign preflight, or the pilot JSON.
+  (corpusgen is currently a `[dev-dependencies]` entry; the producer bin must
+  promote it to a normal dependency, which stays inside the same closure.
+  The promotion is part of implementing the producer, and the producer must
+  still be built and identified under the §8 policy.)
 
 BINDING CONDITION
   The collection producer must stay inside that closure. A future producer
