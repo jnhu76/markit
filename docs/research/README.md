@@ -131,6 +131,27 @@ compared against H0–H4 under the same semantic core, oracle, payload/edit
 contract, workload and measurement protocol. It must not be defined as
 "H4 but optimized" before its mechanism identity is explicitly designed.
 
+## #76 Gate A — H0–H4 donor fidelity (2026-09-28)
+
+Gate A of [#76](https://github.com/jnhu76/markit/issues/76) audited whether
+the H0–H4 horses are defensible controlled models of their donor mechanisms
+before any donor-level interpretation of a Horse-A comparison. Four
+independent donor-first reviewers (R1–R4) produced frozen contracts over
+pinned donor clones:
+
+```text
+H0 = FAITHFUL_MECHANISM_MODEL               H2 = MATERIAL_DEVIATION (2×P1)
+H1 = FAITHFUL_WITH_DECLARED_SIMPLIFICATION  H3 = MATERIAL_DEVIATION (2×P1)
+H4 = FAITHFUL_MECHANISM_MODEL               GATE A = FAIL / BLOCKED
+```
+
+Evidence: [h0-h4-donor-fidelity/](h0-h4-donor-fidelity/) (contracts, donor
+manifest, challenge-case record) and
+[reviews/gate-a-r1-h0-h1-2026-09-28.md](reviews/gate-a-r1-h0-h1-2026-09-28.md)
+… [gate-a-r4-h4-2026-09-28.md](reviews/gate-a-r4-h4-2026-09-28.md).
+Gate B and performance collection remain unauthorized; H2/H3 corrective
+decisions are recorded in the fidelity matrix.
+
 ## Active workspace
 
 `research/benchmarks/markdown-ast-update/` is the only active Markdown parser

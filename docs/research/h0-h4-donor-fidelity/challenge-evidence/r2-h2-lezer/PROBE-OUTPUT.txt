@@ -1,0 +1,64 @@
+== F1 insert inside paragraph
+   incremental==clean: true   checksum eq: true
+   new top slots: Heading@0 Para@9 List@135=SHARED Fence@171=SHARED Para@204=SHARED
+   deep node sharing: 9/11 old nodes retained-by-identity
+   nodes_reused=13
+   blocks_reparsed=2
+   metadata_records_touched=8 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== F2 replace inside list item
+   incremental==clean: true   checksum eq: true
+   new top slots: Heading@0 Para@9 List@125 Fence@160=SHARED Para@193=SHARED
+   deep node sharing: 2/11 old nodes retained-by-identity
+   nodes_reused=3
+   blocks_reparsed=9
+   metadata_records_touched=13 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== F3 list marker change
+   incremental==clean: true   checksum eq: true
+   new top slots: Heading@0 Para@9 List@125 Fence@161=SHARED Para@194=SHARED
+   deep node sharing: 2/11 old nodes retained-by-identity
+   nodes_reused=3
+   blocks_reparsed=9
+   metadata_records_touched=12 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== F4 delete 20 bytes in paragraph
+   incremental==clean: true   checksum eq: true
+   new top slots: Heading@0 Para@9 List@105=SHARED Fence@141=SHARED Para@174=SHARED
+   deep node sharing: 9/11 old nodes retained-by-identity
+   nodes_reused=13
+   blocks_reparsed=2
+   metadata_records_touched=8 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== F5 long doc, mid edit (2 fragments expected)
+   incremental==clean: true   checksum eq: true
+   new top slots: Para@0=SHARED Para@70=SHARED Para@140=SHARED Para@210=SHARED Para@280=SHARED Para@350=SHARED Para@420=SHARED Para@490=SHARED Para@560=SHARED Para@630=SHARED Para@700=SHARED Para@770=SHARED Para@840=SHARED Para@910=SHARED Para@980=SHARED Para@1050=SHARED Para@1120=SHARED Para@1190=SHARED Para@1260=SHARED Para@1330 Para@1400 Para@1470=SHARED Para@1540=SHARED Para@1610=SHARED Para@1680=SHARED Para@1750=SHARED Para@1820=SHARED Para@1890=SHARED Para@1960=SHARED Para@2030=SHARED Para@2100=SHARED Para@2170=SHARED Para@2240=SHARED Para@2310=SHARED Para@2380=SHARED Para@2450=SHARED Para@2520=SHARED Para@2590=SHARED Para@2660=SHARED Para@2730=SHARED
+   deep node sharing: 38/40 old nodes retained-by-identity
+   nodes_reused=76
+   blocks_reparsed=2
+   metadata_records_touched=15 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== MID-CONTAINER: edit inside item 3 of a 30-item tight list
+   incremental==clean: true   checksum eq: true
+   new top slots: Para@0=SHARED List@49 Para@1460=SHARED
+   deep node sharing: 2/63 old nodes retained-by-identity
+   nodes_reused=4
+   blocks_reparsed=61
+   metadata_records_touched=41 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== INTERRUPTOR: undamaged tight list right after damaged para
+   incremental==clean: true   checksum eq: true
+   new top slots: Para@0 List@152 Para@172
+   deep node sharing: 0/13 old nodes retained-by-identity
+   nodes_reused=0
+   blocks_reparsed=13
+   metadata_records_touched=9 (fragment mappings + cursor consultations)
+   new fragment_count=1
+== SHORT-TAIL: 4-byte tail after edit (donor keeps tail fragment)
+   incremental==clean: true   checksum eq: true
+   new top slots: Para@0 Para@92
+   deep node sharing: 0/2 old nodes retained-by-identity
+   nodes_reused=0
+   blocks_reparsed=2
+   metadata_records_touched=4 (fragment mappings + cursor consultations)
+   new fragment_count=1
