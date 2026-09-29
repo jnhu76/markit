@@ -199,19 +199,23 @@ forward parse is larger: 112 KB re-inspected inside the subsequent full build
 Offline oracle (two independent H0 parses + node-signature multiset diff +
 first-wins winner map); spans excluded from "changed" (span-only movement
 reported separately, 0 on all cells except the structurally edited region).
-`Text↔RefLink` entries read **consumed→produced** (E6-3A: 575 Text consumed,
-320 RefLink produced); the sealed counters in `effects.json` record the Text
-side (`text_to_ref_link` / `ref_link_to_text`).
+`Text↔RefLink` entries quote the sealed `outputs.by_kind` orientation
+(added / removed; unbalanced kinds — balanced kinds are value *changes* counted
+once in `value_changed_nodes`, which is how E6-1/2/4/5's re-pointed links are
+counted). The sealed counters `text_to_ref_link` / `ref_link_to_text` record
+the **Text-node increase / decrease** respectively — despite their names they
+do not by themselves denote conversion direction (flagged here; the sealed
+JSONs are immutable).
 
 | Cell | facts Δ | winner changed | existence Δ | Text↔RefLink | must-change outputs | owners/nodes rebuilt (A) |
 |---|---|---|---|---|---:|---:|
 | E6-1 | 1 value | NO | — | — | **1** | 2050 / 4994 |
 | E6-2 | def removed | YES (successor) | — | — | 321 | 2049 / 4993 |
-| E6-3A | def added | — | unresolved→resolved | 575 Text→320 RefLink (+re-segmentation) | 897 | 2049 / 4993 |
-| E6-3B | def removed | — | resolved→unresolved | 320 RefLink→576 Text (re-segmentation) | 897 | 2048 / 4096 |
+| E6-3A | def added | — | unresolved→resolved | +320 RefLink, +575 Text, −1 Paragraph (sealed `text_to_ref_link` = 575 = Text increase) | 897 | 2049 / 4993 |
+| E6-3B | def removed | — | resolved→unresolved | −320 RefLink, −576 Text, −1 RefDef (sealed `ref_link_to_text` = 576 = Text decrease) | 897 | 2048 / 4096 |
 | E6-4 | 1 value | YES | — | — | **11** | 2049 / 4125 |
 | E6-5 | 1 value | YES | — | — | 321 | 2049 / 4993 |
-| E6-6 | def hidden (syntax) | — | resolved→unresolved | 320 RefLink→Text (2368 Text nodes produced); 1792 paras + 1 RefDef removed → 1 FencedCode added | 4482 | 257 / 513 |
+| E6-6 | def hidden (syntax) | — | resolved→unresolved | −320 RefLink, −2368 Text, −1792 paras, −1 RefDef; +1 FencedCode (sealed `ref_link_to_text` = 2368 = Text decrease) | 4482 | 257 / 513 |
 | TINY-1K / TINY-4K / sentinels | — | — | — | — | 1–3 | 1–2 owners (local path) |
 
 ## H. Hypothesis verdicts
@@ -411,7 +415,7 @@ COMMITS= 25849a7 (crate + control + validation) · 6b227b7 (report + evidence) �
          6f32664 (audit errata) · + this closure pass (documentation only)
 PR     = #99 into master — L0/L1 evidence only, no L2 work
 ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted after merge)
-MERGE  = performed at closure, after this commit; the exact FINAL_PR_HEAD and
+MERGE  = at closure, after this commit; the exact FINAL_PR_HEAD and
          MERGE_COMMIT are recorded in the #98 closure receipt and the post-merge
          master receipt commit. Documentation heads never change
          EXECUTED_CODE_IDENTITY.
@@ -454,9 +458,15 @@ NEXT = L2 (paired-profile question per §K; to be designed, authorized,
   0.33–0.56 ms (was 0.1–0.3). Toolchain and executed-code-identity provenance
   corrected in `PROVENANCE.md` (Errata 1–3): authoritative executed toolchain
   is rustc/cargo 1.97.1 + LLVM 22.1.6; executed code ≡ `6b227b7`.
-- **2026-09-29, closure pass** — §G `Text↔RefLink` transcription fixed to the
-  sealed ledger convention (E6-3B reads 320 RefLink→576 Text; E6-6 reads
-  320 RefLink→Text with 2368 Text nodes *produced*); §K cites the sealed probe
-  id `P0_H0_FULL_PARSE_ONLY` exactly; §A/§L state the documentation heads
-  without asserting the merge ahead of it; §H-A recovery bound tied to the
-  measured pre-decision work (≈0–1%, was ≈0–2%).
+- **2026-09-29, closure pass** — §G `Text↔RefLink` transcription corrected. The
+  `effects.json` ledger records `by_kind` as added/removed, but its counter
+  names `text_to_ref_link` / `ref_link_to_text` are the Text-node
+  increase/decrease and do not denote conversion direction; the rows now quote
+  the sealed orientation directly (E6-3A: +320 RefLink, +575 Text, −1 Paragraph;
+  E6-3B: −320 RefLink, −576 Text, −1 RefDef; E6-6: −320 RefLink, −2368 Text,
+  −1792 paras, −1 RefDef, +1 FencedCode) and the inversion is flagged rather
+  than "repaired" (sealed JSONs are immutable). §K cites the sealed probe id
+  `P0_H0_FULL_PARSE_ONLY` exactly; §A/§L state the documentation heads without
+  asserting the merge ahead of it; §H-A recovery bound tied to the measured
+  pre-decision work (≈0–1%, was ≈0–2%). No count, verdict, or measured value
+  changed by this transcription fix.
