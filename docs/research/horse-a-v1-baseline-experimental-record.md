@@ -146,6 +146,57 @@ Project-macro H0-relative speedup under the primary profile:
 | H4 | **2.4535×** |
 | Horse-A | **2.4214×** |
 
+### 4.1 How to read `speedup`
+
+The study defines H0-relative speedup as:
+
+```text
+speedup S = T_H0 / T_mechanism
+relative latency = 1 / S
+```
+
+Therefore `2.4214×` does **not** mean that latency was reduced by 242.14%.
+It means Horse-A completes the frozen EDIT_WRITE project-macro workload in
+about `1 / 2.4214 = 41.3%` of H0's latency — a latency reduction of about
+`58.7%` relative to H0.
+
+Primary-profile conversion:
+
+| Mechanism | Speedup vs H0 | Relative latency vs H0 | Latency interpretation |
+|---|---:|---:|---:|
+| H0 | 1.0000× | 100.0% | baseline |
+| H1 | 1.0647× | 93.9% | 6.1% lower |
+| H2 | 2.0699× | 48.3% | 51.7% lower |
+| H3 | 1.9219× | 52.0% | 48.0% lower |
+| H4 | **2.4535×** | **40.8%** | **59.2% lower** |
+| Horse-A | **2.4214×** | **41.3%** | **58.7% lower** |
+
+The same conversion makes the Horse-A regime results easier to interpret:
+
+| Horse-A regime | Speedup vs H0 | Relative latency vs H0 | Latency interpretation |
+|---|---:|---:|---:|
+| Q1 | 1.414× | 70.7% | 29.3% lower |
+| Q2 | 2.908× | 34.4% | 65.6% lower |
+| Q3 | 5.276× | 19.0% | 81.0% lower |
+| Q4 | 5.367× | 18.6% | 81.4% lower |
+| E1 local text | 3.314× | 30.2% | 69.8% lower |
+| E2 paragraph split/merge | 3.451× | 29.0% | 71.0% lower |
+| E5 inline delimiter | 3.920× | 25.5% | 74.5% lower |
+| ATX-related | 5.234× | 19.1% | 80.9% lower |
+| list container | 2.811× | 35.6% | 64.4% lower |
+| blockquote container | 4.531× | 22.1% | 77.9% lower |
+| E4 fence | 2.391× | 41.8% | 58.2% lower |
+| E6 reference definition | **0.583×** | **171.5%** | **71.5% higher / slower** |
+| bottom-decile Horse-A | 0.825× | 121.2% | 21.2% higher / slower |
+| POST_HOC tiny extreme | 0.453× | 220.8% | 120.8% higher / slower |
+
+For `S < 1`, the mechanism is slower than H0. This is why Horse-A's E6
+`0.583×` is a genuine pathology rather than a small speedup: it corresponds to
+roughly `1.715×` H0 latency, or about **71.5% higher latency**.
+
+These percentages are algebraic restatements of the frozen speedup values,
+not new measurements or a new aggregation surface.
+
 Under the primary ThinLTO profile, H4 and Horse-A differed by only about 1.3%.
 The primary result therefore did **not** justify forcing a universal winner;
 the correct primary verdict was first-tier / inconclusive ordering.
