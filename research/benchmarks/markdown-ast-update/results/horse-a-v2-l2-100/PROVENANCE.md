@@ -85,3 +85,52 @@ sums are in receipts/sha256_*.txt. The committed review evidence is the
 folded stacks, quality metrics, attribution JSONs, differential tables,
 harness receipts, and this provenance; folded data regenerates the full
 attribution, and raw data regenerates the folded data.
+
+# --- host state: COLLECTION vs POST-L2 REPAIR ---
+
+COLLECTION_HOST_STATE (2026-09-29/30, during pilot + campaign):
+  kernel.perf_event_mlock_kb = 8192
+  (set via sudo from the stock 516 to enlarge the perf ring buffer;
+   runtime-only: no entry in /etc/sysctl.conf or /etc/sysctl.d/)
+
+POST-L2_HOST_STATE (2026-09-30, evidence-repair pass):
+  kernel.perf_event_mlock_kb = 8192 (unchanged at repair time)
+  restoration to the stock 516 = PENDING: the repair session has no
+  interactive sudo on E5. Exact restoration command (one line, user-run):
+    sudo sysctl -w kernel.perf_event_mlock_kb=516
+  The mutation is runtime-only and self-reverts to 516 on reboot. No other
+  sysctl was touched, at collection or during repair.
+
+The collection provenance above is truthful and NOT rewritten: collection
+ran with mlock_kb = 8192.
+
+# --- evidence-repair record (2026-09-30) ---
+
+Read-only consistency repair of the L2 evidence layer; no recollection,
+no machine-readable evidence changed, no hypothesis verdict reversed,
+no Step-2 mechanism designed or implemented.
+
+  R1  report now refines H3: CERTIFICATE_BARRIER_LOOKUP_DOMINANT =
+      SUPPORTED, COVERAGE_BUILD_DOMINANT = NOT_SUPPORTED (category label
+      COVERAGE_CERTIFICATE_DOMINANT = SUPPORTED unchanged).
+  R2  Owner-materialization claim bounded: no material positive P1−P0
+      residual on the frozen L2 cells; ≈ cancels vs H0 document
+      materialization under the paired P-LANE experiment.
+  R3  localization-vs-causal boundary made explicit (candidate-selection
+      input only; no replacement-speedup claim).
+  R4  O(B × R) kept as current-implementation observation; no replacement
+      complexity pre-frozen.
+  R5  E6-6 kept as the geometry contrast (+1.30 vs ≈ +103.7 samples/op);
+      not pooled, not a falsification.
+  R6  sysctl restoration PENDING (see host-state section above).
+  R7  this host-state separation + repair record.
+
+Repair-time integrity verification (all PASS): 12/12 attribution JSONs
+regenerate byte-for-byte from committed folded stacks; differential
+markdown byte-identical on regeneration (JSON values identical; only
+set-iteration key order varies); 48/48 receipt SHA-256 checks of
+raw/mid/folded + profiling binary (raw perf.data on E5 unmodified);
+114/114 committed SHA256SUMS entries verify; 12/12 quality gates
+(region >= 3979 samples, resolved >= 95.6%, kernel frames 0, pair-local
+ops identical); cycles:u / period 100000 / exclude_kernel confirmed from
+retained raw perf.data headers; results/horse-a-v2-diag-98/ untouched.

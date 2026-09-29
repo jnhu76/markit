@@ -8,6 +8,7 @@
 > (`docs/research/horse-a-v2-l0l1-e6-tiny-diagnosis.md`; its evidence
 > directory is sealed and untouched)
 > Status: **L2 COMPLETE — escalation decision: L2_SUFFICIENT_FOR_MECHANISM_DECISION**
+> · evidence-repair pass 2026-09-30 (§N; no hypothesis verdict reversed)
 > Machine-readable evidence:
 > `research/benchmarks/markdown-ast-update/results/horse-a-v2-l2-100/`
 
@@ -18,14 +19,19 @@ L2 answers exactly one question (#98 §K, #100):
 > inside `full_build(post)`?
 
 **Headline:** the residual is **not diffuse and not the representation**.
-On E6-1 and E6-5 ≈ **90% of the construction excess executes in one calling
-context** — the `RootBlankEvent` **barrier lookup inside
-`persist_interior_certificates`** (`full_build → attach_interior_certificates
-→ barriers.iter().filter(|ev| ev.cut == boundary)` for every interior
-boundary; `certificate.rs:140-149`). Owner payload materialization
-**cancels against H0's document construction** (28.5 vs 29.2 samples/op on
-E6-1); AVL bulk build is secondary (≈5%); shared block parse largely
-cancels; span rebase and coverage build are below the sampling floor. The
+On E6-1 and E6-5 ≈ **88–90% of the paired P1−P0 construction excess
+executes in one calling context** — the `RootBlankEvent` **barrier lookup
+inside `persist_interior_certificates`** (`full_build →
+attach_interior_certificates → persist_interior_certificates →
+barriers.iter().filter(|ev| ev.cut == boundary)` for every interior
+boundary; `certificate.rs:140-149`). The H3 category holds with a
+refinement: it is the repeated **certificate-barrier lookup** that
+dominates — coverage construction itself is below the sampling floor
+(§H). Owner payload materialization **contributes no material positive
+P1−P0 residual — it approximately cancels against H0's document
+construction** (28.5 vs 29.2 samples/op on E6-1); AVL bulk build is
+secondary (≈5%); shared block parse largely cancels; span rebase and
+coverage build are below the sampling floor. The
 certificate lookup cost scales with the **boundary count** (E6-1 with 1
 must-change output pays the same ≈104 samples/op as E6-5 with 321), which
 is precisely the #98 finding that the full-build tax is
@@ -51,7 +57,15 @@ TOOLCHAIN        = rustc/cargo 1.97.1 (workspace pin; LLVM 22.1.6)
 KERNEL           = Linux 7.2.5-200.fc44.x86_64 (Fedora 44)
 CPU              = Intel Xeon E5-2666 v3 @ 2.90GHz (Haswell-EP)
 PERF_VERSION     = perf version 7.2.5-200.fc44.x86_64
-HOST_TWEAK       = kernel.perf_event_mlock_kb 516 -> 8192 (ring capacity only)
+HOST_TWEAK       = kernel.perf_event_mlock_kb: 516 -> 8192 during L2
+                   collection (ring capacity only; runtime-only, no
+                   persisted sysctl config). POST-L2 REPAIR (2026-09-30):
+                   restoration to the stock 516 is PENDING — the repair
+                   session has no interactive sudo on E5; exact command:
+                   sudo sysctl -w kernel.perf_event_mlock_kb=516 (reboot
+                   also self-reverts it). See PROVENANCE.md, host-state
+                   section. Collection itself ran at 8192 — recorded
+                   truthfully above.
 ```
 
 Live bodies of #95/#96/#97/#100 were fetched and read before execution;
@@ -203,7 +217,15 @@ certificate lookup in full.
 From `receipts/differential_rep1.{json,md}` (rep2 in parentheses in the
 text below where it differs materially). Normalization: counts ÷ frozen
 ops under ONE frozen sampling period — this is a samples/op delta, never a
-percentage-of-flamegraph delta.
+percentage-of-flamegraph delta. Accounting convention: **teardown is
+in-region drop/cleanup attribution, not construction responsibility** —
+the per-iteration drop cannot be excluded by a sampler and is bucketed
+separately (matching the #98 probe semantics where the drop is untimed);
+its negative P1−P0 entries are reported as their own row and are never
+netted into a construction bucket. The construction-localization
+conclusion is robust to this convention: excluding teardown entirely,
+the certificate share of the E6-1/E6-5 excess is 86.4–88.6% — still
+"≈ 88–90%" within rounding.
 
 **E6-1** (totals: P1 158.99, P0 40.47, excess +118.52; rep2 +120.63;
 P1/P0 = 3.93 — T-LANE P1/P0 = 3.66):
@@ -266,20 +288,31 @@ E6-6-SPECIFIC CONTEXTS            = none in construction; E6-6's residual is
 UNEXPECTED CONTEXTS               = the residual owner is certificate
                                     persistence LOOKUP, not certificate
                                     WRITES and not coverage; and Horse-A
-                                    materialization is H0-parity rather
-                                    than a tax
+                                    owner materialization shows no material
+                                    positive P1−P0 residual (≈ cancels vs
+                                    H0 document materialization) rather
+                                    than being a tax
 ```
 
 One general full-build construction tax, one dominant interior owner —
-not several regime-specific costs.
+not several regime-specific costs. E6-6 is retained as a **contrast**, not
+pooled with E6-1/E6-5 into one average and not read as falsifying the
+certificate result: its certificate-barrier residual collapses (+1.30
+samples/op vs ≈ +103.7 on E6-1/E6-5) because its post document has few
+boundaries — the construction tax follows the available boundary/barrier
+geometry, not semantic fanout.
 
 ## H. L2 hypothesis verdicts
 
 ```text
 L2-H1 MATERIALIZATION_DOMINANT        = NOT_SUPPORTED
 L2-H2 AVL_OWNERSEQ_DOMINANT           = NOT_SUPPORTED (present, secondary)
-L2-H3 COVERAGE_CERTIFICATE_DOMINANT   = SUPPORTED (certificate persistence;
-                                        coverage build itself is below floor)
+L2-H3 COVERAGE_CERTIFICATE_DOMINANT   = SUPPORTED
+  Refinement:
+  CERTIFICATE_BARRIER_LOOKUP_DOMINANT = SUPPORTED
+    (repeated certificate-barrier matching dominates the residual)
+  COVERAGE_BUILD_DOMINANT             = NOT_SUPPORTED
+    (coverage construction itself below the sampling floor)
 L2-H4 COORDINATE_SPAN_DOMINANT        = NOT_SUPPORTED
 L2-H5 ALLOCATION_RUNTIME_DOMINANT     = NOT_SUPPORTED
 L2-H6 DIFFUSE_MULTI_CONTEXT           = NOT_SUPPORTED (E6-1/E6-5)
@@ -287,27 +320,41 @@ L2-H7 SHARED_PARSE_RESIDUAL_LARGER_THAN_EXPECTED = NOT_SUPPORTED
 ```
 
 - **H1 NOT_SUPPORTED.** OBSERVATION: owner materialization 28.49/op (E6-1
-  P1) vs H0 document materialization 29.15/op (P0); difference −0.66/op
-  (E6-5: 26.84 vs 30.31). INFERENCE: building the Horse-A payload tree
-  costs ≈ the same as building the H0 normalized tree for identical
-  source. COUNTER_EVIDENCE: none observed; runtime frames were attributed
-  into the responsibilities that caused them, so allocation inside
-  materialization is counted here. BOUNDARY: shares, not wall-time
-  components; payload *representation* maintenance costs outside
-  `full_build` are outside L2 scope.
+  P1) vs H0 document materialization 29.15/op (P0); paired difference
+  −0.66/op (E6-5: 26.84 vs 30.31, −3.47; E6-6: −0.38). INFERENCE: owner
+  materialization contributes **no material positive P1−P0 residual on
+  the frozen L2 cells; it approximately cancels against H0 document
+  materialization under the paired P-LANE experiment**. COUNTER_EVIDENCE:
+  none observed; runtime frames were attributed into the responsibilities
+  that caused them, so allocation inside materialization is counted here.
+  BOUNDARY: this is sampling-based localization over the frozen cells —
+  NOT a universal claim that Owner representation has zero overhead or is
+  proven optimal; payload *representation* maintenance costs outside
+  `full_build` are outside L2 scope. ("H0-parity" is acceptable only as
+  shorthand for the bounded claim above.)
 - **H2 NOT_SUPPORTED (secondary).** OBSERVATION: bulk_build 6.18–6.30/op =
   3.9–4.0% of P1, +6.2/+6.3 of excess ≈ 5%. INFERENCE: AVL/OwnerSeq
   construction is real but second-order. BOUNDARY: its cost also scales
   with boundary count (E6-6: 0.55/op).
-- **H3 SUPPORTED.** OBSERVATION: +103.79/+103.72 samples/op of certificate
-  context on E6-1/E6-5 = 87.6–89.7% of the total P1−P0 excess, all under
-  `persist_interior_certificates`'s per-boundary `barriers.iter().filter`
-  scan (`certificate.rs:140-149`); CoveragePlan::build itself ≤ 0.13/op.
-  INFERENCE: the known 2.7–2.9 ms construction residual is, in calling-
-  context space, the certificate barrier lookup. COUNTER_EVIDENCE: none in
-  the sampled pairs. BOUNDARY: localization, not causal leverage (§I/§K);
-  O(boundaries × barriers) is the observed shape on these cells, not a
-  complexity proof.
+- **H3 SUPPORTED (with refinement).** OBSERVATION: +103.79/+103.72
+  samples/op of certificate context on E6-1/E6-5 = 87.6–89.7% of the
+  total P1−P0 excess, all under `persist_interior_certificates`'s
+  per-boundary `barriers.iter().filter` scan (`certificate.rs:140-149`);
+  CoveragePlan::build itself ≤ 0.13/op (below floor). INFERENCE: the
+  known 2.7–2.9 ms construction residual is, in calling-context space,
+  the repeated **certificate-barrier lookup** — the certificate category
+  holds, but the dominant mechanism is the lookup, not coverage
+  construction (CERTIFICATE_BARRIER_LOOKUP_DOMINANT = SUPPORTED;
+  COVERAGE_BUILD_DOMINANT = NOT_SUPPORTED). COUNTER_EVIDENCE: none in
+  the sampled pairs. BOUNDARY (localization, not causal leverage — §I/§K):
+  L2 establishes **where** the sampled P1−P0 residual executes; it does
+  NOT establish the speedup any concrete replacement would achieve, nor
+  that removing the lookup recovers 88–90% of wall latency. O(B × R)
+  (boundary_count × scanned_barrier_count) is an implementation-level
+  observation of the current matching work on the observed construction
+  path — not a complexity theorem, and NOT a pre-freeze of any replacement
+  (e.g. an O(B + R) merge is unproven until the ordering/uniqueness
+  contract is established separately under #95 Step 2).
 - **H4 NOT_SUPPORTED.** span rebase ≤ 0.07/op everywhere (below floor).
 - **H5 NOT_SUPPORTED.** no standalone runtime context; allocator/memmove
   frames attribute inside the responsibilities; loop/other ≤ 3.4% of P1.
@@ -327,15 +374,22 @@ heat alone (§22), and no mechanism is designed here.
 
 | Sub-row (of #98's retained-construction interior) | L2 evidence | cost localization | mechanism decision |
 |---|---|---|---|
-| certificate persistence — barrier lookup (`persist_interior_certificates`) | ≈ 88–90% of the E6-1/E6-5 construction excess; boundary-count-proportional; obligation-independent | **HIGH** | **DEFERRED → #95 Step 2** as the primary SHRINK candidate owner (repair belongs to challenger design, not L2) |
-| Owner payload materialization | cancels vs H0 document construction (−0.7..−3.5 samples/op) | HIGH (and ≈ H0 parity) | **KEEP** on construction-cost grounds — the payload tree is not the tax |
-| AVL / OwnerSeq bulk build | ≈ 5% of excess | LOW | DEFERRED (secondary SHRINK candidate at most) |
+| certificate persistence — barrier lookup (`persist_interior_certificates`) | ≈ 88–90% of the E6-1/E6-5 construction excess; boundary-count-proportional; obligation-independent | **HIGH** | **DEFERRED → #95 Step 2** as the primary SHRINK candidate owner — candidate type = SHRINK the current implementation (repair belongs to challenger design, not L2) |
+| Owner payload materialization | no material positive P1−P0 residual (−0.7..−3.5 samples/op ≈ cancels vs H0 document construction) | no material positive P1−P0 residual on the frozen cells | **KEEP** for construction-cost purposes — the paired evidence gives no construction-cost challenge to earn |
+| AVL / OwnerSeq bulk build | ≈ 5% of excess | LOW (secondary) | DEFERRED (secondary SHRINK candidate at most) |
 | coordinate/span rebase (`shift_spans`) | ≤ 0.07 samples/op — below floor | ~0 | no change (UNKNOWN, now bounded on these cells) |
 | coverage plan build | ≤ 0.13 samples/op — below floor | ~0 | no change |
 | full_build interior remainder (`full_build_other` + loop/other) | ≈ 8–9% of excess, no single owner | LOW | UNKNOWN (no evidence to act on) |
 
 All other #98 deletion-map rows are unchanged by L2 (no evidence produced
 here touches them).
+
+Scope note (what is NOT challenged): the evidence localizes and challenges
+the current **lookup implementation** inside `persist_interior_certificates`
+— it does NOT challenge certificate authority itself. The restart-certificate
+responsibility may still be correctness/READY-required; nothing here marks
+certificate responsibility DELETE, and no replacement mechanism is selected
+or frozen by L2.
 
 ## J. Main findings (ranked by explanatory importance)
 
@@ -344,10 +398,13 @@ here touches them).
    `persist_interior_certificates`'s per-boundary linear scan over
    `RootBlankEvent` barriers; the rest of the retained-state pipeline does
    not explain the tax.
-2. **Horse-A payload materialization is H0-parity.** Owner materialization
-   and H0's document construction cost the same within noise on every
-   cell — the "retained-READY construction tax" is NOT the payload
-   representation being inherently expensive to build.
+2. **Horse-A owner materialization shows no material positive P1−P0
+   residual on the frozen L2 cells.** Owner materialization and H0's
+   document construction approximately cancel within noise on every cell
+   (−0.66/−3.47/−0.38 samples/op) under the paired P-LANE experiment —
+   the "retained-READY construction tax" is NOT the payload
+   representation being inherently expensive to build. (Bounded claim:
+   frozen-cells localization, not a universal zero-overhead statement.)
 3. **The tax is boundary-count-proportional and obligation-independent.**
    E6-1 (1 must-change output) and E6-5 (321) pay the same ≈ 104
    samples/op; E6-6's few-boundary post document collapses the residual to
@@ -373,13 +430,19 @@ strongly enough that the #95 Step-2 challenger question is now implied by
 L1+L2 evidence together: #98 already established the cost exists
 (T-LANE P1−P0 = 2.7–2.9 ms, 57–62% of arm B) and is not parser work; L2
 establishes where it executes and that it tracks boundaries, not
-obligation. That combination is exactly the input #95 Step 2 needs to
-choose its ≤ 2 challengers (the #98 Candidate B certification repair and a
-construction-interior repair aimed at the localized owner). A causal
-virtual-speedup pass (L3) would not change the challenger choice; per
-#100's rule, location is recorded as location — the map update in §I
-keeps HIGH COST ≠ REPLACE, and every intervention claim remains #95
-Step-2/L6 business.
+obligation. **Boundary of that decision: L2 proves where the sampled
+P1−P0 residual executes; it does NOT prove the speedup any concrete
+replacement implementation would achieve.** `L2_SUFFICIENT_FOR_MECHANISM_DECISION`
+means the localized algorithmic structure is sufficient to authorize
+candidate selection under #95 Step 2 — it is a candidate-selection input,
+not an L3 causal claim, and it must not be read as "removing the lookup
+recovers 88–90% of wall latency". That combination is exactly the input
+#95 Step 2 needs to choose its ≤ 2 challengers (the #98 Candidate B
+certification repair and a construction-interior repair aimed at the
+localized owner). A causal virtual-speedup pass (L3) would not change the
+challenger choice; per #100's rule, location is recorded as location —
+the map update in §I keeps HIGH COST ≠ REPLACE, and every intervention
+claim remains #95 Step-2/L6 business.
 
 Not executed here, by contract: L3–L5, any candidate implementation, any
 mechanism redesign.
@@ -410,6 +473,62 @@ NEXT             = #95_STEP2 (challenger selection over the localized
                    owners; L3 not required for that choice)
 ```
 
+## N. Evidence-repair note (2026-09-30)
+
+A read-only-consistency repair pass over the L2 evidence layer. No
+collection was recollected, no machine-readable evidence changed, no
+hypothesis verdict was reversed, and no Step-2 mechanism was designed or
+implemented.
+
+```text
+R1 (H3 refinement)  the H3 category label COVERAGE_CERTIFICATE_DOMINANT
+                    = SUPPORTED is unchanged; the authoritative text now
+                    states the narrower localization explicitly:
+                    CERTIFICATE_BARRIER_LOOKUP_DOMINANT = SUPPORTED,
+                    COVERAGE_BUILD_DOMINANT = NOT_SUPPORTED. The finding
+                    is: repeated certificate-barrier matching dominates
+                    the residual (§H, headline).
+R2 (Owner claim)    Owner-materialization wording bounded everywhere:
+                    no material positive P1−P0 residual on the frozen L2
+                    cells; approximately cancels against H0 document
+                    materialization under the paired P-LANE experiment.
+                    "H0-parity" only as bounded shorthand (§H H1, §G, §J.2,
+                    §I). No universal zero-overhead/optimal claim is made.
+R3 (claim boundary) localization-vs-causal boundary made explicit: L2
+                    proves WHERE the sampled P1−P0 residual executes, not
+                    the speedup of any concrete replacement;
+                    L2_SUFFICIENT_FOR_MECHANISM_DECISION authorizes
+                    candidate selection only (§K, §H H3 BOUNDARY).
+R4 (complexity)     O(B × R) kept as an implementation-level observation
+                    of the current matching work; no replacement
+                    complexity (e.g. O(B + R) merge) is asserted or
+                    pre-frozen (§H H3 BOUNDARY).
+R5 (E6-6 contrast)  E6-6 recorded explicitly as the geometry contrast
+                    (certificate residual +1.30 vs ≈ +103.7 samples/op on
+                    E6-1/E6-5) — not pooled with the other cells, not a
+                    falsification (§G, threats).
+R6 (host sysctl)    kernel.perf_event_mlock_kb was 516 -> 8192 during L2
+                    collection; at repair time it is still 8192 and
+                    restoration to 516 is PENDING (no interactive sudo on
+                    E5 in the repair session; runtime-only mutation,
+                    self-reverts on reboot). Recorded truthfully in §A
+                    and PROVENANCE.md; collection provenance NOT rewritten.
+R7 (provenance)     PROVENANCE.md now separates COLLECTION_HOST_STATE
+                    (mlock_kb = 8192) from POST-L2_HOST_STATE (repair
+                    status), plus this repair record.
+```
+
+Integrity checks performed during the repair (all PASS, read-only over
+retained evidence): 12/12 attribution JSONs regenerate byte-for-byte from
+the committed folded stacks; differential tables regenerate identically
+(markdown byte-identical; JSON differs only in set-iteration key order,
+values identical); 48/48 per-receipt SHA-256 checks of raw/mid/folded +
+profiling binary (raw data still on E5, unmodified); 114/114 committed
+`SHA256SUMS` entries verify; 12/12 quality gates (region samples ≥ 3 979,
+resolved ≥ 95.6%, kernel frames 0, pair-local ops identical); cycles:u /
+period 100 000 / exclude_kernel confirmed from the retained raw
+`perf.data` headers; sealed `results/horse-a-v2-diag-98/` untouched.
+
 ---
 
 ### Threats and boundaries
@@ -426,7 +545,8 @@ NEXT             = #95_STEP2 (challenger selection over the localized
   3.4% of E6-1 P1, +5.2/op of excess — reported, not decomposed further.
 - **E6-6 construction numbers are qualitative** (small counts: ~2.4
   excess samples/op, rep2 ±0.3); they are used only for the
-  absence-of-E6-6-specific-context claim, which both repeats support.
+  absence-of-E6-6-specific-context claim, which both repeats support, and
+  as the geometry contrast above — never pooled with E6-1/E6-5.
 - **The O(boundaries × barriers) reading is an observed shape** on the
   E6 geometry (~2 050 boundaries/barriers), not an algorithmic proof, and
   says nothing about whether a different certificate representation would
