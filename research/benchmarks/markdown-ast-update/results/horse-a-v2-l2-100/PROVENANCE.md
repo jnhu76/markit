@@ -1,6 +1,15 @@
 # HORSE-A-V2-L2-100 collection provenance
 
-collected_utc = 2026-09-29T23:59Z .. 2026-09-30T00:20Z (pilot + campaign)
+collected = 2026-09-29T23:56 .. 2026-09-30T00:26 E5 local (CST, UTC+8)
+          = 2026-09-29T15:56Z .. 16:26Z
+            (pilot: 15:56Z..16:12Z; campaign: 16:24Z..16:26Z)
+            (closure-review correction: an earlier revision wrote
+             "collected_utc = 2026-09-29T23:59Z .. 2026-09-30T00:20Z",
+             which was local CST wall clock mislabeled with a Z suffix.
+             The retained raw perf.data headers are the time authority:
+             "# captured on" 2026-09-29 23:56:32 .. 2026-09-30 00:25:37
+             CST across pilot + campaign. No measurement artifact
+             changed; this line is documentation-only.)
 host = jnhu@192.168.31.75 (hostname E5)
 cpu = Intel(R) Xeon(R) Core E5-2666 v3 @ 2.90GHz (20 cores, Haswell-EP)
 kernel = Linux 7.2.5-200.fc44.x86_64 (Fedora 44)
