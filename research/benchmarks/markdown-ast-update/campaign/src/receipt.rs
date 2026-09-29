@@ -234,7 +234,7 @@ impl ReceiptSupersession {
                     .to_string(),
             );
         }
-        validate_supersession_scope(&record)?;
+        Self::validate_supersession_scope(&record)?;
         Ok(Some(record))
     }
 
@@ -502,9 +502,9 @@ mod supersession_tests {
             "results/manifests/six-horse-schedule-v1.jsonl".to_string(),
             "y".to_string(),
         );
-        assert!(validate_supersession_scope(&rec).is_err());
+        assert!(ReceiptSupersession::validate_supersession_scope(&rec).is_err());
         let ok = record(&[("Cargo.toml", "f")], &[("Cargo.toml", "n")]);
-        assert!(validate_supersession_scope(&ok).is_ok());
+        assert!(ReceiptSupersession::validate_supersession_scope(&ok).is_ok());
     }
 
     #[test]
