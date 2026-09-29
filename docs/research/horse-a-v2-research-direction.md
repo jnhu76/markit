@@ -140,26 +140,43 @@ that historical machinery is not an architecture obligation.
 For every v1 component ask:
 
 ```text
-1. Is it required for correctness?
-2. Is it required by eager READY / lifecycle semantics?
-3. Does measured evidence show that it saves more work than it costs?
-4. Is there a smaller mechanism that preserves the same authority?
+1. Is the responsibility required for correctness?
+2. Is the responsibility required by eager READY / lifecycle semantics?
+3. Does measured evidence show that the current mechanism has net benefit?
+4. Is there a smaller mechanism that preserves the same authority and obligations?
 ```
+
+Correctness and READY/lifecycle necessity take precedence over isolated
+performance evidence. Required responsibilities include, where applicable,
+termination, failure containment, required identity/association and ownership,
+and next-edit obligations.
 
 Decision rule:
 
 ```text
+if correctness_required == YES or ready_required == YES:
+    PRESERVE THE RESPONSIBILITY
+    CHALLENGE THE CURRENT IMPLEMENTATION
+    REPLACE IT ONLY WITH A SMALLER MECHANISM THAT CARRIES THE SAME OBLIGATIONS
+
 if correctness_required == NO
 and ready_required == NO
 and measured_net_benefit == NO:
     DELETE
 
-if correctness_required == YES or ready_required == YES:
-    KEEP ONLY THE MINIMUM REQUIRED MECHANISM
-
 if measured_net_benefit == UNKNOWN:
-    MEASURE BEFORE PRESERVING OR OPTIMIZING
+    UNKNOWN IS NOT NO
+    MEASURE ONLY WHEN THE UNRESOLVED PERFORMANCE VALUE AFFECTS THE CURRENT CHOICE
 ```
+
+A required authority therefore does not need an isolated speedup result to
+justify its responsibility, but its current representation still has no
+grandfather privilege.
+
+Likewise, deletion is not automatically simplification. Removing one shared
+authority can move checks, state, or invariants elsewhere and increase total
+mechanism complexity. Evaluate deletion together with every displaced
+responsibility introduced by its replacement.
 
 The default question is therefore not:
 
@@ -170,10 +187,11 @@ How can this v1 subsystem be optimized?
 It is:
 
 ```text
-Why must this subsystem still exist at all?
+Why must this subsystem still exist in its current form?
 ```
 
-Deletion is preferred over optimization when both preserve the contract.
+Deletion is preferred over optimization when the complete replacement preserves
+the contract and does not merely duplicate the removed authority elsewhere.
 
 ---
 
@@ -199,7 +217,11 @@ declaration similar to the following:
 | retirement | lifecycle-sensitive | yes | N/A | TBD | MINIMIZE, do not hide |
 
 This table is intentionally incomplete at the start. Unknown fields are research
-questions, not permission to keep the mechanism unchanged.
+questions, not permission to keep the mechanism unchanged and not evidence that
+the mechanism has no value. Responsibilities already justified by correctness
+or lifecycle remain in force until an equivalent replacement demonstrably
+carries them. Only components implicated in the current mechanism choice need
+new performance measurement.
 
 ### Important implementation boundary
 
