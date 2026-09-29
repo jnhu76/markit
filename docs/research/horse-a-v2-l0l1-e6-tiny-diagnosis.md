@@ -7,7 +7,8 @@
 > Baseline authority: Horse-A v1 (immutable);
 > capsule `markit-r0-rq8-research-record-v1.tar.gz`
 > SHA256 `156ec1f3fbdfe1759ce81d17940360c2cda3adb773e7be7634b1ccc1e893d849`
-> Status: **L0 PASS / L1 COMPLETE / escalation decision: L2 (targeted, one question)**
+> Status: **L0 PASS / L1 COMPLETE / L2 NOT_EXECUTED — escalation decision: L2
+> (one paired-profile question, §K; to be authorized and designed separately)**
 > Machine-readable evidence: `research/benchmarks/markdown-ast-update/results/horse-a-v2-diag-98/`
 
 This is the first Horse-A v2 forensic pass (#95 Step 1). It separates, on a
@@ -35,9 +36,14 @@ HOST            = jnhu@192.168.31.75 (hostname E5; Intel Xeon E5-2666 v3, 20 cor
 CHECKOUT        = /home/jnhu/Source/markit
 LIVE_MASTER     = a89a4c2723390d903edb1b38543c263e0d042f05 (matched the expected SHA; no intervening commits)
 EXECUTION_BRANCH= research/98-horse-a-v2-l0-l1-diagnosis
-EXECUTION_REVISION = 25849a7 + then-uncommitted changes now recorded as commit
-                     6b227b7 (executed-code identity == 6b227b7; verified by a
-                     bit-identical release-binary rebuild — see PROVENANCE erratum)
+EXECUTED_CODE_IDENTITY = 6b227b7 (the code state that produced the sealed evidence;
+                     at collection start the last commit was 25849a7 and the 6b227b7
+                     changes were uncommitted; verified by a bit-identical
+                     release-binary rebuild — see PROVENANCE Errata 1/2/3)
+FINAL_PR_HEAD   = documentation/audit tip of the execution branch (6f32664 audit
+                  errata + closure pass); the exact SHA and the merge commit are
+                  recorded in the #98 closure receipt and the post-merge master
+                  receipt. Documentation heads do NOT change EXECUTED_CODE_IDENTITY.
 AUTHORITY_DRIFT = NONE (live #98 body == prompt contract; #95/#96/#97 titles verified OPEN/consistent)
 WORKTREE_STATE  = tracked-clean only after the 6b227b7 commit; at collection time
                   the tree held those changes uncommitted; unrelated untracked
@@ -320,7 +326,7 @@ Evidence-backed rows only (others remain `UNKNOWN` until earned):
 | forward syntax work + convergence | correctness | E6-1..5 immaterial; E6-6 112 KB discarded (154 µs ≈ 15% of A) | SHRINK candidate (fence/EOF convergence regime only — earned by E6-6, not by E6 semantic edits) |
 | facts extraction/comparison | feeds W-A2 decision | 3 owner visits, ≤1-entry compares | SHRINK (its RESULT triggers whole-document rebuilds; see certification) |
 | semantic reuse certification (W-A2 ordered-facts equality) | correctness-sensitive | fires FactsDiffer on semantically irrelevant facts (E6-1: 1/4994) | REPLACE with effective-binding/value certification (Candidate B; must carry the same eager-READY obligations incl. negative dependency) |
-| full-build fallback | correctness/READY safety | the E6 cost center: ≈100% of E6-1..5 update cost | REFRAME — keep as safety; its cost profile (H-B) now gates how often v2 may enter it |
+| full-build fallback | correctness/READY safety | the E6 cost center: dominates E6-1..5 update cost (construction 57–62% + retirement 16–24% + the shared full parse) | REFRAME — keep as safety; its cost profile (H-B) now gates how often v2 may enter it |
 | retained representation construction (Owner payload + AVL + coverage + certificates) | READY representation | P1−P0 = 2.7–2.9 ms (57–62% of arm B; P1/P0 3.6–4.9×) | UNKNOWN→L2: interior split required before SHRINK/REPLACE can be decided |
 | old-state retirement | lifecycle | 0.75–1.1 ms on E6 (heavier than H0's 0.33–0.56 ms drop) | SHRINK candidate (proportional to state size; representation-dependent) |
 | payload reuse / local splice | correctness + v1 strength | sentinels: A beats B 4.4–10×; tiny 1K/4K 3× | KEEP (preserve-v1 guardrail confirmed) |
@@ -329,7 +335,7 @@ Evidence-backed rows only (others remain `UNKNOWN` until earned):
 ## J. Main findings (ranked by mechanism-decision importance)
 
 1. **The E6 pathology is a construction problem, not a path-selection
-   problem.** Normal update ≈ direct rebuild within 0–1% on E6-1..5; the
+   problem.** Normal update ≈ direct rebuild (within 0.7%) on E6-1..5; the
    loss vs H0 (3.2–3.7×) lives inside the full-build route.
 2. **Horse-A READY-state construction is 3.6–4.9× the cost of H0's document
    construction** for identical parser work and identical semantic-node
@@ -354,35 +360,38 @@ ESCALATE_TO_L2_CONTEXT_PATH_PROFILING
 
 ```text
 UNRESOLVED_RESPONSIBILITY =
-    the interior of the Horse-A full-build construction tax (P1−P0):
-    per-Owner payload materialization vs span rebasing vs AVL bulk build vs
-    coverage/certificates vs per-Owner allocation on the E6 cells
+    the full-build construction-route residual inside Horse-A full_build
+    (the P1−P0 quantity). Candidate internal owners — per-Owner payload
+    materialization, span rebasing, AVL bulk build, coverage/certificate
+    construction, allocation, other full_build-only contexts — remain
+    UNRESOLVED at L1; the list is a hypothesis set for L2, not a claim.
 
 WHAT_L1_ESTABLISHED =
-    the tax exists (2.7–2.9 ms, 57–62% of arm B; P1/P0 = 3.6–4.9×),
-    is size-proportional, is not parser work (equal inspections/nodes),
-    and dominates every path that enters a full build, including the
-    direct-rebuild control and clean-state construction
+    P1_FULL_BUILD_ONLY materially exceeds P0_H0_PARSE_ONLY (2.7–2.9 ms,
+    57–62% of arm B; P1/P0 = 3.6–4.9×), is size-proportional, and is not
+    explained by parser work (equal inspections / equal semantic-node
+    counts) or by pre-fallback path-selection work (H-A: A/B = 0.993–1.000
+    on E6-1..5)
 
 WHY_L1_CANNOT_RESOLVE_IT =
-    the frozen counters attribute whole-update quantities
+    the frozen counters attribute whole responsibility quantities
     (owners_created, fresh_payload_nodes, bulk_build visits, retirement
-    frames) but no counter or probe splits the P1−P0 interior, and doing
-    so by ablation would require modifying the frozen v1 mechanism
+    frames) but do not localize cycle ownership among full_build
+    sub-contexts, and doing so by ablation would require modifying the
+    frozen v1 mechanism
 
 EXACT_L2_QUESTION =
-    inside full_build(post) on 2–3 E6 cells, which calling contexts own the
-    P1−P0 delta: materialize_one_with_sink (per-owner), shift_spans_recorded,
-    OwnerSeq::bulk_build (AVL + aggregates), CoveragePlan/certificate
-    persistence, or allocation sites — reported as per-responsibility cycle
-    shares of one and the same frozen binary
+    which calling contexts account for the P1−P0 full-build construction
+    residual inside full_build(post) on E6-1, E6-5 and E6-6?
 
 MINIMUM_PROFILE_NEEDED =
-    one context-sensitive (call-graph-aware) sample profile of
-    P1_FULL_BUILD_ONLY on E6-1 and E6-5 (plus E6-6 as the small-state
-    contrast), release profile, same host/toolchain binding, with
-    per-context attribution resolved to those five responsibility symbols;
-    no new counters, no mechanism modification, no broad PMU reopening
+    PAIRED context-sensitive (call-graph-aware) sample profiles for
+    P1_FULL_BUILD_ONLY and P0_H0_PARSE_ONLY on the same selected cells,
+    host, toolchain, profile, source identity and profiling protocol,
+    followed by differential attribution of the residual. A profile of
+    P1 alone is NOT sufficient: the target is a difference. No new
+    counters, no mechanism modification, no broad PMU reopening, no
+    cache/TLB hypothesis yet.
 ```
 
 L2 is NOT performed in #98. The L2 outcome decides the deletion-map row
@@ -393,10 +402,13 @@ representation) and therefore which second challenger (#95 Step 2) is honest.
 
 ```text
 BRANCH = research/98-horse-a-v2-l0-l1-diagnosis
-COMMITS= 25849a7 (crate + control + validation) + report/evidence commit (this change)
-PR     = OPEN, linked to #98 (not merged)
-ISSUE_98_UPDATED = YES (final L0/L1 result posted)
-MERGED = NO
+EXECUTED_CODE_IDENTITY = 6b227b7 (produced every sealed artifact; immutable)
+COMMITS= 25849a7 (crate + control + validation) · 6b227b7 (report + evidence) ·
+         6f32664 (audit errata) · + this closure pass (documentation only)
+PR     = #99 into master — L0/L1 evidence only, no L2 work
+ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted on merge)
+MERGED = YES (closure pass); FINAL_PR_HEAD and MERGE_COMMIT are recorded exactly
+         in the #98 closure receipt and the post-merge master receipt commit
 ```
 
 ## M. Final state
@@ -404,8 +416,10 @@ MERGED = NO
 ```text
 L0 = PASS
 L1 = COMPLETE
+L2 = NOT_EXECUTED
 DELETION_MAP = INITIALIZED
-NEXT = L2 (one targeted context/path question, per §K)
+NEXT = L2 (paired-profile question per §K; to be designed, authorized,
+       and executed separately — not in this record)
 ```
 
 ---
