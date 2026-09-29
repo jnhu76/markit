@@ -1,0 +1,523 @@
+{
+  "cell": "E6-1",
+  "arm": "P1",
+  "reps": 40,
+  "folded_samples_total": 3671,
+  "samples_in_region": 3671,
+  "samples_per_op_in_region": 91.775,
+  "buckets": {
+    "certificate": {
+      "samples": 3473,
+      "samples_per_op": 86.825,
+      "share_of_region": 0.946064,
+      "top_paths": [
+        {
+          "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x15d;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x15d;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x15d;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x15d;add<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x15d",
+          "samples": 947
+        },
+        {
+          "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x141;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;call_mut<(&&markit_mdbench_shared_grammar::parser::RootBlankEvent), markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;{closure#0}+0x141",
+          "samples": 829
+        },
+        {
+          "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x130;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x130;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x130;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x130;eq<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x130",
+          "samples": 445
+        },
+        {
+          "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x139;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x139;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x139",
+          "samples": 374
+        },
+        {
+          "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x150;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x150;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x150;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x150;eq<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x150",
+          "samples": 339
+        }
+      ]
+    },
+    "full_build_other": {
+      "samples": 107,
+      "samples_per_op": 2.675,
+      "share_of_region": 0.029147,
+      "top_paths": [
+        {
+          "path": "[unknown];l2_p1_build+0x98c;full_build<markit_mdbench_common::work::NoopWorkSink>+0x98c",
+          "samples": 22
+        },
+        {
+          "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x0",
+          "samples": 12
+        },
+        {
+          "path": "[unknown];l2_p1_build+0xa56;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa56",
+          "samples": 5
+        },
+        {
+          "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x10f",
+          "samples": 4
+        },
+        {
+          "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x7",
+          "samples": 4
+        }
+      ]
+    },
+    "block_parse_shared": {
+      "samples": 87,
+      "samples_per_op": 2.175,
+      "share_of_region": 0.023699,
+      "top_paths": [
+        {
+          "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2150;classify<markit_mdbench_common::work::NoopWorkSink>+0x2150",
+          "samples": 7
+        },
+        {
+          "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;observe_top_level_start<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;on_top_level_start+0x25;push<usize, alloc::alloc::Global>+0x25;push_mut<usize, alloc::alloc::Global>+0x25",
+          "samples": 3
+        },
+        {
+          "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc3b",
+          "samples": 3
+        },
+        {
+          "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x3f",
+          "samples": 3
+        },
+        {
+          "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fdf;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fdf;as_mut<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fdf",
+          "samples": 3
+        }
+      ]
+    },
+    "span_coordinate": {
+      "samples": 2,
+      "samples_per_op": 0.05,
+      "share_of_region": 0.000545,
+      "top_paths": [
+        {
+          "path": "[unknown];l2_p1_build+0xa6d;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa6d;shift_spans_recorded+0xa6d",
+          "samples": 1
+        },
+        {
+          "path": "[unknown];l2_p1_build+0xa87;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa87;shift_spans_recorded+0xa87;shift_inner+0x19",
+          "samples": 1
+        }
+      ]
+    },
+    "region_loop_other": {
+      "samples": 2,
+      "samples_per_op": 0.05,
+      "share_of_region": 0.000545,
+      "top_paths": [
+        {
+          "path": "l2_p1_build+0x6fe;drop<markit_mdbench_horse_a::state::ReadyDocument>+0x6fe;drop_glue<markit_mdbench_horse_a::state::ReadyDocument>+0x6fe;drop_glue<markit_mdbench_horse_a::state::OwnerSeq>+0x6fe;drop_glue<core::option::Option<alloc::boxed::Box<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>>>+0x6fe;drop_glue<alloc::boxed::Box<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>>+0x6fe;drop<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>+0x6fe;deallocate+0x6fe;deallocate_impl+0x6fe;deallocate_impl_runtime+0x6fe;dealloc_nonnull+0x6fe;__rdl_dealloc+0x6fe;dealloc+0x6fe;_int_free_chunk+0x28;systrim.constprop.0+0x86;__default_morecore@GLIBC_2.2.5+0xd",
+          "samples": 1
+        },
+        {
+          "path": "l2_p1_build+0x6fe;drop<markit_mdbench_horse_a::state::ReadyDocument>+0x6fe;drop_glue<markit_mdbench_horse_a::state::ReadyDocument>+0x6fe;drop_glue<markit_mdbench_horse_a::state::OwnerSeq>+0x6fe;drop_glue<core::option::Option<alloc::boxed::Box<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>>>+0x6fe;drop_glue<alloc::boxed::Box<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>>+0x6fe;drop<markit_mdbench_horse_a::state::AvlNode, alloc::alloc::Global>+0x6fe;deallocate+0x6fe;deallocate_impl+0x6fe;deallocate_impl_runtime+0x6fe;dealloc_nonnull+0x6fe;__rdl_dealloc+0x6fe;dealloc+0x6fe;_int_free_chunk+0x28;systrim.constprop.0+0x86;__default_morecore@GLIBC_2.2.5+0xb",
+          "samples": 1
+        }
+      ]
+    }
+  },
+  "top_paths": [
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x15d;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x15d;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x15d;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x15d;add<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x15d",
+      "samples": 947,
+      "samples_per_op": 23.675
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x141;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;call_mut<(&&markit_mdbench_shared_grammar::parser::RootBlankEvent), markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x141;{closure#0}+0x141",
+      "samples": 829,
+      "samples_per_op": 20.725
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x130;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x130;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x130;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x130;eq<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x130",
+      "samples": 445,
+      "samples_per_op": 11.125
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x139;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x139;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x139",
+      "samples": 374,
+      "samples_per_op": 9.35
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x150;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x150;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x150;next<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x150;eq<markit_mdbench_shared_grammar::parser::RootBlankEvent>+0x150",
+      "samples": 339,
+      "samples_per_op": 8.475
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x161;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x161;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x161",
+      "samples": 217,
+      "samples_per_op": 5.425
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x159;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x159;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x159;call_mut<(&&markit_mdbench_shared_grammar::parser::RootBlankEvent), markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x159;{closure#0}+0x159",
+      "samples": 171,
+      "samples_per_op": 4.275
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x155;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x155;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x155",
+      "samples": 118,
+      "samples_per_op": 2.95
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x98c;full_build<markit_mdbench_common::work::NoopWorkSink>+0x98c",
+      "samples": 22,
+      "samples_per_op": 0.55
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x174",
+      "samples": 13,
+      "samples_per_op": 0.325
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x0",
+      "samples": 12,
+      "samples_per_op": 0.3
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2150;classify<markit_mdbench_common::work::NoopWorkSink>+0x2150",
+      "samples": 7,
+      "samples_per_op": 0.175
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa56;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa56",
+      "samples": 5,
+      "samples_per_op": 0.125
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x10f",
+      "samples": 4,
+      "samples_per_op": 0.1
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x7",
+      "samples": 4,
+      "samples_per_op": 0.1
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x146",
+      "samples": 4,
+      "samples_per_op": 0.1
+    },
+    {
+      "path": "l2_p1_build+0x923;full_build<markit_mdbench_common::work::NoopWorkSink>+0x923;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x923;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x923",
+      "samples": 4,
+      "samples_per_op": 0.1
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;observe_top_level_start<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;on_top_level_start+0x25;push<usize, alloc::alloc::Global>+0x25;push_mut<usize, alloc::alloc::Global>+0x25",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x170",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc3b",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x3f",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fdf;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fdf;as_mut<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fdf",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x9bc;full_build<markit_mdbench_common::work::NoopWorkSink>+0x9bc",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "l2_p1_build+0x8b7;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8b7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8b7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8b7;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8b7",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x17",
+      "samples": 3,
+      "samples_per_op": 0.075
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x48",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x134",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x83",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaaf;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaaf",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x43",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa88;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa88",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x131",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fa5;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fa5;is_none<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fa5;is_some<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fa5",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x0",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x148a;classify<markit_mdbench_common::work::NoopWorkSink>+0x148a;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x148a",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xef",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x11c",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0x8d7;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8d7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8d7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8d7;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8d7",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1512;classify<markit_mdbench_common::work::NoopWorkSink>+0x1512",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1558;classify<markit_mdbench_common::work::NoopWorkSink>+0x1558;all_spaces+0x1558;all<u8, markit_mdbench_shared_grammar::parser::all_spaces::{closure_env#0}>+0x1558;next<u8>+0x1558;eq<u8>+0x1558",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa50;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa50",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x134",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0x8cf;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8cf;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8cf;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8cf;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8cf",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0xdd",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p1_build+0x8db;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8db;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8db;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8db;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8db",
+      "samples": 2,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x23",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x119",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa6d;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa6d;shift_spans_recorded+0xa6d",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa21",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x106",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa25;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa25",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x121",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1468;classify<markit_mdbench_common::work::NoopWorkSink>+0x1468;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x1468;take<markit_mdbench_shared_grammar::parser::OpenPara>+0x1468;replace<core::option::Option<markit_mdbench_shared_grammar::parser::OpenPara>>+0x1468",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;observe_top_level_start<markit_mdbench_common::work::NoopWorkSink>+0x1fd6;on_top_level_start+0x0",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x8c7;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8c7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8c7;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8c7;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8c7",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x1522;classify<markit_mdbench_common::work::NoopWorkSink>+0x1522",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc80",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x656",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xe2",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xb5",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x897;full_build<markit_mdbench_common::work::NoopWorkSink>+0x897;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x897;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x897;next<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>+0x897;eq<markit_mdbench_shared_grammar::parser::Skel>+0x897",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x862;full_build<markit_mdbench_common::work::NoopWorkSink>+0x862;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x862;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x862",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x13d;next<core::slice::iter::Iter<markit_mdbench_shared_grammar::parser::RootBlankEvent>, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x13d;find<markit_mdbench_shared_grammar::parser::RootBlankEvent, &mut markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x13d;call_mut<(&&markit_mdbench_shared_grammar::parser::RootBlankEvent), markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#0}>+0x13d;{closure#0}+0x13d",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x946;full_build<markit_mdbench_common::work::NoopWorkSink>+0x946;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x946;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x946",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0xcd",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2161;classify<markit_mdbench_common::work::NoopWorkSink>+0x2161",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x710",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x147a;classify<markit_mdbench_common::work::NoopWorkSink>+0x147a;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x147a",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x212d;classify<markit_mdbench_common::work::NoopWorkSink>+0x212d;new_uninit<[(usize, usize); 1]>+0x212d;box_new_uninit+0x212d;allocate+0x212d;alloc_impl+0x212d;alloc_impl_runtime+0x212d;alloc+0x212d;__rdl_alloc+0x212d;alloc+0x212d",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x884;full_build<markit_mdbench_common::work::NoopWorkSink>+0x884;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x884;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x884;next<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>+0x884",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x478",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xa87;full_build<markit_mdbench_common::work::NoopWorkSink>+0xa87;shift_spans_recorded+0xa87;shift_inner+0x19",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x119",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x8b3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8b3;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8b3;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8b3;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8b3",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x8d3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x8d3;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8d3;next<alloc::vec::into_iter::IntoIter<markit_mdbench_shared_grammar::parser::Skel, alloc::alloc::Global>, core::slice::iter::Iter<usize>>+0x8d3;branch<markit_mdbench_shared_grammar::parser::Skel>+0x8d3",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0xe21;full_build<markit_mdbench_common::work::NoopWorkSink>+0xe21;attach_interior_certificates+0xe21;persist_interior_certificates+0x18c;filter<usize, markit_mdbench_horse_a::certificate::persist_interior_certificates::{closure_env#1}>+0x18c",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x213c;classify<markit_mdbench_common::work::NoopWorkSink>+0x213c;entry_key<markit_mdbench_common::work::NoopWorkSink>+0x213c;state_key<markit_mdbench_common::work::NoopWorkSink>+0x213c;as_ref<markit_mdbench_shared_grammar::parser::OpenFence>+0x213c",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0xaa6;full_build<markit_mdbench_common::work::NoopWorkSink>+0xaa6;__memmove_avx_unaligned_erms+0x119",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "l2_p1_build+0x85e;full_build<markit_mdbench_common::work::NoopWorkSink>+0x85e;push<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;push_mut<markit_mdbench_horse_a::state::Owner, alloc::alloc::Global>+0x85e;write<markit_mdbench_horse_a::state::Owner>+0x85e;__memmove_avx_unaligned_erms+0x12b",
+      "samples": 1,
+      "samples_per_op": 0.025
+    },
+    {
+      "path": "[unknown];l2_p1_build+0x1e3;full_build<markit_mdbench_common::work::NoopWorkSink>+0x1e3;parse_region_observed<markit_mdbench_common::work::NoopWorkSink>+0x1e3;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xa0",
+      "samples": 1,
+      "samples_per_op": 0.025
+    }
+  ]
+}

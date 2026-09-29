@@ -1,0 +1,450 @@
+{
+  "cell": "E6-1",
+  "arm": "P0",
+  "reps": 100,
+  "folded_samples_total": 188,
+  "samples_in_region": 188,
+  "samples_per_op_in_region": 1.88,
+  "buckets": {
+    "block_parse_shared": {
+      "samples": 186,
+      "samples_per_op": 1.86,
+      "share_of_region": 0.989362,
+      "top_paths": [
+        {
+          "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x43",
+          "samples": 10
+        },
+        {
+          "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2150;classify<markit_mdbench_common::work::NoopWorkSink>+0x2150",
+          "samples": 8
+        },
+        {
+          "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x48",
+          "samples": 7
+        },
+        {
+          "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x148a;classify<markit_mdbench_common::work::NoopWorkSink>+0x148a;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x148a",
+          "samples": 7
+        },
+        {
+          "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x88",
+          "samples": 5
+        }
+      ]
+    },
+    "h0_document_materialize": {
+      "samples": 2,
+      "samples_per_op": 0.02,
+      "share_of_region": 0.010638,
+      "top_paths": [
+        {
+          "path": "l2_p0_parse+0x28f;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x28f;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x28f;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x28f;finish_document_with_sink<markit_mdbench_common::work::NoopWorkSink>+0x28f;materialize_with_sink<markit_mdbench_common::work::NoopWorkSink>+0x0",
+          "samples": 2
+        }
+      ]
+    }
+  },
+  "top_paths": [
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x43",
+      "samples": 10,
+      "samples_per_op": 0.1
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2150;classify<markit_mdbench_common::work::NoopWorkSink>+0x2150",
+      "samples": 8,
+      "samples_per_op": 0.08
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x48",
+      "samples": 7,
+      "samples_per_op": 0.07
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x148a;classify<markit_mdbench_common::work::NoopWorkSink>+0x148a;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x148a",
+      "samples": 7,
+      "samples_per_op": 0.07
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x88",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x0",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x344",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x10d",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x362",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x7e",
+      "samples": 5,
+      "samples_per_op": 0.05
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x349",
+      "samples": 4,
+      "samples_per_op": 0.04
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2161;classify<markit_mdbench_common::work::NoopWorkSink>+0x2161",
+      "samples": 4,
+      "samples_per_op": 0.04
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x8",
+      "samples": 4,
+      "samples_per_op": 0.04
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x24f5",
+      "samples": 4,
+      "samples_per_op": 0.04
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x147a;classify<markit_mdbench_common::work::NoopWorkSink>+0x147a;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x147a",
+      "samples": 4,
+      "samples_per_op": 0.04
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x24f0",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc2",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x1a",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc4a",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x212d;classify<markit_mdbench_common::work::NoopWorkSink>+0x212d;new_uninit<[(usize, usize); 1]>+0x212d;box_new_uninit+0x212d;allocate+0x212d;alloc_impl+0x212d;alloc_impl_runtime+0x212d;alloc+0x212d;__rdl_alloc+0x212d;alloc+0x212d",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xd",
+      "samples": 3,
+      "samples_per_op": 0.03
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc66",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xdb",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2154;classify<markit_mdbench_common::work::NoopWorkSink>+0x2154",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1498;classify<markit_mdbench_common::work::NoopWorkSink>+0x1498;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x1498",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x8d",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x14aa;classify<markit_mdbench_common::work::NoopWorkSink>+0x14aa;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x14aa",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2179;classify<markit_mdbench_common::work::NoopWorkSink>+0x2179",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x4",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0x16",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x0",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x3f",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xb5",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x17",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1a9a;classify<markit_mdbench_common::work::NoopWorkSink>+0x1a9a;heading_at+0x1a9a",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2171;classify<markit_mdbench_common::work::NoopWorkSink>+0x2171",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x214c;classify<markit_mdbench_common::work::NoopWorkSink>+0x214c",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;malloc+0x2a",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x6aa",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xb34",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x36d",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xa0",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x211a;classify<markit_mdbench_common::work::NoopWorkSink>+0x211a",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x28f;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x28f;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x28f;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x28f;finish_document_with_sink<markit_mdbench_common::work::NoopWorkSink>+0x28f;materialize_with_sink<markit_mdbench_common::work::NoopWorkSink>+0x0",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x213e;classify<markit_mdbench_common::work::NoopWorkSink>+0x213e;entry_key<markit_mdbench_common::work::NoopWorkSink>+0x213e;state_key<markit_mdbench_common::work::NoopWorkSink>+0x213e;as_ref<markit_mdbench_shared_grammar::parser::OpenFence>+0x213e",
+      "samples": 2,
+      "samples_per_op": 0.02
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x40c",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xf3",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x210a;classify<markit_mdbench_common::work::NoopWorkSink>+0x210a",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x2e6;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x2e6;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x2e6;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x2e6;drop_glue<markit_mdbench_shared_grammar::inline::RefTable>+0x2e6;drop_glue<alloc::vec::Vec<(alloc::string::String, alloc::string::String), alloc::alloc::Global>>+0x2e6;drop<(alloc::string::String, alloc::string::String), alloc::alloc::Global>+0x2e6;drop_in_place<[(alloc::string::String, alloc::string::String)]>+0x2e6;drop_glue<[(alloc::string::String, alloc::string::String)]>+0x2e6;drop_glue<(alloc::string::String, alloc::string::String)>+0x2e6;drop_glue<alloc::string::String>+0x2e6;drop_glue<alloc::vec::Vec<u8, alloc::alloc::Global>>+0x2e6;drop_glue<alloc::raw_vec::RawVec<u8, alloc::alloc::Global>>+0x2e6;drop<u8, alloc::alloc::Global>+0x2e6;deallocate<alloc::alloc::Global>+0x2e6;deallocate+0x2e6;deallocate_impl+0x2e6;deallocate_impl_runtime+0x2e6;dealloc_nonnull+0x2e6;__rdl_dealloc+0x2e6;dealloc+0x2e6;cfree@GLIBC_2.2.5+0x1b",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x14c3;classify<markit_mdbench_common::work::NoopWorkSink>+0x14c3;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x14c3",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2133;classify<markit_mdbench_common::work::NoopWorkSink>+0x2133;new_uninit<[(usize, usize); 1]>+0x2133;box_new_uninit+0x2133",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x83",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xb62;unlink_chunk.isra.0+0x19",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x2d",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x14a5;classify<markit_mdbench_common::work::NoopWorkSink>+0x14a5;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x14a5",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x415",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1fa5;classify<markit_mdbench_common::work::NoopWorkSink>+0x1fa5;is_none<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fa5;is_some<markit_mdbench_shared_grammar::parser::OpenPara>+0x1fa5",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xb85",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x3b2",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x404",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x217d;classify<markit_mdbench_common::work::NoopWorkSink>+0x217d",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x25a3",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1512;classify<markit_mdbench_common::work::NoopWorkSink>+0x1512",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x29d",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x544",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x8a3",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x65a",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1500;classify<markit_mdbench_common::work::NoopWorkSink>+0x1500",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x14cd;classify<markit_mdbench_common::work::NoopWorkSink>+0x14cd;deref<markit_mdbench_shared_grammar::parser::Frame, alloc::alloc::Global>+0x14cd;as_slice<markit_mdbench_shared_grammar::parser::Frame, alloc::alloc::Global>+0x14cd",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc80",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1468;classify<markit_mdbench_common::work::NoopWorkSink>+0x1468;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x1468;take<markit_mdbench_shared_grammar::parser::OpenPara>+0x1468;replace<core::option::Option<markit_mdbench_shared_grammar::parser::OpenPara>>+0x1468",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x24fb",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x151a;classify<markit_mdbench_common::work::NoopWorkSink>+0x151a",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x24ed",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x700",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x149",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc95",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0x18e",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x2132;classify<markit_mdbench_common::work::NoopWorkSink>+0x2132;new_uninit<[(usize, usize); 1]>+0x2132;box_new_uninit+0x2132;allocate+0x2132;alloc_impl+0x2132;alloc_impl_runtime+0x2132;alloc+0x2132;__rdl_alloc+0x2132;alloc+0x2132;__libc_malloc2+0xee;_int_malloc+0xc84",
+      "samples": 1,
+      "samples_per_op": 0.01
+    },
+    {
+      "path": "l2_p0_parse+0x217;full_parse<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_with_attribution<markit_mdbench_common::work::NoopWorkSink>+0x217;parse_full<markit_mdbench_common::work::NoopWorkSink>+0x217;run<markit_mdbench_common::work::NoopWorkSink>+0x1464;classify<markit_mdbench_common::work::NoopWorkSink>+0x1464;flush_para<markit_mdbench_common::work::NoopWorkSink>+0x1464;take<markit_mdbench_shared_grammar::parser::OpenPara>+0x1464;replace<core::option::Option<markit_mdbench_shared_grammar::parser::OpenPara>>+0x1464",
+      "samples": 1,
+      "samples_per_op": 0.01
+    }
+  ]
+}

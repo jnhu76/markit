@@ -1,0 +1,36 @@
+[package]
+name = "markit-mdbench-horse-a-v2-l2"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# Issue #100 (Horse-A v2 L2: paired context/path profiling) profiling-only
+# repeated-execution harness.
+#
+# DIAGNOSTIC TOOLING ONLY (the #98 diag precedent, P-LANE only):
+#
+# - reuses the FROZEN #98 cell manifest byte-for-byte by depending on the
+#   `horse-a-v2-diag` crate (no cell is redefined here);
+# - re-runs the two frozen #98 decomposition probes
+#   (P1_FULL_BUILD_ONLY / P0_H0_FULL_PARSE_ONLY) many times inside a
+#   `#[inline(never)]` marker region so a CPU-cycle sampler sees enough
+#   samples of the exact frozen operation;
+# - its wall time is NOT benchmark evidence (the #98 T-LANE remains the
+#   latency authority); the only product is the sampled operation
+#   identity + repetition count.
+#
+# The frozen mechanism crates are not modified and no new mechanism is
+# exercised: this binary calls the same public entry points the #98
+# decompose probe called.
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-horse-a = { workspace = true }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-horse-a-v2-diag = { path = "../horse-a-v2-diag" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[[bin]]
+name = "mdbench-horse-a-v2-l2"
+path = "src/bin/mdbench-horse-a-v2-l2.rs"

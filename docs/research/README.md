@@ -17,6 +17,12 @@ entry point is:
   decomposition with the validated `HORSE_A_V1_DIRECT_READY_REBUILD` control.
   L0 PASS / L1 COMPLETE; E6 cost is construction, not path selection;
   escalation decision L2 (one paired-profile question, not yet executed).
+- **[Horse-A v2 L2 context-profile localization](horse-a-v2-l2-context-profile-100.md)** —
+  paired context-profile pass (#100): the P1−P0 full-build construction
+  residual localizes ≈ 88–90% to the certificate barrier lookup inside
+  `persist_interior_certificates` on E6-1/E6-5; Owner materialization is
+  H0-parity; AVL is secondary; escalation decision
+  L2_SUFFICIENT_FOR_MECHANISM_DECISION → #95 Step 2.
   **Start here for active Horse-A v2 research.**
 - **[Baseline figures](figures/horse-a-v1-baseline/README.md)** — the eight
   ECharts-generated baseline figures (deterministic pipeline over sealed

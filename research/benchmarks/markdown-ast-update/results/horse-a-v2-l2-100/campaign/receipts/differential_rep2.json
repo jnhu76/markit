@@ -1,0 +1,173 @@
+{
+  "E6-1": {
+    "p1_samples_per_op_total": 161.04,
+    "p0_samples_per_op_total": 40.41,
+    "excess_samples_per_op_total": 120.63,
+    "buckets": {
+      "full_build_other": {
+        "p1_samples_per_op": 3.88,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 3.88
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.07,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.07
+      },
+      "teardown": {
+        "p1_samples_per_op": 2.19,
+        "p0_samples_per_op": 3.4,
+        "excess_samples_per_op": -1.21
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 27.51,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 27.51
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 6.0,
+        "p0_samples_per_op": 0.34,
+        "excess_samples_per_op": 5.66
+      },
+      "certificate": {
+        "p1_samples_per_op": 105.76,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 105.76
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.05,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.05
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 6.32,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 6.32
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 9.26,
+        "p0_samples_per_op": 7.71,
+        "excess_samples_per_op": 1.55
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 28.96,
+        "excess_samples_per_op": -28.96
+      }
+    }
+  },
+  "E6-5": {
+    "p1_samples_per_op_total": 158.99,
+    "p0_samples_per_op_total": 39.79,
+    "excess_samples_per_op_total": 119.2,
+    "buckets": {
+      "full_build_other": {
+        "p1_samples_per_op": 4.19,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 4.19
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.13,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.13
+      },
+      "teardown": {
+        "p1_samples_per_op": 2.28,
+        "p0_samples_per_op": 3.29,
+        "excess_samples_per_op": -1.01
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 26.96,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 26.96
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 5.11,
+        "p0_samples_per_op": 0.16,
+        "excess_samples_per_op": 4.95
+      },
+      "certificate": {
+        "p1_samples_per_op": 104.77,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 104.77
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.07,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.07
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 6.32,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 6.32
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 9.16,
+        "p0_samples_per_op": 7.61,
+        "excess_samples_per_op": 1.55
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 28.73,
+        "excess_samples_per_op": -28.73
+      }
+    }
+  },
+  "E6-6": {
+    "p1_samples_per_op_total": 9.7107,
+    "p0_samples_per_op_total": 7.91,
+    "excess_samples_per_op_total": 1.8007,
+    "buckets": {
+      "full_build_other": {
+        "p1_samples_per_op": 0.342,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.342
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.014,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.014
+      },
+      "teardown": {
+        "p1_samples_per_op": 0.0713,
+        "p0_samples_per_op": 0.2273,
+        "excess_samples_per_op": -0.156
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 2.5487,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 2.5487
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 0.44,
+        "p0_samples_per_op": 0.038,
+        "excess_samples_per_op": 0.402
+      },
+      "certificate": {
+        "p1_samples_per_op": 1.3033,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 1.3033
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.0047,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.0047
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 0.602,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.602
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 4.3847,
+        "p0_samples_per_op": 4.6027,
+        "excess_samples_per_op": -0.218
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 3.042,
+        "excess_samples_per_op": -3.042
+      }
+    }
+  }
+}
