@@ -12,8 +12,7 @@ use std::path::PathBuf;
 
 use markit_mdbench_campaign::schedule::{schedule_from_jsonl, ScheduleRow};
 use markit_mdbench_campaign::sensitivity::{
-    project_schedule, sensitivity_spec_id_from_root, SensitivityManifest,
-    SENSITIVITY_SCHEDULE_PATH,
+    project_schedule, sensitivity_spec_id_from_root, SensitivityManifest, SENSITIVITY_SCHEDULE_PATH,
 };
 
 fn benchmark_root() -> PathBuf {
@@ -279,6 +278,21 @@ fn schedule_projection_deterministic_subset_of_primary() {
         markit_mdbench_campaign::schedule::schedule_to_jsonl(&first).unwrap(),
         "the frozen schedule must equal a fresh projection"
     );
+}
+
+/// The full freeze-verification path (pinned primary artifacts ->
+/// projection -> byte-compare + cardinality) passes on the live tree
+/// (the pre-run review noted only the CLI exercised this path).
+#[test]
+fn verify_sensitivity_schedule_path_passes_on_live_tree() {
+    let root = benchmark_root();
+    let manifest = load_manifest();
+    let (spec_id, _) = sensitivity_spec_id_from_root(&root).unwrap();
+    let rows = markit_mdbench_campaign::sensitivity::verify_sensitivity_schedule(
+        &root, &manifest, &spec_id,
+    )
+    .expect("pinned primary artifacts verify and the frozen schedule is the exact projection");
+    assert_eq!(rows, manifest.cardinality.schedule_rows);
 }
 
 /// The sensitivity expectation builder enforces its own contract:

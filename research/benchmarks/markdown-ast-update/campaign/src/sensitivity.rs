@@ -245,6 +245,17 @@ impl SensitivityManifest {
             blockers
                 .push("population + subset_extra must cover the full six-horse roster".to_string());
         }
+        let overlap: Vec<&String> = self
+            .horses
+            .population
+            .iter()
+            .filter(|horse| self.horses.subset_extra.contains(horse))
+            .collect();
+        if !overlap.is_empty() {
+            blockers.push(format!(
+                "horses.population and horses.subset_extra overlap ({overlap:?}); the matrix must partition the roster"
+            ));
+        }
         let clean_sorted = {
             let mut c = self.horses.clean_state.clone();
             c.sort();

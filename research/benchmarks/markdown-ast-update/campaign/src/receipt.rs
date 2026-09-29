@@ -184,6 +184,15 @@ pub fn generate_receipt(benchmark_root: &std::path::Path) -> Result<CampaignRece
 pub const RECEIPT_SUPERSESSION_PATH: &str =
     "results/manifests/sensitivity/primary-receipt-supersession-v1.json";
 
+/// The ONLY artifacts a supersession record may EVER name: workspace
+/// evolution files the frozen primary receipt cannot anticipate (they
+/// define profiles/toolchains for FUTURE authorized work). Everything
+/// else the receipt binds — schedule, campaign/machine manifests,
+/// workload, schemas, lockfile — is a replication input and is NOT
+/// supersedeable; a record naming such an artifact is rejected outright
+/// (#33 RQ8 pre-run review P2-1).
+pub const SUPERSESSIONABLE_ARTIFACTS: [&str; 2] = ["Cargo.toml", "manifest/environment.toml"];
+
 /// An authorized, reviewed workspace supersession of one or more
 /// receipt-bound artifacts (#33 RQ8 second-profile addition).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -225,7 +234,23 @@ impl ReceiptSupersession {
                     .to_string(),
             );
         }
+        validate_supersession_scope(&record)?;
         Ok(Some(record))
+    }
+
+    /// A record may only supersede workspace-evolution artifacts —
+    /// never replication inputs (schedule, manifests, workload,
+    /// schemas, lockfile).
+    fn validate_supersession_scope(record: &ReceiptSupersession) -> Result<(), String> {
+        for artifact in record.superseded_artifacts.keys() {
+            if !SUPERSESSIONABLE_ARTIFACTS.contains(&artifact.as_str()) {
+                return Err(format!(
+                "supersession names {artifact:?}, which is a replication input — only {:?} may ever be superseded",
+                SUPERSESSIONABLE_ARTIFACTS
+            ));
+            }
+        }
+        Ok(())
     }
 
     /// Pure acceptance predicate: `live` replaces `receipt_hash` for
@@ -459,6 +484,27 @@ mod supersession_tests {
             ),
             note: String::new(),
         }
+    }
+
+    #[test]
+    fn supersession_never_authorizes_replication_inputs() {
+        let mut rec = record(
+            &[("Cargo.toml", "frozen-sha")],
+            &[("Cargo.toml", "new-sha")],
+        );
+        // A record that also names the frozen schedule is rejected even
+        // with perfect lineage: replication inputs are not supersedeable.
+        rec.superseded_artifacts.insert(
+            "results/manifests/six-horse-schedule-v1.jsonl".to_string(),
+            "x".to_string(),
+        );
+        rec.replacement_hashes.insert(
+            "results/manifests/six-horse-schedule-v1.jsonl".to_string(),
+            "y".to_string(),
+        );
+        assert!(validate_supersession_scope(&rec).is_err());
+        let ok = record(&[("Cargo.toml", "f")], &[("Cargo.toml", "n")]);
+        assert!(validate_supersession_scope(&ok).is_ok());
     }
 
     #[test]

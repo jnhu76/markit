@@ -16,6 +16,13 @@
 # change, not a mechanism change. The full 2,304-cell matrix is NOT
 # rerun; only the cells the frozen shortlist requires.
 #
+# METRIC SCOPE (recorded limitation): timing lane only (T_total primary
+# endpoint; T_prepare/T_native retained). Instructions, allocations,
+# retained bytes, and fallback counters are NOT remeasured; K-conclusion
+# aspects resting on them stay on sealed primary-profile evidence and
+# are profile-invariance HYPOTHESES, not verified facts. RQ8
+# classifications below apply to the timing components.
+#
 # Matrix (per session; K-mapping):
 #   EDIT_WRITE, ALL 362 cases x {H0, H4, HorseA, H1}
 #     K1  H4/HorseA project-macro near-tie + the 19 EW PMU-panel cells

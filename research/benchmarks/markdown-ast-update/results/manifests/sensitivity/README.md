@@ -22,9 +22,18 @@ measurement.
   K2/K4 union × {H2, H3} + 22 clean-state cases × 6 — 1,690 cells per
   session, 202,800 timing rows total (73% of the primary's row count;
   the full 2,304-cell matrix is NOT rerun).
-- Timing lane only. Attribution, memory, and PMU lanes are NOT rerun;
-  their sealed evidence is compiler-profile-independent for the
-  conclusions under test and stays authoritative.
+- Timing lane only. Attribution, memory, and PMU lanes are NOT rerun
+  (RQ8 task §9: primary endpoint T_total; T_prepare/T_native retained
+  when emitted by the same path). RECORDED LIMITATION: K-conclusion
+  aspects that depend on instructions (K1's instruction-vs-locality
+  trade, K2/K4 instruction volume), allocations (K2/K5/K6), and K6's
+  fallback incidence are NOT re-verified under the second profile —
+  they rely on sealed A/M/PMU evidence measured under the primary
+  profile, and the instruction/allocation components are HYPOTHESES
+  about profile invariance, not proven facts. RQ8 classifies the
+  TIMING components of K1–K6; any conclusion whose timing signature
+  flips is marked OPTIMIZATION_SENSITIVE regardless of the sealed
+  counter evidence.
 - The profile is the single-factor `release-sensitivity-lto-off-v1`
   (`lto = false`; everything else inherited from `release`). Full
   binding: `manifest/rq8-sensitivity-profile-v1.toml`; policy:
