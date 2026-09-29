@@ -1,0 +1,246 @@
+{
+ "validation": {
+  "timing_rows": 202800,
+  "cells": {
+   "clean_state": 132,
+   "edit_write": 1558
+  },
+  "status_counter": {
+   "pass/pass": 202800
+  },
+  "spec_id": "7686e6e149cd9ea11f4582f0bb0ad737890ade42a9b9210b2abcbca8d7394d2f",
+  "run_id": "9306c324ce6f7629f3f10f111c9e7352a81731771fd5a04f2928642bcc35085f",
+  "build_profile": "release-sensitivity-lto-off-v1",
+  "commit": "ff26583f34c3678b66f84bb2f011185a01925b5a",
+  "session_unstable_cells": 0
+ },
+ "second_profile": {
+  "K1": {
+   "macro_H4": 2.5982240226427322,
+   "macro_HorseA": 2.4265486082149073,
+   "gap_pct": 7.074880505036241
+  },
+  "K2": {
+   "H1": 0.8562586872290151,
+   "H2": 1.0244903591572292,
+   "H3": 0.9133481666995505,
+   "H4": 1.0395114305671316,
+   "HorseA": 0.8269259565725184,
+   "ph_a_loss_HorseA": 0.456750120614721,
+   "ph_a_loss_H0_p50_ns": 979
+  },
+  "K3": {
+   "Q3_H4": 4.554918559459316,
+   "Q4_H4": 5.253200062352118,
+   "Q3_HorseA": 5.273800157785502,
+   "Q4_HorseA": 5.408922918790618
+  },
+  "K4": {
+   "H1": 0.6515311357119855,
+   "H2": 1.136857192816854,
+   "H3": 1.0715292840525628,
+   "H4": 0.6769568431932921,
+   "HorseA": 0.5960696893178953
+  },
+  "K5": {
+   "H1": 0.7463576116766899,
+   "H2": 0.771115767041095,
+   "H3": 0.7720957986208569,
+   "H4": 0.7961383876349376,
+   "HorseA": 0.8040016202236451
+  },
+  "K6": {
+   "macro_H1": 1.0751335068223913
+  }
+ },
+ "primary_sealed": {
+  "K1": {
+   "macro_H4": 2.453474412582579,
+   "macro_HorseA": 2.4214182268009155,
+   "gap_pct": 1.323859935754057
+  },
+  "K2": {
+   "H1": 0.8470518211138962,
+   "H2": 1.0324042859965024,
+   "H3": 0.9037721677502423,
+   "H4": 1.0018567063962396,
+   "HorseA": 0.8249498358498847,
+   "ph_a_loss_HorseA": 0.452824675241586
+  },
+  "K3": {
+   "Q3_H4": 4.257988153865476,
+   "Q3_HorseA": 5.27558947633206,
+   "Q4_H4": 4.845036039240567,
+   "Q4_HorseA": 5.366610800633212
+  },
+  "K4": {
+   "H1": 0.6333112492920034,
+   "H2": 1.0996806261951002,
+   "H3": 1.0308357775140096,
+   "H4": 0.6467879044192406,
+   "HorseA": 0.5834978196804155
+  },
+  "K5": {
+   "H1": 0.7389068463999598,
+   "H2": 0.7691429181800395,
+   "H3": 0.7755923078581205,
+   "H4": 0.7874113103480189,
+   "HorseA": 0.7925072424192373
+  },
+  "K6": {
+   "macro_H1": 1.0647311698821205
+  }
+ },
+ "aggregates": {
+  "clean_state": {
+   "H1": {
+    "project_macro_speedup_vs_h0": 0.7463576116766899,
+    "per_project": {
+     "openmlsys": 0.7934675115554127,
+     "opentelemetry-spec": 0.7275759455364064,
+     "oci-image": 0.6681164395889946,
+     "myst-parser": 0.7330085217456832,
+     "rust-book": 0.7489206222681674,
+     "crafting-interpreters": 0.8277194638840646,
+     "d2l-en": 0.7958247135854579,
+     "owasp-cheatsheets": 0.668477013608416,
+     "rust-rfcs": 0.7566165505857045,
+     "kubernetes-keps": 0.7603303133057615
+    }
+   },
+   "H2": {
+    "project_macro_speedup_vs_h0": 0.771115767041095,
+    "per_project": {
+     "openmlsys": 0.8161437704747085,
+     "opentelemetry-spec": 0.7755458766867469,
+     "oci-image": 0.6937874369438936,
+     "myst-parser": 0.7110760480080123,
+     "rust-book": 0.7547574140804383,
+     "crafting-interpreters": 0.8482858354842098,
+     "d2l-en": 0.8190049333791054,
+     "owasp-cheatsheets": 0.7315831348537258,
+     "rust-rfcs": 0.7490976165075539,
+     "kubernetes-keps": 0.8284016715502953
+    }
+   },
+   "H3": {
+    "project_macro_speedup_vs_h0": 0.7720957986208569,
+    "per_project": {
+     "openmlsys": 0.7806735181355225,
+     "opentelemetry-spec": 0.7674807744494675,
+     "oci-image": 0.6934317160287419,
+     "myst-parser": 0.7588463626253054,
+     "rust-book": 0.7505457742615499,
+     "crafting-interpreters": 0.847549881678426,
+     "d2l-en": 0.8266857390481618,
+     "owasp-cheatsheets": 0.7451378646806683,
+     "rust-rfcs": 0.7446395895057712,
+     "kubernetes-keps": 0.8183738221428326
+    }
+   },
+   "H4": {
+    "project_macro_speedup_vs_h0": 0.7961383876349376,
+    "per_project": {
+     "openmlsys": 0.8307205851451078,
+     "opentelemetry-spec": 0.7993832777676151,
+     "oci-image": 0.7111628328802762,
+     "myst-parser": 0.7833403461329517,
+     "rust-book": 0.7816280554801885,
+     "crafting-interpreters": 0.8911560491188294,
+     "d2l-en": 0.8636769334879066,
+     "owasp-cheatsheets": 0.7065872239734742,
+     "rust-rfcs": 0.7981982552680268,
+     "kubernetes-keps": 0.8150313171939805
+    }
+   },
+   "HorseA": {
+    "project_macro_speedup_vs_h0": 0.8040016202236451,
+    "per_project": {
+     "openmlsys": 0.7839570944315142,
+     "opentelemetry-spec": 0.750421832989498,
+     "oci-image": 0.7740118952811554,
+     "myst-parser": 0.7226902176273898,
+     "rust-book": 0.8875602360818172,
+     "crafting-interpreters": 0.829646553076087,
+     "d2l-en": 0.7560161819273589,
+     "owasp-cheatsheets": 0.8238796576397613,
+     "rust-rfcs": 0.8266056904156919,
+     "kubernetes-keps": 0.9046643166470064
+    }
+   }
+  },
+  "edit_write": {
+   "H1": {
+    "project_macro_speedup_vs_h0": 1.0751335068223913,
+    "per_project": {
+     "crafting-interpreters": 2.0405269852233547,
+     "rust-rfcs": 0.6672581071047244,
+     "rust-book": 0.6070085384518472,
+     "kubernetes-keps": 1.133755264208971,
+     "d2l-en": 1.6415718727853459,
+     "myst-parser": 0.6025173441854252,
+     "opentelemetry-spec": 1.6662586235049786,
+     "oci-image": 0.8041986893343488,
+     "owasp-cheatsheets": 2.655030967363871,
+     "openmlsys": 0.6258479502852334
+    }
+   },
+   "H2": {
+    "project_macro_speedup_vs_h0": 1.0141791389810644,
+    "per_project": {
+     "kubernetes-keps": 1.3393792769851565,
+     "oci-image": 1.343563941021994,
+     "crafting-interpreters": 0.8905895671937645,
+     "rust-rfcs": 1.4518885866331945,
+     "d2l-en": 0.5129520986380558,
+     "openmlsys": 0.9824261631384046,
+     "rust-book": 1.2396071445199508,
+     "myst-parser": 0.7699876765624938
+    }
+   },
+   "H3": {
+    "project_macro_speedup_vs_h0": 0.9276882896598583,
+    "per_project": {
+     "kubernetes-keps": 1.1497001678849768,
+     "oci-image": 1.339167112768176,
+     "crafting-interpreters": 0.7787917756231649,
+     "rust-rfcs": 1.199078255219685,
+     "d2l-en": 0.44691173977358906,
+     "openmlsys": 0.8953188923287903,
+     "rust-book": 1.3209596650551714,
+     "myst-parser": 0.7218372221535682
+    }
+   },
+   "H4": {
+    "project_macro_speedup_vs_h0": 2.5982240226427322,
+    "per_project": {
+     "crafting-interpreters": 3.738610779818026,
+     "rust-rfcs": 3.650473832540655,
+     "rust-book": 1.6868517001776253,
+     "kubernetes-keps": 0.8332524580844308,
+     "d2l-en": 3.485010108756025,
+     "myst-parser": 2.3701182379876338,
+     "opentelemetry-spec": 4.068730194341229,
+     "oci-image": 2.478446151905035,
+     "owasp-cheatsheets": 5.7408216673969195,
+     "openmlsys": 1.5285035378101486
+    }
+   },
+   "HorseA": {
+    "project_macro_speedup_vs_h0": 2.4265486082149073,
+    "per_project": {
+     "crafting-interpreters": 2.6313096100238824,
+     "rust-rfcs": 3.96603707283137,
+     "rust-book": 1.5402400203256428,
+     "kubernetes-keps": 0.7801453875706045,
+     "d2l-en": 2.9757182818095558,
+     "myst-parser": 2.4527325968072335,
+     "opentelemetry-spec": 3.790347326820531,
+     "oci-image": 2.862290177282537,
+     "owasp-cheatsheets": 7.779197385109517,
+     "openmlsys": 0.9162791597446156
+    }
+   }
+  }
+ }
+}

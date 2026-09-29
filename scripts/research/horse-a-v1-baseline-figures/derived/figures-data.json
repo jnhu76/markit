@@ -1,0 +1,242 @@
+{
+ "generatedBy": "scripts/research/horse-a-v1-baseline-figures (deterministic extraction)",
+ "capsuleSha256": "156ec1f3fbdfe1759ce81d17940360c2cda3adb773e7be7634b1ccc1e893d849",
+ "inputSha256": {
+  "stage-b-facts-v1.json": "742e9f3665559515fd2f6914e232ad9f6e0360ab9be3bf401356016e474a3806",
+  "r8-values.json": "f752745d7274da0b00bae82b6eb673aa4d917b83fde55fdd95fd35b039a74130",
+  "regime-map.csv": "def050a76a82eb011cca6aa8dd27b541dd50f45cb01310ba34cb1892fef98e52",
+  "rq8-sensitivity-facts-v1.json": "c86602e9a0cb9757de0909ce99026ce60c587836b18536675105eda5138b1352",
+  "pmu-cells-v1.json": "23c7cbbba6a66d67222f8b3d9773f1ef252d4e59bc009773cdcd91e7049d2750"
+ },
+ "sourceNote": "All numeric values are extracted from sealed derived artifacts; see inputs/PROVENANCE.md. Qualitative verdict/priority text comes from inputs/qualitative-verdicts.json (transcription of baseline record §13/§16).",
+ "macro": {
+  "H0": 1,
+  "H1": 1.0647311698821205,
+  "H2": 2.0698796100801014,
+  "H3": 1.9219430652711063,
+  "H4": 2.453474412582579,
+  "HorseA": 2.4214182268009155
+ },
+ "sizeRegime": {
+  "HorseA": {
+   "Q1": 1.414,
+   "Q2": 2.908,
+   "Q3": 5.276,
+   "Q4": 5.367
+  },
+  "H4": {
+   "Q1": 1.381,
+   "Q2": 3.013,
+   "Q3": 4.258,
+   "Q4": 4.845
+  }
+ },
+ "sizeRegimeCrossCheck": {
+  "Q3_HorseA": {
+   "regimeMap": 5.276,
+   "rq8FullPrecision": 5.27558947633206
+  },
+  "Q4_HorseA": {
+   "regimeMap": 5.367,
+   "rq8FullPrecision": 5.366610800633212
+  },
+  "Q3_H4": {
+   "regimeMap": 4.258,
+   "rq8FullPrecision": 4.257988153865476
+  },
+  "Q4_H4": {
+   "regimeMap": 4.845,
+   "rq8FullPrecision": 4.845036039240567
+  }
+ },
+ "editFamily": {
+  "E1": 3.313757641297349,
+  "E2": 3.4514711367633355,
+  "E5": 3.920203226686722,
+  "ATX": 5.234316277490833,
+  "list": 2.811,
+  "blockquote": 4.531,
+  "E4": 2.391399905519984,
+  "E6": 0.5834978196804155
+ },
+ "e6Context": {
+  "H1": 0.6333112492920034,
+  "H2": 1.0996806261951002,
+  "H3": 1.0308357775140096,
+  "H4": 0.6467879044192406,
+  "HorseA": 0.5834978196804155
+ },
+ "allocation": {
+  "H0": {
+   "count": 215.5,
+   "bytes": 112978,
+   "kb": 113,
+   "speedup": 1
+  },
+  "H1": {
+   "count": 290,
+   "bytes": 133591,
+   "kb": 133.6,
+   "speedup": 1.0647311698821205
+  },
+  "H2": {
+   "count": 72,
+   "bytes": 18456,
+   "kb": 18.5,
+   "speedup": 2.0698796100801014
+  },
+  "H3": {
+   "count": 71,
+   "bytes": 16347,
+   "kb": 16.3,
+   "speedup": 1.9219430652711063
+  },
+  "H4": {
+   "count": 51,
+   "bytes": 19524,
+   "kb": 19.5,
+   "speedup": 2.453474412582579
+  },
+  "HorseA": {
+   "count": 28,
+   "bytes": 10631.5,
+   "kb": 10.6,
+   "speedup": 2.4214182268009155
+  }
+ },
+ "pmu": {
+  "H0": {
+   "cells": 13,
+   "instructionsMedian": 179020,
+   "cyclesMedian": 111706,
+   "l1dMpkiMedian": 7.206934239430371,
+   "branchMpkiMedian": 4.695533931075511
+  },
+  "H1": {
+   "cells": 13,
+   "instructionsMedian": 157360,
+   "cyclesMedian": 92550,
+   "l1dMpkiMedian": 12.551800314374322,
+   "branchMpkiMedian": 6.15885189704259
+  },
+  "H2": {
+   "cells": 13,
+   "instructionsMedian": 40288,
+   "cyclesMedian": 50200,
+   "l1dMpkiMedian": 12.646793134598013,
+   "branchMpkiMedian": 13.7935479712527
+  },
+  "H3": {
+   "cells": 13,
+   "instructionsMedian": 41237,
+   "cyclesMedian": 52639,
+   "l1dMpkiMedian": 14.086608768317069,
+   "branchMpkiMedian": 14.212638220969769
+  },
+  "H4": {
+   "cells": 13,
+   "instructionsMedian": 23005,
+   "cyclesMedian": 38031,
+   "l1dMpkiMedian": 21.688500727802037,
+   "branchMpkiMedian": 13.697340550717815
+  },
+  "HorseA": {
+   "cells": 13,
+   "instructionsMedian": 27998,
+   "cyclesMedian": 35292,
+   "l1dMpkiMedian": 11.522375229372965,
+   "branchMpkiMedian": 16.80411731878217
+  }
+ },
+ "rq8K1": {
+  "primary": {
+   "H4": 2.453474412582579,
+   "HorseA": 2.4214182268009155,
+   "gapPct": 1.323859935754057
+  },
+  "secondProfile": {
+   "H4": 2.5982240226427322,
+   "HorseA": 2.4265486082149073,
+   "gapPct": 7.074880505036241
+  }
+ },
+ "bottomDecile": {
+  "HorseA": 0.825
+ },
+ "qualitative": {
+  "$comment": "Faithful transcription of the frozen qualitative verdicts and priority ordering in docs/research/horse-a-v1-baseline-experimental-record.md (§13 weakness table, §16 next-mechanism priorities) and docs/research/horse-a-v1-algorithm.md §20 (W-A1/W-A2/W-A3 pre-registered definitions). This file intentionally contains NO numeric values: every number rendered in Figures 7-8 is injected at generation time from the sealed machine-readable inputs (see PROVENANCE.md). If §13/§16 change, update this file and regenerate.",
+  "figure7": {
+   "columns": [
+    "Pre-experiment risk",
+    "Observed evidence",
+    "Verdict",
+    "Next-mechanism priority"
+   ],
+   "rows": [
+    {
+     "id": "W-A1",
+     "title": "coarse restart / atomic top-level Owner / left guard",
+     "risk": "Coarse recovery could expand replacement work for large containers or long propagation windows.",
+     "observedTemplate": "Strong on list {listSpeedup}x, blockquote {blockquoteSpeedup}x and Q3/Q4; E4/fence is the weakest non-E6 family; long propagation remains a degradation regime.",
+     "verdict": "PARTIALLY_CONFIRMED / REFINED",
+     "verdictNote": "the problem is propagation-window expansion, not \"large container = bad\"",
+     "priority": "MEDIUM",
+     "priorityNote": "preserve the proven container/locality strength"
+    },
+    {
+     "id": "W-A2",
+     "title": "conservative semantic certification / same-target full-build branch",
+     "risk": "Definition/fact changes or preservation uncertainty could erase incremental benefit despite local syntax reuse.",
+     "observedTemplate": "E6 is Horse-A's clearest pathology ({e6Speedup}x), stable under RQ8; PMU attributes the loss to excess algorithmic work.",
+     "verdict": "STRONGLY_CONFIRMED",
+     "verdictNote": "measured, stable across compiler profiles",
+     "priority": "HIGHEST",
+     "priorityNote": "add explicit semantic-dependency authority, beginning with the minimum conservative mechanism"
+    },
+    {
+     "id": "W-A3",
+     "title": "one-record-per-node AVL layout",
+     "risk": "Pointer/tree layout might impose allocation, cache, construction, or retained-maintenance costs.",
+     "observedTemplate": "Horse-A has the lowest edit allocations ({horseAllocCount}) and strong L1D locality; no primary result identifies layout packing as the dominant bottleneck.",
+     "verdict": "NOT_CONFIRMED AS PRIMARY WEAKNESS",
+     "verdictNote": "on the frozen workload / Haswell-EP host",
+     "priority": "LOW",
+     "priorityNote": "do not redesign packing without new evidence"
+    }
+   ]
+  },
+  "figure8": {
+   "subtitle": "design-input prioritization from the completed v1 study — not implementation authorization",
+   "items": [
+    {
+     "rank": 1,
+     "id": "P1",
+     "title": "semantic/global dependency authority",
+     "basis": "W-A2 strongly confirmed",
+     "evidenceTemplate": "E6 {e6Speedup}x < 1, stable under RQ8; PMU: excess algorithmic work"
+    },
+    {
+     "rank": 2,
+     "id": "P2",
+     "title": "small-input / full-rebuild escape",
+     "basis": "new stable measured weakness (discovered by measurement, not pre-registered)",
+     "evidenceTemplate": "bottom-decile Horse-A {bottomDecileSpeedup}x; no precise byte threshold justified"
+    },
+    {
+     "rank": 3,
+     "id": "P3",
+     "title": "propagation / restart refinement",
+     "basis": "W-A1 partially confirmed / refined",
+     "evidenceTemplate": "E4/fence weakest non-E6 family ({e4Speedup}x); long propagation windows degrade"
+    },
+    {
+     "rank": 4,
+     "id": "P4",
+     "title": "packed representation / layout optimization",
+     "basis": "W-A3 not currently confirmed as a primary weakness",
+     "evidenceTemplate": "lowest edit allocations ({horseAllocCount} allocs); layout not the bottleneck"
+    }
+   ]
+  }
+ }
+}
