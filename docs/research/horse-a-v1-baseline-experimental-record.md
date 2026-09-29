@@ -203,7 +203,14 @@ the correct primary verdict was first-tier / inconclusive ordering.
 
 This primary near-tie was later qualified by RQ8 (§5).
 
-![Figure 1 — six-mechanism EDIT_WRITE speedup vs H0](figures/horse-a-v1-baseline/01-six-mechanism-edit-write-speedup.png)
+![Figure 1 — six-mechanism EDIT_WRITE latency reduction vs H0](figures/horse-a-v1-baseline/01-six-mechanism-edit-write-speedup.png)
+
+*Figure 1 — EDIT_WRITE latency reduction vs H0 for the six controlled
+mechanisms under the primary ThinLTO profile, mirroring the §4 table and the
+§4.1 conversion. Labels show latency reduction with the frozen project-macro
+speedup in parentheses (`+58.7% (2.4214×)`); H0 is the full-rebuild reference
+(0% by definition). H4 (`+59.2%`) vs Horse-A (`+58.7%`) is a near-tie, not a
+forced universal winner. Data: sealed stage-b facts (§3).*
 
 ---
 
@@ -257,6 +264,12 @@ K6 H1 fallback lesson               = STABLE
 
 ![Figure 6 — ThinLTO vs LTO-off sensitivity (K1)](figures/horse-a-v1-baseline/06-rq8-thinlto-vs-ltooff.png)
 
+*Figure 6 — RQ8 K1: H4 and Horse-A under the primary ThinLTO vs LTO-off
+profiles (the only factor changed: `lto = "thin"` → `lto = false`). The macro
+gap is compiler-profile conditioned (≈1.32% → ≈7.07% in speedup terms); H4
+numerically leads under both profiles — not a "flip" and not a significance
+claim. Data: sealed rq8-sensitivity-facts (§5).*
+
 ---
 
 ## 6. Horse-A size regime
@@ -290,7 +303,13 @@ work can be amortized across larger retained documents — but it does not
 justify a universal byte threshold or a stronger causal claim that document
 size alone mechanically causes the crossover.
 
-![Figure 2 — Horse-A Q1→Q4 size scaling](figures/horse-a-v1-baseline/02-horse-a-size-regime-q1-q4.png)
+![Figure 2 — Horse-A Q1→Q4 latency scaling](figures/horse-a-v1-baseline/02-horse-a-size-regime-q1-q4.png)
+
+*Figure 2 — Horse-A latency reduction by document-size quartile
+(case-weighted geomean descriptive cut), with H4 as frozen context. This
+mirrors the §6 table in the §4.1 conversion; Horse-A overtakes H4 around
+Q2→Q3. A descriptive regime result — not a claim that size alone causes the
+crossover. Q3/Q4 cross-checked at full precision against the RQ8 K3 facts.*
 
 ---
 
@@ -325,7 +344,14 @@ E4/fence is Horse-A's weakest non-E6 family in the frozen summary, consistent
 with propagation-window sensitivity, but not evidence that containers in
 general are a Horse-A weakness.
 
-![Figure 3 — Horse-A selected edit-family / regime speedups](figures/horse-a-v1-baseline/03-horse-a-edit-family-regimes.png)
+![Figure 3 — Horse-A latency reduction by edit family / regime](figures/horse-a-v1-baseline/03-horse-a-edit-family-regimes.png)
+
+*Figure 3 — Horse-A latency reduction by edit family / regime (§7 rows in the
+§4.1 conversion). Positive = faster than H0; negative = slower. Local /
+container / inline regimes are strong; E6 (reference definitions) renders as
+a below-parity bar (`−71.5% (0.583×)`, i.e. 71.5% slower than a full rebuild)
+— the clearest algorithmic weakness. Frozen speedups are listed in the
+figure's source note.*
 
 ---
 
@@ -436,6 +462,13 @@ edit-latency/allocation view.
 
 ![Figure 4 — edit latency × allocation Pareto view](figures/horse-a-v1-baseline/04-edit-latency-allocation-pareto.png)
 
+*Figure 4 — Edit latency (latency reduction vs H0, §4.1 restatement of §4) ×
+allocation (median allocated KB per edit, §11; bubble area = median
+allocation count). Horse-A is non-dominated on this combined view — lowest
+allocation, first-tier latency — together with H4 on the non-dominated
+frontier (dashed envelope). Exact per-mechanism medians are printed in the
+figure's value block.*
+
 Peak-memory interpretation remains limited: the observed ~6.5 MB peak is
 strongly affected by the harness floor and does not justify a per-mechanism
 "lowest peak memory" claim.
@@ -481,6 +514,14 @@ v2 optimization target.
 
 ![Figure 5 — H4 vs Horse-A PMU efficiency profile (Haswell-EP)](figures/horse-a-v1-baseline/05-h4-vs-horse-a-pmu-profile.png)
 
+*Figure 5 — The §12 PMU summary rendered: EDIT_WRITE representative cells,
+median per horse, host-specific to Haswell-EP (not a universal hardware law).
+H4 is instruction-minimal (23,005 median instructions) while Horse-A executes
+more instructions but with ~2× lower L1D miss pressure (11.5 vs 21.7 MPKI)
+and higher branch pressure (16.8 MPKI) — different efficiency profiles, not a
+dominance claim. Data: sealed pmu-cells (§3), reproducing the published
+PMU-EXPLANATION-v1 table.*
+
 ---
 
 ## 13. Pre-registered Horse-A weaknesses vs observed evidence
@@ -508,6 +549,12 @@ measured Weakness Map, not simply continue optimizing the concerns that seemed
 plausible before measurement.
 
 ![Figure 7 — pre-registered weaknesses vs observed evidence](figures/horse-a-v1-baseline/07-pre-registered-weaknesses-vs-observed.png)
+
+*Figure 7 — The §13 table rendered as a matrix: pre-experiment risk, observed
+evidence, verdict, and next-mechanism priority for W-A1/W-A2/W-A3. Verdict
+wording is the frozen record's own; every number in the evidence cells is
+injected from the same sealed extraction as Figures 2–4 (list 2.811×,
+blockquote 4.531×, E6 0.583×, 28 allocations).*
 
 ---
 
@@ -608,6 +655,12 @@ Likewise, the current evidence does not justify making branch MPKI, AVL packing,
 or cache micro-tuning the first optimization target.
 
 ![Figure 8 — weakness → next-mechanism priority matrix](figures/horse-a-v1-baseline/08-weakness-to-next-mechanism-priority.png)
+
+*Figure 8 — The §16 ordering rendered as ranked bars: P1 semantic/global
+dependency authority (W-A2 strongly confirmed) → P2 small-input/full-rebuild
+escape → P3 propagation/restart refinement → P4 packed representation/layout
+optimization. Design-input prioritization only — not implementation
+authorization. Bar length encodes rank position, not a quantity.*
 
 ---
 
@@ -748,7 +801,10 @@ entries at generation time and asserts the frozen baseline values (§4 macros,
 §6 quartiles, §7 families, §11 allocations, §12 PMU medians, §5 K1) before any
 PNG is written; drift aborts the run. Figures 7–8 restate §13/§16
 qualitatively and plot no numeric value that is not injected from the sealed
-extraction used by Figures 1–4. Reruns are byte-identical. Regenerate with:
+extraction used by Figures 1–4. The figures are embedded in §4–§16 with
+captions that restate the host section's own reading of the data (including
+the §4.1 latency-reduction interpretation); captions introduce no new claims.
+Reruns are byte-identical. Regenerate with:
 
 ```bash
 cd scripts/research/horse-a-v1-baseline-figures && npm install && npm run generate
