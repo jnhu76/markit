@@ -12,6 +12,9 @@ entry point is:
   pre-registered W-A1/W-A2/W-A3 predictions vs observed evidence, measured
   Weakness Map, next-mechanism design inputs, and reproducibility/capsule
   authority. **Start here for the completed study.**
+- **[Baseline figures](figures/horse-a-v1-baseline/README.md)** — the eight
+  ECharts-generated baseline figures (deterministic pipeline over sealed
+  derived artifacts; per-figure provenance in the generated `manifest.json`).
 
 Current final state:
 

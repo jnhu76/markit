@@ -1,0 +1,76 @@
+{
+  "$comment": "Faithful transcription of the frozen qualitative verdicts and priority ordering in docs/research/horse-a-v1-baseline-experimental-record.md (§13 weakness table, §16 next-mechanism priorities) and docs/research/horse-a-v1-algorithm.md §20 (W-A1/W-A2/W-A3 pre-registered definitions). This file intentionally contains NO numeric values: every number rendered in Figures 7-8 is injected at generation time from the sealed machine-readable inputs (see PROVENANCE.md). If §13/§16 change, update this file and regenerate.",
+  "figure7": {
+    "columns": [
+      "Pre-experiment risk",
+      "Observed evidence",
+      "Verdict",
+      "Next-mechanism priority"
+    ],
+    "rows": [
+      {
+        "id": "W-A1",
+        "title": "coarse restart / atomic top-level Owner / left guard",
+        "risk": "Coarse recovery could expand replacement work for large containers or long propagation windows.",
+        "observedTemplate": "Strong on list {listSpeedup}x, blockquote {blockquoteSpeedup}x and Q3/Q4; E4/fence is the weakest non-E6 family; long propagation remains a degradation regime.",
+        "verdict": "PARTIALLY_CONFIRMED / REFINED",
+        "verdictNote": "the problem is propagation-window expansion, not \"large container = bad\"",
+        "priority": "MEDIUM",
+        "priorityNote": "preserve the proven container/locality strength"
+      },
+      {
+        "id": "W-A2",
+        "title": "conservative semantic certification / same-target full-build branch",
+        "risk": "Definition/fact changes or preservation uncertainty could erase incremental benefit despite local syntax reuse.",
+        "observedTemplate": "E6 is Horse-A's clearest pathology ({e6Speedup}x), stable under RQ8; PMU attributes the loss to excess algorithmic work.",
+        "verdict": "STRONGLY_CONFIRMED",
+        "verdictNote": "measured, stable across compiler profiles",
+        "priority": "HIGHEST",
+        "priorityNote": "add explicit semantic-dependency authority, beginning with the minimum conservative mechanism"
+      },
+      {
+        "id": "W-A3",
+        "title": "one-record-per-node AVL layout",
+        "risk": "Pointer/tree layout might impose allocation, cache, construction, or retained-maintenance costs.",
+        "observedTemplate": "Horse-A has the lowest edit allocations ({horseAllocCount}) and strong L1D locality; no primary result identifies layout packing as the dominant bottleneck.",
+        "verdict": "NOT_CONFIRMED AS PRIMARY WEAKNESS",
+        "verdictNote": "on the frozen workload / Haswell-EP host",
+        "priority": "LOW",
+        "priorityNote": "do not redesign packing without new evidence"
+      }
+    ]
+  },
+  "figure8": {
+    "subtitle": "design-input prioritization from the completed v1 study — not implementation authorization",
+    "items": [
+      {
+        "rank": 1,
+        "id": "P1",
+        "title": "semantic/global dependency authority",
+        "basis": "W-A2 strongly confirmed",
+        "evidenceTemplate": "E6 {e6Speedup}x < 1, stable under RQ8; PMU: excess algorithmic work"
+      },
+      {
+        "rank": 2,
+        "id": "P2",
+        "title": "small-input / full-rebuild escape",
+        "basis": "new stable measured weakness (discovered by measurement, not pre-registered)",
+        "evidenceTemplate": "bottom-decile Horse-A {bottomDecileSpeedup}x; no precise byte threshold justified"
+      },
+      {
+        "rank": 3,
+        "id": "P3",
+        "title": "propagation / restart refinement",
+        "basis": "W-A1 partially confirmed / refined",
+        "evidenceTemplate": "E4/fence weakest non-E6 family ({e4Speedup}x); long propagation windows degrade"
+      },
+      {
+        "rank": 4,
+        "id": "P4",
+        "title": "packed representation / layout optimization",
+        "basis": "W-A3 not currently confirmed as a primary weakness",
+        "evidenceTemplate": "lowest edit allocations ({horseAllocCount} allocs); layout not the bottleneck"
+      }
+    ]
+  }
+}
