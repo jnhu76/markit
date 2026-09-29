@@ -93,13 +93,19 @@ COLLECTION_HOST_STATE (2026-09-29/30, during pilot + campaign):
   (set via sudo from the stock 516 to enlarge the perf ring buffer;
    runtime-only: no entry in /etc/sysctl.conf or /etc/sysctl.d/)
 
-POST-L2_HOST_STATE (2026-09-30, evidence-repair pass):
-  kernel.perf_event_mlock_kb = 8192 (unchanged at repair time)
-  restoration to the stock 516 = PENDING: the repair session has no
-  interactive sudo on E5. Exact restoration command (one line, user-run):
-    sudo sysctl -w kernel.perf_event_mlock_kb=516
-  The mutation is runtime-only and self-reverts to 516 on reboot. No other
-  sysctl was touched, at collection or during repair.
+POST-L2_HOST_STATE (verified 2026-09-29T18:50Z, L2 closure review):
+  kernel.perf_event_mlock_kb = 516 (RESTORED to the stock value; verified
+    on E5 with `sysctl kernel.perf_event_mlock_kb` during the independent
+    closure review, before PR #102 merge)
+  At the evidence-repair pass the value was still 8192 and restoration was
+  recorded as PENDING (the repair session had no interactive sudo; the
+  documented one-line user command was `sudo sysctl -w
+  kernel.perf_event_mlock_kb=516`; the mutation was runtime-only and
+  self-reverts to 516 on reboot). The host now reads 516; whether the
+  user ran the command or the runtime value reverted via reboot is not
+  distinguishable from the host state and is not load-bearing — the value
+  equals the stock 516. No other sysctl was touched, at collection,
+  during repair, or at closure.
 
 The collection provenance above is truthful and NOT rewritten: collection
 ran with mlock_kb = 8192.
@@ -122,7 +128,9 @@ no Step-2 mechanism designed or implemented.
       complexity pre-frozen.
   R5  E6-6 kept as the geometry contrast (+1.30 vs ≈ +103.7 samples/op);
       not pooled, not a falsification.
-  R6  sysctl restoration PENDING (see host-state section above).
+  R6  sysctl restoration: PENDING at repair time; RESTORED to the stock
+      516 and verified during the L2 closure review (see host-state
+      section above).
   R7  this host-state separation + repair record. SHA256SUMS regenerated
       at repair time to track the amended PROVENANCE.md: git diff vs the
       pre-repair manifest shows exactly one changed line (./PROVENANCE.md);
