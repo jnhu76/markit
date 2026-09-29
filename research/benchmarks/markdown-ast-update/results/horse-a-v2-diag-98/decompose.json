@@ -1,0 +1,361 @@
+{
+  "cells": [
+    {
+      "cell_id": "E6-1-LOSE-DUP-CHANGE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2855085
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3998195,
+          "median_ns": 3929495,
+          "min_ns": 3844548,
+          "p25_ns": 3907421,
+          "p75_ns": 4006749,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 1096152,
+          "median_ns": 1074410,
+          "min_ns": 1060846,
+          "p25_ns": 1068954,
+          "p75_ns": 1093602,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-2-WINNER-DELETE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2837469
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3947563,
+          "median_ns": 3913322,
+          "min_ns": 3841670,
+          "p25_ns": 3896238,
+          "p75_ns": 3951895,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 1090320,
+          "median_ns": 1075853,
+          "min_ns": 1064135,
+          "p25_ns": 1072060,
+          "p75_ns": 1083405,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-3A-DEF-CREATE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2827205
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3913122,
+          "median_ns": 3865584,
+          "min_ns": 3819310,
+          "p25_ns": 3853683,
+          "p75_ns": 3932716,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 1053077,
+          "median_ns": 1038379,
+          "min_ns": 1028069,
+          "p25_ns": 1034864,
+          "p75_ns": 1045406,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-3B-DEF-DELETE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2846379
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3642869,
+          "median_ns": 3611846,
+          "min_ns": 3564876,
+          "p25_ns": 3598572,
+          "p75_ns": 3634496,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 774343,
+          "median_ns": 765467,
+          "min_ns": 756444,
+          "p25_ns": 763131,
+          "p75_ns": 768262,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-4-LOW-FANOUT-VALUE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2700871
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3432950,
+          "median_ns": 3399037,
+          "min_ns": 3357032,
+          "p25_ns": 3388058,
+          "p75_ns": 3427956,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 705490,
+          "median_ns": 698166,
+          "min_ns": 691628,
+          "p25_ns": 695931,
+          "p75_ns": 701649,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-5-HIGH-FANOUT-VALUE",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2700179
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3718771,
+          "median_ns": 3658259,
+          "min_ns": 3580211,
+          "p25_ns": 3619814,
+          "p75_ns": 3811472,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 982018,
+          "median_ns": 958080,
+          "min_ns": 943744,
+          "p25_ns": 954525,
+          "p75_ns": 1010818,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "E6-6-FENCE-HIDE-DEF",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 62949
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 259253,
+          "median_ns": 257557,
+          "min_ns": 255352,
+          "p25_ns": 256956,
+          "p75_ns": 260712,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 196852,
+          "median_ns": 194608,
+          "min_ns": 193556,
+          "p25_ns": 194217,
+          "p75_ns": 198474,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "TINY-64B-E1",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 110
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 525,
+          "median_ns": 507,
+          "min_ns": 490,
+          "p25_ns": 502,
+          "p75_ns": 513,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 399,
+          "median_ns": 397,
+          "min_ns": 381,
+          "p25_ns": 390,
+          "p75_ns": 405,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "TINY-1K-E2",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 4506
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 13617,
+          "median_ns": 13579,
+          "min_ns": 13064,
+          "p25_ns": 13415,
+          "p75_ns": 13738,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 9110,
+          "median_ns": 9073,
+          "min_ns": 8759,
+          "p25_ns": 9010,
+          "p75_ns": 9154,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "TINY-4K-E5",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 18126
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 67297,
+          "median_ns": 66843,
+          "min_ns": 66001,
+          "p25_ns": 66477,
+          "p75_ns": 67250,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 48959,
+          "median_ns": 48717,
+          "min_ns": 48124,
+          "p25_ns": 48503,
+          "p75_ns": 48953,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "SENT-LIST-INDENT",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 2165669
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 3229216,
+          "median_ns": 3196756,
+          "min_ns": 3145020,
+          "p25_ns": 3181758,
+          "p75_ns": 3234448,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 1056489,
+          "median_ns": 1031087,
+          "min_ns": 1023515,
+          "p25_ns": 1028337,
+          "p75_ns": 1068328,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "SENT-BQ-NEST",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 1606909
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 2423855,
+          "median_ns": 2349273,
+          "min_ns": 2320372,
+          "p25_ns": 2339693,
+          "p75_ns": 2504651,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 772378,
+          "median_ns": 742364,
+          "min_ns": 731966,
+          "p25_ns": 738131,
+          "p75_ns": 802137,
+          "samples": 200
+        }
+      ]
+    },
+    {
+      "cell_id": "SENT-E5-EMPH",
+      "derived_ns": {
+        "p1_minus_p0_horse_state_over_h0_doc": 4070396
+      },
+      "probes": [
+        {
+          "arm": "P1_FULL_BUILD_ONLY",
+          "mean_ns": 5333457,
+          "median_ns": 5292834,
+          "min_ns": 5112813,
+          "p25_ns": 5259187,
+          "p75_ns": 5341752,
+          "samples": 200
+        },
+        {
+          "arm": "P0_H0_FULL_PARSE_ONLY",
+          "mean_ns": 1232782,
+          "median_ns": 1222438,
+          "min_ns": 1160528,
+          "p25_ns": 1210242,
+          "p75_ns": 1235980,
+          "samples": 200
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "argv": [
+      "./target/release/mdbench-horse-a-v2-diag",
+      "decompose",
+      "--out",
+      "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-diag-98"
+    ],
+    "driver": "mdbench-horse-a-v2-diag",
+    "issue": "98",
+    "schema": "HORSE-A-V2-DIAG-98-RUN-v1"
+  },
+  "policy": {
+    "measured_rounds": 200,
+    "probes": [
+      "P1_FULL_BUILD_ONLY",
+      "P0_H0_FULL_PARSE_ONLY"
+    ],
+    "warmup_rounds": 30
+  }
+}

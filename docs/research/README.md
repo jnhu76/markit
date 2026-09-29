@@ -12,6 +12,12 @@ entry point is:
   pre-registered W-A1/W-A2/W-A3 predictions vs observed evidence, measured
   Weakness Map, next-mechanism design inputs, and reproducibility/capsule
   authority. **Start here for the completed study.**
+- **[Horse-A v2 L0+L1 diagnosis](horse-a-v2-l0l1-e6-tiny-diagnosis.md)** —
+  first Horse-A v2 forensic pass (#98): E6 + tiny same-READY work/effect
+  decomposition with the validated `HORSE_A_V1_DIRECT_READY_REBUILD` control.
+  L0 PASS / L1 COMPLETE; E6 cost is construction, not path selection;
+  escalation decision L2 (one paired-profile question, not yet executed).
+  **Start here for active Horse-A v2 research.**
 - **[Baseline figures](figures/horse-a-v1-baseline/README.md)** — the eight
   ECharts-generated baseline figures (deterministic pipeline over sealed
   derived artifacts; per-figure provenance in the generated `manifest.json`).

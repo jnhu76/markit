@@ -171,8 +171,9 @@ pub(crate) struct UpdateRecord {
 }
 
 /// The validated association of `(old state, edit, old source, post source)`
-/// (I4 task contract §7).
-struct Association {
+/// (I4 task contract §7). `pub(crate)` for #98 only (the diagnostic
+/// control reuses the frozen validation boundary); no behavior change.
+pub(crate) struct Association {
     edit_start: usize,
     edit_end: usize,
     /// `inserted_len - (edit_end - edit_start)`, in a width that cannot
@@ -189,7 +190,10 @@ struct Association {
 /// source, and it never repairs a malformed edit description. Byte
 /// coordinates are the only coordinates here (frozen spec §8; no
 /// byte/scalar/grapheme conflation).
-fn validate_association(
+/// `fn` visibility widened to `pub(crate)` for #98 only: the diagnostic
+/// control (`direct_ready`) must run the IDENTICAL frozen validation
+/// boundary, not a re-implementation of it. No behavior change.
+pub(crate) fn validate_association(
     old: &ReadyDocument,
     old_source: &Source,
     post_source: &Source,

@@ -982,6 +982,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-mdbench-horse-a-v2-diag"
+version = "0.1.0"
+dependencies = [
+ "markit-mdbench-campaign2",
+ "markit-mdbench-common",
+ "markit-mdbench-corpusgen",
+ "markit-mdbench-fragment-reuse",
+ "markit-mdbench-full-rebuild",
+ "markit-mdbench-horse-a",
+ "markit-mdbench-instrumentation",
+ "markit-mdbench-oracle",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "markit-mdbench-instrumentation"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,243 @@
+{
+  "manifest": {
+    "cells": [
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-1-LOSE-DUP-CHANGE",
+        "declared_consumers": 320,
+        "edit_end": 10303,
+        "edit_inserted_len": 24,
+        "edit_sha256": "968608d5d61401563409cd4c7787768aadaf7808417e0945f3c7282f6ef7fa9f",
+        "edit_start": 10279,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "ab1949c56897d3182fcbd38b5cc44bb22f73b61f92810f905de62759db994cf5",
+        "role": "E6_CHALLENGE losing-duplicate destination changes while the effective first-wins binding is unchanged; 64 occupied slots x 5 links = 320 consumers unaffected"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-2-WINNER-DELETE",
+        "declared_consumers": 320,
+        "edit_end": 8224,
+        "edit_inserted_len": 0,
+        "edit_sha256": "25ec4ce7c31b1c901cfc74cc29160f6a8822f43c1030e62757628a843c8750cb",
+        "edit_start": 8192,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "ab1949c56897d3182fcbd38b5cc44bb22f73b61f92810f905de62759db994cf5",
+        "role": "E6_CHALLENGE the winning definition line is deleted so the losing duplicate becomes the effective winner; all 320 consumers' resolved destination changes"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-3A-DEF-CREATE",
+        "declared_consumers": 320,
+        "edit_end": 8224,
+        "edit_inserted_len": 32,
+        "edit_sha256": "d1b440f236633ccb4142e00d9584154c26697c6a32a4f3216b15fd8fea957d90",
+        "edit_start": 8192,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "a89318582596a4ad52c606357874c3675499cc19c9bae3b67d3416d3e1405893",
+        "role": "E6_CHALLENGE negative dependency, absence -> existence: with no [rd] definition, all 320 consumer links render as literal text; inserting the definition at the canonical slot makes them ReferenceLinks (topology change, old Text must change)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-3B-DEF-DELETE",
+        "declared_consumers": 320,
+        "edit_end": 8224,
+        "edit_inserted_len": 0,
+        "edit_sha256": "25ec4ce7c31b1c901cfc74cc29160f6a8822f43c1030e62757628a843c8750cb",
+        "edit_start": 8192,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "01538d6bdb44f835d7b96c7e1f9ce32e7d38f06a927e1f9aad23c6090714d663",
+        "role": "E6_CHALLENGE negative dependency, existence -> absence (the inverse leg of E6-3A in the same short trace): deleting the definition makes all 320 consumers literal text again"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-4-LOW-FANOUT-VALUE",
+        "declared_consumers": 10,
+        "edit_end": 8223,
+        "edit_inserted_len": 24,
+        "edit_sha256": "63cb713491148bdb6d848c034c071f79744ecf82af2d99d3fe3cf115d5001278",
+        "edit_start": 8199,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "1da540af5dc8aa18cdd6eb7b569b2ec2d1ab5d6f437d9b29d37687e9b84f2a17",
+        "role": "E6_CHALLENGE effective winner destination changes with a small affected consumer set (2 occupied slots x 5 links = 10 consumers must change)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-5-HIGH-FANOUT-VALUE",
+        "declared_consumers": 320,
+        "edit_end": 8223,
+        "edit_inserted_len": 24,
+        "edit_sha256": "63cb713491148bdb6d848c034c071f79744ecf82af2d99d3fe3cf115d5001278",
+        "edit_start": 8199,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "3b16ab9dffe2e61754cc775c5d8c69e0bfd1f7f01fc36875871ec78bc6c8f4f4",
+        "role": "E6_CHALLENGE effective winner destination changes with many affected consumers (64 occupied slots x 5 links = 320 consumers must change)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE",
+          "H2_REFERENCE"
+        ],
+        "cell_id": "E6-6-FENCE-HIDE-DEF",
+        "declared_consumers": 320,
+        "edit_end": 16384,
+        "edit_inserted_len": 4,
+        "edit_sha256": "c0e79f523663821f9d21f9bc010cc0224a85371722e774fb413cbf0a663cedf5",
+        "edit_start": 16384,
+        "family": "E6_REFERENCE_DEFINITION",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "11307d864488d9a2d94237df961dac14d0fb1219f370d223247421253cebd132",
+        "role": "E6_CHALLENGE syntax-induced semantic change: an unchanged late definition is hidden by inserting a fence-opener line immediately before it (no definition text is edited); all 320 earlier consumers lose resolution"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE"
+        ],
+        "cell_id": "TINY-64B-E1",
+        "declared_consumers": 0,
+        "edit_end": 17,
+        "edit_inserted_len": 1,
+        "edit_sha256": "6e726b278eec80ea2591cd185110aead545cbe83af3fdcab93efe6af97e126af",
+        "edit_start": 16,
+        "family": "E1_LOCAL_TEXT",
+        "pre_len_bytes": 64,
+        "pre_sha256": "620a6bdfef8bcb15459d832f2f0954ee0d4e73e81a11872c3473e64f2100fe26",
+        "role": "TINY Axis::D 64 B point, G0-LOCAL-TEXT-REPLACE-EQ semantics (same-length single-byte content replace)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE"
+        ],
+        "cell_id": "TINY-1K-E2",
+        "declared_consumers": 0,
+        "edit_end": 11,
+        "edit_inserted_len": 2,
+        "edit_sha256": "5315e6d2429ff325240683aed3f05de1b75755d5ce5a2750e3633ef550ef2137",
+        "edit_start": 10,
+        "family": "E2_PARAGRAPH_SPLIT_MERGE",
+        "pre_len_bytes": 1024,
+        "pre_sha256": "f756a32c5f76d506517552e732aa8c1aee8ead847f359a321310b48b8cab20e2",
+        "role": "TINY Axis::D 1 KiB point, G0-PARAGRAPH-SPLIT semantics (interior space -> blank line)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "H0_REFERENCE"
+        ],
+        "cell_id": "TINY-4K-E5",
+        "declared_consumers": 0,
+        "edit_end": 33,
+        "edit_inserted_len": 0,
+        "edit_sha256": "69f367cf75d7888b5f7dd9a1742839d327c2e189173b60a39197d55f338f9ab7",
+        "edit_start": 32,
+        "family": "E5_INLINE_DELIMITER",
+        "pre_len_bytes": 4096,
+        "pre_sha256": "93c853022331b3ddcc7d37465fad9b593c095da30a04e9b9640186b1ac47bd0b",
+        "role": "TINY Axis::D 4 KiB point, G0-EMPH-DELIM-BREAK semantics (delete the closing '*' of the first emphasis span)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD"
+        ],
+        "cell_id": "SENT-LIST-INDENT",
+        "declared_consumers": 0,
+        "edit_end": 74719,
+        "edit_inserted_len": 2,
+        "edit_sha256": "8ca2983528cf2d4d4295c21b91aabd463e77f99d9ffc9a94ed08afae7852e8de",
+        "edit_start": 74719,
+        "family": "E3_CONTAINER_DEPTH",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "76133e4060e092293059ff79b23cd077ba3003f15e3f0a2085cafe38f5608b1d",
+        "role": "SENTINEL Horse-A container strength guard (G0-LIST-ITEM-INDENT semantics: 2-space indent deepens a middle item into a nest)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD"
+        ],
+        "cell_id": "SENT-BQ-NEST",
+        "declared_consumers": 0,
+        "edit_end": 74512,
+        "edit_inserted_len": 1,
+        "edit_sha256": "a170ddebe61598ec44cfc32c897dca7a45ca0adb2e80490e5afc903cf3058b16",
+        "edit_start": 74512,
+        "family": "E3_CONTAINER_DEPTH",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "806f3c31f954a0b20c3f7a7e34253791e8c59ae2abb309649a8e8efa557d3aa4",
+        "role": "SENTINEL Horse-A container strength guard (G0-BQ-NEST-LINE semantics: a middle quote line deepens one level)"
+      },
+      {
+        "arms": [
+          "HORSE_A_V1_NORMAL",
+          "HORSE_A_V1_DIRECT_READY_REBUILD"
+        ],
+        "cell_id": "SENT-E5-EMPH",
+        "declared_consumers": 0,
+        "edit_end": 72145,
+        "edit_inserted_len": 0,
+        "edit_sha256": "2f600e51ced6d6533607bae149863143142f5a63a623f64debfdde7775b1ce80",
+        "edit_start": 72144,
+        "family": "E5_INLINE_DELIMITER",
+        "pre_len_bytes": 131072,
+        "pre_sha256": "4613f60cdf7e2785e6d0d364e185cac3fd7b9bf037f1f01cc2ee969768e4ce65",
+        "role": "SENTINEL Horse-A inline/local strength guard (G0-EMPH-DELIM-BREAK semantics on a 128 KiB document)"
+      }
+    ],
+    "schema": "HORSE-A-V2-DIAG-98-CELL-MANIFEST-v1"
+  },
+  "meta": {
+    "argv": [
+      "./target/release/mdbench-horse-a-v2-diag",
+      "manifest",
+      "--out",
+      "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-diag-98"
+    ],
+    "driver": "mdbench-horse-a-v2-diag",
+    "issue": "98",
+    "schema": "HORSE-A-V2-DIAG-98-RUN-v1"
+  }
+}
