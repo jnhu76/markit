@@ -1,0 +1,44 @@
+[package]
+name = "markit-mdbench-horse-a-v2-diag"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# Issue #98 (Horse-A v2 L0+L1: E6 + tiny same-READY work/effect
+# decomposition) diagnostic crate.
+#
+# DIAGNOSTIC TOOLING ONLY. This crate:
+#
+# - freezes the small #98 diagnostic cell manifest (E6 semantic
+#   challenges, tiny boundary cells, local/container sentinels) with
+#   stable IDs, built from the frozen campaign2 controlled-construction
+#   lineage (`para_region` / the C-F reference-fanout geometry);
+# - validates the HORSE_A_V1_DIRECT_READY_REBUILD control against the
+#   frozen normal path (L0.5 comparator validation) BEFORE any
+#   treatment collection;
+# - collects the T-LANE comparator timing and the A-LANE work counters
+#   by running the UNMODIFIED frozen mechanisms (Horse-A v1, H0, H2)
+#   through their frozen public phase boundaries;
+# - derives the offline required-effect ledger from the frozen H0
+#   normalized oracle.
+#
+# The frozen mechanism crates are not modified (the only #98 change
+# inside a frozen crate is the clearly-separated diagnostic control
+# `horse_a::direct_ready`, which no frozen pipeline path calls).
+
+[dependencies]
+markit-mdbench-common = { workspace = true }
+markit-mdbench-instrumentation = { workspace = true }
+markit-mdbench-oracle = { workspace = true }
+markit-mdbench-campaign2 = { path = "../campaign2" }
+markit-mdbench-corpusgen = { workspace = true }
+markit-mdbench-horse-a = { workspace = true }
+markit-mdbench-full-rebuild = { workspace = true }
+markit-mdbench-fragment-reuse = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[[bin]]
+name = "mdbench-horse-a-v2-diag"
+path = "src/bin/mdbench-horse-a-v2-diag.rs"

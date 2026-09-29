@@ -138,6 +138,10 @@ mod adapter;
 mod candidate;
 pub mod certificate;
 pub mod coverage;
+// #98 L0 diagnostic control (HORSE_A_V1_DIRECT_READY_REBUILD).
+// Diagnostic-only, clearly separated from the frozen mechanism identity;
+// see the module header. Not used by any frozen pipeline path.
+pub mod direct_ready;
 mod cursor;
 pub mod export;
 pub mod facts;
