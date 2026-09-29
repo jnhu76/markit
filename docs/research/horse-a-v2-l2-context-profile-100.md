@@ -59,13 +59,14 @@ CPU              = Intel Xeon E5-2666 v3 @ 2.90GHz (Haswell-EP)
 PERF_VERSION     = perf version 7.2.5-200.fc44.x86_64
 HOST_TWEAK       = kernel.perf_event_mlock_kb: 516 -> 8192 during L2
                    collection (ring capacity only; runtime-only, no
-                   persisted sysctl config). POST-L2 REPAIR (2026-09-30):
-                   restoration to the stock 516 is PENDING — the repair
-                   session has no interactive sudo on E5; exact command:
-                   sudo sysctl -w kernel.perf_event_mlock_kb=516 (reboot
-                   also self-reverts it). See PROVENANCE.md, host-state
-                   section. Collection itself ran at 8192 — recorded
-                   truthfully above.
+                   persisted sysctl config). POST-L2 (verified during the
+                   independent L2 closure review, 2026-09-29T18:50Z):
+                   kernel.perf_event_mlock_kb = 516 — RESTORED to the
+                   stock value; whether the documented user command or a
+                   reboot reverted the runtime-only mutation is not
+                   distinguishable and is not load-bearing. Collection
+                   itself ran at 8192 — recorded truthfully above. See
+                   PROVENANCE.md, host-state section.
 ```
 
 Live bodies of #95/#96/#97/#100 were fetched and read before execution;
@@ -457,8 +458,11 @@ COMMITS           = 29340ab (harness crate + frozen profile + campaign
                     separation) · 8c30e73 (repair follow-up: SHA256SUMS
                     regenerated for the amended PROVENANCE.md — only that
                     entry changed — plus report transcription fixes) ·
-                    the head commit carrying this text (§L receipt; not
-                    nameable by itself)
+                    102222e (§L commit-attribution correction) ·
+                    closure-review documentation-only commits (provenance
+                    host-state restoration verified; collected_utc
+                    timezone correction from the raw perf.data headers;
+                    this §A/§N update)
 PR                = #102 (https://github.com/jnhu76/markit/pull/102) —
                     opened against master, left OPEN for review; L2
                     evidence only, no L3/L4/L5 work, no mechanism change
@@ -518,11 +522,12 @@ R5 (E6-6 contrast)  E6-6 recorded explicitly as the geometry contrast
                     E6-1/E6-5) — not pooled with the other cells, not a
                     falsification (§G, threats).
 R6 (host sysctl)    kernel.perf_event_mlock_kb was 516 -> 8192 during L2
-                    collection; at repair time it is still 8192 and
-                    restoration to 516 is PENDING (no interactive sudo on
-                    E5 in the repair session; runtime-only mutation,
-                    self-reverts on reboot). Recorded truthfully in §A
-                    and PROVENANCE.md; collection provenance NOT rewritten.
+                    collection; at repair time it was still 8192 and
+                    restoration was recorded PENDING. During the
+                    independent L2 closure review (2026-09-29T18:50Z) the
+                    host was verified RESTORED to the stock 516.
+                    Recorded truthfully in §A and PROVENANCE.md;
+                    collection provenance NOT rewritten.
 R7 (provenance)     PROVENANCE.md now separates COLLECTION_HOST_STATE
                     (mlock_kb = 8192) from POST-L2_HOST_STATE (repair
                     status), plus this repair record.

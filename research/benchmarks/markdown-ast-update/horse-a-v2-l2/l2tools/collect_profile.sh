@@ -7,8 +7,9 @@
 #   event        cycles:u (user-space CPU cycles, the only L2 event)
 #   period       fixed -c 100000 (one sample per ~100k cycles; no adaptive
 #                frequency, identical across P1/P0 and all cells)
-#   call chain   --call-graph dwarf (DWARF/eh_frame unwinding; see the
-#                pilot gate before this was frozen)
+#   call chain   --call-graph fp (frame-pointer lane on the debug=2
+#                release-l2-profile-v1 build; the DWARF-unwind attempt was
+#                REJECTED by the pilot — see PROVENANCE.md substrate notes)
 #   affinity     taskset -c 2 (same pinned core for every profile)
 # Run from the markdown-ast-update workspace root. Raw perf.data and the
 # perf script dump stay on the host (git-ignored); folded stacks, the
