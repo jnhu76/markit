@@ -38,9 +38,31 @@ fn main() {
 
     // release -> the frozen primary profile; debug builds are harness
     // development/testing builds and must never be labeled as research
-    // measurements.
+    // measurements. Custom profiles that INHERIT release (currently only
+    // the second frozen profile release-sensitivity-lto-off-v1) also see
+    // PROFILE=release, so the real profile directory name is taken from
+    // OUT_DIR (target/<profile>/build/...); anything unrecognized stays
+    // debug-non-research — a profile can never masquerade as research.
+    let out_dir_profile = env::var("OUT_DIR")
+        .ok()
+        .and_then(|out_dir| {
+            let path = PathBuf::from(&out_dir);
+            // .../<profile>/build/<crate>-<hash>/out
+            path.ancestors()
+                .nth(3)
+                .and_then(|a| a.file_name())
+                .and_then(|n| n.to_str())
+                .map(|s| s.to_string())
+        })
+        .unwrap_or_default();
     let profile_id = match env::var("PROFILE").as_deref() {
-        Ok("release") => "release-primary-v1",
+        Ok("release") => match out_dir_profile.as_str() {
+            "release" => "release-primary-v1",
+            "release-sensitivity-lto-off-v1" => "release-sensitivity-lto-off-v1",
+            // A release-derived profile that is not frozen research
+            // authority cannot be labeled as research evidence.
+            _ => "debug-non-research",
+        },
         _ => "debug-non-research",
     };
     println!("cargo:rustc-env=MDBENCH_BUILD_PROFILE_ID={profile_id}");

@@ -1,0 +1,14 @@
+{
+ "schema": "primary-receipt-supersession-v1",
+ "reason": "authorized second frozen profile addition for the #33 RQ8 optimization-sensitivity check (release-sensitivity-lto-off-v1; R0-METHODOLOGY \u00a74.6): the workspace Cargo.toml gains the profile and manifest/environment.toml records it \u2014 exactly the two bound artifacts the frozen primary receipt cannot anticipate",
+ "date": "2026-09-29",
+ "superseded_artifacts": {
+  "Cargo.toml": "dc8b90a1ab891f4a522ad20ee03465f7d062367dc7f0eda09df3e4d09fd4055e",
+  "manifest/environment.toml": "723ff512e69e199824dbe546524593e0b3ebad2fc6c045478531b657cae73278"
+ },
+ "replacement_hashes": {
+  "Cargo.toml": "b2ef78ddd13135850be0289b3244a7af96f1b836d2a81b6fe415da64b6081b5f",
+  "manifest/environment.toml": "6cb9b94fc53bc1362ef4293013ff2e9402eced3e3f0c63445b926ddb06bfd08e"
+ },
+ "note": "The primary receipt file itself is never rewritten; the sealed primary raw evidence (host-side) is unaffected and keeps its own run receipts. The primary release profile and every other bound artifact are unchanged; the primary campaign spec id still recomputes. The sensitivity replication pins its own replication-relevant artifacts in results/manifests/sensitivity/rq8-sensitivity-manifest-v1.toml. Any drift outside this record fails closed."
+}

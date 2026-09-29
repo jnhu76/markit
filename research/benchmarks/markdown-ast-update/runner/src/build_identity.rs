@@ -8,6 +8,13 @@ use serde::{Deserialize, Serialize};
 /// `manifest/environment.toml` and `protocol/implementation-parity.md`.
 pub const RELEASE_PRIMARY_PROFILE_ID: &str = "release-primary-v1";
 
+/// Identifier of the SECOND frozen profile (#33 RQ8 optimization-
+/// sensitivity check; R0 §4.6). Single intentional difference vs the
+/// primary: `lto = false`. Full binding in
+/// `manifest/rq8-sensitivity-profile-v1.toml`; policy in
+/// `protocol/implementation-parity.md`.
+pub const SENSITIVITY_LTO_OFF_PROFILE_ID: &str = "release-sensitivity-lto-off-v1";
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields, rename_all = "snake_case")]
 pub struct BuildIdentityV1 {
@@ -38,9 +45,10 @@ mod tests {
         let id = current_build_identity();
         assert!(!id.rustc.is_empty());
         assert!(!id.target.is_empty());
-        // debug/test builds must never masquerade as the research profile.
+        // debug/test builds must never masquerade as a research profile.
         assert!(
             id.build_profile_id == RELEASE_PRIMARY_PROFILE_ID
+                || id.build_profile_id == SENSITIVITY_LTO_OFF_PROFILE_ID
                 || id.build_profile_id == "debug-non-research"
         );
         assert_ne!(

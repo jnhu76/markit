@@ -28,14 +28,25 @@ members = [
 #
 # Ordinary, non-horse-specific policy. No custom allocator, no RUSTFLAGS,
 # default target-cpu. Every horse in later rounds is measured under exactly
-# this profile. A second frozen profile (e.g. LTO-off) may be added later for
-# the R0 optimization-sensitivity check; it must be recorded before use.
+# this profile.
 [profile.release]
 opt-level = 3
 lto = "thin"
 codegen-units = 1
 incremental = false
 panic = "unwind"
+
+# SECOND FROZEN PROFILE (#33 RQ8 optimization-sensitivity check; R0 §4.6).
+# Single intentional difference from [profile.release]: thin LTO is
+# disabled. Every other field is inherited unchanged (opt-level 3,
+# codegen-units 1, incremental false, panic unwind, default target-cpu,
+# no RUSTFLAGS, system allocator). Frozen with the toolchain binding in
+# manifest/rq8-sensitivity-profile-v1.toml and
+# protocol/implementation-parity.md BEFORE any run that relies on it;
+# the primary profile above is NOT altered by this addition.
+[profile.release-sensitivity-lto-off-v1]
+inherits = "release"
+lto = false
 
 [workspace.package]
 version = "0.1.0"

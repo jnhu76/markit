@@ -21,6 +21,14 @@
 //!   run-session --surface S --session N      (FUTURE primary timing; release
 //!                                             profile only — NOT this task)
 //!   run-attribution --surface S              (FUTURE attribution lane)
+//!   sensitivity-schedule-generate            freeze the projected K1–K6
+//!                                             schedule (create-only; #33 RQ8)
+//!   sensitivity-schedule-verify              re-project + byte-compare
+//!   sensitivity-preflight --surface S --session N
+//!                                            fail-closed sensitivity checks
+//!   run-sensitivity-session --surface S --session N
+//!                                            RQ8 timing under the SECOND
+//!                                             frozen profile only
 //! ```
 //!
 //! `run-session` / `run-attribution` exist so MARKIT-31-PRIMARY-
@@ -67,6 +75,10 @@ fn main() -> ExitCode {
         "smoke" => cmd_smoke(&root, flags),
         "run-session" => cmd_run_session(&root, flags),
         "run-attribution" => cmd_run_attribution(&root, flags),
+        "sensitivity-schedule-generate" => cmd_sensitivity_schedule_generate(&root),
+        "sensitivity-schedule-verify" => cmd_sensitivity_schedule_verify(&root),
+        "sensitivity-preflight" => cmd_sensitivity_preflight(&root, flags),
+        "run-sensitivity-session" => cmd_run_sensitivity_session(&root, flags),
         "--help" | "help" => {
             print_help();
             Ok(true)
@@ -673,6 +685,279 @@ fn cmd_run_attribution(root: &Path, flags: &[String]) -> Result<bool, String> {
         }
         markit_mdbench_campaign::execute::SessionOutcome::Invalid { reason, .. } => {
             eprintln!("PRIMARY_CAMPAIGN_INVALID {reason}");
+            Ok(false)
+        }
+    }
+}
+
+/// The sensitivity session path refuses every profile except the second
+/// frozen one (fail-closed in both directions with the primary paths).
+fn require_sensitivity_profile() -> Result<(), String> {
+    let build = markit_mdbench_runner::current_build_identity();
+    if build.build_profile_id
+        != markit_mdbench_runner::build_identity::SENSITIVITY_LTO_OFF_PROFILE_ID
+    {
+        return Err(format!(
+            "sensitivity execution requires the second frozen profile {}; this binary was built with {}",
+            markit_mdbench_runner::build_identity::SENSITIVITY_LTO_OFF_PROFILE_ID,
+            build.build_profile_id
+        ));
+    }
+    Ok(())
+}
+
+/// Freeze action: write the projected sensitivity schedule
+/// (create-only; a frozen schedule is never silently regenerated).
+fn cmd_sensitivity_schedule_generate(root: &Path) -> Result<bool, String> {
+    let manifest = markit_mdbench_campaign::sensitivity::SensitivityManifest::load(root)?;
+    manifest.verify().map_err(|blockers| blockers.join("; "))?;
+    let (spec_id, _) = markit_mdbench_campaign::sensitivity::sensitivity_spec_id_from_root(root)?;
+    let primary_rows =
+        markit_mdbench_campaign::sensitivity::load_verified_primary_schedule(root, &manifest)?;
+    let projected =
+        markit_mdbench_campaign::sensitivity::project_schedule(&primary_rows, &manifest, &spec_id)?;
+    let bytes = markit_mdbench_campaign::schedule::schedule_to_jsonl(&projected)?;
+    let out_path = root.join(markit_mdbench_campaign::sensitivity::SENSITIVITY_SCHEDULE_PATH);
+    if out_path.exists() {
+        return Err(format!(
+            "{} already exists: the frozen schedule is create-only; verify it instead",
+            out_path.display()
+        ));
+    }
+    if let Some(parent) = out_path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("mkdir: {e}"))?;
+    }
+    std::fs::write(&out_path, &bytes).map_err(|e| format!("write {}: {e}", out_path.display()))?;
+    let count = markit_mdbench_campaign::sensitivity::verify_sensitivity_schedule(
+        root, &manifest, &spec_id,
+    )?;
+    println!(
+        "SENSITIVITY_SCHEDULE_FROZEN file={} rows={} sha256={}",
+        markit_mdbench_campaign::sensitivity::SENSITIVITY_SCHEDULE_PATH,
+        count,
+        markit_mdbench_campaign::sha256_hex(&bytes)
+    );
+    println!("SENSITIVITY_SPEC_ID {spec_id}");
+    Ok(true)
+}
+
+fn cmd_sensitivity_schedule_verify(root: &Path) -> Result<bool, String> {
+    let manifest = markit_mdbench_campaign::sensitivity::SensitivityManifest::load(root)?;
+    manifest.verify().map_err(|blockers| blockers.join("; "))?;
+    let (spec_id, _) = markit_mdbench_campaign::sensitivity::sensitivity_spec_id_from_root(root)?;
+    let count = markit_mdbench_campaign::sensitivity::verify_sensitivity_schedule(
+        root, &manifest, &spec_id,
+    )?;
+    println!(
+        "SENSITIVITY_SCHEDULE_VERIFIED file={} rows={} spec_id={spec_id}",
+        markit_mdbench_campaign::sensitivity::SENSITIVITY_SCHEDULE_PATH,
+        count
+    );
+    Ok(true)
+}
+
+fn cmd_sensitivity_preflight(root: &Path, flags: &[String]) -> Result<bool, String> {
+    let surface = Surface::parse(
+        &flag_value(flags, "--surface").ok_or("sensitivity-preflight requires --surface")?,
+    )?;
+    let session = flag_value(flags, "--session")
+        .and_then(|v| v.parse::<u32>().ok())
+        .ok_or("sensitivity-preflight requires --session N")?;
+    let report =
+        markit_mdbench_campaign::sensitivity::sensitivity_preflight(root, surface, session);
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&report.diagnostics).unwrap_or_default()
+    );
+    for blocker in &report.blockers {
+        eprintln!("SENSITIVITY_PREFLIGHT_BLOCKED {blocker}");
+    }
+    if report.pass {
+        println!(
+            "SENSITIVITY_PREFLIGHT_PASS scope={}:{1}:{}",
+            surface.as_str(),
+            session
+        );
+        return Ok(true);
+    }
+    Ok(false)
+}
+
+fn cmd_run_sensitivity_session(root: &Path, flags: &[String]) -> Result<bool, String> {
+    use markit_mdbench_campaign::sensitivity::{
+        sensitivity_preflight, sensitivity_spec_id_from_root, SensitivityManifest,
+        SENSITIVITY_MANIFEST_PATH, SENSITIVITY_RAW_ROOT,
+    };
+    require_sensitivity_profile()?;
+    let surface = Surface::parse(
+        &flag_value(flags, "--surface").ok_or("run-sensitivity-session requires --surface")?,
+    )?;
+    let session = flag_value(flags, "--session")
+        .and_then(|v| v.parse::<u32>().ok())
+        .ok_or("run-sensitivity-session requires --session N")?;
+
+    // Fail-closed preflight BEFORE any session data is collected.
+    let report = sensitivity_preflight(root, surface, session);
+    if !report.pass {
+        return Err(format!(
+            "sensitivity preflight blocked: {:?}",
+            report.blockers
+        ));
+    }
+    // Pin the worker to the frozen single CPU (same policy as primary).
+    let machine = markit_mdbench_campaign::manifest::MachineManifest::load(root)?;
+    markit_mdbench_campaign::machine::apply_affinity(machine.selected_cpu)?;
+
+    let primary_manifest = CampaignManifest::load(root)?;
+    let sensitivity_manifest =
+        SensitivityManifest::load(root).map_err(|e| format!("{SENSITIVITY_MANIFEST_PATH}: {e}"))?;
+    let (spec_id, _) = sensitivity_spec_id_from_root(root)?;
+    // The projected schedule is re-derived from the pinned primary
+    // schedule and byte-compared to the frozen file (preflight verified
+    // it); execution consumes exactly those rows.
+    let primary_rows = markit_mdbench_campaign::sensitivity::load_verified_primary_schedule(
+        root,
+        &sensitivity_manifest,
+    )?;
+    let projected = markit_mdbench_campaign::sensitivity::project_schedule(
+        &primary_rows,
+        &sensitivity_manifest,
+        &spec_id,
+    )?;
+    let subset: Vec<&markit_mdbench_campaign::schedule::ScheduleRow> = projected
+        .iter()
+        .filter(|row| row.surface == surface.as_str() && row.session_ordinal == session)
+        .collect();
+    let workload = markit_mdbench_campaign::workload::load_campaign_workload(root)?;
+    let cases = schedule_rows_to_cases(&workload, &subset)?;
+
+    let machine_digest = markit_mdbench_campaign::sha256_file(&root.join(MACHINE_MANIFEST_PATH))?;
+    let build = markit_mdbench_runner::current_build_identity();
+    // The exact binary is part of the run identity (same anti-split rule
+    // as the primary campaign).
+    let executable_sha256 = markit_mdbench_campaign::identity::current_executable_sha256()?;
+    let run_id = markit_mdbench_campaign::identity::run_id(
+        &spec_id,
+        &build.runner_git_commit,
+        &machine_digest,
+        &build,
+        &executable_sha256,
+    );
+    // Isolated raw root: the sensitivity campaign never touches
+    // results/raw/ and cannot collide with primary evidence.
+    let spec_root = root.join(SENSITIVITY_RAW_ROOT).join(&spec_id);
+    markit_mdbench_campaign::runsupport::ensure_single_run_identity(
+        &spec_root,
+        &run_id,
+        &markit_mdbench_campaign::runsupport::CAMPAIGN_BINARY_LANES,
+    )?;
+    let out_path = spec_root
+        .join(&run_id)
+        .join("timing")
+        .join(format!("session-{session}-{}.jsonl", surface.as_str()));
+    if out_path.exists() {
+        return Err(format!(
+            "{} already exists: finalized raw files are never overwritten",
+            out_path.display()
+        ));
+    }
+    if let Some(parent) = out_path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("mkdir: {e}"))?;
+    }
+
+    let identity = markit_mdbench_campaign::execute::ExecutionIdentity {
+        campaign_spec_id: spec_id.clone(),
+        run_id: run_id.clone(),
+        machine_environment_ref: format!("{}#{}", MACHINE_MANIFEST_PATH, machine.machine_id),
+        provenance: markit_mdbench_campaign::sensitivity::PROVENANCE_SENSITIVITY_TIMING,
+        non_research: false,
+    };
+    let session_id =
+        markit_mdbench_campaign::identity::session_id(&spec_id, surface.as_str(), session);
+    // Seed policy "inherit-primary": identical root seed + identical
+    // session derivation -> identical per-case seeds to the primary.
+    let session_seed =
+        markit_mdbench_campaign::manifest::parse_seed_value(&primary_manifest.seed.value)?;
+    let session_seed =
+        markit_mdbench_campaign::identity::session_seed(session_seed, surface.as_str(), session);
+    // The expectation is built from the SAME schedule rows the executor
+    // consumes, before anything runs; cardinalities come from the frozen
+    // sensitivity manifest, not the primary full-population counts.
+    let (expected_case_count, expected_horse_cells) = match surface {
+        Surface::CleanState => (
+            sensitivity_manifest.cardinality.clean_cases_per_session,
+            sensitivity_manifest
+                .cardinality
+                .clean_horse_cells_per_session,
+        ),
+        Surface::EditWrite => (
+            sensitivity_manifest.cardinality.edit_cases_per_session,
+            sensitivity_manifest
+                .cardinality
+                .edit_horse_cells_per_session,
+        ),
+    };
+    let expected_rows = expected_horse_cells
+        * (sensitivity_manifest.sessions.warmup_iterations
+            + sensitivity_manifest.sessions.measured_iterations) as usize;
+    let expectation = markit_mdbench_campaign::finalize::expectation_from_sensitivity_schedule(
+        &subset,
+        &spec_id,
+        &run_id,
+        &session_id,
+        surface,
+        session,
+        sensitivity_manifest.sessions.warmup_iterations,
+        sensitivity_manifest.sessions.measured_iterations,
+        expected_case_count,
+        expected_rows,
+    )?;
+    let executor = markit_mdbench_campaign::execute::SessionExecutor {
+        identity: &identity,
+        surface,
+        session_ordinal: Some(session),
+        session_id,
+        session_seed,
+        build_identity: build,
+        warmup: sensitivity_manifest.sessions.warmup_iterations,
+        measured: sensitivity_manifest.sessions.measured_iterations,
+        observations: 0,
+        warmup_rows: 0,
+        measured_rows: 0,
+        poison_correctness: false,
+    };
+    let mut file = std::fs::File::create(&out_path)
+        .map_err(|e| format!("create {}: {e}", out_path.display()))?;
+    let clock = markit_mdbench_campaign::execute::CampaignClock::Real(
+        markit_mdbench_instrumentation::InstantClock::new(),
+    );
+    let outcome = executor.run(&cases, &clock, &mut file)?;
+    use std::io::Write;
+    file.flush().map_err(|e| format!("flush: {e}"))?;
+    drop(file);
+    // Finalization: identical contract to the primary campaign — a file
+    // that does not verify is retained as evidence and marked invalid.
+    let finalized = markit_mdbench_campaign::runsupport::finalize_raw_file(
+        &out_path,
+        &expectation,
+        &executable_sha256,
+    )?;
+    match outcome {
+        markit_mdbench_campaign::execute::SessionOutcome::Completed { observations, .. }
+            if finalized =>
+        {
+            println!(
+                "SENSITIVITY_SESSION_COMPLETE observations={observations} lane=timing surface={} session={session}",
+                surface.as_str()
+            );
+            Ok(true)
+        }
+        markit_mdbench_campaign::execute::SessionOutcome::Completed { .. } => {
+            eprintln!("SENSITIVITY_CAMPAIGN_INVALID raw file failed finalization");
+            Ok(false)
+        }
+        markit_mdbench_campaign::execute::SessionOutcome::Invalid { reason, .. } => {
+            eprintln!("SENSITIVITY_CAMPAIGN_INVALID {reason}");
             Ok(false)
         }
     }

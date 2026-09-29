@@ -1,0 +1,153 @@
+# results/manifests/sensitivity/rq8-sensitivity-manifest-v1.toml
+#
+# MARKIT-33-RQ8-OPTIMIZATION-SENSITIVITY-v1 — the frozen execution
+# manifest of the #33 RQ8 optimization-sensitivity replication
+# (R0-METHODOLOGY §4.6; protocol/implementation-parity.md "Second frozen
+# profile"). Frozen 2026-09-29 BEFORE any sensitivity measurement.
+#
+# WHAT THIS IS: the minimum replication matrix of the frozen K1–K6
+# shortlist (OPTIMIZATION-SENSITIVITY-SHORTLIST-v1.md, host-sealed R8
+# FINAL SYNTHESIS v1 authority), executed under the second frozen
+# compiler profile release-sensitivity-lto-off-v1 on the same machine,
+# workload, runner semantics, and measurement boundary as the primary
+# campaign. Timing lane only; NO attribution/memory/PMU rerun.
+#
+# WHAT THIS IS NOT: not a second primary campaign, not a workload
+# change, not a mechanism change. The full 2,304-cell matrix is NOT
+# rerun; only the cells the frozen shortlist requires.
+#
+# METRIC SCOPE (recorded limitation): timing lane only (T_total primary
+# endpoint; T_prepare/T_native retained). Instructions, allocations,
+# retained bytes, and fallback counters are NOT remeasured; K-conclusion
+# aspects resting on them stay on sealed primary-profile evidence and
+# are profile-invariance HYPOTHESES, not verified facts. RQ8
+# classifications below apply to the timing components.
+#
+# Matrix (per session; K-mapping):
+#   EDIT_WRITE, ALL 362 cases x {H0, H4, HorseA, H1}
+#     K1  H4/HorseA project-macro near-tie + the 19 EW PMU-panel cells
+#         (inside the population) + K3 Q3/Q4 regime direction
+#     K6  H1 project macro (timing component; the 64.6% fallback
+#         incidence is sealed A-LANE evidence, reused, NOT remeasured)
+#     H0  speedup_vs_h0 normalization baseline
+#   EDIT_WRITE, the 55-case union below x {H2, H3} (all six horses run
+#   there): K2 bottom decile + PH-A-LOSS; K4 E6 family
+#   CLEAN_STATE, all 22 cases x all six horses: K5 clean-state cost
+#
+# Schedule policy: primary-schedule-projection-v1 — the frozen PRIMARY
+# schedule restricted to this matrix (same sessions, same case order
+# ordinals, same per-case horse order with non-required horses removed;
+# NO new randomness; seed inherited from the primary campaign).
+
+schema = "rq8-sensitivity-manifest-v1"
+campaign_id = "MARKIT-33-RQ8-OPTIMIZATION-SENSITIVITY-v1"
+frozen_date = "2026-09-29"
+profile_id = "release-sensitivity-lto-off-v1"
+sensitivity_of_profile = "release-primary-v1"
+schedule_policy = "primary-schedule-projection-v1"
+
+[authority]
+primary_campaign_id = "MARKIT-76-SIX-HORSE-PERFORMANCE-CAMPAIGN-v1"
+primary_campaign_spec_id = "43e08d056bb36288d7acd513871c729f8b5dae763f647431694106fc95238df6"
+primary_schedule_sha256 = "484e0d470abda082bc76877a2561f165054b38a459f6ce9842774a2951c38c93"
+primary_campaign_manifest_sha256 = "566bb34c676ecab65b591d41d708f3ae6c2f188c41615d68b0d2ec49d3bc4cdf"
+primary_machine_manifest_sha256 = "d306fe767b0b49322c2fc649ea208c299625a1abdd7987f9c589bc7acacd91b6"
+primary_workload_receipt_sha256 = "35a6f99a3842c1a5cf9fbadf7a7aefc80db4606adcbe6331ecd8a91f62c62cf7"
+shortlist_sha256 = "03cfeae54b31dfeb71883aaa9e04a8b467fb98086e28ce21f9acacce08a4d00e"
+shortlist_note = "OPTIMIZATION-SENSITIVITY-SHORTLIST-v1.md (R8-FINAL-SYNTHESIS-v1, host-sealed)"
+pinned_rustc = "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+
+[sessions]
+count = 3
+warmup_iterations = 10
+measured_iterations = 30
+
+[seed]
+policy = "inherit-primary"
+value = "0xd7b11f1df0cc7cb5"
+
+[horses]
+population = ["H0", "H4", "HorseA", "H1"]
+subset_extra = ["H2", "H3"]
+clean_state = ["H0", "H1", "H2", "H3", "H4", "HorseA"]
+
+[bottom_decile]
+count = 36
+derivation = "R8 REGIME-MAP R1: the 36 smallest file_bytes (tie-break: case_id ascending) of the frozen 362-case EDIT_WRITE population; derived from the sealed stage-b-facts-v1.json cell table (R7-PRIMARY-RESULT-ANALYSIS-v1)."
+case_ids = [
+  "1bd781ed4daa79cdf17d16c83e9eaa61bc913b5400cc633443fabf3c18b555db",
+  "2b0e5a48116bf2be5f6a0c9e574505818b6af3c45fb1c901743c508990df940b",
+  "7b9cd2e241c7e76e74b0eb78f917ad692e11cf5912110fc0ba2ea177e923249f",
+  "c2ca783cb0b98e5eb7935803dc4ee6314cbcf8304bf0428b4e75e40799c70a63",
+  "cc591e901cba133c8eb261033b0d4ac02569e19e76cd97a0033586af2fa0e82a",
+  "dccbfb960df0592b7f962980c2b563a92a269c298e9bbb6e353a131e09bf8b2f",
+  "11023cd3b503f9e53e640408dc508ec7f13eaeb27bdbe0fa59582bc6d4c6f66e",
+  "375082fae6af307a7d906ce9cde1190998e219931ca5be9412f98ec53b17d813",
+  "76b92656c1420d28bd3a96204c95983ba4ebc7410b2baaafe97dcae89b0c54b6",
+  "7aef71638f2f719ed6c38c86506eee85737708b667e4bced462e66a6d2a5a12d",
+  "808db073a4fb2b3b431241533696cc0aafbef7513bf72cdf11198287228a80b1",
+  "9ddf2ef64375a9ae0ca999d16b981d1dcaeff7ef4b56a14a947cd680aa60a1f8",
+  "b8d4935b3f0010b5be1629ca4b9bede85972113c4b9ad7580b004f368ca73194",
+  "db98a6ab43bc30f1129ee2d1455564e6fe33274fd8248d8363c4f828f81f6ddb",
+  "273fa8cb17228573bab33fed4e0e69f9cc361c86d516fc788ce578678fb80293",
+  "c75bb9bc4599ce17200404835799fbf077d8c469195db9a76bab4c77afc839d2",
+  "016d58d6b8a69c4c4cb235b24e3abd606df2bd38204ec1fa9e68a4c8ccad8ce4",
+  "3c88ae2f78a2c23f144079aa0fe066090113cdead865398c496406680efc361d",
+  "6031ce0e4f2981f905fa714fda6e2c5dd94d5079949760c4d461d691c0e139d3",
+  "674d697d1df41dfb1ef4ca1fe595cd958a1bb90326b619801226ef864d013ad7",
+  "67de44c0d548c0402393e34e2201b364f9558d0f696fd1b14d559361b9434153",
+  "76d7182424c088c668db71df1d0f37e720a41f14b6c85772adc103c35f754071",
+  "8751b5cd8453f60efd97861a4e26576d6fa7df53a7729a43311e0a1cbafd1600",
+  "8c7a9109e2ed6c28c78b2d7f5b51c7dedb7d062b4990f640989799da5156089b",
+  "97adac114ae26b9e33db5553a0766b27975003ee606de7d2b62f0d49947f960a",
+  "bdf617a1a1f320dc82e00edb8c7418cb86f8c05e4dc4d653673e2838f50d8462",
+  "c7cedef1c92870d78fa38fa1e359d098b09cacff05cf527abbf840b65c9d5163",
+  "c9679e07f4cd4512b612d84dcd38a6aa9480d623935a437836830509d81095b6",
+  "d0a2203aa2451c26f9c1f910511bd35f908ddec5cd61bcfd575d67400cfec5f5",
+  "d28f2392b87fbb710c62448bd3a886c26915651135eb15cb5737995f62a30b64",
+  "0f49a711d933b29d07d141a166a70a4d477345685bb2546275d8ec99fed0ccae",
+  "117c2ea60e643beb6d64abcaba2451bb9252535d919f288f92bb5a2c529924bb",
+  "3ec882463f43c8055c3d941986dc7838337a52d911629c0b8590307d5975a0b8",
+  "485e0b719aa9ef63171fa5a9da2b2bbc34eeba2c4968d8847723113a6f97d752",
+  "580c3b870b7d2d7c4a0ebc67cbfc85bb4225b36db7b66d712fd5dd8f4f90df2e",
+  "5f69796091fe680c271f80d3b9a4e33a9b6584cfc99da1ba1b6168dd83e3dc39",
+]
+
+[e6_reference_definition]
+count = 20
+derivation = "R8 REGIME-MAP R13 / shortlist K4: all 20 EDIT_WRITE cases of family E6_REFERENCE_DEFINITION; derived from the sealed stage-b-facts-v1.json cell table."
+case_ids = [
+  "1a0deadd0f109c2a22aacdb0046eabc2a7a4ee1666b254455b1a07e548e44369",
+  "1c38500d66cb01c942d7c7a355dff4299076f63cf3f6a6f6a296aa8675819557",
+  "508e05b37bdb9812e0ddf1f0113538b0d684de7fcc78901175e60121154504cd",
+  "5613d6b9bcd76a454999eb6b55b2c980c7d80a31899117c92a6d15c54e955851",
+  "5b05299e355bbfdf92aa5eae52be885441b47f284a5d3f13334ec1e9c3df0f65",
+  "5f69796091fe680c271f80d3b9a4e33a9b6584cfc99da1ba1b6168dd83e3dc39",
+  "72e99128d9a702e77b2c2a4d95cd7fdbfc20fba89d72b6f4dfd864b679c5f923",
+  "73ddccb64ab70b42e7bd34b631e5614b427a14dd96c67b2581c604bce52f8110",
+  "8acf0a7491fb60d89a82b3cca004b80706068802f6d5503cd7b5efd4e4f08559",
+  "8c58d4b40f0803b8f26b2e108ccfa04987c765b4630584be880b888757309271",
+  "8f7c4df7c6776a41d2319873ce38cb0dc7622a5693017d783333d7565e52cc80",
+  "91d2e536796799571237ced8e8266b404d33ee3077367a18a75a2ca3ca470b02",
+  "9200178eda46905a79636adeef213e4b99a3af62ce43d0ea62ccc7d89eb0059a",
+  "9f4b9202dae1b93e687d879a9b18adbcd3fd6763f50b01eda801251bd155e4f0",
+  "ac1fb780b0d48ca9f592921413ef52016e45df309f2ab6dc9a11b494bc549d5f",
+  "b1b4bba780b9c892e32669fe5993ce2f356114cd443cf0fa4a7d3285310597a8",
+  "cada35f8a7ed2b2c18f357de8e562d411f5b1c65cdd3912246d23376d1a24dec",
+  "d378f080a8c160379b01810e95ff44b867d292c405c44f7c16163c13668947a3",
+  "f0831dd6b564b80e4230d3b4f546ff93b7c65d37018a3b627385ef6a6b90d282",
+  "fea305d72dbbeee48fdea65ea9893a4889602407d2c96d9baf476141ba785ac3",
+]
+
+[ph_a_loss]
+case_id = "1bd781ed4daa79cdf17d16c83e9eaa61bc913b5400cc633443fabf3c18b555db"
+derivation = "R8 REGIME-MAP R1 post-hoc extreme / shortlist K2: PMU post-hoc cell 1bd781ed (89 B, E1_LOCAL_TEXT; sealed HorseA 0.453x, H0 741 ns); already inside the bottom decile — pinned explicitly because K2 names it."
+
+[cardinality]
+edit_cases_per_session = 362
+edit_horse_cells_per_session = 1558
+clean_cases_per_session = 22
+clean_horse_cells_per_session = 132
+schedule_rows = 1152
+timing_rows_per_session = 67600
+total_timing_rows = 202800

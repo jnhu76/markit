@@ -58,6 +58,7 @@ pub mod preflight;
 pub mod receipt;
 pub mod runsupport;
 pub mod schedule;
+pub mod sensitivity;
 pub mod smoke;
 pub mod stats;
 pub mod workload;
