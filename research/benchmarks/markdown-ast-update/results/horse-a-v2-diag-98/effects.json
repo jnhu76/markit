@@ -1,0 +1,538 @@
+{
+  "ledgers": [
+    {
+      "cell_id": "E6-1-LOSE-DUP-CHANGE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 2,
+        "facts_pre": 2,
+        "facts_removed": 0,
+        "facts_value_changed": 1,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "ReferenceDefinition": [
+            1,
+            1
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 4995,
+        "nodes_pre": 4995,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 0,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 1
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 1
+    },
+    {
+      "cell_id": "E6-2-WINNER-DELETE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": true,
+      "facts": {
+        "effective_winner_changed": 1,
+        "facts_added": 0,
+        "facts_post": 1,
+        "facts_pre": 2,
+        "facts_removed": 1,
+        "facts_value_changed": 1,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0,
+        "winner_changes": [
+          [
+            "rd",
+            "/bcdefghijklmnopqrstuvwxy",
+            "/cdefghijklmnopqrstuvwxyz"
+          ]
+        ]
+      },
+      "outputs": {
+        "by_kind": {
+          "ReferenceDefinition": [
+            0,
+            1
+          ],
+          "ReferenceLink": [
+            320,
+            320
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 4994,
+        "nodes_pre": 4995,
+        "nodes_removed": 1,
+        "nodes_span_only_changed": 4,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 320,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 320
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 321
+    },
+    {
+      "cell_id": "E6-3A-DEF-CREATE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 1,
+        "facts_post": 1,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 1,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "Paragraph": [
+            0,
+            1
+          ],
+          "ReferenceDefinition": [
+            1,
+            0
+          ],
+          "ReferenceLink": [
+            320,
+            0
+          ],
+          "Text": [
+            575,
+            0
+          ]
+        },
+        "nodes_added": 896,
+        "nodes_post": 4994,
+        "nodes_pre": 4099,
+        "nodes_removed": 1,
+        "nodes_span_only_changed": 0,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 575,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": true,
+      "semantically_changed_outputs": 897
+    },
+    {
+      "cell_id": "E6-3B-DEF-DELETE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 1,
+        "facts_removed": 1,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 1
+      },
+      "outputs": {
+        "by_kind": {
+          "ReferenceDefinition": [
+            0,
+            1
+          ],
+          "ReferenceLink": [
+            0,
+            320
+          ],
+          "Text": [
+            0,
+            576
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 4097,
+        "nodes_pre": 4994,
+        "nodes_removed": 897,
+        "nodes_span_only_changed": 2,
+        "ref_link_to_text": 576,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": true,
+      "semantically_changed_outputs": 897
+    },
+    {
+      "cell_id": "E6-4-LOW-FANOUT-VALUE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": true,
+      "facts": {
+        "effective_winner_changed": 1,
+        "facts_added": 0,
+        "facts_post": 1,
+        "facts_pre": 1,
+        "facts_removed": 0,
+        "facts_value_changed": 1,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0,
+        "winner_changes": [
+          [
+            "rd",
+            "/efghijklmnopqrstuvwxyzab",
+            "/stuvwxyzabcdefghijklmnop"
+          ]
+        ]
+      },
+      "outputs": {
+        "by_kind": {
+          "ReferenceDefinition": [
+            1,
+            1
+          ],
+          "ReferenceLink": [
+            10,
+            10
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 4126,
+        "nodes_pre": 4126,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 0,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 10,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 11
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 11
+    },
+    {
+      "cell_id": "E6-5-HIGH-FANOUT-VALUE",
+      "definition_facts_changed": true,
+      "effective_winner_changed": true,
+      "facts": {
+        "effective_winner_changed": 1,
+        "facts_added": 0,
+        "facts_post": 1,
+        "facts_pre": 1,
+        "facts_removed": 0,
+        "facts_value_changed": 1,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0,
+        "winner_changes": [
+          [
+            "rd",
+            "/efghijklmnopqrstuvwxyzab",
+            "/stuvwxyzabcdefghijklmnop"
+          ]
+        ]
+      },
+      "outputs": {
+        "by_kind": {
+          "ReferenceDefinition": [
+            1,
+            1
+          ],
+          "ReferenceLink": [
+            320,
+            320
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 4994,
+        "nodes_pre": 4994,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 0,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 320,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 321
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 321
+    },
+    {
+      "cell_id": "E6-6-FENCE-HIDE-DEF",
+      "definition_facts_changed": true,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 1,
+        "facts_removed": 1,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 1
+      },
+      "outputs": {
+        "by_kind": {
+          "FencedCode": [
+            1,
+            0
+          ],
+          "Paragraph": [
+            0,
+            1792
+          ],
+          "ReferenceDefinition": [
+            0,
+            1
+          ],
+          "ReferenceLink": [
+            0,
+            320
+          ],
+          "Text": [
+            0,
+            2368
+          ]
+        },
+        "nodes_added": 1,
+        "nodes_post": 514,
+        "nodes_pre": 4994,
+        "nodes_removed": 4481,
+        "nodes_span_only_changed": 1,
+        "ref_link_to_text": 2368,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": true,
+      "semantically_changed_outputs": 4482
+    },
+    {
+      "cell_id": "TINY-64B-E1",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {},
+        "nodes_added": 0,
+        "nodes_post": 3,
+        "nodes_pre": 3,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 0,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 0
+    },
+    {
+      "cell_id": "TINY-1K-E2",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "Paragraph": [
+            1,
+            0
+          ],
+          "Text": [
+            1,
+            0
+          ]
+        },
+        "nodes_added": 2,
+        "nodes_post": 67,
+        "nodes_pre": 65,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 1,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 1,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 2
+    },
+    {
+      "cell_id": "TINY-4K-E5",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "Emphasis": [
+            0,
+            1
+          ],
+          "Text": [
+            0,
+            2
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 510,
+        "nodes_pre": 513,
+        "nodes_removed": 3,
+        "nodes_span_only_changed": 2,
+        "ref_link_to_text": 2,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 3
+    },
+    {
+      "cell_id": "SENT-LIST-INDENT",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "List": [
+            1,
+            0
+          ]
+        },
+        "nodes_added": 1,
+        "nodes_post": 5449,
+        "nodes_pre": 5448,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 4,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 1
+    },
+    {
+      "cell_id": "SENT-BQ-NEST",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "BlockQuote": [
+            1,
+            0
+          ],
+          "Paragraph": [
+            2,
+            0
+          ]
+        },
+        "nodes_added": 3,
+        "nodes_post": 4328,
+        "nodes_pre": 4325,
+        "nodes_removed": 0,
+        "nodes_span_only_changed": 2,
+        "ref_link_to_text": 0,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 3
+    },
+    {
+      "cell_id": "SENT-E5-EMPH",
+      "definition_facts_changed": false,
+      "effective_winner_changed": false,
+      "facts": {
+        "effective_winner_changed": 0,
+        "facts_added": 0,
+        "facts_post": 0,
+        "facts_pre": 0,
+        "facts_removed": 0,
+        "facts_value_changed": 0,
+        "labels_gained_definition": 0,
+        "labels_lost_definition": 0
+      },
+      "outputs": {
+        "by_kind": {
+          "Emphasis": [
+            0,
+            1
+          ],
+          "Text": [
+            0,
+            2
+          ]
+        },
+        "nodes_added": 0,
+        "nodes_post": 7470,
+        "nodes_pre": 7473,
+        "nodes_removed": 3,
+        "nodes_span_only_changed": 2,
+        "ref_link_to_text": 2,
+        "ref_links_dest_changed": 0,
+        "text_to_ref_link": 0,
+        "value_changed_nodes": 0
+      },
+      "reference_existence_changed": false,
+      "semantically_changed_outputs": 3
+    }
+  ],
+  "meta": {
+    "argv": [
+      "./target/release/mdbench-horse-a-v2-diag",
+      "all",
+      "--out",
+      "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-diag-98"
+    ],
+    "driver": "mdbench-horse-a-v2-diag",
+    "issue": "98",
+    "schema": "HORSE-A-V2-DIAG-98-RUN-v1"
+  },
+  "note": "offline diagnostic oracle (two H0 parses + tree diff); NOT a free online mechanism"
+}

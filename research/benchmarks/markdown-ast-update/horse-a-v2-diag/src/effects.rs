@@ -59,6 +59,8 @@ pub struct OutputEffects {
     /// ReferenceLink nodes whose resolved destination changed
     /// (derived from the winner map, counted at node level).
     pub ref_links_dest_changed: usize,
+    /// Nodes whose signature changed value-side only (counted once).
+    pub value_changed_nodes: usize,
     /// Text -> ReferenceLink topology flips.
     pub text_to_ref_link: i64,
     /// ReferenceLink -> Text topology flips.
@@ -242,20 +244,35 @@ pub fn effect_ledger(
     let mut keys: Vec<&String> = pre_map.keys().chain(post_map.keys()).collect();
     keys.sort();
     keys.dedup();
-    for k in keys {
-        let p = pre_map.get(k).copied().unwrap_or(0);
-        let q = post_map.get(k).copied().unwrap_or(0);
+    // First aggregate signature deltas per KIND so pure value changes
+    // (same kind, same multiplicity, different field) can be counted
+    // once as a changed node instead of add+remove.
+    let mut kind_deltas: BTreeMap<String, (i64, i64)> = BTreeMap::new();
+    for k in &keys {
+        let p = pre_map.get(*k).copied().unwrap_or(0);
+        let q = post_map.get(*k).copied().unwrap_or(0);
         if p != q {
-            // attribute the delta to the kind prefix of the signature
             let kind = k.split(' ').next().unwrap_or(k);
-            let e = by_kind.entry(kind.to_string()).or_insert((0, 0));
+            let e = kind_deltas.entry(kind.to_string()).or_insert((0, 0));
             if q > p {
                 e.0 += q - p;
-                nodes_added += (q - p) as usize;
             } else {
                 e.1 += p - q;
-                nodes_removed += (p - q) as usize;
             }
+        }
+    }
+    let mut value_changed_nodes = 0usize;
+    for (kind, (add, rem)) in &kind_deltas {
+        let e = by_kind.entry(kind.clone()).or_insert((0, 0));
+        e.0 = *add;
+        e.1 = *rem;
+        if add == rem {
+            // balanced: `add` nodes of this kind changed value (their
+            // old signatures left, new ones arrived)
+            value_changed_nodes += *add as usize;
+        } else {
+            nodes_added += *add as usize;
+            nodes_removed += *rem as usize;
         }
     }
 
@@ -263,8 +280,13 @@ pub fn effect_ledger(
     let ref_link_delta = kind_delta(&by_kind, "ReferenceLink");
 
     // ReferenceLink destination changes: winner-map labels with changed
-    // destinations, counted at node multiplicity where possible.
-    let ref_links_dest_changed = winner_changes.len();
+    // destinations. Counted at NODE multiplicity: a balanced
+    // ReferenceLink add/remove pair count IS the set of re-pointed
+    // links; otherwise fall back to the winner-label count.
+    let ref_links_dest_changed = match by_kind.get("ReferenceLink") {
+        Some((add, rem)) if add == rem && *add > 0 => *add as usize,
+        _ => winner_changes.len(),
+    };
 
     let span_moved = span_only_changes(&pre_doc, &post_doc);
 
@@ -273,8 +295,11 @@ pub fn effect_ledger(
     let effective_winner_changed = !winner_changes.is_empty();
     let reference_existence_changed = gained > 0 || lost > 0;
 
+    // Outputs that genuinely had to change: true topology changes plus
+    // value-changed nodes counted ONCE (a value change is one changed
+    // output, not an added plus a removed one).
     let semantically_changed_outputs =
-        nodes_added + nodes_removed + ref_links_dest_changed;
+        nodes_added + nodes_removed + value_changed_nodes;
 
     EffectLedger {
         cell_id: cell_id.to_string(),
@@ -299,6 +324,7 @@ pub fn effect_ledger(
             nodes_removed,
             nodes_span_only_changed: span_moved,
             by_kind,
+            value_changed_nodes,
             ref_links_dest_changed,
             text_to_ref_link: text_delta.0,
             ref_link_to_text: text_delta.1,

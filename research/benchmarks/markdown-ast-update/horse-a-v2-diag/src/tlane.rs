@@ -63,7 +63,7 @@ pub struct CellTiming {
     pub vs_a: std::collections::BTreeMap<String, f64>,
 }
 
-fn quantile(sorted: &[u64], q: f64) -> u64 {
+pub fn quantile(sorted: &[u64], q: f64) -> u64 {
     if sorted.is_empty() {
         return 0;
     }

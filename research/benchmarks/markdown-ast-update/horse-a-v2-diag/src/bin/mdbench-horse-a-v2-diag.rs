@@ -20,7 +20,7 @@ use markit_mdbench_horse_a::full_build::full_build;
 use markit_mdbench_horse_a::structural::NoopHorseAStructuralSink;
 use markit_mdbench_horse_a::update::update;
 
-use markit_mdbench_horse_a_v2_diag::{alane, cells, effects, tlane, validate_control};
+use markit_mdbench_horse_a_v2_diag::{alane, cells, decompose, effects, tlane, validate_control};
 
 fn usage() -> ! {
     eprintln!(
@@ -184,12 +184,33 @@ fn main() -> std::process::ExitCode {
                 Ok(0)
             }
             "effects" => cmd_effects(out),
+            "decompose" => {
+                let rows = decompose::run()?;
+                let value = serde_json::json!({
+                    "meta": run_metadata(),
+                    "policy": {
+                        "probes": ["P1_FULL_BUILD_ONLY", "P0_H0_FULL_PARSE_ONLY"],
+                        "warmup_rounds": tlane::WARMUP_ROUNDS,
+                        "measured_rounds": tlane::MEASURED_ROUNDS,
+                    },
+                    "cells": rows,
+                });
+                if let Some(dir) = out {
+                    write_json(&dir.join("decompose.json"), &value).map_err(|e| e.to_string())?;
+                } else {
+                    println!("{}", serde_json::to_string_pretty(&value).unwrap());
+                }
+                Ok(0)
+            }
             "all" => {
                 // 0C first: no treatment data unless every gate passes.
                 let rows = validate_control::validate_all()?;
                 let all_pass = rows.iter().all(|r| r.passed);
                 write_json(
-                    &out.clone().unwrap_or_else(|| PathBuf::from(".")),
+                    &out
+                        .clone()
+                        .unwrap_or_else(|| PathBuf::from("."))
+                        .join("validation.json"),
                     &serde_json::json!({
                         "meta": run_metadata(),
                         "all_pass": all_pass,

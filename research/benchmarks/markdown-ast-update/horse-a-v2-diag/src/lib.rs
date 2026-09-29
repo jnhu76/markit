@@ -42,6 +42,7 @@
 //!   campaign result.
 
 pub mod alane;
+pub mod decompose;
 pub mod cells;
 pub mod effects;
 pub mod tlane;
