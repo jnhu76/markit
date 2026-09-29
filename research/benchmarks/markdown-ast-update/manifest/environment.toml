@@ -26,7 +26,12 @@ panic = "unwind"
 target_cpu = "default"
 rustflags = ""
 overflow_checks = false
-second_profile = "RESERVED (optimization-sensitivity check only; must be recorded here before use)"
+# FROZEN 2026-09-29 (was "RESERVED"): the second frozen profile for the
+# R0 §4.6 optimization-sensitivity check (#33 RQ8). Single intentional
+# difference vs release-primary-v1: lto = false. Full binding in
+# manifest/rq8-sensitivity-profile-v1.toml; policy recorded in
+# protocol/implementation-parity.md.
+second_profile = "release-sensitivity-lto-off-v1 (manifest/rq8-sensitivity-profile-v1.toml; lto=false, all else identical to primary)"
 
 [allocator]
 policy = "rust-system-default"

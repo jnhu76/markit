@@ -1,0 +1,57 @@
+# manifest/rq8-sensitivity-profile-v1.toml — SECOND FROZEN BUILD PROFILE
+# (#33 RQ8 optimization-sensitivity check; R0-METHODOLOGY §4.6;
+# protocol/implementation-parity.md "Second frozen profile").
+#
+# Frozen 2026-09-29 BEFORE any sensitivity measurement. The profile is
+# materialized in the workspace Cargo.toml as
+# [profile.release-sensitivity-lto-off-v1] (inherits "release", lto = false)
+# and is the ONLY intentional optimization difference from release-primary-v1.
+#
+# Build command (authoritative Rust installation only):
+#   source ~/bin/markit-rust-1971-env
+#   cargo build --profile release-sensitivity-lto-off-v1 -p markit-mdbench-campaign
+
+schema = "rq8-sensitivity-profile-v1"
+profile_id = "release-sensitivity-lto-off-v1"
+frozen_date = "2026-09-29"
+purpose = "single-factor compiler-optimization sensitivity replication of the frozen K1-K6 shortlist (OPTIMIZATION-SENSITIVITY-SHORTLIST-v1.md)"
+
+[toolchain]
+channel = "1.97.1"
+rustc = "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+rustc_commit = "8bab26f4f68e0e26f0bb7960be334d5b520ea452"
+cargo = "cargo 1.97.1 (c980f4866 2026-06-30)"
+rustup_home = "/home/jnhu/rustup-1971"
+
+[profile]
+inherits = "release"
+opt_level = 3
+lto = false
+codegen_units = 1
+incremental = false
+panic = "unwind"
+target_cpu = "default"
+rustflags = ""
+allocator = "rust-system-default"
+overflow_checks = false
+
+[difference]
+# The single intentional dimension changed vs release-primary-v1.
+dimension = "lto"
+primary_value = "thin"
+second_value = "false"
+
+[unchanged_vs_primary]
+toolchain = true
+llvm = true
+target_cpu = true
+codegen_units = true
+opt_level = true
+panic_policy = true
+allocator = true
+features = true
+mechanism_code = true
+runner_semantics = true
+workload = true
+measurement_boundary = true
+machine = true

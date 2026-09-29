@@ -179,9 +179,85 @@ pub fn generate_receipt(benchmark_root: &std::path::Path) -> Result<CampaignRece
     })
 }
 
+/// Path of the reviewed primary-receipt supersession record (below the
+/// benchmark root). Absent = no supersession is authorized at all.
+pub const RECEIPT_SUPERSESSION_PATH: &str =
+    "results/manifests/sensitivity/primary-receipt-supersession-v1.json";
+
+/// An authorized, reviewed workspace supersession of one or more
+/// receipt-bound artifacts (#33 RQ8 second-profile addition).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ReceiptSupersession {
+    pub schema: String,
+    pub reason: String,
+    pub date: String,
+    /// artifact path -> the FROZEN RECEIPT hash it superseded (lineage
+    /// proof: the record is made against the sealed receipt, never an
+    /// arbitrary earlier state).
+    pub superseded_artifacts: std::collections::BTreeMap<String, String>,
+    /// artifact path -> the hash that now authoritatively replaces it.
+    pub replacement_hashes: std::collections::BTreeMap<String, String>,
+    pub note: String,
+}
+
+impl ReceiptSupersession {
+    pub fn load(benchmark_root: &std::path::Path) -> Result<Option<Self>, String> {
+        let path = benchmark_root.join(RECEIPT_SUPERSESSION_PATH);
+        if !path.exists() {
+            return Ok(None);
+        }
+        let text =
+            std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
+        let record: ReceiptSupersession =
+            serde_json::from_str(&text).map_err(|e| format!("parse {}: {e}", path.display()))?;
+        if record.schema != "primary-receipt-supersession-v1" {
+            return Err(format!(
+                "supersession schema {:?} != primary-receipt-supersession-v1",
+                record.schema
+            ));
+        }
+        if record.superseded_artifacts.keys().collect::<Vec<_>>()
+            != record.replacement_hashes.keys().collect::<Vec<_>>()
+        {
+            return Err(
+                "supersession superseded_artifacts and replacement_hashes must name the same set"
+                    .to_string(),
+            );
+        }
+        Ok(Some(record))
+    }
+
+    /// Pure acceptance predicate: `live` replaces `receipt_hash` for
+    /// `artifact` only when this record names the artifact, quotes the
+    /// SAME frozen receipt hash, and pins the exact live replacement.
+    pub fn accepts(&self, artifact: &str, receipt_hash: &str, live_hash: &str) -> bool {
+        self.superseded_artifacts
+            .get(artifact)
+            .map(|superseded| superseded == receipt_hash)
+            .unwrap_or(false)
+            && self
+                .replacement_hashes
+                .get(artifact)
+                .map(|replacement| replacement == live_hash)
+                .unwrap_or(false)
+    }
+}
+
 /// Verify the checked-in campaign receipt (task §47): every bound hash
 /// matches, the spec id recomputes, and the bound schedule is exactly
 /// the schedule regenerate produces.
+///
+/// AUTHORIZED WORKSPACE SUPERSESSION (#33 RQ8): a bound artifact whose
+/// live hash differs from the receipt is accepted ONLY when a reviewed
+/// supersession record (`RECEIPT_SUPERSESSION_PATH`) names that
+/// artifact, quotes the artifact's FROZEN RECEIPT hash (lineage proof
+/// against the sealed receipt), and pins the exact live replacement.
+/// The receipt file itself is never rewritten. Any other drift — or a
+/// malformed/stale supersession record — fails closed exactly as
+/// before. The one authorized supersession to date is the second
+/// frozen profile addition (Cargo.toml + manifest/environment.toml;
+/// see protocol/implementation-parity.md "Second frozen profile").
 pub fn verify_receipt(benchmark_root: &std::path::Path) -> Result<(), Vec<String>> {
     let mut blockers = Vec::new();
     let receipt = match CampaignReceipt::load(benchmark_root) {
@@ -197,14 +273,49 @@ pub fn verify_receipt(benchmark_root: &std::path::Path) -> Result<(), Vec<String
     if !receipt.produced_before_primary_timing {
         blockers.push("receipt must be produced before primary timing".to_string());
     }
+    let supersession = match ReceiptSupersession::load(benchmark_root) {
+        Ok(record) => record,
+        Err(error) => {
+            blockers.push(error);
+            None
+        }
+    };
     for bound in &receipt.artifacts {
         match sha256_file(&benchmark_root.join(&bound.artifact)) {
             Ok(actual) if actual == bound.sha256 => {}
-            Ok(actual) => blockers.push(format!(
-                "bound artifact {} hash {actual} != receipt {}",
-                bound.artifact, bound.sha256
-            )),
+            Ok(actual) => {
+                let authorized = supersession
+                    .as_ref()
+                    .map(|record| record.accepts(&bound.artifact, &bound.sha256, &actual))
+                    .unwrap_or(false);
+                if !authorized {
+                    blockers.push(format!(
+                        "bound artifact {} hash {actual} != receipt {} (no authorized supersession)",
+                        bound.artifact, bound.sha256
+                    ));
+                }
+            }
             Err(error) => blockers.push(format!("bound artifact {}: {error}", bound.artifact)),
+        }
+    }
+    if let Some(record) = &supersession {
+        // A superseded artifact that no longer drifts is a stale record:
+        // the supersession must describe the PRESENT authorized state.
+        for artifact in record.superseded_artifacts.keys() {
+            let frozen = receipt
+                .artifacts
+                .iter()
+                .find(|bound| bound.artifact == *artifact)
+                .map(|bound| bound.sha256.as_str());
+            match (frozen, sha256_file(&benchmark_root.join(artifact)).ok()) {
+                (Some(_), Some(live)) if record.accepts(artifact, frozen.unwrap_or_default(), &live) => {}
+                (None, _) => blockers.push(format!(
+                    "supersession names {artifact:?}, which the receipt does not bind"
+                )),
+                _ => blockers.push(format!(
+                    "supersession record for {artifact} does not describe the live state — remove or update it via review"
+                )),
+            }
         }
     }
     let declared: Vec<&str> = receipt
@@ -324,4 +435,45 @@ pub fn verify_schedule_on_disk(benchmark_root: &std::path::Path) -> Result<(), V
 /// CLI).
 pub fn campaign_manifest_path() -> &'static str {
     CAMPAIGN_MANIFEST_PATH
+}
+
+#[cfg(test)]
+mod supersession_tests {
+    use super::ReceiptSupersession;
+    use std::collections::BTreeMap;
+
+    fn record(superseded: &[(&str, &str)], replacement: &[(&str, &str)]) -> ReceiptSupersession {
+        ReceiptSupersession {
+            schema: "primary-receipt-supersession-v1".to_string(),
+            reason: "test".to_string(),
+            date: "2026-09-29".to_string(),
+            superseded_artifacts: BTreeMap::from_iter(
+                superseded
+                    .iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string())),
+            ),
+            replacement_hashes: BTreeMap::from_iter(
+                replacement
+                    .iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string())),
+            ),
+            note: String::new(),
+        }
+    }
+
+    #[test]
+    fn supersession_accepts_only_exact_lineage_and_replacement() {
+        let rec = record(
+            &[("Cargo.toml", "frozen-sha")],
+            &[("Cargo.toml", "new-sha")],
+        );
+        // Exact lineage + exact replacement: accepted.
+        assert!(rec.accepts("Cargo.toml", "frozen-sha", "new-sha"));
+        // Wrong lineage (the record must quote the RECEIPT's hash).
+        assert!(!rec.accepts("Cargo.toml", "other-old", "new-sha"));
+        // Wrong replacement (live drift beyond the reviewed record).
+        assert!(!rec.accepts("Cargo.toml", "frozen-sha", "drifted-sha"));
+        // Artifact not named by the record.
+        assert!(!rec.accepts("Cargo.lock", "frozen-sha", "new-sha"));
+    }
 }

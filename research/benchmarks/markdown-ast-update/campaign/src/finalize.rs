@@ -260,6 +260,109 @@ pub fn expectation_from_schedule(
     Ok(expectation)
 }
 
+/// Build the raw-file expectation of one SENSITIVITY session from the
+/// PROJECTED schedule rows the execution consumed (#33 RQ8). Identical
+/// contract to [`expectation_from_schedule`] except: (a) horse orders
+/// are SUBSETS of the frozen roster (every listed horse is a frozen
+/// horse, no duplicates, never empty) instead of the exact six-horse
+/// roster, and (b) cardinality is checked against the frozen SENSITIVITY
+/// counts (`expected_case_count`, `expected_rows`) instead of the
+/// primary full-population counts. The primary path above is unchanged.
+#[allow(clippy::too_many_arguments)]
+pub fn expectation_from_sensitivity_schedule(
+    schedule_rows: &[&crate::schedule::ScheduleRow],
+    campaign_spec_id: &str,
+    run_id: &str,
+    session_id: &str,
+    surface: Surface,
+    session_ordinal: u32,
+    warmup_iterations: u32,
+    measured_iterations: u32,
+    expected_case_count: usize,
+    expected_rows: usize,
+) -> Result<RawFileExpectation, String> {
+    let mut cases = Vec::new();
+    let mut seen: BTreeSet<String> = BTreeSet::new();
+    let mut frozen: Vec<&str> = crate::HORSE_IDS.to_vec();
+    frozen.sort_unstable();
+    for row in schedule_rows {
+        if row.surface != surface.as_str() {
+            return Err(format!(
+                "schedule row {} belongs to surface {:?}, not {}",
+                row.case_id,
+                row.surface,
+                surface.as_str()
+            ));
+        }
+        if row.session_ordinal != session_ordinal {
+            return Err(format!(
+                "schedule row {} is session {}, not {session_ordinal}",
+                row.case_id, row.session_ordinal
+            ));
+        }
+        if row.campaign_spec_id != campaign_spec_id {
+            return Err(format!(
+                "schedule row {} carries spec id {} != {campaign_spec_id}",
+                row.case_id, row.campaign_spec_id
+            ));
+        }
+        if !seen.insert(row.case_id.clone()) {
+            return Err(format!("schedule repeats case {}", row.case_id));
+        }
+        if row.horse_order.is_empty() {
+            return Err(format!("schedule row {} dispatches no horse", row.case_id));
+        }
+        let mut ordered = row.horse_order.clone();
+        ordered.sort_unstable();
+        let unique = BTreeSet::from_iter(ordered.iter().cloned());
+        if unique.len() != ordered.len() {
+            return Err(format!(
+                "schedule row {} repeats a horse in its order",
+                row.case_id
+            ));
+        }
+        if ordered
+            .iter()
+            .any(|horse| !frozen.contains(&horse.as_str()))
+        {
+            return Err(format!(
+                "schedule row {} dispatches a horse outside the frozen roster",
+                row.case_id
+            ));
+        }
+        cases.push(ScheduledCaseIdentity {
+            case_id: row.case_id.clone(),
+            order_ordinal: row.order_ordinal,
+            horse_order: row.horse_order.clone(),
+        });
+    }
+    if cases.len() != expected_case_count {
+        return Err(format!(
+            "{} sensitivity schedule carries {} cases, not the frozen {expected_case_count}",
+            surface.as_str(),
+            cases.len()
+        ));
+    }
+    let expectation = RawFileExpectation {
+        campaign_spec_id: campaign_spec_id.to_string(),
+        run_id: run_id.to_string(),
+        session_id: session_id.to_string(),
+        surface,
+        lane: RawLane::Timing { session_ordinal },
+        warmup_iterations,
+        measured_iterations,
+        cases,
+    };
+    let rows = expectation.expected_rows();
+    if rows != expected_rows {
+        return Err(format!(
+            "{} sensitivity timing: expected rows {rows} != frozen {expected_rows}",
+            surface.as_str()
+        ));
+    }
+    Ok(expectation)
+}
+
 /// Horse label of a mechanism id (the frozen roster is the only mapping).
 fn horse_for_mechanism(mechanism_id: &str) -> Option<&'static str> {
     crate::HORSE_ROSTER
