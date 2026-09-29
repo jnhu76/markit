@@ -117,6 +117,13 @@ COMPLETED SUBSTRATE:
        protocol/R7-PRIMARY-PERFORMANCE-CAMPAIGN-FREEZE-v1.md
        protocol/R7-MACHINE-BINDING-CORRECTIVE-1.md
        collection closure merged (results/primary-run/) — PRIMARY_TIMING = NOT_STARTED
+
+ARCHIVED:
+    Experiment 0 — #19 / PR #20
+    research/experiments/experiment-0-parser-survey/
+
+SUPERSEDED:
+    #21 MARKIT-MARKDOWN-ARCHITECTURE-1
 ```
 
 **ID collision warning.** The `R0`–`R7` identifiers above are *protocol stage
