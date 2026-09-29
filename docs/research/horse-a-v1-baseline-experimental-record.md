@@ -44,7 +44,9 @@ common Source/Edit/result contract, frozen workload, common correctness oracle,
 and common measurement discipline. Prior-art names provide mechanism lineage;
 these results are not product-level latency claims about upstream parsers.
 
-The completed study used four evidence layers:
+The completed study used four sealed evidence layers — the primary campaign's
+T/A/M lanes plus the PMU explanation campaign — and one second-profile
+sensitivity qualification applied on top of them:
 
 ```text
 T-LANE  -> wall-clock timing
@@ -52,6 +54,7 @@ A-LANE  -> algorithmic / structural work attribution
 M-LANE  -> allocation / retained-memory evidence
 PMU     -> targeted microarchitectural explanation
 RQ8     -> second compiler-profile optimization sensitivity
+           (qualification, not a collection lane)
 ```
 
 Key sealed counts:
@@ -138,8 +141,8 @@ Project-macro H0-relative speedup under the primary profile:
 |---|---:|
 | H0 | 1.0000× |
 | H1 | 1.0647× |
-| H2 | 2.0700× |
-| H3 | 1.9220× |
+| H2 | 2.0699× |
+| H3 | 1.9219× |
 | H4 | **2.4535×** |
 | Horse-A | **2.4214×** |
 
@@ -203,7 +206,8 @@ K6 H1 fallback lesson               = STABLE
 
 ## 6. Horse-A size regime
 
-Horse-A H0-relative speedup by document-size quartile:
+Horse-A H0-relative speedup by document-size quartile (case-weighted geomean
+descriptive cut over the frozen population, not the project-macro aggregate):
 
 | Size regime | Horse-A speedup |
 |---|---:|
@@ -235,7 +239,9 @@ size alone mechanically causes the crossover.
 
 ## 7. Edit-family / regime behavior
 
-Representative Horse-A H0-relative results:
+Representative Horse-A H0-relative results (E1/E2/E5/E4/E6/ATX rows are
+equal-weight FAMILY_MACRO aggregates; the list/blockquote rows are
+case-weighted E3 sub-stratum cuts):
 
 | Edit family / regime | Horse-A speedup |
 |---|---:|
@@ -477,7 +483,7 @@ Horse-A v1 is not a universal winner. Its evidence-backed profile is:
 strong local incremental performance
 large-document advantage
 strong container/local/inline regimes
-structural and L1D locality
+structural and L1D locality (Haswell-EP PMU)
 lowest edit-path allocation profile
 Q3/Q4 leadership in the frozen study
 ```
@@ -490,7 +496,9 @@ small-input fixed-cost crossover
 clean-state retained-representation construction tax
 branch-heavy Haswell-EP signature
 incomplete Horse-A-specific E6 work-attribution vocabulary
-exact H4/Horse-A macro ranking is optimization-sensitive
+H4/Horse-A macro near-tie characterization is optimization-sensitive
+   (the gap magnitude is profile-conditional; H4 numerically leads under
+   both profiles — the winner sign does not flip)
 ```
 
 The strongest design lesson is:
@@ -589,7 +597,10 @@ sealed raw / derived CSV or JSON
 
 This requirement exists because independent review already found transcription
 slips during the study. The prose is interpretation; sealed derived artifacts
-are the plotting authority.
+are the plotting authority. The 2026-09-29 evidence audit applied the same rule
+to this document: the §4 H2/H3 macro values are the exact 4-decimal roundings
+of the sealed stage-b facts (2.0699 / 1.9219), replacing the zero-padded
+2.0700 / 1.9220 forms inherited from the #91 snapshot.
 
 Until those scripts/figures are committed, the numeric tables in this document
 are a readable baseline summary, not a replacement for the sealed evidence.
