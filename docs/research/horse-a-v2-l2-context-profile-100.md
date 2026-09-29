@@ -453,9 +453,12 @@ mechanism redesign.
 BRANCH            = research/100-horse-a-v2-l2-context-profile
 COMMITS           = 29340ab (harness crate + frozen profile + campaign
                     evidence + original report) · 5fb955e (evidence-repair
-                    pass: §N refinements, PROVENANCE host-state separation,
-                    SHA256SUMS regenerated for the amended PROVENANCE.md —
-                    only that entry changed)
+                    pass R1–R5/R7: §N refinements, PROVENANCE host-state
+                    separation) · 8c30e73 (repair follow-up: SHA256SUMS
+                    regenerated for the amended PROVENANCE.md — only that
+                    entry changed — plus report transcription fixes) ·
+                    the head commit carrying this text (§L receipt; not
+                    nameable by itself)
 PR                = #102 (https://github.com/jnhu76/markit/pull/102) —
                     opened against master, left OPEN for review; L2
                     evidence only, no L3/L4/L5 work, no mechanism change
