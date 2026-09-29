@@ -16,11 +16,12 @@ frozen eager semantics actually require, using a validated neutral control
 (`HORSE_A_V1_DIRECT_READY_REBUILD`) plus the frozen H0/H2 references.
 
 **Headline:** on the E6 semantic challenges the normal update and a direct
-same-READY rebuild cost the same within noise (A/B ≈ 1.00–1.02 on E6-1..5).
-The E6 pathology is **not** duplicate pre-fallback work; it is dominated by
-the cost of the full-build route itself — chiefly the Horse-A retained-state
-construction (P1−P0 ≈ 2.7–2.9 ms of a ≈ 4.6 ms update, ≈ 60–77%), plus
-old-state retirement/validation (≈ 0.75–1.1 ms, ≈ 16–24%). Meanwhile the
+same-READY rebuild cost the same within noise (A/B = 0.993–1.000 on E6-1..5;
+at most 0.7% apart). The E6 pathology is **not** duplicate pre-fallback work;
+it is dominated by the cost of the full-build route itself — chiefly the
+Horse-A retained-state construction (P1−P0 ≈ 2.7–2.9 ms of a ≈ 4.6 ms update,
+≈ 57–62% of arm B), plus old-state retirement/validation (≈ 0.75–1.1 ms,
+≈ 16–24%). Meanwhile the
 frozen ordered-facts certification fires full rebuilds on semantically
 irrelevant fact changes (E6-1: **1** output had to change; 2050 owners /
 4994 nodes were rebuilt).
@@ -34,12 +35,18 @@ HOST            = jnhu@192.168.31.75 (hostname E5; Intel Xeon E5-2666 v3, 20 cor
 CHECKOUT        = /home/jnhu/Source/markit
 LIVE_MASTER     = a89a4c2723390d903edb1b38543c263e0d042f05 (matched the expected SHA; no intervening commits)
 EXECUTION_BRANCH= research/98-horse-a-v2-l0-l1-diagnosis
-EXECUTION_REVISION = 25849a7 (milestone commit: diag crate + control + validation)
+EXECUTION_REVISION = 25849a7 + then-uncommitted changes now recorded as commit
+                     6b227b7 (executed-code identity == 6b227b7; verified by a
+                     bit-identical release-binary rebuild — see PROVENANCE erratum)
 AUTHORITY_DRIFT = NONE (live #98 body == prompt contract; #95/#96/#97 titles verified OPEN/consistent)
-WORKTREE_STATE  = clean of tracked changes; unrelated untracked #76-era result files left untouched
-RUSTC           = 1.97.1 (workspace pin, rust-toolchain.toml)
+WORKTREE_STATE  = tracked-clean only after the 6b227b7 commit; at collection time
+                  the tree held those changes uncommitted; unrelated untracked
+                  #76-era result files left untouched
+RUSTC           = 1.97.1 (workspace pin, rust-toolchain.toml; resolves in-workspace)
 CARGO           = 1.97.1
-LLVM            = 22.1.8 (toolchain 1.97.1 reports LLVM 22.1.8)
+LLVM            = 22.1.6 (bundled with rustc 1.97.1; the collector originally
+                  captured host-default 1.98.1 / LLVM 22.1.8 strings — see the
+                  dated erratum in PROVENANCE.md)
 KERNEL          = Linux 7.2.5-200.fc44.x86_64 (Fedora 44)
 CPU             = Intel Xeon E5-2666 v3 @ 2.90GHz (Haswell-EP; the v1 PMU host class)
 PROFILE         = release (opt-level 3, lto=thin, codegen-units 1, incremental=false,
@@ -149,15 +156,15 @@ were admitted.
 
 Machine-readable: `results/horse-a-v2-diag-98/alane.json` (+ `tlane.json`,
 `decompose.json`). Medians from 200 measured interleaved rounds × 30 warmup,
-single process, release profile; IQR/median 2–10% (recorded per arm in the
+single process, release profile; IQR/median 0.8–10% (recorded per arm in the
 artifacts), far below the 3–10× separations interpreted here.
 
-| Cell | A µs | B µs | C µs | D µs | B/A | A/C | P1 µs | P0 µs | B−P1 µs | P1−P0 µs |
+| Cell | A µs | B µs | C µs | D µs | A/B | A/C | P1 µs | P0 µs | B−P1 µs | P1−P0 µs |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | E6-1 | 4719 | 4722 | 1444 | 756 | 1.00 | 3.27 | 3930 | 1074 | 792 | 2855 |
 | E6-2 | 4734 | 4739 | 1463 | 701 | 1.00 | 3.24 | 3913 | 1076 | 826 | 2838 |
 | E6-3A | 4595 | 4617 | 1369 | 689 | 1.00 | 3.36 | 3866 | 1038 | 752 | 2827 |
-| E6-3B | 4606 | 4623 | 1322 | 527 | 1.00 | 3.48 | 3612 | 766 | 1012 | 2846 |
+| E6-3B | 4606 | 4623 | 1322 | 527 | 1.00 | 3.48 | 3612 | 765 | 1012 | 2846 |
 | E6-4 | 4444 | 4475 | 1205 | 512 | 0.99 | 3.69 | 3399 | 698 | 1076 | 2701 |
 | E6-5 | 4739 | 4753 | 1479 | 754 | 1.00 | 3.20 | 3658 | 958 | 1095 | 2700 |
 | E6-6 | 999 | 845 | 568 | 435 | 1.18 | 1.76 | 258 | 195 | 588 | 63 |
@@ -171,15 +178,15 @@ artifacts), far below the 3–10× separations interpreted here.
 P1 = Horse-A `full_build(post)` alone; P0 = H0 `full_parse(post)` alone;
 B−P1 = validation + old-state retirement; P1−P0 = Horse-A retained-READY
 construction over H0 document construction. C−P0 (H0's own old-state drop,
-context) = 0.10–0.31 ms on E6.
+context) = 0.33–0.56 ms on E6.
 
 Repeated/discarded work (E6, from the frozen counters): on E6-1..5 the normal
-path's pre-decision work is **~160 bytes of source inspection, 2–3 candidate
-checks, 3 old-fact owner visits, and a 1-entry facts comparison** (restart
+path's pre-decision work is **128–160 bytes of source inspection, 2–3 candidate
+checks, 3 old-fact owner visits, and a ≤1-entry facts comparison** (restart
 ≈ 8128/10208, convergence ≈ 8288/10368) — arm A inspects 259 424 B vs arm B's
 259 264 B (E6-1). On E6-6 (fence, convergence at real EOF) the discarded
 forward parse is larger: 112 KB re-inspected inside the subsequent full build
-(43% of arm A's inspection effort; A−B wall = 154 µs ≈ 18% of A).
+(43% of arm A's inspection effort; A−B wall = 154 µs ≈ 15% of A, 18% above B).
 
 ## G. Required-effect ledger
 
@@ -211,29 +218,29 @@ H-TINY_FALLBACK_OPPORTUNITY  = NOT_SUPPORTED (for this tested scope)
 
 ### H-A — duplicate/path-selection work: NOT_SUPPORTED (E6 semantic regime)
 
-- OBSERVATION: E6-1..5 arm A vs arm B: wall medians equal within 0–1%
-  (IQR/median 2–9%); pre-decision work ≈ 160 B inspection, 2–3 candidate
-  checks, 1-entry facts comparison; both arms then run the identical full
+- OBSERVATION: E6-1..5 arm A vs arm B: wall medians equal within 0.7%
+  (IQR/median 1.9–8.6%); pre-decision work 128–160 B inspection, 2–3 candidate
+  checks, ≤1-entry facts comparison; both arms then run the identical full
   build (equal `owners_created`, `fresh_payload_nodes`, retirement frames).
 - INFERENCE: on value/duplicate/delete/negative-dependency definition edits,
   the incremental attempt before the full-build branch is not a material loss
   source; the E6 loss is the full-build route itself.
 - COUNTER_EVIDENCE / boundary: E6-6 (fence-induced, convergence only at real
   EOF) does discard a real forward parse: 112 KB re-inspected (43% of A's
-  inspection), A−B = 154 µs (18% of A). The fence/propagation regime retains
+  inspection), A−B = 154 µs (15% of A, 18% above B). The fence/propagation regime retains
   moderate duplicate work — consistent with the sealed W-A1 propagation
   finding, not with E6-value edits.
 - MECHANISM IMPLICATION: "stop the incremental attempt earlier / skip it on
-  E6" would recover ≈0–2% on E6-1..5 and ≈18% on the fence variant. Candidate
+  E6" would recover ≈0–2% on E6-1..5 and ≈15% on the fence variant. Candidate
   A (earlier rebuild) is a minor lever for the E6 semantic problem; it is not
   the pathology.
 
 ### H-B — READY construction/lifecycle tax: SUPPORTED
 
 - OBSERVATION: P1−P0 = 2.70–2.86 ms on every E6-1..5 cell (P1/P0 =
-  3.4–4.9×), i.e. 60–77% of arm B's ≈ 4.5–4.7 ms; B−P1 (validation +
+  3.6–4.9×), i.e. 57–62% of arm B's ≈ 4.5–4.7 ms; B−P1 (validation +
   old-state retirement) = 0.75–1.10 ms (16–24%); H0's own old-state drop
-  (C−P0) is 0.10–0.31 ms for context. Inspection volumes are equal across
+  (C−P0) is 0.33–0.56 ms for context. Inspection volumes are equal across
   B/C (259 KB both) and payload-node counts are equal (≈ 4993 both), so the
   delta is state construction + heavier retirement, not parser work.
 - INFERENCE: producing an equivalent next-edit-ready Horse-A state is itself
@@ -287,9 +294,9 @@ H-TINY_FALLBACK_OPPORTUNITY  = NOT_SUPPORTED (for this tested scope)
 
 ### H-TINY — legal fallback opportunity: NOT_SUPPORTED (this tested scope)
 
-- OBSERVATION: TINY-64B: B/A = 1.25 (B 0.8 µs vs A 1.0 µs; both sub-µs);
-  TINY-1K: B/A = 0.33; TINY-4K: B/A = 0.31. A direct rebuild beats the normal
-  path only at 64 B by an absolute 0.2 µs, and even there B remains 1.4× H0.
+- OBSERVATION: TINY-64B: A/B = 1.25 (B 0.84 µs vs A 1.05 µs; B sub-µs, A ≈ 1 µs);
+  TINY-1K: A/B = 0.33; TINY-4K: A/B = 0.31. A direct rebuild beats the normal
+  path only at 64 B by an absolute 0.2 µs, and even there B remains ≈ 1.5× H0.
 - INFERENCE: in the tested tiny regime a legal direct same-READY rebuild does
   NOT materially beat normal Horse-A update; where Horse-A loses to H0
   (TINY-64B), the cause is the same construction tax (P1/P0 = 1.3×, and B
@@ -309,14 +316,14 @@ Evidence-backed rows only (others remain `UNKNOWN` until earned):
 | Responsibility / component | Obligation | Evidence / measured cost | Decision |
 |---|---|---|---|
 | source/edit validation | correctness | O(1), part of B−P1 | KEEP (challenge nothing yet) |
-| damage locate / restart selection / left guard | correctness (restart certificates) | E6 pre-decision work ≈ 160 B / 2–3 checks | KEEP |
-| forward syntax work + convergence | correctness | E6-1..5 immaterial; E6-6 112 KB discarded (18% wall) | SHRINK candidate (fence/EOF convergence regime only — earned by E6-6, not by E6 semantic edits) |
+| damage locate / restart selection / left guard | correctness (restart certificates) | E6 pre-decision work 128–160 B / 2–3 checks | KEEP |
+| forward syntax work + convergence | correctness | E6-1..5 immaterial; E6-6 112 KB discarded (154 µs ≈ 15% of A) | SHRINK candidate (fence/EOF convergence regime only — earned by E6-6, not by E6 semantic edits) |
 | facts extraction/comparison | feeds W-A2 decision | 3 owner visits, ≤1-entry compares | SHRINK (its RESULT triggers whole-document rebuilds; see certification) |
 | semantic reuse certification (W-A2 ordered-facts equality) | correctness-sensitive | fires FactsDiffer on semantically irrelevant facts (E6-1: 1/4994) | REPLACE with effective-binding/value certification (Candidate B; must carry the same eager-READY obligations incl. negative dependency) |
 | full-build fallback | correctness/READY safety | the E6 cost center: ≈100% of E6-1..5 update cost | REFRAME — keep as safety; its cost profile (H-B) now gates how often v2 may enter it |
-| retained representation construction (Owner payload + AVL + coverage + certificates) | READY representation | P1−P0 = 2.7–2.9 ms (60–77% of E6 update; P1/P0 3.4–4.9×) | UNKNOWN→L2: interior split required before SHRINK/REPLACE can be decided |
-| old-state retirement | lifecycle | 0.75–1.1 ms on E6 (heavier than H0's 0.1–0.3 ms drop) | SHRINK candidate (proportional to state size; representation-dependent) |
-| payload reuse / local splice | correctness + v1 strength | sentinels: A beats B 4.3–10×; tiny 1K/4K 3× | KEEP (preserve-v1 guardrail confirmed) |
+| retained representation construction (Owner payload + AVL + coverage + certificates) | READY representation | P1−P0 = 2.7–2.9 ms (57–62% of arm B; P1/P0 3.6–4.9×) | UNKNOWN→L2: interior split required before SHRINK/REPLACE can be decided |
+| old-state retirement | lifecycle | 0.75–1.1 ms on E6 (heavier than H0's 0.33–0.56 ms drop) | SHRINK candidate (proportional to state size; representation-dependent) |
+| payload reuse / local splice | correctness + v1 strength | sentinels: A beats B 4.4–10×; tiny 1K/4K 3× | KEEP (preserve-v1 guardrail confirmed) |
 | tiny selector | none (was a research idea) | H-TINY NOT_SUPPORTED | DELETE the research branch for this scope |
 
 ## J. Main findings (ranked by mechanism-decision importance)
@@ -324,7 +331,7 @@ Evidence-backed rows only (others remain `UNKNOWN` until earned):
 1. **The E6 pathology is a construction problem, not a path-selection
    problem.** Normal update ≈ direct rebuild within 0–1% on E6-1..5; the
    loss vs H0 (3.2–3.7×) lives inside the full-build route.
-2. **Horse-A READY-state construction is 3.4–4.9× the cost of H0's document
+2. **Horse-A READY-state construction is 3.6–4.9× the cost of H0's document
    construction** for identical parser work and identical semantic-node
    counts (P1−P0 = 2.7–2.9 ms of ≈ 4.6 ms updates). This tax also explains
    the tiny residual (B never reaches H0 even at 64 B).
@@ -336,7 +343,7 @@ Evidence-backed rows only (others remain `UNKNOWN` until earned):
    effective-change/fence cells vs 1–11 on ineffective/low-fanout cells —
    v2 needs both targeted invalidation and an affordable coarse rebuild.
 5. **v1 strengths are intact under the same-READY contract**: sentinels show
-   normal update 4.3–10× faster than direct rebuild; tiny 1K/4K 3× faster.
+   normal update 4.4–10× faster than direct rebuild; tiny 1K/4K 3× faster.
    Any v2 selector that rebuilds eagerly would destroy these.
 
 ## K. Escalation decision
@@ -352,7 +359,7 @@ UNRESOLVED_RESPONSIBILITY =
     coverage/certificates vs per-Owner allocation on the E6 cells
 
 WHAT_L1_ESTABLISHED =
-    the tax exists (2.7–2.9 ms, 60–77% of E6 updates; P1/P0 = 3.4–4.9×),
+    the tax exists (2.7–2.9 ms, 57–62% of arm B; P1/P0 = 3.6–4.9×),
     is size-proportional, is not parser work (equal inspections/nodes),
     and dominates every path that enters a full build, including the
     direct-rebuild control and clean-state construction

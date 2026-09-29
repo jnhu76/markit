@@ -21,3 +21,28 @@ commands =
   ./target/release/mdbench-horse-a-v2-diag all --out <dir>
   ./target/release/mdbench-horse-a-v2-diag decompose --out <dir>
   ./target/release/mdbench-horse-a-v2-diag manifest --out <dir>
+
+## Erratum 1 — 2026-09-29 post-collection audit
+
+The `rustc`/`cargo`/`llvm` lines above were captured from the host default
+toolchain, not the workspace-pinned toolchain that actually built and ran the
+collection binary. The workspace pin (`toolchain_binding`, rust-toolchain.toml
+channel 1.97.1) resolves in-workspace to **rustc/cargo 1.97.1 with LLVM
+22.1.6** (`target/.rustc_info.json`; verified with an in-workspace
+`rustc --version`). Confirmation: rebuilding the 6b227b7 sources under the
+pin reproduces the preserved collection binary bit-for-bit
+(sha256 c2b2217054f50429b644c7e66aab706147c64a20220372bb886946055d664529).
+Corrected values: rustc = 1.97.1 (8bab26f4f 2026-07-14), cargo = 1.97.1,
+llvm = 22.1.6.
+
+## Erratum 2 — 2026-09-29 post-collection audit
+
+`execution_revision = 25849a7e…` names the last commit at collection time,
+but the working tree then additionally held uncommitted changes that are
+recorded verbatim as commit **6b227b7** (the `decompose` subcommand, the
+`value_changed_nodes` effect field, and the validation output-path fix — none
+of which existed at 25849a7, so 25849a7 alone could not have produced the
+sealed artifacts). The executed code state therefore equals 6b227b7, verified
+by the bit-identical binary rebuild above; "clean of tracked changes" held
+only after that commit was created. No sealed JSON changed and `SHA256SUMS`
+remains valid; this file and SHA256SUMS form the un-checksummed outer layer.
