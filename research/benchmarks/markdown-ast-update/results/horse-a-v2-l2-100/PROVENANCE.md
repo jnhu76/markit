@@ -123,14 +123,17 @@ no Step-2 mechanism designed or implemented.
   R5  E6-6 kept as the geometry contrast (+1.30 vs ≈ +103.7 samples/op);
       not pooled, not a falsification.
   R6  sysctl restoration PENDING (see host-state section above).
-  R7  this host-state separation + repair record.
+  R7  this host-state separation + repair record. SHA256SUMS regenerated
+      at repair time to track the amended PROVENANCE.md: git diff vs the
+      pre-repair manifest shows exactly one changed line (./PROVENANCE.md);
+      every measurement-artifact entry is byte-identical.
 
 Repair-time integrity verification (all PASS): 12/12 attribution JSONs
 regenerate byte-for-byte from committed folded stacks; differential
 markdown byte-identical on regeneration (JSON values identical; only
 set-iteration key order varies); 48/48 receipt SHA-256 checks of
 raw/mid/folded + profiling binary (raw perf.data on E5 unmodified);
-114/114 committed SHA256SUMS entries verify; 12/12 quality gates
+114/114 committed SHA256SUMS entries verify (regenerated per R7 above); 12/12 quality gates
 (region >= 3979 samples, resolved >= 95.6%, kernel frames 0, pair-local
 ops identical); cycles:u / period 100000 / exclude_kernel confirmed from
 retained raw perf.data headers; results/horse-a-v2-diag-98/ untouched.

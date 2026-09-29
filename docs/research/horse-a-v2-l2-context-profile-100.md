@@ -202,7 +202,7 @@ owner_materialize 2.54 (26.2%), certificate 1.30 (13.4%), avl_ownerseq
 0.55, region_loop_other 0.42, full_build_other 0.38, teardown 0.08,
 coverage 0.006, span_coordinate 0.005.
 
-**E6-6 / P0** (total 7.33): block_parse_shared 4.19 (57.2%),
+**E6-6 / P0** (total 7.33): block_parse_shared 4.19 (57.1%),
 h0_document_materialize 2.91 (39.7%), teardown 0.21 (2.8%),
 region_loop_other 0.03.
 
@@ -236,13 +236,13 @@ P1/P0 = 3.93 — T-LANE P1/P0 = 3.66):
 | avl_ownerseq | 6.18 | 0 | +6.18 | secondary (5.2%) |
 | region_loop_other | 5.44 | 0.27 | +5.17 | entry/loop + unattributed runtime frees; small |
 | full_build_other | 3.81 | 0 | +3.81 | residual full_build interior, no single owner |
-| block_parse_shared | 9.19 | 7.53 | +1.66 | shared parse ≈ cancels (+1.4% of P1) |
+| block_parse_shared | 9.19 | 7.53 | +1.66 | shared parse ≈ cancels (+1.4% of the excess; ≈1.0% of P1) |
 | coverage | 0.08 | 0 | +0.08 | below floor |
 | span_coordinate | 0.03 | 0 | +0.03 | below floor |
 | owner_materialize vs h0_document_materialize | 28.49 | 29.15 | −0.66 | **cancels** — Horse-A payload materialization ≈ H0 document construction |
 | teardown | 1.98 | 3.52 | −1.54 | H0's recursive Node drop costs more than ReadyDocument's |
 
-**E6-5** (totals: P1 157.13, P0 41.55, excess +115.58; rep2 +119.21;
+**E6-5** (totals: P1 157.13, P0 41.55, excess +115.58; rep2 +119.20;
 P1/P0 = 3.78 — T-LANE 3.82): same structure as E6-1 — certificate
 **+103.72** (89.7% of total excess), avl_ownerseq +6.30, full_build_other
 +4.03, loop/other +5.06, block parse +1.28, materialization −3.47
@@ -452,14 +452,21 @@ mechanism redesign.
 ```text
 BRANCH            = research/100-horse-a-v2-l2-context-profile
 COMMITS           = 29340ab (harness crate + frozen profile + campaign
-                    evidence + this report) · PR-head commit (§L receipt)
+                    evidence + original report) · 5fb955e (evidence-repair
+                    pass: §N refinements, PROVENANCE host-state separation,
+                    SHA256SUMS regenerated for the amended PROVENANCE.md —
+                    only that entry changed)
 PR                = #102 (https://github.com/jnhu76/markit/pull/102) —
                     opened against master, left OPEN for review; L2
                     evidence only, no L3/L4/L5 work, no mechanism change
-ISSUE_100_UPDATED = YES (execution result posted on the issue)
+ISSUE_100_UPDATED = YES (execution result + repair note on the issue)
 MERGED            = NO
 SEALED_98_EVIDENCE= untouched
 ```
+
+Evidence identity is pinned by `SHA256SUMS` + the per-receipt checksums,
+not by the PR head hash (the head commit necessarily carries its own
+receipt text).
 
 ## M. Final state
 
@@ -524,7 +531,11 @@ the committed folded stacks; differential tables regenerate identically
 (markdown byte-identical; JSON differs only in set-iteration key order,
 values identical); 48/48 per-receipt SHA-256 checks of raw/mid/folded +
 profiling binary (raw data still on E5, unmodified); 114/114 committed
-`SHA256SUMS` entries verify; 12/12 quality gates (region samples ≥ 3 979,
+`SHA256SUMS` entries verify — the manifest was regenerated at repair time
+to track the R7-amended `PROVENANCE.md` (git diff vs the pre-repair
+manifest shows exactly one changed line, `./PROVENANCE.md`; every
+measurement-artifact entry is byte-identical); 12/12 quality gates
+(region samples ≥ 3 979,
 resolved ≥ 95.6%, kernel frames 0, pair-local ops identical); cycles:u /
 period 100 000 / exclude_kernel confirmed from the retained raw
 `perf.data` headers; sealed `results/horse-a-v2-diag-98/` untouched.
