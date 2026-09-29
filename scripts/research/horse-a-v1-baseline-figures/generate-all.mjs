@@ -41,7 +41,7 @@ const FIGURES = [
     build: fig1SixMechanismSpeedup,
     sourceFiles: ['stage-b-facts-v1.json'],
     extraction:
-      'aggregates.edit_write.<mech>.project_macro_speedup_vs_h0 for H1/H2/H3/H4/HorseA; H0 = 1 by definition (full-rebuild reference). Display rounding: 4 dp (frozen baseline §4 form).',
+      'aggregates.edit_write.<mech>.project_macro_speedup_vs_h0 for H1/H2/H3/H4/HorseA; H0 = 1 by definition (full-rebuild reference). Display: latency reduction = 1 − 1/speedup on the frozen display-form speedup (baseline record §4.1 algebraic restatement); frozen speedups shown in parentheses. Full-precision speedups retained below.',
   },
   {
     file: '02-horse-a-size-regime-q1-q4.png',
@@ -49,7 +49,7 @@ const FIGURES = [
     build: fig2SizeRegime,
     sourceFiles: ['regime-map.csv', 'rq8-sensitivity-facts-v1.json'],
     extraction:
-      'regime-map.csv rows R2–R5 key_metric_values (case-weighted geomean cuts; anchored-prefix parse) for Horse-A and H4; Q3/Q4 cross-checked against rq8-sensitivity-facts-v1.json primary_sealed.K3 at 3 dp. Display rounding: 3 dp (frozen baseline §6 form).',
+      'regime-map.csv rows R2–R5 key_metric_values (case-weighted geomean cuts; anchored-prefix parse) for Horse-A and H4; Q3/Q4 cross-checked against rq8-sensitivity-facts-v1.json primary_sealed.K3 at 3 dp. Display: latency reduction = 1 − 1/speedup on the frozen 3 dp cut (§4.1); speedups in parentheses.',
   },
   {
     file: '03-horse-a-edit-family-regimes.png',
@@ -57,7 +57,7 @@ const FIGURES = [
     build: fig3EditFamilies,
     sourceFiles: ['stage-b-facts-v1.json', 'regime-map.csv'],
     extraction:
-      'E1/E2/E5/E4/E6/ATX from stage-b-facts-v1.json family_macro.edit_write.HorseA (equal-weight FAMILY_MACRO aggregates); list/blockquote from regime-map.csv R8/R9 key_metric_values (case-weighted E3 sub-stratum cuts). Display rounding: 3 dp (frozen baseline §7 form).',
+      'E1/E2/E5/E4/E6/ATX from stage-b-facts-v1.json family_macro.edit_write.HorseA (equal-weight FAMILY_MACRO aggregates); list/blockquote from regime-map.csv R8/R9 key_metric_values (case-weighted E3 sub-stratum cuts). Display: latency reduction = 1 − 1/speedup on the frozen 3 dp family value (§4.1); speedups in parentheses. E6 plots as negative (71.5% slower).',
   },
   {
     file: '04-edit-latency-allocation-pareto.png',
@@ -65,7 +65,7 @@ const FIGURES = [
     build: fig4LatencyAllocationPareto,
     sourceFiles: ['r8-values.json', 'stage-b-facts-v1.json'],
     extraction:
-      'r8-values.json edit_write/<mech>.allocation_count_median and .allocated_bytes_median; speedup from stage-b-facts-v1.json project macro (same authority as Figure 1). Latency representation: speedup vs H0 (relative latency = 1/speedup); KB = bytes/1000, 1 dp (frozen baseline §11 table convention).',
+      'r8-values.json edit_write/<mech>.allocation_count_median and .allocated_bytes_median; latency from stage-b-facts-v1.json project macro (same authority as Figure 1). Latency representation: latency reduction vs H0 = 1 − 1/speedup on the frozen 4 dp speedup (§4.1); KB = bytes/1000, 1 dp (frozen baseline §11 table convention).',
   },
   {
     file: '05-h4-vs-horse-a-pmu-profile.png',
@@ -81,7 +81,7 @@ const FIGURES = [
     build: fig6Rq8Sensitivity,
     sourceFiles: ['rq8-sensitivity-facts-v1.json'],
     extraction:
-      'primary_sealed.K1.{macro_H4,macro_HorseA,gap_pct} and second_profile.K1.{...}. Display rounding: 4 dp values (frozen baseline §5 form); gap percentages annotated ≈1.32% / ≈7.07%.',
+      'primary_sealed.K1.{macro_H4,macro_HorseA,gap_pct} and second_profile.K1.{...}. Display: latency reduction = 1 − 1/speedup on the frozen 4 dp speedup (§4.1); speedups in parentheses; gap percentages annotated in frozen speedup terms (≈1.32% / ≈7.07%).',
   },
   {
     file: '07-pre-registered-weaknesses-vs-observed.png',
@@ -165,17 +165,17 @@ function main() {
 function plottedValuesFor(file, d) {
   switch (file) {
     case '01-six-mechanism-edit-write-speedup.png':
-      return { macro: d.macro };
+      return { macro: d.macro, latencyReduction: d.latencyReduction.macro };
     case '02-horse-a-size-regime-q1-q4.png':
-      return { sizeRegime: d.sizeRegime, crossCheck: d.sizeRegimeCrossCheck };
+      return { sizeRegime: d.sizeRegime, crossCheck: d.sizeRegimeCrossCheck, latencyReduction: d.latencyReduction.sizeRegime };
     case '03-horse-a-edit-family-regimes.png':
-      return { editFamily: d.editFamily };
+      return { editFamily: d.editFamily, latencyReduction: d.latencyReduction.editFamily };
     case '04-edit-latency-allocation-pareto.png':
-      return { allocation: d.allocation };
+      return { allocation: d.allocation, latencyReduction: d.latencyReduction.macro };
     case '05-h4-vs-horse-a-pmu-profile.png':
       return { pmu: { H4: d.pmu.H4, HorseA: d.pmu.HorseA } };
     case '06-rq8-thinlto-vs-ltooff.png':
-      return { rq8K1: d.rq8K1 };
+      return { rq8K1: d.rq8K1, latencyReduction: d.latencyReduction.rq8K1 };
     case '07-pre-registered-weaknesses-vs-observed.png':
       return {
         editFamily: { list: d.editFamily.list, blockquote: d.editFamily.blockquote, E6: d.editFamily.E6 },
@@ -186,8 +186,7 @@ function plottedValuesFor(file, d) {
         editFamily: { E6: d.editFamily.E6, E4: d.editFamily.E4 },
         bottomDecileHorseA: d.bottomDecile.HorseA,
         horseAllocCount: d.allocation.HorseA.count,
-      };
-    default:
+      };default:
       return null;
   }
 }

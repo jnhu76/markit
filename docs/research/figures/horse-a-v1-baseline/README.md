@@ -8,10 +8,10 @@ never from hand-copied prose numbers (baseline record §18 provenance rule).
 
 | File | Figure | Primary source artifact(s) |
 |---|---|---|
-| `01-six-mechanism-edit-write-speedup.png` | Six-mechanism EDIT_WRITE speedup vs H0 (§4) | R7 `stage-b-facts-v1.json` |
-| `02-horse-a-size-regime-q1-q4.png` | Horse-A Q1→Q4 size scaling (§6) | R8 `regime-map.csv` + RQ8 `rq8-sensitivity-facts-v1.json` cross-check |
-| `03-horse-a-edit-family-regimes.png` | Selected edit-family / regime speedups (§7) | R7 `stage-b-facts-v1.json` + R8 `regime-map.csv` |
-| `04-edit-latency-allocation-pareto.png` | Latency × allocation Pareto view (§11) | R8 `r8-values.json` + R7 `stage-b-facts-v1.json` |
+| `01-six-mechanism-edit-write-speedup.png` | Six-mechanism EDIT_WRITE latency reduction vs H0 (§4, §4.1) | R7 `stage-b-facts-v1.json` |
+| `02-horse-a-size-regime-q1-q4.png` | Horse-A Q1→Q4 latency scaling (§6, §4.1) | R8 `regime-map.csv` + RQ8 `rq8-sensitivity-facts-v1.json` cross-check |
+| `03-horse-a-edit-family-regimes.png` | Selected edit-family / regime latency reductions (§7, §4.1) | R7 `stage-b-facts-v1.json` + R8 `regime-map.csv` |
+| `04-edit-latency-allocation-pareto.png` | Latency × allocation Pareto view (§11, §4.1) | R8 `r8-values.json` + R7 `stage-b-facts-v1.json` |
 | `05-h4-vs-horse-a-pmu-profile.png` | H4 vs Horse-A PMU efficiency profile (§12) | PMU `pmu-cells-v1.json` |
 | `06-rq8-thinlto-vs-ltooff.png` | ThinLTO vs LTO-off sensitivity (§5) | RQ8 `rq8-sensitivity-facts-v1.json` |
 | `07-pre-registered-weaknesses-vs-observed.png` | Pre-registered weaknesses vs observed evidence (§13) | baseline §13 (qualitative) + sealed extraction for all numbers |
@@ -29,7 +29,17 @@ never from hand-copied prose numbers (baseline record §18 provenance rule).
 - `manifest.json` (GENERATED) records, per figure: source files + hashes,
   extraction/transformation description, full-precision plotted values, and
   the PNG SHA-256.
-- Display rounding is uniform and matches the frozen baseline tables:
+- Display metric: figures 1–4 and 6 show **latency reduction vs H0 = 1 − 1/speedup**
+  — the algebraic restatement the baseline record itself freezes in §4.1
+  ("not new measurements or a new aggregation surface"), chosen because a
+  bare speedup ratio is easy to misread. Every label also carries the frozen
+  speedup in parentheses (e.g. `+58.7% (2.4214×)`; E6 renders as
+  `−71.5% (0.583×)` = 71.5% slower). The reduction is always computed from
+  the same frozen display-form speedup the label shows, so figure values
+  match §4.1's tables exactly; full-precision speedups are retained in
+  `manifest.json`. Figures 5, 7, 8 do not plot speedups (PMU counters and
+  verbatim §13/§16 text).
+- Display rounding otherwise uniform and matching the frozen baseline tables:
   speedups 4 dp where the baseline freezes 4 dp (§4/§5) and 3 dp where the
   sealed source is 3 dp (§6/§7); allocation KB = bytes/1000 at 1 dp (§11
   convention); PMU instructions exact integers, MPKI 1 dp (§12 published
@@ -56,9 +66,10 @@ mismatch. Reruns are byte-identical for every generated artifact (PNGs,
 
 ## Latency representation note (Figure 4)
 
-Figure 4 expresses latency as the EDIT_WRITE project-macro speedup vs H0 —
-the same frozen §4 numbers as Figure 1 (relative latency = 1/speedup). The
-x-axis is the sealed §11 median allocated KB per edit (1000 B convention) and
-bubble area encodes the median allocation count. On this view Horse-A is
-non-dominated (lowest allocation, first-tier speedup), together with H4 on
-the non-dominated frontier.
+Figure 4 expresses latency as the EDIT_WRITE latency reduction vs H0 — the
+§4.1 algebraic restatement of the frozen §4 project-macro speedup (relative
+latency = 1/speedup; reduction = 1 − 1/speedup), with the frozen speedup
+retained in the value block. The x-axis is the sealed §11 median allocated KB
+per edit (1000 B convention) and bubble area encodes the median allocation
+count. On this view Horse-A is non-dominated (lowest allocation, first-tier
+reduction), together with H4 on the non-dominated frontier.

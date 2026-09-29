@@ -78,9 +78,27 @@ const PARITY_MARK = {
   symbol: 'none',
   silent: true,
   lineStyle: { color: COLORS.refLine, type: 'dashed', width: 1.5 },
-  label: { ...baseText, fontSize: 16, position: 'insideEndTop', formatter: 'H0 parity (1.0x)' },
-  data: [{ yAxis: 1 }],
+  label: { ...baseText, fontSize: 16, position: 'insideEndTop', formatter: 'H0 parity (0%)' },
+  data: [{ yAxis: 0 }],
 };
+
+// Latency-reduction display: "+58.7%" faster / "−71.5%" slower (U+2212).
+const red = (v) =>
+  v > 0 ? '+' + v.toFixed(1) + '%' : v < 0 ? '−' + Math.abs(v).toFixed(1) + '%' : '0.0%';
+const redLabel = (v, speedup) => `${red(v)} (${speedup}×)`;
+
+// Vertical y-axis name (horizontal names clip at the canvas edge given the
+// 110px left grid margin).
+const yAxisName = (text) => ({
+  type: 'value',
+  name: text,
+  nameLocation: 'middle',
+  nameRotate: 90,
+  nameTextStyle: { ...baseText, fontSize: 18 },
+  nameGap: 64,
+  axisLabel: { ...baseText, fontSize: 19 },
+  splitLine: { lineStyle: { color: '#dddddd' } },
+});
 
 // Greedy word wrap for graphic-cell text (fig 7/8). Deterministic. Breaks
 // after hyphens and slashes (delimiter kept on the line) so long tokens like
@@ -114,12 +132,13 @@ function wrap(text, maxChars) {
 export function fig1SixMechanismSpeedup(d) {
   const mechs = ['H0', 'H1', 'H2', 'H3', 'H4', 'HorseA'];
   const option = commonOption({
-    title: 'EDIT_WRITE speedup vs H0 — six controlled mechanisms',
+    title: 'EDIT_WRITE latency reduction vs H0 — six controlled mechanisms',
     subtitle:
       'Primary profile (ThinLTO) · project-macro aggregate, sealed stage-b facts\n' +
-      'H4 (2.4535x) vs Horse-A (2.4214x) is a near-tie: not a forced universal winner',
+      `H4 (${red(d.latencyReduction.macro.H4)}) vs Horse-A (${red(d.latencyReduction.macro.HorseA)}) is a near-tie: not a forced universal winner`,
     bottomNote:
-      'Source: R7 stage-b-facts-v1.json aggregates.edit_write.*.project_macro_speedup_vs_h0\nH0 = full-rebuild reference (1.0000x by definition)',
+      'Source: R7 stage-b-facts-v1.json project-macro speedups · latency reduction = 1 − 1/speedup (baseline record §4.1)\n' +
+      'labels: latency reduction with the frozen speedup in parentheses · H0 = full-rebuild reference (0% by definition)',
   });
   Object.assign(option, {
     grid: { top: 170, left: 110, right: 60, bottom: 130 },
@@ -131,31 +150,28 @@ export function fig1SixMechanismSpeedup(d) {
       axisTick: { show: false },
     },
     yAxis: {
-      type: 'value',
-      name: 'speedup vs H0 (x)',
-      nameTextStyle: { ...baseText, fontSize: 19 },
-      nameGap: 24,
-      max: 3,
-      axisLabel: { ...baseText, fontSize: 19 },
-      splitLine: { lineStyle: { color: '#dddddd' } },
+      ...yAxisName('latency reduction vs H0 (%)'),
+      min: -10,
+      max: 70,
     },
     series: [
       {
         type: 'bar',
         barWidth: 96,
         data: mechs.map((m) => ({
-          value: Number(d.macro[m].toFixed(4)),
+          value: d.latencyReduction.macro[m],
+          speedup: d.macro[m].toFixed(4),
           itemStyle: { color: mechColor(m) },
         })),
         label: {
           show: true,
           position: 'top',
           ...baseText,
-          fontSize: 21,
+          fontSize: 20,
           fontWeight: 'bold',
-          formatter: (p) => p.value.toFixed(4),
+          formatter: (p) => redLabel(p.value, p.data.speedup),
         },
-        markLine: PARITY_MARK,
+        markLine: { ...PARITY_MARK, label: { ...PARITY_MARK.label, position: 'insideStartBottom' } },
       },
     ],
   });
@@ -167,12 +183,13 @@ export function fig1SixMechanismSpeedup(d) {
 export function fig2SizeRegime(d) {
   const q = ['Q1', 'Q2', 'Q3', 'Q4'];
   const option = commonOption({
-    title: 'Horse-A size scaling across document-size quartiles (Q1 → Q4)',
+    title: 'Horse-A latency reduction across document-size quartiles (Q1 → Q4)',
     subtitle:
       'Descriptive quartile regime result (case-weighted geomean cut, primary profile) — not a claim that size alone causes the crossover\n' +
       'Horse-A overtakes H4 around Q2→Q3',
     bottomNote:
-      'Source: R8 regime-map.csv R2–R5 (Q3/Q4 cross-checked at full precision against RQ8 rq8-sensitivity-facts-v1.json K3)\nH4 shown as frozen context',
+      'Source: R8 regime-map.csv R2–R5 (Q3/Q4 cross-checked at full precision against RQ8 rq8-sensitivity-facts-v1.json K3)\n' +
+      'latency reduction = 1 − 1/speedup (§4.1) · frozen speedups (×): Horse-A Q1 1.414 · Q2 2.908 · Q3 5.276 · Q4 5.367 · H4 shown as frozen context',
   });
   Object.assign(option, {
     grid: { top: 190, left: 110, right: 70, bottom: 130 },
@@ -191,56 +208,62 @@ export function fig2SizeRegime(d) {
       axisTick: { show: false },
     },
     yAxis: {
-      type: 'value',
-      name: 'speedup vs H0 (x)',
-      nameTextStyle: { ...baseText, fontSize: 19 },
-      nameGap: 24,
-      max: 6,
-      axisLabel: { ...baseText, fontSize: 19 },
-      splitLine: { lineStyle: { color: '#dddddd' } },
+      ...yAxisName('latency reduction vs H0 (%)'),
+      min: 0,
+      max: 95,
     },
     series: [
       {
         name: 'Horse-A v1',
         type: 'line',
-        data: q.map((k) => d.sizeRegime.HorseA[k]),
+        // per-point label positions: the two lines cross between Q2 and Q3,
+        // so fixed positions must alternate around each marker
+        data: q.map((k, i) => ({
+          value: d.latencyReduction.sizeRegime.HorseA[k],
+          // Q1 sits left of the rising outgoing segment: 'left' keeps the
+          // label clear of the line; 'top' would be pierced by it.
+          label: { show: true, position: ['left', 'right', 'top', 'top'][i], distance: 10 },
+        })),
         symbol: 'circle',
         symbolSize: 14,
         lineStyle: { width: 4, color: COLORS.HorseA },
         itemStyle: { color: COLORS.HorseA },
         label: {
-          show: true,
-          position: 'top',
           ...baseText,
-          fontSize: 21,
+          fontSize: 20,
           fontWeight: 'bold',
-          formatter: (p) => p.value.toFixed(3),
+          formatter: (p) => red(p.value),
         },
         labelLayout: { moveOverlap: 'shiftY', hideOverlap: false },
       },
       {
         name: 'H4',
         type: 'line',
-        data: q.map((k) => d.sizeRegime.H4[k]),
+        data: q.map((k, i) => ({
+          value: d.latencyReduction.sizeRegime.H4[k],
+          label: {
+            show: true,
+            position: ['bottom', 'top', 'bottom', 'bottom'][i],
+            distance: 10,
+            offset: i === 1 ? [-34, 0] : [0, 0],
+          },
+        })),
         symbol: 'triangle',
         symbolSize: 12,
         lineStyle: { width: 3, color: COLORS.H4, type: 'dashed' },
         itemStyle: { color: COLORS.H4 },
         label: {
-          show: true,
-          position: 'bottom',
-          distance: 10,
           ...baseText,
-          fontSize: 18,
+          fontSize: 16,
           color: '#205d8c',
-          formatter: (p) => p.value.toFixed(3),
+          formatter: (p) => red(p.value),
         },
         labelLayout: { moveOverlap: 'shiftY', hideOverlap: false },
       },
       {
         type: 'line',
         data: [],
-        markLine: PARITY_MARK,
+        markLine: { ...PARITY_MARK, label: { ...PARITY_MARK.label, position: 'insideStartTop' } },
       },
     ],
   });
@@ -251,57 +274,54 @@ export function fig2SizeRegime(d) {
 
 export function fig3EditFamilies(d) {
   const rows = [
-    ['E1\ntext', d.editFamily.E1, COLORS.HorseA],
-    ['E2\nparagraph', d.editFamily.E2, COLORS.HorseA],
-    ['E5\ninline', d.editFamily.E5, COLORS.HorseA],
-    ['ATX\nheading', d.editFamily.ATX, COLORS.HorseA],
-    ['list\ncontainer', d.editFamily.list, '#7a6ea8'],
-    ['blockquote\ncontainer', d.editFamily.blockquote, '#7a6ea8'],
-    ['E4\nfence', d.editFamily.E4, '#c98b3f'],
-    ['E6\nreference', d.editFamily.E6, '#8f1d1d'],
+    ['E1', 'E1\ntext', COLORS.HorseA, 'top'],
+    ['E2', 'E2\nparagraph', COLORS.HorseA, 'top'],
+    ['E5', 'E5\ninline', COLORS.HorseA, 'top'],
+    ['ATX', 'ATX\nheading', COLORS.HorseA, 'top'],
+    ['list', 'list\ncontainer', '#7a6ea8', 'top'],
+    ['blockquote', 'blockquote\ncontainer', '#7a6ea8', 'top'],
+    ['E4', 'E4\nfence', '#c98b3f', 'top'],
+    ['E6', 'E6\nreference', '#8f1d1d', 'bottom'],
   ];
   const option = commonOption({
-    title: 'Horse-A speedup by edit family / regime',
+    title: 'Horse-A latency reduction by edit family / regime',
     subtitle:
-      'Local / container / inline edits strong; semantic / global dependency edits weak\n' +
-      'E6 is below H0 parity — the clearest algorithmic weakness',
+      'Positive = faster than H0; negative = slower · local / container / inline edits strong, semantic / global weak\n' +
+      `E6 ${red(d.latencyReduction.editFamily.E6)} means ${Math.abs(d.latencyReduction.editFamily.E6)}% slower than a full rebuild — the clearest algorithmic weakness`,
     bottomNote:
       'E1/E2/E5/E4/E6/ATX = equal-weight FAMILY_MACRO aggregates (stage-b facts); list/blockquote = case-weighted E3 sub-stratum cuts (R8 regime map)\n' +
+      'latency reduction = 1 − 1/speedup (§4.1) · frozen speedups (×): E1 3.314 · E2 3.451 · E5 3.920 · ATX 5.234 · list 2.811 · blockquote 4.531 · E4 2.391 · E6 0.583\n' +
       'colors: local (red) · container (purple) · fence (amber) · semantic/global (dark red)',
   });
   Object.assign(option, {
     grid: { top: 170, left: 110, right: 60, bottom: 140 },
     xAxis: {
       type: 'category',
-      data: rows.map((r) => r[0]),
+      data: rows.map((r) => r[1]),
       axisLabel: { ...baseText, fontSize: 18, interval: 0, lineHeight: 24 },
       axisLine: { lineStyle: { color: '#333333' } },
       axisTick: { show: false },
     },
     yAxis: {
-      type: 'value',
-      name: 'speedup vs H0 (x)',
-      nameTextStyle: { ...baseText, fontSize: 19 },
-      nameGap: 24,
-      max: 6,
-      axisLabel: { ...baseText, fontSize: 19 },
-      splitLine: { lineStyle: { color: '#dddddd' } },
+      ...yAxisName('latency reduction vs H0 (%)'),
+      min: -85,
+      max: 95,
     },
     series: [
       {
         type: 'bar',
         barWidth: 74,
         data: rows.map((r) => ({
-          value: Number(r[1].toFixed(3)),
+          value: d.latencyReduction.editFamily[r[0]],
           itemStyle: { color: r[2] },
+          label: { position: r[3] },
         })),
         label: {
           show: true,
-          position: 'top',
           ...baseText,
-          fontSize: 20,
+          fontSize: 19,
           fontWeight: 'bold',
-          formatter: (p) => p.value.toFixed(3),
+          formatter: (p) => red(p.value),
         },
         markLine: PARITY_MARK,
       },
@@ -328,7 +348,7 @@ export function fig4LatencyAllocationPareto(d) {
   const mechs = ['HorseA', 'H3', 'H2', 'H4', 'H0', 'H1'];
   const points = mechs.map((m) => ({
     name: m,
-    value: [d.allocation[m].kb, Number(d.allocation[m].speedup.toFixed(4))],
+    value: [d.allocation[m].kb, d.latencyReduction.macro[m]],
     count: d.allocation[m].count,
     label: {
       show: true,
@@ -344,17 +364,17 @@ export function fig4LatencyAllocationPareto(d) {
     .map((m) => {
       const nm = m === 'HorseA' ? 'Horse-A v1' : m;
       const a = d.allocation[m];
-      return `${nm.padEnd(11)} ${String(a.kb).padStart(6)} KB · ${a.speedup.toFixed(4)}x · ${a.count} allocs`;
+      return `${nm.padEnd(11)} ${String(a.kb).padStart(6)} KB · ${red(d.latencyReduction.macro[m])} · ${a.speedup.toFixed(4)}× · ${a.count} allocs`;
     })
     .join('\n');
   const option = commonOption({
     title: 'Edit latency × allocation — Horse-A is non-dominated',
     subtitle:
-      'Latency shown as EDIT_WRITE project-macro speedup vs H0 (relative latency = 1/speedup)\n' +
+      'Latency shown as EDIT_WRITE latency reduction vs H0 (algebraic restatement of the §4 speedup: reduction = 1 − 1/speedup)\n' +
       'x = median allocated KB per edit (1000 B convention) · bubble area ∝ median allocation count',
     bottomNote:
       'Sources: r8-values.json edit_write/* (allocation medians) + stage-b-facts-v1.json project macro (speedups, same authority as Figure 1)\n' +
-      'dashed envelope: non-dominated frontier Horse-A → H4 · shaded region: lower allocation + higher speedup = better',
+      'dashed envelope: non-dominated frontier Horse-A → H4 · shaded region: lower allocation + higher reduction = better',
   });
   Object.assign(option, {
     grid: { top: 185, left: 110, right: 70, bottom: 130 },
@@ -370,14 +390,9 @@ export function fig4LatencyAllocationPareto(d) {
       splitLine: { lineStyle: { color: '#eeeeee' } },
     },
     yAxis: {
-      type: 'value',
-      name: 'speedup vs H0 (x)',
-      nameTextStyle: { ...baseText, fontSize: 19 },
-      nameGap: 24,
-      min: 0,
-      max: 3,
-      axisLabel: { ...baseText, fontSize: 19 },
-      splitLine: { lineStyle: { color: '#dddddd' } },
+      ...yAxisName('latency reduction vs H0 (%)'),
+      min: -5,
+      max: 70,
     },
     series: [
       {
@@ -392,8 +407,8 @@ export function fig4LatencyAllocationPareto(d) {
           label: { show: false },
           data: [
             [
-              { coord: [d.allocation.HorseA.kb, Number(d.allocation.HorseA.speedup.toFixed(4))] },
-              { coord: [d.allocation.H4.kb, Number(d.allocation.H4.speedup.toFixed(4))] },
+              { coord: [d.allocation.HorseA.kb, d.latencyReduction.macro.HorseA] },
+              { coord: [d.allocation.H4.kb, d.latencyReduction.macro.H4] },
             ],
           ],
         },
@@ -401,7 +416,7 @@ export function fig4LatencyAllocationPareto(d) {
           silent: true,
           itemStyle: { color: 'rgba(178, 58, 72, 0.05)' },
           label: { show: false },
-          data: [[{ xAxis: 0, yAxis: 2.4214 }, { xAxis: 10.6, yAxis: 3 }]],
+          data: [[{ xAxis: 0, yAxis: d.latencyReduction.macro.HorseA }, { xAxis: 10.6, yAxis: 70 }]],
         },
       },
     ],
@@ -537,15 +552,19 @@ export function fig5PmuProfile(d) {
 
 export function fig6Rq8Sensitivity(d) {
   const cats = ['H4', 'Horse-A v1'];
-  const primary = [Number(d.rq8K1.primary.H4.toFixed(4)), Number(d.rq8K1.primary.HorseA.toFixed(4))];
-  const ltoOff = [Number(d.rq8K1.secondProfile.H4.toFixed(4)), Number(d.rq8K1.secondProfile.HorseA.toFixed(4))];
+  const mkSeries = (profile) =>
+    cats.map((c, i) => {
+      const key = i === 0 ? 'H4' : 'HorseA';
+      return d.latencyReduction.rq8K1[profile][key];
+    });
   const option = commonOption({
     title: 'RQ8 sensitivity — primary ThinLTO vs LTO-off (H4 and Horse-A only)',
     subtitle:
-      'K1 = OPTIMIZATION_SENSITIVE: the macro gap is compiler-profile conditioned\n' +
-      '(≈1.32% under ThinLTO → ≈7.07% under LTO-off) · H4 numerically leads under both profiles — not a "flip", not a significance claim',
+      'K1 = OPTIMIZATION_SENSITIVE: the macro gap is compiler-profile conditioned (≈1.32% → ≈7.07% in speedup terms)\n' +
+      'H4 numerically leads under both profiles — not a "flip", not a significance claim',
     bottomNote:
-      'Source: rq8-sensitivity-facts-v1.json K1 (primary_sealed / second_profile)\nexactly one factor changed: lto = "thin" → lto = false',
+      'Source: rq8-sensitivity-facts-v1.json K1 (primary_sealed / second_profile) · exactly one factor changed: lto = "thin" → lto = false\n' +
+      'latency reduction = 1 − 1/speedup (§4.1) · frozen speedups (×): H4 2.4535 → 2.5982 · Horse-A 2.4214 → 2.4265',
   });
   Object.assign(option, {
     grid: { top: 200, left: 130, right: 60, bottom: 130 },
@@ -564,29 +583,26 @@ export function fig6Rq8Sensitivity(d) {
       axisTick: { show: false },
     },
     yAxis: {
-      type: 'value',
-      name: 'speedup vs H0 (x)',
-      nameTextStyle: { ...baseText, fontSize: 19 },
-      nameGap: 24,
-      min: 2.0,
-      max: 2.8,
-      axisLabel: { ...baseText, fontSize: 19 },
-      splitLine: { lineStyle: { color: '#dddddd' } },
+      ...yAxisName('latency reduction vs H0 (%)'),
+      min: 0,
+      max: 70,
     },
     series: [
       {
         name: 'primary ThinLTO',
         type: 'bar',
         barWidth: 110,
-        data: primary.map((v) => ({ value: v, itemStyle: { color: '#205d8c' } })),
-        label: { show: true, position: 'top', ...baseText, fontSize: 21, fontWeight: 'bold', formatter: (p) => p.value.toFixed(4) },
+        itemStyle: { color: '#205d8c' },
+        data: mkSeries('primary').map((v) => ({ value: v })),
+        label: { show: true, position: 'top', ...baseText, fontSize: 20, fontWeight: 'bold', formatter: (p) => red(p.value) },
       },
       {
         name: 'LTO-off',
         type: 'bar',
         barWidth: 110,
-        data: ltoOff.map((v) => ({ value: v, itemStyle: { color: '#8f4a52' } })),
-        label: { show: true, position: 'top', ...baseText, fontSize: 21, fontWeight: 'bold', formatter: (p) => p.value.toFixed(4) },
+        itemStyle: { color: '#8f4a52' },
+        data: mkSeries('secondProfile').map((v) => ({ value: v })),
+        label: { show: true, position: 'top', ...baseText, fontSize: 20, fontWeight: 'bold', formatter: (p) => red(p.value) },
       },
     ],
   });

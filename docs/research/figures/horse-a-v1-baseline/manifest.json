@@ -29,12 +29,12 @@
       "sourceFiles": [
         "stage-b-facts-v1.json"
       ],
-      "extraction": "aggregates.edit_write.<mech>.project_macro_speedup_vs_h0 for H1/H2/H3/H4/HorseA; H0 = 1 by definition (full-rebuild reference). Display rounding: 4 dp (frozen baseline §4 form).",
+      "extraction": "aggregates.edit_write.<mech>.project_macro_speedup_vs_h0 for H1/H2/H3/H4/HorseA; H0 = 1 by definition (full-rebuild reference). Display: latency reduction = 1 − 1/speedup on the frozen display-form speedup (baseline record §4.1 algebraic restatement); frozen speedups shown in parentheses. Full-precision speedups retained below.",
       "inputSha256": {
         "stage-b-facts-v1.json": "742e9f3665559515fd2f6914e232ad9f6e0360ab9be3bf401356016e474a3806"
       },
-      "pngSha256": "0f080190c94bc7b2c8e8e944324631826d405c5681f51969fbe24f17598f291c",
-      "pngBytes": 78781,
+      "pngSha256": "5387ff1af22b56b08cd84318c7fc359ab293494ee88b12eed4c7e706db3d399c",
+      "pngBytes": 92615,
       "plottedValues": {
         "macro": {
           "H0": 1,
@@ -43,6 +43,14 @@
           "H3": 1.9219430652711063,
           "H4": 2.453474412582579,
           "HorseA": 2.4214182268009155
+        },
+        "latencyReduction": {
+          "H0": 0,
+          "H1": 6.1,
+          "H2": 51.7,
+          "H3": 48,
+          "H4": 59.2,
+          "HorseA": 58.7
         }
       }
     },
@@ -53,13 +61,13 @@
         "regime-map.csv",
         "rq8-sensitivity-facts-v1.json"
       ],
-      "extraction": "regime-map.csv rows R2–R5 key_metric_values (case-weighted geomean cuts; anchored-prefix parse) for Horse-A and H4; Q3/Q4 cross-checked against rq8-sensitivity-facts-v1.json primary_sealed.K3 at 3 dp. Display rounding: 3 dp (frozen baseline §6 form).",
+      "extraction": "regime-map.csv rows R2–R5 key_metric_values (case-weighted geomean cuts; anchored-prefix parse) for Horse-A and H4; Q3/Q4 cross-checked against rq8-sensitivity-facts-v1.json primary_sealed.K3 at 3 dp. Display: latency reduction = 1 − 1/speedup on the frozen 3 dp cut (§4.1); speedups in parentheses.",
       "inputSha256": {
         "regime-map.csv": "def050a76a82eb011cca6aa8dd27b541dd50f45cb01310ba34cb1892fef98e52",
         "rq8-sensitivity-facts-v1.json": "c86602e9a0cb9757de0909ce99026ce60c587836b18536675105eda5138b1352"
       },
-      "pngSha256": "92e363c90220e3f66a36b19e46f10e57d263d5ebf1c7338dcec6052a7a9486c7",
-      "pngBytes": 82230,
+      "pngSha256": "2fa9f51db6c7ee7af06b56c90d06b50a788dd024338c6d086f0273365a898706",
+      "pngBytes": 89238,
       "plottedValues": {
         "sizeRegime": {
           "HorseA": {
@@ -92,6 +100,20 @@
             "regimeMap": 4.845,
             "rq8FullPrecision": 4.845036039240567
           }
+        },
+        "latencyReduction": {
+          "HorseA": {
+            "Q1": 29.3,
+            "Q2": 65.6,
+            "Q3": 81,
+            "Q4": 81.4
+          },
+          "H4": {
+            "Q1": 27.6,
+            "Q2": 66.8,
+            "Q3": 76.5,
+            "Q4": 79.4
+          }
         }
       }
     },
@@ -102,13 +124,13 @@
         "stage-b-facts-v1.json",
         "regime-map.csv"
       ],
-      "extraction": "E1/E2/E5/E4/E6/ATX from stage-b-facts-v1.json family_macro.edit_write.HorseA (equal-weight FAMILY_MACRO aggregates); list/blockquote from regime-map.csv R8/R9 key_metric_values (case-weighted E3 sub-stratum cuts). Display rounding: 3 dp (frozen baseline §7 form).",
+      "extraction": "E1/E2/E5/E4/E6/ATX from stage-b-facts-v1.json family_macro.edit_write.HorseA (equal-weight FAMILY_MACRO aggregates); list/blockquote from regime-map.csv R8/R9 key_metric_values (case-weighted E3 sub-stratum cuts). Display: latency reduction = 1 − 1/speedup on the frozen 3 dp family value (§4.1); speedups in parentheses. E6 plots as negative (71.5% slower).",
       "inputSha256": {
         "stage-b-facts-v1.json": "742e9f3665559515fd2f6914e232ad9f6e0360ab9be3bf401356016e474a3806",
         "regime-map.csv": "def050a76a82eb011cca6aa8dd27b541dd50f45cb01310ba34cb1892fef98e52"
       },
-      "pngSha256": "753e1223c562e7454925abd51abb3ae2fb95d6fd1432ddf13a2d90062ce87867",
-      "pngBytes": 86470,
+      "pngSha256": "05f6ff9d5bef84e354ba9a24c3110cec5072ffdb5a448e980d06afe45f4f6c15",
+      "pngBytes": 102711,
       "plottedValues": {
         "editFamily": {
           "E1": 3.313757641297349,
@@ -119,6 +141,16 @@
           "blockquote": 4.531,
           "E4": 2.391399905519984,
           "E6": 0.5834978196804155
+        },
+        "latencyReduction": {
+          "E1": 69.8,
+          "E2": 71,
+          "E5": 74.5,
+          "ATX": 80.9,
+          "list": 64.4,
+          "blockquote": 77.9,
+          "E4": 58.2,
+          "E6": -71.5
         }
       }
     },
@@ -129,13 +161,13 @@
         "r8-values.json",
         "stage-b-facts-v1.json"
       ],
-      "extraction": "r8-values.json edit_write/<mech>.allocation_count_median and .allocated_bytes_median; speedup from stage-b-facts-v1.json project macro (same authority as Figure 1). Latency representation: speedup vs H0 (relative latency = 1/speedup); KB = bytes/1000, 1 dp (frozen baseline §11 table convention).",
+      "extraction": "r8-values.json edit_write/<mech>.allocation_count_median and .allocated_bytes_median; latency from stage-b-facts-v1.json project macro (same authority as Figure 1). Latency representation: latency reduction vs H0 = 1 − 1/speedup on the frozen 4 dp speedup (§4.1); KB = bytes/1000, 1 dp (frozen baseline §11 table convention).",
       "inputSha256": {
         "r8-values.json": "f752745d7274da0b00bae82b6eb673aa4d917b83fde55fdd95fd35b039a74130",
         "stage-b-facts-v1.json": "742e9f3665559515fd2f6914e232ad9f6e0360ab9be3bf401356016e474a3806"
       },
-      "pngSha256": "9dcc1175ee5f4d979c5452f3720518578700db3dfa6f11c639ff9867348f3892",
-      "pngBytes": 104049,
+      "pngSha256": "e0a5b9f44e4d3f86cbc67a2e32b4bb61afe934898f97daf03ed46fc0478a0a12",
+      "pngBytes": 113083,
       "plottedValues": {
         "allocation": {
           "H0": {
@@ -174,6 +206,14 @@
             "kb": 10.6,
             "speedup": 2.4214182268009155
           }
+        },
+        "latencyReduction": {
+          "H0": 0,
+          "H1": 6.1,
+          "H2": 51.7,
+          "H3": 48,
+          "H4": 59.2,
+          "HorseA": 58.7
         }
       }
     },
@@ -214,12 +254,12 @@
       "sourceFiles": [
         "rq8-sensitivity-facts-v1.json"
       ],
-      "extraction": "primary_sealed.K1.{macro_H4,macro_HorseA,gap_pct} and second_profile.K1.{...}. Display rounding: 4 dp values (frozen baseline §5 form); gap percentages annotated ≈1.32% / ≈7.07%.",
+      "extraction": "primary_sealed.K1.{macro_H4,macro_HorseA,gap_pct} and second_profile.K1.{...}. Display: latency reduction = 1 − 1/speedup on the frozen 4 dp speedup (§4.1); speedups in parentheses; gap percentages annotated in frozen speedup terms (≈1.32% / ≈7.07%).",
       "inputSha256": {
         "rq8-sensitivity-facts-v1.json": "c86602e9a0cb9757de0909ce99026ce60c587836b18536675105eda5138b1352"
       },
-      "pngSha256": "573aa05052bc4e5dd277ab0bf14c01e273df561f4134f1c00ceb2ef164ff8e73",
-      "pngBytes": 67361,
+      "pngSha256": "63c8b76edd3931177a7ed650f56fd6f0e4d0870438849602e64df572c4dec424",
+      "pngBytes": 80681,
       "plottedValues": {
         "rq8K1": {
           "primary": {
@@ -231,6 +271,16 @@
             "H4": 2.5982240226427322,
             "HorseA": 2.4265486082149073,
             "gapPct": 7.074880505036241
+          }
+        },
+        "latencyReduction": {
+          "primary": {
+            "H4": 59.2,
+            "HorseA": 58.7
+          },
+          "secondProfile": {
+            "H4": 61.5,
+            "HorseA": 58.8
           }
         }
       }

@@ -116,6 +116,14 @@ function regimeValue(row, expectedPrefix, mech) {
 
 const round = (x, d) => Number(x.toFixed(d));
 
+// Baseline record §4.1: latency reduction vs H0 = 1 − 1/speedup. The doc
+// freezes these percentages as algebraic restatements of the frozen speedup
+// values ("not new measurements or a new aggregation surface"), so figures
+// display reduction computed from the same frozen display-form speedup that
+// the figure shows in parentheses — never from a different rounding.
+const reductionPct = (displaySpeedup) =>
+  Number((((1 - 1 / displaySpeedup) * 100)).toFixed(1));
+
 function median(xs) {
   const s = [...xs].sort((a, b) => a - b);
   const n = s.length;
@@ -203,6 +211,28 @@ const GUARDS = [
   ['fig6 HorseA primary', 'rq8K1.primary.HorseA', 2.4214],
   // §9 bottom decile (3 dp, from regime map R1)
   ['fig8 bottom decile HorseA', 'bottomDecile.HorseA', 0.825],
+  // §4.1 latency-reduction restatement of the frozen speedups (1 dp)
+  ['fig1 H1 reduction', 'latencyReduction.macro.H1', 6.1],
+  ['fig1 H2 reduction', 'latencyReduction.macro.H2', 51.7],
+  ['fig1 H3 reduction', 'latencyReduction.macro.H3', 48.0],
+  ['fig1 H4 reduction', 'latencyReduction.macro.H4', 59.2],
+  ['fig1 HorseA reduction', 'latencyReduction.macro.HorseA', 58.7],
+  ['fig2 HorseA Q1 reduction', 'latencyReduction.sizeRegime.HorseA.Q1', 29.3],
+  ['fig2 HorseA Q2 reduction', 'latencyReduction.sizeRegime.HorseA.Q2', 65.6],
+  ['fig2 HorseA Q3 reduction', 'latencyReduction.sizeRegime.HorseA.Q3', 81.0],
+  ['fig2 HorseA Q4 reduction', 'latencyReduction.sizeRegime.HorseA.Q4', 81.4],
+  ['fig3 E1 reduction', 'latencyReduction.editFamily.E1', 69.8],
+  ['fig3 E2 reduction', 'latencyReduction.editFamily.E2', 71.0],
+  ['fig3 E5 reduction', 'latencyReduction.editFamily.E5', 74.5],
+  ['fig3 ATX reduction', 'latencyReduction.editFamily.ATX', 80.9],
+  ['fig3 list reduction', 'latencyReduction.editFamily.list', 64.4],
+  ['fig3 blockquote reduction', 'latencyReduction.editFamily.blockquote', 77.9],
+  ['fig3 E4 reduction', 'latencyReduction.editFamily.E4', 58.2],
+  ['fig3 E6 reduction (slower)', 'latencyReduction.editFamily.E6', -71.5],
+  ['fig6 H4 LTO-off reduction', 'latencyReduction.rq8K1.secondProfile.H4', 61.5],
+  ['fig6 HorseA LTO-off reduction', 'latencyReduction.rq8K1.secondProfile.HorseA', 58.8],
+  ['fig6 H4 primary reduction', 'latencyReduction.rq8K1.primary.H4', 59.2],
+  ['fig6 HorseA primary reduction', 'latencyReduction.rq8K1.primary.HorseA', 58.7],
 ];
 
 function runGuards(data) {
@@ -348,6 +378,36 @@ export function extract() {
     ),
   };
 
+  // §4.1 latency-reduction restatement (display metric for Figures 1–4, 6),
+  // computed from the same frozen display-form speedups the figures plot.
+  const latencyReduction = {
+    rule: 'reduction = 1 − 1/speedup on the frozen display-form speedup (baseline record §4.1)',
+    macro: Object.fromEntries(
+      Object.entries(macro).map(([m, s]) => [m, m === 'H0' ? 0 : reductionPct(round(s, 4))]),
+    ),
+    sizeRegime: Object.fromEntries(
+      Object.entries(sizeRegime).map(([mech, qs]) => [
+        mech,
+        Object.fromEntries(Object.entries(qs).map(([q, s]) => [q, reductionPct(round(s, 3))])),
+      ]),
+    ),
+    editFamily: Object.fromEntries(
+      Object.entries(editFamily).map(([f, s]) => [f, reductionPct(round(s, 3))]),
+    ),
+    rq8K1: {
+      primary: Object.fromEntries(
+        Object.entries(rq8K1.primary)
+          .filter(([k]) => k !== 'gapPct')
+          .map(([m, s]) => [m, reductionPct(round(s, 4))]),
+      ),
+      secondProfile: Object.fromEntries(
+        Object.entries(rq8K1.secondProfile)
+          .filter(([k]) => k !== 'gapPct')
+          .map(([m, s]) => [m, reductionPct(round(s, 4))]),
+      ),
+    },
+  };
+
   const data = {
     generatedBy: 'scripts/research/horse-a-v1-baseline-figures (deterministic extraction)',
     capsuleSha256: '156ec1f3fbdfe1759ce81d17940360c2cda3adb773e7be7634b1ccc1e893d849',
@@ -355,6 +415,7 @@ export function extract() {
     sourceNote:
       'All numeric values are extracted from sealed derived artifacts; see inputs/PROVENANCE.md. Qualitative verdict/priority text comes from inputs/qualitative-verdicts.json (transcription of baseline record §13/§16).',
     macro,
+    latencyReduction,
     sizeRegime,
     sizeRegimeCrossCheck: crossCheck,
     editFamily,
