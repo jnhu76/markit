@@ -52,7 +52,8 @@ toolchain:        rustc/cargo 1.97.1 (identical to primary; RUSTUP_HOME=/home/jn
 
 Full binding: `manifest/rq8-sensitivity-profile-v1.toml`. The profile
 exists ONLY for the #33 RQ8 sensitivity replication of the frozen K1–K6
-shortlist (`results/synthesis/R8-FINAL-SYNTHESIS-v1/OPTIMIZATION-SENSITIVITY-SHORTLIST-v1.md`,
+shortlist (host-sealed R8 FINAL SYNTHESIS v1 record; sha256
+`03cfeae5…` pinned in `results/manifests/sensitivity/rq8-sensitivity-manifest-v1.toml`;
 authority: issue #33). It changes nothing about the mechanisms, the
 runner's timing semantics, the workload, or the measurement boundary.
 The primary `[profile.release]` above is NOT altered; primary evidence
