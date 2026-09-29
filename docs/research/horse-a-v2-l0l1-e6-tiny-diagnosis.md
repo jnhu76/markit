@@ -414,11 +414,12 @@ EXECUTED_CODE_IDENTITY = 6b227b7 (produced every sealed artifact; immutable)
 COMMITS= 25849a7 (crate + control + validation) · 6b227b7 (report + evidence) ·
          6f32664 (audit errata) · + this closure pass (documentation only)
 PR     = #99 into master — L0/L1 evidence only, no L2 work
-ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted after merge)
-MERGE  = at closure, after this commit; the exact FINAL_PR_HEAD and
-         MERGE_COMMIT are recorded in the #98 closure receipt and the post-merge
-         master receipt commit. Documentation heads never change
-         EXECUTED_CODE_IDENTITY.
+ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted at merge)
+FINAL_PR_HEAD = 8bdbe14d4302c82afc1e3e22a47348714018fac2
+MERGE_COMMIT  = 9030b6137f77fc0ff0ed4d00a7285a8f10669f23 (merge commit into
+                master; all five PR commits preserved)
+POST_MERGE_RECEIPT = this commit (documentation only). Documentation heads never
+                change EXECUTED_CODE_IDENTITY.
 ```
 
 ## M. Final state
@@ -470,3 +471,7 @@ NEXT = L2 (paired-profile question per §K; to be designed, authorized,
   asserting the merge ahead of it; §H-A recovery bound tied to the measured
   pre-decision work (≈0–1%, was ≈0–2%). No count, verdict, or measured value
   changed by this transcription fix.
+- **2026-09-29, post-merge receipt** — after PR #99 merged into master, this
+  documentation-only commit records `FINAL_PR_HEAD = 8bdbe14…` and
+  `MERGE_COMMIT = 9030b61…` here and in `PROVENANCE.md` (the merge preserved
+  all five PR commits). No sealed artifact, verdict, or measured value changed.

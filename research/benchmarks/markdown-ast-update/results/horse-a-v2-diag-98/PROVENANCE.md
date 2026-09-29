@@ -30,10 +30,10 @@ collection_binary_sha256 = c2b2217054f50429b644c7e66aab706147c64a20220372bb88694
 
 # --- documentation/audit heads (do NOT change the executed identity) ---
 post_audit_doc_head = 6f32664 (audit errata commit)
-closure_doc_head = tip of research/98-horse-a-v2-l0-l1-diagnosis at closure
-                   (6f32664 + the closure pass); the exact FINAL_PR_HEAD and
-                   MERGE_COMMIT are recorded in the #98 closure receipt and in the
-                   post-merge master receipt commit
+FINAL_PR_HEAD = 8bdbe14d4302c82afc1e3e22a47348714018fac2 (tip of
+                research/98-horse-a-v2-l0-l1-diagnosis at merge)
+MERGE_COMMIT  = 9030b6137f77fc0ff0ed4d00a7285a8f10669f23 (merge commit into master;
+                all five PR commits preserved)
 execution_branch = research/98-horse-a-v2-l0-l1-diagnosis
 live_master_at_start = a89a4c2723390d903edb1b38543c263e0d042f05
 baseline_capsule = markit-r0-rq8-research-record-v1.tar.gz
