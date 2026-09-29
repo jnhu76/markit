@@ -199,16 +199,19 @@ forward parse is larger: 112 KB re-inspected inside the subsequent full build
 Offline oracle (two independent H0 parses + node-signature multiset diff +
 first-wins winner map); spans excluded from "changed" (span-only movement
 reported separately, 0 on all cells except the structurally edited region).
+`Text↔RefLink` entries read **consumed→produced** (E6-3A: 575 Text consumed,
+320 RefLink produced); the sealed counters in `effects.json` record the Text
+side (`text_to_ref_link` / `ref_link_to_text`).
 
 | Cell | facts Δ | winner changed | existence Δ | Text↔RefLink | must-change outputs | owners/nodes rebuilt (A) |
 |---|---|---|---|---|---:|---:|
 | E6-1 | 1 value | NO | — | — | **1** | 2050 / 4994 |
 | E6-2 | def removed | YES (successor) | — | — | 321 | 2049 / 4993 |
 | E6-3A | def added | — | unresolved→resolved | 575 Text→320 RefLink (+re-segmentation) | 897 | 2049 / 4993 |
-| E6-3B | def removed | — | resolved→unresolved | 576 RefLink→Text | 897 | 2048 / 4096 |
+| E6-3B | def removed | — | resolved→unresolved | 320 RefLink→576 Text (re-segmentation) | 897 | 2048 / 4096 |
 | E6-4 | 1 value | YES | — | — | **11** | 2049 / 4125 |
 | E6-5 | 1 value | YES | — | — | 321 | 2049 / 4993 |
-| E6-6 | def hidden (syntax) | — | resolved→unresolved | 320 RefLink→Text; 1792 paras + 2368 Text → 1 FencedCode | 4482 | 257 / 513 |
+| E6-6 | def hidden (syntax) | — | resolved→unresolved | 320 RefLink→Text (2368 Text nodes produced); 1792 paras + 1 RefDef removed → 1 FencedCode added | 4482 | 257 / 513 |
 | TINY-1K / TINY-4K / sentinels | — | — | — | — | 1–3 | 1–2 owners (local path) |
 
 ## H. Hypothesis verdicts
@@ -237,7 +240,8 @@ H-TINY_FALLBACK_OPPORTUNITY  = NOT_SUPPORTED (for this tested scope)
   moderate duplicate work — consistent with the sealed W-A1 propagation
   finding, not with E6-value edits.
 - MECHANISM IMPLICATION: "stop the incremental attempt earlier / skip it on
-  E6" would recover ≈0–2% on E6-1..5 and ≈15% on the fence variant. Candidate
+  E6" would recover ≈0–1% on E6-1..5 (measured pre-decision work is 128–160 B
+  of ≈ 259 KB and A/B = 0.993–1.000) and ≈15% on the fence variant. Candidate
   A (earlier rebuild) is a minor lever for the E6 semantic problem; it is not
   the pathology.
 
@@ -367,7 +371,7 @@ UNRESOLVED_RESPONSIBILITY =
     UNRESOLVED at L1; the list is a hypothesis set for L2, not a claim.
 
 WHAT_L1_ESTABLISHED =
-    P1_FULL_BUILD_ONLY materially exceeds P0_H0_PARSE_ONLY (2.7–2.9 ms,
+    P1_FULL_BUILD_ONLY materially exceeds P0_H0_FULL_PARSE_ONLY (2.7–2.9 ms,
     57–62% of arm B; P1/P0 = 3.6–4.9×), is size-proportional, and is not
     explained by parser work (equal inspections / equal semantic-node
     counts) or by pre-fallback path-selection work (H-A: A/B = 0.993–1.000
@@ -386,7 +390,7 @@ EXACT_L2_QUESTION =
 
 MINIMUM_PROFILE_NEEDED =
     PAIRED context-sensitive (call-graph-aware) sample profiles for
-    P1_FULL_BUILD_ONLY and P0_H0_PARSE_ONLY on the same selected cells,
+    P1_FULL_BUILD_ONLY and P0_H0_FULL_PARSE_ONLY on the same selected cells,
     host, toolchain, profile, source identity and profiling protocol,
     followed by differential attribution of the residual. A profile of
     P1 alone is NOT sufficient: the target is a difference. No new
@@ -406,9 +410,11 @@ EXECUTED_CODE_IDENTITY = 6b227b7 (produced every sealed artifact; immutable)
 COMMITS= 25849a7 (crate + control + validation) · 6b227b7 (report + evidence) ·
          6f32664 (audit errata) · + this closure pass (documentation only)
 PR     = #99 into master — L0/L1 evidence only, no L2 work
-ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted on merge)
-MERGED = YES (closure pass); FINAL_PR_HEAD and MERGE_COMMIT are recorded exactly
-         in the #98 closure receipt and the post-merge master receipt commit
+ISSUE_98_UPDATED = YES (L0/L1 result posted; closure receipt posted after merge)
+MERGE  = performed at closure, after this commit; the exact FINAL_PR_HEAD and
+         MERGE_COMMIT are recorded in the #98 closure receipt and the post-merge
+         master receipt commit. Documentation heads never change
+         EXECUTED_CODE_IDENTITY.
 ```
 
 ## M. Final state
@@ -438,3 +444,19 @@ NEXT = L2 (paired-profile question per §K; to be designed, authorized,
 - The two `pub(crate)` widenings and `horse_a::direct_ready` are #98
   diagnostic additions; no frozen pipeline path calls them, and Horse-A v1's
   mechanism identity is unchanged (arm A ran the untouched pipeline).
+
+### Revision notes (documentation audit; no verdict or measured value changed)
+
+- **2026-09-29, commit `6f32664`** — derived ranges corrected against the
+  sealed evidence JSONs: (P1−P0)/B = 57–62% (was 60–77%), P1/P0 = 3.6–4.9×
+  (was 3.4–4.9×), A/B = 0.993–1.000 (was 1.00–1.02), fence A−B = 15% of A
+  (was "18% wall"), sentinel separation 4.4–10× (was 4.3–10×), C−P0 =
+  0.33–0.56 ms (was 0.1–0.3). Toolchain and executed-code-identity provenance
+  corrected in `PROVENANCE.md` (Errata 1–3): authoritative executed toolchain
+  is rustc/cargo 1.97.1 + LLVM 22.1.6; executed code ≡ `6b227b7`.
+- **2026-09-29, closure pass** — §G `Text↔RefLink` transcription fixed to the
+  sealed ledger convention (E6-3B reads 320 RefLink→576 Text; E6-6 reads
+  320 RefLink→Text with 2368 Text nodes *produced*); §K cites the sealed probe
+  id `P0_H0_FULL_PARSE_ONLY` exactly; §A/§L state the documentation heads
+  without asserting the merge ahead of it; §H-A recovery bound tied to the
+  measured pre-decision work (≈0–1%, was ≈0–2%).
