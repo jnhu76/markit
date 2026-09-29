@@ -380,7 +380,7 @@ heat alone (§22), and no mechanism is designed here.
 | AVL / OwnerSeq bulk build | ≈ 5% of excess | LOW (secondary) | DEFERRED (secondary SHRINK candidate at most) |
 | coordinate/span rebase (`shift_spans`) | ≤ 0.07 samples/op — below floor | ~0 | no change (UNKNOWN, now bounded on these cells) |
 | coverage plan build | ≤ 0.13 samples/op — below floor | ~0 | no change |
-| full_build interior remainder (`full_build_other` + loop/other) | ≈ 8–9% of excess, no single owner | LOW | UNKNOWN (no evidence to act on) |
+| full_build interior remainder (`full_build_other` + loop/other) | ≈ 7.6–7.9% of excess, no single owner | LOW | UNKNOWN (no evidence to act on) |
 
 All other #98 deletion-map rows are unchanged by L2 (no evidence produced
 here touches them).
