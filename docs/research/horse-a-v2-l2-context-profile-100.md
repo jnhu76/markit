@@ -388,10 +388,11 @@ mechanism redesign.
 
 ```text
 BRANCH            = research/100-horse-a-v2-l2-context-profile
-COMMITS           = harness crate + frozen profile + campaign evidence +
-                    this report (list fixed at push; see the branch tip)
-PR                = opened against master, left OPEN for review (L2
-                    evidence only; no L3/L4/L5 work, no mechanism change)
+COMMITS           = 29340ab (harness crate + frozen profile + campaign
+                    evidence + this report) · PR-head commit (§L receipt)
+PR                = #102 (https://github.com/jnhu76/markit/pull/102) —
+                    opened against master, left OPEN for review; L2
+                    evidence only, no L3/L4/L5 work, no mechanism change
 ISSUE_100_UPDATED = YES (execution result posted on the issue)
 MERGED            = NO
 SEALED_98_EVIDENCE= untouched
