@@ -15,6 +15,7 @@ members = [
     "campaign2",
     "h4diag",
     "horse-a-v2-diag",
+    "horse-a-v2-l2",
     "mechanisms/null-r1",
     "mechanisms/full-rebuild",
     "mechanisms/block-local",
@@ -48,6 +49,20 @@ panic = "unwind"
 [profile.release-sensitivity-lto-off-v1]
 inherits = "release"
 lto = false
+
+# THIRD FROZEN PROFILE (#100 L2 P-LANE only; NOT a T-LANE profile).
+# Two intentional differences from [profile.release]: full DWARF debug
+# info (debug = 2) so perf can expand inlined frames, and — via the
+# recorded RUSTFLAGS at build time — forced frame pointers, after the
+# DWARF-unwind pilot showed 16 KiB stack dumps truncating deep parser
+# chains. Optimization is otherwise identical (opt-level 3, thin LTO,
+# codegen-units 1, incremental false, panic unwind, default target-cpu,
+# system allocator). Used ONLY for the #100 paired context profiles; its
+# wall times are not latency evidence (#98 T-LANE remains the latency
+# authority).
+[profile.release-l2-profile-v1]
+inherits = "release"
+debug = 2
 
 [workspace.package]
 version = "0.1.0"

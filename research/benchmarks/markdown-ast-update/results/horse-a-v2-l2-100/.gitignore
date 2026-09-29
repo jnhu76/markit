@@ -1,0 +1,5 @@
+# Issue #100 L2 raw profiling data: retained on the execution host only.
+# perf.data and perf script dumps are git-ignored; their SHA-256 sums and
+# the exact regeneration commands are recorded in receipts/ and PROVENANCE.md.
+raw/
+mid/

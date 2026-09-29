@@ -1,0 +1,11 @@
+{
+  "samples_total": 4138,
+  "samples_in_region": 3979,
+  "region_marker_fraction": 0.961576,
+  "resolved_fraction_in_region": 0.96758,
+  "unknown_fraction_in_region": 0.03242,
+  "leaf_unknown_fraction_in_region": 0.03242,
+  "kernel_frames_in_region": 0,
+  "frame_order": "leaf_first",
+  "unique_paths_in_region": 1470
+}

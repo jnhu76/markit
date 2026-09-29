@@ -1,0 +1,173 @@
+{
+  "E6-1": {
+    "p1_samples_per_op_total": 158.99,
+    "p0_samples_per_op_total": 40.47,
+    "excess_samples_per_op_total": 118.52,
+    "buckets": {
+      "teardown": {
+        "p1_samples_per_op": 1.98,
+        "p0_samples_per_op": 3.52,
+        "excess_samples_per_op": -1.54
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 5.44,
+        "p0_samples_per_op": 0.27,
+        "excess_samples_per_op": 5.17
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 9.19,
+        "p0_samples_per_op": 7.53,
+        "excess_samples_per_op": 1.66
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.03,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.03
+      },
+      "certificate": {
+        "p1_samples_per_op": 103.79,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 103.79
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 6.18,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 6.18
+      },
+      "full_build_other": {
+        "p1_samples_per_op": 3.81,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 3.81
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 28.49,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 28.49
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 29.15,
+        "excess_samples_per_op": -29.15
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.08,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.08
+      }
+    }
+  },
+  "E6-5": {
+    "p1_samples_per_op_total": 157.13,
+    "p0_samples_per_op_total": 41.55,
+    "excess_samples_per_op_total": 115.58,
+    "buckets": {
+      "teardown": {
+        "p1_samples_per_op": 1.74,
+        "p0_samples_per_op": 3.24,
+        "excess_samples_per_op": -1.5
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 5.3,
+        "p0_samples_per_op": 0.24,
+        "excess_samples_per_op": 5.06
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 9.04,
+        "p0_samples_per_op": 7.76,
+        "excess_samples_per_op": 1.28
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.06,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.06
+      },
+      "certificate": {
+        "p1_samples_per_op": 103.72,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 103.72
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 6.3,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 6.3
+      },
+      "full_build_other": {
+        "p1_samples_per_op": 4.03,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 4.03
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 26.84,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 26.84
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 30.31,
+        "excess_samples_per_op": -30.31
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.1,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.1
+      }
+    }
+  },
+  "E6-6": {
+    "p1_samples_per_op_total": 9.7033,
+    "p0_samples_per_op_total": 7.3307,
+    "excess_samples_per_op_total": 2.3726,
+    "buckets": {
+      "teardown": {
+        "p1_samples_per_op": 0.078,
+        "p0_samples_per_op": 0.2067,
+        "excess_samples_per_op": -0.1287
+      },
+      "region_loop_other": {
+        "p1_samples_per_op": 0.4167,
+        "p0_samples_per_op": 0.026,
+        "excess_samples_per_op": 0.3907
+      },
+      "block_parse_shared": {
+        "p1_samples_per_op": 4.4207,
+        "p0_samples_per_op": 4.1853,
+        "excess_samples_per_op": 0.2354
+      },
+      "span_coordinate": {
+        "p1_samples_per_op": 0.0053,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.0053
+      },
+      "certificate": {
+        "p1_samples_per_op": 1.304,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 1.304
+      },
+      "avl_ownerseq": {
+        "p1_samples_per_op": 0.552,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.552
+      },
+      "full_build_other": {
+        "p1_samples_per_op": 0.3833,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.3833
+      },
+      "owner_materialize": {
+        "p1_samples_per_op": 2.5373,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 2.5373
+      },
+      "h0_document_materialize": {
+        "p1_samples_per_op": 0.0,
+        "p0_samples_per_op": 2.9127,
+        "excess_samples_per_op": -2.9127
+      },
+      "coverage": {
+        "p1_samples_per_op": 0.006,
+        "p0_samples_per_op": 0.0,
+        "excess_samples_per_op": 0.006
+      }
+    }
+  }
+}
