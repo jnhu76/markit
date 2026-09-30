@@ -1,0 +1,89 @@
+{
+ "artifact": "erratum.json",
+ "erratum_id": "HORSE-A-V2-L2-EVIDENCE-ERRATUM-2026-09-30",
+ "document": "docs/research/horse-a-v2-l2-evidence-erratum-2026-09-30.md",
+ "authority": "APPEND-ONLY INTERPRETATION CORRECTION for issue #100 (CLOSED) L2 record",
+ "historical_authority": {
+  "issue_100": "CLOSED (2026-09-29T19:06:30Z)",
+  "pr_102_head": "5722388504e9331795e7992c079c9e2321a0b9fd",
+  "pr_102_merge": "fb359deb721c2020b0880739424ae4ea4dfc27c1",
+  "live_master_at_erratum_start": "fb359deb721c2020b0880739424ae4ea4dfc27c1 (no drift)",
+  "l2_report_path": "docs/research/horse-a-v2-l2-context-profile-100.md",
+  "l2_evidence_path": "research/benchmarks/markdown-ast-update/results/horse-a-v2-l2-100/",
+  "l2_evidence_git_tree": "0d6f0d28400d3a801a2c132fc372d717b9afbf9e",
+  "l2_report_sha256": "cec491ec4f371ccf1891d5d1a99f0ce7d2a91bcbad00f1e98d9c522d1455e437"
+ },
+ "status_block": {
+  "HORSE_A_V2_L2_HISTORICAL_REPORT": "PRESERVED",
+  "HORSE_A_V2_L2_RAW_EVIDENCE": "PRESERVED",
+  "ERRATUM_TYPE": "EVIDENCE_BOUNDARY / INTERPRETATION",
+  "L2_HOTSPOT_DIRECTION_REVERSED": "NO",
+  "L2_MECHANISM_DECISION_REVISED": "REPAIR_SUBSTRATE_THEN_REASSESS"
+ },
+ "items": {
+  "E1_warmup_inclusion_denominator": {
+   "status": "CORRECTED",
+   "defect": "published samples/op = mixed-phase numerator (warmup + formal marker-frame samples, inseparable by call path in retained evidence) / formal-only denominator (region_ops)",
+   "evidence": "harness warmup calls l2_p1_build/l2_p0_parse from main; collect_profile.sh:26 perf record launches the process; perf_fold.py:121 retains by marker containment only; profile_region frame occurs 0 times in all 12 mid + 12 folded files; classify.py:131 divides by region_ops",
+   "true_warmed_only": "NOT RECOVERED (strictly); constrained window estimate in phase_window.json (sensitivity-only)",
+   "magnitude": "E6-1/E6-5 per-op values inflated ~x1.20 (warmup ops = 20/120 of profiled ops, rep1 warmup/formal per-op rates within +/-2.4%); E6-6 ~x1.02",
+   "shares_unaffected_by_pooling": "pooled normalization (B) leaves differential shares identical to A (uniform rescaling of both arms)"
+  },
+  "E2_certificate_share_bound": {
+   "status": "BOUNDED",
+   "defect": "'≈ 88–90%' is a historical mixed-phase differential share; not a warmed-only estimate, not % of P1 absolute execution, not recoverable wall-time, not a universal constant",
+   "historical_arithmetic": "E6-1: 103.79/118.52 = 87.57%; E6-5: 103.72/115.58 = 89.74% (rep1, verified against differential_rep1.json)",
+   "window_sensitivity": "warmed-only window estimate: E6-1 87.9–88.1%, E6-5 87.8–90.0% (rep1/rep2) — qualitative dominance ROBUST",
+   "corrected_language": "CERTIFICATE_LOOKUP_DOMINANCE = ROBUST QUALITATIVE LOCALIZATION; EXACT_WARMED_ONLY_SHARE = NOT ESTABLISHED BY THE ORIGINAL L2 PIPELINE"
+  },
+  "E3_e6_4_misclassification": {
+   "status": "CORRECTED",
+   "defect": "historical H-D wording grouped E6-4 with E6-1 under effective binding/value certification converting updates into local splices",
+   "evidence": "effects.json E6-4: effective_winner_changed=true (winner 'rd' destination changed), 10 consumer ReferenceLinks re-pointed, 11 must-change outputs; cell role text states 'effective winner destination changes'",
+   "correction": "E6_1_CLASS (equality/early-cutoff candidate: F_old != F_new, pi(F_old) == pi(F_new)) != E6_4_CLASS (sparse propagation: dependency discovery + selective propagation; the effective answer changes)"
+  },
+  "E4_query_equality_not_stale_state": {
+   "status": "ADDED-BOUNDARY",
+   "claim": "retained semantic state includes the complete ordered fact sequence (RefTable entries: source order preserved, duplicates included), not just the effective winner map",
+   "example": "winner=/a loser=/b; edit /b->/c leaves resolve() unchanged while retained facts must go [/a,/b] -> [/a,/c]",
+   "obligation": "a future equality/early-cutoff may skip unchanged-consumer propagation but may NOT leave complete producer state stale; required invariant stated as research obligation, not theorem; authorizes no implementation"
+  },
+  "E5_effect_ledger_scope": {
+   "status": "BOUNDED",
+   "claim": "effect ledger is a diagnostic classification under the implemented signature/multiset/winner-map comparison, not a universal minimum-work oracle",
+   "boundaries": [
+    "kind/value signature multiset diff ignores structural parent/child correspondence",
+    "value_changed_nodes inferred from balanced kind deltas (add==rem heuristic), not a node-matching proof",
+    "span-only accounting is class-level (signature-class span sets), not optimal node matching",
+    "effective_winner_changed does not encode None<->Some existence transitions (E6-6: eff_winner_changed=false, ref_existence_changed=true)",
+    "counts are not minimum writes / computation lower bound / exact dependency locations / reusable-node cardinality"
+   ],
+   "e6_6": "4482 is dominated by removals (4481 removed / 1 added); it does not imply the new state constructs that many new outputs"
+  },
+  "E6_comparator_boundary": {
+   "status": "BOUNDED",
+   "claim": "P1_FULL_BUILD_ONLY vs P0_H0_FULL_PARSE_ONLY is a legal L2 construction-path contrast, but P1-P0 != pure removable Horse-A work",
+   "evidence": "full_build produces the complete READY state (RefTable + eager payloads + owner-relative coordinates + coverage + certificates + OwnerSeq) carrying next-edit obligations; P0 produces a NormalizedDocument with no Horse-A retained-state obligations",
+   "implication": "L2 supports where-the-differential-executes claims, not every-P1-P0-cycle-should-disappear claims; the case for testing a same-authority repair R is unaffected"
+  }
+ },
+ "not_retracted": [
+  "L0 same-READY comparator legality",
+  "L1: E6-1..5 not primarily dominated by large discarded incremental work before full build",
+  "L2 qualitative localization: certificate-barrier lookup is the dominant dense-boundary P1-P0 differential context",
+  "certificate authority itself is not shown unnecessary",
+  "Owner/AVL/coverage are not promoted to primary targets",
+  "L3/L4/L5 are not required now",
+  "NEXT = SUBSTRATE_REPAIR R"
+ ],
+ "no_new_mechanism_conclusions": [
+  "linear merge is the correct repair", "O(B+R) is proven", "HashMap is required",
+  "certificate density should decrease", "reverse dependency index is justified",
+  "facts_equal should become effective_equal", "E6-4 is solved by early cutoff"
+ ],
+ "derived_evidence": {
+  "directory": "research/benchmarks/markdown-ast-update/results/horse-a-v2-l2-100-erratum/",
+  "replay_gate": "12/12 attribution bucket counts reproduced integer-exact from mid files",
+  "authority": "sensitivity/audit only"
+ }
+}

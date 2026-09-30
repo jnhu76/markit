@@ -1,0 +1,239 @@
+{
+ "artifact": "warmup_audit.json",
+ "purpose": "mechanical evidence for erratum E1 (warmup inclusion / denominator defect)",
+ "authority": "SENSITIVITY / AUDIT ONLY \u2014 corrects interpretation; rewrites nothing",
+ "historical_evidence_modified": false,
+ "source_authorities": {
+  "harness": {
+   "path": "horse-a-v2-l2/src/bin/mdbench-horse-a-v2-l2.rs",
+   "sha256": "bf83aa01e8fa2877662ec9d075f5790818bba6552a40b4cd1f7a591805b30a06",
+   "warmup_calls_marker_fns": "lines 101-104: match arm { P1 => l2_p1_build(.., warmup), P0 => l2_p0_parse(.., warmup) } run from main BEFORE profile_region",
+   "formal_calls_marker_fns": "lines 123-129: #[inline(never)] profile_region -> l2_p1_build/l2_p0_parse(reps)",
+   "design_intent_comment": "harness doc claims 'the folding stage detects frame order and filters setup samples by these names' \u2014 the implemented filter cannot do this (see perf_fold)"
+  },
+  "collect_profile": {
+   "path": "horse-a-v2-l2/l2tools/collect_profile.sh",
+   "sha256": "de4a112229d498335d2e2138783b474b45f62d9f73cd117f828359fa2ca7a893",
+   "perf_record_launches_process": "line 26: taskset -c 2 perf record ... -- \"$BIN\" --cell ... --warmup \"$WARMUP\" \u2014 sampling starts at exec, covering startup AND warmup"
+  },
+  "perf_fold": {
+   "path": "horse-a-v2-l2/l2tools/perf_fold.py",
+   "sha256": "71c0c64af5197514edb2d936955b5c6e51acf0cea135256a0864350e17ded610",
+   "region_markers": "REGION_MARKERS = ['l2_p1_build', 'l2_p0_parse'] (line 32)",
+   "retention_predicate": "line 121: any(m in s for s in syms for m in REGION_MARKERS) \u2014 call-path containment of the SAME functions warmup uses; no profile_region requirement, no time/phase filter"
+  },
+  "classify": {
+   "path": "horse-a-v2-l2/l2tools/classify.py",
+   "sha256": "38d70739dbf95831562162968b2b38c29fefc0e30547dc30b875d22fffd94f69",
+   "denominator": "samples_per_op = samples / args.reps (lines 131, 138); args.reps = region_ops only \u2014 warmup ops never enter the denominator"
+  }
+ },
+ "profile_region_frame_occurrences": {
+  "mid/perf_E6-1_P1_rep1.txt": 0,
+  "folded/perf_E6-1_P1_rep1.folded": 0,
+  "mid/perf_E6-1_P0_rep1.txt": 0,
+  "folded/perf_E6-1_P0_rep1.folded": 0,
+  "mid/perf_E6-5_P1_rep1.txt": 0,
+  "folded/perf_E6-5_P1_rep1.folded": 0,
+  "mid/perf_E6-5_P0_rep1.txt": 0,
+  "folded/perf_E6-5_P0_rep1.folded": 0,
+  "mid/perf_E6-6_P1_rep1.txt": 0,
+  "folded/perf_E6-6_P1_rep1.folded": 0,
+  "mid/perf_E6-6_P0_rep1.txt": 0,
+  "folded/perf_E6-6_P0_rep1.folded": 0,
+  "mid/perf_E6-1_P1_rep2.txt": 0,
+  "folded/perf_E6-1_P1_rep2.folded": 0,
+  "mid/perf_E6-1_P0_rep2.txt": 0,
+  "folded/perf_E6-1_P0_rep2.folded": 0,
+  "mid/perf_E6-5_P1_rep2.txt": 0,
+  "folded/perf_E6-5_P1_rep2.folded": 0,
+  "mid/perf_E6-5_P0_rep2.txt": 0,
+  "folded/perf_E6-5_P0_rep2.folded": 0,
+  "mid/perf_E6-6_P1_rep2.txt": 0,
+  "folded/perf_E6-6_P1_rep2.folded": 0,
+  "mid/perf_E6-6_P0_rep2.txt": 0,
+  "folded/perf_E6-6_P0_rep2.folded": 0
+ },
+ "profiles": {
+  "E6-1_P1_rep1": {
+   "mid_sha256": "95418add9a4fe3f87af98d197915daf6fde7d285e87f8810402033cdfae7dc90",
+   "attribution_sha256": "417cb788fd1f5cf5d53e5e1dbeb1c9b08fb154e8ae22ff7eed30315cfd44a2a9",
+   "run_sha256": "f6b2717ce0fe5e9a5824fd272531bd980e76c2dac869b756cdf13cffd59feebb",
+   "quality_sha256": "99e73fc6bcda6278f194ddc30840e11a54201eedf69662842028eb41d9a2c693",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 499505236
+   },
+   "attribution_in_region": 15899,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 16175
+  },
+  "E6-1_P0_rep1": {
+   "mid_sha256": "be36ed035a59b4a67734b5239a32dd6ae5af57c3ca92037364fca1198864d122",
+   "attribution_sha256": "e969604832cee51571ab6c5a016cd737d78a48fc641474124e1e01741e23c7d2",
+   "run_sha256": "1dc47c3e9f948b28e3e654f55a32ba78178c6afeef408b5032bde5e225a9ef37",
+   "quality_sha256": "2ed461f4be5699b2c1b9cf06047d8be7b329811fa6f9e9db06d7e6322079f70d",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 157600825
+   },
+   "attribution_in_region": 4047,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 4202
+  },
+  "E6-5_P1_rep1": {
+   "mid_sha256": "f5cd611117aff776b3508d05160a2105cd435486ce00da09710a418e9b41eed8",
+   "attribution_sha256": "f939c61ddcf6d8718c315fd21a33eee7c08026d615977dd44b026497ae8767b7",
+   "run_sha256": "c7f4769371d89d678150ea9e202d4c8b719e90a72737e917226aa94ff10a5719",
+   "quality_sha256": "7cc36370cedcff4d4bc7f7500daeb66dc7f03ae5f9873d229fa392892d5a35e7",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 449432615
+   },
+   "attribution_in_region": 15713,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 15975
+  },
+  "E6-5_P0_rep1": {
+   "mid_sha256": "65835a28cc63578a934c255002902290179fc8131ca32ce6abe03942ff1d10f6",
+   "attribution_sha256": "28b5e1f4399c9ccb0600f4083843f85bda5e35b8a0546379e53eece145f58c8c",
+   "run_sha256": "c3bc0ed6586d44c628be25fd20d8dc614e33313808386435ed63f650dd9ba6bb",
+   "quality_sha256": "c076ec0da177f4979bc0e424abf50b166c83c4d444f55de935d048efbfd1d2cf",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 172838463
+   },
+   "attribution_in_region": 4155,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 4317
+  },
+  "E6-6_P1_rep1": {
+   "mid_sha256": "5ce9314b35c900d8d0e119a86dccef6c4050bac678cada40e2d2f32c8ddf3817",
+   "attribution_sha256": "96b552656e78548d1f55fd187e416be6af2377a4403d15fa9c633effda383340",
+   "run_sha256": "f601aa46d224ce07fa9002d89f50bbd63e26a196608d8ab439258d5462097ad5",
+   "quality_sha256": "8398f43360e46ff362b025f6c64a35d4c61b87a008ee823ae98ce7ea8d2b9ffb",
+   "run_receipt": {
+    "warmup_ops": 30,
+    "region_ops": 1500,
+    "region_wall_ns": 477446381
+   },
+   "attribution_in_region": 14555,
+   "attribution_reps_denominator": 1500,
+   "quality_samples_total": 14866
+  },
+  "E6-6_P0_rep1": {
+   "mid_sha256": "b9e5877c47fe08470f43cf51d0c8ae2c79373b1407f134219e567d3acad064d5",
+   "attribution_sha256": "2572d3cdbdbb92c802f9135f2f737fdfba35b3a656b06d0fa629efc9a9fac2d6",
+   "run_sha256": "0a6eb110a31c78df627c973b9aed138252626dfbd0c9b7bd8eb956575733627f",
+   "quality_sha256": "281c48dd6c4f03d859e5a82378ea3c2ec5b632e764e50e816f410eb91ca51349",
+   "run_receipt": {
+    "warmup_ops": 30,
+    "region_ops": 1500,
+    "region_wall_ns": 385141841
+   },
+   "attribution_in_region": 10996,
+   "attribution_reps_denominator": 1500,
+   "quality_samples_total": 11150
+  },
+  "E6-1_P1_rep2": {
+   "mid_sha256": "b0a5c213578ee020973c4d7462198bb5ef00c890596561f74fdbe873d351e9b0",
+   "attribution_sha256": "7c0610a7b23aa75e024a995fb9451ed9f78eb94658b1e9d2d01b0281c49f5765",
+   "run_sha256": "3f4959888d4b06842ef107227ed1838c710ddafbf54ebce685d040e74ea24ef1",
+   "quality_sha256": "7eba3a6c4b1ce6ce56d55632e0e0b2ed7606f272b08282c6ede84bfdb5cb1f22",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 495535440
+   },
+   "attribution_in_region": 16104,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 16383
+  },
+  "E6-1_P0_rep2": {
+   "mid_sha256": "cb620078f809dfbb042b106baea74c8c02d27dad18cd75e5792d267b3956da0a",
+   "attribution_sha256": "99835a74f9810aa5a8b0fb8f262300d9c2ac0fd70f81f1bf72c9d027f93e3497",
+   "run_sha256": "b6dd826037c21c205b93d1a778d8b73de111ba4541770a42e62ca238ebda988f",
+   "quality_sha256": "fb63271dfe2844aef22faffff0c3223d763dc04aa70a273e508e1c68a813ea35",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 166166459
+   },
+   "attribution_in_region": 4041,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 4205
+  },
+  "E6-5_P1_rep2": {
+   "mid_sha256": "573ecdb0652e63b338e27d31c3064b4bcacad94d6b656cfba28bf03391e30f00",
+   "attribution_sha256": "f354019822e7d633f73a1ff7bcf7da28aeb3bd88247057f98b0f5e60ca0527a3",
+   "run_sha256": "795d703e72e86c0c4c21f2ada3a629b398105fc7bb5c410c49966f74f05a7686",
+   "quality_sha256": "464337eea2d27c488f9069aab13453ff1b8401dc939b1ee5256f20f65903a88e",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 509165207
+   },
+   "attribution_in_region": 15899,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 16159
+  },
+  "E6-5_P0_rep2": {
+   "mid_sha256": "3fbb7fab852525b3417a2bf32af9f12ee804f79461611cfbe1ffa0e34b2f283c",
+   "attribution_sha256": "5c9402e3e0739333dd47171be2dcfca4cfff5eebed52db07a13a3d8ec4ef8735",
+   "run_sha256": "4f94330a00f6d49589711997008f0b86d6acd3efbf60481769b35e477dfa2140",
+   "quality_sha256": "403362d0ebaaea3973fec590e815c81f3326f89065fb61814766162f5f640fb0",
+   "run_receipt": {
+    "warmup_ops": 20,
+    "region_ops": 100,
+    "region_wall_ns": 164955946
+   },
+   "attribution_in_region": 3979,
+   "attribution_reps_denominator": 100,
+   "quality_samples_total": 4138
+  },
+  "E6-6_P1_rep2": {
+   "mid_sha256": "103a4475281fc091c09fc322e2aa9177fa32fb2a9b553704b1cf5988e71f9373",
+   "attribution_sha256": "b366940ea90b618ee665ea359c2328c5f93b14b32a569a4f775469701b78ee55",
+   "run_sha256": "a4fe4bb7d25f1ce039dc2dc02f9ffede45f7d0ec8742fb109ba31bf5f909c4af",
+   "quality_sha256": "06b977fb43201001e728827d1495bea4e747acdb3899bb99b3f543918fa50d2f",
+   "run_receipt": {
+    "warmup_ops": 30,
+    "region_ops": 1500,
+    "region_wall_ns": 449591898
+   },
+   "attribution_in_region": 14566,
+   "attribution_reps_denominator": 1500,
+   "quality_samples_total": 14872
+  },
+  "E6-6_P0_rep2": {
+   "mid_sha256": "283c134d6f0bca250bab7ace5096d508a140e36570df970cb0e4bb0bddaa8da0",
+   "attribution_sha256": "4ea7d9beccc900bfaf1a3aa82ae87761c20d14814cada501f63112b268402e78",
+   "run_sha256": "56d3122ba3abc80a7d744ece60900a6a5e9a7eb371aed135e614456da48694ee",
+   "quality_sha256": "e3538292d6259f7e98dacb949ced8da43a7db6ff1a9de25da59dac1948b7a5ca",
+   "run_receipt": {
+    "warmup_ops": 30,
+    "region_ops": 1500,
+    "region_wall_ns": 412990156
+   },
+   "attribution_in_region": 11865,
+   "attribution_reps_denominator": 1500,
+   "quality_samples_total": 12089
+  }
+ },
+ "operation_counts": {
+  "E6-1": "20 warmup + 100 formal (identical within the P1/P0 pair)",
+  "E6-5": "20 warmup + 100 formal (identical within the P1/P0 pair)",
+  "E6-6": "30 warmup + 1500 formal (identical within the P1/P0 pair)"
+ },
+ "conclusion": {
+  "warmup_inside_perf_window": true,
+  "fold_filter_distinguishes_phase": false,
+  "historical_denominator": "region_ops (formal only)",
+  "historical_numerator": "all retained marker-containing samples (warmup + formal, not separable by call path in retained evidence)",
+  "true_warmed_only_strictly_recoverable": "NO \u2014 no recorded phase boundary; the timestamp+wall-duration reconstruction in phase_window.json is an ESTIMATE (sensitivity-only)"
+ }
+}
