@@ -17,7 +17,8 @@ research/            owns experimental mechanisms, benchmark evidence,
 
 crates/              owns production/reusable Markit crates
                      (currently: markit-composition, the generic
-                     composition kernel; future document/markdown-api/
+                     composition kernel, and markit-app, the thin
+                     composition root; future document/markdown-api/
                      workbench/platform crates belong here as authorized).
 
 apps/                owns executable application composition roots
@@ -28,6 +29,9 @@ docs/product/        owns product contracts and requirements.
 docs/research/       owns research authority records.
 
 scripts/             owns repository automation.
+
+tools/               owns product boundary tooling
+                     (tools/check_product_boundaries.py, enforced by CI).
 ```
 
 Do not create speculative empty directories; create a root only when its
@@ -83,6 +87,7 @@ crates/**, apps/**     → production product code
 docs/product/**        → product-facing contracts
 docs/research/**       → research records
 scripts/**             → repository automation
+tools/**               → product boundary tooling
 ```
 
 If a path does not make that clear, the layout — not the reader — is wrong.
