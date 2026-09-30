@@ -291,39 +291,6 @@ mod tests {
         );
     }
 
-    /// Withdrawing the provider degrades the surviving consumer to Pending
-    /// over its vanished dependency — plugin-authored edition of the
-    /// kernel-mediated withdrawal regression.
-    #[test]
-    fn withdrawing_the_provider_degrades_the_consumer_to_pending() {
-        let mut runtime = MarkitApp::new();
-        runtime
-            .register_component(probe_provider("probe_provider"))
-            .expect("legal");
-        runtime
-            .register_component(ComponentSpec::new("probe_consumer").requires::<ProbeCapability>())
-            .expect("legal");
-        runtime
-            .revise_desired(vec![
-                desired_probe("probe_provider"),
-                desired_probe("probe_consumer"),
-            ])
-            .expect("legal");
-
-        // Withdraw only the provider; the consumer stays desired.
-        runtime
-            .revise_desired(vec![desired_probe("probe_consumer")])
-            .expect("legal");
-
-        let snap = runtime.composition_snapshot();
-        assert_eq!(
-            snap.fibers.get("probe_consumer").map(|f| f.state),
-            Some(FiberState::Pending),
-            "the consumer remains desired and degrades over its vanished dependency"
-        );
-        assert_eq!(snap.capabilities.get("Probe"), Some(&None));
-    }
-
     /// Composition regression at the root: K0 legally instantiates several
     /// desired entries of one plugin-authored component, and withdrawing
     /// one instance must leave the surviving sibling's kernel-mediated

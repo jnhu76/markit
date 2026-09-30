@@ -64,6 +64,15 @@ permit, and the temp-file prefix `qianqian_lifecycle_` →
 3. **`tests/real_resource_lifecycle/main.rs` header** — the donor
    disclaimer named "audio-device safety" (donor product domain); the
    same disclaimer now says "device-driver safety".
+4. **Minimality-pass removals (Issue #106 slice; two donor tests)** —
+   `withdrawing_the_provider_degrades_the_consumer_to_pending` (donor's
+   own comment: a "plugin-authored edition" of the kernel-mediated
+   withdrawal regression, already proven by the markit-composition
+   oracle suites, with `revise_desired` a pure passthrough) and the
+   W5 witness `root_disposal_drains_all_real_resources` (its assertions
+   are the conjunction of W1 and W2, which already cover the
+   provision-bearing and owner-local fiber classes at root disposal).
+   No production behavior changed.
 
 ## Verification
 
