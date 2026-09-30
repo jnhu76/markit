@@ -158,20 +158,22 @@ C. TRUE_WARMED_ONLY        formal-phase samples only / region_ops
   collection time; the retained evidence cannot deterministically
   isolate formal from warmup execution. A constrained *estimate* of C
   exists (timestamp window anchored by the run receipts'
-  `region_wall_ns`; boundary shifts of ±2 ms move the split ≤ ±0.4%),
+  `region_wall_ns`; ±2 ms boundary shifts move the formal/warmup split
+  by ≤ 0.5% on the P1 profiles and ≤ 1.3% on the small-count P0
+  profiles, ≤ 64 samples in all cases),
   stored under the erratum namespace as **sensitivity-only** evidence.
   C must not be derived from A by a simple arithmetic factor — warmup
   and formal distributions need not be identical (and rep2 of E6-1/P1
   runs its warmup ≈ 7.9% hotter per op; E6-6/P0 rep2 ≈ 49% hotter on
   small counts), even though rep1 warmup/formal rates agree within
-  ±2.4%).
+  ±2.4%.
 
 No profile was re-collected for this erratum.
 
 ### WHAT REMAINS VALID
 
 - All *relative* structure of the retained attribution: bucket ordering,
-  the P1/P0 ratio per cell (3.93/3.78/1.32 → 3.91/3.76/1.32 under the
+  the P1/P0 ratio per cell (rep1: 3.93/3.78/1.32 → 3.91/3.76/1.32 under the
   warmed-only window estimate), the cancellation rows, the below-floor
   rows.
 - The differential **shares** are mathematically invariant under the
@@ -348,8 +350,9 @@ owners, or any state a later edit or export observes.
 
 ### ORIGINAL OBSERVATION
 
-L1 §G published required-effect counts (1 / 11 / 321 / 4482 …) as the
-"eager obligation floor".
+L1 §G published required-effect counts (1 / 11 / 321 / 4482 …) under the
+"eager obligation floor" reading (the phrase is the frozen ledger code's
+own label, `effects.rs`).
 
 ### CORRECTED INTERPRETATION
 
@@ -524,17 +527,20 @@ New, append-only:
 `research/benchmarks/markdown-ast-update/results/horse-a-v2-l2-100-erratum/`
 (`erratum.json`, `warmup_audit.json`, `phase_window.json`,
 `sensitivity.md`, `SHA256SUMS`, `README.md`, plus the two replay scripts).
-Every derived artifact records its source historical artifacts, source
-SHA-256s, calculation, denominator, assumption, and sensitivity-only
-status; the derivation reproduces all 12 committed attribution buckets
+Every derived artifact records its source historical artifacts,
+calculation, denominator, assumption, and sensitivity-only status;
+source SHA-256s for the audited harness/analysis surfaces are recorded
+in `warmup_audit.json`, and namespace identity in `SHA256SUMS`. The
+derivation reproduces all 12 committed attribution buckets
 integer-exact before any phase claim (replay gate 12/12). No historical
 attribution JSON was copied or modified.
 
 ## 9. GitHub history
 
 Issue #100 remains CLOSED; no existing comment on #100, #98, or the PRs
-was edited. The erratum may later be posted to #100 as a **new
-append-only comment** after this PR is reviewed — not before.
+was edited by this erratum work. The erratum may later be posted to
+#100 as a **new append-only comment** after this PR is reviewed — not
+before.
 
 ## 10. Independent audit record (performed before opening the PR)
 
@@ -554,8 +560,8 @@ RefTable/complete-state claim vs inline.rs/facts.rs VERIFIED (ordered, duplicate
 effect-ledger semantics vs effects.rs          VERIFIED (multiset/class-level
                                                 heuristics; separate existence field)
 P1/P0 obligation difference vs full_build.rs + decompose.rs VERIFIED
-phase-window reconstruction                     replay gate 12/12; boundary
-                                                sensitivity quantified (±2 ms → ≤ ±0.4%)
+phase-window reconstruction                     replay gate 12/12; ±2 ms split
+                                                movement ≤ 0.5% P1 / ≤ 1.3% P0 profiles
 P0 = 0   P1 = 0   P2 = 3 (draft precision-wording nits — ±2% vs ±2.4%
                 warmup/formal rate bound, ≤0.4 pp vs +0.41 pp share
                 shift, P1 totals range 130.6–132.6 — found by this

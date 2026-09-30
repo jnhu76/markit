@@ -110,11 +110,14 @@ Certificate bucket (P1 arm only; P0 certificate is 0 everywhere):
    under uniform rescaling. Warmup inclusion never changed the published
    *shares* — only the absolute samples/op magnitudes.
 2. **Absolute magnitudes carry a uniform ≈ ×1.20 inflation on
-   E6-1/E6-5** (warmup ops are ≈ 20/120 of profiled ops with per-op rates
-   within ±2%): e.g. certificate 103.79 → ≈ 86.4 warmed-only samples/op;
+   E6-1/E6-5** (warmup ops are ≈ 20/120 of profiled ops with rep1
+   per-op rates within ±2.4%): e.g. certificate 103.79 → ≈ 86.4
+   warmed-only samples/op;
    totals 158.99/40.47 → 132.07/33.78. On E6-6 the inflation is ≈ ×1.02.
-3. **C moves the certificate share by at most +0.41 percentage points**
-   on E6-1/E6-5 (max: E6-1 rep2 87.7% → 88.1%). The L2 report's
+3. **C moves the certificate share by at most 0.41 percentage points in
+   absolute value**
+   on E6-1/E6-5 (max: E6-1 rep2 87.7% → 88.1%; E6-5 rep2 moves
+   −0.1 pp). The L2 report's
    qualitative localization — the P1−P0 construction excess is strongly
    concentrated in the certificate-barrier lookup context on E6-1/E6-5 —
    **survives the warmed-only reconstruction** (shares 87.8–90.0%).
