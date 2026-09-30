@@ -104,7 +104,15 @@ no token or assertion changes:
    `"decoder"` → `"gateway"` (doc comments and local variables with it).
    Fixture behavior unchanged.
 9. **Test-suite headers** — donor stage references ("#70 Stage N") are
-   prefixed "donor issue #70" so they cannot be misread as Markit issues.
+   prefixed "donor issue #70" so they cannot be misread as Markit issues,
+   and two donor spec-path citations gained an explicit "donor repository:"
+   qualifier (`tests/lifecycle_oracles.rs` TLA-model citation;
+   `tests/staged_mount_oracles.rs` TLA+ counterexample citation).
+10. **Donor-attribution comment rewording in the crate manifest** — the
+   manifest was written fresh for Markit (item 1), so its comments differ
+   from the donor's wording beyond the rename (the firewall sentence names
+   research mechanisms and product crates; the `kani`-cfg comment says
+   "transplanted from the donor").
 
 ## License
 
