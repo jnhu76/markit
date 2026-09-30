@@ -65,8 +65,13 @@ and this provenance record itself.
 
 ## Local adaptations (the complete list)
 
-Everything not listed here is byte-equivalent to the donor apart from the
-crate-identifier rename `qianqian[-_]composition` → `markit[-_]composition`:
+Everything not listed here is byte-equivalent to the donor apart from two
+mechanical, rename-determined classes: the crate-identifier rename
+`qianqian[-_]composition` → `markit[-_]composition`, and the rustfmt line
+reflow that shorter rename permits (a few multi-line call expressions
+rejoin onto one line; e.g. `tests/common/mod.rs` `ActivationError::new`
+calls, `tests/adversarial_review.rs` `DuplicateCapabilityName` matches) —
+no token or assertion changes:
 
 1. **Crate identity** — package `qianqian-composition` → `markit-composition`,
    first workspace member of the new root product workspace

@@ -73,7 +73,10 @@ fn kernel_sources_reference_no_repository_boundaries() {
     ];
     // Case-sensitive tokens that must never appear in production sources:
     // the research area and its mechanisms, donor product crates and media
-    // domain, and Markit UI/platform/Markdown surfaces.
+    // domain, and Markit UI/platform/Markdown surfaces. Tokens are matched
+    // as raw substrings on purpose: the scan is fail-closed, so a future
+    // incidental false positive fails loudly and is re-worded here, never
+    // silently suppressed (today the sources are hit-free).
     const FORBIDDEN: &[&str] = &[
         "research/",
         "benchmark",
