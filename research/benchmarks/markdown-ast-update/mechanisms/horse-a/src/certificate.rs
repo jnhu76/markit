@@ -80,6 +80,13 @@ use crate::state::Owner;
 use crate::structural::{ForbiddenKind, HorseAStructuralSink};
 use markit_mdbench_shared_grammar::RootBlankEvent;
 
+/// Step 2R experimental mechanism identity (#95 Step 2R; issue #104): the
+/// same-authority minimum certificate-matching repair over frozen Horse-A
+/// v1. V itself is frozen and untouched at master `352e214`; a binary built
+/// from a tree carrying this constant is the R mechanism, never V. The
+/// identity must never enter `ReadyDocument` or any persisted state.
+pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
+
 /// Install the persistent outgoing certificates of one Owner sequence from
 /// real parser evidence (§6; data-model §8.3): a certificate exists only at
 /// an INTERIOR boundary, `cuts[i + 1]` for `i < owners.len() - 1`, and only
@@ -118,6 +125,37 @@ use markit_mdbench_shared_grammar::RootBlankEvent;
 /// parser evidence). Callers always pass exactly the FRESH Owners being
 /// assembled — retained suffix certificates are never rewritten here, and
 /// the site charges that sentinel zero on every execution.
+///
+/// # Step 2R matching traversal (`CERTIFICATE_MATCH_REPAIR_ID`)
+///
+/// The matcher is a single forward merge traversal over two sequences the
+/// callers construct strictly increasing, replacing V's per-boundary full
+/// filter scan (V = master `352e214`, where every examined boundary
+/// exhausted `barriers.iter().filter(..)` — exactly `N_b × B` cut
+/// inspections per call):
+///
+/// - `cuts[1..=boundary_count]` strictly increasing — runtime-enforced by
+///   `CoveragePlan::build_with_base` at both callers;
+/// - `barriers` strictly increasing by `cut` — single-scan collection
+///   (one `parse_region_observed` per call, one forward per-line pass, at
+///   most one event per dispatched line, append-only observers).
+///
+/// A barrier is *examined* by the cursor at most once; events skipped
+/// before a boundary have `cut < boundary <` every later boundary and can
+/// never match again. The match predicate stays exact `cut` equality.
+/// Duplicate detection is preserved with V's semantics and scope: only
+/// examined interior boundaries detect duplicates (one adjacent-element
+/// peek — under the stated monotonicity a second same-cut event, if any,
+/// is exactly the next element), the check runs BEFORE any support check,
+/// the lowest examined boundary errors first, and the error class/text is
+/// V's. Duplicates at non-examined cuts stay silently ignored, exactly as
+/// in V.
+///
+/// The monotone precondition is a documented caller invariant (proven at
+/// both callers), not re-checked here: this traversal is total and adds no
+/// new panic mode on violative input (which would have undefined matching
+/// behavior, is unreachable from both callers, and must not be relied on).
+/// The pre-existing unchecked `ev.cut - base` keeps V's exact arithmetic.
 pub(crate) fn persist_interior_certificates(
     owners: &mut [Owner],
     cuts: &[usize],
@@ -137,16 +175,44 @@ pub(crate) fn persist_interior_certificates(
     } else {
         owners.len().saturating_sub(1)
     };
+    let mut cursor = 0usize;
     for i in 0..boundary_count {
         let boundary = cuts[i + 1];
-        let mut candidates = barriers.iter().filter(|ev| ev.cut == boundary);
-        let Some(ev) = candidates.next() else {
-            continue;
+        // Advance past every barrier that ends before this boundary.
+        // One diagnostic inspection per barrier cut compared here; the
+        // batch is charged once per examined boundary, never per
+        // comparison (see `certificate_barrier_inspections`).
+        let mut inspected = 0u64;
+        while cursor < barriers.len() {
+            inspected += 1;
+            if barriers[cursor].cut >= boundary {
+                break;
+            }
+            cursor += 1;
+        }
+        sink.certificate_barrier_inspections(inspected);
+        let Some(ev) = barriers.get(cursor) else {
+            // Every barrier is behind this boundary; later boundaries are
+            // larger still, so nothing further can match (monotonicity).
+            break;
         };
-        if candidates.next().is_some() {
-            return Err(format!(
-                "multiple root blank barriers certify the same boundary {boundary}"
-            ));
+        if ev.cut > boundary {
+            // First not-yet-consumed barrier ends past this boundary: no
+            // candidate here, and the barrier stays pending for later,
+            // larger boundaries.
+            continue;
+        }
+        // ev.cut == boundary: the exact-equality match. V searched the
+        // whole remainder for a second match BEFORE any support check;
+        // under the monotone collection the second match, if any, is
+        // exactly the adjacent element.
+        if let Some(next) = barriers.get(cursor + 1) {
+            sink.certificate_barrier_inspections(1);
+            if next.cut == boundary {
+                return Err(format!(
+                    "multiple root blank barriers certify the same boundary {boundary}"
+                ));
+            }
         }
         let base = cuts[i];
         // The blank line must lie strictly inside the left Owner's coverage:
@@ -180,6 +246,9 @@ pub(crate) fn persist_interior_certificates(
             },
         });
         sink.certificate_write();
+        // The matched barrier is consumed: it certified this boundary and
+        // every later boundary is strictly larger (monotonicity).
+        cursor += 1;
     }
     // Defended-site sentinel assertion: only the fresh Owners passed in
     // were touched; the retained suffix's certificates are structurally

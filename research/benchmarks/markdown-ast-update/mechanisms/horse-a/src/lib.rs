@@ -167,8 +167,11 @@ mod i4_tests;
 #[cfg(test)]
 mod i5_tests;
 
+#[cfg(test)]
+mod step2r_tests;
+
 pub use adapter::{HorseAMechanism, HORSE_A_MECHANISM_ID};
-pub use certificate::{RestartCertificate, RestartSupport};
+pub use certificate::{CERTIFICATE_MATCH_REPAIR_ID, RestartCertificate, RestartSupport};
 pub use full_build::{full_build, BuildError};
 pub use state::{
     Aggregate, AstPayload, AvlNode, InterpretationId, Owner, OwnerPayload, OwnerSeq, ReadyDocument,
