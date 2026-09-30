@@ -141,16 +141,19 @@ pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
 ///   (one `parse_region_observed` per call, one forward per-line pass, at
 ///   most one event per dispatched line, append-only observers).
 ///
-/// **Eligibility gate (amendment v3).** Legal production parsing always
-/// satisfies both orderings, so the fast path always applies there. The
-/// gate itself is an allocation-free O(B) scan (`B - 1` cut comparisons;
-/// vacuously eligible for `B <= 1`) that re-verifies the barrier ordering
-/// before entering the fast traversal. Any slice that is not strictly
-/// increasing by `cut` — a duplicate or decreasing event, unreachable
-/// from legal parser generation — is routed to
-/// [`v1_defensive_fallback`], which is the frozen V matcher copied
-/// verbatim. Non-monotone defensive input therefore keeps V's exact
-/// seam semantics: same whole-slice duplicate search, same examined-
+/// **Eligibility gate (amendment v3, extended after review E).** Legal
+/// production parsing always satisfies both orderings, so the fast path
+/// always applies there. The gate itself is an allocation-free O(B + N_b)
+/// scan that re-verifies BOTH orderings the traversal relies on — the
+/// barriers strictly increasing by `cut` AND the cuts strictly increasing
+/// (the exhaustion break "nothing later can match" is unsound for
+/// decreasing cuts) — before entering the fast traversal. Any slice pair
+/// violating either ordering — a duplicate or decreasing event, or
+/// non-monotone cuts, all unreachable from legal parser generation — is
+/// routed to [`v1_defensive_fallback`], which is the frozen V matcher
+/// copied verbatim and is defined on arbitrary input. Defensive input
+/// therefore keeps V's exact seam semantics on EVERY shape: same
+/// whole-slice duplicate search, same examined-
 /// boundary scope, same precedence (lowest examined duplicate boundary
 /// errors first), same error text, same support checks, silent skips,
 /// `certificate_write` accounting, EOF/local-convergence behavior and
@@ -158,24 +161,27 @@ pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
 /// state, heap allocation, or new error class is introduced, and the
 /// traversal stays total (no new panic mode) on any input.
 ///
-/// A barrier is *examined* by the cursor at most once; events skipped
-/// before a boundary have `cut < boundary <` every later boundary and can
-/// never match again. The match predicate stays exact `cut` equality.
+/// A barrier at the cursor is *stopped at* by at most one boundary and
+/// advanced past at most once — except a support-rejected exact match,
+/// which stays at the cursor and is compared once more at the next
+/// examined boundary (the `R` term of the fast-match bound below). The
+/// match predicate stays exact `cut` equality.
 /// Duplicate detection preserves V's semantics and scope on BOTH routes:
 /// only examined interior boundaries detect duplicates, the check runs
 /// BEFORE any support check, the lowest examined boundary errors first,
 /// and the error class/text is V's. On the fast path the duplicate check
 /// is the adjacent-element peek below — provably inert under the gate
-/// (strict monotonicity makes a second same-cut event impossible), kept
-/// as a defended site; the real duplicate defense for violative input is
-/// the fallback's whole-slice V scan. Duplicates at non-examined cuts
-/// stay silently ignored, exactly as in V.
+/// (strict monotonicity of both sequences makes a second same-cut event
+/// impossible), kept as a defended site; the real duplicate defense for
+/// violative input is the fallback's whole-slice V scan. Duplicates at
+/// non-examined cuts stay silently ignored, exactly as in V.
 ///
 /// # Work accounting (amendment v3, proved against this code)
 ///
-/// - `ORDER_CHECK_WORK = max(B - 1, 0)` cut comparisons for the
-///   eligibility gate; allocation-free; NOT charged to the diagnostic
-///   counter (its semantics are fixed below).
+/// - `ORDER_CHECK_WORK = max(B - 1, 0) + boundary_count` cut comparisons
+///   for the eligibility gate (barriers scan + cuts scan); allocation-
+///   free; NOT charged to the diagnostic counter (its semantics are
+///   fixed below).
 /// - `FAST_MATCH` (what `certificate_barrier_inspections` counts: seek
 ///   iterations + duplicate peeks) `<= B + N_b + R`, where `R` is the
 ///   number of exact-cut matches whose support is not persistable (each
@@ -188,8 +194,9 @@ pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
 ///   peeks at most once (`P <= M = I + R`), so
 ///   `A + T + P <= B + N_b + R - U`.
 /// - Total legal-path matching + eligibility work is therefore
-///   `<= 2B + N_b + R - 1` — linear in `B + N_b`, against V's exact
-///   `N_b × B`.
+///   `<= 2B + 2*boundary_count + R - 1` (empty shape `B = 0`,
+///   `boundary_count = 0`: no work), i.e. linear in `B + N_b`, against
+///   V's exact `N_b × B`.
 /// - The defensive fallback route is exactly V's `N_b × B` predicate
 ///   evaluations (the frozen algorithm's own cost) and exists only for
 ///   inputs outside legal production generation.
@@ -218,11 +225,14 @@ pub(crate) fn persist_interior_certificates(
     } else {
         owners.len().saturating_sub(1)
     };
-    // Amendment v3 eligibility gate: strict monotonicity, checked
-    // allocation-free in one forward pass. Legal production parsing is
-    // always eligible (R-C7 collection invariants); anything else takes
-    // the frozen-V fallback below.
-    let strictly_increasing = barriers.windows(2).all(|w| w[0].cut < w[1].cut);
+    // Amendment v3 eligibility gate (extended after review E): strict
+    // monotonicity of BOTH sequences the traversal relies on, checked
+    // allocation-free in one forward pass each. Legal production parsing
+    // is always eligible (R-C2 collection invariants + CoveragePlan
+    // runtime cuts checks at both callers); anything else takes the
+    // frozen-V fallback below, which is defined on arbitrary input.
+    let strictly_increasing = barriers.windows(2).all(|w| w[0].cut < w[1].cut)
+        && cuts[..=boundary_count].windows(2).all(|w| w[0] < w[1]);
     if !strictly_increasing {
         return v1_defensive_fallback(owners, cuts, barriers, boundary_count, sink);
     }
@@ -354,7 +364,11 @@ fn v1_defensive_fallback(
         };
         // `None` (BOF) is legal support and stays None; an LF before the
         // left Owner's base cannot be represented Owner-relatively, so that
-        // candidate is non-persistable too.
+        // candidate is non-persistable too. Unreachable for well-formed
+        // events (the seam always reports `preceding_lf == line_start - 1`,
+        // and `line_start >= base + 1` above puts that LF at or after
+        // `base`) — skipped rather than errored so no transient evidence
+        // shape can abort a legal state.
         let rel_preceding = match ev.preceding_lf {
             None => None,
             Some(lf) => match lf.checked_sub(base) {

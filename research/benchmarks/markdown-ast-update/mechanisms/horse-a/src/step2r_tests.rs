@@ -18,9 +18,11 @@
 //!    charged tally is asserted at exact values on a hand-traced case and
 //!    under the fast-match bound `B + N_b + R` (amendment v3: `R` =
 //!    support-rejected exact matches, 0 on these shapes) — and strictly
-//!    below V — on a dense case. The eligibility gate's `B - 1` order
-//!    comparisons are NOT part of that counter (analytical accounting
-//!    only). Non-monotone defensive slices take the frozen-V fallback
+//!    below V — on a dense case. The eligibility gate's order-check
+//!    comparisons (barriers scan AND cuts scan) are NOT part of that
+//!    counter (analytical accounting only). Non-monotone defensive
+//!    slices — non-monotone BARRIERS (D1–D7) or non-monotone CUTS
+//!    (D8, review E's demonstrated class) — take the frozen-V fallback
 //!    and charge no fast-matcher inspections at all.
 //! 3. **End-to-end same-authority** — through the public update API:
 //!    R-produced READY states must equal the from-scratch clean
@@ -147,6 +149,23 @@ fn blank_owners(cuts: &[usize]) -> Vec<Owner> {
         .collect()
 }
 
+/// The same shape, tolerating NON-MONOTONE cuts (review E P1: the strict
+/// subtraction above panics on a decreasing cut, which made every other
+/// battery case structurally unable to test cuts-ordering violations).
+/// `persist_interior_certificates` never reads `coverage_len`, so the
+/// saturating form is exact for seam-differential purposes.
+fn blank_owners_saturating(cuts: &[usize]) -> Vec<Owner> {
+    cuts[..cuts.len() - 1]
+        .iter()
+        .enumerate()
+        .map(|(i, &base)| Owner {
+            coverage_len: cuts[i + 1].saturating_sub(base),
+            payload: OwnerPayload::TriviaOnly,
+            outgoing_restart: None,
+        })
+        .collect()
+}
+
 struct Differential {
     /// (result, owners, certificate_writes)
     r: (Result<(), String>, Vec<Owner>, Observed),
@@ -156,8 +175,19 @@ struct Differential {
 }
 
 fn run_differential(cuts: &[usize], barriers: &[RootBlankEvent], last: bool) -> Differential {
-    let mut owners_r = blank_owners(cuts);
-    let mut owners_v = blank_owners(cuts);
+    run_differential_with_owners(cuts, barriers, last, blank_owners(cuts))
+}
+
+/// Differential driver over caller-supplied Owners (the non-monotone-cuts
+/// route: the plain helper cannot even construct those shapes).
+fn run_differential_with_owners(
+    cuts: &[usize],
+    barriers: &[RootBlankEvent],
+    last: bool,
+    owners_seed: Vec<Owner>,
+) -> Differential {
+    let mut owners_r = owners_seed.clone();
+    let mut owners_v = owners_seed;
 
     let mut sink_r = RecordingHorseAStructuralSink::new();
     let r = persist_interior_certificates(&mut owners_r, cuts, barriers, last, &mut sink_r);
@@ -185,8 +215,7 @@ fn run_differential(cuts: &[usize], barriers: &[RootBlankEvent], last: bool) -> 
 }
 
 #[track_caller]
-fn assert_v_r_parity(cuts: &[usize], barriers: &[RootBlankEvent], last: bool) -> Differential {
-    let d = run_differential(cuts, barriers, last);
+fn assert_parity(d: &Differential, cuts: &[usize], last: bool) {
     assert_eq!(
         d.r.0, d.v.0,
         "R and V disagree on the result class/message for cuts {cuts:?} last={last}"
@@ -199,6 +228,25 @@ fn assert_v_r_parity(cuts: &[usize], barriers: &[RootBlankEvent], last: bool) ->
         d.r.2, d.v.2,
         "R and V disagree on certificate_write charges for cuts {cuts:?} last={last}"
     );
+}
+
+#[track_caller]
+fn assert_v_r_parity(cuts: &[usize], barriers: &[RootBlankEvent], last: bool) -> Differential {
+    let d = run_differential(cuts, barriers, last);
+    assert_parity(&d, cuts, last);
+    d
+}
+
+/// The saturating-Owner twin: full parity on shapes the plain helper
+/// cannot construct (non-monotone cuts).
+#[track_caller]
+fn assert_v_r_parity_saturating(
+    cuts: &[usize],
+    barriers: &[RootBlankEvent],
+    last: bool,
+) -> Differential {
+    let d = run_differential_with_owners(cuts, barriers, last, blank_owners_saturating(cuts));
+    assert_parity(&d, cuts, last);
     d
 }
 
@@ -570,6 +618,82 @@ fn d7_fallback_support_rejection_still_skips_like_v() {
         "eligible slice takes the fast path (peek after the rejected match)"
     );
     assert_eq!(fast.r.1, d.r.1);
+}
+
+/// Review-E P0 class (fixed by extending the gate to the cuts ordering):
+/// NON-MONOTONE CUTS with gate-eligible (strictly increasing, here
+/// single-element) barriers. V's filter loop is defined on arbitrary
+/// cuts; the fast traversal's exhaustion break ("nothing later can
+/// match") assumes cuts strictly increasing. With only a barriers-side
+/// gate, cuts [0,10,3,6] made R break at boundary 10 and install nothing
+/// while V installed owner 2's certificate {Some(0), 1..3}. Both shapes
+/// below are E's demonstrated inputs; the full fallback must reproduce V
+/// exactly on them.
+#[test]
+fn d8_non_monotone_cuts_route_to_v_fallback() {
+    // Shape 1 (E's counterexample): V installs owners[2] = {Some(0), 1..3}
+    // (boundary 6 matches; base = cuts[2] = 3).
+    let cuts = [0usize, 10, 3, 6];
+    let barriers = [ev(4, 5, Some(3))]; // cut 6; single barrier: vacuously monotone
+    let d = assert_v_r_parity_saturating(&cuts, &barriers, true);
+    assert!(d.r.0.is_ok());
+    assert_eq!(
+        d.r.1[2].outgoing_restart,
+        Some(RestartCertificate {
+            support: RestartSupport {
+                preceding_lf: Some(0),
+                blank_line: 1..3
+            }
+        }),
+        "V installs owner 2 here; R must reproduce it via the fallback"
+    );
+    assert_eq!(d.r.1[0].outgoing_restart, None);
+    assert_eq!(d.r.1[1].outgoing_restart, None);
+    assert_eq!(d.r.2, d.v.2);
+    assert_eq!(d.r.2, Observed::known(1));
+    assert_eq!(d.r_inspections, 0, "fallback route charges no inspections");
+
+    // Shape 2 (E's second input): cuts [0,100,5,6], boundary 6's match is
+    // support-rejected (line_start 4 underflows base 5) — V skips it, and
+    // R must skip it identically (the fast path's exhaustion break would
+    // have ended the loop at boundary 100 already).
+    let cuts = [0usize, 100, 5, 6];
+    let barriers = [ev(4, 5, Some(3))]; // cut 6
+    let d = assert_v_r_parity_saturating(&cuts, &barriers, true);
+    assert!(d.r.0.is_ok());
+    assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+    assert_eq!(d.r_inspections, 0);
+
+    // Non-monotone cuts AND non-monotone barriers together: still exact V
+    // parity on the fallback route (duplicate at examined boundary 10
+    // errors; the duplicate at unexamined cut 9 below stays silent).
+    let cuts = [0usize, 10, 3, 20];
+    let barriers = [ev(1, 9, Some(0)), ev(5, 2, Some(4)), ev(6, 8, Some(5)), ev(1, 9, Some(0))];
+    let d = assert_v_r_parity_saturating(&cuts, &barriers, true);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 10".to_string())
+    );
+}
+
+/// The cuts gate must not misroute LEGAL shapes: a strictly increasing
+/// cuts sequence over a prefix-equal boundary set still takes the fast
+/// path (charge > 0), and a single-owner shape (boundary_count 0 or 1,
+/// vacuous cuts window) stays on the fast route.
+#[test]
+fn d9_the_cuts_gate_keeps_legal_shapes_on_the_fast_path() {
+    // Strictly increasing cuts + monotone barriers: fast path.
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(4, 9, Some(3))], false);
+    assert!(d.r.0.is_ok());
+    assert!(d.r_inspections > 0);
+
+    // boundary_count == 0 (single owner, last=false): the cuts window is
+    // empty; the fast path examines nothing and V (the filter loop) does
+    // nothing either — parity with zero charges... the seek still charges
+    // a 0-batch per examined boundary, of which there are none, so 0.
+    let d = assert_v_r_parity(&[0, 10], &[], false);
+    assert!(d.r.0.is_ok());
+    assert_eq!(d.r_inspections, 0);
 }
 
 // ---------------------------------------------------------------------------
