@@ -1,0 +1,561 @@
+{
+  "cells": [
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4795857,
+          "median_ns": 4694062,
+          "min_ns": 4609910,
+          "p25_ns": 4656013,
+          "p75_ns": 4917318,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4805730,
+          "median_ns": 4692118,
+          "min_ns": 4612943,
+          "p25_ns": 4656228,
+          "p75_ns": 4925757,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1284137,
+          "median_ns": 1228492,
+          "min_ns": 1203722,
+          "p25_ns": 1210895,
+          "p75_ns": 1359302,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 701727,
+          "median_ns": 682374,
+          "min_ns": 665243,
+          "p25_ns": 677337,
+          "p75_ns": 721102,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-1-LOSE-DUP-CHANGE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE losing-duplicate destination changes while the effective first-wins binding is unchanged; 64 occupied slots x 5 links = 320 consumers unaffected",
+      "vs_a": {
+        "H0_REFERENCE": 3.820995171315727,
+        "H2_REFERENCE": 6.8790164924220445,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 1.0004143118310325
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4657929,
+          "median_ns": 4610294,
+          "min_ns": 4562395,
+          "p25_ns": 4593143,
+          "p75_ns": 4641438,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4663957,
+          "median_ns": 4612867,
+          "min_ns": 4546671,
+          "p25_ns": 4591528,
+          "p75_ns": 4666022,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1232052,
+          "median_ns": 1213251,
+          "min_ns": 1198260,
+          "p25_ns": 1205323,
+          "p75_ns": 1226063,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 622434,
+          "median_ns": 614561,
+          "min_ns": 595041,
+          "p25_ns": 610948,
+          "p75_ns": 619230,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-2-WINNER-DELETE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE the winning definition line is deleted so the losing duplicate becomes the effective winner; all 320 consumers' resolved destination changes",
+      "vs_a": {
+        "H0_REFERENCE": 3.7999507109410997,
+        "H2_REFERENCE": 7.501767928651509,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.9994422124028288
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4188706,
+          "median_ns": 4133507,
+          "min_ns": 4070461,
+          "p25_ns": 4114590,
+          "p75_ns": 4183879,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4190516,
+          "median_ns": 4135585,
+          "min_ns": 4070029,
+          "p25_ns": 4114229,
+          "p75_ns": 4187997,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1152150,
+          "median_ns": 1132696,
+          "min_ns": 1110708,
+          "p25_ns": 1129197,
+          "p75_ns": 1150895,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 617101,
+          "median_ns": 608266,
+          "min_ns": 594864,
+          "p25_ns": 606235,
+          "p75_ns": 612815,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-3A-DEF-CREATE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE negative dependency, absence -> existence: with no [rd] definition, all 320 consumer links render as literal text; inserting the definition at the canonical slot makes them ReferenceLinks (topology change, old Text must change)",
+      "vs_a": {
+        "H0_REFERENCE": 3.649264233298255,
+        "H2_REFERENCE": 6.795558193290436,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.9994975317881267
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4108669,
+          "median_ns": 4064626,
+          "min_ns": 3981143,
+          "p25_ns": 4049227,
+          "p75_ns": 4089719,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4119262,
+          "median_ns": 4070877,
+          "min_ns": 4022403,
+          "p25_ns": 4054885,
+          "p75_ns": 4093877,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1090818,
+          "median_ns": 1076559,
+          "min_ns": 1065917,
+          "p25_ns": 1072774,
+          "p75_ns": 1079840,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 454402,
+          "median_ns": 450948,
+          "min_ns": 434697,
+          "p25_ns": 447932,
+          "p75_ns": 454684,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-3B-DEF-DELETE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE negative dependency, existence -> absence (the inverse leg of E6-3A in the same short trace): deleting the definition makes all 320 consumers literal text again",
+      "vs_a": {
+        "H0_REFERENCE": 3.7755719844430264,
+        "H2_REFERENCE": 9.013513753248711,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.9984644586412216
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4048540,
+          "median_ns": 3993559,
+          "min_ns": 3929895,
+          "p25_ns": 3971438,
+          "p75_ns": 4054521,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4050383,
+          "median_ns": 3998180,
+          "min_ns": 3933336,
+          "p25_ns": 3974693,
+          "p75_ns": 4053860,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1019757,
+          "median_ns": 1001779,
+          "min_ns": 993559,
+          "p25_ns": 998891,
+          "p75_ns": 1029721,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 463434,
+          "median_ns": 458309,
+          "min_ns": 446999,
+          "p25_ns": 455473,
+          "p75_ns": 462607,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-4-LOW-FANOUT-VALUE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE effective winner destination changes with a small affected consumer set (2 occupied slots x 5 links = 10 consumers must change)",
+      "vs_a": {
+        "H0_REFERENCE": 3.9864670750734446,
+        "H2_REFERENCE": 8.713682253676014,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.9988442241219755
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 4256570,
+          "median_ns": 4210162,
+          "min_ns": 4156923,
+          "p25_ns": 4193099,
+          "p75_ns": 4247841,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4273524,
+          "median_ns": 4216157,
+          "min_ns": 4161968,
+          "p25_ns": 4200116,
+          "p75_ns": 4268361,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 1226380,
+          "median_ns": 1208166,
+          "min_ns": 1199146,
+          "p25_ns": 1204097,
+          "p75_ns": 1223717,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 666741,
+          "median_ns": 659601,
+          "min_ns": 642742,
+          "p25_ns": 655876,
+          "p75_ns": 664327,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-5-HIGH-FANOUT-VALUE",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE effective winner destination changes with many affected consumers (64 occupied slots x 5 links = 320 consumers must change)",
+      "vs_a": {
+        "H0_REFERENCE": 3.4847545784271365,
+        "H2_REFERENCE": 6.382892081728197,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.9985780890038013
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 924050,
+          "median_ns": 918542,
+          "min_ns": 905440,
+          "p25_ns": 916851,
+          "p75_ns": 920718,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 774157,
+          "median_ns": 769914,
+          "min_ns": 759673,
+          "p25_ns": 768109,
+          "p75_ns": 771379,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 514741,
+          "median_ns": 512354,
+          "min_ns": 504217,
+          "p25_ns": 509736,
+          "p75_ns": 515331,
+          "samples": 200
+        },
+        {
+          "arm": "H2_REFERENCE",
+          "mean_ns": 401488,
+          "median_ns": 399318,
+          "min_ns": 383757,
+          "p25_ns": 396117,
+          "p75_ns": 402946,
+          "samples": 200
+        }
+      ],
+      "cell_id": "E6-6-FENCE-HIDE-DEF",
+      "family": "E6_REFERENCE_DEFINITION",
+      "role": "E6_CHALLENGE syntax-induced semantic change: an unchanged late definition is hidden by inserting a fence-opener line immediately before it (no definition text is edited); all 320 earlier consumers lose resolution",
+      "vs_a": {
+        "H0_REFERENCE": 1.7927877990608057,
+        "H2_REFERENCE": 2.3002769722376653,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 1.1930449374865244
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 950,
+          "median_ns": 946,
+          "min_ns": 927,
+          "p25_ns": 939,
+          "p75_ns": 961,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 733,
+          "median_ns": 733,
+          "min_ns": 714,
+          "p25_ns": 726,
+          "p75_ns": 740,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 516,
+          "median_ns": 514,
+          "min_ns": 501,
+          "p25_ns": 509,
+          "p75_ns": 521,
+          "samples": 200
+        }
+      ],
+      "cell_id": "TINY-64B-E1",
+      "family": "E1_LOCAL_TEXT",
+      "role": "TINY Axis::D 64 B point, G0-LOCAL-TEXT-REPLACE-EQ semantics (same-length single-byte content replace)",
+      "vs_a": {
+        "H0_REFERENCE": 1.8404669260700388,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 1.290586630286494
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 7305,
+          "median_ns": 6996,
+          "min_ns": 6523,
+          "p25_ns": 6882,
+          "p75_ns": 7137,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 21503,
+          "median_ns": 21206,
+          "min_ns": 19861,
+          "p25_ns": 21004,
+          "p75_ns": 21379,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 12931,
+          "median_ns": 12748,
+          "min_ns": 12229,
+          "p25_ns": 12631,
+          "p75_ns": 12928,
+          "samples": 200
+        }
+      ],
+      "cell_id": "TINY-1K-E2",
+      "family": "E2_PARAGRAPH_SPLIT_MERGE",
+      "role": "TINY Axis::D 1 KiB point, G0-PARAGRAPH-SPLIT semantics (interior space -> blank line)",
+      "vs_a": {
+        "H0_REFERENCE": 0.5487919673674302,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.3299066301990003
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 39857,
+          "median_ns": 39557,
+          "min_ns": 38499,
+          "p25_ns": 39312,
+          "p75_ns": 39876,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 124105,
+          "median_ns": 123523,
+          "min_ns": 121255,
+          "p25_ns": 122952,
+          "p75_ns": 124253,
+          "samples": 200
+        },
+        {
+          "arm": "H0_REFERENCE",
+          "mean_ns": 88704,
+          "median_ns": 88358,
+          "min_ns": 86040,
+          "p25_ns": 87852,
+          "p75_ns": 88869,
+          "samples": 200
+        }
+      ],
+      "cell_id": "TINY-4K-E5",
+      "family": "E5_INLINE_DELIMITER",
+      "role": "TINY Axis::D 4 KiB point, G0-EMPH-DELIM-BREAK semantics (delete the closing '*' of the first emphasis span)",
+      "vs_a": {
+        "H0_REFERENCE": 0.44769007899680846,
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.3202399553119662
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 906485,
+          "median_ns": 895092,
+          "min_ns": 884610,
+          "p25_ns": 891991,
+          "p75_ns": 912485,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 4351082,
+          "median_ns": 4306697,
+          "min_ns": 4237549,
+          "p25_ns": 4282311,
+          "p75_ns": 4344923,
+          "samples": 200
+        }
+      ],
+      "cell_id": "SENT-LIST-INDENT",
+      "family": "E3_CONTAINER_DEPTH",
+      "role": "SENTINEL Horse-A container strength guard (G0-LIST-ITEM-INDENT semantics: 2-space indent deepens a middle item into a nest)",
+      "vs_a": {
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.20783723582132665
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 541497,
+          "median_ns": 536263,
+          "min_ns": 526666,
+          "p25_ns": 533814,
+          "p75_ns": 540655,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 2857848,
+          "median_ns": 2836432,
+          "min_ns": 2798956,
+          "p25_ns": 2825272,
+          "p75_ns": 2853176,
+          "samples": 200
+        }
+      ],
+      "cell_id": "SENT-BQ-NEST",
+      "family": "E3_CONTAINER_DEPTH",
+      "role": "SENTINEL Horse-A container strength guard (G0-BQ-NEST-LINE semantics: a middle quote line deepens one level)",
+      "vs_a": {
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.18906252644167038
+      }
+    },
+    {
+      "arms": [
+        {
+          "arm": "HORSE_A_V1_NORMAL",
+          "mean_ns": 566230,
+          "median_ns": 558825,
+          "min_ns": 551839,
+          "p25_ns": 554627,
+          "p75_ns": 563852,
+          "samples": 200
+        },
+        {
+          "arm": "HORSE_A_V1_DIRECT_READY_REBUILD",
+          "mean_ns": 5565987,
+          "median_ns": 5461844,
+          "min_ns": 5393495,
+          "p25_ns": 5434470,
+          "p75_ns": 5608561,
+          "samples": 200
+        }
+      ],
+      "cell_id": "SENT-E5-EMPH",
+      "family": "E5_INLINE_DELIMITER",
+      "role": "SENTINEL Horse-A inline/local strength guard (G0-EMPH-DELIM-BREAK semantics on a 128 KiB document)",
+      "vs_a": {
+        "HORSE_A_V1_DIRECT_READY_REBUILD": 0.10231434658331509
+      }
+    }
+  ],
+  "meta": {
+    "argv": [
+      "/home/jnhu/Source/markit-v-frozen/research/benchmarks/markdown-ast-update/target/release/mdbench-horse-a-v2-diag",
+      "tlane",
+      "--out",
+      "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/pair-campaign/v4"
+    ],
+    "driver": "mdbench-horse-a-v2-diag",
+    "issue": "98",
+    "schema": "HORSE-A-V2-DIAG-98-RUN-v1"
+  },
+  "policy": {
+    "measured_rounds": 200,
+    "mechanisms": {
+      "H0_REFERENCE": "h0-full-rebuild",
+      "H2_REFERENCE": "fragment-reuse-h2",
+      "HORSE_A_V1_DIRECT_READY_REBUILD": "horse-a-v1-direct-ready-rebuild",
+      "HORSE_A_V1_NORMAL": "horse-a-v1"
+    },
+    "process_model": "single process, cells in manifest order, arms interleaved per round",
+    "timed_window": "complete arm call incl. pre-state clone exclusion and result drop exclusion",
+    "warmup_rounds": 30
+  }
+}

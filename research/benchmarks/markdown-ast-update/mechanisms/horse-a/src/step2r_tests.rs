@@ -293,6 +293,18 @@ fn the_seam_battery_is_v_equivalent() {
     assert!(d.r.0.is_ok());
     assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
 
+    // 11b. duplicate where the FIRST candidate would fail its support
+    //      checks: the duplicate error still fires (V checks duplicates
+    //      before support; R-C3b) — the first event's blank starts at the
+    //      Owner base (unpersistable), the second is perfectly persistable,
+    //      and both V and R must hard-error rather than skip.
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(0, 9, None), ev(4, 9, Some(3))], false);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 10".to_string())
+    );
+    assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+
     // 12. local convergence: with `last_boundary_is_interior` the LAST
     //     fresh boundary is a real interior boundary and IS certified
     //     (R-C6 local branch).
