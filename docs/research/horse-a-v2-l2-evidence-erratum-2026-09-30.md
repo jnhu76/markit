@@ -176,8 +176,9 @@ No profile was re-collected for this erratum.
   rows.
 - The differential **shares** are mathematically invariant under the
   pooled normalization (both arms rescale by the same factor), and move
-  by at most +0.41 percentage points under the warmed-only window
-  estimate (§E2).
+  by at most 0.41 percentage points in absolute value under the
+  warmed-only window estimate on E6-1/E6-5 (both directions observed;
+  §E2).
 
 ### WHAT IS NO LONGER CLAIMED
 
@@ -480,7 +481,7 @@ opening.
 | # | Historical statement / implication | Correction | Status after correction |
 |---|---|---|---|
 | E1 | L2 `samples/op` represent formal warmed-only operations | mixed-phase numerator (warmup provably inside the retained sets) ÷ formal-only denominator; per-op magnitudes inflated ≈ ×1.20 on E6-1/E6-5 (≈ ×1.02 on E6-6) | CORRECTED |
-| E2 | certificate share ≈ 88–90% (of the excess) | robust qualitative dominance; shares invariant under pooled normalization and stable (≤ ±0.4 pp) under the warmed-only window estimate; exact warmed-only share not established by the original pipeline | BOUNDED |
+| E2 | certificate share ≈ 88–90% (of the excess) | robust qualitative dominance; shares invariant under pooled normalization and stable (max \|Δ\| = 0.41 pp on E6-1/E6-5, both directions) under the warmed-only window estimate; exact warmed-only share not established by the original pipeline | BOUNDED |
 | E3 | E6-4 belongs to the equality-only certification opportunity | effective answer changes (winner re-points, 10 consumers, 11 outputs); it is sparse propagation, not early cutoff — `E6_1_CLASS != E6_4_CLASS` | CORRECTED |
 | E4 | (implicit) equality on effective queries suffices | complete retained facts (ordered, duplicates) must still be updated; producer state may not remain stale — stated as a research obligation | ADDED-BOUNDARY |
 | E5 | effect counts represent minimum required runtime work | they are diagnostic differences under the implemented multiset/signature/winner-map ledger | BOUNDED |

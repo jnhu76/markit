@@ -36,7 +36,8 @@ entry point is:
   the 87.6%/89.7% certificate shares are historical mixed-phase
   differential shares — the qualitative certificate-barrier-lookup
   localization is ROBUST under every retained-evidence normalization
-  (≤ ±0.4 pp under the warmed-only window estimate); E6-4 is sparse
+  (max |Δ certificate share| = 0.41 pp under the warmed-only window
+  estimate on E6-1/E6-5); E6-4 is sparse
   propagation, not equality-only (`E6_1_CLASS != E6_4_CLASS`); the
   effect ledger is a diagnostic classification, not a minimum-work
   oracle; P1−P0 is not removable work. Derived sensitivity evidence:
