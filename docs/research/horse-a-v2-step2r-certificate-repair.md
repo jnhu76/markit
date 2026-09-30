@@ -7,16 +7,17 @@
 > [horse-a-v2-l2-context-profile-100.md](horse-a-v2-l2-context-profile-100.md)
 > plus its append-only
 > [erratum](horse-a-v2-l2-evidence-erratum-2026-09-30.md).
-> Status: **CONTRACT AMENDMENT v3 APPLIED (independent-review P1 fix:
-> defensive non-monotone barrier slices now route to a verbatim frozen-V
-> fallback); corrective rerun complete; the R PR is open — merged only
-> after the fresh post-fix reviews; #95 is not closed; no S mechanism
+> Status: **CONTRACT AMENDMENT v3 APPLIED AND REVIEW-FIXED (independent
+> reviews E/F round 1 resolved: gate extended to the cuts ordering,
+> diagnostic tally made panic-free, retention claims corrected); FINAL
+> screening complete on the final binary; fresh reviews E'/F' rerun on
+> the final head before any merge; #95 is not closed; no S mechanism
 > exists.**
 
 ```text
 STEP_1_DIAGNOSIS   = COMPLETE (#97/#98/#100)
 L2_ERRATUM         = MERGED (PR #103)
-STEP_2R            = AMENDED_v3_CORRECTIVE_RERUN_COMPLETE_FOR_REVIEW
+STEP_2R            = AMENDED_v3_FINAL_SCREENING_COMPLETE_FOR_REVIEW_GATE
 L3/L4/L5           = NOT EXECUTED
 HISTORICAL_V       = IMMUTABLE (master 352e214; nothing rewritten)
 SEMANTIC_CHALLENGER_FROZEN = NO (S1 question EARNED and RECORDED only)
@@ -27,36 +28,55 @@ NEXT               = FRESH_POST_FIX_REVIEW_THEN_MERGE_GATE
 
 ```text
 LIVE_MASTER_AT_START = 352e214fc43ff22a89c835c5407a107d83cbe33e
-                       (task-creation authority re-verified live; local
-                       checkout fast-forwarded fb359de -> 352e214; no drift;
-                       RE-VERIFIED at amendment-v3 time: origin/master still
-                       352e214, PR head still 9854f7c, no commits added)
+                       (task-creation authority re-verified live at every
+                       round: origin/master still 352e214; no drift)
 ISSUE                = #104 (created for Step 2R; body + comments carry the
                        full contract/protocol/calibration/result trail plus
-                       the append-only CONTRACT AMENDMENT v3 receipt)
+                       the append-only CONTRACT AMENDMENT v3 and corrective
+                       receipts)
 BRANCH               = research/95-step2r-certificate-match-r1
-R_HEADS              = pre-review screening head 9854f7c (campaign binary
-                       692631ac...); corrective amendment-v3 head 2ea09b7
-                       (campaign binary 25c13f70...). Research identity is
-                       logically ONE mechanism, HORSE-A-V2-STEP2R-CERT-MATCH-
-                       R1, across both heads.
+R_HEADS              = pre-review screening head 9854f7c (binary 692631ac…);
+                       corrective round-1 head 2ea09b7/d9d613b (binary
+                       25c13f70…); FINAL head a9270ba (binary 734cccba…).
+                       Research identity is logically ONE mechanism,
+                       HORSE-A-V2-STEP2R-CERT-MATCH-R1, across all heads.
 V_IDENTITY           = frozen Horse-A v1 = master 352e214
                        certificate.rs blob 564b84dc8ae0374e8c3508b560ef5f0
                        eb42ca626 (sha256 259f776bf9e44623e4d2d3358569871a
                        811150a2a1d3726b8327e6830ac00dbc)
-V_BINARY             = built from worktree /home/jnhu/Source/markit-v-frozen
-                       (detached 352e214); sha256 81f569d8349a52d4efb67c06
-                       4eada519bb42899bbcb672cd62a03ec24f26ce86; RETAINED
-                       on host (path above), re-verified at both campaign
-                       times — UNCHANGED by amendment v3
+V_BINARY             = sha256 81f569d8349a52d4efb67c064eada519bb42899bbcb67
+                       2cd62a03ec24f26ce86, built from worktree
+                       /home/jnhu/Source/markit-v-frozen (detached 352e214).
+                       UNCHANGED through all campaigns. Retention is now
+                       DUAL-LOCATION after incident PE-7: the original
+                       bytes live at the worktree path AND at
+                       /home/jnhu/retained-bench-binaries/
+                       V-frozen-352e214-81f569d8 (outside any cargo
+                       target dir).
 R_IDENTITY           = HORSE-A-V2-STEP2R-CERT-MATCH-R1
                        (CERTIFICATE_MATCH_REPAIR_ID, certificate.rs only;
                        never enters ReadyDocument/InterpretationId)
+R_BINARY_FINAL       = sha256 734cccba37717074e67e99c507a9939087e62e08327
+                       45d9c338e851297c450fe, built from the final
+                       production-code tree (head a9270ba; the docs/evidence
+                       commits after it touch no .rs file, so the binary is
+                       valid for the final PR head); RETAINED at the R
+                       target/release path AND at
+                       /home/jnhu/retained-bench-binaries/
+                       R-final-a9270ba-734cccba
 R_BINARY_PRE_REVIEW  = sha256 692631acc10247cb39f6f46be96dd25adfea64f9bf55
-                       0ae6ba41ea29e681bb46 (head 9854f7c; RETAINED)
+                       0ae6ba41ea29e681bb46 — NO LONGER ON HOST: the
+                       original single-copy retention (the R target/release
+                       path) was overwritten by the corrective rebuild
+                       (PE-7's lesson). Its identity is attested by the
+                       #104 protocol receipt + the PE-2 test-only-delta
+                       chain; the pre-review screening it produced is
+                       explicitly NOT merge-authoritative.
 R_BINARY_CORRECTIVE  = sha256 25c13f70c840e2e28e3c51daacd09aa4375191687864
-                       c3201b759c4dc1e2731f (head 2ea09b7; RETAINED) — the
-                       merge-authoritative Step 2R binary
+                       c3201b759c4dc1e2731f (corrective round-1; also no
+                       longer on host, same overwrite class — its
+                       screening is retained as history, superseded by
+                       the FINAL screening)
 HOST                 = E5 (jnhu@192.168.31.75; Xeon E5-2666 v3, 20 cores),
                        Linux 7.2.5-200.fc44.x86_64, schedutil untouched
 TOOLCHAIN            = workspace pin 1.97.1 (rust-toolchain.toml; verified
@@ -124,18 +144,27 @@ R-C3  DUPLICATE_CUT_SEMANTICS = same hard error, same scope, same order.
       slices are therefore routed to the verbatim V fallback, restoring
       V's exact whole-slice duplicate semantics on every input.
 
-R-C2a (amendment v3) BARRIER_ORDER_ELIGIBILITY_GATE = the fast traversal
-      runs only after an allocation-free O(B) scan confirms
-      `barriers.windows(2).all(|w| w[0].cut < w[1].cut)` (strictly
-      increasing; vacuously true for B <= 1; B - 1 comparisons). Legal
-      production always passes (R-C2). A duplicate (equal cut) or a
-      decreasing cut fails the gate and takes the frozen-V fallback
-      (`v1_defensive_fallback`, the 352e214 matcher loop copied
-      verbatim, including its forbidden-sentinel tail and early-Err
-      shape). NO sorting, deduplication, assertion, panic, new retained
-      state, heap allocation, or new error class. Totality (R-C9) is
-      strengthened: violative input now has V's exact defined behavior
-      instead of "undefined matching behavior".
+R-C2a (amendment v3, extended after review E) ORDERING_ELIGIBILITY_GATE =
+      the fast traversal runs only after an allocation-free scan
+      confirms BOTH orderings it relies on:
+      `barriers.windows(2).all(|w| w[0].cut < w[1].cut)` AND
+      `cuts[..=boundary_count].windows(2).all(|w| w[0] < w[1])`
+      (vacuously true for single-element windows; at most
+      `(B - 1) + boundary_count` comparisons). Review E demonstrated a
+      P0 on the barriers-only gate: with NON-MONOTONE CUTS and a
+      gate-eligible barrier, the fast traversal's exhaustion break
+      installs nothing where V's filter loop installs a certificate
+      (cuts [0,10,3,6], barrier cut 6 -> V persists owner 2,
+      {Some(0), 1..3}). Legal production always passes both (R-C2 +
+      CoveragePlan cuts checks). A violation of either ordering routes
+      to the frozen-V fallback (`v1_defensive_fallback`, the 352e214
+      matcher loop copied verbatim, defined on arbitrary input,
+      including its forbidden-sentinel tail and early-Err shape).
+      NO sorting, deduplication, assertion, panic, new retained state,
+      heap allocation, or new error class. Totality (R-C9): every input
+      now has V's exact defined behavior — the gate covers the FULL
+      assumption set of the fast traversal, so V-parity holds on EVERY
+      input, legal or defensive.
 
 R-C4  UNMATCHED_EVENT_SEMANTICS = three silent skip classes (corrected
       from four in review): (1) cut matches no examined boundary (mid-gap,
@@ -192,9 +221,10 @@ MECHANISM_CHANGE = persist_interior_certificates:
   V:  for every examined boundary, a fresh lazy filter scan over ALL
       barriers (first match + whole-remainder second-match search) —
       exactly N_b x B barrier-cut inspections per call.
-  R:  an eligibility gate first (R-C2a): one allocation-free O(B) scan
-      confirms the barriers are strictly increasing by cut. Eligible
-      (every legal production call): one function-local usize cursor
+  R:  an eligibility gate first (R-C2a): allocation-free scans confirm
+      BOTH orderings (barriers strictly increasing by cut; cuts
+      strictly increasing). Eligible (every legal production call): one
+      function-local usize cursor
       advanced monotonically over the barriers as the examined
       boundaries increase; exact-equality match at the cursor; the
       adjacent-element duplicate peek retained as a defended site
@@ -202,9 +232,10 @@ MECHANISM_CHANGE = persist_interior_certificates:
       installation, charges and error paths VERBATIM. The matched
       barrier is consumed (cursor += 1); exhaustion breaks (nothing
       later can match).
-      NOT eligible (non-monotone, unreachable from legal parsing): the
-      frozen V matcher verbatim (`v1_defensive_fallback`), restoring
-      V's exact seam semantics on defensive input (AMENDMENT v3).
+      NOT eligible (violation of either ordering, unreachable from
+      legal parsing): the frozen V matcher verbatim
+      (`v1_defensive_fallback`), restoring V's exact seam semantics on
+      every input shape (AMENDMENT v3, extended after review E).
 JUSTIFICATION = R-C1 + R-C2 + R-C2a (both sequences strictly increasing
       at every legal call site; all four call sites enumerated:
       full_build.rs, fresh.rs, two single-element test callers; the gate
@@ -260,10 +291,10 @@ SEAM DIFFERENTIAL (V-replica vs R, src/step2r_tests.rs)
                        last boundary certified; single-owner (both flags);
                        empty owners; cuts-length precondition error +
                        sentinel-not-charged
-  DEFENSIVE BATTERY (amendment v3, D1–D7): non-adjacent duplicate
+  DEFENSIVE BATTERY (amendment v3, D1–D9): non-adjacent duplicate
                        (exact V error text, fallback route charges 0
                        fast-matcher inspections); duplicate after a larger
-                       out-of-order event at a later boundary; unsorted
+                       out-of-order event; unsorted
                        without duplicate (full Result/Owner/writes parity
                        plus the same-shape monotone twin proving both
                        routes converge on the same state); unsorted
@@ -272,7 +303,13 @@ SEAM DIFFERENTIAL (V-replica vs R, src/step2r_tests.rs)
                        unsorted input; duplicate precedence over a
                        support-failing first candidate under unsorted
                        geometry; support-rejected exact match skips
-                       identically on both routes
+                       identically on both routes; NON-MONOTONE CUTS
+                       (review E's demonstrated P0 shapes: cuts
+                       [0,10,3,6] and [0,100,5,6] with a single barrier —
+                       V's installed certificate is reproduced exactly by
+                       the fallback route; plus combined cuts+barriers
+                       violations); legal cuts shapes stay on the fast
+                       path (gate routing both ways)
 NEXT_EDIT GATE
   chains             = edit1 -> READY1 -> edit2 -> READY2, every stage
                        held to the clean from-scratch full-build
@@ -291,23 +328,31 @@ WORK ACCOUNTING     = hand-traced exact: small case V=10, R=6; dense case
                        V=2480, R=109 (= 93 seek iterations + 16 peeks,
                        exact-asserted; fast-match bound B + N_b = 111,
                        rejected-match term R = 0 on these shapes)
-CORRECTIVE RERUN (amendment v3, corrected binary 25c13f70):
-  unit + workspace   = horse-a crate 256 tests green (incl. the D1-D7
-                       battery); full workspace green
-  L0.5 validate      = PASS on BOTH binaries, all 13 cells (raw outputs
-                       under results/horse-a-v2-step2r-104/corrective/
-                       validate-retention/)
-  A-LANE PARITY      = alane.json V vs R on the corrected binary:
-                       byte-identical counters on all 13 cells for every
-                       field, incl. certificate_writes and
-                       forbidden_unaffected_certificate_writes = 0
+CORRECTIVE RERUNS (protocol-preserving; see F for PE-6/PE-7):
+  ROUND 1 (amendment v3, binary 25c13f70): unit + workspace green
+                       (horse-a 256 tests incl. D1–D7); L0.5 validate
+                       PASS both binaries 13/13; A-LANE V/R
+                       byte-identical; screening under corrective-
+                       campaign/ (retained as history).
+  FINAL (review-E fixes, binary 734cccba, head a9270ba): horse-a 258
+                       tests green (incl. D8/D9, the non-monotone-CUTS
+                       differential); workspace green except the sealed
+                       #100 campaign crate, whose code is byte-identical
+                       on both trees (0 diff lines vs 352e214) and whose
+                       failing tests are environment/state-dependent,
+                       differing in NAME between trees and runs on both
+                       sides — classified not-R-caused, outside this
+                       PR's scope; L0.5 validate PASS both binaries
+                       13/13 (final/validate-retention/); A-LANE V/R
+                       byte-identical on all 13 cells
+                       (final/alane-v, final/alane-r); FINAL screening
+                       under final-campaign/ (MERGE-AUTHORITATIVE).
 PRE-REVIEW SUITES (head 9854f7c, binary 692631ac — retained for the
   record)            = horse-a crate 249 tests green; full workspace
-                       green except the sealed campaign crate, whose
-                       failing set on R is a STRICT SUBSET of the failing
-                       set on frozen V (pre-existing,
-                       environment-dependent, not R-caused); L0.5 PASS on
-                       both binaries (retained under validate-retention/)
+                       green except the sealed campaign crate
+                       (environment-dependent, not R-caused); L0.5 PASS
+                       on both binaries (retained under
+                       validate-retention/)
 ```
 
 ## E. Work-reduction receipt (restated by amendment v3)
@@ -326,9 +371,11 @@ V_MATCHING_WORK   = exactly N_b x B barrier-cut predicate evaluations per
                     remainder scan B-k-1 evals = B; no-match scan = B).
                     V charges no counter; this number is derived, not
                     measured.
-ORDER_CHECK_WORK  = max(B - 1, 0) cut comparisons for the amendment-v3
-                    eligibility gate; allocation-free; NOT charged to the
-                    diagnostic counter (fixed scope, below).
+ORDER_CHECK_WORK  = max(B - 1, 0) + boundary_count cut comparisons for
+                    the eligibility gate (barriers scan + cuts scan;
+                    extended after review E); allocation-free; NOT
+                    charged to the diagnostic counter (fixed scope,
+                    below).
 FAST_MATCH_INSPECTIONS (the diagnostic tally: seek iterations + duplicate
                     peeks) <= B + N_b + R, where R = support-rejected
                     exact matches (each contributes one later seek
@@ -343,12 +390,13 @@ FAST_MATCH_INSPECTIONS (the diagnostic tally: seek iterations + duplicate
                     dense-case exact 109 (vs V 2480, a 22.8x reduction;
                     bound 111 with R = U = 0 on those shapes). R = 0 on
                     every measured evidence path.
-TOTAL_LEGAL_PATH  = ORDER_CHECK + FAST_MATCH <= 2B + N_b + R - 1 —
-                    linear in B + N_b. On the dense E6 geometry
+TOTAL_LEGAL_PATH  = ORDER_CHECK + FAST_MATCH <= 2B + 2*boundary_count
+                    + R - 1 (empty shape B = 0, boundary_count = 0: no
+                    work) — linear in B + N_b. On the dense E6 geometry
                     (~2050 barriers x ~2050 examined boundaries):
                     V performed ~4.2M matching inspections per full
                     build; R performs ~4.1k fast-match inspections plus
-                    ~2k order-check comparisons.
+                    ~4.1k order-check comparisons.
 DEFENSIVE_FALLBACK (non-monotone input only, unreachable from legal
                     production generation) = exactly V's N_b x B
                     predicate evaluations — the frozen algorithm's own
@@ -401,111 +449,117 @@ EVIDENCE         = results/horse-a-v2-step2r-104/ (raw tlane JSONs,
                    STEP2R-104-*-v1).
 ```
 
-### Corrective rerun (amendment v3 — protocol-preserving)
+### Corrective reruns (amendment v3 — protocol-preserving)
 
-The amendment-v3 fix changed production code (the eligibility gate), so
-the pre-review timing was NOT reused as final. The frozen screening
-protocol was rerun unchanged; nothing was recalculated after seeing R
-numbers.
+Production code changed twice after the pre-review screening (the v3
+fallback fix; then review E's gate extension), so pre-review timing was
+NOT reused. The frozen screening protocol was rerun unchanged each time;
+nothing was recalculated after seeing R numbers.
 
 ```text
-CORRECTIVE_RERUN_REASON          = independent-review P1 same-authority fix
-SCREENING_PROTOCOL_CHANGED       = NO
-MATERIALITY_THRESHOLDS_CHANGED   = NO (same v_only_calibration.json; the
-                                   analysis script is unchanged and reads
-                                   the same frozen thresholds file)
+CORRECTIVE_RERUN_REASON          = independent-review fixes (round 1: P1
+                                   fallback fix; round 2: review-E P0
+                                   gate extension)
+SCREENING_PROTOCOL_CHANGED       = NO (both reruns)
+MATERIALITY_THRESHOLDS_CHANGED   = NO (both reruns; the analysis script
+                                   is unchanged and reads the same
+                                   v_only_calibration.json)
 V_ARM_CHANGED                    = NO (binary 81f569d8... re-verified
-                                   unchanged; fresh V runs rerun in the
-                                   same interleaved structure)
-R_IMPLEMENTATION_CHANGED         = YES (binary 25c13f70..., head 2ea09b7)
-CORRECTNESS_BEFORE_TIMING        = YES (unit + workspace + L0.5 PASS +
-                                   A-LANE parity, all on the corrected
-                                   binary, before any tlane run)
-CAMPAIGN                         = 2026-09-30T14:44:42..14:47:04+08:00,
-                                   5 V + 5 R independent processes,
+                                   before every campaign; fresh V runs
+                                   in the same interleaved structure)
+R_IMPLEMENTATION_CHANGED         = YES (round-1 binary 25c13f70..., head
+                                   2ea09b7; FINAL binary 734cccba...,
+                                   head a9270ba)
+CORRECTNESS_BEFORE_TIMING        = YES (both reruns: unit + workspace +
+                                   L0.5 PASS + A-LANE parity, all on the
+                                   round's binary, before any tlane run)
+ROUND-1 CAMPAIGN                 = 2026-09-30T14:44:42..14:47:04+08:00
+FINAL CAMPAIGN                   = 2026-09-30T15:49:54..15:52:17+08:00,
+                                   5 V + 5 R independent processes each,
                                    interleaved V,R x 5, taskset -c 2,
                                    one process per run, no perf sampling
 EVIDENCE                         = results/horse-a-v2-step2r-104/
-                                   corrective-campaign/ (raw tlane JSONs
-                                   + derived receipt); results/horse-a-v2-
-                                   step2r-104/corrective/ (validate + alane)
-BOTH_SCREENINGS_PRESERVED        = YES (pair-campaign/ = pre-review;
-                                   corrective-campaign/ = merge-
-                                   authoritative)
+                                   {corrective-campaign, final-campaign}/
+                                   plus corrective/ and final/ (validate
+                                   + alane); ALL screenings preserved:
+                                   pair-campaign/ = pre-review;
+                                   corrective-campaign/ = round 1
+                                   (history); final-campaign/ =
+                                   MERGE-AUTHORITATIVE
+QUARANTINE                       = final-campaign-quarantine-PE7/ — one
+                                   aborted 15:46 campaign started against
+                                   an accidentally rebuilt V binary before
+                                   the recovery in PE-7 was complete;
+                                   retained for the record, used for
+                                   nothing
 ```
 
 ## G. V vs R screening (all nine frozen cells)
 
-Two complete screenings are retained. The pre-review screening
-(binary 692631ac) is historical; the corrective screening (binary
-25c13f70) is the merge-authoritative Step 2R result. Decision statistic
-in both: median of the 5 paired-campaign per-run ARM_A medians.
+Three complete screenings are retained: the pre-review screening
+(binary 692631ac, table preserved in the #104 corrective receipt and in
+`corrective-campaign`'s sibling history), the round-1 corrective
+screening (binary 25c13f70 — history; its table is in the #104 corrective
+receipt), and the FINAL screening below (binary 734cccba,
+MERGE-AUTHORITATIVE). Decision statistic in all: median of the 5
+paired-campaign per-run ARM_A medians.
 
-Pre-review screening (head 9854f7c; retained unchanged):
+FINAL screening (head a9270ba; MERGE-AUTHORITATIVE):
 
-| frozen cell | V median ns | R median ns | relative effect | frozen threshold | verdict |
+| frozen cell | V median ns | R-final median ns | relative effect | frozen threshold | verdict |
 |---|---|---|---|---|---|
-| E6-1-LOSE-DUP-CHANGE | 4 657 227 | 2 164 441 | **−53.53%** | 2.53% | MATERIAL, faster |
-| E6-4-LOW-FANOUT-VALUE | 3 997 977 | 1 529 045 | **−61.75%** | 2.00% | MATERIAL, faster |
-| E6-5-HIGH-FANOUT-VALUE | 4 222 666 | 1 735 597 | **−58.90%** | 2.00% | MATERIAL, faster |
-| E6-6-FENCE-HIDE-DEF (guardrail) | 910 054 | 907 958 | −0.23% | 2.50% | within noise |
-| TINY-64B-E1 (guardrail) | 952 | 944 | −0.84% | 17.75% | within noise |
-| TINY-1K-E2 (guardrail) | 6 996 | 7 004 | +0.11% | 31.44% | within noise |
-| SENT-E5-EMPH (guardrail) | 556 261 | 553 663 | −0.47% | 5.98% | within noise |
-| SENT-LIST-INDENT (guardrail) | 895 092 | 899 955 | +0.54% | 3.78% | within noise |
-| SENT-BQ-NEST (guardrail) | 536 263 | 542 787 | +1.22% | 13.51% | within noise |
+| E6-1-LOSE-DUP-CHANGE | 4 653 919 | 2 147 378 | **−53.86%** | 2.53% | MATERIAL, faster |
+| E6-4-LOW-FANOUT-VALUE | 3 987 410 | 1 501 198 | **−62.35%** | 2.00% | MATERIAL, faster |
+| E6-5-HIGH-FANOUT-VALUE | 4 205 224 | 1 723 155 | **−59.02%** | 2.00% | MATERIAL, faster |
+| E6-6-FENCE-HIDE-DEF (guardrail) | 902 953 | 873 207 | −3.29% | 2.50% | MATERIAL, FASTER (see PE-4) |
+| TINY-64B-E1 (guardrail) | 958 | 942 | −1.67% | 17.75% | within noise |
+| TINY-1K-E2 (guardrail) | 6 882 | 7 124 | +3.52% | 31.44% | within noise |
+| SENT-E5-EMPH (guardrail) | 551 576 | 554 633 | +0.55% | 5.98% | within noise |
+| SENT-LIST-INDENT (guardrail) | 889 951 | 897 884 | +0.89% | 3.78% | within noise |
+| SENT-BQ-NEST (guardrail) | 531 161 | 543 461 | +2.32% | 13.51% | within noise |
 
-Corrective screening (head 2ea09b7; MERGE-AUTHORITATIVE):
-
-| frozen cell | V median ns | R median ns | relative effect | frozen threshold | verdict |
-|---|---|---|---|---|---|
-| E6-1-LOSE-DUP-CHANGE | 4 632 743 | 2 154 608 | **−53.49%** | 2.53% | MATERIAL, faster |
-| E6-4-LOW-FANOUT-VALUE | 3 993 632 | 1 498 464 | **−62.48%** | 2.00% | MATERIAL, faster |
-| E6-5-HIGH-FANOUT-VALUE | 4 210 524 | 1 724 013 | **−59.05%** | 2.00% | MATERIAL, faster |
-| E6-6-FENCE-HIDE-DEF (guardrail) | 903 573 | 870 158 | −3.70% | 2.50% | MATERIAL, FASTER (see PE-4) |
-| TINY-64B-E1 (guardrail) | 946 | 943 | −0.32% | 17.75% | within noise |
-| TINY-1K-E2 (guardrail) | 7 025 | 7 107 | +1.17% | 31.44% | within noise |
-| SENT-E5-EMPH (guardrail) | 554 035 | 553 011 | −0.18% | 5.98% | within noise |
-| SENT-LIST-INDENT (guardrail) | 897 295 | 888 948 | −0.93% | 3.78% | within noise |
-| SENT-BQ-NEST (guardrail) | 537 801 | 534 611 | −0.59% | 13.51% | within noise |
+The round-1 corrective screening (binary 25c13f70) showed the same
+shape: −53.49/−62.48/−59.05% on the challenges, no guardrail regression,
+E6-6 −3.70% favorable — consistent across both post-fix binaries.
 
 Guardrail reading: the frozen rule requires a material REGRESSION on a
 guardrail to be explained before any positive E6 reading is used. No
-guardrail regressed in either screening (worst slower-side movement
-+1.22% pre-review, +1.17% corrective). E6-6 crossed its threshold in the
-FASTER direction in the corrective screening; the frozen rule does not
-block on that, and the deviation is recorded as protocol event PE-4 with
-its interpretation rather than silently absorbed.
+guardrail regressed in any screening (worst slower-side movement +1.22%
+pre-review, +1.17% round 1, +3.52% final — all far below their
+thresholds). E6-6 crossed its threshold in the FASTER direction in both
+post-fix screenings; the frozen rule does not block on that, and the
+deviation is recorded as protocol event PE-4 with its interpretation
+rather than silently absorbed.
 
 Resource guardrails: NEW_RETAINED_STATE = 0 (structural); temporary
 repair allocations = 0 (structural, gate included); A-LANE counters
-byte-identical V/R on both binaries (parser evidence and route parity);
+byte-identical V/R on every binary (parser evidence and route parity);
 certificate_writes identical.
-Context-only, same-run, not decision-bearing: H0_REFERENCE 1.21 ms,
-H2_REFERENCE 0.68 ms on the dense cells (corrective screening; H0/H2 are
-byte-identical mechanisms on both binaries and moved <1% between arms).
+Context-only, same-run, not decision-bearing (FINAL screening):
+H0_REFERENCE 1.24 ms, H2_REFERENCE 0.68 ms on the dense cells; H0/H2 are
+byte-identical mechanisms on both binaries and moved <2% between arms.
 
-## H. Residual interpretation (corrective screening numbers)
+## H. Residual interpretation (FINAL screening numbers)
 
 ```text
-E6-1 (dense, equality-class): 4.63 -> 2.15 ms. The removed ~2.5 ms matches
+E6-1 (dense, equality-class): 4.65 -> 2.15 ms. The removed ~2.5 ms matches
     the removed matching work (L2 erratum E2 bounded certificate-barrier
     lookup as the robust qualitative localization of the P1-P0 excess).
     The remaining total cost of the legal same-target rebuild is
-    ~0.95 ms above the same-run H0 clean parse (CONTEXT ONLY — see I),
+    ~0.91 ms above the same-run H0 clean parse (CONTEXT ONLY — see I),
     for an edit whose consumer-visible effective environment is
     UNCHANGED. This residual is the largest dense-cell number remaining
     and it is a SEMANTIC residual, not a matching-work residual.
 E6-4 (low fanout, real change): 3.99 -> 1.50 ms.
 E6-5 (high fanout, real change): 4.21 -> 1.72 ms.
-    The E6-5 vs E6-4 total-price delta is ~0.23 ms after R; V showed
+    The E6-5 vs E6-4 total-price delta is ~0.22 ms after R; V showed
     ~0.22 ms on the same pair in the same campaign. This is recorded as
     a descriptive observation about THIS cell pair only; no general
     fanout model is claimed (see I, S2).
-E6-6 (low-boundary contrast): pre-review -0.23%, corrective -3.70%
-    (FASTER; PE-4). With few boundaries there is little matching work to
-    remove; the corrective movement direction is favorable and no
-    guardrail regressed.
+E6-6 (low-boundary contrast): pre-review -0.23%; -3.70% and -3.29%
+    (FASTER) in the two post-fix screenings (PE-4). With few boundaries
+    there is little matching work to remove; the movement direction is
+    favorable and no guardrail regressed.
 tiny controls: unchanged (certificate lookup absent/small).
 sentinels: unchanged (local/container strengths protected).
 COST MIGRATION: none observed — matching work fell and latency fell with
@@ -526,10 +580,10 @@ S1_OPPORTUNITY = REAL
   deserves independent study.
 
 S1_RECOVERABLE_PRIZE = NOT YET MEASURED
-  R_E6_1_TOTAL_COST ~= 2.15 ms. The same-run H0 difference (~0.95 ms)
+  R_E6_1_TOTAL_COST ~= 2.15 ms. The same-run H0 difference (~0.91 ms)
   is CONTEXT ONLY, NOT an estimate of removable semantic work: H0 does
   not carry Horse-A's complete eager READY / next-edit obligations, so
-  no statement of the form "S1 prize = R - H0", "S1 can recover 0.95 ms",
+  no statement of the form "S1 prize = R - H0", "S1 can recover 0.91 ms",
   "perfect S1 should reach H0", or "H0 is the lower bound for legal S1"
   is made or implied. The future S1 experiment must separate:
   required producer-state refresh, avoidable unchanged-consumer
@@ -584,6 +638,45 @@ METHODOLOGY_REVIEW_D (research/process, post-implementation)
     values replace the earlier rounded ranges); "every sample kept"
     describes the live run, while retained tlane.json stores summary
     statistics only.
+POST_FIX_REVIEW_E (semantic/exact-equivalence adversary, fresh context,
+  round 1 on corrective head d9d613b)
+  = P0=1 P1=1 P2=2 P3=1. P0 (EMPIRICALLY DEMONSTRATED): the
+    amendment-v3 gate checked only the BARRIERS ordering, but the fast
+    traversal's exhaustion break additionally assumes the CUTS strictly
+    increasing — with non-monotone cuts [0,10,3,6] and a single barrier
+    cut 6, V installs owner 2's certificate while the fast path installs
+    nothing (unreachable from every in-tree caller, but inside the
+    seam's parity claim). P1: the battery's Owner helper panicked on
+    decreasing cuts, making the whole battery structurally unable to
+    test cuts-ordering violations. P2s: the doc's parity sentence was
+    broader than the mechanism; the diagnostic tally's checked_add
+    .expect() was a new panic mode. ALL RESOLVED in head a9270ba: the
+    gate now verifies BOTH orderings (R-C2a); differential D8 pins E's
+    exact shapes over a saturating Owner builder (D9 pins legal-shape
+    routing); the tally is saturating_add (no new panic mode); the doc
+    now claims exactly what the mechanism does; the fallback's dropped
+    V comment sentences restored (P3).
+POST_FIX_REVIEW_F (methodology/claim audit, fresh context, round 1 on
+  corrective head d9d613b)
+  = P0=0 P1=1 P2=1 P3=5. Explicit answers: tighter work bound anywhere
+    = NO (the R term proved necessary and sufficient);
+    R−H0-as-S1-prize anywhere = NO; S2 overclaim in active surfaces =
+    NO; thresholds unchanged (programmatically equal to both derived
+    receipts); alane V/R byte-identical; all 18 published screening
+    numbers recomputed from raw and exact; historical evidence pristine.
+    P1: the "RETAINED" claim for the pre-review binary 692631ac had
+    become false (overwritten by the corrective rebuild) — report/README
+    reworded to state the overwrite honestly (and PE-7 dual-location
+    retention added). P2: corrective-head identity string divergence
+    (d9d613b vs 2ea09b7) — resolved by stating the exact tree the binary
+    was built from and the no-.rs-delta fact. P3s: "examined at most
+    once" wording (fixed), empty-shape bound note (added), immutable
+    #04 comment S2 phrasing (superseded by receipt), argv-without-
+    taskset (known, attested in-issue), trait-doc batching wording
+    (fixed).
+POST_FIX_REVIEW_ROUND_2 (E' semantic, F' methodology — fresh contexts)
+  = rerun on the FINAL head; verdicts recorded on #104 before any merge
+    gate. Merge requires P0 = P1 = P2 = 0 on both.
 ```
 
 ## K. Protocol events (post-freeze deviations, recorded not repaired)
@@ -624,6 +717,33 @@ PE-5  (amendment v3 corrective rerun) the pre-review screening was NOT
       R_IMPLEMENTATION_CHANGED = YES); both screenings are preserved in
       the evidence tree and the corrective screening is the
       merge-authoritative Step 2R result.
+PE-6  (review-E gate extension, head a9270ba) round-1 review E found a
+      P0 (cuts-ordering gap) requiring a production-code change, so the
+      corrective round-1 screening was NOT reused as final either: the
+      frozen protocol was rerun a second time, unchanged, on the FINAL
+      binary 734cccba (see the corrective-reruns block in F). Three
+      complete screenings are retained; final-campaign/ is
+      merge-authoritative.
+PE-7  (V-binary retention incident + recovery) during the review-E fix
+      round, a `cargo test --release` executed inside the frozen V
+      worktree rebuilt and overwrote the retained V binary at its
+      target/release path (sha temporarily 34aca634...). One final-
+      campaign attempt (15:46..15:48) started against that wrong V arm
+      and was QUARANTINED unused (final-campaign-quarantine-PE7/,
+      retained for the record, used for nothing). The original bytes
+      were recovered intact from the cargo dep artifact
+      mdbench_horse_a_v2_diag-5a2c026aa87d37c2 (sha re-verified
+      81f569d8...), restored to the retention path, and copied to a
+      second location outside any cargo target dir
+      (/home/jnhu/retained-bench-binaries/); the R-final binary got the
+      same dual retention. The FINAL campaign (15:49:54..15:52:17) ran
+      with the re-verified frozen V binary. Lesson recorded: benchmark
+      binaries are never single-copied inside a cargo target dir, and
+      cargo test is never run in a worktree that holds a retained
+      benchmark binary. (The same overwrite class had earlier silently
+      destroyed the pre-review and round-1 R binaries — review F's P1 —
+      which is why their retention claims were reworded and dual
+      location introduced.)
 ```
 
 ## L. GitHub receipt

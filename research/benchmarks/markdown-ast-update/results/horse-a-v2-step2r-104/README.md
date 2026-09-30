@@ -40,37 +40,62 @@ calibration-number freezes are timestamped in #104 BEFORE the respective
 executions; the methodology review verified the artifact mtimes against
 the comment trail.
 
-## Amendment v3 corrective rerun (merge-authoritative)
+## Amendment v3 corrective reruns (round 1 = history; FINAL = merge-authoritative)
 
 The independent review found P1: the fast matcher did not preserve V's
 frozen duplicate behavior on non-monotone defensive barrier slices.
-Amendment v3 (#104, append-only receipt) added an allocation-free O(B)
-strict-order eligibility gate: monotone slices take the unchanged fast
-matcher; non-monotone slices route to `v1_defensive_fallback` — the
-frozen 352e214 V matcher copied verbatim. Because production code
-changed, the frozen screening was rerun as a protocol-preserving
-corrective rerun (protocol, thresholds, repetitions, order, host
-unchanged; thresholds NOT recalculated; V binary re-verified unchanged).
+Amendment v3 (#104, append-only receipt) added an allocation-free
+strict-order eligibility gate: eligible slices take the unchanged fast
+matcher; violators route to `v1_defensive_fallback` — the frozen 352e214
+V matcher copied verbatim. Round-1 review E then found (and demonstrated
+empirically) a P0 on the barriers-only gate — non-monotone CUTS with
+gate-eligible barriers took the fast path where V's filter loop is
+defined — so the gate was extended to BOTH orderings (head a9270ba).
+Because production code changed each time, the frozen screening was
+rerun as a protocol-preserving corrective rerun after each fix
+(protocol, thresholds, repetitions, order, host unchanged; thresholds
+NOT recalculated; V binary re-verified before every campaign).
 
 ```text
-corrective/             validate-retention/ (L0.5 PASS both binaries, all
-                        13 cells) + alane-v/ alane-r/ (A-LANE receipts on
-                        the corrected binary; V/R byte-identical on every
-                        field)
-corrective-campaign/    v1..v5 + r1..r5 tlane.json (interleaved V,R x 5,
-                        2026-09-30T14:44:42..14:47:04+08:00, taskset -c 2)
-                        + pair_campaign_result.json (analyze_pair.py
-                        unchanged, same frozen thresholds)
-R_BINARY_CORRECTIVE     sha256 25c13f70c840e2e28e3c51daacd09aa4375191687864
-                        c3201b759c4dc1e2731f, built at corrective head
-                        2ea09b7; RETAINED at the R target/release path
-                        (pre-review binary 692631ac... also retained)
-V_BINARY                sha256 81f569d8... (UNCHANGED, re-verified)
-VERDICT                 challenges E6-1 -53.49% / E6-4 -62.48% /
-                        E6-5 -59.05% all MATERIAL faster; no guardrail
-                        regression (worst +1.17%); E6-6 crossed its
-                        threshold FASTER (-3.70%) — recorded as report
-                        protocol event PE-4. This screening is the
-                        merge-authoritative Step 2R result; pair-campaign/
-                        is preserved as the pre-review screening.
+corrective/             round-1 (binary 25c13f70): validate-retention/ +
+                        alane-v/ alane-r/ (V/R byte-identical)
+corrective-campaign/    round-1 screening (14:44:42..14:47:04+08:00) —
+                        HISTORY, superseded by the FINAL screening
+final/                  FINAL (binary 734cccba, head a9270ba):
+                        validate-retention/ (L0.5 PASS both binaries,
+                        13/13 cells) + alane-v/ alane-r/ (byte-identical
+                        V/R on every field)
+final-campaign/         FINAL screening (15:49:54..15:52:17+08:00),
+                        interleaved V,R x 5, taskset -c 2 +
+                        pair_campaign_result.json (analyze_pair.py
+                        unchanged, same frozen thresholds) —
+                        MERGE-AUTHORITATIVE
+final-campaign-quarantine-PE7/   one aborted 15:46 campaign run against
+                        an accidentally rebuilt V arm (see PE-7); kept
+                        for the record, used for NOTHING
+R_BINARY_FINAL          sha256 734cccba37717074e67e99c507a9939087e62e08327
+                        45d9c338e851297c450fe, built from the final
+                        production-code tree (head a9270ba; later
+                        commits touch no .rs file); RETAINED at the R
+                        target/release path AND at
+                        /home/jnhu/retained-bench-binaries/
+                        R-final-a9270ba-734cccba
+V_BINARY                sha256 81f569d8... (UNCHANGED through every
+                        campaign; after the PE-7 overwrite incident the
+                        original bytes were recovered from the cargo dep
+                        artifact, restored, and dual-retained at
+                        /home/jnhu/retained-bench-binaries/
+                        V-frozen-352e214-81f569d8)
+EARLIER R BINARIES      692631ac (pre-review) and 25c13f70 (round 1) are
+                        NO LONGER ON HOST — single-copy retention inside
+                        a cargo target dir was overwritten by later
+                        rebuilds (PE-7's lesson; review F round-1 P1).
+                        Their screenings are retained as history; the
+                        FINAL screening is the merge-authoritative
+                        result.
+VERDICT (FINAL)         challenges E6-1 -53.86% / E6-4 -62.35% /
+                        E6-5 -59.02% all MATERIAL faster; no guardrail
+                        regression (worst +3.52% vs 31.44% threshold);
+                        E6-6 crossed its threshold FASTER (-3.29%) —
+                        report protocol event PE-4.
 ```
