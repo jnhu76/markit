@@ -348,8 +348,8 @@ CORRECTIVE RERUNS (protocol-preserving; see F for PE-6/PE-7):
                        byte-identical on all 13 cells
                        (final/alane-v, final/alane-r); FINAL screening
                        under final-campaign/ (MERGE-AUTHORITATIVE).
-PRE-REVIEW SUITES (head 9854f7c, binary 692631ac — retained for the
-  record)            = horse-a crate 249 tests green; full workspace
+PRE-REVIEW SUITES (head 9854f7c, binary 692631ac — the suites' record is
+  retained; the binary itself is NOT on host, see §A)            = horse-a crate 249 tests green; full workspace
                        green except the sealed campaign crate
                        (environment-dependent, not R-caused); L0.5 PASS
                        on both binaries (retained under
