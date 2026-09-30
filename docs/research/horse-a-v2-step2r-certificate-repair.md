@@ -277,9 +277,10 @@ Every gate below was green before any timing was collected.
 SEAM DIFFERENTIAL (V-replica vs R, src/step2r_tests.rs)
   V-replica          = verbatim 352e214 traversal (one predicate
                        evaluation at a time), audited faithful by review C
-  battery            = 15 seam cases x (Result + exact message + full
-                       Owner vector + certificate_write parity): ALL
-                       identical
+  battery            = every enumerated seam shape (see `covers`)
+                       x (Result + exact message + full Owner vector +
+                       certificate_write parity): ALL identical; plus the
+                       separate cuts-precondition test
   covers             = no-barriers; single certificate; all-certified;
                        mid-gap events; leading trivia; EOF cut;
                        BOF-shaped skip; blank-at-base skip; before-base

@@ -17,21 +17,29 @@ validate-retention/ raw L0.5 validate outputs, both binaries (captured
 ```
 
 Identity binding (the raw tlane/alane JSONs embed no binary identity —
-see #104 Protocol Event receipts):
+see #104 Protocol Event receipts). **HISTORICAL — pre-review screening
+only, NOT merge-authoritative, and superseded by the "Amendment v3
+corrective reruns" section below: the R_BINARY recorded here (692631ac…)
+and the round-1 binary (25c13f70…) were later OVERWRITTEN at this path
+by successive rebuilds and are NO LONGER ON HOST (review F round-1 P1 /
+PE-7); "re-verified … at report time" was true only at that report
+time. The surviving binaries are V (81f569d8…) and R-final (734cccba…),
+dual-retained as listed below.**:
 
 ```text
 V_BINARY sha256 = 81f569d8349a52d4efb67c064eada519bb42899bbcb672cd62a03ec24f26ce86
   built from worktree /home/jnhu/Source/markit-v-frozen (detached master
   352e214); binary RETAINED at
   /home/jnhu/Source/markit-v-frozen/research/benchmarks/markdown-ast-update/target/release/mdbench-horse-a-v2-diag
-R_BINARY sha256 = 692631acc10247cb39f6f46be96dd25adfea64f9bf550ae6ba41ea29e681bb46
-  built from the R branch; binary RETAINED at
+  and (dual location, post-PE-7) at
+  /home/jnhu/retained-bench-binaries/V-frozen-352e214-81f569d8
+R_BINARY (pre-review, HISTORICAL) sha256 = 692631acc10247cb39f6f46be96dd25adfea64f9bf550ae6ba41ea29e681bb46
+  was built from the pre-review branch head; the original copy at
   /home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/target/release/mdbench-horse-a-v2-diag
-  (built at aa0efca; branch tip 15ce147 differs only in #[cfg(test)] code,
-  so the release binary — and this sha256 — is unchanged; #104 PE-2)
-BOTH            = re-verified by sha256 at report time; every timing run
-                  invoked one of these two paths under `taskset -c 2`
-                  (argv recorded inside each tlane.json)
+  has been overwritten by later rebuilds (now holds R-final 734cccba…)
+BOTH            = the V sha256 was re-verified before every campaign;
+  the pre-review "re-verified at report time" statement applied to the
+  pre-review report only
 ```
 
 Phase timeline (E5 local CST, 2026-09-30): V-only calibration
