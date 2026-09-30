@@ -41,10 +41,11 @@ architecture/governance documents (donor evidence, not Markit authority).
 
 Everything not listed here is byte-equivalent to the donor apart from the
 mechanical rename classes `qianqian[-_]app` → `markit[-_]app`,
-`QianqianApp` → `MarkitApp`, `qianqian[-_]composition` →
-`markit[-_]composition`, the rustfmt line reflow the shorter renames
-permit, and the temp-file prefix `qianqian_lifecycle_` →
-`markit_lifecycle_`:
+`QianqianApp` → `MarkitApp` (with the grammatical article the rename
+forces: "an QianqianApp" → "a MarkitApp"),
+`qianqian[-_]composition` → `markit[-_]composition`, the rustfmt line
+reflow the shorter renames permit, and the temp-file prefix
+`qianqian_lifecycle_` → `markit_lifecycle_`:
 
 1. **Crate identity** — package `qianqian-app` → `markit-app`; path
    dependency retargeted to `markit-composition`; `version`/`edition`
@@ -73,6 +74,15 @@ permit, and the temp-file prefix `qianqian_lifecycle_` →
    are the conjunction of W1 and W2, which already cover the
    provision-bearing and owner-local fiber classes at root disposal).
    No production behavior changed.
+
+## License
+
+The donor crate is part of qianqian, dual-licensed MIT OR Apache-2.0
+(donor `LICENSE`, `LICENSE-MIT`, `LICENSE-APACHE` at the donor commit).
+Markit redistributes this transplant under the Apache-2.0 option, which
+Markit's repository license (`/LICENSE`, Apache-2.0) satisfies. The
+crate's only dependency is `markit-composition` (itself transplanted
+under the same license choice), so no third-party notices are owed.
 
 ## Verification
 

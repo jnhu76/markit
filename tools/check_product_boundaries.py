@@ -188,6 +188,15 @@ def scan():
     root = cargo_metadata()
     for pkg in root["packages"]:
         universe[pkg["name"]] = pkg
+    # An admitted excluded crate is governed like a member: loaded from
+    # its own manifest into the universe, so the edge, research, and
+    # stale-rule scans below see it. Exclusion must never remove a
+    # markit-* crate from this gate's sight.
+    for manifest in WORKSPACE_EXCLUDED_PRODUCTION:
+        meta = cargo_metadata(f"{manifest}/Cargo.toml")
+        for pkg in meta["packages"]:
+            if pkg["name"] not in universe:
+                universe[pkg["name"]] = pkg
 
     # Universe-level allowlist: every discovered internal crate must have
     # an explicit rule entry, and every rule entry must exist in reality.
