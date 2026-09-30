@@ -1,0 +1,184 @@
+{
+  "all_pass": true,
+  "cells": [
+    {
+      "cell_id": "E6-1-LOSE-DUP-CHANGE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-2-WINNER-DELETE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-3A-DEF-CREATE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-3B-DEF-DELETE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-4-LOW-FANOUT-VALUE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-5-HIGH-FANOUT-VALUE",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "E6-6-FENCE-HIDE-DEF",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "TINY-64B-E1",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "TINY-1K-E2",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "TINY-4K-E5",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "SENT-LIST-INDENT",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "SENT-BQ-NEST",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    },
+    {
+      "cell_id": "SENT-E5-EMPH",
+      "lifecycle_owners_removed_eq_m_old": true,
+      "lifecycle_retirement_charged": true,
+      "next_edit_ok": true,
+      "passed": true,
+      "refusal_parity": true,
+      "result_parity_ab": true,
+      "result_parity_h0": true,
+      "semantic_state": true,
+      "structural_a": true,
+      "structural_b": true
+    }
+  ],
+  "meta": {
+    "argv": [
+      "./target/release/mdbench-horse-a-v2-diag",
+      "validate"
+    ],
+    "driver": "mdbench-horse-a-v2-diag",
+    "issue": "98",
+    "schema": "HORSE-A-V2-DIAG-98-RUN-v1"
+  }
+}
+L0 comparator validation: PASS

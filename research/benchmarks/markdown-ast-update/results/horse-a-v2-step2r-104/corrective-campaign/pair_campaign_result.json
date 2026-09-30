@@ -1,0 +1,319 @@
+{
+  "schema": "HORSE-A-V2-STEP2R-104-PAIR-CAMPAIGN-v1",
+  "frozen_cells": [
+    {
+      "cell": "E6-1-LOSE-DUP-CHANGE",
+      "role": "challenge",
+      "v": {
+        "run_medians_ns": [
+          4632743,
+          4639882,
+          4628037,
+          4622032,
+          4650388
+        ],
+        "median_ns": 4632743,
+        "min_ns": 4622032,
+        "max_ns": 4650388
+      },
+      "r": {
+        "run_medians_ns": [
+          2176501,
+          2127381,
+          2144662,
+          2175150,
+          2154608
+        ],
+        "median_ns": 2154608,
+        "min_ns": 2127381,
+        "max_ns": 2176501
+      },
+      "relative_effect": -0.53492,
+      "frozen_threshold": 0.0253,
+      "material": true,
+      "direction": "faster"
+    },
+    {
+      "cell": "E6-4-LOW-FANOUT-VALUE",
+      "role": "challenge",
+      "v": {
+        "run_medians_ns": [
+          3995375,
+          3993632,
+          3983691,
+          3975512,
+          3996324
+        ],
+        "median_ns": 3993632,
+        "min_ns": 3975512,
+        "max_ns": 3996324
+      },
+      "r": {
+        "run_medians_ns": [
+          1509739,
+          1482410,
+          1488181,
+          1526813,
+          1498464
+        ],
+        "median_ns": 1498464,
+        "min_ns": 1482410,
+        "max_ns": 1526813
+      },
+      "relative_effect": -0.62479,
+      "frozen_threshold": 0.02,
+      "material": true,
+      "direction": "faster"
+    },
+    {
+      "cell": "E6-5-HIGH-FANOUT-VALUE",
+      "role": "challenge",
+      "v": {
+        "run_medians_ns": [
+          4211850,
+          4210524,
+          4202697,
+          4194886,
+          4256983
+        ],
+        "median_ns": 4210524,
+        "min_ns": 4194886,
+        "max_ns": 4256983
+      },
+      "r": {
+        "run_medians_ns": [
+          1747804,
+          1706715,
+          1716529,
+          1753160,
+          1724013
+        ],
+        "median_ns": 1724013,
+        "min_ns": 1706715,
+        "max_ns": 1753160
+      },
+      "relative_effect": -0.59055,
+      "frozen_threshold": 0.02,
+      "material": true,
+      "direction": "faster"
+    },
+    {
+      "cell": "E6-6-FENCE-HIDE-DEF",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          902704,
+          916545,
+          900870,
+          904817,
+          903573
+        ],
+        "median_ns": 903573,
+        "min_ns": 900870,
+        "max_ns": 916545
+      },
+      "r": {
+        "run_medians_ns": [
+          886436,
+          865896,
+          870158,
+          867781,
+          889836
+        ],
+        "median_ns": 870158,
+        "min_ns": 865896,
+        "max_ns": 889836
+      },
+      "relative_effect": -0.03698,
+      "frozen_threshold": 0.02501,
+      "material": true,
+      "direction": "faster"
+    },
+    {
+      "cell": "TINY-64B-E1",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          946,
+          944,
+          948,
+          930,
+          1015
+        ],
+        "median_ns": 946,
+        "min_ns": 930,
+        "max_ns": 1015
+      },
+      "r": {
+        "run_medians_ns": [
+          931,
+          1086,
+          943,
+          965,
+          938
+        ],
+        "median_ns": 943,
+        "min_ns": 931,
+        "max_ns": 1086
+      },
+      "relative_effect": -0.00317,
+      "frozen_threshold": 0.17751,
+      "material": false,
+      "direction": "faster"
+    },
+    {
+      "cell": "TINY-1K-E2",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          7237,
+          6985,
+          7025,
+          6852,
+          7076
+        ],
+        "median_ns": 7025,
+        "min_ns": 6852,
+        "max_ns": 7237
+      },
+      "r": {
+        "run_medians_ns": [
+          7135,
+          7107,
+          7456,
+          6893,
+          7014
+        ],
+        "median_ns": 7107,
+        "min_ns": 6893,
+        "max_ns": 7456
+      },
+      "relative_effect": 0.01167,
+      "frozen_threshold": 0.31438,
+      "material": false,
+      "direction": "slower"
+    },
+    {
+      "cell": "SENT-E5-EMPH",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          556337,
+          564862,
+          549541,
+          554035,
+          550624
+        ],
+        "median_ns": 554035,
+        "min_ns": 549541,
+        "max_ns": 564862
+      },
+      "r": {
+        "run_medians_ns": [
+          550707,
+          553011,
+          557284,
+          550052,
+          588255
+        ],
+        "median_ns": 553011,
+        "min_ns": 550052,
+        "max_ns": 588255
+      },
+      "relative_effect": -0.00185,
+      "frozen_threshold": 0.05978,
+      "material": false,
+      "direction": "faster"
+    },
+    {
+      "cell": "SENT-LIST-INDENT",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          892858,
+          900648,
+          895032,
+          897295,
+          907342
+        ],
+        "median_ns": 897295,
+        "min_ns": 892858,
+        "max_ns": 907342
+      },
+      "r": {
+        "run_medians_ns": [
+          887622,
+          884253,
+          888948,
+          909352,
+          899522
+        ],
+        "median_ns": 888948,
+        "min_ns": 884253,
+        "max_ns": 909352
+      },
+      "relative_effect": -0.0093,
+      "frozen_threshold": 0.0378,
+      "material": false,
+      "direction": "faster"
+    },
+    {
+      "cell": "SENT-BQ-NEST",
+      "role": "guardrail",
+      "v": {
+        "run_medians_ns": [
+          530559,
+          538334,
+          548097,
+          536424,
+          537801
+        ],
+        "median_ns": 537801,
+        "min_ns": 530559,
+        "max_ns": 548097
+      },
+      "r": {
+        "run_medians_ns": [
+          534611,
+          532468,
+          533401,
+          544145,
+          539730
+        ],
+        "median_ns": 534611,
+        "min_ns": 532468,
+        "max_ns": 544145
+      },
+      "relative_effect": -0.00593,
+      "frozen_threshold": 0.13508,
+      "material": false,
+      "direction": "faster"
+    }
+  ],
+  "context_only_cells": [
+    {
+      "cell": "E6-2-WINNER-DELETE",
+      "v_median_ns": 4596125,
+      "r_median_ns": 2118345,
+      "relative_effect": -0.5391
+    },
+    {
+      "cell": "E6-3A-DEF-CREATE",
+      "v_median_ns": 4117704,
+      "r_median_ns": 1636275,
+      "relative_effect": -0.60262
+    },
+    {
+      "cell": "E6-3B-DEF-DELETE",
+      "v_median_ns": 4062843,
+      "r_median_ns": 1576186,
+      "relative_effect": -0.61205
+    },
+    {
+      "cell": "TINY-4K-E5",
+      "v_median_ns": 40310,
+      "r_median_ns": 40598,
+      "relative_effect": 0.00714
+    }
+  ]
+}

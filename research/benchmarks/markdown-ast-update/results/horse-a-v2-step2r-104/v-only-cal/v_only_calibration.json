@@ -1,0 +1,129 @@
+{
+  "schema": "HORSE-A-V2-STEP2R-104-V-ONLY-CAL-v1",
+  "runs": [
+    "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/v-only-cal/run1/tlane.json",
+    "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/v-only-cal/run2/tlane.json",
+    "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/v-only-cal/run3/tlane.json",
+    "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/v-only-cal/run4/tlane.json",
+    "/home/jnhu/Source/markit/research/benchmarks/markdown-ast-update/results/horse-a-v2-step2r-104/v-only-cal/run5/tlane.json"
+  ],
+  "rows": [
+    {
+      "cell": "E6-1-LOSE-DUP-CHANGE",
+      "v_run_medians_ns": [
+        4668313,
+        4701979,
+        4653341,
+        4643010,
+        4662006
+      ],
+      "v_median_ns": 4662006,
+      "v_spread_rel": 0.01265,
+      "threshold_rel": 0.0253
+    },
+    {
+      "cell": "E6-4-LOW-FANOUT-VALUE",
+      "v_run_medians_ns": [
+        4000289,
+        4021033,
+        3991293,
+        3990639,
+        4022806
+      ],
+      "v_median_ns": 4000289,
+      "v_spread_rel": 0.00804,
+      "threshold_rel": 0.02
+    },
+    {
+      "cell": "E6-5-HIGH-FANOUT-VALUE",
+      "v_run_medians_ns": [
+        4216914,
+        4238173,
+        4215805,
+        4223767,
+        4218370
+      ],
+      "v_median_ns": 4218370,
+      "v_spread_rel": 0.0053,
+      "threshold_rel": 0.02
+    },
+    {
+      "cell": "E6-6-FENCE-HIDE-DEF",
+      "v_run_medians_ns": [
+        907546,
+        904481,
+        911268,
+        903813,
+        915162
+      ],
+      "v_median_ns": 907546,
+      "v_spread_rel": 0.01251,
+      "threshold_rel": 0.02501
+    },
+    {
+      "cell": "TINY-64B-E1",
+      "v_run_medians_ns": [
+        1045,
+        959,
+        1003,
+        1049,
+        1014
+      ],
+      "v_median_ns": 1014,
+      "v_spread_rel": 0.08876,
+      "threshold_rel": 0.17751
+    },
+    {
+      "cell": "TINY-1K-E2",
+      "v_run_medians_ns": [
+        6943,
+        7468,
+        7386,
+        8032,
+        6871
+      ],
+      "v_median_ns": 7386,
+      "v_spread_rel": 0.15719,
+      "threshold_rel": 0.31438
+    },
+    {
+      "cell": "SENT-E5-EMPH",
+      "v_run_medians_ns": [
+        558763,
+        548898,
+        565600,
+        557647,
+        564131
+      ],
+      "v_median_ns": 558763,
+      "v_spread_rel": 0.02989,
+      "threshold_rel": 0.05978
+    },
+    {
+      "cell": "SENT-LIST-INDENT",
+      "v_run_medians_ns": [
+        896377,
+        904941,
+        895327,
+        888001,
+        899308
+      ],
+      "v_median_ns": 896377,
+      "v_spread_rel": 0.0189,
+      "threshold_rel": 0.0378
+    },
+    {
+      "cell": "SENT-BQ-NEST",
+      "v_run_medians_ns": [
+        532425,
+        568521,
+        534425,
+        532827,
+        544888
+      ],
+      "v_median_ns": 534425,
+      "v_spread_rel": 0.06754,
+      "threshold_rel": 0.13508
+    }
+  ]
+}

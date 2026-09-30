@@ -359,6 +359,18 @@ pub trait HorseAStructuralSink {
     /// RestartCertificate at the real persistence seam.
     fn certificate_write(&mut self);
 
+    /// [Step 2R additive diagnostic seam (`CERTIFICATE_MATCH_REPAIR_ID`,
+    /// issue #104) — deliberately NOT part of the frozen
+    /// `HORSE-A-STRUCTURAL-COUNTERS-v1` record.] `n` certificate-barrier
+    /// cut inspections consumed by the certificate matching traversal for
+    /// ONE examined boundary, batched once per examined boundary (never
+    /// once per comparison; a MATCHED boundary is charged twice — its
+    /// seek batch plus its duplicate peek, protocol event PE-1), so the
+    /// no-op lane pays only the call. The frozen v1
+    /// record, its producer, and its adjudicator stay byte-identical
+    /// across V (master 352e214, which charges nothing here) and R.
+    fn certificate_barrier_inspections(&mut self, _n: u64) {}
+
     /// One full convergence-predicate evaluation of one offered candidate.
     fn candidate_check(&mut self);
 
@@ -470,6 +482,12 @@ impl HorseAStructuralSink for NoopHorseAStructuralSink {
 #[derive(Debug, Clone, Default)]
 pub struct RecordingHorseAStructuralSink {
     counters: HorseAStructuralCountersV1,
+    /// Step 2R diagnostic side tally (issue #104): total
+    /// `certificate_barrier_inspections` batches accumulated. This is a
+    /// sink side field, deliberately outside the frozen v1 record — read
+    /// it through [`RecordingHorseAStructuralSink::certificate_barrier_inspections`],
+    /// never through `counters()`.
+    certificate_barrier_inspections: u64,
 }
 
 impl RecordingHorseAStructuralSink {
@@ -477,6 +495,7 @@ impl RecordingHorseAStructuralSink {
     pub fn new() -> Self {
         Self {
             counters: HorseAStructuralCountersV1::new(),
+            certificate_barrier_inspections: 0,
         }
     }
 
@@ -488,6 +507,14 @@ impl RecordingHorseAStructuralSink {
     /// Consume the sink and hand back the record.
     pub fn into_counters(self) -> HorseAStructuralCountersV1 {
         self.counters
+    }
+
+    /// The Step 2R diagnostic side tally: the total number of
+    /// certificate-barrier cut inspections charged by the matching
+    /// traversal (V charges nothing; V's matching work is
+    /// `N_b × B` by structure). Not part of the frozen record.
+    pub fn certificate_barrier_inspections(&self) -> u64 {
+        self.certificate_barrier_inspections
     }
 }
 
@@ -534,6 +561,16 @@ impl HorseAStructuralSink for RecordingHorseAStructuralSink {
     fn certificate_write(&mut self) {
         let field = &mut self.counters.certificate_writes;
         *field = field.add(1);
+    }
+
+    fn certificate_barrier_inspections(&mut self, n: u64) {
+        // Saturating, never panicking: this diagnostic must not add a new
+        // panic mode (review E) — the tally is diagnostic only and the
+        // saturated value can never satisfy a PASS gate. Unreachable in
+        // practice (per persist call the charge is <= B + N_b + R).
+        self.certificate_barrier_inspections = self
+            .certificate_barrier_inspections
+            .saturating_add(n);
     }
 
     fn candidate_check(&mut self) {
