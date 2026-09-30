@@ -25,6 +25,23 @@ entry point is:
   P1−P0 residual (≈ cancels vs H0 document materialization on the frozen
   cells); AVL is secondary; escalation decision
   L2_SUFFICIENT_FOR_MECHANISM_DECISION → #95 Step 2.
+  **Historical record — read together with the L2 evidence erratum
+  below.**
+- **[Horse-A v2 L2 evidence erratum (2026-09-30)](horse-a-v2-l2-evidence-erratum-2026-09-30.md)** —
+  append-only interpretation correction for the completed L2 record
+  (#100 CLOSED, not reopened; no historical artifact rewritten, no
+  recollection): the published `samples/op` quantities used a
+  mixed-phase numerator (warmup provably inside the retained sets) with
+  a formal-only denominator (per-op magnitudes ≈ ×1.2 on E6-1/E6-5);
+  the 87.6%/89.7% certificate shares are historical mixed-phase
+  differential shares — the qualitative certificate-barrier-lookup
+  localization is ROBUST under every retained-evidence normalization
+  (≤ ±0.4 pp under the warmed-only window estimate); E6-4 is sparse
+  propagation, not equality-only (`E6_1_CLASS != E6_4_CLASS`); the
+  effect ledger is a diagnostic classification, not a minimum-work
+  oracle; P1−P0 is not removable work. Derived sensitivity evidence:
+  `research/benchmarks/markdown-ast-update/results/horse-a-v2-l2-100-erratum/`.
+  **Consume the original L2 report + this erratum together.**
   **Start here for active Horse-A v2 research.**
 - **[Baseline figures](figures/horse-a-v1-baseline/README.md)** — the eight
   ECharts-generated baseline figures (deterministic pipeline over sealed
@@ -39,6 +56,10 @@ primary T/A/M                     = COMPLETE / SEALED
 PMU explanation                   = COMPLETE / SEALED
 RQ8 optimization sensitivity      = COMPLETE
 Horse-A v1                        = IMMUTABLE EXPERIMENTAL BASELINE
+Horse-A v2 L0/L1 (#98)            = CLOSED / COMPLETE (sealed evidence)
+Horse-A v2 L2 (#100)              = CLOSED / COMPLETE + APPEND-ONLY
+                                    EVIDENCE ERRATUM (2026-09-30) — read the
+                                    original report and the erratum together
 production Markdown design        = NOT STARTED
 ```
 
