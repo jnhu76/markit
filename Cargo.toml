@@ -1,0 +1,19 @@
+# Markit product workspace.
+#
+# Owns production/reusable product crates under crates/ only. The research
+# trees (research/benchmarks/markdown-ast-update, research/experiments/
+# experiment-0-parser-survey) are self-contained research workspaces with
+# their own roots, frozen profiles, and toolchain pins; they are excluded so
+# they can never become members of this workspace and their dependency
+# resolution, feature selection, and build behavior stay exactly as frozen.
+# See docs/product/repository-layout.md.
+
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+exclude = ["research"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
