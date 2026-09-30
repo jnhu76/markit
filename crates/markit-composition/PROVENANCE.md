@@ -113,6 +113,25 @@ no token or assertion changes:
    from the donor's wording beyond the rename (the firewall sentence names
    research mechanisms and product crates; the `kani`-cfg comment says
    "transplanted from the donor").
+11. **Donor playback authority citations removed from `src/kernel.rs`**
+   (PR #107 corrective, P2) — the donor doc comments on `DisposeVerdict`
+   and `dispose_root()` justified the verdict-vs-snapshot authority split
+   by citing donor playback-domain authority documents (ADR-PBK-002
+   D14.6 with the F6-AUTHORITY-PROMOTION-1 amendment, and PBK-001 §2.3 —
+   donor product/playback ADRs, not the K0 design). Markit production
+   sources may not let a donor product ADR adjudicate kernel semantics,
+   so those citations were removed: the root-disposal outcome now cites
+   the K0 design section that freezes it (§L.2: root disposal reports
+   violations and does not claim completion while one is open), while
+   the verdict-vs-snapshot authority split itself is kept as transplanted
+   generic behavior — the K0 design documents do not formally state that
+   ruling for disposal verdicts; in the donor it entered the crate
+   through the playback amendment named above (visible in the donor
+   repository at the recorded commit). The repository-boundary firewall
+   (`tests/dependency_firewall.rs`) now denies `ADR-PBK` / `PBK-` /
+   `AUTHORITY-PROMOTION` in production sources, which makes this file the
+   only place in the crate that names those identifiers outside the
+   firewall's own deny-list.
 
 ## License
 

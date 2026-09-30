@@ -4,10 +4,11 @@
 //! time via the manifest, and mechanically via a source-tree scan.
 //!
 //! The deny-list vocabulary below (donor media-domain words, donor product
-//! crate names, Markit research/UI mechanism names) intentionally appears
-//! ONLY inside firewall deny-lists and in PROVENANCE.md — the scan targets
-//! are production sources and the manifest, where a hit would be an active
-//! code dependency or contamination, not donor documentation.
+//! crate names, donor authority-document identifiers, Markit research/UI
+//! mechanism names) intentionally appears ONLY inside firewall deny-lists
+//! and in PROVENANCE.md — the scan targets are production sources and the
+//! manifest, where a hit would be an active code dependency or
+//! contamination, not donor documentation.
 
 use markit_composition::{ComponentSpec, CompositionKernel, DesiredEntry, Revision};
 
@@ -73,7 +74,9 @@ fn kernel_sources_reference_no_repository_boundaries() {
     ];
     // Case-sensitive tokens that must never appear in production sources:
     // the research area and its mechanisms, donor product crates and media
-    // domain, and Markit UI/platform/Markdown surfaces. Tokens are matched
+    // domain, donor authority-document identifiers (a donor product ADR
+    // must not adjudicate Markit kernel semantics), and Markit
+    // UI/platform/Markdown surfaces. Tokens are matched
     // as raw substrings on purpose: the scan is fail-closed, so a future
     // incidental false positive fails loudly and is re-worded here, never
     // silently suppressed (today the sources are hit-free).
@@ -101,6 +104,9 @@ fn kernel_sources_reference_no_repository_boundaries() {
         "qianqian-output",
         "qianqian-decode",
         "qianqian-songcore",
+        "ADR-PBK",
+        "PBK-",
+        "AUTHORITY-PROMOTION",
         "songcore",
         "playback",
         "Playback",

@@ -34,12 +34,12 @@ pub enum StepOutcome {
     Blocked,
 }
 
-/// The authoritative outcome of a root disposal (ADR-PBK-002 D14.6, the
-/// F6-AUTHORITY-PROMOTION-1 amendment): the control-plane result of the
-/// disposal OPERATION itself, computed by the kernel from its own
-/// committed fiber states — never a diagnostic snapshot read, which
-/// remains a read-side projection (PBK-001 §2.3: the snapshot is an
-/// observation, not a success certificate).
+/// The authoritative outcome of a root disposal (design §L.2): the
+/// control-plane result of the disposal OPERATION itself, computed by
+/// the kernel from its own committed fiber states — never a diagnostic
+/// snapshot read, which remains a read-side projection (the snapshot
+/// is an observation, not a success certificate; transplanted generic
+/// behavior, see PROVENANCE.md).
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum DisposeVerdict {
     /// Every fiber retired cleanly: the composition is fully discharged
@@ -203,14 +203,14 @@ impl CompositionKernel {
     }
 
     /// Root disposal: retire everything and drain (§L.2), yielding the
-    /// AUTHORITATIVE disposal outcome (ADR-PBK-002 D14.6,
-    /// F6-AUTHORITY-PROMOTION-1). The verdict is computed from the
-    /// kernel's own committed fiber states inside this operation — it is
-    /// the control-plane result the composition root owns, never a read
-    /// of the diagnostic snapshot (which remains a projection). A latched
-    /// §G.6 violation is also visible in the post-disposal snapshot; the
-    /// violated fiber stays mounted, its effect records remain, and no
-    /// further composition may be built on this kernel.
+    /// AUTHORITATIVE disposal outcome (see [`DisposeVerdict`]). The
+    /// verdict is computed from the kernel's own committed fiber states
+    /// inside this operation — it is the control-plane result the
+    /// composition root owns, never a read of the diagnostic snapshot
+    /// (which remains a projection). A latched §G.6 violation is also
+    /// visible in the post-disposal snapshot; the violated fiber stays
+    /// mounted, its effect records remain, and no further composition
+    /// may be built on this kernel.
     pub fn dispose_root(&mut self) -> DisposeVerdict {
         self.count_op();
         // The empty composition is always legal, so this cannot fail.
