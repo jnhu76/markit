@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
+name = "markit-app"
+version = "0.1.0"
+dependencies = [
+ "markit-composition",
+]
+
+[[package]]
 name = "markit-composition"
 version = "0.1.0"

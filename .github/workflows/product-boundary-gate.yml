@@ -1,0 +1,61 @@
+name: Product Boundary Gate
+
+# Durable gate for the Markit product foundation (Issue #106,
+# MARKIT-FOUNDATION-0; rules in docs/product/foundation-rules.md).
+#
+# Fail-closed contract: any unadmitted internal dependency edge (normal,
+# dev, build, optional, target-specific), any unknown markit-* crate in
+# the production universe, any production dependency pointing into
+# research/, a markit-* crate hidden in the workspace exclude list, or a
+# donor mechanism marker in a production source fails the job. The
+# negative-controls step proves the gate is not vacuous by reversibly
+# mutating the tree (A unadmitted dev edge / B unknown crate /
+# C research dependency / D exclude bypass / E donor marker) and
+# requiring each mutation RED.
+
+on:
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "crates/**"
+      - "apps/**"
+      - "tools/check_product_boundaries.py"
+      - ".github/workflows/product-boundary-gate.yml"
+  push:
+    branches: [master]
+    paths:
+      - "Cargo.toml"
+      - "crates/**"
+      - "apps/**"
+      - "tools/check_product_boundaries.py"
+      - ".github/workflows/product-boundary-gate.yml"
+
+concurrency:
+  group: product-boundary-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+# A hardening gate needs the least authority that still lets it judge:
+# read-only checkout, nothing else.
+permissions:
+  contents: read
+
+jobs:
+  product-boundary:
+    name: Cargo topology allowlist + research boundary + donor scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install stable Rust (cargo metadata input)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Product boundary gate (topology allowlist + research boundary + donor scan)
+        run: python3 tools/check_product_boundaries.py
+
+      - name: Negative controls (gate non-vacuity, reversible mutations)
+        run: python3 tools/check_product_boundaries.py --negative-controls
