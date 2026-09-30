@@ -39,3 +39,38 @@ Phase timeline (E5 local CST, 2026-09-30): V-only calibration
 calibration-number freezes are timestamped in #104 BEFORE the respective
 executions; the methodology review verified the artifact mtimes against
 the comment trail.
+
+## Amendment v3 corrective rerun (merge-authoritative)
+
+The independent review found P1: the fast matcher did not preserve V's
+frozen duplicate behavior on non-monotone defensive barrier slices.
+Amendment v3 (#104, append-only receipt) added an allocation-free O(B)
+strict-order eligibility gate: monotone slices take the unchanged fast
+matcher; non-monotone slices route to `v1_defensive_fallback` — the
+frozen 352e214 V matcher copied verbatim. Because production code
+changed, the frozen screening was rerun as a protocol-preserving
+corrective rerun (protocol, thresholds, repetitions, order, host
+unchanged; thresholds NOT recalculated; V binary re-verified unchanged).
+
+```text
+corrective/             validate-retention/ (L0.5 PASS both binaries, all
+                        13 cells) + alane-v/ alane-r/ (A-LANE receipts on
+                        the corrected binary; V/R byte-identical on every
+                        field)
+corrective-campaign/    v1..v5 + r1..r5 tlane.json (interleaved V,R x 5,
+                        2026-09-30T14:44:42..14:47:04+08:00, taskset -c 2)
+                        + pair_campaign_result.json (analyze_pair.py
+                        unchanged, same frozen thresholds)
+R_BINARY_CORRECTIVE     sha256 25c13f70c840e2e28e3c51daacd09aa4375191687864
+                        c3201b759c4dc1e2731f, built at corrective head
+                        2ea09b7; RETAINED at the R target/release path
+                        (pre-review binary 692631ac... also retained)
+V_BINARY                sha256 81f569d8... (UNCHANGED, re-verified)
+VERDICT                 challenges E6-1 -53.49% / E6-4 -62.48% /
+                        E6-5 -59.05% all MATERIAL faster; no guardrail
+                        regression (worst +1.17%); E6-6 crossed its
+                        threshold FASTER (-3.70%) — recorded as report
+                        protocol event PE-4. This screening is the
+                        merge-authoritative Step 2R result; pair-campaign/
+                        is preserved as the pre-review screening.
+```
