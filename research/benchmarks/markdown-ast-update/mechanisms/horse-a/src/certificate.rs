@@ -126,7 +126,8 @@ pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
 /// assembled — retained suffix certificates are never rewritten here, and
 /// the site charges that sentinel zero on every execution.
 ///
-/// # Step 2R matching traversal (`CERTIFICATE_MATCH_REPAIR_ID`)
+/// # Step 2R matching traversal (`CERTIFICATE_MATCH_REPAIR_ID`, contract
+/// amendment v3)
 ///
 /// The matcher is a single forward merge traversal over two sequences the
 /// callers construct strictly increasing, replacing V's per-boundary full
@@ -140,21 +141,63 @@ pub const CERTIFICATE_MATCH_REPAIR_ID: &str = "HORSE-A-V2-STEP2R-CERT-MATCH-R1";
 ///   (one `parse_region_observed` per call, one forward per-line pass, at
 ///   most one event per dispatched line, append-only observers).
 ///
+/// **Eligibility gate (amendment v3).** Legal production parsing always
+/// satisfies both orderings, so the fast path always applies there. The
+/// gate itself is an allocation-free O(B) scan (`B - 1` cut comparisons;
+/// vacuously eligible for `B <= 1`) that re-verifies the barrier ordering
+/// before entering the fast traversal. Any slice that is not strictly
+/// increasing by `cut` — a duplicate or decreasing event, unreachable
+/// from legal parser generation — is routed to
+/// [`v1_defensive_fallback`], which is the frozen V matcher copied
+/// verbatim. Non-monotone defensive input therefore keeps V's exact
+/// seam semantics: same whole-slice duplicate search, same examined-
+/// boundary scope, same precedence (lowest examined duplicate boundary
+/// errors first), same error text, same support checks, silent skips,
+/// `certificate_write` accounting, EOF/local-convergence behavior and
+/// forbidden-sentinel behavior. No sorting, deduplication, retained
+/// state, heap allocation, or new error class is introduced, and the
+/// traversal stays total (no new panic mode) on any input.
+///
 /// A barrier is *examined* by the cursor at most once; events skipped
 /// before a boundary have `cut < boundary <` every later boundary and can
 /// never match again. The match predicate stays exact `cut` equality.
-/// Duplicate detection is preserved with V's semantics and scope: only
-/// examined interior boundaries detect duplicates (one adjacent-element
-/// peek — under the stated monotonicity a second same-cut event, if any,
-/// is exactly the next element), the check runs BEFORE any support check,
-/// the lowest examined boundary errors first, and the error class/text is
-/// V's. Duplicates at non-examined cuts stay silently ignored, exactly as
-/// in V.
+/// Duplicate detection preserves V's semantics and scope on BOTH routes:
+/// only examined interior boundaries detect duplicates, the check runs
+/// BEFORE any support check, the lowest examined boundary errors first,
+/// and the error class/text is V's. On the fast path the duplicate check
+/// is the adjacent-element peek below — provably inert under the gate
+/// (strict monotonicity makes a second same-cut event impossible), kept
+/// as a defended site; the real duplicate defense for violative input is
+/// the fallback's whole-slice V scan. Duplicates at non-examined cuts
+/// stay silently ignored, exactly as in V.
 ///
-/// The monotone precondition is a documented caller invariant (proven at
-/// both callers), not re-checked here: this traversal is total and adds no
-/// new panic mode on violative input (which would have undefined matching
-/// behavior, is unreachable from both callers, and must not be relied on).
+/// # Work accounting (amendment v3, proved against this code)
+///
+/// - `ORDER_CHECK_WORK = max(B - 1, 0)` cut comparisons for the
+///   eligibility gate; allocation-free; NOT charged to the diagnostic
+///   counter (its semantics are fixed below).
+/// - `FAST_MATCH` (what `certificate_barrier_inspections` counts: seek
+///   iterations + duplicate peeks) `<= B + N_b + R`, where `R` is the
+///   number of exact-cut matches whose support is not persistable (each
+///   such barrier stays at the cursor and is re-inspected once at the
+///   next examined boundary; each contributes one seek inspection and
+///   one peek beyond the `B + N_b` core). `R = 0` on every measured
+///   evidence path. Derivation: every barrier is advanced past at most
+///   once (`A = B - U - I`, `U` never-reached, `I` installed), every
+///   examined boundary breaks at most once (`T <= N_b`), every match
+///   peeks at most once (`P <= M = I + R`), so
+///   `A + T + P <= B + N_b + R - U`.
+/// - Total legal-path matching + eligibility work is therefore
+///   `<= 2B + N_b + R - 1` — linear in `B + N_b`, against V's exact
+///   `N_b × B`.
+/// - The defensive fallback route is exactly V's `N_b × B` predicate
+///   evaluations (the frozen algorithm's own cost) and exists only for
+///   inputs outside legal production generation.
+/// - Diagnostic-counter scope: `certificate_barrier_inspections` counts
+///   FAST-MATCH seek + peek inspections only. Order-check comparisons
+///   are not included, and the V fallback (V has no such diagnostic)
+///   charges nothing. Total work is accounted analytically above.
+///
 /// The pre-existing unchecked `ev.cut - base` keeps V's exact arithmetic.
 pub(crate) fn persist_interior_certificates(
     owners: &mut [Owner],
@@ -175,6 +218,14 @@ pub(crate) fn persist_interior_certificates(
     } else {
         owners.len().saturating_sub(1)
     };
+    // Amendment v3 eligibility gate: strict monotonicity, checked
+    // allocation-free in one forward pass. Legal production parsing is
+    // always eligible (R-C7 collection invariants); anything else takes
+    // the frozen-V fallback below.
+    let strictly_increasing = barriers.windows(2).all(|w| w[0].cut < w[1].cut);
+    if !strictly_increasing {
+        return v1_defensive_fallback(owners, cuts, barriers, boundary_count, sink);
+    }
     let mut cursor = 0usize;
     for i in 0..boundary_count {
         let boundary = cuts[i + 1];
@@ -204,8 +255,11 @@ pub(crate) fn persist_interior_certificates(
         }
         // ev.cut == boundary: the exact-equality match. V searched the
         // whole remainder for a second match BEFORE any support check;
-        // under the monotone collection the second match, if any, is
-        // exactly the adjacent element.
+        // the eligibility gate guarantees strict monotonicity, so a
+        // second same-cut event cannot exist and this adjacent peek is
+        // provably inert. It is retained as a defended site (one charged
+        // inspection per match), never as the duplicate defense — that
+        // role belongs to the fallback's whole-slice V scan.
         if let Some(next) = barriers.get(cursor + 1) {
             sink.certificate_barrier_inspections(1);
             if next.cut == boundary {
@@ -227,7 +281,9 @@ pub(crate) fn persist_interior_certificates(
         // events (the seam always reports `preceding_lf == line_start - 1`,
         // and `line_start >= base + 1` above puts that LF at or after
         // `base`) — skipped rather than errored so no transient evidence
-        // shape can abort a legal state.
+        // shape can abort a legal state. A support-rejected match stays at
+        // the cursor and is re-inspected (once) at the next examined
+        // boundary — the `R` term of the fast-match bound above.
         let rel_preceding = match ev.preceding_lf {
             None => None,
             Some(lf) => match lf.checked_sub(base) {
@@ -254,6 +310,70 @@ pub(crate) fn persist_interior_certificates(
     // were touched; the retained suffix's certificates are structurally
     // retained and never rewritten. A regression that rewrote them would
     // charge this site.
+    sink.forbidden(ForbiddenKind::UnaffectedCertificateWrites, 0);
+    Ok(())
+}
+
+/// The frozen V matcher (master `352e214`,
+/// `mechanisms/horse-a/src/certificate.rs`, `persist_interior_certificates`
+/// loop), copied verbatim as the amendment-v3 defensive fallback. It runs
+/// ONLY for barrier slices that are not strictly increasing by `cut` —
+/// shapes unreachable from legal parser generation — so that non-monotone
+/// defensive input keeps V's exact seam behavior instead of the fast
+/// traversal's monotone assumptions. Verbatim means verbatim: the lazy
+/// per-boundary full-slice filter, the whole-remainder duplicate search
+/// before any support check, the identical error text, support checks,
+/// silent skips, charge sites, and the early `Err` that skips the
+/// forbidden-sentinel tail exactly as V's does. No inspections are
+/// charged here (V has no such diagnostic; see the counter-scope note on
+/// [`persist_interior_certificates`]).
+fn v1_defensive_fallback(
+    owners: &mut [Owner],
+    cuts: &[usize],
+    barriers: &[RootBlankEvent],
+    boundary_count: usize,
+    sink: &mut dyn HorseAStructuralSink,
+) -> Result<(), String> {
+    for i in 0..boundary_count {
+        let boundary = cuts[i + 1];
+        let mut candidates = barriers.iter().filter(|ev| ev.cut == boundary);
+        let Some(ev) = candidates.next() else {
+            continue;
+        };
+        if candidates.next().is_some() {
+            return Err(format!(
+                "multiple root blank barriers certify the same boundary {boundary}"
+            ));
+        }
+        let base = cuts[i];
+        // The blank line must lie strictly inside the left Owner's coverage:
+        // a blank starting AT the Owner's base would pull its preceding LF
+        // (or a BOF claim) across the coverage start.
+        let Some(rel_blank_start) = ev.line_start.checked_sub(base).filter(|rel| *rel >= 1) else {
+            continue;
+        };
+        // `None` (BOF) is legal support and stays None; an LF before the
+        // left Owner's base cannot be represented Owner-relatively, so that
+        // candidate is non-persistable too.
+        let rel_preceding = match ev.preceding_lf {
+            None => None,
+            Some(lf) => match lf.checked_sub(base) {
+                Some(rel) => Some(rel),
+                None => continue,
+            },
+        };
+        let rel_blank_end = ev.cut - base;
+        owners[i].outgoing_restart = Some(RestartCertificate {
+            support: RestartSupport {
+                preceding_lf: rel_preceding,
+                blank_line: rel_blank_start..rel_blank_end,
+            },
+        });
+        sink.certificate_write();
+    }
+    // V's tail, verbatim: the defended-site sentinel charges on successful
+    // completion exactly as in V, and the duplicate `Err` above skips it
+    // exactly as in V.
     sink.forbidden(ForbiddenKind::UnaffectedCertificateWrites, 0);
     Ok(())
 }

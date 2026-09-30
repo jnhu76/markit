@@ -16,7 +16,12 @@
 //! 2. **Work reduction** — V's inspection count is exactly `N_b × B`
 //!    (the lazy filter is exhausted for every examined boundary); R's
 //!    charged tally is asserted at exact values on a hand-traced case and
-//!    under the `B + N_b` bound (and strictly below V) on a dense case.
+//!    under the fast-match bound `B + N_b + R` (amendment v3: `R` =
+//!    support-rejected exact matches, 0 on these shapes) — and strictly
+//!    below V — on a dense case. The eligibility gate's `B - 1` order
+//!    comparisons are NOT part of that counter (analytical accounting
+//!    only). Non-monotone defensive slices take the frozen-V fallback
+//!    and charge no fast-matcher inspections at all.
 //! 3. **End-to-end same-authority** — through the public update API:
 //!    R-produced READY states must equal the from-scratch clean
 //!    full-build authority as FULL `ReadyDocument` state (Owner sequence
@@ -362,7 +367,9 @@ fn the_dense_geometry_shows_strict_reduction_with_state_parity() {
     // R, hand-traced: 31 examined boundaries × (2 noise advances + 1
     // stop/match iteration) = 93 seek iterations, + 1 duplicate peek per
     // matched boundary (16 boundary events at even i) = 109; the two noise
-    // events behind the last examined boundary are never entered.
+    // events behind the last examined boundary are never entered. Every
+    // match is persistable here, so the rejected-match term is R = 0 and
+    // the strict bound B + N_b = 111 holds (amendment v3 derivation).
     assert_eq!(d.r_inspections as usize, 93 + 16);
     assert!(
         d.r_inspections as usize <= b + n_b,
@@ -401,6 +408,168 @@ fn the_work_accounting_is_exact_on_a_hand_traced_case() {
     // + 1 peek; the EOF cut is never examined. Total 6.
     assert_eq!(d.r_inspections, 6);
     assert!(d.r_inspections < d.v_inspections);
+}
+
+// ---------------------------------------------------------------------------
+// Amendment v3: the eligibility gate and the defensive fallback.
+//
+// Legal production barriers are strictly increasing by `cut` (R-C7
+// collection invariants), so the fast matcher always applies there. Any
+// NON-monotone slice is routed to the frozen V matcher verbatim
+// (`v1_defensive_fallback`); these cases pin the full V seam behavior on
+// such input — including the exact-duplicate defense the fast path
+// cannot see (its adjacent peek is provably inert under the gate).
+// ---------------------------------------------------------------------------
+
+/// D1 — non-adjacent duplicate: the second same-cut event is separated
+/// from the first by an unrelated larger event. V hard-errors at the
+/// lowest examined duplicate boundary; R must route to the V fallback and
+/// produce the identical result, Owner state, writes and error text (the
+/// fast path's adjacent peek alone would have silently installed here).
+#[test]
+fn d1_non_adjacent_duplicate_errors_exactly_like_v() {
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(4, 9, Some(3)), ev(8, 14, Some(7)), ev(6, 9, Some(5))], false);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 10".to_string())
+    );
+    // The fallback route charges no fast-matcher inspections (Option A
+    // counter scope): V has no such diagnostic.
+    assert_eq!(d.r_inspections, 0);
+}
+
+/// D2 — duplicate after a larger out-of-order event at a LATER examined
+/// boundary, with unrelated events in between on both sides: exact V
+/// parity (result, state, writes) and exact error precedence (the
+/// duplicate at boundary 20 errors, boundary 10 installs normally).
+#[test]
+fn d2_duplicate_after_larger_out_of_order_event_is_v_exact() {
+    let cuts = [0usize, 10, 20, 30];
+    let barriers = [
+        ev(4, 9, Some(3)),    // cut 10: matches boundary 10, persistable
+        ev(14, 19, Some(13)), // cut 20: first candidate for boundary 20
+        ev(21, 23, Some(20)), // cut 24: unrelated, larger than 20
+        ev(16, 19, Some(15)), // cut 20 AGAIN, after the larger event
+        ev(24, 29, Some(23)), // cut 30: behind the duplicate
+    ];
+    let d = assert_v_r_parity(&cuts, &barriers, false);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 20".to_string())
+    );
+    assert_eq!(d.r_inspections, 0, "fallback route charges no inspections");
+}
+
+/// D3 — unsorted but NO duplicate: R must produce exactly V's Result,
+/// persisted Owner state and certificate-write charges. Here the slice
+/// [cut 15, cut 10] is decreasing; V's lazy filter still finds the cut-10
+/// event for boundary 10 and persists it, finds nothing for boundary 20.
+#[test]
+fn d3_unsorted_without_duplicate_matches_v_exactly() {
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(8, 14, Some(7)), ev(4, 9, Some(3))], false);
+    assert!(d.r.0.is_ok());
+    assert_eq!(
+        d.r.1[0].outgoing_restart,
+        Some(RestartCertificate {
+            support: RestartSupport {
+                preceding_lf: Some(3),
+                blank_line: 4..10
+            }
+        })
+    );
+    assert!(d.r.1[1].outgoing_restart.is_none());
+    assert_eq!(d.r.2, d.v.2);
+    // Vacuous gate: a strictly-increasing slice of the same events takes
+    // the fast path instead (state parity either way; the counter shows
+    // WHICH route ran).
+    let sorted = assert_v_r_parity(&[0, 10, 20], &[ev(4, 9, Some(3)), ev(8, 14, Some(7))], false);
+    assert!(sorted.r.0.is_ok());
+    assert!(sorted.r_inspections > 0, "eligible slice takes the fast path");
+    assert_eq!(sorted.r.1, d.r.1, "same persisted state on both routes");
+}
+
+/// D4 — duplicates at an UNEXAMINED cut under unsorted input stay
+/// silently ignored, exactly where V ignores them: no global duplicate
+/// validation may appear even on the fallback route.
+#[test]
+fn d4_unsorted_duplicates_at_unexamined_cuts_stay_silent() {
+    // cuts [0,10,20], last=false: examined boundaries are 10 and 20; the
+    // duplicate pair at cut 25 is behind the EOF cut and is never
+    // examined. The slice is non-monotone (25, 15, 25), so this exercises
+    // the fallback route's silence too.
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(18, 24, Some(17)), ev(8, 14, Some(7)), ev(18, 24, Some(17))], false);
+    assert!(d.r.0.is_ok());
+    // V (and therefore R) persists nothing here: cut 15 is not a boundary
+    // and the cut-25 duplicates are unexamined.
+    assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+}
+
+/// D5 — several duplicate boundaries under unsorted input: V's lowest
+/// examined duplicate boundary errors first, with V's exact precedence
+/// over the silently-skipped shapes between.
+#[test]
+fn d5_lowest_examined_duplicate_boundary_errors_first_under_unsorted_input() {
+    let cuts = [0usize, 10, 20, 30];
+    let barriers = [
+        ev(14, 19, Some(13)), // cut 20 (first candidate for boundary 20)
+        ev(4, 9, Some(3)),    // cut 10 (first candidate for boundary 10)
+        ev(8, 14, Some(7)),   // cut 15 (noise, unsorted position)
+        ev(6, 9, Some(5)),    // cut 10 AGAIN -> boundary 10 duplicates
+        ev(16, 19, Some(15)), // cut 20 AGAIN -> boundary 20 duplicates too
+    ];
+    let d = assert_v_r_parity(&cuts, &barriers, false);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 10".to_string()),
+        "the LOWEST examined duplicate boundary errors first, as in V"
+    );
+}
+
+/// The duplicate-with-failed-first-support case (battery case 11b) also
+/// holds under the fallback route's unsorted geometry: the duplicate
+/// error still precedes the support skip.
+#[test]
+fn d6_duplicate_precedence_over_support_skip_survives_unsorted_input() {
+    let cuts = [0usize, 10, 20, 30];
+    let barriers = [
+        ev(0, 9, None),       // cut 10, blank AT the Owner base: support would fail
+        ev(11, 13, Some(10)), // cut 14 (noise)
+        ev(4, 9, Some(3)),    // cut 10 AGAIN, perfectly persistable
+    ];
+    let d = assert_v_r_parity(&cuts, &barriers, false);
+    assert_eq!(
+        d.r.0,
+        Err("multiple root blank barriers certify the same boundary 10".to_string())
+    );
+    assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+}
+
+/// A support-rejected exact match under the FALLBACK route keeps V's
+/// skip behavior, independent of the fast path's `R`-term accounting.
+/// (A support-rejected match on the FAST route is covered by the dense
+/// battery's shape freedom; here the slice is deliberately non-monotone
+/// so the fallback route itself is exercised.)
+#[test]
+fn d7_fallback_support_rejection_still_skips_like_v() {
+    // Boundary 10's only candidate has its blank AT the left Owner base
+    // (support would fail: rel start 0); the slice is non-monotone
+    // (cuts 10, 12, 8) so R routes to the V fallback and must skip
+    // exactly like V — no error, nothing persisted.
+    let d = assert_v_r_parity(&[0, 10, 20], &[ev(0, 9, None), ev(6, 11, Some(5)), ev(4, 7, Some(3))], false);
+    assert!(d.r.0.is_ok());
+    assert!(d.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+    assert_eq!(d.r_inspections, 0, "fallback route charges no inspections");
+
+    // The monotone twin of the same rejected shape takes the fast path
+    // and skips identically (state parity across routes).
+    let fast = assert_v_r_parity(&[0, 10, 20], &[ev(0, 9, None)], false);
+    assert!(fast.r.0.is_ok());
+    assert!(fast.r.1.iter().all(|o| o.outgoing_restart.is_none()));
+    assert!(
+        fast.r_inspections > 0,
+        "eligible slice takes the fast path (peek after the rejected match)"
+    );
+    assert_eq!(fast.r.1, d.r.1);
 }
 
 // ---------------------------------------------------------------------------
