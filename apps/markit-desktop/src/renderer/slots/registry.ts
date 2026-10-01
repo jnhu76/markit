@@ -115,7 +115,9 @@ export class SlotRegistry {
   render(declaration: SlotDeclaration, host: HTMLElement): void {
     const state = this.#live(declaration);
     host.replaceChildren();
-    for (const contribution of state.contributions.values()) {
+    // Snapshot: a render callback that contributes mid-pass does not draw
+    // in this pass (the next render picks it up).
+    for (const contribution of [...state.contributions.values()]) {
       contribution.render(host);
     }
   }

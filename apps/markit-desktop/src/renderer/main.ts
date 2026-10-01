@@ -56,6 +56,7 @@ async function openDocument(source: string, path: string | null): Promise<void> 
   filePath = path;
   const host = workbench.root.querySelector<HTMLElement>('[data-slot-host="editor.surface"]');
   if (!host) throw new Error("missing editor surface");
+  editor?.destroy();
   host.replaceChildren();
   editor = await createSourceEditor(host, session, () => void refresh());
   await refresh();
@@ -89,31 +90,18 @@ addToolbarButton("save", "Save", () => {
   void (async () => {
     if (!session) return;
     const view = await session.view();
-    await session.save(view.revision, filePath);
+    const result = await session.save(view.revision, filePath);
+    if (result.kind === "saved") filePath = result.path;
     await refresh();
   })();
 });
 
 addToolbarButton("undo", "Undo", () => {
-  void (async () => {
-    if (!session || !editor) return;
-    const revision = await session.undo();
-    if (revision !== null) {
-      const view = await session.view();
-      await editor.reconcile(view.source);
-    }
-  })();
+  void editor?.undo();
 });
 
 addToolbarButton("redo", "Redo", () => {
-  void (async () => {
-    if (!session || !editor) return;
-    const revision = await session.redo();
-    if (revision !== null) {
-      const view = await session.view();
-      await editor.reconcile(view.source);
-    }
-  })();
+  void editor?.redo();
 });
 
 registry.contribute(workbench.status, {

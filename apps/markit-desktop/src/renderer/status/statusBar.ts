@@ -30,10 +30,6 @@ export class StatusBar {
     this.#render();
   }
 
-  render(host: HTMLElement): void {
-    void host; // the chip renders into its own element, contributed below
-  }
-
   element(): HTMLElement {
     return this.#host;
   }

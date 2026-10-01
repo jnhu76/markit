@@ -3,28 +3,41 @@
 // domain as typed edits (UTF-8 byte offsets), and after every
 // authoritative operation the renderer reconciles to the Document
 // revision. Undo/redo are domain commands — CodeMirror's own history is
-// deliberately NOT installed, so there is exactly one undo authority.
+// deliberately NOT installed, and the standard keys route to the domain.
 //
-// Typed changes are applied through a serial queue against the session:
-// each queued edit carries its transaction's coordinates (relative to the
-// document state its predecessor produced), and a refusal triggers a full
-// resync to the authoritative snapshot instead of divergent source.
+// ALL authoritative operations (typed edits, undo, redo) run through ONE
+// serial queue against the session. Each queued task captures the epoch
+// it was enqueued under; a refusal or a thrown bridge error resyncs the
+// editor to the authoritative snapshot and invalidates every queued task
+// that still carries pre-resync coordinates. There is no path where the
+// buffer diverges from the authority without a resync.
 
 import { EditorView } from "@codemirror/view";
 import { EditorState, Compartment } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { defaultKeymap, indentWithTab } from "@codemirror/commands";
 import { keymap, lineNumbers } from "@codemirror/view";
-import { defaultHighlightStyle, syntaxHighlighting, bracketMatching, indentOnInput } from "@codemirror/language";
+import {
+  defaultHighlightStyle,
+  syntaxHighlighting,
+  bracketMatching,
+  indentOnInput,
+} from "@codemirror/language";
 import type { DocumentSession } from "../adapter/types";
 import { utf16ToByte } from "../adapter/fake";
 
 export interface SourceEditor {
   readonly host: HTMLElement;
-  /** Full reconcile to the authoritative source (undo/redo/resync). */
-  reconcile(source: string): Promise<void>;
+  /** Domain undo through the serial queue; a no-op at history start. */
+  undo(): Promise<void>;
+  /** Domain redo through the serial queue. */
+  redo(): Promise<void>;
+  /** Force-resync to the authoritative snapshot (after the queue drains). */
+  reconcile(): Promise<void>;
   /** The UI caret head, in domain bytes. */
   caretByteOffset(): number;
+  /** Destroy the CodeMirror instance (document switch). */
+  destroy(): void;
 }
 
 export async function createSourceEditor(
@@ -38,8 +51,31 @@ export async function createSourceEditor(
   let baseRevision = initial.revision;
   let applying = false;
   let queue: Promise<void> = Promise.resolve();
+  let epoch = 0;
+  // Bound late: the keymap closures below read this at keypress time.
+  let api: SourceEditor;
 
   const language = new Compartment();
+
+  const resync = async (): Promise<void> => {
+    epoch += 1;
+    const authoritative = await session.view();
+    baseRevision = authoritative.revision;
+    applyDoc(authoritative.source);
+    onAuthoritativeChange();
+  };
+
+  /** Run `task` through the serial queue under the current epoch. */
+  const enqueue = (task: () => Promise<void>): Promise<void> => {
+    const myEpoch = epoch;
+    queue = queue
+      .then(() => {
+        if (myEpoch !== epoch) return; // pre-resync coordinates: skip
+        return task();
+      })
+      .catch(() => resync());
+    return queue;
+  };
 
   const state = EditorState.create({
     doc: initial.source,
@@ -49,7 +85,13 @@ export async function createSourceEditor(
       syntaxHighlighting(defaultHighlightStyle),
       bracketMatching(),
       indentOnInput(),
-      keymap.of([...defaultKeymap, indentWithTab]),
+      keymap.of([
+        { key: "Mod-z", run: () => (void api.undo(), true) },
+        { key: "Mod-Shift-z", run: () => (void api.redo(), true) },
+        { key: "Mod-y", run: () => (void api.redo(), true) },
+        ...defaultKeymap,
+        indentWithTab,
+      ]),
       EditorView.updateListener.of((update) => {
         if (!update.docChanged) return;
         if (applying) return; // our own reconcile echo
@@ -60,18 +102,16 @@ export async function createSourceEditor(
             to: utf16ToByte(startDoc, toA),
             inserted,
           };
-          queue = queue.then(async () => {
+          enqueue(async () => {
             const result = await session.edit(
               baseRevision,
               { start: edit.from, end: edit.to },
               edit.inserted.toString(),
             );
             if (result.kind === "rejected") {
-              // Never corrupt source on refusal: resync to the authority.
-              const authoritative = await session.view();
-              baseRevision = authoritative.revision;
-              applyDoc(authoritative.source);
-              onAuthoritativeChange();
+              // Never corrupt source on refusal: resync to the authority;
+              // queued successors carry stale coordinates and are skipped.
+              await resync();
               return;
             }
             baseRevision = result.revision;
@@ -96,17 +136,39 @@ export async function createSourceEditor(
     }
   }
 
-  return {
+  api = {
     host,
-    async reconcile(source: string) {
+
+    undo() {
+      return enqueue(async () => {
+        const revision = await session.undo();
+        if (revision !== null) await resync();
+      });
+    },
+
+    redo() {
+      return enqueue(async () => {
+        const revision = await session.redo();
+        if (revision !== null) await resync();
+      });
+    },
+
+    async reconcile() {
       await queue;
       const authoritative = await session.view();
       baseRevision = authoritative.revision;
-      applyDoc(source);
+      applyDoc(authoritative.source);
       onAuthoritativeChange();
     },
+
     caretByteOffset() {
       return utf16ToByte(view.state.doc.toString(), view.state.selection.main.head);
     },
+
+    destroy() {
+      view.destroy();
+    },
   };
+
+  return api;
 }

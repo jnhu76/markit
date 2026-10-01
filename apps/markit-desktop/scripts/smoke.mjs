@@ -16,6 +16,7 @@ const args = useXvfb ? ["-a", electron, "--no-sandbox", "dist/main/main.js"] : [
 
 const child = spawn(wrapper ?? electron, args, { stdio: ["ignore", "pipe", "pipe"] });
 let ready = false;
+let mounted = false;
 let output = "";
 const timer = setTimeout(() => {
   console.error(`smoke: TIMEOUT — renderer-ready line not seen\n${output}`);
@@ -25,8 +26,9 @@ const timer = setTimeout(() => {
 
 child.stdout.on("data", (chunk) => {
   output += chunk.toString();
-  if (output.includes("markit-desktop: renderer ready")) {
-    ready = true;
+  if (output.includes("markit-desktop: renderer ready")) ready = true;
+  if (output.includes("markit-desktop: workbench mounted=true")) mounted = true;
+  if (ready && mounted) {
     clearTimeout(timer);
     child.kill("SIGTERM");
   }
@@ -35,10 +37,12 @@ child.stderr.on("data", (chunk) => {
   output += chunk.toString();
 });
 child.on("exit", (code) => {
-  if (ready) {
-    console.log("smoke: PASS (renderer ready observed, app shut down cleanly)");
+  if (ready && mounted) {
+    console.log("smoke: PASS (renderer ready, workbench mounted, clean shutdown)");
     process.exit(0);
   }
-  console.error(`smoke: FAIL (exit ${code})\n${output}`);
+  console.error(
+    `smoke: FAIL (exit ${code}, ready=${ready}, mounted=${mounted})\n${output}`,
+  );
   process.exit(1);
 });

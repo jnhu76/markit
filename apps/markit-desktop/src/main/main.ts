@@ -31,12 +31,28 @@ function createWindow(): BrowserWindow {
     },
   });
 
-  // No window.open authorities: the shell denies all new windows.
+  // No window.open or navigation authorities: the shell denies both.
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("will-navigate", (event) => event.preventDefault());
   win.once("ready-to-show", () => {
     win.show();
-    // The native smoke observes this line; keep the wording stable.
+    // The native smoke observes these lines; keep the wording stable.
     console.log("markit-desktop: renderer ready");
+    // The smoke must be able to lose: assert the renderer actually
+    // mounted its workbench, not merely that a page painted.
+    void (async () => {
+      for (let i = 0; i < 50; i++) {
+        const mounted = await win.webContents
+          .executeJavaScript("!!document.querySelector('.workbench')", true)
+          .catch(() => false);
+        if (mounted) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      const mounted = await win.webContents
+        .executeJavaScript("!!document.querySelector('.workbench')", true)
+        .catch(() => false);
+      console.log(`markit-desktop: workbench mounted=${mounted}`);
+    })();
   });
 
   const index = path.join(dirname, "../renderer/index.html");
@@ -44,8 +60,8 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
-ipcMain.handle("dialog:openMarkdown", async () => {
-  const win = BrowserWindow.getAllWindows().at(-1);
+ipcMain.handle("dialog:openMarkdown", async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
   if (!win) return null;
   const picked = await dialog.showOpenDialog(win, {
     properties: ["openFile"],
@@ -61,8 +77,8 @@ ipcMain.handle("dialog:openMarkdown", async () => {
 
 ipcMain.handle(
   "dialog:saveMarkdown",
-  async (_event, args: { suggestedName: string; bytesBase64: string }) => {
-    const win = BrowserWindow.getAllWindows().at(-1);
+  async (event, args: { suggestedName: string; bytesBase64: string }) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
     if (!win) return null;
     const picked = await dialog.showSaveDialog(win, {
       defaultPath: args.suggestedName,
@@ -82,5 +98,5 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  app.quit();
+  if (process.platform !== "darwin") app.quit();
 });
