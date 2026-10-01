@@ -5,7 +5,7 @@
 //! dirty relations stay in the document crate (paths are never URLized
 //! here).
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::rc::Rc;
 
 use markit_composition::{CompositionKernel, DesiredEntry, Revision as K0Revision};
@@ -128,5 +128,43 @@ fn paths_are_not_urlized() {
     StdFiles.write(&path, b"x").expect("write");
     assert!(path.is_file());
     assert_eq!(StdFiles.read(&path).unwrap(), b"x");
-    let _ = Path::new(&path);
+}
+
+/// A missing parent directory surfaces the OS error (no temp junk, no
+/// silent creation of directories).
+#[test]
+fn missing_parent_dir_surfaces_the_os_error() {
+    let dir = tmp_dir("no-parent");
+    let error = StdFiles
+        .write(&dir.join("gone").join("doc.md"), b"x")
+        .expect_err("missing parent");
+    assert_eq!(error.kind(), std::io::ErrorKind::NotFound);
+}
+
+/// Replacing a file preserves its permissions: saving a private
+/// (owner-only) file never widens access.
+#[cfg(unix)]
+#[test]
+fn save_preserves_target_permissions() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tmp_dir("permissions");
+    let path = dir.join("private.md");
+    StdFiles
+        .write(
+            &path, b"# v1
+",
+        )
+        .expect("initial save");
+    std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600)).expect("restrict");
+
+    StdFiles
+        .write(
+            &path, b"# v2
+",
+        )
+        .expect("save over private file");
+
+    let mode = std::fs::metadata(&path).unwrap().permissions().mode();
+    assert_eq!(mode & 0o777, 0o600, "save must not widen access");
+    assert_eq!(StdFiles.read(&path).unwrap(), b"# v2\n");
 }

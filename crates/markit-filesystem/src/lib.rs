@@ -21,11 +21,14 @@ pub trait LocalFiles {
 
     /// Persist the complete bytes of one local file atomically: the write
     /// lands in a sibling temp file which then replaces the target by
-    /// rename, so a crash mid-write cannot leave a torn target.
+    /// rename, so a process crash mid-write cannot leave a torn target
+    /// (power-loss durability is a later concern). An existing target's
+    /// permissions are preserved.
     fn write(&self, path: &Path, bytes: &[u8]) -> io::Result<()>;
 }
 
-/// The std-based local implementation (platform brand stays private).
+/// The std-based local implementation. The concrete type is public for
+/// composition and tests; consumers should bind to [`LocalFiles`].
 pub struct StdFiles;
 
 impl LocalFiles for StdFiles {
@@ -40,30 +43,39 @@ impl LocalFiles for StdFiles {
         let dir = path.parent().unwrap_or_else(|| Path::new("."));
         let base = file_name.to_string_lossy().into_owned();
         let pid = std::process::id();
+        // Create the temp exclusively (O_EXCL): acquisition is atomic, so
+        // concurrent savers never share a temp, and a planted symlink at
+        // the temp name is never followed. A target's permissions carry
+        // over so replacing it never widens access.
         let mut n = 0u32;
-        loop {
-            let tmp = if n == 0 {
-                dir.join(format!(".{base}.markit-tmp-{pid}"))
-            } else {
-                dir.join(format!(".{base}.markit-tmp-{pid}-{n}"))
-            };
-            if !tmp.exists() {
-                return match std::fs::write(&tmp, bytes) {
-                    Ok(()) => match std::fs::rename(&tmp, path) {
-                        Ok(()) => Ok(()),
-                        Err(e) => {
-                            let _ = std::fs::remove_file(&tmp);
-                            Err(e)
-                        }
-                    },
-                    Err(e) => {
-                        let _ = std::fs::remove_file(&tmp);
-                        Err(e)
-                    }
-                };
+        let tmp = loop {
+            let candidate = dir.join(format!(".{base}.{pid}.tmp{n}"));
+            match std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&candidate)
+            {
+                Ok(_) => break candidate,
+                Err(e) if e.kind() == io::ErrorKind::AlreadyExists => n += 1,
+                Err(e) => return Err(e),
             }
-            n += 1;
+        };
+        let cleanup = |e: io::Error| {
+            let _ = std::fs::remove_file(&tmp);
+            e
+        };
+        if let Ok(meta) = std::fs::metadata(path) {
+            #[cfg(unix)]
+            if let Err(e) = std::fs::set_permissions(&tmp, meta.permissions()) {
+                return Err(cleanup(e));
+            }
+            #[cfg(not(unix))]
+            let _ = meta;
         }
+        if let Err(e) = std::fs::write(&tmp, bytes) {
+            return Err(cleanup(e));
+        }
+        std::fs::rename(&tmp, path).map_err(cleanup)
     }
 }
 
