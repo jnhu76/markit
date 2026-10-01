@@ -69,6 +69,17 @@ NORMAL_EDGES = {
     # ComponentSpec (foundation-rules constructor convention); the document
     # hot path itself stays inside the crate.
     "markit-document": {"markit-composition"},
+    # markit-markdown-api is the backend-neutral Markdown seam: contract
+    # types over document identity, capability publication over K0.
+    "markit-markdown-api": {"markit-composition", "markit-document"},
+    # markit-markdown-h4 implements the Markdown contract; it may depend on
+    # the seam, document identity, and K0 role publication — never on
+    # research (the donor mechanism was transplanted, see its PROVENANCE.md).
+    "markit-markdown-h4": {
+        "markit-composition",
+        "markit-document",
+        "markit-markdown-api",
+    },
 }
 
 DEV_EDGES = {}  # no internal dev edges are admitted for any crate
@@ -102,6 +113,8 @@ EDGE_RULE_PROSE = {
     "markit-composition": "K0 depends on no product crate",
     "markit-app": "the composition root may depend on composition only",
     "markit-document": "document code may depend on composition only (role publication)",
+    "markit-markdown-api": "the Markdown seam may depend on composition + document identity only",
+    "markit-markdown-h4": "the H4 provider may depend on the seam, document identity, and composition only",
 }
 
 
