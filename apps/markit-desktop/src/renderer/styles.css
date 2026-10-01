@@ -1,0 +1,32 @@
+/* Workbench layout: sidebar | editor over a status strip. Foundation
+   visual bar is deliberately low. */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #1c1c1c;
+  background: #fafafa;
+}
+.workbench { display: flex; flex-direction: column; height: 100vh; }
+.workbench-topbar {
+  display: flex; gap: 8px; padding: 6px 10px;
+  border-bottom: 1px solid #ddd; background: #f0f0f0;
+}
+.workbench-topbar button { padding: 2px 12px; }
+.workbench-main { display: flex; flex: 1; min-height: 0; }
+.workbench-sidebar {
+  width: 240px; border-right: 1px solid #ddd;
+  overflow: auto; background: #f7f7f7;
+}
+.workbench-editor { flex: 1; min-width: 0; overflow: auto; }
+.source-editor, .source-editor .cm-editor { height: 100%; }
+.outline-panel { padding: 8px; }
+.outline-title { font-weight: 600; margin-bottom: 6px; }
+.outline-row { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 1px 0; }
+.outline-unavailable { color: #a33; }
+.workbench-status {
+  display: flex; gap: 12px; padding: 4px 10px;
+  border-top: 1px solid #ddd; background: #f0f0f0;
+}
+.status-chip { color: #444; }
+.status-semantic-failed { color: #a33; }
