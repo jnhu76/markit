@@ -1,0 +1,8 @@
+[package]
+name = "markit-filesystem"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+markit-composition = { path = "../markit-composition" }

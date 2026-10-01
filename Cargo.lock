@@ -21,6 +21,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "markit-filesystem"
+version = "0.1.0"
+dependencies = [
+ "markit-composition",
+]
+
+[[package]]
 name = "markit-markdown-api"
 version = "0.1.0"
 dependencies = [
