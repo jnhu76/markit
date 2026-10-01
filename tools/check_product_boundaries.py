@@ -65,6 +65,10 @@ INTERNAL_PREFIX = "markit-"
 NORMAL_EDGES = {
     "markit-composition": set(),  # K0 depends on no product crate
     "markit-app": {"markit-composition"},  # thin admission layer over K0
+    # markit-document publishes the stable `document` composition role as a
+    # ComponentSpec (foundation-rules constructor convention); the document
+    # hot path itself stays inside the crate.
+    "markit-document": {"markit-composition"},
 }
 
 DEV_EDGES = {}  # no internal dev edges are admitted for any crate
@@ -97,6 +101,7 @@ DONOR_MARKERS = [
 EDGE_RULE_PROSE = {
     "markit-composition": "K0 depends on no product crate",
     "markit-app": "the composition root may depend on composition only",
+    "markit-document": "document code may depend on composition only (role publication)",
 }
 
 
