@@ -54,6 +54,8 @@ pub trait MarkdownSession {
 
     /// The generation this session's views carry (identity/lifecycle
     /// safety: late work from a retired session never matches).
+    /// Generations are process-unique: a value never names two sessions,
+    /// across provider rebinding included.
     fn generation(&self) -> u64;
 
     /// The latest observable availability/failure state.
@@ -81,7 +83,10 @@ pub trait MarkdownSession {
 
     /// Acquire the pinned read view for `revision`, if this session
     /// computed one. The returned view stays at that revision forever;
-    /// further commits never upgrade it.
+    /// further commits never upgrade it. Retention between publications
+    /// is provider policy (the H4 provider keeps the latest view plus
+    /// views still held elsewhere); an unheld older view may become
+    /// unpinnable.
     fn pin(&self, revision: SourceRevision) -> Option<Rc<PinnedMarkdownRead>>;
 
     /// Observe post-fact semantic events (view available / attempt
@@ -103,7 +108,6 @@ pub trait MarkdownSemanticService {
 }
 
 /// A live subscription to one session's events; dropping it unsubscribes.
-#[derive(Clone)]
 pub struct Subscription {
     remove: Rc<dyn Fn()>,
 }

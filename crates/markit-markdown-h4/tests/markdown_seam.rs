@@ -353,3 +353,89 @@ fn events_carry_targets_and_late_delivery_changes_nothing() {
         SemanticStatus::Available(session.pin(doc.revision()).unwrap().id())
     );
 }
+
+/// The refusal contract covers FORWARD gaps too: an edit whose base is the
+/// session's last applied revision, but whose `after` snapshot is two
+/// commits ahead, is refused — one apply_edit is exactly one commit.
+#[test]
+fn forward_gapped_sequence_is_refused() {
+    let mut doc = Document::new("# A\n");
+    let session = H4Service::new().open_session(doc.id(), config());
+    session.reset(&doc.snapshot());
+    let before = doc.snapshot();
+
+    let r1 = whole(&doc);
+    apply(&mut doc, session.as_ref(), r1, "# B\n");
+    let r2 = whole(&doc);
+    apply(&mut doc, session.as_ref(), r2, "# C\n");
+
+    // forge: the base is right, but `after` skips a commit
+    let before_range = SourceRange::new(
+        SourceOffset::new(0),
+        SourceOffset::new(before.source().len()),
+    );
+    let forged = SourceEdit::replace(
+        doc.id(),
+        before.revision(),
+        before_range,
+        "# X\n".to_owned(),
+    );
+    let error = session
+        .apply_edit(&before, &doc.snapshot(), &forged)
+        .expect_err("a forward gap is not an ordered edit");
+    assert!(error.to_string().contains("reset"), "{error}");
+    assert_eq!(
+        headings_at(session.as_ref(), doc.revision()),
+        vec![(1u8, "C".to_owned())],
+        "the refusal left the session's state untouched"
+    );
+}
+
+/// Snapshots of another document are a caller contract violation (the
+/// safe API cannot produce an incoherent same-document snapshot: a
+/// document's snapshot at revision N always carries N's exact bytes, and
+/// the sequence check refuses everything else).
+#[test]
+#[should_panic(expected = "another document")]
+fn cross_document_snapshots_are_a_contract_violation() {
+    let mut doc = Document::new("# A\n");
+    let session = H4Service::new().open_session(doc.id(), config());
+    session.reset(&doc.snapshot());
+    let before = doc.snapshot();
+
+    let r = whole(&doc);
+    apply(&mut doc, session.as_ref(), r, "# B\n");
+
+    let other = Document::new("# B\n\nsmuggled\n");
+    let before_range = SourceRange::new(
+        SourceOffset::new(0),
+        SourceOffset::new(before.source().len()),
+    );
+    let edit = SourceEdit::replace(
+        doc.id(),
+        before.revision(),
+        before_range,
+        "# B\n".to_owned(),
+    );
+    let _ = session.apply_edit(&before, &other.snapshot(), &edit);
+}
+
+/// Generations are process-unique across provider instances: a late view
+/// from a retired H4Service can never share identity with a new one's.
+#[test]
+fn generations_are_unique_across_provider_instances() {
+    let doc_a = Document::new("# A\n");
+    let doc_b = Document::new("# B\n");
+    let s1 = H4Service::new().open_session(doc_a.id(), config());
+    let s2 = H4Service::new().open_session(doc_b.id(), config());
+    assert_ne!(s1.generation(), s2.generation());
+}
+
+/// The provider rejects configuration naming another dialect.
+#[test]
+#[should_panic(expected = "dialect")]
+fn foreign_dialect_configuration_is_refused() {
+    let doc = Document::new("# A\n");
+    let _ =
+        H4Service::new().open_session(doc.id(), MarkdownSemanticConfig::new("some-other-dialect"));
+}

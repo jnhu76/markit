@@ -3,9 +3,10 @@
 //! seam; consumers on the other side see `markit-markdown-api` types
 //! only.
 
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use markit_document::{
     DocumentId, SourceEdit, SourceOffset, SourceRange, SourceRevision, SourceSnapshot,
@@ -22,17 +23,20 @@ use crate::impls::restart::H4Document;
 /// configuration. Configuration vocabulary, not an internal type.
 pub const H4_DIALECT: &str = "bench-grammar-v1";
 
+/// Session generations are process-unique: a value never names two
+/// sessions, so a late result from a retired provider binding can never
+/// pass a consumer's identity check against a new session's views.
+static NEXT_SESSION_GENERATION: AtomicU64 = AtomicU64::new(0);
+
 /// The provider: opens one H4 session per document. The only H4-branded
 /// object consumers may hold is the capability service, and even that is
 /// reached through the neutral [`MarkdownSemanticService`] face.
 #[derive(Default)]
-pub struct H4Service {
-    next_generation: Cell<u64>,
-}
+pub struct H4Service {}
 
 impl H4Service {
     pub fn new() -> Self {
-        Self::default()
+        Self {}
     }
 }
 
@@ -42,8 +46,13 @@ impl MarkdownSemanticService for H4Service {
         document: DocumentId,
         config: MarkdownSemanticConfig,
     ) -> Rc<dyn MarkdownSession> {
-        let generation = self.next_generation.get();
-        self.next_generation.set(generation + 1);
+        assert!(
+            config.dialect == H4_DIALECT,
+            "the H4 provider interprets dialect {:?} only, got {:?}",
+            H4_DIALECT,
+            config.dialect
+        );
+        let generation = NEXT_SESSION_GENERATION.fetch_add(1, Ordering::Relaxed);
         Rc::new(H4Session {
             document,
             config,
@@ -142,18 +151,20 @@ impl MarkdownSession for H4Session {
             expected_base: SourceRevision::INITIAL,
             edit_base: edit.base(),
         })?;
-        if edit.base() != expected_base
-            || edit.base() != before.revision()
-            || after.revision() <= before.revision()
-        {
-            return Err(SemanticError::MismatchedSequence {
-                expected_base,
-                edit_base: edit.base(),
-            });
-        }
         let range = edit.range();
         let (es, ee) = (range.start.get(), range.end.get());
-        if ee > before.source().len() || es > ee {
+        // The edit must be exactly the next commit of the session's state:
+        // same document, right base, and `after` is that one commit's
+        // result with byte length following from the replacement. A gapped
+        // or incoherent sequence is refused; `reset` is the recovery path.
+        if edit.document() != self.document
+            || edit.base() != expected_base
+            || edit.base() != before.revision()
+            || after.revision().get() != before.revision().get() + 1
+            || ee > before.source().len()
+            || es > ee
+            || after.source().len() != before.source().len() - (ee - es) + edit.replacement().len()
+        {
             return Err(SemanticError::MismatchedSequence {
                 expected_base,
                 edit_base: edit.base(),
