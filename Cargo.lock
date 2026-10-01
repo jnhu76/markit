@@ -19,3 +19,20 @@ version = "0.1.0"
 dependencies = [
  "markit-composition",
 ]
+
+[[package]]
+name = "markit-markdown-api"
+version = "0.1.0"
+dependencies = [
+ "markit-composition",
+ "markit-document",
+]
+
+[[package]]
+name = "markit-markdown-h4"
+version = "0.1.0"
+dependencies = [
+ "markit-composition",
+ "markit-document",
+ "markit-markdown-api",
+]
