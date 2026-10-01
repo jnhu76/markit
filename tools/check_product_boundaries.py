@@ -80,6 +80,9 @@ NORMAL_EDGES = {
         "markit-document",
         "markit-markdown-api",
     },
+    # markit-filesystem is a standalone platform capability: composition
+    # role publication only; document/markdown stay untouched by it.
+    "markit-filesystem": {"markit-composition"},
 }
 
 DEV_EDGES = {}  # no internal dev edges are admitted for any crate
@@ -115,6 +118,7 @@ EDGE_RULE_PROSE = {
     "markit-document": "document code may depend on composition only (role publication)",
     "markit-markdown-api": "the Markdown seam may depend on composition + document identity only",
     "markit-markdown-h4": "the H4 provider may depend on the seam, document identity, and composition only",
+    "markit-filesystem": "filesystem code may depend on composition only (role publication)",
 }
 
 
