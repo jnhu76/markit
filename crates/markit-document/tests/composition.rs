@@ -59,7 +59,10 @@ fn document_plugin_binds_through_k0_and_documents_flow_through_the_bound_face() 
         .expect("legal composition");
     kernel.settle();
 
-    let observed = observed.borrow().clone().expect("the probe committed through the bound document face");
+    let observed = observed
+        .borrow()
+        .clone()
+        .expect("the probe committed through the bound document face");
     assert_eq!(observed, (1, 1, "# Bound\n".to_owned()));
 }
 

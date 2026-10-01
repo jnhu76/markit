@@ -92,25 +92,31 @@ impl SourceEdit {
 pub enum DocumentError {
     /// The edit addresses a different document than the one it was
     /// submitted to.
-    DocumentMismatch { expected: DocumentId, actual: DocumentId },
+    DocumentMismatch {
+        expected: DocumentId,
+        actual: DocumentId,
+    },
     /// The edit's base revision is not the document's current revision.
-    StaleBase { current: SourceRevision, edit_base: SourceRevision },
+    StaleBase {
+        current: SourceRevision,
+        edit_base: SourceRevision,
+    },
     /// The edit's byte range is not fully inside the base revision's
     /// source (`start > end` or `end > source length`).
-    RangeInvalid { range: SourceRange, source_len: usize },
+    RangeInvalid {
+        range: SourceRange,
+        source_len: usize,
+    },
     /// A range boundary falls in the middle of a UTF-8 scalar value.
     NotCharBoundary { offset: SourceOffset },
-    /// The saved baseline names a revision this document never issued.
-    UnknownRevision { revision: SourceRevision },
 }
 
 impl fmt::Display for DocumentError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::DocumentMismatch { expected, actual } => write!(
-                f,
-                "edit addresses {actual} but was submitted to {expected}"
-            ),
+            Self::DocumentMismatch { expected, actual } => {
+                write!(f, "operation addresses {actual} but reached {expected}")
+            }
             Self::StaleBase { current, edit_base } => write!(
                 f,
                 "edit base {edit_base} is stale; current revision is {current}"
@@ -118,15 +124,10 @@ impl fmt::Display for DocumentError {
             Self::RangeInvalid { range, source_len } => write!(
                 f,
                 "edit range [{}, {}) is not inside the {}-byte source",
-                range.start,
-                range.end,
-                source_len
+                range.start, range.end, source_len
             ),
             Self::NotCharBoundary { offset } => {
                 write!(f, "edit boundary {} splits a UTF-8 scalar value", offset)
-            }
-            Self::UnknownRevision { revision } => {
-                write!(f, "revision {revision} was never issued by this document")
             }
         }
     }
@@ -243,7 +244,11 @@ impl Document {
         }
         let (start, end) = (edit.range.start.get(), edit.range.end.get());
         if !self.source.is_char_boundary(start) || !self.source.is_char_boundary(end) {
-            let split = if self.source.is_char_boundary(start) { end } else { start };
+            let split = if self.source.is_char_boundary(start) {
+                end
+            } else {
+                start
+            };
             return Err(DocumentError::NotCharBoundary {
                 offset: SourceOffset::new(split),
             });
@@ -306,15 +311,22 @@ impl Document {
         next
     }
 
-    /// Record that revision `revision`'s bytes are the ones persisted by
-    /// the filesystem owner. Saving N while the document has advanced to
-    /// N+1 leaves N+1 dirty: dirty means `current != saved`, never
-    /// "a save happened recently".
-    pub fn mark_saved(&mut self, revision: SourceRevision) -> Result<(), DocumentError> {
-        if revision > self.revision {
-            return Err(DocumentError::UnknownRevision { revision });
+    /// Record that the bytes the filesystem owner persisted are exactly
+    /// the pinned snapshot `saved`. The snapshot carries the document
+    /// identity, so another document's revision can never mark this
+    /// document clean; saving N while the document has advanced to N+1
+    /// leaves N+1 dirty. Dirty means `current != saved`, never "a save
+    /// happened recently".
+    pub fn mark_saved(&mut self, saved: &SourceSnapshot) -> Result<(), DocumentError> {
+        if saved.document_id() != self.id {
+            return Err(DocumentError::DocumentMismatch {
+                expected: self.id,
+                actual: saved.document_id(),
+            });
         }
-        self.saved = Some(revision);
+        // A snapshot of this document was issued at its revision, and the
+        // monotonic counter keeps it <= current by construction.
+        self.saved = Some(saved.revision());
         Ok(())
     }
 

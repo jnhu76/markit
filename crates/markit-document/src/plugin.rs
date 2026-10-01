@@ -8,7 +8,7 @@ use std::cell::{Ref, RefCell, RefMut};
 use std::collections::BTreeMap;
 use std::rc::Rc;
 
-use markit_composition::{ComponentSpec, Capability};
+use markit_composition::{Capability, ComponentSpec};
 
 use crate::document::Document;
 use crate::identity::DocumentId;
@@ -26,6 +26,11 @@ impl Capability for DocumentStoreCapability {
 /// The document factory/registry service: owns the open documents of one
 /// composition. Shared through K0 as an `Rc`, so the map is behind a
 /// `RefCell`; keying is by [`DocumentId`], so consumers never guess.
+///
+/// Borrow discipline: the store admits at most one live borrow at a time.
+/// While holding a `get`/`get_mut` guard, do not re-enter the store
+/// (`create`/`close`/`get*` panic on double borrow), including for a
+/// different document. Drop the guard first.
 #[derive(Default)]
 pub struct DocumentStore {
     documents: RefCell<BTreeMap<DocumentId, Document>>,
@@ -50,7 +55,10 @@ impl DocumentStore {
     }
 
     pub fn get_mut(&self, id: DocumentId) -> Option<RefMut<'_, Document>> {
-        RefMut::filter_map(self.documents.borrow_mut(), |documents| documents.get_mut(&id)).ok()
+        RefMut::filter_map(self.documents.borrow_mut(), |documents| {
+            documents.get_mut(&id)
+        })
+        .ok()
     }
 
     /// Close (retire) a document. Explicitly retained snapshots handed out

@@ -4,7 +4,9 @@
 //! validation, undo/redo as new commits, pinned reads, and the saved
 //! baseline / dirty relation.
 
-use markit_document::{DocumentError, Document, SourceEdit, SourceOffset, SourceRange, SourceRevision};
+use markit_document::{
+    Document, DocumentError, SourceEdit, SourceOffset, SourceRange, SourceRevision,
+};
 
 /// Tracer bullet — a successful commit produces a new revision and the
 /// source reflects the replacement.
@@ -58,7 +60,11 @@ fn stale_base_revision_is_rejected_without_mutating_the_document() {
             edit_base: stale,
         }
     );
-    assert_eq!(doc.source(), "# Changed\n", "a rejected edit mutates nothing");
+    assert_eq!(
+        doc.source(),
+        "# Changed\n",
+        "a rejected edit mutates nothing"
+    );
 }
 
 /// An edit addressed to one document cannot be committed by another, so
@@ -130,8 +136,8 @@ fn cjk_emoji_edits_reject_split_scalars_and_preserve_valid_source() {
         split,
         Err(DocumentError::NotCharBoundary {
             offset: SourceOffset::new(3)
-        }
-    ));
+        })
+    );
 
     let len = doc.source().len();
     let rev = doc
@@ -166,7 +172,11 @@ fn same_numeric_revision_in_two_documents_never_aliases() {
     a.commit(edit_for(&a, "AAA")).expect("a commit");
     b.commit(edit_for(&b, "BBB")).expect("b commit");
 
-    assert_eq!(a.revision(), b.revision(), "same number, different documents");
+    assert_eq!(
+        a.revision(),
+        b.revision(),
+        "same number, different documents"
+    );
 
     let pin_a = a.snapshot();
     assert_eq!(pin_a.document_id(), a.id());
@@ -194,7 +204,11 @@ fn pin_n_remains_n_after_commit_n_plus_one() {
 
     assert_eq!(doc.revision().get(), 1);
     assert_eq!(doc.source(), "# Goodbye\n");
-    assert_eq!(pin.revision().get(), 0, "the pin must not upgrade to latest");
+    assert_eq!(
+        pin.revision().get(),
+        0,
+        "the pin must not upgrade to latest"
+    );
     assert_eq!(pin.source(), "# Hello\n");
     assert_eq!(pin.document_id(), doc.id());
 }
@@ -342,53 +356,60 @@ fn saved_baseline_tracks_exactly_the_revision_that_was_saved() {
     let mut doc = Document::new("# Hello\n");
     assert!(doc.is_dirty(), "never-saved content is dirty");
 
-    let opened = doc.revision();
-    doc.mark_saved(opened).expect("the opened content is on disk");
+    let opened = doc.snapshot();
+    doc.mark_saved(&opened)
+        .expect("the opened content is on disk");
     assert!(!doc.is_dirty());
 
-    let edited = doc
-        .commit(SourceEdit::replace(
-            doc.id(),
-            doc.revision(),
-            SourceRange::new(SourceOffset::new(2), SourceOffset::new(7)),
-            "Bye".to_owned(),
-        ))
-        .expect("edit past the save");
+    doc.commit(SourceEdit::replace(
+        doc.id(),
+        doc.revision(),
+        SourceRange::new(SourceOffset::new(2), SourceOffset::new(7)),
+        "Bye".to_owned(),
+    ))
+    .expect("edit past the save");
     assert!(doc.is_dirty());
 
     // The save of the OLD revision completes after the edit committed:
-    // marking revision 0 saved must not clean revision 1.
-    doc.mark_saved(opened).expect("a late save of an older revision is still a save");
-    assert_eq!(doc.saved_revision(), Some(opened));
-    assert!(doc.is_dirty(), "revision {edited} was never saved");
+    // marking the opened snapshot saved must not clean the new revision.
+    doc.mark_saved(&opened)
+        .expect("a late save of an older revision is still a save");
+    assert_eq!(doc.saved_revision(), Some(opened.revision()));
+    assert!(doc.is_dirty(), "the edited revision was never saved");
 
-    doc.mark_saved(edited).expect("save current");
+    let edited = doc.snapshot();
+    doc.mark_saved(&edited).expect("save current");
     assert!(!doc.is_dirty());
 
     doc.undo().expect("undo past the save");
-    assert!(doc.is_dirty(), "undo is a new revision, not a return to the saved one");
+    assert!(
+        doc.is_dirty(),
+        "undo is a new revision, not a return to the saved one"
+    );
 }
 
-/// Marking a revision this document never issued is refused. Another
-/// document's legitimately minted revision is exactly that case.
+/// The saved baseline carries document identity: another document's
+/// snapshot — even at the same numeric revision — can never mark this
+/// document's unsaved bytes clean.
 #[test]
-fn marking_a_revision_this_document_never_issued_is_rejected() {
+fn marking_another_documents_revision_saved_is_rejected() {
     let mut doc = Document::new("# Hello\n");
-    let mut other = Document::new("# Other\n");
-    for _ in 0..3 {
-        other
-            .commit(SourceEdit::replace(
-                other.id(),
-                other.revision(),
-                SourceRange::new(SourceOffset::new(0), SourceOffset::new(0)),
-                "x".to_owned(),
-            ))
-            .expect("advance the other document");
-    }
-    let foreign = other.revision();
-    assert_ne!(foreign, doc.revision());
+    let other = Document::new("# Other\n");
+    let foreign = other.snapshot();
+    assert_eq!(
+        foreign.revision(),
+        doc.revision(),
+        "same number, different document"
+    );
 
-    let error = doc.mark_saved(foreign);
-    assert!(matches!(error, Err(DocumentError::UnknownRevision { .. })));
+    let error = doc.mark_saved(&foreign);
+    assert_eq!(
+        error,
+        Err(DocumentError::DocumentMismatch {
+            expected: doc.id(),
+            actual: foreign.document_id(),
+        })
+    );
     assert_eq!(doc.saved_revision(), None, "a refused mark saves nothing");
+    assert!(doc.is_dirty(), "unsaved bytes stay dirty");
 }
